@@ -66,9 +66,25 @@ ul, li {
 }
 
 .action-button {
-  background-color : white;
-  width : 150px;
-  display : inline-block;
+  background-color: white;
+  width: 118px;
+  padding: 5px;
+  text-align: center;
+  border-radius: 2px;
+  display: inline-block;
+  font-family: Arial;
+  cursor: pointer;
+  color: white;
+  background: #aaa;
+  text-shadow: 0 -1px 0 #888;
+}
+
+.action-button:hover {
+  background: #b0b0b0;
+}
+
+.action-button:active {
+  background: #9a9a9a;
 }
 
 #preview-list li{
