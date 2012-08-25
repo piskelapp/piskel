@@ -5,8 +5,40 @@
   var piskel = {
     init : function () {
       this.addFrame();
+      this.initPreview();
+    },
 
-      setInterval(this.refreshAnimatedPreview, 500);
+    initPreview : function() {
+      var scope = this;
+
+      var animFPSTuner = document.getElementById("preview-fps");
+      var animPreviewFPS = parseInt(animFPSTuner.value, 10);
+      var startPreviewRefresh = function() {
+        return setInterval(scope.refreshAnimatedPreview, 1000/animPreviewFPS);
+      };
+      var refreshUpdater = startPreviewRefresh();
+      
+      animFPSTuner.addEventListener('keyup', function(evt) {
+        window.clearInterval(refreshUpdater);
+        animPreviewFPS = parseInt(animFPSTuner.value, 10);
+        if(isNaN(animPreviewFPS)) {
+          animPreviewFPS = 1;
+        }
+        if(evt.keyCode == 38) {
+          animPreviewFPS++;
+        }
+        else if (evt.keyCode == 40) {
+          animPreviewFPS--;
+        }
+        if(animPreviewFPS < 1) {
+          animPreviewFPS = 1;
+        }
+        if(animPreviewFPS > 100) {
+          animPreviewFPS = 100;
+        }
+        animFPSTuner.value = animPreviewFPS;
+        refreshUpdater = startPreviewRefresh();
+      });
     },
 
     getCurrentCanvas : function () {
@@ -22,27 +54,48 @@
     },
 
     createPreviews : function () {
-      var container = $('preview-list');
+      var container = $('preview-list'), previewTile;
       container.innerHTML = "";
       for (var i = 0 ; i < frames.length ; i++) {
-        var preview = document.createElement("li");
-        if (index == i) {
-          preview.className = "selected";
-        }
-        var canvasPreview = document.createElement("canvas");
-        
-        canvasPreview.setAttribute('width', '128');
-        canvasPreview.setAttribute('height', '128');
-        
-        canvasPreview.setAttribute('onclick', 'piskel.setFrame('+i+')');
-
-        canvasPreview.getContext('2d').drawImage(frames[i], 0, 0, 320, 320, 0, 0 , 128, 128);
-        preview.appendChild(canvasPreview);
-
-
-        container.appendChild(preview);
-
+        previewTile = this.createPreviewTile(i);
+        container.appendChild(previewTile);
       }
+    },
+
+    createPreviewTile: function(tileNumber) {
+      var preview = document.createElement("li");
+      var classname = "preview-tile";
+
+      if (index == tileNumber) {
+        classname += " selected";
+      }
+      preview.className = classname;
+
+      var canvasPreview = document.createElement("canvas");
+      canvasPreview.className = "tile-view"
+      
+      canvasPreview.setAttribute('width', '128');
+      canvasPreview.setAttribute('height', '128');     
+      canvasPreview.setAttribute('onclick', 'piskel.setFrame('+ tileNumber +')');
+
+      var canvasPreviewDuplicateAction = document.createElement("button");
+      canvasPreviewDuplicateAction.className = "tile-action"
+      canvasPreviewDuplicateAction.innerHTML = "dup"
+      canvasPreviewDuplicateAction.setAttribute('onclick', 'piskel.duplicateFrame('+ tileNumber +')');
+        
+      canvasPreview.getContext('2d').drawImage(frames[tileNumber], 0, 0, 320, 320, 0, 0 , 128, 128);
+      preview.appendChild(canvasPreview);
+      preview.appendChild(canvasPreviewDuplicateAction);
+      
+      if(frames.length > 1) {
+        var canvasPreviewDeleteAction = document.createElement("button");
+        canvasPreviewDeleteAction.className = "tile-action"
+        canvasPreviewDeleteAction.innerHTML = "del"
+        canvasPreviewDeleteAction.setAttribute('onclick', 'piskel.removeFrame('+ tileNumber +')');
+        preview.appendChild(canvasPreviewDeleteAction);
+      }
+
+      return preview;
     },
 
     refreshAnimatedPreview : function () {
@@ -59,6 +112,30 @@
 
     setFrame : function (frameIndex) {
       index = frameIndex;
+      $('canvas-container').innerHTML = "";
+      $('canvas-container').appendChild(this.getCurrentCanvas());
+      this.createPreviews();
+    },
+
+    removeFrame: function(frameIndex) {
+      index = frameIndex - 1 < 0 ? 0 : frameIndex - 1;
+      animIndex = 0;
+      frames.splice(frameIndex, 1);
+      $('canvas-container').innerHTML = "";
+      $('canvas-container').appendChild(this.getCurrentCanvas());
+      this.createPreviews();
+    },
+
+    duplicateFrame: function(frameIndex) {
+      index = frameIndex + 1;
+      animIndex = 0;
+      var duplicateCanvas = frames[frameIndex].cloneNode(true);
+      // Copy canvas content:
+      var context = duplicateCanvas.getContext('2d');
+      context.drawImage(frames[frameIndex], 0, 0);
+
+      // Insert cloned node into frame collection:
+      frames.splice(frameIndex + 1, 0, duplicateCanvas);
       $('canvas-container').innerHTML = "";
       $('canvas-container').appendChild(this.getCurrentCanvas());
       this.createPreviews();
@@ -121,7 +198,7 @@
       canvas.setAttribute('height', '320');
       canvas.setAttribute('onmousemove', 'piskel.onCanvasMousemove(arguments[0])');
       canvas.setAttribute('oncontextmenu', 'piskel.onCanvasContextMenu(arguments[0])');
-      canvas.setAttribute('onclick', 'piskel.onCanvasClick(arguments[0])');
+      //canvas.setAttribute('onclick', 'piskel.onCanvasClick(arguments[0])');
       var context = canvas.getContext('2d'); 
 
       context.fillStyle = "white";
@@ -131,6 +208,8 @@
         context.drawImage(frames[index], 0, 0, 320, 320, 0, 0 , 320, 320);
       }
 
+      // TODO: We should probably store some metadata or enhance a domain object instead
+      //       of the rendered view ? It will allow to decouple view and model and clean a bunch of code above.
       frames.push(canvas);
       this.setFrame(frames.length - 1);
     }
