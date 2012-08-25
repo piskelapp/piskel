@@ -24,6 +24,7 @@ ul, li {
   top : 0;
   bottom : 0;
   width : 200px;
+  overflow-y: scroll;
   background : #000;
   padding : 10px;
 }
@@ -32,7 +33,7 @@ ul, li {
   position:absolute;
   top : 0;
   bottom : 0;
-  left : 200px;
+  left : 220px;
   right : 0;
   background : #ccc;
 }
@@ -49,7 +50,7 @@ ul, li {
   box-shadow : 0px 0px 2px rgba(0,0,0,0.2);
 }
 
-.preview-container canvas{
+.preview-container canvas {
   border : 0px Solid transparent;
   border-radius:5px 0px 0px 5px;
 }
@@ -71,13 +72,43 @@ ul, li {
   display : inline-block;
 }
 
-#preview-list li{
-  margin : 10px 0;
-  width : 128px;
-  height : 128px;
+#preview-list {
+  list-style-type: none;
 }
 
-#preview-list li.selected{
-  margin : 8px -2px;
-  border : 2px Solid red;
+#preview-list .preview-tile {
+  padding : 10px;
+  overflow: hidden;
+}
+
+.preview-tile .tile-view {
+  float: left;
+}
+
+.preview-tile .tile-action {
+  display: none;
+  float: right;
+}
+
+.preview-tile:hover .tile-action {
+  display: block;
+}
+
+.preview-tile:hover {
+  background-color: lightgray;
+}
+
+#preview-list .preview-tile.selected {
+  background-color: gray;
+}
+
+::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 7px;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: rgba(180,180,180,.7);
+    -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
 }
