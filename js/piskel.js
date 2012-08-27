@@ -1,16 +1,115 @@
 (function ($) {
-  var frames = [], isClicked = false, brushSize = 10, index = -1, animIndex = 0, button = 0;
+  var frameSheet,
+
+      // Constants:
+      TRANSPARENT_COLOR = 'tc',
+      //TRANSPARENT_COLOR = 'pink',
+      DEFAULT_PEN_COLOR = '#000',
+
+      // Configuration:
+      // Canvas size in pixel size (not dpi related)
+      framePixelWidth = 32, 
+      framePixelHeight = 32,
+
+      // Scaling factors for a given frameSheet rendering:
+      // Main drawing area:
+      drawingCanvasDpi = 10,
+      // Canvas previous in the slideshow:
+      previewTileCanvasDpi = 4,
+      // Ainmated canvas preview:
+      previewAnimationCanvasDpi = 8,
+
+      // DOM references:
+      drawingAreaContainer,
+      drawingAreaCanvas,
+      previewCanvas,
+
+      // States:
+      isClicked = false, 
+      isRightClicked = false, 
+      activeFrameIndex = -1, 
+      animIndex = 0,
+      penColor = DEFAULT_PEN_COLOR;
 
 
   var piskel = {
     init : function () {
-      this.addFrame();
-      this.initPreview();
+      frameSheet = FrameSheetModel.getInstance(framePixelWidth, framePixelHeight);
+      frameSheet.addEmptyFrame();
+      this.setActiveFrame(0);
+
+      this.initDrawingArea();
+      this.initPreviewSlideshow();
+      this.initAnimationPreview();
     },
 
-    initPreview : function() {
+    setActiveFrame: function(index) {
+      activeFrameIndex = index;
+    },
+
+    setActiveFrameAndRedraw: function(index) {
+      this.setActiveFrame(index);
+      
+      // Update drawing canvas:
+      this.drawFrameToCanvas(frameSheet.getFrameByIndex(this.getActiveFrameIndex()), drawingAreaCanvas, drawingCanvasDpi);
+      
+      // Update slideshow:
+      this.createPreviews();
+
+      // Update animation preview:
+      animIndex = 0;
+    },
+
+    getActiveFrameIndex: function() {
+      if(-1 == activeFrameIndex) {
+        throw "Bad active frane initialization."
+      }
+      return activeFrameIndex;
+    },
+
+    initDrawingArea : function() {
+        drawingAreaContainer = $('drawing-canvas-container');
+
+        drawingAreaCanvas = document.createElement("canvas");
+        drawingAreaCanvas.className = 'canvas';
+        drawingAreaCanvas.setAttribute('width', '' + framePixelWidth * drawingCanvasDpi);
+        drawingAreaCanvas.setAttribute('height', '' + framePixelHeight * drawingCanvasDpi);
+
+        drawingAreaContainer.setAttribute('style', 
+          'width:' + framePixelWidth * drawingCanvasDpi + 'px; height:' + framePixelHeight * drawingCanvasDpi + 'px;');
+
+        drawingAreaCanvas.setAttribute('oncontextmenu', 'piskel.onCanvasContextMenu(arguments[0])');
+        drawingAreaContainer.appendChild(drawingAreaCanvas);
+
+        var body = document.getElementsByTagName('body')[0];
+        body.setAttribute('onmouseup', 'piskel.onCanvasMouseup(arguments[0])');
+        drawingAreaContainer.setAttribute('onmousedown', 'piskel.onCanvasMousedown(arguments[0])');
+        drawingAreaContainer.setAttribute('onmousemove', 'piskel.onCanvasMousemove(arguments[0])');
+
+        this.drawFrameToCanvas(frameSheet.getFrameByIndex(this.getActiveFrameIndex()), drawingAreaCanvas, drawingCanvasDpi);
+    },
+
+    initPreviewSlideshow: function() {
+      var addFrameButton = $('add-frame-button');
+      addFrameButton.addEventListener('mousedown', function() {
+        frameSheet.addEmptyFrame();
+        piskel.setActiveFrameAndRedraw(frameSheet.getFrameCount() - 1);
+      });
+      this.createPreviews();
+    },
+
+    initAnimationPreview : function() {
       var scope = this;
 
+      var previewAnimationContainer = $('preview-canvas-container');
+      previewCanvas = document.createElement('canvas');
+      previewCanvas.className = 'canvas';
+      previewAnimationContainer.setAttribute('style', 
+        'width:' + framePixelWidth * previewAnimationCanvasDpi + 'px; height:' + framePixelHeight * previewAnimationCanvasDpi + 'px;');
+      previewAnimationContainer.appendChild(previewCanvas);
+      previewCanvas.setAttribute('width', framePixelWidth * previewAnimationCanvasDpi);
+      previewCanvas.setAttribute('height', framePixelHeight * previewAnimationCanvasDpi);
+      
       var animFPSTuner = document.getElementById("preview-fps");
       var animPreviewFPS = parseInt(animFPSTuner.value, 10);
       var startPreviewRefresh = function() {
@@ -41,104 +140,93 @@
       });
     },
 
-    getCurrentCanvas : function () {
-      return frames[index];
-    },
-
-    onCanvasMousemove : function (event) {
-      //this.updateCursorInfo(event);
-      if (isClicked) {
-        var coords = this.getRelativeCoordinates(event.clientX, event.clientY);
-        this.drawAt(coords.x, coords.y);
-      }
-    },
-
     createPreviews : function () {
       var container = $('preview-list'), previewTile;
       container.innerHTML = "";
-      for (var i = 0 ; i < frames.length ; i++) {
+      for (var i = 0, l = frameSheet.getFrameCount(); i < l ; i++) {
         previewTile = this.createPreviewTile(i);
         container.appendChild(previewTile);
       }
     },
 
     createPreviewTile: function(tileNumber) {
-      var preview = document.createElement("li");
+      var previewTileRoot = document.createElement("li");
       var classname = "preview-tile";
 
-      if (index == tileNumber) {
+      if (this.getActiveFrameIndex() == tileNumber) {
         classname += " selected";
       }
-      preview.className = classname;
+      previewTileRoot.className = classname;
+      
+      var canvasContainer = document.createElement("div");
+      canvasContainer.className = "canvas-container";
+      canvasContainer.setAttribute('style', 
+        'width:' + framePixelWidth * previewTileCanvasDpi + 'px; height:' + framePixelHeight * previewTileCanvasDpi + 'px;');
+      
+      var canvasBackground = document.createElement("div");
+      canvasBackground.className = "canvas-background";
+      canvasContainer.appendChild(canvasBackground);
 
       var canvasPreview = document.createElement("canvas");
-      canvasPreview.className = "tile-view"
+      canvasPreview.className = "canvas tile-view"
       
-      canvasPreview.setAttribute('width', '128');
-      canvasPreview.setAttribute('height', '128');     
-      canvasPreview.setAttribute('onclick', 'piskel.setFrame('+ tileNumber +')');
+      canvasPreview.setAttribute('width', framePixelWidth * previewTileCanvasDpi);
+      canvasPreview.setAttribute('height', framePixelHeight * previewTileCanvasDpi);     
+      
+      previewTileRoot.addEventListener('click', function(evt) {
+        // has not class tile-action:
+        // TODO: let me know when you want to start using a framework :)
+        if(!evt.target.className.match(new RegExp('(\\s|^)'+ 'tile-action' +'(\\s|$)'))) {
+          piskel.setActiveFrameAndRedraw(tileNumber);
+        }    
+      });
 
       var canvasPreviewDuplicateAction = document.createElement("button");
       canvasPreviewDuplicateAction.className = "tile-action"
       canvasPreviewDuplicateAction.innerHTML = "dup"
-      canvasPreviewDuplicateAction.setAttribute('onclick', 'piskel.duplicateFrame('+ tileNumber +')');
-        
-      canvasPreview.getContext('2d').drawImage(frames[tileNumber], 0, 0, 320, 320, 0, 0 , 128, 128);
-      preview.appendChild(canvasPreview);
-      preview.appendChild(canvasPreviewDuplicateAction);
+
+      canvasPreviewDuplicateAction.addEventListener('click', function(evt) {
+        piskel.duplicateFrame(tileNumber);
+      });
+
+      this.drawFrameToCanvas(frameSheet.getFrameByIndex(tileNumber), canvasPreview, previewTileCanvasDpi);
+      canvasContainer.appendChild(canvasPreview);
+      previewTileRoot.appendChild(canvasContainer);
+      previewTileRoot.appendChild(canvasPreviewDuplicateAction);
       
-      if(frames.length > 1) {
+      if(tileNumber > 0 || frameSheet.getFrameCount() > 1) {
         var canvasPreviewDeleteAction = document.createElement("button");
         canvasPreviewDeleteAction.className = "tile-action"
         canvasPreviewDeleteAction.innerHTML = "del"
-        canvasPreviewDeleteAction.setAttribute('onclick', 'piskel.removeFrame('+ tileNumber +')');
-        preview.appendChild(canvasPreviewDeleteAction);
+        canvasPreviewDeleteAction.addEventListener('click', function(evt) {
+          frameSheet.removeFrameByIndex(tileNumber);
+          animIndex = 0;
+          piskel.createPreviews();
+        });
+        previewTileRoot.appendChild(canvasPreviewDeleteAction);
       }
 
-      return preview;
+      return previewTileRoot;
     },
 
     refreshAnimatedPreview : function () {
-      var context = $('animated-preview').getContext('2d');
-      // erase canvas, verify proper way
-      context.fillStyle = "white";
-      context.fillRect(0, 0, 256, 256);
-
-      context.drawImage(frames[animIndex++], 0, 0, 320, 320, 0, 0 , 256, 256);
-      if (animIndex == frames.length) {
+      piskel.drawFrameToCanvas(frameSheet.getFrameByIndex(animIndex), previewCanvas, previewAnimationCanvasDpi);
+      animIndex++;
+      if (animIndex == frameSheet.getFrameCount()) {
         animIndex = 0;
       }
     },
 
-    setFrame : function (frameIndex) {
-      index = frameIndex;
-      $('canvas-container').innerHTML = "";
-      $('canvas-container').appendChild(this.getCurrentCanvas());
-      this.createPreviews();
-    },
+    removeFrame: function(frameIndex) {     
+      frameSheet.removeFrameByIndex(frameIndex);
 
-    removeFrame: function(frameIndex) {
-      index = frameIndex - 1 < 0 ? 0 : frameIndex - 1;
-      animIndex = 0;
-      frames.splice(frameIndex, 1);
-      $('canvas-container').innerHTML = "";
-      $('canvas-container').appendChild(this.getCurrentCanvas());
-      this.createPreviews();
+      this.setActiveFrameAndRedraw(frameIndex - 1);
     },
 
     duplicateFrame: function(frameIndex) {
-      index = frameIndex + 1;
-      animIndex = 0;
-      var duplicateCanvas = frames[frameIndex].cloneNode(true);
-      // Copy canvas content:
-      var context = duplicateCanvas.getContext('2d');
-      context.drawImage(frames[frameIndex], 0, 0);
+      frameSheet.duplicateFrameByIndex(frameIndex);
 
-      // Insert cloned node into frame collection:
-      frames.splice(frameIndex + 1, 0, duplicateCanvas);
-      $('canvas-container').innerHTML = "";
-      $('canvas-container').appendChild(this.getCurrentCanvas());
-      this.createPreviews();
+      this.setActiveFrameAndRedraw(frameIndex + 1);
     },
 
     updateCursorInfo : function (event) {
@@ -155,26 +243,73 @@
 
     onCanvasMousedown : function (event) {
       isClicked = true;
-      button = event.button;
       var coords = this.getRelativeCoordinates(event.clientX, event.clientY);
-      this.drawAt(coords.x, coords.y);
+      if(event.button == 0) {
+        this.drawAt(coords.x, coords.y, penColor);
+      } else {
+        // Right click used to delete.
+        isRightClicked = true;
+        this.drawAt(coords.x, coords.y, TRANSPARENT_COLOR);
+      }
+    },
+
+    onCanvasMousemove : function (event) {
+      //this.updateCursorInfo(event);
+      if (isClicked) {
+        var coords = this.getRelativeCoordinates(event.clientX, event.clientY);
+        if(isRightClicked) {
+          this.drawAt(coords.x, coords.y, TRANSPARENT_COLOR);
+        } else {
+          this.drawAt(coords.x, coords.y, penColor);
+        }
+      }
     },
     
     onCanvasMouseup : function (event) {
+      if(isClicked || isRightClicked) {
+        // A mouse button was clicked on the drawing canvas before this mouseup event,
+        // the user was probably drawing on the canvas.
+        // Note: The mousemove movement (and the mouseup) may end up outside
+        // of the drawing canvas.
+        this.createPreviews();
+      }
       isClicked = false;
+      isRightClicked = false;
     },
 
-    drawAt : function (x, y) {
-      if (x < 0 || y < 0 || x > 320 || y > 320) return;
-      var context = this.getCurrentCanvas().getContext('2d');
-      if (button == 0) {
-        context.fillStyle = "black";      
-      } else {
-        context.fillStyle = "white";      
-      }
+    drawAt : function (x, y, color) {
+      var pixelWidthIndex = (x - x%drawingCanvasDpi) / 10;
+      var pixelHeightIndex = (y - y%drawingCanvasDpi) / 10;
+      
+      // Update model:
+      var currentFrame = frameSheet.getFrameByIndex(this.getActiveFrameIndex());
+      
+      // TODO: make a better accessor for pixel state update:
+      // TODO: Make pen color dynamic:
+      currentFrame[pixelWidthIndex][pixelHeightIndex] = color;
+      
+      // Update view:
+      // TODO: Create a per pixel update function for perf ?
+      this.drawFrameToCanvas(currentFrame, drawingAreaCanvas, drawingCanvasDpi);
+    },
 
-      context.fillRect(x - x%brushSize, y - y%brushSize, brushSize, brushSize);
-      this.createPreviews();
+    // TODO: move that to a FrameRenderer (/w cache) ?
+    drawFrameToCanvas: function(frame, canvasElement, dpi) {
+      var pixelColor, context = canvasElement.getContext('2d');
+      for(var col = 0, num_col = frame.length; col < num_col; col++) {
+        for(var row = 0, num_row = frame[col].length; row < num_row; row++) {
+          pixelColor = frame[col][row];
+          
+          if(pixelColor == undefined || pixelColor == TRANSPARENT_COLOR) {
+            context.clearRect(col * dpi, row * dpi, dpi, dpi);   
+          } else {
+            context.fillStyle = pixelColor;
+            context.fillRect(col * dpi, row * dpi, dpi, dpi);
+          }
+         
+          
+        }
+      }
     },
 
     onCanvasContextMenu : function (event) {
@@ -183,35 +318,13 @@
       event.cancelBubble = true;
       return false;
     },
+    
     getRelativeCoordinates : function (x, y) {
-      var canvas = this.getCurrentCanvas();
-      var canvasRect = canvas.getBoundingClientRect();
+      var canvasRect = drawingAreaCanvas.getBoundingClientRect();
       return {
         x : x - canvasRect.left,
         y : y - canvasRect.top
       }
-    },
-
-    addFrame : function () {
-      var canvas = document.createElement("canvas");
-      canvas.setAttribute('width', '320');
-      canvas.setAttribute('height', '320');
-      canvas.setAttribute('onmousemove', 'piskel.onCanvasMousemove(arguments[0])');
-      canvas.setAttribute('oncontextmenu', 'piskel.onCanvasContextMenu(arguments[0])');
-      //canvas.setAttribute('onclick', 'piskel.onCanvasClick(arguments[0])');
-      var context = canvas.getContext('2d'); 
-
-      context.fillStyle = "white";
-      context.fillRect(0, 0, 320, 320);
-
-      if(frames[index]) { //is a valid canvas
-        context.drawImage(frames[index], 0, 0, 320, 320, 0, 0 , 320, 320);
-      }
-
-      // TODO: We should probably store some metadata or enhance a domain object instead
-      //       of the rendered view ? It will allow to decouple view and model and clean a bunch of code above.
-      frames.push(canvas);
-      this.setFrame(frames.length - 1);
     }
   };
 
