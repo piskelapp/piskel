@@ -13,24 +13,29 @@
   
   
 </head>
-<body 
-      onmousedown="piskel.onCanvasMousedown(arguments[0])"
-      onmouseup="piskel.onCanvasMouseup(arguments[0])">
+<body>
   <div class='debug left-nav'>
-    <span class="action-button"
-      onclick="piskel.addFrame()">
+    <button id='add-frame-button' class="action-button">
       Add a Frame
-    </span>
+    </button>
     <ul id="preview-list">
     </ul>
   </div>
   <div class='main-panel'>
-    <div id="canvas-container"></div>
+    <div id="drawing-canvas-container" class="canvas-container">
+      <div class="canvas-background"></div>
+    </div>
     <div class='preview-container'>
-      <canvas id="animated-preview" width="256" height="256"></canvas>
+      <div id='preview-canvas-container' class="canvas-container">
+        <div class="canvas-background"></div>
+      </div>
+      <div>
+        <label>Preview FPS:</label><input id="preview-fps" type="text" value="12" />
+      </div>
     </div>
   </div>
   <div id="cursorInfo"></div>
+  <script src="js/frameSheetModel.js"></script>
   <script src="js/piskel.js"></script>
 </body>
 </html>

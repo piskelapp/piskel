@@ -24,6 +24,7 @@ ul, li {
   top : 0;
   bottom : 0;
   width : 200px;
+  overflow-y: scroll;
   background : #000;
   padding : 10px;
 }
@@ -32,7 +33,7 @@ ul, li {
   position:absolute;
   top : 0;
   bottom : 0;
-  left : 200px;
+  left : 220px;
   right : 0;
   background : #ccc;
 }
@@ -49,7 +50,7 @@ ul, li {
   box-shadow : 0px 0px 2px rgba(0,0,0,0.2);
 }
 
-.preview-container canvas{
+.preview-container canvas {
   border : 0px Solid transparent;
   border-radius:5px 0px 0px 5px;
 }
@@ -66,34 +67,74 @@ ul, li {
 }
 
 .action-button {
-  background-color: white;
-  width: 118px;
-  padding: 5px;
-  text-align: center;
-  border-radius: 2px;
-  display: inline-block;
-  font-family: Arial;
-  cursor: pointer;
-  color: white;
-  background: #aaa;
-  text-shadow: 0 -1px 0 #888;
+  background-color : white;
+  width : 150px;
+  display : inline-block;
 }
 
-.action-button:hover {
-  background: #b0b0b0;
+#preview-list {
+  list-style-type: none;
 }
 
-.action-button:active {
-  background: #9a9a9a;
+.preview-tile {
+  padding : 10px;
+  overflow: hidden;
+  background-color: gray;
 }
 
-#preview-list li{
-  margin : 10px 0;
-  width : 128px;
-  height : 128px;
+.preview-tile .canvas-container {
+  float: left;
 }
 
-#preview-list li.selected{
-  margin : 8px -2px;
-  border : 2px Solid red;
+.preview-tile .tile-view {
+  float: left;
+  border: blue 1px solid;
+}
+
+.preview-tile .tile-action {
+  display: none;
+  float: right;
+}
+
+.preview-tile:hover .tile-action {
+  display: block;
+}
+
+.preview-tile:hover {
+  background-color: lightgray;
+}
+
+#preview-list .preview-tile.selected {
+  background-color: lightyellow;
+}
+
+.canvas-container {
+  position: relative;
+  display: block;
+}
+
+.canvas-container .canvas-background {
+  background: url(../img/transparent_background.png) repeat;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.canvas {
+  position: relative;
+  z-index: 1;
+}
+
+/* Force apparition of scrollbars on leopard */
+::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 7px;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: rgba(180,180,180,.7);
+    -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
 }
