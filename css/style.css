@@ -76,13 +76,19 @@ ul, li {
   list-style-type: none;
 }
 
-#preview-list .preview-tile {
+.preview-tile {
   padding : 10px;
   overflow: hidden;
+  background-color: gray;
+}
+
+.preview-tile .canvas-container {
+  float: left;
 }
 
 .preview-tile .tile-view {
   float: left;
+  border: blue 1px solid;
 }
 
 .preview-tile .tile-action {
@@ -99,9 +105,29 @@ ul, li {
 }
 
 #preview-list .preview-tile.selected {
-  background-color: gray;
+  background-color: lightyellow;
 }
 
+.canvas-container {
+  position: relative;
+  display: block;
+}
+
+.canvas-container .canvas-background {
+  background: url(../img/transparent_background.png) repeat;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.canvas {
+  position: relative;
+  z-index: 1;
+}
+
+/* Force apparition of scrollbars on leopard */
 ::-webkit-scrollbar {
     -webkit-appearance: none;
     width: 7px;
