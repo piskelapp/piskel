@@ -69,7 +69,7 @@
         binaryFrames[i] = "";
         for (var j =0 ; j < chunks.length ; j++) {
           var binaryEnding = parseInt(chunks[j], 36).toString(2);
-          var missingZeros = (new Array(1 + 64 - binaryEnding.length)).join("0");
+          var missingZeros = (new Array(1 + 32 - binaryEnding.length)).join("0");
           binaryFrames[i] += (missingZeros + binaryEnding);
           console.log((missingZeros + binaryEnding).length);
         }
