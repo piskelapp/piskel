@@ -32,9 +32,9 @@ var FrameSheetModel = (function() {
 		 */
 		deserializeFramesheet : function (serialized) {
 			try {
-				frames = eval(serialized);
+				frames = JSON.parse(serialized);
 			} catch (e) {
-				throw "Could not load serialized framesheet." + e.getMessage()
+				throw "Could not load serialized framesheet." + e.message()
 			}	
 		},
 		
