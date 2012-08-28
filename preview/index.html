@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <title>Piskel</title>
+  <meta name="description" content="">
+  <meta name="author" content="Julian Descottes">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/style.css">
+  
+  
+</head>
+<body>
+  <div class='debug left-nav'>
+  <a onclick="piskel.reload()" style="color:white">Get URL</a>
+    <button id='add-frame-button' class="action-button">
+      Add a Frame
+    </button>
+    <ul id="preview-list">
+    </ul>
+  </div>
+  <div class='main-panel'>
+    <div id="drawing-canvas-container" class="canvas-container">
+      <div class="canvas-background"></div>
+    </div>
+    <div class='preview-container'>
+      <div id='preview-canvas-container' class="canvas-container">
+        <div class="canvas-background"></div>
+      </div>
+      <div>
+        <label>Preview FPS:</label><input id="preview-fps" type="text" value="12" />
+      </div>
+    </div>
+  </div>
+  <div id="cursorInfo"></div>
+  <script src="js/frameSheetModel.js"></script>
+  <script src="js/piskel.js"></script>
+</body>
+</html>
