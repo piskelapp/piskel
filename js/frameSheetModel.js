@@ -1,4 +1,3 @@
-
 var FrameSheetModel = (function() {
     
     var inst;
@@ -30,7 +29,7 @@ var FrameSheetModel = (function() {
 		 * Overrides existing frames.
 		 * @param {String} serialized
 		 */
-		deserializeFramesheet : function (serialized) {
+		deserialize : function (serialized) {
 			try {
 				frames = JSON.parse(serialized);
 			} catch (e) {
