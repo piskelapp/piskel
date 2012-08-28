@@ -13,7 +13,7 @@
 
       // Scaling factors for a given frameSheet rendering:
       // Main drawing area:
-      drawingCanvasDpi = 10,
+      drawingCanvasDpi = 20,
       // Canvas previous in the slideshow:
       previewTileCanvasDpi = 4,
       // Ainmated canvas preview:
@@ -208,9 +208,7 @@
         canvasPreviewDeleteAction.className = "tile-action"
         canvasPreviewDeleteAction.innerHTML = "del"
         canvasPreviewDeleteAction.addEventListener('click', function(evt) {
-          frameSheet.removeFrameByIndex(tileNumber);
-          animIndex = 0;
-          piskel.createPreviews();
+          piskel.removeFrame(tileNumber);
         });
         previewTileRoot.appendChild(canvasPreviewDeleteAction);
       }
@@ -287,8 +285,8 @@
     },
 
     drawAt : function (x, y, color) {
-      var pixelWidthIndex = (x - x%drawingCanvasDpi) / 10;
-      var pixelHeightIndex = (y - y%drawingCanvasDpi) / 10;
+      var pixelWidthIndex = (x - x%drawingCanvasDpi) / drawingCanvasDpi;
+      var pixelHeightIndex = (y - y%drawingCanvasDpi) / drawingCanvasDpi;
       
       // Update model:
       var currentFrame = frameSheet.getFrameByIndex(this.getActiveFrameIndex());
