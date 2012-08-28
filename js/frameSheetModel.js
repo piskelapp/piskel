@@ -19,10 +19,23 @@ var FrameSheetModel = (function() {
 			return true; // I'm always right dude
 		},
 
-		// Could be use to pass around model using long GET param (good enough for simple models) and 
+		// Could be used to pass around model using long GET param (good enough for simple models) and 
 		// do some temporary locastorage
 		serialize: function() {
-			throw "FrameSheet.serialize Not implemented"
+			return JSON.stringify(frames);
+		},
+
+		/**
+		 * Load a framesheet from a string that might have been persisted in db / localstorage
+		 * Overrides existing frames.
+		 * @param {String} serialized
+		 */
+		deserializeFramesheet : function (serialized) {
+			try {
+				frames = eval(serialized);
+			} catch (e) {
+				throw "Could not load serialized framesheet." + e.getMessage()
+			}	
 		},
 		
 		addEmptyFrame: function() {
