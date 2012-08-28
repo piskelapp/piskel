@@ -1,4 +1,3 @@
-
 var FrameSheetModel = (function() {
     
     var inst;
@@ -16,8 +15,8 @@ var FrameSheetModel = (function() {
 
     var serializeFrame_ = function (frame) {
     	var buffer = [];
-    	var serializedLine = "";
     	for (var i = 0 ; i < frame.length ; i++) {
+    		var serializedLine = "";
     		for(var j = 0 ; j < frame[i].length ; j++) {
     			if (typeof frame[i][j] == 'undefined' || frame[i][j] == 'tc') {
     				serializedLine += "0"
@@ -25,11 +24,7 @@ var FrameSheetModel = (function() {
     				serializedLine += "1"
     			}
     		}
-    		if (i%2 == 1) {
-    			console.log(i);
-    			buffer.push(parseInt(serializedLine, 2).toString(36));
-    			serializedLine = "";
-    		}
+    		buffer.push(parseInt(serializedLine, 2).toString(36));
 
     	}
     	return buffer.join(",");
