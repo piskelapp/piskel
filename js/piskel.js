@@ -41,6 +41,7 @@
       this.initDrawingArea();
       this.initPreviewSlideshow();
       this.initAnimationPreview();
+      this.initColorPicker();
     },
 
     setActiveFrame: function(index) {
@@ -65,6 +66,14 @@
         throw "Bad active frane initialization."
       }
       return activeFrameIndex;
+    },
+
+    initColorPicker: function() {
+      var colorPicker = document.getElementById('color-picker');
+      colorPicker.value = DEFAULT_PEN_COLOR;
+      colorPicker.addEventListener('change', function(evt) {
+        penColor = colorPicker.value;
+      });
     },
 
     initDrawingArea : function() {
