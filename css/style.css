@@ -134,6 +134,10 @@ ul, li {
   margin : 5px;
 }
 
+#preview-fps {
+  width : 200px;
+}
+
 /* Force apparition of scrollbars on leopard */
 ::-webkit-scrollbar {
     -webkit-appearance: none;
