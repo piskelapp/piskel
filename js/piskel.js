@@ -75,7 +75,6 @@
     getFrameIdFromUrl : function() {
       var href = window.location.href;
       if (href.indexOf('frameId=') != -1) {
-        console.log(href.substring(href.indexOf('frameId=')+8));
         return href.substring(href.indexOf('frameId=')+8);
       }
     },
@@ -467,7 +466,8 @@
       xhr.open('POST', PISKEL_SERVICE_URL + "/store", true);
       xhr.onload = function(e) {
         if (this.status == 200) {
-          alert("stored key : " + this.responseText);
+          var baseUrl = window.location.href.replace(window.location.search, "");
+          window.location.href = baseUrl + "?frameId=" + this.responseText;
         }
       };
 
