@@ -77,7 +77,7 @@
     },
 
     onPickerChange : function(evt) {
-        penColor = colorPicker.value;
+        penColor = "#" + this.colorPicker.value;
     },
 
     initPalette : function (color) {
@@ -88,6 +88,7 @@
         var color = colors[i];
         var colorEl = document.createElement("li");
         colorEl.setAttribute("data-color", color);
+        colorEl.innerHTML = color;
         paletteEl.appendChild(colorEl);
       }
     },

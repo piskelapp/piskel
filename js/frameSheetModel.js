@@ -19,7 +19,34 @@ var FrameSheetModel = (function() {
 		},
 
 		getUsedColors : function () {
-			return ["#000", "#fff"]
+			var colors = [];
+			var pixels = this.getAllPixels();
+			for (var i = 0 ; i < pixels.length ; i++) {
+				var pixel = pixels[i];
+				if (pixel && colors.indexOf(pixel)) {
+					colors.push(pixel);
+				}
+			}
+			return colors;
+		},
+
+		getAllPixels : function () {
+			var pixels = [];
+			for (var i = 0 ; i < frames.length ; i++) {
+				pixels = pixels.concat(this.getFramePixels(frames[i]));
+			}
+			return pixels;
+		},
+
+		getFramePixels : function (frame) {
+			var pixels = [];
+			for (var i = 0 ; i < frame.length ; i++) {
+				var line = frame[i];
+				for (var j = 0 ; j < line.length ; j++) {
+					pixels.push(line[j]);
+				}
+			}
+			return pixels;
 		},
 
 		// Could be used to pass around model using long GET param (good enough for simple models) and 
