@@ -1,4 +1,3 @@
-
 var FrameSheetModel = (function() {
     
     var inst;
@@ -18,6 +17,7 @@ var FrameSheetModel = (function() {
 		validate: function() {
 			return true; // I'm always right dude
 		},
+
 		getAllPixels : function () {
 			var pixels = [];
 			for (var i = 0 ; i < frames.length ; i++) {

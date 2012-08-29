@@ -3,7 +3,6 @@
 
       // Constants:
       TRANSPARENT_COLOR = 'tc',
-      //TRANSPARENT_COLOR = 'pink',
       DEFAULT_PEN_COLOR = '#000000',
 
       // Configuration:
@@ -115,6 +114,7 @@
 
         drawingAreaContainer.setAttribute('style', 
           'width:' + framePixelWidth * drawingCanvasDpi + 'px; height:' + framePixelHeight * drawingCanvasDpi + 'px;');
+
         drawingAreaCanvas.setAttribute('oncontextmenu', 'piskel.onCanvasContextMenu(event)');
         drawingAreaContainer.appendChild(drawingAreaCanvas);
 
@@ -122,7 +122,6 @@
         body.setAttribute('onmouseup', 'piskel.onCanvasMouseup(event)');
         drawingAreaContainer.setAttribute('onmousedown', 'piskel.onCanvasMousedown(event)');
         drawingAreaContainer.setAttribute('onmousemove', 'piskel.onCanvasMousemove(event)');
-
         this.drawFrameToCanvas(frameSheet.getFrameByIndex(this.getActiveFrameIndex()), drawingAreaCanvas, drawingCanvasDpi);
     },
 
@@ -174,6 +173,7 @@
         }
         $("display-fps").innerHTML = animPreviewFPS + " fps";
         animFPSTuner.value = animPreviewFPS;
+        $("fps-value").innerHTML = animPreviewFPS + " fps";
         refreshUpdater = startPreviewRefresh();
       });
     },
@@ -357,6 +357,7 @@
       event.cancelBubble = true;
       return false;
     },
+
     onPaletteClick : function (event) {
       var color = event.target.getAttribute("data-color");
       if (null !== color) {
@@ -379,3 +380,4 @@
   piskel.init();
 
 })(function(id){return document.getElementById(id)});
+//small change for checking my git setup :(
