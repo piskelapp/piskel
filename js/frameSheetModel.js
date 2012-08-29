@@ -52,7 +52,7 @@ var FrameSheetModel = (function() {
 			try {
 				frames = JSON.parse(serialized);
 			} catch (e) {
-				throw "Could not load serialized framesheet." + e.message()
+				throw "Could not load serialized framesheet." + e.message
 			}	
 		},
 		
