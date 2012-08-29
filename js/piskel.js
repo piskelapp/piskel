@@ -23,6 +23,7 @@
       drawingAreaContainer,
       drawingAreaCanvas,
       previewCanvas,
+      paletteEl,
 
       // States:
       isClicked = false, 
@@ -30,7 +31,17 @@
       activeFrameIndex = -1, 
       animIndex = 0,
       penColor = DEFAULT_PEN_COLOR,
-      paletteColors = [];
+      paletteColors = [],
+
+      //utility
+      _normalizeColor = function (color) {
+        if(color == undefined || color == TRANSPARENT_COLOR || color.indexOf("#") == 0) {
+          return color;
+        } else {
+          return "#" + color;
+        }
+      }
+      ;
 
 
   var piskel = {
@@ -77,15 +88,11 @@
     },
 
     onPickerChange : function(evt) {
-        penColor = this.colorPicker.value;
+        penColor = _normalizeColor(this.colorPicker.value);
     },
 
     initPalette : function (color) {
-      var pixels = frameSheet.getAllPixels();
-      this.paletteEl = $('palette');
-      for (var i = 0 ; i < pixels.length ; i++) {
-        this.addColorToPalette(pixels[i]);
-      }
+      paletteEl = $('palette');
     },
 
     addColorToPalette : function (color) {
@@ -94,7 +101,7 @@
         colorEl.setAttribute("data-color", color);
         colorEl.setAttribute("title", color);
         colorEl.style.background = color;
-        this.paletteEl.appendChild(colorEl);
+        paletteEl.appendChild(colorEl);
         paletteColors.push(color);
       }
     },
@@ -114,7 +121,7 @@
         drawingAreaContainer.appendChild(drawingAreaCanvas);
 
         var body = document.getElementsByTagName('body')[0];
-        body.setAttribute('onmouseup', 'piskel.onCanvasMouseup(arguments[0])');
+        body.setAttribute('onmouseup', 'piskel.onCanvasMouseup(event)');
         drawingAreaContainer.setAttribute('onmousedown', 'piskel.onCanvasMousedown(event)');
         drawingAreaContainer.setAttribute('onmousemove', 'piskel.onCanvasMousemove(event)');
 
@@ -309,36 +316,39 @@
     },
 
     drawAt : function (x, y, color) {
-      var pixelWidthIndex = (x - x%drawingCanvasDpi) / drawingCanvasDpi;
-      var pixelHeightIndex = (y - y%drawingCanvasDpi) / drawingCanvasDpi;
+      var col = (x - x%drawingCanvasDpi) / drawingCanvasDpi;
+      var row = (y - y%drawingCanvasDpi) / drawingCanvasDpi;
       
       // Update model:
       var currentFrame = frameSheet.getFrameByIndex(this.getActiveFrameIndex());
       
       // TODO: make a better accessor for pixel state update:
       // TODO: Make pen color dynamic:
-      currentFrame[pixelWidthIndex][pixelHeightIndex] = color;
-      
-      // Update view:
-      // TODO: Create a per pixel update function for perf ?
-      this.drawFrameToCanvas(currentFrame, drawingAreaCanvas, drawingCanvasDpi);
+      var color = _normalizeColor(color);
+      if (color != currentFrame[col][row]) {
+        currentFrame[col][row] = color;
+        this.drawPixelInCanvas(row, col, color, drawingAreaCanvas, drawingCanvasDpi);
+      }      
+    },
+
+    drawPixelInCanvas : function (row, col, color, canvas, dpi) {
+      var context = canvas.getContext('2d');
+      if(color == undefined || color == TRANSPARENT_COLOR) {
+        context.clearRect(col * dpi, row * dpi, dpi, dpi);   
+      } else {
+        this.addColorToPalette(color);
+        context.fillStyle = color;
+        context.fillRect(col * dpi, row * dpi, dpi, dpi);
+      }
     },
 
     // TODO: move that to a FrameRenderer (/w cache) ?
     drawFrameToCanvas: function(frame, canvasElement, dpi) {
-      var pixelColor, context = canvasElement.getContext('2d');
+      var color;
       for(var col = 0, num_col = frame.length; col < num_col; col++) {
         for(var row = 0, num_row = frame[col].length; row < num_row; row++) {
-          pixelColor = frame[col][row];
-          if(pixelColor == undefined || pixelColor == TRANSPARENT_COLOR) {
-            context.clearRect(col * dpi, row * dpi, dpi, dpi);   
-          } else {
-            if (pixelColor.indexOf("#") != 0) 
-              pixelColor = "#" + pixelColor;
-            this.addColorToPalette(pixelColor);
-            context.fillStyle = pixelColor;
-            context.fillRect(col * dpi, row * dpi, dpi, dpi);
-          }
+          color = _normalizeColor(frame[col][row]);
+          this.drawPixelInCanvas(row, col, color, canvasElement, dpi);
         }
       }
     },
