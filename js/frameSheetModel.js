@@ -18,6 +18,25 @@ var FrameSheetModel = (function() {
 			return true; // I'm always right dude
 		},
 
+		getAllPixels : function () {
+			var pixels = [];
+			for (var i = 0 ; i < frames.length ; i++) {
+				pixels = pixels.concat(this._getFramePixels(frames[i]));
+			}
+			return pixels;
+		},
+
+		_getFramePixels : function (frame) {
+			var pixels = [];
+			for (var i = 0 ; i < frame.length ; i++) {
+				var line = frame[i];
+				for (var j = 0 ; j < line.length ; j++) {
+					pixels.push(line[j]);
+				}
+			}
+			return pixels;
+		},
+
 		// Could be used to pass around model using long GET param (good enough for simple models) and 
 		// do some temporary locastorage
 		serialize: function() {

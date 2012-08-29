@@ -127,6 +127,13 @@ ul, li {
   z-index: 1;
 }
 
+#palette li {
+  display : inline-block;
+  height : 20px;
+  width : 20px;
+  margin : 5px;
+}
+
 /* Force apparition of scrollbars on leopard */
 ::-webkit-scrollbar {
     -webkit-appearance: none;
