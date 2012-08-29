@@ -18,27 +18,15 @@ var FrameSheetModel = (function() {
 			return true; // I'm always right dude
 		},
 
-		getUsedColors : function () {
-			var colors = [];
-			var pixels = this.getAllPixels();
-			for (var i = 0 ; i < pixels.length ; i++) {
-				var pixel = pixels[i];
-				if (pixel && colors.indexOf(pixel)) {
-					colors.push(pixel);
-				}
-			}
-			return colors;
-		},
-
 		getAllPixels : function () {
 			var pixels = [];
 			for (var i = 0 ; i < frames.length ; i++) {
-				pixels = pixels.concat(this.getFramePixels(frames[i]));
+				pixels = pixels.concat(this._getFramePixels(frames[i]));
 			}
 			return pixels;
 		},
 
-		getFramePixels : function (frame) {
+		_getFramePixels : function (frame) {
 			var pixels = [];
 			for (var i = 0 ; i < frame.length ; i++) {
 				var line = frame[i];

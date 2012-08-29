@@ -4,7 +4,7 @@
       // Constants:
       TRANSPARENT_COLOR = 'tc',
       //TRANSPARENT_COLOR = 'pink',
-      DEFAULT_PEN_COLOR = '#000',
+      DEFAULT_PEN_COLOR = '#000000',
 
       // Configuration:
       // Canvas size in pixel size (not dpi related)
@@ -39,11 +39,11 @@
       frameSheet.addEmptyFrame();
       this.setActiveFrame(0);
 
+      this.initPalette();
       this.initDrawingArea();
       this.initPreviewSlideshow();
       this.initAnimationPreview();
       this.initColorPicker();
-      this.initPalette();
     },
 
     setActiveFrame: function(index) {
@@ -77,19 +77,25 @@
     },
 
     onPickerChange : function(evt) {
-        penColor = "#" + this.colorPicker.value;
+        penColor = this.colorPicker.value;
     },
 
     initPalette : function (color) {
-      var colors = frameSheet.getUsedColors();
-      var paletteEl = $('palette');
-      paletteEl.innerHTML = "";
-      for (var i = 0 ; i < colors.length ; i++) {
-        var color = colors[i];
+      var pixels = frameSheet.getAllPixels();
+      this.paletteEl = $('palette');
+      for (var i = 0 ; i < pixels.length ; i++) {
+        this.addColorToPalette(pixels[i]);
+      }
+    },
+
+    addColorToPalette : function (color) {
+      if (color && color != TRANSPARENT_COLOR && paletteColors.indexOf(color) == -1) {
         var colorEl = document.createElement("li");
         colorEl.setAttribute("data-color", color);
-        colorEl.innerHTML = color;
-        paletteEl.appendChild(colorEl);
+        colorEl.setAttribute("title", color);
+        colorEl.style.background = color;
+        this.paletteEl.appendChild(colorEl);
+        paletteColors.push(color);
       }
     },
 
@@ -323,15 +329,15 @@
       for(var col = 0, num_col = frame.length; col < num_col; col++) {
         for(var row = 0, num_row = frame[col].length; row < num_row; row++) {
           pixelColor = frame[col][row];
-          
           if(pixelColor == undefined || pixelColor == TRANSPARENT_COLOR) {
             context.clearRect(col * dpi, row * dpi, dpi, dpi);   
           } else {
+            if (pixelColor.indexOf("#") != 0) 
+              pixelColor = "#" + pixelColor;
+            this.addColorToPalette(pixelColor);
             context.fillStyle = pixelColor;
             context.fillRect(col * dpi, row * dpi, dpi, dpi);
           }
-         
-          
         }
       }
     },
@@ -345,8 +351,11 @@
 
     onPaletteClick : function (event) {
       var color = event.target.getAttribute("data-color");
-      var colorPicker = $('color-picker');
-      colorPicker.color.fromString(color);
+      if (null !== color) {
+        var colorPicker = $('color-picker');
+        colorPicker.color.fromString(color);
+        this.onPickerChange();
+      }
     },
     
     getRelativeCoordinates : function (x, y) {
