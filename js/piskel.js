@@ -4,7 +4,7 @@
       // Constants:
       TRANSPARENT_COLOR = 'tc',
       //TRANSPARENT_COLOR = 'pink',
-      DEFAULT_PEN_COLOR = '#000',
+      DEFAULT_PEN_COLOR = '#000000',
 
       // Configuration:
       // Canvas size in pixel size (not dpi related)
@@ -29,7 +29,8 @@
       isRightClicked = false, 
       activeFrameIndex = -1, 
       animIndex = 0,
-      penColor = DEFAULT_PEN_COLOR;
+      penColor = DEFAULT_PEN_COLOR,
+      paletteColors = [];
 
 
   var piskel = {
@@ -38,6 +39,7 @@
       frameSheet.addEmptyFrame();
       this.setActiveFrame(0);
 
+      this.initPalette();
       this.initDrawingArea();
       this.initPreviewSlideshow();
       this.initAnimationPreview();
@@ -69,11 +71,32 @@
     },
 
     initColorPicker: function() {
-      var colorPicker = document.getElementById('color-picker');
-      colorPicker.value = DEFAULT_PEN_COLOR;
-      colorPicker.addEventListener('change', function(evt) {
-        penColor = colorPicker.value;
-      });
+      this.colorPicker = $('color-picker');
+      this.colorPicker.value = DEFAULT_PEN_COLOR;
+      this.colorPicker.addEventListener('change', this.onPickerChange.bind(this));
+    },
+
+    onPickerChange : function(evt) {
+        penColor = this.colorPicker.value;
+    },
+
+    initPalette : function (color) {
+      var pixels = frameSheet.getAllPixels();
+      this.paletteEl = $('palette');
+      for (var i = 0 ; i < pixels.length ; i++) {
+        this.addColorToPalette(pixels[i]);
+      }
+    },
+
+    addColorToPalette : function (color) {
+      if (color && color != TRANSPARENT_COLOR && paletteColors.indexOf(color) == -1) {
+        var colorEl = document.createElement("li");
+        colorEl.setAttribute("data-color", color);
+        colorEl.setAttribute("title", color);
+        colorEl.style.background = color;
+        this.paletteEl.appendChild(colorEl);
+        paletteColors.push(color);
+      }
     },
 
     initDrawingArea : function() {
@@ -87,13 +110,13 @@
         drawingAreaContainer.setAttribute('style', 
           'width:' + framePixelWidth * drawingCanvasDpi + 'px; height:' + framePixelHeight * drawingCanvasDpi + 'px;');
 
-        drawingAreaCanvas.setAttribute('oncontextmenu', 'piskel.onCanvasContextMenu(arguments[0])');
+        drawingAreaCanvas.setAttribute('oncontextmenu', 'piskel.onCanvasContextMenu(event)');
         drawingAreaContainer.appendChild(drawingAreaCanvas);
 
         var body = document.getElementsByTagName('body')[0];
         body.setAttribute('onmouseup', 'piskel.onCanvasMouseup(arguments[0])');
-        drawingAreaContainer.setAttribute('onmousedown', 'piskel.onCanvasMousedown(arguments[0])');
-        drawingAreaContainer.setAttribute('onmousemove', 'piskel.onCanvasMousemove(arguments[0])');
+        drawingAreaContainer.setAttribute('onmousedown', 'piskel.onCanvasMousedown(event)');
+        drawingAreaContainer.setAttribute('onmousemove', 'piskel.onCanvasMousemove(event)');
 
         this.drawFrameToCanvas(frameSheet.getFrameByIndex(this.getActiveFrameIndex()), drawingAreaCanvas, drawingCanvasDpi);
     },
@@ -306,15 +329,15 @@
       for(var col = 0, num_col = frame.length; col < num_col; col++) {
         for(var row = 0, num_row = frame[col].length; row < num_row; row++) {
           pixelColor = frame[col][row];
-          
           if(pixelColor == undefined || pixelColor == TRANSPARENT_COLOR) {
             context.clearRect(col * dpi, row * dpi, dpi, dpi);   
           } else {
+            if (pixelColor.indexOf("#") != 0) 
+              pixelColor = "#" + pixelColor;
+            this.addColorToPalette(pixelColor);
             context.fillStyle = pixelColor;
             context.fillRect(col * dpi, row * dpi, dpi, dpi);
           }
-         
-          
         }
       }
     },
@@ -324,6 +347,15 @@
       event.stopPropagation();
       event.cancelBubble = true;
       return false;
+    },
+
+    onPaletteClick : function (event) {
+      var color = event.target.getAttribute("data-color");
+      if (null !== color) {
+        var colorPicker = $('color-picker');
+        colorPicker.color.fromString(color);
+        this.onPickerChange();
+      }
     },
     
     getRelativeCoordinates : function (x, y) {
