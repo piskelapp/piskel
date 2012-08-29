@@ -1,4 +1,3 @@
-
 var FrameSheetModel = (function() {
     
     var inst;
@@ -18,11 +17,43 @@ var FrameSheetModel = (function() {
 		validate: function() {
 			return true; // I'm always right dude
 		},
+		
+		getAllPixels : function () {
+			var pixels = [];
+			for (var i = 0 ; i < frames.length ; i++) {
+				pixels = pixels.concat(this._getFramePixels(frames[i]));
+			}
+			return pixels;
+		},
 
-		// Could be use to pass around model using long GET param (good enough for simple models) and 
+		_getFramePixels : function (frame) {
+			var pixels = [];
+			for (var i = 0 ; i < frame.length ; i++) {
+				var line = frame[i];
+				for (var j = 0 ; j < line.length ; j++) {
+					pixels.push(line[j]);
+				}
+			}
+			return pixels;
+		},
+
+		// Could be used to pass around model using long GET param (good enough for simple models) and 
 		// do some temporary locastorage
 		serialize: function() {
-			throw "FrameSheet.serialize Not implemented"
+			return JSON.stringify(frames);
+		},
+
+		/**
+		 * Load a framesheet from a string that might have been persisted in db / localstorage
+		 * Overrides existing frames.
+		 * @param {String} serialized
+		 */
+		deserialize : function (serialized) {
+			try {
+				frames = JSON.parse(serialized);
+			} catch (e) {
+				throw "Could not load serialized framesheet." + e.message()
+			}	
 		},
 		
 		addEmptyFrame: function() {

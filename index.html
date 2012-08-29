@@ -25,6 +25,9 @@
     <div id="drawing-canvas-container" class="canvas-container">
       <div class="canvas-background"></div>
     </div>
+    <input id="color-picker" class="color" type="text" value=""/>
+    <ul id="palette" onclick="piskel.onPaletteClick(event)">
+    </ul>
     <div class='preview-container'>
       <div id='preview-canvas-container' class="canvas-container">
         <div class="canvas-background"></div>
@@ -35,6 +38,7 @@
     </div>
   </div>
   <div id="cursorInfo"></div>
+  <script src="js/lib/jsColor_1_4_0/jscolor.js"></script>
   <script src="js/frameSheetModel.js"></script>
   <script src="js/piskel.js"></script>
 </body>
