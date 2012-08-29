@@ -1,0 +1,7 @@
+Exception: STATUS_ACCESS_VIOLATION at eip=6102048B
+eax=104200F8 ebx=612445A4 ecx=75860F81 edx=0034C1CC esi=00000000 edi=0028F9F4
+ebp=61020C00 esp=0028C7C4 program=C:\cygwin\lib\git-core\git-remote-https.exe, pid 4488, thread main
+cs=0023 ds=002B es=002B fs=0053 gs=002B ss=002B
+Stack trace:
+Frame     Function  Args
+End of stack trace
