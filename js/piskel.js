@@ -58,7 +58,10 @@
       this.initPreviewSlideshow();
       this.initAnimationPreview();
       this.initColorPicker();
+      this.initLocalStorageBackup();    
+    },
 
+    initLocalStorageBackup: function() {
       if(window.localStorage && window.localStorage['snapShot']) {
         var message = document.createElement('div');
         message.id = "user-message";
@@ -156,6 +159,15 @@
         drawingAreaContainer.setAttribute('onmousemove', 'piskel.onCanvasMousemove(event)');
 
         this.drawFrameToCanvas(frameSheet.getFrameByIndex(this.getActiveFrameIndex()), drawingAreaCanvas, drawingCanvasDpi);
+    },
+
+    initPreviewSlideshow: function() {
+      var addFrameButton = $('add-frame-button');
+      addFrameButton.addEventListener('mousedown', function() {
+        frameSheet.addEmptyFrame();
+        piskel.setActiveFrameAndRedraw(frameSheet.getFrameCount() - 1);
+      });
+      this.createPreviews();
     },
 
     initPreviewSlideshow: function() {
