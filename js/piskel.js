@@ -4,6 +4,7 @@
       // Constants:
       TRANSPARENT_COLOR = 'tc',
       DEFAULT_PEN_COLOR = '#000000',
+      PISKEL_SERVICE_URL = 'http://2.piskel-app.appspot.com',
 
       // Configuration:
       // Canvas size in pixel size (not dpi related)
@@ -49,14 +50,50 @@
   var piskel = {
     init : function () {
       frameSheet = FrameSheetModel.getInstance(framePixelWidth, framePixelHeight);
-      frameSheet.addEmptyFrame();
       this.setActiveFrame(0);
+      frameSheet.addEmptyFrame();
+
+      var frameId = this.getFrameIdFromUrl();
+      if (frameId) {
+        this.loadFramesheetFromService(frameId);
+      } else {
+        this.finishInit();
+      }
+    },
+
+    finishInit : function () {
       this.initPalette();
       this.initDrawingArea();
       this.initPreviewSlideshow();
       this.initAnimationPreview();
       this.initColorPicker();
-      this.initLocalStorageBackup();    
+      this.initLocalStorageBackup();
+
+      this.startAnimation();
+    },
+
+    getFrameIdFromUrl : function() {
+      var href = window.location.href;
+      if (href.indexOf('frameId=') != -1) {
+        return href.substring(href.indexOf('frameId=')+8);
+      }
+    },
+
+    loadFramesheetFromService : function (frameId) {
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', PISKEL_SERVICE_URL + '/get?l=' + frameId, true);
+      xhr.responseType = 'text';
+
+      xhr.onload = function(e) {
+        frameSheet.deserialize(this.responseText);
+        piskel.finishInit();
+      };
+
+      xhr.onerror = function () {
+        piskel.finishInit();
+      };
+
+      xhr.send();
     },
 
     initLocalStorageBackup: function() {
@@ -167,17 +204,7 @@
       this.createPreviews();
     },
 
-    initPreviewSlideshow: function() {
-      var addFrameButton = $('add-frame-button');
-      addFrameButton.addEventListener('mousedown', function() {
-        frameSheet.addEmptyFrame();
-        piskel.setActiveFrameAndRedraw(frameSheet.getFrameCount() - 1);
-      });
-      this.createPreviews();
-    },
-
     initAnimationPreview : function() {
-      var scope = this;
 
       var previewAnimationContainer = $('preview-canvas-container');
       previewCanvas = document.createElement('canvas');
@@ -187,7 +214,10 @@
       previewAnimationContainer.appendChild(previewCanvas);
       previewCanvas.setAttribute('width', framePixelWidth * previewAnimationCanvasDpi);
       previewCanvas.setAttribute('height', framePixelHeight * previewAnimationCanvasDpi);
-      
+    },
+
+    startAnimation : function () {
+      var scope = this;
       var animFPSTuner = document.getElementById("preview-fps");
       var animPreviewFPS = parseInt(animFPSTuner.value, 10);
       var startPreviewRefresh = function() {
@@ -426,6 +456,26 @@
         x : x - canvasRect.left,
         y : y - canvasRect.top
       }
+    },
+
+    storeSheet : function (event) {
+      var xhr = new XMLHttpRequest();
+      var formData = new FormData();
+      formData.append('framesheet_content', frameSheet.serialize());
+      formData.append('fps_speed', $('preview-fps').value);
+      xhr.open('POST', PISKEL_SERVICE_URL + "/store", true);
+      xhr.onload = function(e) {
+        if (this.status == 200) {
+          var baseUrl = window.location.href.replace(window.location.search, "");
+          window.location.href = baseUrl + "?frameId=" + this.responseText;
+        }
+      };
+
+      xhr.send(formData);
+
+      event.stopPropagation();
+      event.preventDefault();
+      return false;
     }
   };
 
