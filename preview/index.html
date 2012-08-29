@@ -15,7 +15,7 @@
 </head>
 <body>
   <div class='debug left-nav'>
-    <button onclick="piskel.storeSheet()" class="action-button">Save Framesheet</button>
+  <a onclick="piskel.reload()" style="color:white">Get URL</a>
     <button id='add-frame-button' class="action-button">
       Add a Frame
     </button>
@@ -26,24 +26,16 @@
     <div id="drawing-canvas-container" class="canvas-container">
       <div class="canvas-background"></div>
     </div>
-    <input id="color-picker" class="color" type="text" value=""/>
-    <ul id="palette" onclick="piskel.onPaletteClick(event)">
-    </ul>
     <div class='preview-container'>
       <div id='preview-canvas-container' class="canvas-container">
         <div class="canvas-background"></div>
       </div>
       <div>
-        <input id="preview-fps" type="range" min="1" max="24" value="12" style="width:200px;"/>
-        <span id="display-fps">12 fps</span>
+        <label>Preview FPS:</label><input id="preview-fps" type="text" value="12" />
       </div>
     </div>
   </div>
   <div id="cursorInfo"></div>
-  
-  <script src="js/lib/jquery-1.8.0.js"></script>
-  <script src="js/lib/pubsub.js"></script>
-  <script src="js/lib/jsColor_1_4_0/jscolor.js"></script>
   <script src="js/frameSheetModel.js"></script>
   <script src="js/piskel.js"></script>
 </body>
