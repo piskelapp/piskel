@@ -18,6 +18,10 @@ var FrameSheetModel = (function() {
 			return true; // I'm always right dude
 		},
 
+		getUsedColors : function () {
+			return ["#000", "#fff"]
+		},
+
 		// Could be used to pass around model using long GET param (good enough for simple models) and 
 		// do some temporary locastorage
 		serialize: function() {

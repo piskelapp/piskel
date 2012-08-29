@@ -29,7 +29,8 @@
       isRightClicked = false, 
       activeFrameIndex = -1, 
       animIndex = 0,
-      penColor = DEFAULT_PEN_COLOR;
+      penColor = DEFAULT_PEN_COLOR,
+      paletteColors = [];
 
 
   var piskel = {
@@ -42,6 +43,7 @@
       this.initPreviewSlideshow();
       this.initAnimationPreview();
       this.initColorPicker();
+      this.initPalette();
     },
 
     setActiveFrame: function(index) {
@@ -69,11 +71,25 @@
     },
 
     initColorPicker: function() {
-      var colorPicker = document.getElementById('color-picker');
-      colorPicker.value = DEFAULT_PEN_COLOR;
-      colorPicker.addEventListener('change', function(evt) {
+      this.colorPicker = $('color-picker');
+      this.colorPicker.value = DEFAULT_PEN_COLOR;
+      this.colorPicker.addEventListener('change', this.onPickerChange.bind(this));
+    },
+
+    onPickerChange : function(evt) {
         penColor = colorPicker.value;
-      });
+    },
+
+    initPalette : function (color) {
+      var colors = frameSheet.getUsedColors();
+      var paletteEl = $('palette');
+      paletteEl.innerHTML = "";
+      for (var i = 0 ; i < colors.length ; i++) {
+        var color = colors[i];
+        var colorEl = document.createElement("li");
+        colorEl.setAttribute("data-color", color);
+        paletteEl.appendChild(colorEl);
+      }
     },
 
     initDrawingArea : function() {
@@ -87,13 +103,13 @@
         drawingAreaContainer.setAttribute('style', 
           'width:' + framePixelWidth * drawingCanvasDpi + 'px; height:' + framePixelHeight * drawingCanvasDpi + 'px;');
 
-        drawingAreaCanvas.setAttribute('oncontextmenu', 'piskel.onCanvasContextMenu(arguments[0])');
+        drawingAreaCanvas.setAttribute('oncontextmenu', 'piskel.onCanvasContextMenu(event)');
         drawingAreaContainer.appendChild(drawingAreaCanvas);
 
         var body = document.getElementsByTagName('body')[0];
         body.setAttribute('onmouseup', 'piskel.onCanvasMouseup(arguments[0])');
-        drawingAreaContainer.setAttribute('onmousedown', 'piskel.onCanvasMousedown(arguments[0])');
-        drawingAreaContainer.setAttribute('onmousemove', 'piskel.onCanvasMousemove(arguments[0])');
+        drawingAreaContainer.setAttribute('onmousedown', 'piskel.onCanvasMousedown(event)');
+        drawingAreaContainer.setAttribute('onmousemove', 'piskel.onCanvasMousemove(event)');
 
         this.drawFrameToCanvas(frameSheet.getFrameByIndex(this.getActiveFrameIndex()), drawingAreaCanvas, drawingCanvasDpi);
     },
@@ -324,6 +340,12 @@
       event.stopPropagation();
       event.cancelBubble = true;
       return false;
+    },
+
+    onPaletteClick : function (event) {
+      var color = event.target.getAttribute("data-color");
+      var colorPicker = $('color-picker');
+      colorPicker.color.fromString(color);
     },
     
     getRelativeCoordinates : function (x, y) {
