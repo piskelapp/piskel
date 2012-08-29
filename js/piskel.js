@@ -40,7 +40,10 @@
         } else {
           return "#" + color;
         }
-      }
+      },
+
+      // setTimeout/setInterval references:
+      localStorageThrottler = null
       ;
 
 
@@ -55,6 +58,36 @@
       this.initPreviewSlideshow();
       this.initAnimationPreview();
       this.initColorPicker();
+      this.initLocalStorageBackup();    
+    },
+
+    initLocalStorageBackup: function() {
+      if(window.localStorage && window.localStorage['snapShot']) {
+        var message = document.createElement('div');
+        message.id = "user-message";
+        message.className = "user-message";
+        var reloadLink = "<a href='#' onclick='piskel.restoreFromLocalStorage()'>reload</a>";
+        var discardLink = "<a href='#' onclick='piskel.cleanLocalStorage()'>discard</a>";
+        message.innerHTML = "Non saved version found. " + reloadLink + " or " + discardLink;
+        message.onclick = function() {
+          message.parentNode.removeChild(message);
+        };
+        document.body.appendChild(message);
+      }
+    },
+
+    persistToLocalStorage: function() {
+      console.log('persited')
+      window.localStorage['snapShot'] = frameSheet.serialize();
+    },
+
+    restoreFromLocalStorage: function() {
+      frameSheet.deserialize(window.localStorage['snapShot']);
+      this.setActiveFrameAndRedraw(0);
+    },
+
+    cleanLocalStorage: function() {
+      delete window.localStorage['snapShot'];
     },
 
     setActiveFrame: function(index) {
@@ -126,6 +159,15 @@
         drawingAreaContainer.setAttribute('onmousemove', 'piskel.onCanvasMousemove(event)');
 
         this.drawFrameToCanvas(frameSheet.getFrameByIndex(this.getActiveFrameIndex()), drawingAreaCanvas, drawingCanvasDpi);
+    },
+
+    initPreviewSlideshow: function() {
+      var addFrameButton = $('add-frame-button');
+      addFrameButton.addEventListener('mousedown', function() {
+        frameSheet.addEmptyFrame();
+        piskel.setActiveFrameAndRedraw(frameSheet.getFrameCount() - 1);
+      });
+      this.createPreviews();
     },
 
     initPreviewSlideshow: function() {
@@ -328,7 +370,18 @@
       if (color != currentFrame[col][row]) {
         currentFrame[col][row] = color;
         this.drawPixelInCanvas(row, col, color, drawingAreaCanvas, drawingCanvasDpi);
-      }      
+      }
+
+      // Persist to localStorage when drawing. We throttle localStorage accesses
+      // for high frequency drawing (eg mousemove).
+      if(localStorageThrottler == null) {
+          localStorageThrottler = window.setTimeout(function() {
+            piskel.persistToLocalStorage();
+            localStorageThrottler = null;
+          }, 1000);
+      }
+      
+           
     },
 
     drawPixelInCanvas : function (row, col, color, canvas, dpi) {
