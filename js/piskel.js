@@ -4,7 +4,7 @@
       // Constants:
       TRANSPARENT_COLOR = 'tc',
       //TRANSPARENT_COLOR = 'pink',
-      DEFAULT_PEN_COLOR = '#000',
+      DEFAULT_PEN_COLOR = '#000000',
 
       // Configuration:
       // Canvas size in pixel size (not dpi related)
@@ -13,7 +13,7 @@
 
       // Scaling factors for a given frameSheet rendering:
       // Main drawing area:
-      drawingCanvasDpi = 10,
+      drawingCanvasDpi = 20,
       // Canvas previous in the slideshow:
       previewTileCanvasDpi = 4,
       // Ainmated canvas preview:
@@ -23,13 +23,25 @@
       drawingAreaContainer,
       drawingAreaCanvas,
       previewCanvas,
+      paletteEl,
 
       // States:
       isClicked = false, 
       isRightClicked = false, 
       activeFrameIndex = -1, 
       animIndex = 0,
-      penColor = DEFAULT_PEN_COLOR;
+      penColor = DEFAULT_PEN_COLOR,
+      paletteColors = [],
+
+      //utility
+      _normalizeColor = function (color) {
+        if(color == undefined || color == TRANSPARENT_COLOR || color.indexOf("#") == 0) {
+          return color;
+        } else {
+          return "#" + color;
+        }
+      }
+      ;
 
 
   var piskel = {
@@ -37,10 +49,11 @@
       frameSheet = FrameSheetModel.getInstance(framePixelWidth, framePixelHeight);
       frameSheet.addEmptyFrame();
       this.setActiveFrame(0);
-
+      this.initPalette();
       this.initDrawingArea();
       this.initPreviewSlideshow();
       this.initAnimationPreview();
+      this.initColorPicker();
     },
 
     setActiveFrame: function(index) {
@@ -67,6 +80,31 @@
       return activeFrameIndex;
     },
 
+    initColorPicker: function() {
+      this.colorPicker = $('color-picker');
+      this.colorPicker.value = DEFAULT_PEN_COLOR;
+      this.colorPicker.addEventListener('change', this.onPickerChange.bind(this));
+    },
+
+    onPickerChange : function(evt) {
+        penColor = _normalizeColor(this.colorPicker.value);
+    },
+
+    initPalette : function (color) {
+      paletteEl = $('palette');
+    },
+
+    addColorToPalette : function (color) {
+      if (color && color != TRANSPARENT_COLOR && paletteColors.indexOf(color) == -1) {
+        var colorEl = document.createElement("li");
+        colorEl.setAttribute("data-color", color);
+        colorEl.setAttribute("title", color);
+        colorEl.style.background = color;
+        paletteEl.appendChild(colorEl);
+        paletteColors.push(color);
+      }
+    },
+
     initDrawingArea : function() {
         drawingAreaContainer = $('drawing-canvas-container');
 
@@ -77,14 +115,13 @@
 
         drawingAreaContainer.setAttribute('style', 
           'width:' + framePixelWidth * drawingCanvasDpi + 'px; height:' + framePixelHeight * drawingCanvasDpi + 'px;');
-
-        drawingAreaCanvas.setAttribute('oncontextmenu', 'piskel.onCanvasContextMenu(arguments[0])');
+        drawingAreaCanvas.setAttribute('oncontextmenu', 'piskel.onCanvasContextMenu(event)');
         drawingAreaContainer.appendChild(drawingAreaCanvas);
 
         var body = document.getElementsByTagName('body')[0];
-        body.setAttribute('onmouseup', 'piskel.onCanvasMouseup(arguments[0])');
-        drawingAreaContainer.setAttribute('onmousedown', 'piskel.onCanvasMousedown(arguments[0])');
-        drawingAreaContainer.setAttribute('onmousemove', 'piskel.onCanvasMousemove(arguments[0])');
+        body.setAttribute('onmouseup', 'piskel.onCanvasMouseup(event)');
+        drawingAreaContainer.setAttribute('onmousedown', 'piskel.onCanvasMousedown(event)');
+        drawingAreaContainer.setAttribute('onmousemove', 'piskel.onCanvasMousemove(event)');
 
         this.drawFrameToCanvas(frameSheet.getFrameByIndex(this.getActiveFrameIndex()), drawingAreaCanvas, drawingCanvasDpi);
     },
@@ -117,7 +154,7 @@
       };
       var refreshUpdater = startPreviewRefresh();
       
-      animFPSTuner.addEventListener('keyup', function(evt) {
+      animFPSTuner.addEventListener('change', function(evt) {
         window.clearInterval(refreshUpdater);
         animPreviewFPS = parseInt(animFPSTuner.value, 10);
         if(isNaN(animPreviewFPS)) {
@@ -135,6 +172,7 @@
         if(animPreviewFPS > 100) {
           animPreviewFPS = 100;
         }
+        $("display-fps").innerHTML = animPreviewFPS + " fps";
         animFPSTuner.value = animPreviewFPS;
         refreshUpdater = startPreviewRefresh();
       });
@@ -199,9 +237,7 @@
         canvasPreviewDeleteAction.className = "tile-action"
         canvasPreviewDeleteAction.innerHTML = "del"
         canvasPreviewDeleteAction.addEventListener('click', function(evt) {
-          frameSheet.removeFrameByIndex(tileNumber);
-          animIndex = 0;
-          piskel.createPreviews();
+          piskel.removeFrame(tileNumber);
         });
         previewTileRoot.appendChild(canvasPreviewDeleteAction);
       }
@@ -278,36 +314,39 @@
     },
 
     drawAt : function (x, y, color) {
-      var pixelWidthIndex = (x - x%drawingCanvasDpi) / 10;
-      var pixelHeightIndex = (y - y%drawingCanvasDpi) / 10;
+      var col = (x - x%drawingCanvasDpi) / drawingCanvasDpi;
+      var row = (y - y%drawingCanvasDpi) / drawingCanvasDpi;
       
       // Update model:
       var currentFrame = frameSheet.getFrameByIndex(this.getActiveFrameIndex());
       
       // TODO: make a better accessor for pixel state update:
       // TODO: Make pen color dynamic:
-      currentFrame[pixelWidthIndex][pixelHeightIndex] = color;
-      
-      // Update view:
-      // TODO: Create a per pixel update function for perf ?
-      this.drawFrameToCanvas(currentFrame, drawingAreaCanvas, drawingCanvasDpi);
+      var color = _normalizeColor(color);
+      if (color != currentFrame[col][row]) {
+        currentFrame[col][row] = color;
+        this.drawPixelInCanvas(row, col, color, drawingAreaCanvas, drawingCanvasDpi);
+      }      
+    },
+
+    drawPixelInCanvas : function (row, col, color, canvas, dpi) {
+      var context = canvas.getContext('2d');
+      if(color == undefined || color == TRANSPARENT_COLOR) {
+        context.clearRect(col * dpi, row * dpi, dpi, dpi);   
+      } else {
+        this.addColorToPalette(color);
+        context.fillStyle = color;
+        context.fillRect(col * dpi, row * dpi, dpi, dpi);
+      }
     },
 
     // TODO: move that to a FrameRenderer (/w cache) ?
     drawFrameToCanvas: function(frame, canvasElement, dpi) {
-      var pixelColor, context = canvasElement.getContext('2d');
+      var color;
       for(var col = 0, num_col = frame.length; col < num_col; col++) {
         for(var row = 0, num_row = frame[col].length; row < num_row; row++) {
-          pixelColor = frame[col][row];
-          
-          if(pixelColor == undefined || pixelColor == TRANSPARENT_COLOR) {
-            context.clearRect(col * dpi, row * dpi, dpi, dpi);   
-          } else {
-            context.fillStyle = pixelColor;
-            context.fillRect(col * dpi, row * dpi, dpi, dpi);
-          }
-         
-          
+          color = _normalizeColor(frame[col][row]);
+          this.drawPixelInCanvas(row, col, color, canvasElement, dpi);
         }
       }
     },
@@ -317,6 +356,14 @@
       event.stopPropagation();
       event.cancelBubble = true;
       return false;
+    },
+    onPaletteClick : function (event) {
+      var color = event.target.getAttribute("data-color");
+      if (null !== color) {
+        var colorPicker = $('color-picker');
+        colorPicker.color.fromString(color);
+        this.onPickerChange();
+      }
     },
     
     getRelativeCoordinates : function (x, y) {
