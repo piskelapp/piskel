@@ -149,7 +149,7 @@
       };
       var refreshUpdater = startPreviewRefresh();
       
-      animFPSTuner.addEventListener('keyup', function(evt) {
+      animFPSTuner.addEventListener('change', function(evt) {
         window.clearInterval(refreshUpdater);
         animPreviewFPS = parseInt(animFPSTuner.value, 10);
         if(isNaN(animPreviewFPS)) {
@@ -167,6 +167,7 @@
         if(animPreviewFPS > 100) {
           animPreviewFPS = 100;
         }
+        $("display-fps").innerHTML = animPreviewFPS + " fps";
         animFPSTuner.value = animPreviewFPS;
         refreshUpdater = startPreviewRefresh();
       });
