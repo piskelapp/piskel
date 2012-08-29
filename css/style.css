@@ -138,6 +138,23 @@ ul, li {
   width : 200px;
 }
 
+/* User messages */
+.user-message {
+    position: fixed;
+    bottom: 0;
+    left: 40%;
+    background-color: #F9EDBE;
+    padding: 7px 22px;
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+    font-family: ‘Arial Black’, Gadget, sans-serif;
+    color: #222;
+    border: #F0C36D 1px solid;
+    border-bottom: 0;
+    font-weight: bold;
+    font-size: 14px;  
+}
+
 /* Force apparition of scrollbars on leopard */
 ::-webkit-scrollbar {
     -webkit-appearance: none;
