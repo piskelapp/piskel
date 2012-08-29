@@ -218,7 +218,7 @@
 
     startAnimation : function () {
       var scope = this;
-      var animFPSTuner = document.getElementById("preview-fps");
+      var animFPSTuner = $("preview-fps");
       var animPreviewFPS = parseInt(animFPSTuner.value, 10);
       var startPreviewRefresh = function() {
         return setInterval(scope.refreshAnimatedPreview, 1000/animPreviewFPS);
@@ -228,24 +228,7 @@
       animFPSTuner.addEventListener('change', function(evt) {
         window.clearInterval(refreshUpdater);
         animPreviewFPS = parseInt(animFPSTuner.value, 10);
-        if(isNaN(animPreviewFPS)) {
-          animPreviewFPS = 1;
-        }
-        if(evt.keyCode == 38) {
-          animPreviewFPS++;
-        }
-        else if (evt.keyCode == 40) {
-          animPreviewFPS--;
-        }
-        if(animPreviewFPS < 1) {
-          animPreviewFPS = 1;
-        }
-        if(animPreviewFPS > 100) {
-          animPreviewFPS = 100;
-        }
         $("display-fps").innerHTML = animPreviewFPS + " fps";
-        animFPSTuner.value = animPreviewFPS;
-        $("fps-value").innerHTML = animPreviewFPS + " fps";
         refreshUpdater = startPreviewRefresh();
       });
     },
