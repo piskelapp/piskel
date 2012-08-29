@@ -3,7 +3,8 @@
 
       // Constants:
       TRANSPARENT_COLOR = 'tc',
-      DEFAULT_PEN_COLOR = '#000000',
+      //TRANSPARENT_COLOR = 'pink',
+      DEFAULT_PEN_COLOR = '#000',
 
       // Configuration:
       // Canvas size in pixel size (not dpi related)
@@ -12,7 +13,7 @@
 
       // Scaling factors for a given frameSheet rendering:
       // Main drawing area:
-      drawingCanvasDpi = 20,
+      drawingCanvasDpi = 10,
       // Canvas previous in the slideshow:
       previewTileCanvasDpi = 4,
       // Ainmated canvas preview:
@@ -22,70 +23,78 @@
       drawingAreaContainer,
       drawingAreaCanvas,
       previewCanvas,
-      paletteEl,
 
       // States:
       isClicked = false, 
       isRightClicked = false, 
       activeFrameIndex = -1, 
       animIndex = 0,
-      penColor = DEFAULT_PEN_COLOR,
-      paletteColors = [],
-
-      //utility
-      _normalizeColor = function (color) {
-        if(color == undefined || color == TRANSPARENT_COLOR || color.indexOf("#") == 0) {
-          return color;
-        } else {
-          return "#" + color;
-        }
-      },
-
-      // setTimeout/setInterval references:
-      localStorageThrottler = null
-      ;
+      penColor = DEFAULT_PEN_COLOR;
 
 
   var piskel = {
     init : function () {
-      frameSheet = FrameSheetModel.getInstance(framePixelWidth, framePixelHeight);
-      frameSheet.addEmptyFrame();
+      if (this.hasGetParam()) {
+        this.initFromGetParam();
+      } else {
+        frameSheet = FrameSheetModel.getInstance(framePixelWidth, framePixelHeight);
+        frameSheet.addEmptyFrame();
+      }
+      
       this.setActiveFrame(0);
-      this.initPalette();
+
       this.initDrawingArea();
       this.initPreviewSlideshow();
       this.initAnimationPreview();
-      this.initColorPicker();
-      this.initLocalStorageBackup();    
     },
 
-    initLocalStorageBackup: function() {
-      if(window.localStorage && window.localStorage['snapShot']) {
-        var message = document.createElement('div');
-        message.id = "user-message";
-        message.className = "user-message";
-        var reloadLink = "<a href='#' onclick='piskel.restoreFromLocalStorage()'>reload</a>";
-        var discardLink = "<a href='#' onclick='piskel.cleanLocalStorage()'>discard</a>";
-        message.innerHTML = "Non saved version found. " + reloadLink + " or " + discardLink;
-        message.onclick = function() {
-          message.parentNode.removeChild(message);
-        };
-        document.body.appendChild(message);
+    hasGetParam : function () {
+      return window.location.href.indexOf('frame=') != -1;
+    },
+
+    reload : function () {
+      var baseUrl = window.location.href.replace(window.location.search, "");
+      window.location = baseUrl + "?frame=" + this.serialize();
+    },
+
+    initFromGetParam : function () {
+      frameSheet = FrameSheetModel.getInstance(framePixelWidth, framePixelHeight);
+      var href = window.location.href;
+      // todo find ending ...
+      var getBase16 = href.substring(href.indexOf('frame=') + 6);
+      var serializedFrames = getBase16.split("+");
+      var binaryFrames = [];
+      for (var i = 0 ; i < serializedFrames.length ; i++) {
+        var chunks = serializedFrames[i].split(",");
+        binaryFrames[i] = "";
+        for (var j =0 ; j < chunks.length ; j++) {
+          var binaryEnding = parseInt(chunks[j], 36).toString(2);
+          var missingZeros = (new Array(1 + 32 - binaryEnding.length)).join("0");
+          binaryFrames[i] += (missingZeros + binaryEnding);
+          console.log((missingZeros + binaryEnding).length);
+        }
+      }
+
+      for (var i = 0 ; i < binaryFrames.length ; i++) {
+        var bFrame = binaryFrames[i];
+        var frame = new Array(framePixelWidth);
+        for (var j = 0 ; j < framePixelWidth ; j++) {
+          frame[j] = new Array(framePixelHeight);
+          for (var k = 0 ; k < framePixelHeight ; k++) {
+            if (bFrame.charAt(j*framePixelWidth + k) == "0") {
+              frame[j][k] = TRANSPARENT_COLOR;
+            } else {
+              frame[j][k] = DEFAULT_PEN_COLOR;
+            }
+          }
+        }
+        frameSheet.addFrame(frame);
       }
     },
+    
 
-    persistToLocalStorage: function() {
-      console.log('persited')
-      window.localStorage['snapShot'] = frameSheet.serialize();
-    },
-
-    restoreFromLocalStorage: function() {
-      frameSheet.deserialize(window.localStorage['snapShot']);
-      this.setActiveFrameAndRedraw(0);
-    },
-
-    cleanLocalStorage: function() {
-      delete window.localStorage['snapShot'];
+    serialize: function () {
+      return frameSheet.serialize();
     },
 
     setActiveFrame: function(index) {
@@ -112,31 +121,6 @@
       return activeFrameIndex;
     },
 
-    initColorPicker: function() {
-      this.colorPicker = $('color-picker');
-      this.colorPicker.value = DEFAULT_PEN_COLOR;
-      this.colorPicker.addEventListener('change', this.onPickerChange.bind(this));
-    },
-
-    onPickerChange : function(evt) {
-        penColor = _normalizeColor(this.colorPicker.value);
-    },
-
-    initPalette : function (color) {
-      paletteEl = $('palette');
-    },
-
-    addColorToPalette : function (color) {
-      if (color && color != TRANSPARENT_COLOR && paletteColors.indexOf(color) == -1) {
-        var colorEl = document.createElement("li");
-        colorEl.setAttribute("data-color", color);
-        colorEl.setAttribute("title", color);
-        colorEl.style.background = color;
-        paletteEl.appendChild(colorEl);
-        paletteColors.push(color);
-      }
-    },
-
     initDrawingArea : function() {
         drawingAreaContainer = $('drawing-canvas-container');
 
@@ -148,23 +132,15 @@
         drawingAreaContainer.setAttribute('style', 
           'width:' + framePixelWidth * drawingCanvasDpi + 'px; height:' + framePixelHeight * drawingCanvasDpi + 'px;');
 
-        drawingAreaCanvas.setAttribute('oncontextmenu', 'piskel.onCanvasContextMenu(event)');
+        drawingAreaCanvas.setAttribute('oncontextmenu', 'piskel.onCanvasContextMenu(arguments[0])');
         drawingAreaContainer.appendChild(drawingAreaCanvas);
 
         var body = document.getElementsByTagName('body')[0];
-        body.setAttribute('onmouseup', 'piskel.onCanvasMouseup(event)');
-        drawingAreaContainer.setAttribute('onmousedown', 'piskel.onCanvasMousedown(event)');
-        drawingAreaContainer.setAttribute('onmousemove', 'piskel.onCanvasMousemove(event)');
-        this.drawFrameToCanvas(frameSheet.getFrameByIndex(this.getActiveFrameIndex()), drawingAreaCanvas, drawingCanvasDpi);
-    },
+        body.setAttribute('onmouseup', 'piskel.onCanvasMouseup(arguments[0])');
+        drawingAreaContainer.setAttribute('onmousedown', 'piskel.onCanvasMousedown(arguments[0])');
+        drawingAreaContainer.setAttribute('onmousemove', 'piskel.onCanvasMousemove(arguments[0])');
 
-    initPreviewSlideshow: function() {
-      var addFrameButton = $('add-frame-button');
-      addFrameButton.addEventListener('mousedown', function() {
-        frameSheet.addEmptyFrame();
-        piskel.setActiveFrameAndRedraw(frameSheet.getFrameCount() - 1);
-      });
-      this.createPreviews();
+        this.drawFrameToCanvas(frameSheet.getFrameByIndex(this.getActiveFrameIndex()), drawingAreaCanvas, drawingCanvasDpi);
     },
 
     initPreviewSlideshow: function() {
@@ -195,7 +171,7 @@
       };
       var refreshUpdater = startPreviewRefresh();
       
-      animFPSTuner.addEventListener('change', function(evt) {
+      animFPSTuner.addEventListener('keyup', function(evt) {
         window.clearInterval(refreshUpdater);
         animPreviewFPS = parseInt(animFPSTuner.value, 10);
         if(isNaN(animPreviewFPS)) {
@@ -213,9 +189,7 @@
         if(animPreviewFPS > 100) {
           animPreviewFPS = 100;
         }
-        $("display-fps").innerHTML = animPreviewFPS + " fps";
         animFPSTuner.value = animPreviewFPS;
-        $("fps-value").innerHTML = animPreviewFPS + " fps";
         refreshUpdater = startPreviewRefresh();
       });
     },
@@ -279,7 +253,9 @@
         canvasPreviewDeleteAction.className = "tile-action"
         canvasPreviewDeleteAction.innerHTML = "del"
         canvasPreviewDeleteAction.addEventListener('click', function(evt) {
-          piskel.removeFrame(tileNumber);
+          frameSheet.removeFrameByIndex(tileNumber);
+          animIndex = 0;
+          piskel.createPreviews();
         });
         previewTileRoot.appendChild(canvasPreviewDeleteAction);
       }
@@ -356,50 +332,36 @@
     },
 
     drawAt : function (x, y, color) {
-      var col = (x - x%drawingCanvasDpi) / drawingCanvasDpi;
-      var row = (y - y%drawingCanvasDpi) / drawingCanvasDpi;
+      var pixelWidthIndex = (x - x%drawingCanvasDpi) / 10;
+      var pixelHeightIndex = (y - y%drawingCanvasDpi) / 10;
       
       // Update model:
       var currentFrame = frameSheet.getFrameByIndex(this.getActiveFrameIndex());
       
       // TODO: make a better accessor for pixel state update:
       // TODO: Make pen color dynamic:
-      var color = _normalizeColor(color);
-      if (color != currentFrame[col][row]) {
-        currentFrame[col][row] = color;
-        this.drawPixelInCanvas(row, col, color, drawingAreaCanvas, drawingCanvasDpi);
-      }
-
-      // Persist to localStorage when drawing. We throttle localStorage accesses
-      // for high frequency drawing (eg mousemove).
-      if(localStorageThrottler == null) {
-          localStorageThrottler = window.setTimeout(function() {
-            piskel.persistToLocalStorage();
-            localStorageThrottler = null;
-          }, 1000);
-      }
+      currentFrame[pixelWidthIndex][pixelHeightIndex] = color;
       
-           
-    },
-
-    drawPixelInCanvas : function (row, col, color, canvas, dpi) {
-      var context = canvas.getContext('2d');
-      if(color == undefined || color == TRANSPARENT_COLOR) {
-        context.clearRect(col * dpi, row * dpi, dpi, dpi);   
-      } else {
-        this.addColorToPalette(color);
-        context.fillStyle = color;
-        context.fillRect(col * dpi, row * dpi, dpi, dpi);
-      }
+      // Update view:
+      // TODO: Create a per pixel update function for perf ?
+      this.drawFrameToCanvas(currentFrame, drawingAreaCanvas, drawingCanvasDpi);
     },
 
     // TODO: move that to a FrameRenderer (/w cache) ?
     drawFrameToCanvas: function(frame, canvasElement, dpi) {
-      var color;
+      var pixelColor, context = canvasElement.getContext('2d');
       for(var col = 0, num_col = frame.length; col < num_col; col++) {
         for(var row = 0, num_row = frame[col].length; row < num_row; row++) {
-          color = _normalizeColor(frame[col][row]);
-          this.drawPixelInCanvas(row, col, color, canvasElement, dpi);
+          pixelColor = frame[col][row];
+          
+          if(pixelColor == undefined || pixelColor == TRANSPARENT_COLOR) {
+            context.clearRect(col * dpi, row * dpi, dpi, dpi);   
+          } else {
+            context.fillStyle = pixelColor;
+            context.fillRect(col * dpi, row * dpi, dpi, dpi);
+          }
+         
+          
         }
       }
     },
@@ -409,15 +371,6 @@
       event.stopPropagation();
       event.cancelBubble = true;
       return false;
-    },
-
-    onPaletteClick : function (event) {
-      var color = event.target.getAttribute("data-color");
-      if (null !== color) {
-        var colorPicker = $('color-picker');
-        colorPicker.color.fromString(color);
-        this.onPickerChange();
-      }
     },
     
     getRelativeCoordinates : function (x, y) {
@@ -433,4 +386,3 @@
   piskel.init();
 
 })(function(id){return document.getElementById(id)});
-//small change for checking my git setup :(
