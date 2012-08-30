@@ -55,6 +55,7 @@
 
       var frameId = this.getFrameIdFromUrl();
       if (frameId) {
+        this.displayMessage("Loading animation with id : [" + frameId + "]");
         this.loadFramesheetFromService(frameId);
       } else {
         this.finishInit();
@@ -86,10 +87,12 @@
 
       xhr.onload = function(e) {
         frameSheet.deserialize(this.responseText);
+        piskel.removeMessage();
         piskel.finishInit();
       };
 
       xhr.onerror = function () {
+        piskel.removeMessage();
         piskel.finishInit();
       };
 
@@ -98,16 +101,25 @@
 
     initLocalStorageBackup: function() {
       if(window.localStorage && window.localStorage['snapShot']) {
-        var message = document.createElement('div');
-        message.id = "user-message";
-        message.className = "user-message";
         var reloadLink = "<a href='#' onclick='piskel.restoreFromLocalStorage()'>reload</a>";
         var discardLink = "<a href='#' onclick='piskel.cleanLocalStorage()'>discard</a>";
-        message.innerHTML = "Non saved version found. " + reloadLink + " or " + discardLink;
-        message.onclick = function() {
-          message.parentNode.removeChild(message);
-        };
-        document.body.appendChild(message);
+        this.displayMessage("Non saved version found. " + reloadLink + " or " + discardLink);
+      }
+    },
+
+    displayMessage : function (content) {
+      var message = document.createElement('div');
+      message.id = "user-message";
+      message.className = "user-message";
+      message.innerHTML = content;
+      message.onclick = this.removeMessage;
+      document.body.appendChild(message);
+    },
+
+    removeMessage : function () {
+      var message = $("user-message");
+      if (message) {
+        message.parentNode.removeChild(message);  
       }
     },
 
