@@ -152,7 +152,8 @@ ul, li {
     border: #F0C36D 1px solid;
     border-bottom: 0;
     font-weight: bold;
-    font-size: 14px;  
+    font-size: 14px; 
+    z-index: 10000;
 }
 
 /* Force apparition of scrollbars on leopard */
