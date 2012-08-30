@@ -5,11 +5,24 @@ The goal is to create an easy-to-use/in-the-cloud/web-based 2d animation editor.
 
 Try it at : http://juliandescottes.github.com/piskel/
 
-v0.0something (with 2 pull requests from grosbouddha)
+v0.0almostthere
+------------------------------------
+**30 Aug 2012** : Many new features in 2 days :
+* __save animations__, they are persisted in the cloud, and can be retrieved via a __unique URL__
+* __color picker__, no longer limited to black and white 
+* __local storage__, your work is automatically backed up locally
+* __color palette__, listing all the colors already used in the animation
+* __slider__ for choosing the speed of the preview
+
+UI was slightly updated : 
+
+![Screenshot 2](https://dl.dropbox.com/u/17803671/screen_piskel_2.png "Screenshot 2")
+
+v0.0something
 ------------------------------------
 **28 Aug 2012** : Thanks to grosbouddha, new features added to Piskel :
 * modify preview speed !
-* remove (shitty) frames
+* remove frames
 * transparent background
 
 v0.0whatever (aka the thing I did last night)
