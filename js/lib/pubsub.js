@@ -7,6 +7,7 @@
   var o = $({});
 
   $.subscribe = function() {
+    console.log("SUBSCRIBE: " + arguments[0]);
     o.on.apply(o, arguments);
   };
 
@@ -15,7 +16,10 @@
   };
 
   $.publish = function() {
+    console.log("PUBLISH: " + arguments[0]);
     o.trigger.apply(o, arguments);
   };
 
 }(jQuery));
+
+

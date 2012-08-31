@@ -127,6 +127,26 @@ ul, li {
   z-index: 1;
 }
 
+.drawing-canvas-container {
+  float: left;
+}
+
+.tool-paint-bucket .drawing-canvas-container:hover {
+  cursor: url(../img/tools/paint-bucket.png) 18 17, pointer;
+}
+
+.tool-pen .drawing-canvas-container:hover {
+  cursor: url(../img/tools/pen.png) 7 21, pointer;
+}
+
+.tool-eraser .drawing-canvas-container:hover {
+  cursor: url(../img/tools/eraser.png) 5 21, pointer;
+}
+
+/** 
+ * Tool section:
+ */
+
 #palette li {
   display : inline-block;
   height : 20px;
@@ -134,11 +154,55 @@ ul, li {
   margin : 5px;
 }
 
+.tools-container {
+  float: left;
+}
+
+.tools-container .tool-icon {
+  display: block;
+  float: left;
+  margin-right: 2px;
+}
+
+.tool-icon {
+  width: 30px;
+  height: 30px;
+  border: 5px solid #fff;
+}
+
+.tool-icon:hover {
+  border-color: #;
+}
+
+.tool-icon:hover {
+  cursor: pointer;
+  border: 5px solid #eee;
+}
+
+.tool-icon.selected {
+  cursor: auto;
+  border: 5px solid #ddd;
+}
+
+.tool-icon.tool-pen {
+  background: #fff url(../img/tools/pen.png) 3px 3px no-repeat;
+}
+
+.tool-icon.tool-paint-bucket {
+  background: #fff url(../img/tools/paint-bucket.png) 3px 3px no-repeat;
+}
+
+.tool-icon.tool-eraser {
+  background: #fff url(../img/tools/eraser.png) 3px 3px no-repeat;
+}
+
 #preview-fps {
   width : 200px;
 }
 
-/* User messages */
+/** 
+ * User messages 
+ */
 .user-message {
     position: fixed;
     bottom: 0;
