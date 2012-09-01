@@ -39,9 +39,13 @@
       <div class="tool-icon tool-paint-bucket" data-tool-id="tool-paint-bucket" title="Bucket tool"></div>
       <div class="tool-icon tool-stroke" data-tool-id="tool-stroke" title="Stroke tool"></div>
       
-      <input id="color-picker" class="color {hash:true}" type="text" value=""/>
-      
-      <ul id="palette" class="palette" onclick="piskel.onPaletteClick(event)"></ul>
+      <div class="color-tool">
+        <input id="color-picker" class="color {hash:true}" type="text" value=""/>
+        
+        <ul id="palette" class="palette" onclick="piskel.onPaletteClick(event)">
+          <span class="palette-color transparent-color" data-color="TRANSPARENT" title="Transparent"></span>
+        </ul>
+      </div>
     </div>
 
     <!-- Animation preview: -->

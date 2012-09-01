@@ -467,9 +467,21 @@ $.namespace("pskl");
 
     onPaletteClick : function (event) {
       var color = $(event.target).data("color");
-      if (null !== color) {
-        //debugger;
-        var colorPicker = $('#color-picker');
+      var colorPicker = $('#color-picker');
+      if (color == "TRANSPARENT") {
+        // We can set the current palette color to transparent.
+        // You can then combine this transparent color with an advanced
+        // tool for customized deletions. 
+        // Eg: bucket + transparent: Delete a colored area
+        //     Stroke + transparent: hollow out the equivalent of a stroke
+        penColor = Constants.TRANSPARENT_COLOR;
+        
+        // The colorpicker can't be set to a transparent state.
+        // We set its background to white and insert the
+        // string "TRANSPARENT" to mimic this state:
+        colorPicker[0].color.fromString("#fff");
+        colorPicker.val("TRANSPARENT");
+      } else if (null !== color) {
         colorPicker[0].color.fromString(color);
         penColor = color;
       }

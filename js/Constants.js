@@ -1,3 +1,3 @@
 var Constants = {
-	TRANSPARENT_COLOR : "tc"
+	TRANSPARENT_COLOR : "TRANSPARENT"
 };
