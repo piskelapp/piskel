@@ -11,7 +11,8 @@ pskl.ToolSelector = (function() {
 	var toolInstances = {
 		"simplePen" : new pskl.drawingtools.SimplePen(),
 		"eraser" : new pskl.drawingtools.Eraser(),
-		"paintBucket" : new pskl.drawingtools.PaintBucket()
+		"paintBucket" : new pskl.drawingtools.PaintBucket(),
+		"stroke" : new pskl.drawingtools.Stroke()
 	};
 	var currentSelectedTool = toolInstances.simplePen;
 	var previousSelectedTool = toolInstances.simplePen;

@@ -15,27 +15,20 @@
 	/**
 	 * @override
 	 */
-	ns.SimplePen.prototype.applyToolOnFrameAt = function(col, row, frame, color) {
+	ns.SimplePen.prototype.applyToolAt = function(col, row, frame, color, canvas, dpi) {
+		
+		// Change model:
 		var color = pskl.utils.normalizeColor(color);
 	    if (color != frame[col][row]) {
 	        frame[col][row] = color;
 	    }
+
+	    // Draw on canvas:
+	    // TODO: Remove that when we have the centralized redraw loop
+	    this.drawPixelInCanvas(col, row, canvas, color, dpi);
 	};
 
-	/**
-	 * @override
-	 */
-	ns.SimplePen.prototype.applyToolOnCanvasAt = function(col, row, canvas, frame, color, dpi) {
-
-		this.drawPixelInCanvas(col, row, canvas, color, dpi);
+	ns.SimplePen.prototype.moveToolAt = function(col, row, frame, color, canvas, dpi) {
+		this.applyToolAt(col, row, frame, color, canvas, dpi);
 	};
-
-	/**
-	 * @override
-	 */
-	ns.SimplePen.prototype.releaseToolAt = function() {
-		// Do nothing
-		console.log('SimplePen release');
-	};
-
 })();
