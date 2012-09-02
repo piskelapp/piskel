@@ -95,7 +95,8 @@ $.namespace("pskl");
 
       // TODO: Move this into their service or behavior files:
       this.initDrawingArea();
-      this.initPreviewSlideshow();   
+      this.initPreviewSlideshow(); 
+      this.initAnimationPreview();  
       this.startAnimation();
       
       pskl.ToolSelector.init();
