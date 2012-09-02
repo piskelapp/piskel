@@ -154,6 +154,10 @@ ul, li {
   cursor: url(../img/tools/cursors/pen.png) 5 21, pointer;
 }
 
+.tool-rectangle .drawing-canvas-container:hover {
+  cursor: url(../img/tools/cursors/rectangle.png) 4 21, pointer;
+}
+
 
 /** 
  * Tool section:
@@ -211,6 +215,7 @@ ul, li {
   width: 30px;
   height: 30px;
   border: 5px solid #fff;
+  background-color: #fff
 }
 
 .tool-icon:hover {
@@ -241,6 +246,10 @@ ul, li {
 
 .tool-icon.tool-stroke {
   background: #fff url(../img/tools/icons/stroke.png) 3px 3px no-repeat;
+}
+
+.tool-icon.tool-rectangle {
+  background: #fff url(../img/tools/icons/rectangle.png) 3px 3px no-repeat;
 }
 
 #preview-fps {
