@@ -20,7 +20,7 @@ Events = {
 	 * TODO: Remove or rework when redraw system is refactored.
 	 */
 	REFRESH: "REFRESH",
+	
 	SHOW_NOTIFICATION: "SHOW_NOTIFICATION",
 	HIDE_NOTIFICATION: "HIDE_NOTIFICATION"
-
 };
