@@ -1,5 +1,7 @@
 
-var FrameSheetModel = (function() {
+$.namespace("pskl");
+
+pskl.FrameSheetModel = (function() {
     
     var inst;
     var frames = [];
