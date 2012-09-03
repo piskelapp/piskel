@@ -91,6 +91,7 @@ $.namespace("pskl");
       this.startAnimation();
       
       pskl.ToolSelector.init();
+      pskl.Palette.init(frameSheet);
     },
 
     getFramesheetIdFromUrl : function() {
