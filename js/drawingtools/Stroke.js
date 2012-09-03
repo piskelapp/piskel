@@ -1,5 +1,5 @@
 /*
- * @provide pskl.drawingtools.SimplePen
+ * @provide pskl.drawingtools.Stroke
  *
  * @require pskl.utils
  */
@@ -75,7 +75,8 @@
 		this.endCol = col;
 		this.endRow = row;
 		
-		// If the stroke tool is released outside of the canvas, we cancel the stroke: 
+		// If the stroke tool is released outside of the canvas, we cancel the stroke:
+		// TODO: Mutualize this check in common method
 		if(col < 0 || row < 0 || col > frame.length || row > frame[0].length) {
 			this.removeCanvasOverlays();
 			return;
