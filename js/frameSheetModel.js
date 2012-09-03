@@ -1,16 +1,29 @@
-var FrameSheetModel = (function() {
+
+$.namespace("pskl");
+
+pskl.FrameSheetModel = (function() {
     
     var inst;
     var frames = [];
     var width;
     var height;
 
+    /**
+     * @private
+     */
     var createEmptyFrame_ = function() {
     	var emptyFrame = new Array(width);
 		for (var columnIndex=0; columnIndex < width; columnIndex++) {
 			emptyFrame[columnIndex] = new Array(height);
     	}
         return emptyFrame;
+    };
+
+    /**
+     * @private
+     */
+    var requestLocalStorageSave_ = function() {
+    	
     };
 
 	return {

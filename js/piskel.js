@@ -1,76 +1,105 @@
-(function ($) {
+/**
+ * @require Constants
+ * @require Events
+ */
+$.namespace("pskl");
+
+(function () {
+
+  /**
+   * FrameSheetModel instance.
+   */
   var frameSheet,
 
-      // Constants:
-      TRANSPARENT_COLOR = 'tc',
-      DEFAULT_PEN_COLOR = '#000000',
-      PISKEL_SERVICE_URL = 'http://2.piskel-app.appspot.com',
+      // Temporary zoom implementation to easily get bigger canvases to
+      // see how good perform critical algorithms on big canvas.
+      zoom = 1,
 
       // Configuration:
       // Canvas size in pixel size (not dpi related)
-      framePixelWidth = 32, 
-      framePixelHeight = 32,
+      framePixelWidth = 32 * zoom, 
+      framePixelHeight = 32 * zoom,
+
 
       // Scaling factors for a given frameSheet rendering:
       // Main drawing area:
-      drawingCanvasDpi = 20,
+      drawingCanvasDpi = Math.ceil(20/ zoom),
       // Canvas previous in the slideshow:
-      previewTileCanvasDpi = 4,
+      previewTileCanvasDpi = Math.ceil(4 / zoom),
       // Ainmated canvas preview:
-      previewAnimationCanvasDpi = 8,
+      previewAnimationCanvasDpi = Math.ceil(8 / zoom),
 
       // DOM references:
       drawingAreaContainer,
       drawingAreaCanvas,
       previewCanvas,
-      paletteEl,
-
+      
       // States:
       isClicked = false, 
       isRightClicked = false, 
       activeFrameIndex = -1, 
       animIndex = 0,
-      penColor = DEFAULT_PEN_COLOR,
-      paletteColors = [],
+      penColor = Constants.DEFAULT_PEN_COLOR,
+      currentFrame = null;
+      currentToolBehavior = null,
+      previousMousemoveTime = 0,
 
       //utility
       _normalizeColor = function (color) {
-        if(color == undefined || color == TRANSPARENT_COLOR || color.indexOf("#") == 0) {
+        if(color == undefined || color == Constants.TRANSPARENT_COLOR || color.indexOf("#") == 0) {
           return color;
         } else {
           return "#" + color;
         }
-      },
+      };
 
-      // setTimeout/setInterval references:
-      localStorageThrottler = null
-      ;
-
-
+  /**
+   * Main application controller
+   */
   var piskel = {
-    init : function () {
-      frameSheet = FrameSheetModel.getInstance(framePixelWidth, framePixelHeight);
-      this.setActiveFrame(0);
-      frameSheet.addEmptyFrame();
 
+    init : function () {
+      frameSheet = pskl.FrameSheetModel.getInstance(framePixelWidth, framePixelHeight);
+      frameSheet.addEmptyFrame();
+      this.setActiveFrame(0);
+      
+      pskl.NotificationService.init();
+      pskl.LocalStorageService.init(frameSheet);
+
+      // TODO: Add comments 
       var frameId = this.getFrameIdFromUrl();
       if (frameId) {
-        this.displayMessage("Loading animation with id : [" + frameId + "]");
+        $.publish(Events.SHOW_NOTIFICATION, [{"content": "Loading animation with id : [" + frameId + "]"}]);
         this.loadFramesheetFromService(frameId);
       } else {
         this.finishInit();
+        pskl.LocalStorageService.displayRestoreNotification();
       }
     },
 
     finishInit : function () {
-      this.initPalette();
-      this.initDrawingArea();
-      this.initPreviewSlideshow();
-      this.initAnimationPreview();
-      this.initColorPicker();
-      this.initLocalStorageBackup();
 
+      $.subscribe(Events.TOOL_SELECTED, function(evt, toolBehavior) {
+        console.log("Tool selected: ", toolBehavior);
+        currentToolBehavior = toolBehavior;
+      });
+
+      $.subscribe(Events.COLOR_SELECTED, function(evt, color) {
+        console.log("Color selected: ", color);
+        penColor = color;
+      });
+
+      $.subscribe(Events.REFRESH, function() {
+        piskel.setActiveFrameAndRedraw(0);
+      });
+
+      // TODO: Move this into their service or behavior files:
+      this.initDrawingArea();
+      this.initPreviewSlideshow(); 
+      this.initAnimationPreview();  
       this.startAnimation();
+      
+      pskl.ToolSelector.init();
     },
 
     getFrameIdFromUrl : function() {
@@ -82,70 +111,33 @@
 
     loadFramesheetFromService : function (frameId) {
       var xhr = new XMLHttpRequest();
-      xhr.open('GET', PISKEL_SERVICE_URL + '/get?l=' + frameId, true);
+      xhr.open('GET', Constants.PISKEL_SERVICE_URL + '/get?l=' + frameId, true);
       xhr.responseType = 'text';
 
       xhr.onload = function(e) {
         frameSheet.deserialize(this.responseText);
-        piskel.removeMessage();
+        $.publish(Events.HIDE_NOTIFICATION);
         piskel.finishInit();
       };
 
       xhr.onerror = function () {
-        piskel.removeMessage();
+        $.publish(Events.HIDE_NOTIFICATION);
         piskel.finishInit();
       };
 
       xhr.send();
     },
 
-    initLocalStorageBackup: function() {
-      if(window.localStorage && window.localStorage['snapShot']) {
-        var reloadLink = "<a href='#' onclick='piskel.restoreFromLocalStorage()'>reload</a>";
-        var discardLink = "<a href='#' onclick='piskel.cleanLocalStorage()'>discard</a>";
-        this.displayMessage("Non saved version found. " + reloadLink + " or " + discardLink);
-      }
-    },
-
-    displayMessage : function (content) {
-      var message = document.createElement('div');
-      message.id = "user-message";
-      message.className = "user-message";
-      message.innerHTML = content;
-      message.onclick = this.removeMessage;
-      document.body.appendChild(message);
-    },
-
-    removeMessage : function () {
-      var message = $("user-message");
-      if (message) {
-        message.parentNode.removeChild(message);  
-      }
-    },
-
-    persistToLocalStorage: function() {
-      console.log('persited')
-      window.localStorage['snapShot'] = frameSheet.serialize();
-    },
-
-    restoreFromLocalStorage: function() {
-      frameSheet.deserialize(window.localStorage['snapShot']);
-      this.setActiveFrameAndRedraw(0);
-    },
-
-    cleanLocalStorage: function() {
-      delete window.localStorage['snapShot'];
-    },
-
     setActiveFrame: function(index) {
       activeFrameIndex = index;
+      currentFrame = frameSheet.getFrameByIndex(activeFrameIndex)
     },
 
     setActiveFrameAndRedraw: function(index) {
       this.setActiveFrame(index);
       
       // Update drawing canvas:
-      this.drawFrameToCanvas(frameSheet.getFrameByIndex(this.getActiveFrameIndex()), drawingAreaCanvas, drawingCanvasDpi);
+      this.drawFrameToCanvas(currentFrame, drawingAreaCanvas, drawingCanvasDpi);
       
       // Update slideshow:
       this.createPreviews();
@@ -161,33 +153,8 @@
       return activeFrameIndex;
     },
 
-    initColorPicker: function() {
-      this.colorPicker = $('color-picker');
-      this.colorPicker.value = DEFAULT_PEN_COLOR;
-      this.colorPicker.addEventListener('change', this.onPickerChange.bind(this));
-    },
-
-    onPickerChange : function(evt) {
-        penColor = _normalizeColor(this.colorPicker.value);
-    },
-
-    initPalette : function (color) {
-      paletteEl = $('palette');
-    },
-
-    addColorToPalette : function (color) {
-      if (color && color != TRANSPARENT_COLOR && paletteColors.indexOf(color) == -1) {
-        var colorEl = document.createElement("li");
-        colorEl.setAttribute("data-color", color);
-        colorEl.setAttribute("title", color);
-        colorEl.style.background = color;
-        paletteEl.appendChild(colorEl);
-        paletteColors.push(color);
-      }
-    },
-
     initDrawingArea : function() {
-        drawingAreaContainer = $('drawing-canvas-container');
+        drawingAreaContainer = $('#drawing-canvas-container')[0];
 
         drawingAreaCanvas = document.createElement("canvas");
         drawingAreaCanvas.className = 'canvas';
@@ -201,14 +168,14 @@
         drawingAreaContainer.appendChild(drawingAreaCanvas);
 
         var body = document.getElementsByTagName('body')[0];
-        body.setAttribute('onmouseup', 'piskel.onCanvasMouseup(event)');
+        body.setAttribute('onmouseup', 'piskel.onDocumentBodyMouseup(event)');
         drawingAreaContainer.setAttribute('onmousedown', 'piskel.onCanvasMousedown(event)');
         drawingAreaContainer.setAttribute('onmousemove', 'piskel.onCanvasMousemove(event)');
-        this.drawFrameToCanvas(frameSheet.getFrameByIndex(this.getActiveFrameIndex()), drawingAreaCanvas, drawingCanvasDpi);
+        this.drawFrameToCanvas(currentFrame, drawingAreaCanvas, drawingCanvasDpi);
     },
 
     initPreviewSlideshow: function() {
-      var addFrameButton = $('add-frame-button');
+      var addFrameButton = $('#add-frame-button')[0];
       addFrameButton.addEventListener('mousedown', function() {
         frameSheet.addEmptyFrame();
         piskel.setActiveFrameAndRedraw(frameSheet.getFrameCount() - 1);
@@ -218,7 +185,7 @@
 
     initAnimationPreview : function() {
 
-      var previewAnimationContainer = $('preview-canvas-container');
+      var previewAnimationContainer = $('#preview-canvas-container')[0];
       previewCanvas = document.createElement('canvas');
       previewCanvas.className = 'canvas';
       previewAnimationContainer.setAttribute('style', 
@@ -230,7 +197,7 @@
 
     startAnimation : function () {
       var scope = this;
-      var animFPSTuner = $("preview-fps");
+      var animFPSTuner = $("#preview-fps")[0];
       var animPreviewFPS = parseInt(animFPSTuner.value, 10);
       var startPreviewRefresh = function() {
         return setInterval(scope.refreshAnimatedPreview, 1000/animPreviewFPS);
@@ -240,13 +207,13 @@
       animFPSTuner.addEventListener('change', function(evt) {
         window.clearInterval(refreshUpdater);
         animPreviewFPS = parseInt(animFPSTuner.value, 10);
-        $("display-fps").innerHTML = animPreviewFPS + " fps";
+        $("#display-fps").html(animPreviewFPS + " fps");
         refreshUpdater = startPreviewRefresh();
       });
     },
 
     createPreviews : function () {
-      var container = $('preview-list'), previewTile;
+      var container = $('#preview-list')[0], previewTile;
       container.innerHTML = "";
       for (var i = 0, l = frameSheet.getFrameCount(); i < l ; i++) {
         previewTile = this.createPreviewTile(i);
@@ -346,79 +313,74 @@
 
     onCanvasMousedown : function (event) {
       isClicked = true;
-      var coords = this.getRelativeCoordinates(event.clientX, event.clientY);
-      if(event.button == 0) {
-        this.drawAt(coords.x, coords.y, penColor);
-      } else {
-        // Right click used to delete.
+      
+      if(event.button == 2) { // right click
         isRightClicked = true;
-        this.drawAt(coords.x, coords.y, TRANSPARENT_COLOR);
+        $.publish(Events.CANVAS_RIGHT_CLICKED);
       }
+      var spriteCoordinate = this.getSpriteCoordinate(event);
+      currentToolBehavior.applyToolAt(
+          spriteCoordinate.col,
+          spriteCoordinate.row,
+          currentFrame,
+          penColor,
+          drawingAreaCanvas,
+          drawingCanvasDpi);
+        
+      $.publish(Events.LOCALSTORAGE_REQUEST);
     },
 
     onCanvasMousemove : function (event) {
+
       //this.updateCursorInfo(event);
-      if (isClicked) {
-        var coords = this.getRelativeCoordinates(event.clientX, event.clientY);
-        if(isRightClicked) {
-          this.drawAt(coords.x, coords.y, TRANSPARENT_COLOR);
-        } else {
-          this.drawAt(coords.x, coords.y, penColor);
+      var currentTime = new Date().getTime();
+      // Throttling of the mousemove event:
+      if ((currentTime - previousMousemoveTime) > 40 ) {
+        if (isClicked) {
+          var spriteCoordinate = this.getSpriteCoordinate(event);
+          currentToolBehavior.moveToolAt(
+              spriteCoordinate.col,
+              spriteCoordinate.row,
+              currentFrame,
+              penColor,
+              drawingAreaCanvas,
+              drawingCanvasDpi);
+          
+          // TODO(vincz): Find a way to move that to the model instead of being at the interaction level.
+          // Eg when drawing, it may make sense to have it here. However for a non drawing tool,
+          // you don't need to draw anything when mousemoving and you request useless localStorage.
+          $.publish(Events.LOCALSTORAGE_REQUEST);
         }
+        previousMousemoveTime = currentTime;
       }
     },
     
-    onCanvasMouseup : function (event) {
+    onDocumentBodyMouseup : function (event) {
       if(isClicked || isRightClicked) {
         // A mouse button was clicked on the drawing canvas before this mouseup event,
         // the user was probably drawing on the canvas.
         // Note: The mousemove movement (and the mouseup) may end up outside
         // of the drawing canvas.
+        // TODO: Remove that when we have the centralized redraw loop
         this.createPreviews();
+      }
+
+      if(isRightClicked) {
+        $.publish(Events.CANVAS_RIGHT_CLICK_RELEASED);
       }
       isClicked = false;
       isRightClicked = false;
+      var spriteCoordinate = this.getSpriteCoordinate(event);
+      currentToolBehavior.releaseToolAt(
+          spriteCoordinate.col,
+          spriteCoordinate.row,
+          currentFrame,
+          penColor,
+          drawingAreaCanvas,
+          drawingCanvasDpi);
     },
 
-    drawAt : function (x, y, color) {
-      var col = (x - x%drawingCanvasDpi) / drawingCanvasDpi;
-      var row = (y - y%drawingCanvasDpi) / drawingCanvasDpi;
-      
-      // Update model:
-      var currentFrame = frameSheet.getFrameByIndex(this.getActiveFrameIndex());
-      
-      // TODO: make a better accessor for pixel state update:
-      // TODO: Make pen color dynamic:
-      var color = _normalizeColor(color);
-      if (color != currentFrame[col][row]) {
-        currentFrame[col][row] = color;
-        this.drawPixelInCanvas(row, col, color, drawingAreaCanvas, drawingCanvasDpi);
-      }
-
-      // Persist to localStorage when drawing. We throttle localStorage accesses
-      // for high frequency drawing (eg mousemove).
-      if(localStorageThrottler == null) {
-          localStorageThrottler = window.setTimeout(function() {
-            piskel.persistToLocalStorage();
-            localStorageThrottler = null;
-          }, 1000);
-      }
-      
-           
-    },
-
-    drawPixelInCanvas : function (row, col, color, canvas, dpi) {
-      var context = canvas.getContext('2d');
-      if(color == undefined || color == TRANSPARENT_COLOR) {
-        context.clearRect(col * dpi, row * dpi, dpi, dpi);   
-      } else {
-        this.addColorToPalette(color);
-        context.fillStyle = color;
-        context.fillRect(col * dpi, row * dpi, dpi, dpi);
-      }
-    },
-
-    // TODO: move that to a FrameRenderer (/w cache) ?
+    // TODO(vincz/julz): Refactor to make this disappear in a big event-driven redraw loop 
     drawFrameToCanvas: function(frame, canvasElement, dpi) {
       var color;
       for(var col = 0, num_col = frame.length; col < num_col; col++) {
@@ -429,6 +391,17 @@
       }
     },
 
+    // TODO(vincz/julz): Refactor to make this disappear in a big event-driven redraw loop 
+    drawPixelInCanvas : function (row, col, color, canvas, dpi) {
+      var context = canvas.getContext('2d');
+      if(color == undefined || color == Constants.TRANSPARENT_COLOR) {
+        context.clearRect(col * dpi, row * dpi, dpi, dpi);   
+      } else {
+        context.fillStyle = color;
+        context.fillRect(col * dpi, row * dpi, dpi, dpi);
+      }
+    },
+
     onCanvasContextMenu : function (event) {
       event.preventDefault();
       event.stopPropagation();
@@ -436,15 +409,6 @@
       return false;
     },
 
-    onPaletteClick : function (event) {
-      var color = event.target.getAttribute("data-color");
-      if (null !== color) {
-        var colorPicker = $('color-picker');
-        colorPicker.color.fromString(color);
-        this.onPickerChange();
-      }
-    },
-    
     getRelativeCoordinates : function (x, y) {
       var canvasRect = drawingAreaCanvas.getBoundingClientRect();
       return {
@@ -453,12 +417,23 @@
       }
     },
 
+    getSpriteCoordinate : function(event) {
+        var coord = this.getRelativeCoordinates(event.x, event.y);
+        var coords = this.getRelativeCoordinates(event.clientX, event.clientY);
+        return {
+          "col" : (coords.x - coords.x%drawingCanvasDpi) / drawingCanvasDpi,
+          "row" : (coords.y - coords.y%drawingCanvasDpi) / drawingCanvasDpi
+        }
+    },
+
+    // TODO(julz): Create package ?
     storeSheet : function (event) {
+      // TODO Refactor using jquery ?
       var xhr = new XMLHttpRequest();
       var formData = new FormData();
       formData.append('framesheet_content', frameSheet.serialize());
-      formData.append('fps_speed', $('preview-fps').value);
-      xhr.open('POST', PISKEL_SERVICE_URL + "/store", true);
+      formData.append('fps_speed', $('#preview-fps').val());
+      xhr.open('POST', Constants.PISKEL_SERVICE_URL + "/store", true);
       xhr.onload = function(e) {
         if (this.status == 200) {
           var baseUrl = window.location.href.replace(window.location.search, "");
@@ -477,5 +452,4 @@
   window.piskel = piskel;
   piskel.init();
 
-})(function(id){return document.getElementById(id)});
-//small change for checking my git setup :(
+})();
