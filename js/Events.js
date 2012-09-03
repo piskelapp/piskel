@@ -15,11 +15,17 @@ Events = {
 	CANVAS_RIGHT_CLICK_RELEASED: "CANVAS_RIGHT_CLICK_RELEASED",
 
 	/**
-	 * Event to requset a refresh of the display.
+	 * Event to request a refresh of the display.
 	 * A bit overkill but, it's just workaround in our current drawing system.
 	 * TODO: Remove or rework when redraw system is refactored.
 	 */
 	REFRESH: "REFRESH",
+
+	/**
+	 * The framesheet was reseted and is now probably drastically different.
+	 * Number of frames, content of frames, color used for the palette may have changed.
+	 */
+	FRAMESHEET_RESET: "FRAMESHEET_RESET",
 	
 	SHOW_NOTIFICATION: "SHOW_NOTIFICATION",
 	HIDE_NOTIFICATION: "HIDE_NOTIFICATION"
