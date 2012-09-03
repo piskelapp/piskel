@@ -32,10 +32,4 @@
 	ns.Eraser.prototype.moveToolAt = function(col, row, frame, color, canvas, dpi) {
 		this.applyToolAt(col, row, frame, color, canvas, dpi);
 	};
-
-	ns.Eraser.prototype.releaseToolAt = function(col, row, frame, color, canvas, dpi) {
-		// TODO: Create a afterRelease event hook or put that deep in the model
-		$.publish(Events.FRAMESHEET_UPDATED);   
-	};
-
 })();
