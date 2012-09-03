@@ -127,27 +127,39 @@ ul, li {
   z-index: 1;
 }
 
+.canvas-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10;
+}
+
 .drawing-canvas-container {
   float: left;
 }
 
 .tool-paint-bucket .drawing-canvas-container:hover {
-  cursor: url(../img/tools/paint-bucket.png) 18 17, pointer;
+  cursor: url(../img/tools/cursors/paint-bucket.png) 18 17, pointer;
 }
 
 .tool-pen .drawing-canvas-container:hover {
-  cursor: url(../img/tools/pen.png) 7 21, pointer;
+  cursor: url(../img/tools/cursors/pen.png) 7 21, pointer;
 }
 
 .tool-eraser .drawing-canvas-container:hover {
-  cursor: url(../img/tools/eraser.png) 5 21, pointer;
+  cursor: url(../img/tools/cursors/eraser.png) 5 21, pointer;
 }
+
+.tool-stroke .drawing-canvas-container:hover {
+  cursor: url(../img/tools/cursors/pen.png) 5 21, pointer;
+}
+
 
 /** 
  * Tool section:
  */
 
-#palette li {
+.palette .palette-color {
   display : inline-block;
   height : 20px;
   width : 20px;
@@ -185,15 +197,19 @@ ul, li {
 }
 
 .tool-icon.tool-pen {
-  background: #fff url(../img/tools/pen.png) 3px 3px no-repeat;
+  background: #fff url(../img/tools/icons/pen.png) 3px 3px no-repeat;
 }
 
 .tool-icon.tool-paint-bucket {
-  background: #fff url(../img/tools/paint-bucket.png) 3px 3px no-repeat;
+  background: #fff url(../img/tools/icons/paint-bucket.png) 3px 3px no-repeat;
 }
 
 .tool-icon.tool-eraser {
-  background: #fff url(../img/tools/eraser.png) 3px 3px no-repeat;
+  background: #fff url(../img/tools/icons/eraser.png) 3px 3px no-repeat;
+}
+
+.tool-icon.tool-stroke {
+  background: #fff url(../img/tools/icons/stroke.png) 3px 3px no-repeat;
 }
 
 #preview-fps {

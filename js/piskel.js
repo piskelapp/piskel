@@ -204,7 +204,8 @@ $.namespace("pskl");
 
     addColorToPalette : function (color) {
       if (color && color != Constants.TRANSPARENT_COLOR && paletteColors.indexOf(color) == -1) {
-        var colorEl = document.createElement("li");
+        var colorEl = document.createElement("li");    
+        colorEl.className = "palette-color";
         colorEl.setAttribute("data-color", color);
         colorEl.setAttribute("title", color);
         colorEl.style.background = color;
@@ -379,11 +380,14 @@ $.namespace("pskl");
         $.publish(Events.CANVAS_RIGHT_CLICKED);
       }
       var spriteCoordinate = this.getSpriteCoordinate(event);
-      currentToolBehavior.applyToolOnFrameAt(
-          spriteCoordinate.col, spriteCoordinate.row, currentFrame, penColor);
-      currentToolBehavior.applyToolOnCanvasAt(
-          spriteCoordinate.col, spriteCoordinate.row, drawingAreaCanvas, currentFrame, penColor, drawingCanvasDpi);
-
+      currentToolBehavior.applyToolAt(
+          spriteCoordinate.col,
+          spriteCoordinate.row,
+          currentFrame,
+          penColor,
+          drawingAreaCanvas,
+          drawingCanvasDpi);
+     
       piskel.persistToLocalStorageRequest();
     },
 
@@ -391,12 +395,18 @@ $.namespace("pskl");
 
       //this.updateCursorInfo(event);
       if (isClicked) {
-        var spriteCoordinate = this.getSpriteCoordinate(event)
-        currentToolBehavior.applyToolOnFrameAt(
-            spriteCoordinate.col, spriteCoordinate.row, currentFrame, penColor);
-        currentToolBehavior.applyToolOnCanvasAt(
-            spriteCoordinate.col, spriteCoordinate.row, drawingAreaCanvas, currentFrame, penColor, drawingCanvasDpi);
-
+        var spriteCoordinate = this.getSpriteCoordinate(event);
+        currentToolBehavior.moveToolAt(
+            spriteCoordinate.col,
+            spriteCoordinate.row,
+            currentFrame,
+            penColor,
+            drawingAreaCanvas,
+            drawingCanvasDpi);
+        
+        // TODO(vincz): Find a way to move that to the model instead of being at the interaction level.
+        // Eg when drawing, it may make sense to have it here. However for a non drawing tool,
+        // you don't need to draw anything when mousemoving and you request useless localStorage.
         piskel.persistToLocalStorageRequest();
       }
     },
@@ -407,15 +417,23 @@ $.namespace("pskl");
         // the user was probably drawing on the canvas.
         // Note: The mousemove movement (and the mouseup) may end up outside
         // of the drawing canvas.
+        // TODO: Remove that when we have the centralized redraw loop
         this.createPreviews();
       }
+
       if(isRightClicked) {
         $.publish(Events.CANVAS_RIGHT_CLICK_RELEASED);
       }
       isClicked = false;
       isRightClicked = false;
-      var spriteCoordinate = this.getSpriteCoordinate(event)
-      currentToolBehavior.releaseToolAt(spriteCoordinate.col, spriteCoordinate.row, penColor);
+      var spriteCoordinate = this.getSpriteCoordinate(event);
+      currentToolBehavior.releaseToolAt(
+          spriteCoordinate.col,
+          spriteCoordinate.row,
+          currentFrame,
+          penColor,
+          drawingAreaCanvas,
+          drawingCanvasDpi);
     },
 
     // TODO(vincz/julz): Refactor to make this disappear in a big event-driven redraw loop 
