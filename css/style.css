@@ -159,11 +159,42 @@ ul, li {
  * Tool section:
  */
 
+ .color-tool {
+  
+ }
+
 .palette .palette-color {
+  cursor: pointer;
   display : inline-block;
   height : 20px;
   width : 20px;
   margin : 5px;
+}
+
+.palette .palette-color.transparent-color {
+  background-color: white;
+  height : 16px;
+  width : 16px;
+  border: 2px solid #000;
+
+  background-image: -webkit-gradient(
+    linear,
+    left top,
+    right bottom,
+    color-stop(0, #fff),
+    color-stop(0.45, #fff),
+    color-stop(0.5, #ff0000),
+    color-stop(0.55, #fff),
+    color-stop(1, #fff)
+  );
+  background-image: -moz-linear-gradient(
+      left top,
+      #fff 0%,
+      #fff 45%,
+      #f00 50%,
+      #fff 55%,
+      #fff 100%
+  );
 }
 
 .tools-container {

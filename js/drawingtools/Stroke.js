@@ -53,7 +53,17 @@
 			0, 0, this.canvasOverlay.width, this.canvasOverlay.height);
 		
 		// Drawing current stroke:
-		for(var i = 0; i< strokePoints.length; i++) {			
+		for(var i = 0; i< strokePoints.length; i++) {
+
+			if(color == Constants.TRANSPARENT_COLOR) {
+				// When mousemoving the stroke tool, we draw in the canvas overlay above the drawing canvas.
+				// If the stroke color is transparent, we won't be
+				// able to see it during the movement.
+				// We set it to a semi-opaque white during the tool mousemove allowing to see colors below the stroke.
+				// When the stroke tool will be released, It will draw a transparent stroke, 
+				// eg deleting the equivalent of a stroke.		
+				color = "rgba(255, 255, 255, 0.6)";
+			}			
 			this.drawPixelInCanvas(strokePoints[i].col, strokePoints[i].row, this.canvasOverlay, color, dpi);
 		}
 	};
