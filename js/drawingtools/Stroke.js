@@ -62,7 +62,7 @@
 				// We set it to a semi-opaque white during the tool mousemove allowing to see colors below the stroke.
 				// When the stroke tool will be released, It will draw a transparent stroke, 
 				// eg deleting the equivalent of a stroke.		
-				color = "rgba(255, 255, 255, 0.6)";
+				color = Constants.SELECTION_TRANSPARENT_COLOR;
 			}			
 			this.drawPixelInCanvas(strokePoints[i].col, strokePoints[i].row, this.canvasOverlay, color, dpi);
 		}
@@ -96,10 +96,7 @@
 		}
 
 		// For now, we are done with the stroke tool and don't need an overlay anymore:
-		this.removeCanvasOverlays();
-
-		// TODO: Create a afterRelease event hook or out that deep in the model
-		$.publish(Events.FRAMESHEET_UPDATED);     
+		this.removeCanvasOverlays();   
 	};
 
 })();
