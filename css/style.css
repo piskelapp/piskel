@@ -265,6 +265,7 @@ ul, li {
     left: 40%;
     background-color: #F9EDBE;
     padding: 7px 22px;
+    padding-right: 42px;
     border-top-left-radius: 7px;
     border-top-right-radius: 7px;
     font-family: ‘Arial Black’, Gadget, sans-serif;
@@ -274,6 +275,20 @@ ul, li {
     font-weight: bold;
     font-size: 14px; 
     z-index: 10000;
+}
+
+.user-message .close {
+  position: absolute;
+  top: 3px;
+  right: 6px;
+  color: gray;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.user-message .close:hover {
+  color: black;
 }
 
 /* Force apparition of scrollbars on leopard */

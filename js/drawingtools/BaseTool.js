@@ -21,8 +21,8 @@
 			context.clearRect(col * dpi, row * dpi, dpi, dpi);   
 		} 
 		else {
-			// TODO(vincz): Remove this global access to piskel when Palette component is created.
-			piskel.addColorToPalette(color);
+			// TODO(vincz): Found a better design to update the palette, it's called too frequently.
+			$.publish(Events.COLOR_USED, [color]);
 			context.fillStyle = color;
 			context.fillRect(col * dpi, row * dpi, dpi, dpi);
 		}

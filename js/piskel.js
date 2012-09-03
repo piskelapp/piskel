@@ -5,11 +5,11 @@
 $.namespace("pskl");
 
 (function () {
-  var frameSheet,
 
-      // Constants:
-      DEFAULT_PEN_COLOR = '#000000',
-      PISKEL_SERVICE_URL = 'http://2.piskel-app.appspot.com',
+  /**
+   * FrameSheetModel instance.
+   */
+  var frameSheet,
 
       // Temporary zoom implementation to easily get bigger canvases to
       // see how good perform critical algorithms on big canvas.
@@ -33,15 +33,13 @@ $.namespace("pskl");
       drawingAreaContainer,
       drawingAreaCanvas,
       previewCanvas,
-      paletteEl,
-
+      
       // States:
       isClicked = false, 
       isRightClicked = false, 
       activeFrameIndex = -1, 
       animIndex = 0,
-      penColor = DEFAULT_PEN_COLOR,
-      paletteColors = [],
+      penColor = Constants.DEFAULT_PEN_COLOR,
       currentFrame = null;
       currentToolBehavior = null,
       previousMousemoveTime = 0,
@@ -53,25 +51,29 @@ $.namespace("pskl");
         } else {
           return "#" + color;
         }
-      },
+      };
 
-      // setTimeout/setInterval references:
-      localStorageThrottler = null
-      ;
-
-
+  /**
+   * Main application controller
+   */
   var piskel = {
+
     init : function () {
-      frameSheet = FrameSheetModel.getInstance(framePixelWidth, framePixelHeight);
+      frameSheet = pskl.FrameSheetModel.getInstance(framePixelWidth, framePixelHeight);
       frameSheet.addEmptyFrame();
       this.setActiveFrame(0);
       
+      pskl.NotificationService.init();
+      pskl.LocalStorageService.init(frameSheet);
+
+      // TODO: Add comments 
       var frameId = this.getFrameIdFromUrl();
       if (frameId) {
-        this.displayMessage("Loading animation with id : [" + frameId + "]");
+        $.publish(Events.SHOW_NOTIFICATION, [{"content": "Loading animation with id : [" + frameId + "]"}]);
         this.loadFramesheetFromService(frameId);
       } else {
         this.finishInit();
+        pskl.LocalStorageService.displayRestoreNotification();
       }
     },
 
@@ -82,15 +84,22 @@ $.namespace("pskl");
         currentToolBehavior = toolBehavior;
       });
 
-      this.initPalette();
-      this.initDrawingArea();
-      this.initPreviewSlideshow();
-      this.initAnimationPreview();
-      this.initColorPicker();
-      this.initLocalStorageBackup();
-      pskl.ToolSelector.init();
+      $.subscribe(Events.COLOR_SELECTED, function(evt, color) {
+        console.log("Color selected: ", color);
+        penColor = color;
+      });
 
+      $.subscribe(Events.REFRESH, function() {
+        piskel.setActiveFrameAndRedraw(0);
+      });
+
+      // TODO: Move this into their service or behavior files:
+      this.initDrawingArea();
+      this.initPreviewSlideshow(); 
+      this.initAnimationPreview();  
       this.startAnimation();
+      
+      pskl.ToolSelector.init();
     },
 
     getFrameIdFromUrl : function() {
@@ -102,71 +111,21 @@ $.namespace("pskl");
 
     loadFramesheetFromService : function (frameId) {
       var xhr = new XMLHttpRequest();
-      xhr.open('GET', PISKEL_SERVICE_URL + '/get?l=' + frameId, true);
+      xhr.open('GET', Constants.PISKEL_SERVICE_URL + '/get?l=' + frameId, true);
       xhr.responseType = 'text';
 
       xhr.onload = function(e) {
         frameSheet.deserialize(this.responseText);
-        piskel.removeMessage();
+        $.publish(Events.HIDE_NOTIFICATION);
         piskel.finishInit();
       };
 
       xhr.onerror = function () {
-        piskel.removeMessage();
+        $.publish(Events.HIDE_NOTIFICATION);
         piskel.finishInit();
       };
 
       xhr.send();
-    },
-
-    initLocalStorageBackup: function() {
-      if(window.localStorage && window.localStorage['snapShot']) {
-        var reloadLink = "<a href='#' onclick='piskel.restoreFromLocalStorage()'>reload</a>";
-        var discardLink = "<a href='#' onclick='piskel.cleanLocalStorage()'>discard</a>";
-        this.displayMessage("Non saved version found. " + reloadLink + " or " + discardLink);
-      }
-    },
-
-    displayMessage : function (content) {
-      var message = document.createElement('div');
-      message.id = "user-message";
-      message.className = "user-message";
-      message.innerHTML = content;
-      message.onclick = this.removeMessage;
-      document.body.appendChild(message);
-    },
-
-    removeMessage : function () {
-      var message = $("#user-message");
-      if (message.length) {
-        message.remove();
-      }
-    },
-
-    persistToLocalStorageRequest: function() {
-      // Persist to localStorage when drawing. We throttle localStorage accesses
-      // for high frequency drawing (eg mousemove).
-      if(localStorageThrottler != null) {
-          window.clearTimeout(localStorageThrottler);
-      }
-      localStorageThrottler = window.setTimeout(function() {
-        piskel.persistToLocalStorage();
-        localStorageThrottler = null;
-      }, 1000);
-    },
-
-    persistToLocalStorage: function() {
-      console.log('persited')
-      window.localStorage['snapShot'] = frameSheet.serialize();
-    },
-
-    restoreFromLocalStorage: function() {
-      frameSheet.deserialize(window.localStorage['snapShot']);
-      this.setActiveFrameAndRedraw(0);
-    },
-
-    cleanLocalStorage: function() {
-      delete window.localStorage['snapShot'];
     },
 
     setActiveFrame: function(index) {
@@ -192,33 +151,6 @@ $.namespace("pskl");
         throw "Bad active frane initialization."
       }
       return activeFrameIndex;
-    },
-
-    initColorPicker: function() {
-      this.colorPicker = $('#color-picker');
-      this.colorPicker.val(DEFAULT_PEN_COLOR);
-      this.colorPicker.change(this.onPickerChange.bind(this));
-    },
-
-    onPickerChange : function(evt) {
-        var inputPicker = $(evt.target);
-        penColor = _normalizeColor(inputPicker.val());
-    },
-
-    initPalette : function (color) {
-      paletteEl = $('#palette')[0];
-    },
-
-    addColorToPalette : function (color) {
-      if (color && color != Constants.TRANSPARENT_COLOR && paletteColors.indexOf(color) == -1) {
-        var colorEl = document.createElement("li");    
-        colorEl.className = "palette-color";
-        colorEl.setAttribute("data-color", color);
-        colorEl.setAttribute("title", color);
-        colorEl.style.background = color;
-        paletteEl.appendChild(colorEl);
-        paletteColors.push(color);
-      }
     },
 
     initDrawingArea : function() {
@@ -394,8 +326,8 @@ $.namespace("pskl");
           penColor,
           drawingAreaCanvas,
           drawingCanvasDpi);
-     
-      piskel.persistToLocalStorageRequest();
+        
+      $.publish(Events.LOCALSTORAGE_REQUEST);
     },
 
     onCanvasMousemove : function (event) {
@@ -417,7 +349,7 @@ $.namespace("pskl");
           // TODO(vincz): Find a way to move that to the model instead of being at the interaction level.
           // Eg when drawing, it may make sense to have it here. However for a non drawing tool,
           // you don't need to draw anything when mousemoving and you request useless localStorage.
-          piskel.persistToLocalStorageRequest();
+          $.publish(Events.LOCALSTORAGE_REQUEST);
         }
         previousMousemoveTime = currentTime;
       }
@@ -477,28 +409,6 @@ $.namespace("pskl");
       return false;
     },
 
-    onPaletteClick : function (event) {
-      var color = $(event.target).data("color");
-      var colorPicker = $('#color-picker');
-      if (color == "TRANSPARENT") {
-        // We can set the current palette color to transparent.
-        // You can then combine this transparent color with an advanced
-        // tool for customized deletions. 
-        // Eg: bucket + transparent: Delete a colored area
-        //     Stroke + transparent: hollow out the equivalent of a stroke
-        penColor = Constants.TRANSPARENT_COLOR;
-        
-        // The colorpicker can't be set to a transparent state.
-        // We set its background to white and insert the
-        // string "TRANSPARENT" to mimic this state:
-        colorPicker[0].color.fromString("#fff");
-        colorPicker.val("TRANSPARENT");
-      } else if (null !== color) {
-        colorPicker[0].color.fromString(color);
-        penColor = color;
-      }
-    },
-    
     getRelativeCoordinates : function (x, y) {
       var canvasRect = drawingAreaCanvas.getBoundingClientRect();
       return {
@@ -518,11 +428,12 @@ $.namespace("pskl");
 
     // TODO(julz): Create package ?
     storeSheet : function (event) {
+      // TODO Refactor using jquery ?
       var xhr = new XMLHttpRequest();
       var formData = new FormData();
       formData.append('framesheet_content', frameSheet.serialize());
       formData.append('fps_speed', $('#preview-fps').val());
-      xhr.open('POST', PISKEL_SERVICE_URL + "/store", true);
+      xhr.open('POST', Constants.PISKEL_SERVICE_URL + "/store", true);
       xhr.onload = function(e) {
         if (this.status == 200) {
           var baseUrl = window.location.href.replace(window.location.search, "");
@@ -541,4 +452,4 @@ $.namespace("pskl");
   window.piskel = piskel;
   piskel.init();
 
-})(function(id){return document.getElementById(id)});
+})();
