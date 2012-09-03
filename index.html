@@ -43,7 +43,7 @@
       <div class="color-tool">
         <input id="color-picker" class="color {hash:true}" type="text" value=""/>
         
-        <ul id="palette" class="palette" onclick="piskel.onPaletteClick(event)">
+        <ul id="palette" class="palette">
           <span class="palette-color transparent-color" data-color="TRANSPARENT" title="Transparent"></span>
         </ul>
       </div>
@@ -75,7 +75,9 @@
   <script src="js/lib/jsColor_1_4_0/jscolor.js"></script>
 
   <!-- Application libraries-->
-  <script src="js/frameSheetModel.js"></script>
+  <script src="js/FrameSheetModel.js"></script>
+  <script src="js/LocalStorageService.js"></script>
+  <script src="js/Notification.js"></script>
   <script src="js/drawingtools/BaseTool.js"></script>
   <script src="js/drawingtools/SimplePen.js"></script>
   <script src="js/drawingtools/Eraser.js"></script>

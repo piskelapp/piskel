@@ -21,12 +21,18 @@
 		var targetColor = pskl.utils.normalizeColor(frame[col][row]);
 		//this.recursiveFloodFill_(frame, col, row, targetColor, color);
 		this.queueLinearFloodFill_(frame, col, row, targetColor, color);
-
+		$.publish(Events.FRAMESHEET_UPDATED);
+        
 		// Draw in canvas:
 		// TODO: Remove that when we have the centralized redraw loop
 		this.drawFrameInCanvas(frame, canvas, dpi);
 	};
 
+	ns.PaintBucket.prototype.releaseToolAt = function(col, row, frame, color, canvas, dpi) {
+		// TODO: Create a afterRelease event hook or put that deep in the model
+		$.publish(Events.FRAMESHEET_UPDATED);   
+	};
+	
 	/**
 	 *  Flood-fill (node, target-color, replacement-color):
 	 *	 1. Set Q to the empty queue.

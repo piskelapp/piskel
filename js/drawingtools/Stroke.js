@@ -97,6 +97,9 @@
 
 		// For now, we are done with the stroke tool and don't need an overlay anymore:
 		this.removeCanvasOverlays();
+
+		// TODO: Create a afterRelease event hook or out that deep in the model
+		$.publish(Events.FRAMESHEET_UPDATED);     
 	};
 
 })();

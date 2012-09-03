@@ -81,9 +81,12 @@
 			// TODO: Remove that when we have the centralized redraw loop
 			this.drawPixelInCanvas(strokePoints[i].col, strokePoints[i].row, canvas, color, dpi);		
 		}
-
+		
 		// For now, we are done with the stroke tool and don't need an overlay anymore:
 		this.removeCanvasOverlays();
+
+		// TODO: Create a afterRelease event hook or put that deep in the model
+		$.publish(Events.FRAMESHEET_UPDATED);   
 	};
 
 	/**

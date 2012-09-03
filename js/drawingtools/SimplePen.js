@@ -52,4 +52,9 @@
 		this.previousCol = col;
 		this.previousRow = row;
 	};
+
+	ns.SimplePen.prototype.releaseToolAt = function(col, row, frame, color, canvas, dpi) {
+		// TODO: Create a afterRelease event hook or out that deep in the model
+		$.publish(Events.FRAMESHEET_UPDATED);   
+	};
 })();
