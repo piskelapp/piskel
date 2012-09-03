@@ -18,7 +18,7 @@
 	ns.PaintBucket.prototype.applyToolAt = function(col, row, frame, color, canvas, dpi) {
 
 		// Change model:
-		var targetColor = pskl.utils.normalizeColor(frame[col][row]);
+		var targetColor = frame[col][row];
 		//this.recursiveFloodFill_(frame, col, row, targetColor, color);
 		this.queueLinearFloodFill_(frame, col, row, targetColor, color);
 		

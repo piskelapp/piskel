@@ -22,9 +22,6 @@
 		
 		this.previousCol = col;
 		this.previousRow = row;
-
-		// Change model:
-		var color = pskl.utils.normalizeColor(color);
 	    if (color != frame[col][row]) {
 	        frame[col][row] = color;
 	    }

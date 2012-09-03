@@ -42,16 +42,7 @@ $.namespace("pskl");
       penColor = Constants.DEFAULT_PEN_COLOR,
       currentFrame = null;
       currentToolBehavior = null,
-      previousMousemoveTime = 0,
-
-      //utility
-      _normalizeColor = function (color) {
-        if(color == undefined || color == Constants.TRANSPARENT_COLOR || color.indexOf("#") == 0) {
-          return color;
-        } else {
-          return "#" + color;
-        }
-      };
+      previousMousemoveTime = 0;
 
   /**
    * Main application controller
@@ -391,7 +382,7 @@ $.namespace("pskl");
       var color;
       for(var col = 0, num_col = frame.length; col < num_col; col++) {
         for(var row = 0, num_row = frame[col].length; row < num_row; row++) {
-          color = _normalizeColor(frame[col][row]);
+          color = frame[col][row];
           this.drawPixelInCanvas(row, col, color, canvasElement, dpi);
         }
       }

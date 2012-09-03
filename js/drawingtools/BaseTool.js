@@ -35,7 +35,7 @@
 	  var color;
 	  for(var col = 0, num_col = frame.length; col < num_col; col++) {
 	    for(var row = 0, num_row = frame[col].length; row < num_row; row++) {
-	      color = pskl.utils.normalizeColor(frame[col][row]);
+	      color = frame[col][row];
 	      this.drawPixelInCanvas(col, row,canvas, color, dpi);
 	    }
 	  }
