@@ -57,6 +57,20 @@ pskl.FrameSheetModel = (function() {
 			return pixels;
 		},
 
+		getUsedColors: function() {
+			var colors = {};
+			for (var frameIndex=0; frameIndex < frames.length; frameIndex++) {
+				var currentFrame = frames[frameIndex];
+				for (var i = 0 ; i < currentFrame.length ; i++) {
+					var line = currentFrame[i];
+					for (var j = 0 ; j < line.length ; j++) {
+						colors[line[j]] = line[j];
+					}
+				}
+			}
+			return colors;
+		},
+
 		// Could be used to pass around model using long GET param (good enough for simple models) and 
 		// do some temporary locastorage
 		serialize: function() {
@@ -71,6 +85,7 @@ pskl.FrameSheetModel = (function() {
 		deserialize : function (serialized) {
 			try {
 				frames = JSON.parse(serialized);
+				$.publish(Events.FRAMESHEET_RESET);
 			} catch (e) {
 				throw "Could not load serialized framesheet." + e.message
 			}	
