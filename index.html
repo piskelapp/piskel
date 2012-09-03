@@ -7,7 +7,7 @@
   <title>Piskel</title>
   <meta name="description" content="">
   <meta name="author" content="Julian Descottes">
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="css/style.css">
   
@@ -15,24 +15,36 @@
 </head>
 <body>
   <div class='debug left-nav'>
+
+    <!-- Frame actions: -->
     <button onclick="piskel.storeSheet()" class="action-button">Save Framesheet</button>
     <button id='add-frame-button' class="action-button">
       Add a Frame
     </button>
-    <ul id="preview-list">
-    </ul>
+
+    <!-- List of frames: -->
+    <ul id="preview-list"></ul>
   </div>
   <div class='main-panel'>
+
+    <!-- Drawing area: -->
     <div id="drawing-canvas-container" class="drawing-canvas-container canvas-container">
       <div class="canvas-background"></div>
     </div>
+
+    <!-- Tool section: -->
     <div id="tools-container" class="tools-container">
-      <div class="tool-icon tool-pen" data-tool-id="tool-pen"></div>
-      <div class="tool-icon tool-eraser" data-tool-id="tool-eraser"></div>
-      <div class="tool-icon tool-paint-bucket" data-tool-id="tool-paint-bucket"></div>
+      <div class="tool-icon tool-pen" data-tool-id="tool-pen" title="Pen tool"></div>
+      <div class="tool-icon tool-eraser" data-tool-id="tool-eraser" title="Eraser tool"></div>
+      <div class="tool-icon tool-paint-bucket" data-tool-id="tool-paint-bucket" title="Bucket tool"></div>
+      <div class="tool-icon tool-stroke" data-tool-id="tool-stroke" title="Stroke tool"></div>
+      
       <input id="color-picker" class="color {hash:true}" type="text" value=""/>
-      <ul id="palette" onclick="piskel.onPaletteClick(event)"></ul>
+      
+      <ul id="palette" class="palette" onclick="piskel.onPaletteClick(event)"></ul>
     </div>
+
+    <!-- Animation preview: -->
     <div class='preview-container'>
       <div id='preview-canvas-container' class="canvas-container">
         <div class="canvas-background"></div>
@@ -45,21 +57,28 @@
   </div>
   <div id="cursorInfo"></div>
   
+  <!-- Core libraries: -->
   <script src="js/lib/jquery-1.8.0.js"></script>
   <script src="js/lib/pubsub.js"></script> 
   
+  <!-- Application wide configuration -->
   <script src="js/Constants.js"></script>
   <script src="js/Events.js"></script>
+  
+  <!-- Libraries -->
   <script src="js/utils.js"></script>
-
   <script src="js/lib/jsColor_1_4_0/jscolor.js"></script>
 
+  <!-- Application libraries-->
   <script src="js/frameSheetModel.js"></script>
   <script src="js/drawingtools/BaseTool.js"></script>
   <script src="js/drawingtools/SimplePen.js"></script>
   <script src="js/drawingtools/Eraser.js"></script>
+  <script src="js/drawingtools/Stroke.js"></script>
   <script src="js/drawingtools/PaintBucket.js"></script>
   <script src="js/ToolSelector.js"></script>
+
+  <!-- Application controller and initialization -->
   <script src="js/piskel.js"></script>
 </body>
 </html>
