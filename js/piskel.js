@@ -11,18 +11,23 @@ $.namespace("pskl");
       DEFAULT_PEN_COLOR = '#000000',
       PISKEL_SERVICE_URL = 'http://2.piskel-app.appspot.com',
 
+      // Temporary zoom implementation to easily get bigger canvases to
+      // see how good perform critical algorithms on big canvas.
+      zoom = 1,
+
       // Configuration:
       // Canvas size in pixel size (not dpi related)
-      framePixelWidth = 32, 
-      framePixelHeight = 32,
+      framePixelWidth = 32 * zoom, 
+      framePixelHeight = 32 * zoom,
+
 
       // Scaling factors for a given frameSheet rendering:
       // Main drawing area:
-      drawingCanvasDpi = 20,
+      drawingCanvasDpi = Math.ceil(20/ zoom),
       // Canvas previous in the slideshow:
-      previewTileCanvasDpi = 4,
+      previewTileCanvasDpi = Math.ceil(4 / zoom),
       // Ainmated canvas preview:
-      previewAnimationCanvasDpi = 8,
+      previewAnimationCanvasDpi = Math.ceil(8 / zoom),
 
       // DOM references:
       drawingAreaContainer,
@@ -39,6 +44,7 @@ $.namespace("pskl");
       paletteColors = [],
       currentFrame = null;
       currentToolBehavior = null,
+      previousMousemoveTime = 0,
 
       //utility
       _normalizeColor = function (color) {
@@ -131,21 +137,22 @@ $.namespace("pskl");
     },
 
     removeMessage : function () {
-      var message = $("user-message");
-      if (message) {
-        message.parentNode.removeChild(message);  
+      var message = $("#user-message");
+      if (message.length) {
+        message.remove();
       }
     },
 
     persistToLocalStorageRequest: function() {
       // Persist to localStorage when drawing. We throttle localStorage accesses
       // for high frequency drawing (eg mousemove).
-      if(localStorageThrottler == null) {
-          localStorageThrottler = window.setTimeout(function() {
-            piskel.persistToLocalStorage();
-            localStorageThrottler = null;
-          }, 1000);
+      if(localStorageThrottler != null) {
+          window.clearTimeout(localStorageThrottler);
       }
+      localStorageThrottler = window.setTimeout(function() {
+        piskel.persistToLocalStorage();
+        localStorageThrottler = null;
+      }, 1000);
     },
 
     persistToLocalStorage: function() {
@@ -394,20 +401,25 @@ $.namespace("pskl");
     onCanvasMousemove : function (event) {
 
       //this.updateCursorInfo(event);
-      if (isClicked) {
-        var spriteCoordinate = this.getSpriteCoordinate(event);
-        currentToolBehavior.moveToolAt(
-            spriteCoordinate.col,
-            spriteCoordinate.row,
-            currentFrame,
-            penColor,
-            drawingAreaCanvas,
-            drawingCanvasDpi);
-        
-        // TODO(vincz): Find a way to move that to the model instead of being at the interaction level.
-        // Eg when drawing, it may make sense to have it here. However for a non drawing tool,
-        // you don't need to draw anything when mousemoving and you request useless localStorage.
-        piskel.persistToLocalStorageRequest();
+      var currentTime = new Date().getTime();
+      // Throttling of the mousemove event:
+      if ((currentTime - previousMousemoveTime) > 40 ) {
+        if (isClicked) {
+          var spriteCoordinate = this.getSpriteCoordinate(event);
+          currentToolBehavior.moveToolAt(
+              spriteCoordinate.col,
+              spriteCoordinate.row,
+              currentFrame,
+              penColor,
+              drawingAreaCanvas,
+              drawingCanvasDpi);
+          
+          // TODO(vincz): Find a way to move that to the model instead of being at the interaction level.
+          // Eg when drawing, it may make sense to have it here. However for a non drawing tool,
+          // you don't need to draw anything when mousemoving and you request useless localStorage.
+          piskel.persistToLocalStorageRequest();
+        }
+        previousMousemoveTime = currentTime;
       }
     },
     
