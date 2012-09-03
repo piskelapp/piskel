@@ -62,15 +62,15 @@ $.namespace("pskl");
       frameSheet = pskl.FrameSheetModel.getInstance(framePixelWidth, framePixelHeight);
       frameSheet.addEmptyFrame();
       this.setActiveFrame(0);
-      
+          
       pskl.NotificationService.init();
       pskl.LocalStorageService.init(frameSheet);
 
       // TODO: Add comments 
-      var frameId = this.getFrameIdFromUrl();
-      if (frameId) {
-        $.publish(Events.SHOW_NOTIFICATION, [{"content": "Loading animation with id : [" + frameId + "]"}]);
-        this.loadFramesheetFromService(frameId);
+      var framesheetId = this.getFramesheetIdFromUrl();
+      if (framesheetId) {
+        $.publish(Events.SHOW_NOTIFICATION, [{"content": "Loading animation with id : [" + framesheetId + "]"}]);
+        this.loadFramesheetFromService(framesheetId);
       } else {
         this.finishInit();
         pskl.LocalStorageService.displayRestoreNotification();
@@ -102,8 +102,9 @@ $.namespace("pskl");
       pskl.ToolSelector.init();
     },
 
-    getFrameIdFromUrl : function() {
+    getFramesheetIdFromUrl : function() {
       var href = window.location.href;
+      // TODO: Change frameId to framesheetId on the backend
       if (href.indexOf('frameId=') != -1) {
         return href.substring(href.indexOf('frameId=')+8);
       }
@@ -111,18 +112,22 @@ $.namespace("pskl");
 
     loadFramesheetFromService : function (frameId) {
       var xhr = new XMLHttpRequest();
+      // TODO: Change frameId to framesheetId on the backend
       xhr.open('GET', Constants.PISKEL_SERVICE_URL + '/get?l=' + frameId, true);
       xhr.responseType = 'text';
 
       xhr.onload = function(e) {
         frameSheet.deserialize(this.responseText);
+        piskel.setActiveFrame(0);  
         $.publish(Events.HIDE_NOTIFICATION);
         piskel.finishInit();
+        piskel.setActiveFrameAndRedraw(0);  
       };
 
       xhr.onerror = function () {
         $.publish(Events.HIDE_NOTIFICATION);
         piskel.finishInit();
+        piskel.setActiveFrameAndRedraw(0);
       };
 
       xhr.send();
@@ -136,12 +141,13 @@ $.namespace("pskl");
     setActiveFrameAndRedraw: function(index) {
       this.setActiveFrame(index);
       
+      // When redraw engine is refactored, remove the following crap and
+      // trigger an event instead:
+
       // Update drawing canvas:
-      this.drawFrameToCanvas(currentFrame, drawingAreaCanvas, drawingCanvasDpi);
-      
+      this.drawFrameToCanvas(currentFrame, drawingAreaCanvas, drawingCanvasDpi);   
       // Update slideshow:
       this.createPreviews();
-
       // Update animation preview:
       animIndex = 0;
     },

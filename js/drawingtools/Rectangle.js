@@ -49,7 +49,7 @@
 		for(var i = 0; i< strokePoints.length; i++) {
 
 			if(color == Constants.TRANSPARENT_COLOR) {
-				color = "rgba(255, 255, 255, 0.6)";
+				color = Constants.SELECTION_TRANSPARENT_COLOR;
 			}			
 			this.drawPixelInCanvas(strokePoints[i].col, strokePoints[i].row, this.canvasOverlay, color, dpi);
 		}
@@ -84,9 +84,6 @@
 		
 		// For now, we are done with the stroke tool and don't need an overlay anymore:
 		this.removeCanvasOverlays();
-
-		// TODO: Create a afterRelease event hook or put that deep in the model
-		$.publish(Events.FRAMESHEET_UPDATED);   
 	};
 
 	/**

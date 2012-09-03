@@ -9,14 +9,21 @@ pskl.FrameSheetModel = (function() {
     var height;
 
     /**
+     * Create empty frame of dimension [width * height] with Constants.TRANSPARENT_COLOR
+     * as a default value.
+     * 
      * @private
      */
     var createEmptyFrame_ = function() {
-    	var emptyFrame = new Array(width);
+    	var emptyFrame = []; //new Array(width);
 		for (var columnIndex=0; columnIndex < width; columnIndex++) {
-			emptyFrame[columnIndex] = new Array(height);
+			var columnArray = [];
+			for(var heightIndex = 0; heightIndex < height; heightIndex++) {
+				columnArray.push(Constants.TRANSPARENT_COLOR);
+			}
+			emptyFrame[columnIndex] = columnArray;
     	}
-        return emptyFrame;
+    	return emptyFrame;
     };
 
     /**
