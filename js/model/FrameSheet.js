@@ -38,7 +38,11 @@
 	// Could be used to pass around model using long GET param (good enough for simple models) and 
 	// do some temporary locastorage
 	ns.FrameSheet.prototype.serialize = function() {
-		throw "FrameSheet.prototype.serialize not implemented"
+		var serializedFrames = [];
+		for (var i = 0 ; i < this.frames.length ; i++) {
+			serializedFrames.push(this.frames[i].serialize());
+		}
+		return '[' + serializedFrames.join(",") + ']';
 		//return JSON.stringify(frames);
 	};
 
@@ -48,13 +52,17 @@
 	 * @param {String} serialized
 	 */
 	ns.FrameSheet.prototype.deserialize = function (serialized) {
-		throw "FrameSheet.prototype.deserialize not implemented"
-		// try {
-		// 	frames = JSON.parse(serialized);
-		// 	$.publish(Events.FRAMESHEET_RESET);
-		// } catch (e) {
-		// 	throw "Could not load serialized framesheet." + e.message
-		// }	
+		try {
+		 	var frameConfigurations = JSON.parse(serialized);
+		 	this.frames = [];
+		 	for (var i = 0 ; i < frameConfigurations.length ; i++) {
+		 		var frameCfg = frameConfigurations[i];
+		 		this.addFrame(new ns.Frame(frameCfg));
+		 	}
+		 	$.publish(Events.FRAMESHEET_RESET);
+		} catch (e) {
+	 		throw "Could not load serialized framesheet : " + e.message
+		}	
 	};
 
 	ns.FrameSheet.prototype.getFrameByIndex = function(index) {

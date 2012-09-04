@@ -9,7 +9,7 @@ $.namespace("pskl");
   /**
    * FrameSheetModel instance.
    */
-  var frameSheet, renderer = null,
+  var frameSheet,
 
       // Temporary zoom implementation to easily get bigger canvases to
       // see how good perform critical algorithms on big canvas.
@@ -52,17 +52,32 @@ $.namespace("pskl");
     init : function () {
       var emptyFrame = pskl.model.Frame.createEmpty(framePixelWidth, framePixelHeight);
 
+      frameSheet = new pskl.model.FrameSheet();
+      frameSheet.addFrame(emptyFrame);
+
       this.drawingController = new pskl.controller.DrawingController(
         emptyFrame,
         $('#drawing-canvas-container')[0], 
         drawingCanvasDpi
       );
 
-      renderer = new pskl.rendering.FrameRenderer();
-
-      frameSheet = new pskl.model.FrameSheet();
-      frameSheet.addFrame(emptyFrame);
       this.setActiveFrame(0);
+
+      this.animationController = new pskl.controller.AnimatedPreviewController(
+        frameSheet,
+        $('#preview-canvas-container')[0], 
+        previewAnimationCanvasDpi
+      );
+
+
+      this.previewsController = new pskl.controller.PreviewFilmController(
+        frameSheet,
+        $('#preview-list')[0], 
+        previewTileCanvasDpi
+      );
+
+      this.animationController.init();
+      this.previewsController.init();
           
       pskl.NotificationService.init();
       pskl.LocalStorageService.init(frameSheet);
@@ -96,9 +111,6 @@ $.namespace("pskl");
 
       // TODO: Move this into their service or behavior files:
       this.initDrawingArea();
-      this.initPreviewSlideshow(); 
-      this.initAnimationPreview();  
-      this.startAnimation();
       
       pskl.ToolSelector.init();
       pskl.Palette.init(frameSheet);
@@ -142,21 +154,19 @@ $.namespace("pskl");
 
     setActiveFrameAndRedraw: function(index) {
       this.setActiveFrame(index);
-      
-      // When redraw engine is refactored, remove the following crap and
-      // trigger an event instead:
+      this.redraw();
+    },
 
+    redraw : function () {
       // Update drawing canvas:
       this.drawingController.renderFrame();
       // Update slideshow:
-      this.createPreviews();
-      // Update animation preview:
-      animIndex = 0;
+      this.previewsController.createPreviews();
     },
 
     getActiveFrameIndex: function() {
       if(-1 == activeFrameIndex) {
-        throw "Bad active frane initialization."
+        throw "Bad active frame initialization."
       }
       return activeFrameIndex;
     },
@@ -171,128 +181,13 @@ $.namespace("pskl");
         drawingAreaContainer.addEventListener('contextmenu', this.onCanvasContextMenu);
     },
 
-    initPreviewSlideshow: function() {
-      var addFrameButton = $('#add-frame-button')[0];
-      addFrameButton.addEventListener('mousedown', function() {
-        frameSheet.addEmptyFrame();
-        piskel.setActiveFrameAndRedraw(frameSheet.getFrameCount() - 1);
-      });
-      this.createPreviews();
-    },
-
-    initAnimationPreview : function() {
-
-      var previewAnimationContainer = $('#preview-canvas-container')[0];
-      previewCanvas = document.createElement('canvas');
-      previewCanvas.className = 'canvas';
-      previewAnimationContainer.setAttribute('style', 
-        'width:' + framePixelWidth * previewAnimationCanvasDpi + 'px; height:' + framePixelHeight * previewAnimationCanvasDpi + 'px;');
-      previewAnimationContainer.appendChild(previewCanvas);
-      previewCanvas.setAttribute('width', framePixelWidth * previewAnimationCanvasDpi);
-      previewCanvas.setAttribute('height', framePixelHeight * previewAnimationCanvasDpi);
-    },
-
-    startAnimation : function () {
-      var scope = this;
-      var animFPSTuner = $("#preview-fps")[0];
-      var animPreviewFPS = parseInt(animFPSTuner.value, 10);
-      var startPreviewRefresh = function() {
-        return setInterval(scope.refreshAnimatedPreview, 1000/animPreviewFPS);
-      };
-      var refreshUpdater = startPreviewRefresh();
-      
-      animFPSTuner.addEventListener('change', function(evt) {
-        window.clearInterval(refreshUpdater);
-        animPreviewFPS = parseInt(animFPSTuner.value, 10);
-        $("#display-fps").html(animPreviewFPS + " fps");
-        refreshUpdater = startPreviewRefresh();
-      });
-    },
-
-    createPreviews : function () {
-      console.log("createPreviews");
-      var container = $('#preview-list')[0], previewTile;
-      container.innerHTML = "";
-      for (var i = 0, l = frameSheet.getFrameCount(); i < l ; i++) {
-        previewTile = this.createPreviewTile(i);
-        container.appendChild(previewTile);
-      }
-    },
-
-    createPreviewTile: function(tileNumber) {
-      var previewTileRoot = document.createElement("li");
-      var classname = "preview-tile";
-
-      if (this.getActiveFrameIndex() == tileNumber) {
-        classname += " selected";
-      }
-      previewTileRoot.className = classname;
-      
-      var canvasContainer = document.createElement("div");
-      canvasContainer.className = "canvas-container";
-      canvasContainer.setAttribute('style', 
-        'width:' + framePixelWidth * previewTileCanvasDpi + 'px; height:' + framePixelHeight * previewTileCanvasDpi + 'px;');
-      
-      var canvasBackground = document.createElement("div");
-      canvasBackground.className = "canvas-background";
-      canvasContainer.appendChild(canvasBackground);
-
-      var canvasPreview = document.createElement("canvas");
-      canvasPreview.className = "canvas tile-view"
-      
-      canvasPreview.setAttribute('width', framePixelWidth * previewTileCanvasDpi);
-      canvasPreview.setAttribute('height', framePixelHeight * previewTileCanvasDpi);     
-
-      previewTileRoot.addEventListener('click', function(evt) {
-        // has not class tile-action:
-        if(!evt.target.classList.contains('tile-action')) {
-          piskel.setActiveFrameAndRedraw(tileNumber);
-        }    
-      });
-
-      var canvasPreviewDuplicateAction = document.createElement("button");
-      canvasPreviewDuplicateAction.className = "tile-action"
-      canvasPreviewDuplicateAction.innerHTML = "dup"
-
-      canvasPreviewDuplicateAction.addEventListener('click', function(evt) {
-        piskel.duplicateFrame(tileNumber);
-      });
-
-      renderer.render(frameSheet.getFrameByIndex(tileNumber), canvasPreview, previewTileCanvasDpi);
-      canvasContainer.appendChild(canvasPreview);
-      previewTileRoot.appendChild(canvasContainer);
-      previewTileRoot.appendChild(canvasPreviewDuplicateAction);
-      
-      if(tileNumber > 0 || frameSheet.getFrameCount() > 1) {
-        var canvasPreviewDeleteAction = document.createElement("button");
-        canvasPreviewDeleteAction.className = "tile-action"
-        canvasPreviewDeleteAction.innerHTML = "del"
-        canvasPreviewDeleteAction.addEventListener('click', function(evt) {
-          piskel.removeFrame(tileNumber);
-        });
-        previewTileRoot.appendChild(canvasPreviewDeleteAction);
-      }
-
-      return previewTileRoot;
-    },
-
-    refreshAnimatedPreview : function () {
-      renderer.render(frameSheet.getFrameByIndex(animIndex), previewCanvas, previewAnimationCanvasDpi);
-      animIndex++;
-      if (animIndex == frameSheet.getFrameCount()) {
-        animIndex = 0;
-      }
-    },
-
     removeFrame: function(frameIndex) {     
       frameSheet.removeFrameByIndex(frameIndex);
-
       this.setActiveFrameAndRedraw(frameIndex - 1);
     },
 
     duplicateFrame: function(frameIndex) {
       frameSheet.duplicateFrameByIndex(frameIndex);
-
       this.setActiveFrameAndRedraw(frameIndex + 1);
     },
 
@@ -343,7 +238,7 @@ $.namespace("pskl");
         // Note: The mousemove movement (and the mouseup) may end up outside
         // of the drawing canvas.
         // TODO: Remove that when we have the centralized redraw loop
-        this.createPreviews();
+        this.previewsController.createPreviews();
       }
 
       if(isRightClicked) {

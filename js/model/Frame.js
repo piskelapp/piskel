@@ -1,5 +1,6 @@
 (function () {
 	var ns = $.namespace("pskl.model");
+	
 	ns.Frame = function (pixels) {
 		this.pixels = pixels;
 	};
@@ -28,6 +29,10 @@
 			}
 		}
 		return clone;
+	};
+
+	ns.Frame.prototype.serialize = function () {
+		return JSON.stringify(this.pixels);
 	};
 
 	ns.Frame.prototype.setPixel = function (col, row, color) {
