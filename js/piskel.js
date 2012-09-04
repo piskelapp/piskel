@@ -450,8 +450,10 @@ $.namespace("pskl");
 
       xhr.send(formData);
 
-      event.stopPropagation();
-      event.preventDefault();
+      if(event) {
+        event.stopPropagation();
+        event.preventDefault();
+      }
       return false;
     }
   };

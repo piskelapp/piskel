@@ -1,0 +1,129 @@
+.tools-container {}
+
+.tools-group {
+    float: left;
+    height: 30px;
+    border-right: 1px solid #ccc;
+    padding: 0 3px;
+}
+
+.tool-icon {
+  float: left;
+  width: 30px;
+  height: 30px;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: 7px 7px;
+}
+
+.tool-icon.tool-save {
+  background-image: url(../img/tools/icons/save.png);
+}
+
+.tool-icon.tool-add-frame {
+  background-image: url(../img/tools/icons/add-frame.png);
+}
+
+.tool-icon.tool-pen {
+  background-image: url(../img/tools/icons/pen.png);
+}
+
+.tool-icon.tool-paint-bucket {
+  background-image: url(../img/tools/icons/paint-bucket.png);
+}
+
+.tool-icon.tool-eraser {
+  background-image: url(../img/tools/icons/eraser.png);
+}
+
+.tool-icon.tool-stroke {
+  background-image: url(../img/tools/icons/stroke.png);
+}
+
+.tool-icon.tool-rectangle {
+  background-image: url(../img/tools/icons/rectangle.png);
+}
+
+/*.tool-icon.tool-palette {
+  background-image: url(../img/tools/icons/color-palette.png);
+}*/
+
+.tool-paint-bucket .drawing-canvas-container:hover {
+  cursor: url(../img/tools/cursors/paint-bucket.png) 18 17, pointer;
+}
+
+.tool-pen .drawing-canvas-container:hover {
+  cursor: url(../img/tools/cursors/pen.png) 7 21, pointer;
+}
+
+.tool-eraser .drawing-canvas-container:hover {
+  cursor: url(../img/tools/cursors/eraser.png) 5 21, pointer;
+}
+
+.tool-stroke .drawing-canvas-container:hover {
+  cursor: url(../img/tools/cursors/pen.png) 5 21, pointer;
+}
+
+.tool-rectangle .drawing-canvas-container:hover {
+  cursor: url(../img/tools/cursors/rectangle.png) 4 21, pointer;
+}
+
+.tool-icon.selected {
+  cursor: auto;
+  background-color: #eee;
+}
+
+.tool-icon:hover {
+  cursor: pointer;
+  background-color: #eee;
+}
+
+.tool-color-picker input {
+  width: 12px; height: 12px;
+  border: 1px solid black;
+  padding: 1px;
+  background: white;
+  margin: 7px 0 0 7px;
+  cursor: pointer;
+}
+
+.tool-palette {
+    width: auto;
+}
+.tool-palette .palette li {
+    float: left;
+}
+
+.palette .palette-color {
+  cursor: pointer;
+  display : inline-block;
+  height : 20px;
+  width : 20px;
+  margin : 5px;
+}
+
+.palette .palette-color.transparent-color {
+  background-color: white;
+  height : 16px;
+  width : 16px;
+  border: 2px solid #000;
+
+  background-image: -webkit-gradient(
+    linear,
+    left top,
+    right bottom,
+    color-stop(0, #fff),
+    color-stop(0.45, #fff),
+    color-stop(0.5, #ff0000),
+    color-stop(0.55, #fff),
+    color-stop(1, #fff)
+  );
+  background-image: -moz-linear-gradient(
+      left top,
+      #fff 0%,
+      #fff 45%,
+      #f00 50%,
+      #fff 55%,
+      #fff 100%
+  );
+}
