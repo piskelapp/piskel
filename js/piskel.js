@@ -9,7 +9,7 @@ $.namespace("pskl");
   /**
    * FrameSheetModel instance.
    */
-  var frameSheet,
+  var frameSheet, renderer = null,
 
       // Temporary zoom implementation to easily get bigger canvases to
       // see how good perform critical algorithms on big canvas.
@@ -50,8 +50,18 @@ $.namespace("pskl");
   var piskel = {
 
     init : function () {
+      var emptyFrame = pskl.rendering.Frame.createEmpty(framePixelWidth, framePixelHeight);
+
+      this.drawingController = new pskl.rendering.DrawingController(
+        emptyFrame,
+        $('#drawing-canvas-container')[0], 
+        drawingCanvasDpi
+      );
+
+      renderer = new pskl.rendering.FrameRenderer();
+
       frameSheet = pskl.FrameSheetModel.getInstance(framePixelWidth, framePixelHeight);
-      frameSheet.addEmptyFrame();
+      frameSheet.addFrame(emptyFrame);
       this.setActiveFrame(0);
           
       pskl.NotificationService.init();
@@ -89,13 +99,6 @@ $.namespace("pskl");
       this.initPreviewSlideshow(); 
       this.initAnimationPreview();  
       this.startAnimation();
-
-      var frame = frameSheet.getFrameByIndex(this.getActiveFrameIndex());
-      this.drawer = new pskl.rendering.DrawingController(
-        frame, 
-        $('#drawing-canvas-container')[0], 
-        drawingCanvasDpi
-      );
       
       pskl.ToolSelector.init();
       pskl.Palette.init(frameSheet);
@@ -134,7 +137,7 @@ $.namespace("pskl");
 
     setActiveFrame: function(index) {
       activeFrameIndex = index;
-      currentFrame = frameSheet.getFrameByIndex(activeFrameIndex)
+      this.drawingController.frame = frameSheet.getFrameByIndex(index); 
     },
 
     setActiveFrameAndRedraw: function(index) {
@@ -144,7 +147,7 @@ $.namespace("pskl");
       // trigger an event instead:
 
       // Update drawing canvas:
-      this.drawFrameToCanvas(currentFrame, drawingAreaCanvas, drawingCanvasDpi);   
+      this.drawingController.renderFrame();
       // Update slideshow:
       this.createPreviews();
       // Update animation preview:
@@ -160,13 +163,12 @@ $.namespace("pskl");
 
     initDrawingArea : function() {
         drawingAreaContainer = $('#drawing-canvas-container')[0];
-        var body = document.getElementsByTagName('body')[0];
-        body.setAttribute('onmouseup', 'piskel.onDocumentBodyMouseup(event)');
+        document.body.addEventListener('mouseup', this.onMouseup.bind(this));
+        drawingAreaContainer.addEventListener('mousedown', this.onMousedown.bind(this));
+        drawingAreaContainer.addEventListener('mousemove', this.onMousemove.bind(this));
         drawingAreaContainer.style.width = framePixelWidth * drawingCanvasDpi + "px";
         drawingAreaContainer.style.height = framePixelHeight * drawingCanvasDpi + "px";
-        drawingAreaContainer.setAttribute('oncontextmenu', 'piskel.onCanvasContextMenu(event)');
-        drawingAreaContainer.setAttribute('onmousedown', 'piskel.onCanvasMousedown(event)');
-        drawingAreaContainer.setAttribute('onmousemove', 'piskel.onCanvasMousemove(event)');
+        drawingAreaContainer.addEventListener('contextmenu', this.onCanvasContextMenu);
     },
 
     initPreviewSlideshow: function() {
@@ -208,6 +210,7 @@ $.namespace("pskl");
     },
 
     createPreviews : function () {
+      console.log("createPreviews");
       var container = $('#preview-list')[0], previewTile;
       container.innerHTML = "";
       for (var i = 0, l = frameSheet.getFrameCount(); i < l ; i++) {
@@ -239,11 +242,10 @@ $.namespace("pskl");
       
       canvasPreview.setAttribute('width', framePixelWidth * previewTileCanvasDpi);
       canvasPreview.setAttribute('height', framePixelHeight * previewTileCanvasDpi);     
-      
+
       previewTileRoot.addEventListener('click', function(evt) {
         // has not class tile-action:
-        // TODO: let me know when you want to start using a framework :)
-        if(!evt.target.className.match(new RegExp('(\\s|^)'+ 'tile-action' +'(\\s|$)'))) {
+        if(!evt.target.classList.contains('tile-action')) {
           piskel.setActiveFrameAndRedraw(tileNumber);
         }    
       });
@@ -256,7 +258,7 @@ $.namespace("pskl");
         piskel.duplicateFrame(tileNumber);
       });
 
-      this.drawFrameToCanvas(frameSheet.getFrameByIndex(tileNumber), canvasPreview, previewTileCanvasDpi);
+      renderer.render(frameSheet.getFrameByIndex(tileNumber), canvasPreview, previewTileCanvasDpi);
       canvasContainer.appendChild(canvasPreview);
       previewTileRoot.appendChild(canvasContainer);
       previewTileRoot.appendChild(canvasPreviewDuplicateAction);
@@ -275,7 +277,7 @@ $.namespace("pskl");
     },
 
     refreshAnimatedPreview : function () {
-      piskel.drawFrameToCanvas(frameSheet.getFrameByIndex(animIndex), previewCanvas, previewAnimationCanvasDpi);
+      renderer.render(frameSheet.getFrameByIndex(animIndex), previewCanvas, previewAnimationCanvasDpi);
       animIndex++;
       if (animIndex == frameSheet.getFrameCount()) {
         animIndex = 0;
@@ -294,7 +296,7 @@ $.namespace("pskl");
       this.setActiveFrameAndRedraw(frameIndex + 1);
     },
 
-    onCanvasMousedown : function (event) {
+    onMousedown : function (event) {
       isClicked = true;
       
       if(event.button == 2) { // right click
@@ -306,13 +308,13 @@ $.namespace("pskl");
         spriteCoordinate.col,
         spriteCoordinate.row,
         penColor,
-        this.drawer
+        this.drawingController
       );
         
       $.publish(Events.LOCALSTORAGE_REQUEST);
     },
 
-    onCanvasMousemove : function (event) {
+    onMousemove : function (event) {
       var currentTime = new Date().getTime();
       // Throttling of the mousemove event:
       if ((currentTime - previousMousemoveTime) > 40 ) {
@@ -322,7 +324,7 @@ $.namespace("pskl");
             spriteCoordinate.col,
             spriteCoordinate.row,
             penColor,
-            this.drawer
+            this.drawingController
           );
           
           // TODO(vincz): Find a way to move that to the model instead of being at the interaction level.
@@ -334,7 +336,7 @@ $.namespace("pskl");
       }
     },
     
-    onDocumentBodyMouseup : function (event) {
+    onMouseup : function (event) {
       if(isClicked || isRightClicked) {
         // A mouse button was clicked on the drawing canvas before this mouseup event,
         // the user was probably drawing on the canvas.
@@ -356,28 +358,6 @@ $.namespace("pskl");
           penColor,
           this.drawer
         );
-    },
-
-    // TODO(vincz/julz): Refactor to make this disappear in a big event-driven redraw loop 
-    drawFrameToCanvas: function(frame, canvasElement, dpi) {
-      var color;
-      for(var col = 0, num_col = frame.length; col < num_col; col++) {
-        for(var row = 0, num_row = frame[col].length; row < num_row; row++) {
-          color = frame[col][row];
-          this.drawPixelInCanvas(row, col, color, canvasElement, dpi);
-        }
-      }
-    },
-
-    // TODO(vincz/julz): Refactor to make this disappear in a big event-driven redraw loop 
-    drawPixelInCanvas : function (row, col, color, canvas, dpi) {
-      var context = canvas.getContext('2d');
-      if(color == undefined || color == Constants.TRANSPARENT_COLOR) {
-        context.clearRect(col * dpi, row * dpi, dpi, dpi);   
-      } else {
-        context.fillStyle = color;
-        context.fillRect(col * dpi, row * dpi, dpi, dpi);
-      }
     },
 
     onCanvasContextMenu : function (event) {

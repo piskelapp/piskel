@@ -19,13 +19,15 @@
 	 * @override
 	 */
 	ns.SimplePen.prototype.applyToolAt = function(col, row, color, drawer) {
-		this.previousCol = col;
-		this.previousRow = row;
-	    drawer.frame.setPixel(col, row, color);
+		if (drawer.frame.containsPixel(col, row)) {
+			this.previousCol = col;
+			this.previousRow = row;
+		    drawer.frame.setPixel(col, row, color);
 
-	    // Draw on canvas:
-	    // TODO: Remove that when we have the centralized redraw loop
-	    drawer.renderFramePixel(col, row);
+		    // Draw on canvas:
+		    // TODO: Remove that when we have the centralized redraw loop
+		    drawer.renderFramePixel(col, row);
+		}
 	};
 
 	ns.SimplePen.prototype.moveToolAt = function(col, row, color, drawer) {

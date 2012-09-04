@@ -69,7 +69,7 @@
 	ns.Stroke.prototype.releaseToolAt = function(col, row, color, drawer) {
 		// If the stroke tool is released outside of the canvas, we cancel the stroke:
 		// TODO: Mutualize this check in common method
-		if(drawer.frame.isInFrame(col, row)) {
+		if(drawer.frame.containsPixel(col, row)) {
 			// The user released the tool to draw a line. We will compute the pixel coordinate, impact
 			// the model and draw them in the drawing canvas (not the fake overlay anymore)
 			var strokePoints = this.getLinePixels_(this.startCol, col, this.startRow, row);

@@ -52,7 +52,7 @@
 	 */
 	ns.Rectangle.prototype.releaseToolAt = function(col, row, color, drawer) {		
 		// If the stroke tool is released outside of the canvas, we cancel the stroke: 
-		if(drawer.frame.isInFrame(col, row)) {
+		if(drawer.frame.containsPixel(col, row)) {
 			var strokePoints = this.getRectanglePixels_(this.startCol, col, this.startRow, row);
 			for(var i = 0; i< strokePoints.length; i++) {
 				// Change model:

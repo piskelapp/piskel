@@ -55,8 +55,12 @@ pskl.FrameSheetModel = (function() {
 			}	
 		},
 		
-		addEmptyFrame: function() {
-			frames.push(pskl.rendering.Frame.createEmpty(width, height));
+		addEmptyFrame : function () {
+			this.addFrame(pskl.rendering.Frame.createEmpty(width, height));
+		},
+
+		addFrame: function(frame) {
+			frames.push(frame);
 		},
 
 		getFrameCount: function() {

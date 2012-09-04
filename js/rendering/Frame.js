@@ -46,7 +46,7 @@
 		return this.pixels[0].length;
 	};
 
-	ns.Frame.prototype.isInFrame = function (col, row) {
+	ns.Frame.prototype.containsPixel = function (col, row) {
 		return col >= 0 && row >= 0 && col <= this.pixels.length && row <= this.pixels[0].length;
 	};
 
