@@ -294,18 +294,6 @@ $.namespace("pskl");
       this.setActiveFrameAndRedraw(frameIndex + 1);
     },
 
-    updateCursorInfo : function (event) {
-      var cursor = $('cursorInfo');
-      cursor.style.top = event.clientY + 10 + "px";
-      cursor.style.left = event.clientX + 10 + "px";
-
-      var coordinates = this.getRelativeCoordinates(event.clientX, event.clientY)
-      cursor.innerHTML = [
-        "X : " + coordinates.x,
-        "Y : " + coordinates.y
-      ].join(", ");
-    },
-
     onCanvasMousedown : function (event) {
       isClicked = true;
       
@@ -325,8 +313,6 @@ $.namespace("pskl");
     },
 
     onCanvasMousemove : function (event) {
-
-      //this.updateCursorInfo(event);
       var currentTime = new Date().getTime();
       // Throttling of the mousemove event:
       if ((currentTime - previousMousemoveTime) > 40 ) {
