@@ -1,17 +1,17 @@
 (function () {
-	var ns = $.namespace("pskl.rendering");
+	var ns = $.namespace("pskl.controller");
 	ns.DrawingController = function (frame, container, dpi) {
 		this.dpi = dpi;
 
 		// Public
 		this.frame = frame;
-		this.overlay = ns.Frame.createEmptyFromFrame(frame);
+		this.overlay = pskl.model.Frame.createEmptyFromFrame(frame);
 
 		// Private
 		this.container = container;
 		this.mainCanvas = this.createMainCanvas();
 		this.overlayCanvas = this.createOverlayCanvas();
-		this.renderer = new ns.FrameRenderer();
+		this.renderer = new pskl.rendering.FrameRenderer();
 	};
 
 	ns.DrawingController.prototype.renderFrame = function () {
@@ -27,7 +27,7 @@
 	};
 
 	ns.DrawingController.prototype.clearOverlay = function () {
-		this.overlay = ns.Frame.createEmptyFromFrame(this.frame);
+		this.overlay = pskl.model.Frame.createEmptyFromFrame(this.frame);
 		this.overlayCanvas.getContext("2d").clearRect(0, 0, this.overlayCanvas.width, this.overlayCanvas.height);
 	};
 

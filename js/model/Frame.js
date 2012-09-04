@@ -1,5 +1,5 @@
 (function () {
-	var ns = $.namespace("pskl.rendering");
+	var ns = $.namespace("pskl.model");
 	ns.Frame = function (pixels) {
 		this.pixels = pixels;
 	};

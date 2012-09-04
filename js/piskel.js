@@ -50,9 +50,9 @@ $.namespace("pskl");
   var piskel = {
 
     init : function () {
-      var emptyFrame = pskl.rendering.Frame.createEmpty(framePixelWidth, framePixelHeight);
+      var emptyFrame = pskl.model.Frame.createEmpty(framePixelWidth, framePixelHeight);
 
-      this.drawingController = new pskl.rendering.DrawingController(
+      this.drawingController = new pskl.controller.DrawingController(
         emptyFrame,
         $('#drawing-canvas-container')[0], 
         drawingCanvasDpi
@@ -60,7 +60,7 @@ $.namespace("pskl");
 
       renderer = new pskl.rendering.FrameRenderer();
 
-      frameSheet = pskl.FrameSheetModel.getInstance(framePixelWidth, framePixelHeight);
+      frameSheet = new pskl.model.FrameSheet();
       frameSheet.addFrame(emptyFrame);
       this.setActiveFrame(0);
           
