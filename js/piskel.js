@@ -89,6 +89,13 @@ $.namespace("pskl");
       this.initPreviewSlideshow(); 
       this.initAnimationPreview();  
       this.startAnimation();
+
+      var frame = frameSheet.getFrameByIndex(this.getActiveFrameIndex());
+      this.drawer = new pskl.rendering.DrawingController(
+        frame, 
+        $('#drawing-canvas-container')[0], 
+        drawingCanvasDpi
+      );
       
       pskl.ToolSelector.init();
       pskl.Palette.init(frameSheet);
@@ -153,23 +160,13 @@ $.namespace("pskl");
 
     initDrawingArea : function() {
         drawingAreaContainer = $('#drawing-canvas-container')[0];
-
-        drawingAreaCanvas = document.createElement("canvas");
-        drawingAreaCanvas.className = 'canvas';
-        drawingAreaCanvas.setAttribute('width', '' + framePixelWidth * drawingCanvasDpi);
-        drawingAreaCanvas.setAttribute('height', '' + framePixelHeight * drawingCanvasDpi);
-
-        drawingAreaContainer.setAttribute('style', 
-          'width:' + framePixelWidth * drawingCanvasDpi + 'px; height:' + framePixelHeight * drawingCanvasDpi + 'px;');
-
-        drawingAreaCanvas.setAttribute('oncontextmenu', 'piskel.onCanvasContextMenu(event)');
-        drawingAreaContainer.appendChild(drawingAreaCanvas);
-
         var body = document.getElementsByTagName('body')[0];
         body.setAttribute('onmouseup', 'piskel.onDocumentBodyMouseup(event)');
+        drawingAreaContainer.style.width = framePixelWidth * drawingCanvasDpi + "px";
+        drawingAreaContainer.style.height = framePixelHeight * drawingCanvasDpi + "px";
+        drawingAreaContainer.setAttribute('oncontextmenu', 'piskel.onCanvasContextMenu(event)');
         drawingAreaContainer.setAttribute('onmousedown', 'piskel.onCanvasMousedown(event)');
         drawingAreaContainer.setAttribute('onmousemove', 'piskel.onCanvasMousemove(event)');
-        this.drawFrameToCanvas(currentFrame, drawingAreaCanvas, drawingCanvasDpi);
     },
 
     initPreviewSlideshow: function() {
@@ -318,12 +315,11 @@ $.namespace("pskl");
       }
       var spriteCoordinate = this.getSpriteCoordinate(event);
       currentToolBehavior.applyToolAt(
-          spriteCoordinate.col,
-          spriteCoordinate.row,
-          currentFrame,
-          penColor,
-          drawingAreaCanvas,
-          drawingCanvasDpi);
+        spriteCoordinate.col,
+        spriteCoordinate.row,
+        penColor,
+        this.drawer
+      );
         
       $.publish(Events.LOCALSTORAGE_REQUEST);
     },
@@ -337,12 +333,11 @@ $.namespace("pskl");
         if (isClicked) {
           var spriteCoordinate = this.getSpriteCoordinate(event);
           currentToolBehavior.moveToolAt(
-              spriteCoordinate.col,
-              spriteCoordinate.row,
-              currentFrame,
-              penColor,
-              drawingAreaCanvas,
-              drawingCanvasDpi);
+            spriteCoordinate.col,
+            spriteCoordinate.row,
+            penColor,
+            this.drawer
+          );
           
           // TODO(vincz): Find a way to move that to the model instead of being at the interaction level.
           // Eg when drawing, it may make sense to have it here. However for a non drawing tool,
@@ -372,10 +367,9 @@ $.namespace("pskl");
       currentToolBehavior.releaseToolAt(
           spriteCoordinate.col,
           spriteCoordinate.row,
-          currentFrame,
           penColor,
-          drawingAreaCanvas,
-          drawingCanvasDpi);
+          this.drawer
+        );
     },
 
     // TODO(vincz/julz): Refactor to make this disappear in a big event-driven redraw loop 
@@ -408,7 +402,7 @@ $.namespace("pskl");
     },
 
     getRelativeCoordinates : function (x, y) {
-      var canvasRect = drawingAreaCanvas.getBoundingClientRect();
+      var canvasRect = $(".canvas-main")[0].getBoundingClientRect();
       return {
         x : x - canvasRect.left,
         y : y - canvasRect.top

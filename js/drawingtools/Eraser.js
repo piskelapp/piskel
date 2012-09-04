@@ -16,7 +16,7 @@
 	/**
 	 * @override
 	 */
-	ns.Eraser.prototype.applyToolAt = function(col, row, frame, color, canvas, dpi) {
-		this.superclass.applyToolAt.call(this, col, row, frame, Constants.TRANSPARENT_COLOR, canvas, dpi);
+	ns.Eraser.prototype.applyToolAt = function(col, row, frame) {
+		this.superclass.applyToolAt.call(this, col, row, frame, Constants.TRANSPARENT_COLOR);
 	};
 })();

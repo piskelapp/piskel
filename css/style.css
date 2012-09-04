@@ -127,6 +127,13 @@ ul, li {
   z-index: 1;
 }
 
+.canvas-main {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
 .canvas-overlay {
   position: absolute;
   top: 0;

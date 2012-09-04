@@ -12,11 +12,6 @@
 		// Rectangle's first point coordinates (set in applyToolAt)
 		this.startCol = null;
 		this.startRow = null;
-		// Rectangle's second point coordinates (changing dynamically in moveToolAt)
-		this.endCol = null;
-		this.endRow = null;
-		
-		this.canvasOverlay = null;
 	};
 
 	pskl.utils.inherit(ns.Rectangle, ns.BaseTool);
@@ -24,26 +19,22 @@
 	/**
 	 * @override
 	 */
-	ns.Rectangle.prototype.applyToolAt = function(col, row, frame, color, canvas, dpi) {
+	ns.Rectangle.prototype.applyToolAt = function(col, row, color, drawer) {
 		this.startCol = col;
 		this.startRow = row;
 		
-		// The fake canvas where we will draw the preview of the rectangle:
-		this.canvasOverlay = this.createCanvasOverlay(canvas);
 		// Drawing the first point of the rectangle in the fake overlay canvas:
-		this.drawPixelInCanvas(col, row, this.canvasOverlay, color, dpi);
+		drawer.overlay.setPixel(col, row, color);
+		drawer.renderOverlay();
 	};
 
-	ns.Rectangle.prototype.moveToolAt = function(col, row, frame, color, canvas, dpi) {
-		this.endCol = col;
-		this.endRow = row;
-		// When the user moussemove (before releasing), we dynamically compute the 
-		// pixel to draw the line and draw this line in the overlay canvas:
-		var strokePoints = this.getRectanglePixels_(this.startCol, this.endCol, this.startRow, this.endRow);
-
+	ns.Rectangle.prototype.moveToolAt = function(col, row, color, drawer) {
 		// Clean overlay canvas:
-		this.canvasOverlay.getContext("2d").clearRect(
-			0, 0, this.canvasOverlay.width, this.canvasOverlay.height);
+		drawer.clearOverlay();
+
+		// When the user moussemove (before releasing), we dynamically compute the 
+		// pixel to draw the line and draw this line in the overlay :
+		var strokePoints = this.getRectanglePixels_(this.startCol, col, this.startRow, row);
 		
 		// Drawing current stroke:
 		for(var i = 0; i< strokePoints.length; i++) {
@@ -51,39 +42,29 @@
 			if(color == Constants.TRANSPARENT_COLOR) {
 				color = Constants.SELECTION_TRANSPARENT_COLOR;
 			}			
-			this.drawPixelInCanvas(strokePoints[i].col, strokePoints[i].row, this.canvasOverlay, color, dpi);
+			drawer.overlay.setPixel(strokePoints[i].col, strokePoints[i].row, color);
 		}
+		drawer.renderOverlay();
 	};
 
 	/**
 	 * @override
 	 */
-	ns.Rectangle.prototype.releaseToolAt = function(col, row, frame, color, canvas, dpi) {
-		this.endCol = col;
-		this.endRow = row;
-		
+	ns.Rectangle.prototype.releaseToolAt = function(col, row, color, drawer) {		
 		// If the stroke tool is released outside of the canvas, we cancel the stroke: 
-		// TODO: Mutualize this check in common method
-		if(col < 0 || row < 0 || col > frame.length || row > frame[0].length) {
-			this.removeCanvasOverlays();
-			return;
-		}
-
-		// The user released the tool to draw a line. We will compute the pixel coordinate, impact
-		// the model and draw them in the drawing canvas (not the fake overlay anymore)
-		var strokePoints = this.getRectanglePixels_(this.startCol, this.endCol, this.startRow, this.endRow);
-
-		for(var i = 0; i< strokePoints.length; i++) {
-			// Change model:
-			frame[strokePoints[i].col][strokePoints[i].row] = color;
-			
+		if(drawer.frame.isInFrame(col, row)) {
+			var strokePoints = this.getRectanglePixels_(this.startCol, col, this.startRow, row);
+			for(var i = 0; i< strokePoints.length; i++) {
+				// Change model:
+				drawer.frame.setPixel(strokePoints[i].col, strokePoints[i].row, color);
+			}
+			// The user released the tool to draw a line. We will compute the pixel coordinate, impact
+			// the model and draw them in the drawing canvas (not the fake overlay anymore)
 			// Draw in canvas:
 			// TODO: Remove that when we have the centralized redraw loop
-			this.drawPixelInCanvas(strokePoints[i].col, strokePoints[i].row, canvas, color, dpi);		
+			drawer.renderFrame();		
 		}
-		
-		// For now, we are done with the stroke tool and don't need an overlay anymore:
-		this.removeCanvasOverlays();
+		drawer.clearOverlay();
 	};
 
 	/**

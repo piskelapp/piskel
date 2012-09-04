@@ -15,16 +15,16 @@
 	/**
 	 * @override
 	 */
-	ns.PaintBucket.prototype.applyToolAt = function(col, row, frame, color, canvas, dpi) {
+	ns.PaintBucket.prototype.applyToolAt = function(col, row, color, drawer) {
 
 		// Change model:
-		var targetColor = frame[col][row];
+		var targetColor = drawer.frame.getPixel(col, row);
 		//this.recursiveFloodFill_(frame, col, row, targetColor, color);
-		this.queueLinearFloodFill_(frame, col, row, targetColor, color);
+		this.queueLinearFloodFill_(drawer.frame, col, row, targetColor, color);
 		
 		// Draw in canvas:
 		// TODO: Remove that when we have the centralized redraw loop
-		this.drawFrameInCanvas(frame, canvas, dpi);
+		drawer.renderFrame();
 	};
 
 	/**
@@ -53,37 +53,27 @@
 	    var dx = [0, 1, 0, -1];
 
 	 	try {
-			if(frame[col][row] == replacementColor) {
+			if(frame.getPixel(col, row) == replacementColor) {
 		 		return;
 		 	}
 		} catch(e) {
 			// Frame out of bound exception.
 		}
 
-		var isInFrameBound = function(frame_, col_, row_) {
-			if( col_ < 0 ||
-		 		col_ >= frame_.length ||
-		 		row_ < 0 ||
-		 		row_ >= frame_[0].length) {
-		 		return false;
-		 	}
-		 	return true;
-		}
-
 	 	queue.push({"col": col, "row": row});
 	 	var loopCount = 0;
-	 	var cellCount = frame.length * frame[0].length;
+	 	var cellCount = frame.getWidth() * frame.getHeight();
 	 	while(queue.length > 0) {
 			loopCount ++;
 
 	 		var currentItem = queue.pop();
-	 		frame[currentItem.col][currentItem.row] = replacementColor;
+	 		frame.setPixel(currentItem.col, currentItem.row, replacementColor);
 	 		
 	 		for (var i = 0; i < 4; i++) {
 	 			var nextCol = currentItem.col + dx[i]
 	            var nextRow = currentItem.row + dy[i]
 				try {
-		            if (isInFrameBound(frame, nextCol, nextRow)  && frame[nextCol][nextRow] == targetColor) {
+		            if (frame.isInFrame(nextCol, nextRow)  && frame.getPixel(nextCol, nextRow) == targetColor) {
 		                queue.push({"col": nextCol, "row": nextRow });
 		            }
 		        } catch(e) {

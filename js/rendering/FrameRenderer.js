@@ -3,17 +3,16 @@
 	ns.FrameRenderer = function () {};
 
 	ns.FrameRenderer.prototype.render = function (frame, canvas, dpi) {
-		var color;
-		for(var col = 0, num_col = frame.length; col < num_col; col++) {
-			for(var row = 0, num_row = frame[col].length; row < num_row; row++) {
-				color = frame[col][row];
-				this.drawPixelInCanvas(col, row, canvas, color, dpi);
+		for(var col = 0, width = frame.getWidth(); col < width; col++) {
+			for(var row = 0, height = frame.getHeight(); row < height; row++) {
+				this.drawPixel(col, row, frame, canvas, dpi);
 			}
 		}
 	};
 
-	ns.FrameRenderer.prototype.drawPixelInCanvas = function () {
+	ns.FrameRenderer.prototype.drawPixel = function (col, row, frame, canvas, dpi) {
 		var context = canvas.getContext('2d');
+		var color = frame.getPixel(col, row);
 		if(color == Constants.TRANSPARENT_COLOR) {
 			context.clearRect(col * dpi, row * dpi, dpi, dpi);   
 		} 
@@ -25,7 +24,5 @@
 			context.fillStyle = color;
 			context.fillRect(col * dpi, row * dpi, dpi, dpi);
 		}
-
-	} 
-
+	};
 })();

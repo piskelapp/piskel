@@ -12,9 +12,6 @@
 		// Stroke's first point coordinates (set in applyToolAt)
 		this.startCol = null;
 		this.startRow = null;
-		// Stroke's second point coordinates (changing dynamically in moveToolAt)
-		this.endCol = null;
-		this.endRow = null;
 		
 		this.canvasOverlay = null;
 	};
@@ -24,7 +21,7 @@
 	/**
 	 * @override
 	 */
-	ns.Stroke.prototype.applyToolAt = function(col, row, frame, color, canvas, dpi) {
+	ns.Stroke.prototype.applyToolAt = function(col, row, color, drawer) {
 		this.startCol = col;
 		this.startRow = row;
 		
@@ -36,17 +33,15 @@
 		// frame model and canvas rendering.
 
 		// The fake canvas where we will draw the preview of the stroke:
-		this.canvasOverlay = this.createCanvasOverlay(canvas);
 		// Drawing the first point of the stroke in the fake overlay canvas:
-		this.drawPixelInCanvas(col, row, this.canvasOverlay, color, dpi);
+		drawer.updateOverlay(col, row, color);
+		drawer.renderOverlay();
 	};
 
-	ns.Stroke.prototype.moveToolAt = function(col, row, frame, color, canvas, dpi) {
-		this.endCol = col;
-		this.endRow = row;
+	ns.Stroke.prototype.moveToolAt = function(col, row, color, drawer) {
 		// When the user moussemove (before releasing), we dynamically compute the 
 		// pixel to draw the line and draw this line in the overlay canvas:
-		var strokePoints = this.getLinePixels_(this.startCol, this.endCol, this.startRow, this.endRow);
+		var strokePoints = this.getLinePixels_(this.startCol, col, this.startRow, row);
 
 		// Clean overlay canvas:
 		this.canvasOverlay.getContext("2d").clearRect(
@@ -64,39 +59,29 @@
 				// eg deleting the equivalent of a stroke.		
 				color = Constants.SELECTION_TRANSPARENT_COLOR;
 			}			
-			this.drawPixelInCanvas(strokePoints[i].col, strokePoints[i].row, this.canvasOverlay, color, dpi);
+			drawer.updateOverlay(strokePoints[i].col, strokePoints[i].row, color);
 		}
 	};
 
 	/**
 	 * @override
 	 */
-	ns.Stroke.prototype.releaseToolAt = function(col, row, frame, color, canvas, dpi) {
-		this.endCol = col;
-		this.endRow = row;
-		
+	ns.Stroke.prototype.releaseToolAt = function(col, row, color, drawer) {
 		// If the stroke tool is released outside of the canvas, we cancel the stroke:
 		// TODO: Mutualize this check in common method
-		if(col < 0 || row < 0 || col > frame.length || row > frame[0].length) {
-			this.removeCanvasOverlays();
-			return;
-		}
-
-		// The user released the tool to draw a line. We will compute the pixel coordinate, impact
-		// the model and draw them in the drawing canvas (not the fake overlay anymore)
-		var strokePoints = this.getLinePixels_(this.startCol, this.endCol, this.startRow, this.endRow);
-
-		for(var i = 0; i< strokePoints.length; i++) {
-			// Change model:
-			frame[strokePoints[i].col][strokePoints[i].row] = color;
-			
+		if(drawer.frame.isInFrame(col, row)) {
+			// The user released the tool to draw a line. We will compute the pixel coordinate, impact
+			// the model and draw them in the drawing canvas (not the fake overlay anymore)
+			var strokePoints = this.getLinePixels_(this.startCol, col, this.startRow, row);
+			for(var i = 0; i< strokePoints.length; i++) {
+				// Change model:
+				drawer.updateFrame(strokePoints[i].col, strokePoints[i].row, color);
+			}
 			// Draw in canvas:
 			// TODO: Remove that when we have the centralized redraw loop
-			this.drawPixelInCanvas(strokePoints[i].col, strokePoints[i].row, canvas, color, dpi);		
-		}
-
+			drawer.renderFrame();
+		} 
 		// For now, we are done with the stroke tool and don't need an overlay anymore:
-		this.removeCanvasOverlays();   
+		drawer.clearOverlay();   
 	};
-
 })();
