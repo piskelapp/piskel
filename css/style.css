@@ -1,28 +1,12 @@
-html, body {
-  height : 100%;
-  margin : 0;
-  cursor : default;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-
-ul, li {
-  margin : 0;
-  padding : 0;
-}
-
-.debug {
-  border : 1px Solid black;
+.tools-container {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 30px;
 }
 
 .left-nav {
   position:absolute;
-  top : 0;
-  bottom : 0;
+  top : 30px; bottom : 0;
   width : 200px;
   overflow-y: scroll;
   background : #000;
@@ -31,17 +15,13 @@ ul, li {
 
 .main-panel {
   position:absolute;
-  top : 0;
-  bottom : 0;
-  left : 220px;
-  right : 0;
+  top : 30px; bottom : 0; left : 220px; right : 0;
   background : #ccc;
 }
 
 .preview-container {
   position : absolute;
-  top : 30px;
-  right : 0;
+  bottom : 0; right : 0;
   height : 256px;
   width : 256px;
   background : white;
@@ -145,120 +125,6 @@ ul, li {
   float: left;
 }
 
-.tool-paint-bucket .drawing-canvas-container:hover {
-  cursor: url(../img/tools/cursors/paint-bucket.png) 18 17, pointer;
-}
-
-.tool-pen .drawing-canvas-container:hover {
-  cursor: url(../img/tools/cursors/pen.png) 7 21, pointer;
-}
-
-.tool-eraser .drawing-canvas-container:hover {
-  cursor: url(../img/tools/cursors/eraser.png) 5 21, pointer;
-}
-
-.tool-stroke .drawing-canvas-container:hover {
-  cursor: url(../img/tools/cursors/pen.png) 5 21, pointer;
-}
-
-.tool-rectangle .drawing-canvas-container:hover {
-  cursor: url(../img/tools/cursors/rectangle.png) 4 21, pointer;
-}
-
-
-/** 
- * Tool section:
- */
-
- .color-tool {
-  
- }
-
-.palette .palette-color {
-  cursor: pointer;
-  display : inline-block;
-  height : 20px;
-  width : 20px;
-  margin : 5px;
-}
-
-.palette .palette-color.transparent-color {
-  background-color: white;
-  height : 16px;
-  width : 16px;
-  border: 2px solid #000;
-
-  background-image: -webkit-gradient(
-    linear,
-    left top,
-    right bottom,
-    color-stop(0, #fff),
-    color-stop(0.45, #fff),
-    color-stop(0.5, #ff0000),
-    color-stop(0.55, #fff),
-    color-stop(1, #fff)
-  );
-  background-image: -moz-linear-gradient(
-      left top,
-      #fff 0%,
-      #fff 45%,
-      #f00 50%,
-      #fff 55%,
-      #fff 100%
-  );
-}
-
-.tools-container {
-  float: left;
-}
-
-.tools-container .tool-icon {
-  display: block;
-  float: left;
-  margin-right: 2px;
-}
-
-.tool-icon {
-  width: 30px;
-  height: 30px;
-  border: 5px solid #fff;
-  background-color: #fff
-}
-
-.tool-icon:hover {
-  border-color: #;
-}
-
-.tool-icon:hover {
-  cursor: pointer;
-  border: 5px solid #eee;
-}
-
-.tool-icon.selected {
-  cursor: auto;
-  border: 5px solid #ddd;
-}
-
-.tool-icon.tool-pen {
-  background: #fff url(../img/tools/icons/pen.png) 3px 3px no-repeat;
-}
-
-.tool-icon.tool-paint-bucket {
-  background: #fff url(../img/tools/icons/paint-bucket.png) 3px 3px no-repeat;
-}
-
-.tool-icon.tool-eraser {
-  background: #fff url(../img/tools/icons/eraser.png) 3px 3px no-repeat;
-}
-
-.tool-icon.tool-stroke {
-  background: #fff url(../img/tools/icons/stroke.png) 3px 3px no-repeat;
-}
-
-.tool-icon.tool-rectangle {
-  background: #fff url(../img/tools/icons/rectangle.png) 3px 3px no-repeat;
-}
-
 #preview-fps {
   width : 200px;
 }
@@ -267,27 +133,26 @@ ul, li {
  * User messages 
  */
 .user-message {
-    position: fixed;
-    bottom: 0;
-    left: 40%;
+    position: absolute;
+    top: 2px;
+    right: 0;
     background-color: #F9EDBE;
-    padding: 7px 22px;
-    padding-right: 42px;
+    padding: 4px 12px;
+    padding-right: 20px;
     border-top-left-radius: 7px;
-    border-top-right-radius: 7px;
-    font-family: ‘Arial Black’, Gadget, sans-serif;
+    border-bottom-left-radius: 7px;
+    border-right: 0;
     color: #222;
     border: #F0C36D 1px solid;
-    border-bottom: 0;
     font-weight: bold;
-    font-size: 14px; 
+    font-size: 13px; 
     z-index: 10000;
 }
 
 .user-message .close {
   position: absolute;
-  top: 3px;
-  right: 6px;
+  top: 0px;
+  right: 5px;
   color: gray;
   font-weight: bold;
   cursor: pointer;

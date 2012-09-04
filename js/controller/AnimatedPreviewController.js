@@ -51,12 +51,13 @@
 	};
 
    	ns.AnimatedPreviewController.prototype.refreshAnimatedPreview = function () {
-      this.renderer.render(this.framesheet.getFrameByIndex(this.animIndex), this.previewCanvas, this.dpi);
-      this.animIndex++;
-      if (this.animIndex == this.framesheet.getFrameCount()) {
-        this.animIndex = 0;
-      }
-      this.startAnimationTimer();
+   		if (!this.framesheet.hasFrameAtIndex(this.animIndex)) {
+   			this.animIndex = 0;
+   		}
+		
+		this.renderer.render(this.framesheet.getFrameByIndex(this.animIndex), this.previewCanvas, this.dpi);
+		this.animIndex++;
+		this.startAnimationTimer();
     };
 
 })();

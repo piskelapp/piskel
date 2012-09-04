@@ -65,12 +65,17 @@
 		}	
 	};
 
+	
+	ns.FrameSheet.prototype.hasFrameAtIndex = function(index) {
+		return (index >= 0 && index < this.getFrameCount());
+	};
+
 	ns.FrameSheet.prototype.getFrameByIndex = function(index) {
 		if (isNaN(index)) {
 			throw "Bad argument value for getFrameByIndex method: <" + index + ">";
 		} 
 
-		if (index < 0 || index > this.getFrameCount()) {
+		if (!this.hasFrameAtIndex(index)) {
 			throw "Out of bound index for frameSheet object.";
 		}
 
@@ -78,10 +83,10 @@
 	};
 
 	ns.FrameSheet.prototype.removeFrameByIndex = function(index) {
-		if(index < 0 || index > this.getFrameCount()) {
+		if(!this.hasFrameAtIndex(index)) {
 			throw "Out of bound index for frameSheet object.";
 		}
-		frames.splice(index, 1);
+		this.frames.splice(index, 1);
 	};
 
 	ns.FrameSheet.prototype.duplicateFrameByIndex = function(index) {
