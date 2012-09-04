@@ -263,7 +263,7 @@ $.namespace("pskl");
     },
 
     getRelativeCoordinates : function (x, y) {
-      var canvasRect = $(".canvas-main")[0].getBoundingClientRect();
+      var canvasRect = $(".drawing-canvas")[0].getBoundingClientRect();
       return {
         x : x - canvasRect.left,
         y : y - canvasRect.top

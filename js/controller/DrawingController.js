@@ -33,7 +33,7 @@
 
 	ns.DrawingController.prototype.createMainCanvas = function () {
 		var mainCanvas = this.createCanvas();
-		mainCanvas.className = "canvas-main";
+		mainCanvas.className = "drawing-canvas";
 		this.container.appendChild(mainCanvas);
 		return mainCanvas;
 	};
