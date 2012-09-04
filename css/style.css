@@ -107,6 +107,13 @@
   z-index: 1;
 }
 
+.drawing-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
 .canvas-overlay {
   position: absolute;
   top: 0;

@@ -19,7 +19,6 @@
 
   <!-- Tool section: -->
   <div id="tools-container" class="tools-container">
-
     <ul class="tools-group">
       <li class="tool-icon tool-save" data-tool-id="tool-save" title="Save" onclick="piskel.storeSheet()"></li>
       <li class="tool-icon tool-add-frame" id="add-frame-button" data-tool-id="tool-add-frame" title="Add a frame"></li>
@@ -86,7 +85,12 @@
   <script src="js/lib/jsColor_1_4_0/jscolor.js"></script>
 
   <!-- Application libraries-->
-  <script src="js/FrameSheetModel.js"></script>
+  <script src="js/model/Frame.js"></script>
+  <script src="js/model/FrameSheet.js"></script>
+  <script src="js/controller/DrawingController.js"></script>
+  <script src="js/controller/PreviewFilmController.js"></script>
+  <script src="js/controller/AnimatedPreviewController.js"></script>
+  <script src="js/rendering/FrameRenderer.js"></script>
   <script src="js/LocalStorageService.js"></script>
   <script src="js/Palette.js"></script>
   <script src="js/Notification.js"></script>
