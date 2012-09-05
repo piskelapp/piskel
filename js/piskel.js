@@ -191,7 +191,6 @@ $.namespace("pskl");
     },
 
     onMousedown : function (event) {
-      console.log("onMousedown");
       isClicked = true;
       
       if(event.button == 2) { // right click
@@ -210,7 +209,6 @@ $.namespace("pskl");
     },
 
     onMousemove : function (event) {
-      console.log("onMousemove");
       var currentTime = new Date().getTime();
       // Throttling of the mousemove event:
       if ((currentTime - previousMousemoveTime) > 40 ) {
@@ -233,7 +231,6 @@ $.namespace("pskl");
     },
     
     onMouseup : function (event) {
-      console.log("onMouseup");
       if(isClicked || isRightClicked) {
         // A mouse button was clicked on the drawing canvas before this mouseup event,
         // the user was probably drawing on the canvas.
