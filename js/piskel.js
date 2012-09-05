@@ -252,7 +252,7 @@ $.namespace("pskl");
           spriteCoordinate.col,
           spriteCoordinate.row,
           penColor,
-          this.drawer
+          this.drawingController
         );
     },
 
