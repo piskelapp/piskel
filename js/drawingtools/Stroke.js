@@ -57,7 +57,7 @@
 				// eg deleting the equivalent of a stroke.		
 				color = Constants.SELECTION_TRANSPARENT_COLOR;
 			}			
-			drawer.updateOverlay(strokePoints[i].col, strokePoints[i].row, color);
+			drawer.overlay.setPixel(strokePoints[i].col, strokePoints[i].row, color);
 		}
 		drawer.renderOverlay();
 	};
@@ -74,7 +74,7 @@
 			var strokePoints = this.getLinePixels_(this.startCol, col, this.startRow, row);
 			for(var i = 0; i< strokePoints.length; i++) {
 				// Change model:
-				drawer.updateFrame(strokePoints[i].col, strokePoints[i].row, color);
+				drawer.frame.setPixel(strokePoints[i].col, strokePoints[i].row, color);
 			}
 			// Draw in canvas:
 			// TODO: Remove that when we have the centralized redraw loop
