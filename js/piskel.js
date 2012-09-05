@@ -212,8 +212,9 @@ $.namespace("pskl");
       var currentTime = new Date().getTime();
       // Throttling of the mousemove event:
       if ((currentTime - previousMousemoveTime) > 40 ) {
+        var spriteCoordinate = this.getSpriteCoordinate(event);
         if (isClicked) {
-          var spriteCoordinate = this.getSpriteCoordinate(event);
+          
           currentToolBehavior.moveToolAt(
             spriteCoordinate.col,
             spriteCoordinate.row,
@@ -225,6 +226,11 @@ $.namespace("pskl");
           // Eg when drawing, it may make sense to have it here. However for a non drawing tool,
           // you don't need to draw anything when mousemoving and you request useless localStorage.
           $.publish(Events.LOCALSTORAGE_REQUEST);
+        } else {
+            // debug mode to see the selected pixel
+            // this.drawingController.clearOverlay();
+            // this.drawingController.overlay.setPixel( spriteCoordinate.col,spriteCoordinate.row, "#ff0000");
+            // this.drawingController.renderOverlay();
         }
         previousMousemoveTime = currentTime;
       }
