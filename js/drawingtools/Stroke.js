@@ -59,6 +59,7 @@
 			}			
 			drawer.updateOverlay(strokePoints[i].col, strokePoints[i].row, color);
 		}
+		drawer.renderOverlay();
 	};
 
 	/**
