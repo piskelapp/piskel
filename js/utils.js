@@ -26,14 +26,6 @@ jQuery.namespace = function() {
         return ((r << 16) | (g << 8) | b).toString(16);
     };
 
-    ns.normalizeColor = function (color) {
-      if(color == undefined || color == Constants.TRANSPARENT_COLOR || color.indexOf("#") == 0) {
-        return color;
-      } else {
-        return "#" + color;
-      }
-    };
-
     ns.inherit = function(extendedObject, inheritFrom) {
         extendedObject.prototype = Object.create(inheritFrom.prototype);
         extendedObject.prototype.constructor = extendedObject;
