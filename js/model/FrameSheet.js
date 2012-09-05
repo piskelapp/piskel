@@ -1,6 +1,8 @@
 (function () {
 	var ns = $.namespace("pskl.model");
-	ns.FrameSheet = function () {
+	ns.FrameSheet = function (width, height) {
+		this.width = width;
+		this.height = height;
 		this.frames = [];
 	};
 
@@ -9,7 +11,7 @@
 	};
 
 	ns.FrameSheet.prototype.addEmptyFrame = function () {
-		this.addFrame(ns.Frame.createEmpty(width, height));
+		this.addFrame(ns.Frame.createEmpty(this.width, this.height));
 	};
 
 	ns.FrameSheet.prototype.addFrame = function (frame) {

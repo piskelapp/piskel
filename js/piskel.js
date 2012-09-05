@@ -50,13 +50,11 @@ $.namespace("pskl");
   var piskel = {
 
     init : function () {
-      var emptyFrame = pskl.model.Frame.createEmpty(framePixelWidth, framePixelHeight);
-
-      frameSheet = new pskl.model.FrameSheet();
-      frameSheet.addFrame(emptyFrame);
+      frameSheet = new pskl.model.FrameSheet(framePixelWidth, framePixelHeight);
+      frameSheet.addEmptyFrame();
 
       this.drawingController = new pskl.controller.DrawingController(
-        emptyFrame,
+        frameSheet.getFrameByIndex(0),
         $('#drawing-canvas-container')[0], 
         drawingCanvasDpi
       );
@@ -253,7 +251,7 @@ $.namespace("pskl");
           penColor,
           this.drawingController
         );
-        
+
         // TODO: Remove that when we have the centralized redraw loop
         this.previewsController.createPreviews();
       }
