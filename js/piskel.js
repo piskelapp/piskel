@@ -183,7 +183,8 @@ $.namespace("pskl");
 
     removeFrame: function(frameIndex) {     
       frameSheet.removeFrameByIndex(frameIndex);
-      this.setActiveFrameAndRedraw(frameIndex - 1);
+      var activeFrameIndex = frameIndex ? frameIndex - 1 : 0;
+      this.setActiveFrameAndRedraw(activeFrameIndex);
     },
 
     duplicateFrame: function(frameIndex) {
