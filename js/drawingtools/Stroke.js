@@ -39,13 +39,11 @@
 	};
 
 	ns.Stroke.prototype.moveToolAt = function(col, row, color, drawer) {
+		drawer.clearOverlay();
+
 		// When the user moussemove (before releasing), we dynamically compute the 
 		// pixel to draw the line and draw this line in the overlay canvas:
 		var strokePoints = this.getLinePixels_(this.startCol, col, this.startRow, row);
-
-		// Clean overlay canvas:
-		this.canvasOverlay.getContext("2d").clearRect(
-			0, 0, this.canvasOverlay.width, this.canvasOverlay.height);
 		
 		// Drawing current stroke:
 		for(var i = 0; i< strokePoints.length; i++) {
