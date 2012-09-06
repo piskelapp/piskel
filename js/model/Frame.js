@@ -3,7 +3,7 @@
 	
 	ns.Frame = function (pixels) {
 		this.pixels = pixels;
-		this.previousStates = [pixels];
+		this.previousStates = [this._clonePixels()];
 		this.stateIndex = 0;
 	};
 
@@ -56,7 +56,7 @@
 	};
 
 	ns.Frame.prototype.containsPixel = function (col, row) {
-		return col >= 0 && row >= 0 && col <= this.pixels.length && row <= this.pixels[0].length;
+		return col >= 0 && row >= 0 && col < this.pixels.length && row < this.pixels[0].length;
 	};
 
 	ns.Frame.prototype.saveState = function () {
@@ -69,10 +69,10 @@
 	};
 
 	ns.Frame.prototype.loadPreviousState = function () {
-		if (this.stateIndex >= 0) {
+		if (this.stateIndex > 0) {
 			this.stateIndex--;
 			this.pixels = this.previousStates[this.stateIndex];
-		}	
+		}
 	};
 
 	ns.Frame.prototype.loadNextState = function () {
