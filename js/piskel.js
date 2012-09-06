@@ -79,7 +79,8 @@ $.namespace("pskl");
 
       this.animationController.init();
       this.previewsController.init();
-          
+
+      pskl.HistoryManager.init();
       pskl.NotificationService.init();
       pskl.LocalStorageService.init(frameSheet);
 
@@ -154,7 +155,7 @@ $.namespace("pskl");
 
     setActiveFrame: function(index) {
       activeFrameIndex = index;
-      this.drawingController.frame = frameSheet.getFrameByIndex(index); 
+      this.drawingController.frame = this.getCurrentFrame(); 
     },
 
     setActiveFrameAndRedraw: function(index) {
@@ -174,6 +175,10 @@ $.namespace("pskl");
         throw "Bad active frame initialization."
       }
       return activeFrameIndex;
+    },
+
+    getCurrentFrame : function () {
+      return frameSheet.getFrameByIndex(activeFrameIndex);
     },
 
     initDrawingArea : function() {
@@ -261,6 +266,8 @@ $.namespace("pskl");
         if(isRightClicked) {
           $.publish(Events.CANVAS_RIGHT_CLICK_RELEASED);
         }
+
+
         isClicked = false;
         isRightClicked = false;
         var spriteCoordinate = this.getSpriteCoordinate(event);
@@ -271,11 +278,11 @@ $.namespace("pskl");
           this.drawingController
         );
 
+
+        $.publish(Events.TOOL_RELEASED);
         // TODO: Remove that when we have the centralized redraw loop
         this.previewsController.createPreviews();
       }
-
-      
     },
 
     onCanvasContextMenu : function (event) {
