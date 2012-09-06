@@ -46,7 +46,7 @@
 }
 
 .tool-icon.tool-move {
-  background-image: url(../img/tools/icons/rectangle.png);
+  background-image: url(../img/tools/icons/hand.png);
 }
 
 /*.tool-icon.tool-palette {
@@ -73,8 +73,8 @@
   cursor: url(../img/tools/cursors/rectangle.png) 4 21, pointer;
 }
 
-.tool-rectangle .drawing-canvas-move:hover {
-  cursor: url(../img/tools/cursors/rectangle.png) 4 21, pointer;
+.tool-move .drawing-canvas-container:hover {
+  cursor: url(../img/tools/cursors/hand.png) 14 12, pointer;
 }
 
 .tool-icon.selected {
