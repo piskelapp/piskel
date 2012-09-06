@@ -36,7 +36,7 @@ pskl.Palette = (function() {
 	  * @private
 	  */
 	 var addColorToPalette_ = function (color) {
-      if (paletteColors.indexOf(color) == -1) {
+      if (paletteColors.indexOf(color) == -1 && color != Constants.TRANSPARENT_COLOR) {
       	var colorEl = document.createElement("li");    
         colorEl.className = "palette-color";
         colorEl.setAttribute("data-color", color);
