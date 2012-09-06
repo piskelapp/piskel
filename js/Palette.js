@@ -36,7 +36,7 @@ pskl.Palette = (function() {
 	  * @private
 	  */
 	 var addColorToPalette_ = function (color) {
-      if (paletteColors.indexOf(color) == -1) {
+      if (paletteColors.indexOf(color) == -1 && color != Constants.TRANSPARENT_COLOR) {
       	var colorEl = document.createElement("li");    
         colorEl.className = "palette-color";
         colorEl.setAttribute("data-color", color);
@@ -53,10 +53,10 @@ pskl.Palette = (function() {
     var onPaletteColorClick_ = function (event) {
       var selectedColor = $(event.target).data("color");
       if (event.which == 1) { // left button 
-        updateColorPicker(selectedColor, $('#color-picker')[0]);
+        updateColorPicker(selectedColor, $('#color-picker'));
         $.publish(Events.COLOR_SELECTED, [selectedColor, true]);
       } else if (event.which == 3) { // right button
-        updateColorPicker(selectedColor, $('#secondary-color-picker')[0]);
+        updateColorPicker(selectedColor, $('#secondary-color-picker'));
         $.publish(Events.COLOR_SELECTED, [selectedColor, false]);
       }
     };
@@ -72,10 +72,10 @@ pskl.Palette = (function() {
         // The colorpicker can't be set to a transparent state.
         // We set its background to white and insert the
         // string "TRANSPARENT" to mimic this state:
-        colorPicker.color.fromString("#fff");
+        colorPicker[0].color.fromString("#fff");
         colorPicker.val(Constants.TRANSPARENT_COLOR);
       } else {
-        colorPicker.color.fromString(color);
+        colorPicker[0].color.fromString(color);
       }
     }
 
