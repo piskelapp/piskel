@@ -14,9 +14,9 @@ pskl.Palette = (function() {
 	/**
 	 * @private
 	 */
-	 var onPickerChange_ = function(evt) {
+	 var onPickerChange_ = function(evt, isPrimary) {
         var inputPicker = $(evt.target);
-        $.publish(Events.COLOR_SELECTED, [inputPicker.val()]);
+        $.publish(Events.COLOR_SELECTED, [inputPicker.val(), evt.data.isPrimary]);
 	 };
 
 	 /**
@@ -52,8 +52,17 @@ pskl.Palette = (function() {
      */
     var onPaletteColorClick_ = function (event) {
       var selectedColor = $(event.target).data("color");
-      var colorPicker = $('#color-picker');
-      if (selectedColor == Constants.TRANSPARENT_COLOR) {
+      if (event.which == 1) { // left button 
+        updateColorPicker(selectedColor, $('#color-picker')[0]);
+        $.publish(Events.COLOR_SELECTED, [selectedColor, true]);
+      } else if (event.which == 3) { // right button
+        updateColorPicker(selectedColor, $('#secondary-color-picker')[0]);
+        $.publish(Events.COLOR_SELECTED, [selectedColor, false]);
+      }
+    };
+
+    var updateColorPicker = function (color, colorPicker) {
+      if (color == Constants.TRANSPARENT_COLOR) {
         // We can set the current palette color to transparent.
         // You can then combine this transparent color with an advanced
         // tool for customized deletions. 
@@ -63,13 +72,12 @@ pskl.Palette = (function() {
         // The colorpicker can't be set to a transparent state.
         // We set its background to white and insert the
         // string "TRANSPARENT" to mimic this state:
-        colorPicker[0].color.fromString("#fff");
-        colorPicker.val("TRANSPARENT");
+        colorPicker.color.fromString("#fff");
+        colorPicker.val(Constants.TRANSPARENT_COLOR);
       } else {
-        colorPicker[0].color.fromString(selectedColor);
+        colorPicker.color.fromString(color);
       }
-      $.publish(Events.COLOR_SELECTED, [selectedColor])
-    };
+    }
 
 	return {
 		init: function(framesheet) {
@@ -83,15 +91,20 @@ pskl.Palette = (function() {
       			createPalette_(framesheet.getUsedColors());
       		});
 
-      		paletteRoot.click(onPaletteColorClick_);
-      		$.subscribe(Events.COLOR_USED, function(evt, color) {
+      		paletteRoot.mouseup(onPaletteColorClick_);
+      		$.subscribe(Events.COLOR_SELECTED, function(evt, color) {
       			addColorToPalette_(color);
       		});
 
       		// Initialize colorpicker:
       		var colorPicker = $('#color-picker');
       		colorPicker.val(Constants.DEFAULT_PEN_COLOR);
-      		colorPicker.change(onPickerChange_);
+      		colorPicker.change({isPrimary : true}, onPickerChange_);
+
+
+          var secondaryColorPicker = $('#secondary-color-picker');
+          secondaryColorPicker.val(Constants.TRANSPARENT_COLOR);
+          secondaryColorPicker.change({isPrimary : false}, onPickerChange_);
 
 		}
 	};

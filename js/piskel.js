@@ -39,7 +39,10 @@ $.namespace("pskl");
       isRightClicked = false, 
       activeFrameIndex = -1, 
       animIndex = 0,
-      penColor = Constants.DEFAULT_PEN_COLOR,
+
+      primaryColor = Constants.DEFAULT_PEN_COLOR,
+      secondaryColor = Constants.TRANSPARENT_COLOR,
+
       currentFrame = null;
       currentToolBehavior = null,
       previousMousemoveTime = 0;
@@ -98,9 +101,13 @@ $.namespace("pskl");
         currentToolBehavior = toolBehavior;
       });
 
-      $.subscribe(Events.COLOR_SELECTED, function(evt, color) {
+      $.subscribe(Events.COLOR_SELECTED, function(evt, color, isPrimary) {
         console.log("Color selected: ", color);
-        penColor = color;
+        if (isPrimary) {
+          primaryColor = color;
+        } else {
+          secondaryColor = color;
+        }
       });
 
       $.subscribe(Events.REFRESH, function() {
@@ -176,7 +183,7 @@ $.namespace("pskl");
         drawingAreaContainer.addEventListener('mousemove', this.onMousemove.bind(this));
         drawingAreaContainer.style.width = framePixelWidth * drawingCanvasDpi + "px";
         drawingAreaContainer.style.height = framePixelHeight * drawingCanvasDpi + "px";
-        drawingAreaContainer.addEventListener('contextmenu', this.onCanvasContextMenu);
+        document.body.addEventListener('contextmenu', this.onCanvasContextMenu);
     },
 
     removeFrame: function(frameIndex) {     
@@ -190,6 +197,14 @@ $.namespace("pskl");
       this.setActiveFrameAndRedraw(frameIndex + 1);
     },
 
+    getCurrentColor : function () {
+      if(isRightClicked) {
+        return secondaryColor;
+      } else {
+        return primaryColor;
+      }
+    },
+
     onMousedown : function (event) {
       isClicked = true;
       
@@ -197,11 +212,12 @@ $.namespace("pskl");
         isRightClicked = true;
         $.publish(Events.CANVAS_RIGHT_CLICKED);
       }
+
       var spriteCoordinate = this.getSpriteCoordinate(event);
       currentToolBehavior.applyToolAt(
         spriteCoordinate.col,
         spriteCoordinate.row,
-        penColor,
+        this.getCurrentColor(),
         this.drawingController
       );
         
@@ -218,7 +234,7 @@ $.namespace("pskl");
           currentToolBehavior.moveToolAt(
             spriteCoordinate.col,
             spriteCoordinate.row,
-            penColor,
+            this.getCurrentColor(),
             this.drawingController
           );
           
@@ -251,7 +267,7 @@ $.namespace("pskl");
         currentToolBehavior.releaseToolAt(
           spriteCoordinate.col,
           spriteCoordinate.row,
-          penColor,
+          this.getCurrentColor(),
           this.drawingController
         );
 
