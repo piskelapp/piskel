@@ -81,5 +81,4 @@
 			this.pixels = this.previousStates[this.stateIndex];
 		}	
 	};
-
 })();
