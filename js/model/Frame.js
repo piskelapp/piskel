@@ -3,6 +3,8 @@
 	
 	ns.Frame = function (pixels) {
 		this.pixels = pixels;
+		this.previousStates = [this._clonePixels()];
+		this.stateIndex = 0;
 	};
 
 	ns.Frame.createEmpty = function (width, height) {
@@ -22,13 +24,15 @@
 	};
 
 	ns.Frame.prototype.clone = function () {
-		var clone = ns.Frame.createEmptyFromFrame(this);
-		for (var col = 0 ; col < clone.getWidth() ; col++) {
-			for (var row = 0 ; row < clone.getHeight() ; row++) {
-				clone.setPixel(col, row, this.getPixel(col, row));
-			}
+		return new ns.Frame(this._clonePixels());
+	};
+
+	ns.Frame.prototype._clonePixels = function () {
+		var pixels = [];
+		for (var col = 0 ; col < this.getWidth() ; col++) {
+			pixels[col] = this.pixels[col].slice(0 , this.getHeight());
 		}
-		return clone;
+		return pixels;
 	};
 
 	ns.Frame.prototype.serialize = function () {
@@ -52,7 +56,29 @@
 	};
 
 	ns.Frame.prototype.containsPixel = function (col, row) {
-		return col >= 0 && row >= 0 && col <= this.pixels.length && row <= this.pixels[0].length;
+		return col >= 0 && row >= 0 && col < this.pixels.length && row < this.pixels[0].length;
 	};
 
+	ns.Frame.prototype.saveState = function () {
+		// remove all states past current state
+		this.previousStates.length = this.stateIndex + 1;
+		// push new state
+		this.previousStates.push(this._clonePixels());
+		// set the stateIndex to latest saved state
+		this.stateIndex = this.previousStates.length - 1;
+	};
+
+	ns.Frame.prototype.loadPreviousState = function () {
+		if (this.stateIndex > 0) {
+			this.stateIndex--;
+			this.pixels = this.previousStates[this.stateIndex];
+		}
+	};
+
+	ns.Frame.prototype.loadNextState = function () {
+		if (this.stateIndex < this.previousStates.length - 1) {
+			this.stateIndex++;
+			this.pixels = this.previousStates[this.stateIndex];
+		}	
+	};
 })();

@@ -34,7 +34,7 @@
 
 		// The fake canvas where we will draw the preview of the stroke:
 		// Drawing the first point of the stroke in the fake overlay canvas:
-		drawer.updateOverlay(col, row, color);
+		drawer.overlay.setPixel(col, row, color);
 		drawer.renderOverlay();
 	};
 
