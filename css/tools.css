@@ -45,6 +45,10 @@
   background-image: url(../img/tools/icons/rectangle.png);
 }
 
+.tool-icon.tool-move {
+  background-image: url(../img/tools/icons/rectangle.png);
+}
+
 /*.tool-icon.tool-palette {
   background-image: url(../img/tools/icons/color-palette.png);
 }*/
@@ -66,6 +70,10 @@
 }
 
 .tool-rectangle .drawing-canvas-container:hover {
+  cursor: url(../img/tools/cursors/rectangle.png) 4 21, pointer;
+}
+
+.tool-rectangle .drawing-canvas-move:hover {
   cursor: url(../img/tools/cursors/rectangle.png) 4 21, pointer;
 }
 
