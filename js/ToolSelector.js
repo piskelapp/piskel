@@ -74,18 +74,6 @@ pskl.ToolSelector = (function() {
 			selectTool_(toolInstances.simplePen);
 			// Activate listener on tool panel:
 			$("#tools-container").click(onToolIconClicked_);
-
-			// Special right click handlers (select the eraser tool)
-			$.subscribe(Events.CANVAS_RIGHT_CLICKED, function() {
-				previousSelectedTool = currentSelectedTool;
-				currentSelectedTool = toolInstances.eraser;
-				$.publish(Events.TOOL_SELECTED, [currentSelectedTool]);
-			});
-
-			$.subscribe(Events.CANVAS_RIGHT_CLICK_RELEASED, function() {
-				currentSelectedTool = previousSelectedTool;
-				$.publish(Events.TOOL_SELECTED, [currentSelectedTool]);
-			});
 		}
 	};
 })();

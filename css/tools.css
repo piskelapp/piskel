@@ -9,6 +9,7 @@
 
 .tool-icon {
   float: left;
+  cursor : pointer;
   width: 30px;
   height: 30px;
   background-color: transparent;
@@ -74,17 +75,25 @@
 }
 
 .tool-icon:hover {
-  cursor: pointer;
   background-color: #eee;
 }
 
+.tool-color-picker {
+  padding: 5px 0 0 5px;
+  cursor : default;
+}
+
 .tool-color-picker input {
-  width: 12px; height: 12px;
+  width: 8px; height: 8px;
   border: 1px solid black;
   padding: 1px;
   background: white;
-  margin: 7px 0 0 7px;
   cursor: pointer;
+  position : relative;
+}
+
+#secondary-color-picker {
+  top : 8px;
 }
 
 .tool-palette {
