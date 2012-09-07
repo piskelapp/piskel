@@ -52,49 +52,6 @@
   display : inline-block;
 }
 
-#preview-list {
-  list-style-type: none;
-}
-
-.preview-tile {
-  padding : 10px;
-  overflow: hidden;
-  background-color: gray;
-}
-
-.preview-tile .canvas-container {
-  float: left;
-}
-
-.preview-tile .tile-view {
-  float: left;
-  border: blue 1px solid;
-}
-
-.preview-tile .tile-action {
-  display: none;
-  float: right;
-}
-
-.preview-tile:hover .tile-action {
-  display: block;
-}
-
-.preview-tile:hover {
-  background-color: lightgray;
-}
-
-.preview-tile.selected {
-  background-color: lightyellow;
-}
-
-.droppable-active {
-  background-color: pink;
-}
-
-.droppable-hover-active {
- background-color: yellow;
-}
 
 .canvas-container {
   position: relative;
