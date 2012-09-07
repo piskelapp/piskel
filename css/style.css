@@ -84,8 +84,16 @@
   background-color: lightgray;
 }
 
-#preview-list .preview-tile.selected {
+.preview-tile.selected {
   background-color: lightyellow;
+}
+
+.droppable-active {
+  background-color: pink;
+}
+
+.droppable-hover-active {
+ background-color: yellow;
 }
 
 .canvas-container {

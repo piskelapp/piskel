@@ -95,4 +95,19 @@
 		var frame = this.getFrameByIndex(index);
 		this.frames.splice(index + 1, 0, frame.clone());
 	};
+
+	ns.FrameSheet.prototype.swapFrames = function(indexFrame1, indexFrame2) {
+		if(isNaN(indexFrame1) || isNaN(indexFrame1) ||
+		   (!this.hasFrameAtIndex(indexFrame1) && !this.hasFrameAtIndex(indexFrame2))) {
+		 	throw "Bad indexes for swapFrames Framesheet function.";
+		}
+		if(indexFrame1 == indexFrame2) {
+			return;
+		}
+		else {
+			var swapFrame = this.frames[indexFrame1];
+			this.frames[indexFrame1] = this.frames[indexFrame2];
+			this.frames[indexFrame2] = swapFrame;
+		}
+	};
 })();

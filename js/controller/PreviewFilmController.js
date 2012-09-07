@@ -21,11 +21,45 @@
     };
 
     ns.PreviewFilmController.prototype.createPreviews = function () {
-      this.container.innerHTML = "";
+      this.container.html("");
       for (var i = 0, l = this.framesheet.getFrameCount(); i < l ; i++) {
-        this.container.appendChild(this.createPreviewTile(i));
+        this.container.append(this.createPreviewTile(i));
       }
+      this.initTilesBehavior();
     };
+
+    ns.PreviewFilmController.prototype.initTilesBehavior = function () {
+    	var tiles = $(".preview-tile");
+    	tiles.draggable( {
+	      containment: '#preview-list',
+	      stack: '.preview-tile',
+	      cursor: 'move',
+	      revert: true
+	    });
+
+	    tiles.droppable( {
+	        accept: ".preview-tile",
+			activeClass: "droppable-active",
+			hoverClass: "droppable-hover-active",
+			drop: $.proxy(this.onDrop_, this)
+	    });
+    };
+
+    /**
+     * @private
+     */
+    ns.PreviewFilmController.prototype.onDrop_ = function( event, ui ) {
+		var frameId1 = parseInt($(event.srcElement).data("tile-number"), 10);
+		var frameId2 = parseInt($(event.target).data("tile-number"), 10);
+
+		this.framesheet.swapFrames(frameId1, frameId2);
+
+		// TODO(vincz): deprecate
+		piskel.setActiveFrameAndRedraw(frameId2);
+
+		// TODO(vincz): move localstorage request to the model layer?
+		$.publish(Events.LOCALSTORAGE_REQUEST);
+	};
 
     ns.PreviewFilmController.prototype.createPreviewTile = function(tileNumber) {
     	var frame = this.framesheet.getFrameByIndex(tileNumber);
@@ -34,6 +68,7 @@
 
 		var previewTileRoot = document.createElement("li");
 		var classname = "preview-tile";
+		previewTileRoot.setAttribute("data-tile-number", tileNumber);
 
 		if (piskel.getActiveFrameIndex() == tileNumber) {
 			classname += " selected";
