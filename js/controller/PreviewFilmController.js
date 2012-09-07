@@ -51,7 +51,10 @@
     ns.PreviewFilmController.prototype.onDrop_ = function( event, ui ) {
 		var frameId1 = parseInt($(event.srcElement).data("tile-number"), 10);
 		var frameId2 = parseInt($(event.target).data("tile-number"), 10);
-
+		
+		if(isNaN(frameId1) || isNaN(frameId2)) {
+			return;
+		}
 		this.framesheet.swapFrames(frameId1, frameId2);
 
 		// TODO(vincz): deprecate
