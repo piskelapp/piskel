@@ -48,7 +48,7 @@
 	ns.Frame.prototype.clonePixels_ = function (pixels) {
 		var clonedPixels = [];
 		for (var col = 0 ; col < pixels.length ; col++) {
-			clonedPixels[col] = pixels[col].slice(0 , pixels[col].length-1);
+			clonedPixels[col] = pixels[col].slice(0 , pixels[col].length);
 		}
 		return clonedPixels;
 	};
