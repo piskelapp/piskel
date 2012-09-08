@@ -4,3 +4,6 @@
 # sublime text stuff (the -project should actually be shared, but then we'd have to share the same disk location)
 *.sublime-project
 *.sublime-workspace
+
+# git stackdumps
+*.stackdump
