@@ -16,10 +16,7 @@
 
 	ns.AnimatedPreviewController.prototype.init = function () {
 		this.initDom();
-
 		this.renderer.init(this.framesheet.getFrameByIndex(this.animIndex));
-
-		this.startAnimationTimer();
 	};
 
 	ns.AnimatedPreviewController.prototype.initDom = function () {

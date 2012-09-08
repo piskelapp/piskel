@@ -5,14 +5,15 @@
 		this.dpi = dpi;
 		this.framesheet = framesheet;
 		this.container = container;
+
+		$.subscribe(Events.REDRAW_PREVIEWFILM, $.proxy(function(evt) {
+			// this.render();
+		}, this));
 	};
 
 	ns.PreviewFilmController.prototype.init = function() {
       var addFrameButton = $('#add-frame-button')[0];
       addFrameButton.addEventListener('mousedown', this.addFrame.bind(this));
-      this.createPreviews();
-
-
     };
 
     ns.PreviewFilmController.prototype.addFrame = function () {
@@ -20,7 +21,7 @@
         piskel.setActiveFrameAndRedraw(this.framesheet.getFrameCount() - 1);
     };
 
-    ns.PreviewFilmController.prototype.createPreviews = function () {
+    ns.PreviewFilmController.prototype.render = function () {
       // TODO(vincz): Full redraw on any drawing modification, optimize.
       this.container.html("");
 
@@ -28,7 +29,7 @@
       
       for (var i = 0, l = frameCount; i < l ; i++) {
         this.container.append(this.createInterstitialTile_(i));
-        this.container.append(this.createPreviewTile_(i));
+        this.container.append(this.createPreviewTile_(i, this.framesheet));
       }
       this.container.append(this.createInterstitialTile_(frameCount));
 
@@ -142,11 +143,9 @@
      * @private
      * TODO(vincz): clean this giant rendering function & remove listeners.
      */
-    ns.PreviewFilmController.prototype.createPreviewTile_ = function(tileNumber) {
+    ns.PreviewFilmController.prototype.createPreviewTile_ = function(tileNumber, framesheet) {
     	var currentFrame = this.framesheet.getFrameByIndex(tileNumber);
-    	//var width = frame.getWidth() * this.dpi,
-    	//	height = frame.getHeight() * this.dpi;
-
+    	
 		var previewTileRoot = document.createElement("li");
 		var classname = "preview-tile";
 		previewTileRoot.setAttribute("data-tile-number", tileNumber);
@@ -158,18 +157,10 @@
 
 		var canvasContainer = document.createElement("div");
 		canvasContainer.className = "canvas-container";
-		//canvasContainer.setAttribute('style', 'width:' + width + 'px; height:' + height + 'px;');
-
+		
 		var canvasBackground = document.createElement("div");
 		canvasBackground.className = "canvas-background";
 		canvasContainer.appendChild(canvasBackground);
-		/*
-		var canvasPreview = document.createElement("canvas");
-		canvasPreview.className = "canvas tile-view"
-
-		canvasPreview.setAttribute('width', width);
-		canvasPreview.setAttribute('height', height);     
-        */
 		
 		previewTileRoot.addEventListener('click', function(evt) {
 			// has not class tile-action:
@@ -183,7 +174,9 @@
 		canvasPreviewDuplicateAction.innerHTML = "dup"
 
 		canvasPreviewDuplicateAction.addEventListener('click', function(evt) {
-			piskel.duplicateFrame(tileNumber);
+			framesheet.duplicateFrameByIndex(tileNumber);
+			$.publish(Events.LOCALSTORAGE_REQUEST);	 // Should come from model
+      		$.publish('SET_ACTIVE_FRAME', [tileNumber + 1]);
 		});
 
 		//this.renderer.render(this.framesheet.getFrameByIndex(tileNumber), canvasPreview);
@@ -191,7 +184,7 @@
 		// TODO(vincz): Eventually optimize this part by not recreating a FrameRenderer. Note that the real optim
 		// is to make this update function (#createPreviewTile) less aggressive.
 		var renderingOptions = {"dpi": this.dpi };
-		var currentFrameRenderer = new pskl.rendering.FrameRenderer(canvasContainer, renderingOptions, "tile-view");
+		var currentFrameRenderer = new pskl.rendering.FrameRenderer($(canvasContainer), renderingOptions, "tile-view");
 		currentFrameRenderer.init(currentFrame);
 		
 		previewTileRoot.appendChild(canvasContainer);
@@ -202,7 +195,9 @@
 			canvasPreviewDeleteAction.className = "tile-action"
 			canvasPreviewDeleteAction.innerHTML = "del"
 			canvasPreviewDeleteAction.addEventListener('click', function(evt) {
-				piskel.removeFrame(tileNumber);
+				framesheet.removeFrameByIndex(tileNumber);
+				$.publish(Events.FRAMESHEET_RESET); 
+				$.publish(Events.LOCALSTORAGE_REQUEST);	// Should come from model	
 			});
 			previewTileRoot.appendChild(canvasPreviewDeleteAction);
 		}
