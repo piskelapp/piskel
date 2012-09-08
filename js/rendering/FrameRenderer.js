@@ -1,7 +1,6 @@
 (function () {
 	var ns = $.namespace("pskl.rendering");
 
-	
 	ns.FrameRenderer = function (container, renderingOptions, className) {
 		
 		this.defaultRenderingOptions = {
@@ -168,5 +167,19 @@
 			this.canvasConfigDirty = false;
 		}
 		return this.canvas;
+	};
+
+	/**
+	 * @private
+	 */
+	ns.FrameRenderer.prototype.createCanvasForFrame_ = function (frame) {
+		var canvas = document.createElement("canvas");
+		canvas.setAttribute("width", frame.getWidth() * this.dpi);
+		canvas.setAttribute("height", frame.getHeight() * this.dpi);
+		
+		canvas.classList.add("canvas");
+		if(this.className) canvas.classList.add(this.className);
+
+		return canvas;
 	};
 })();

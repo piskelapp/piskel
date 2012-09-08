@@ -36,6 +36,7 @@ $.namespace("pskl");
 
       piskel.initDPIs_();
 
+
       frameSheet = new pskl.model.FrameSheet(framePixelWidth, framePixelHeight);
       frameSheet.addEmptyFrame();
 
@@ -78,12 +79,21 @@ $.namespace("pskl");
       }
 
       $.subscribe('SET_ACTIVE_FRAME', function(evt, frameId) {
-        piskel.setActiveFrameAndRedraw(frameId);
+        piskel.setActiveFrame(frameId);
       });
 
       $.subscribe('FRAMESHEET_RESET', function(evt, frameId) {
         piskel.redraw();
       });
+      var drawingLoop = new pskl.rendering.DrawingLoop();
+      drawingLoop.addCallback(this.render, this);
+      drawingLoop.start();
+    },
+
+    render : function (delta) {
+      this.drawingController.render(delta);
+      this.animationController.render(delta);
+      this.previewsController.render(delta);
     },
 
     /**
@@ -138,7 +148,7 @@ $.namespace("pskl");
       
 
       $.subscribe(Events.REFRESH, function() {
-        piskel.setActiveFrameAndRedraw(0);
+        piskel.setActiveFrame(0);
       });
 
       pskl.ToolSelector.init();
@@ -164,13 +174,12 @@ $.namespace("pskl");
         piskel.setActiveFrame(0);  
         $.publish(Events.HIDE_NOTIFICATION);
         piskel.finishInit();
-        piskel.setActiveFrameAndRedraw(0);  
       };
 
       xhr.onerror = function () {
         $.publish(Events.HIDE_NOTIFICATION);
         piskel.finishInit();
-        piskel.setActiveFrameAndRedraw(0);
+        piskel.setActiveFrame(0);  
       };
 
       xhr.send();
@@ -179,18 +188,6 @@ $.namespace("pskl");
     setActiveFrame: function(index) {
       activeFrameIndex = index;
       this.drawingController.frame = this.getCurrentFrame(); 
-    },
-
-    setActiveFrameAndRedraw: function(index) {
-      this.setActiveFrame(index);
-      this.redraw();
-    },
-
-    redraw : function () {
-      // Update drawing canvas:
-      this.drawingController.renderFrame();
-      // Update slideshow:
-      this.previewsController.createPreviews();
     },
 
     getActiveFrameIndex: function() {
@@ -203,7 +200,6 @@ $.namespace("pskl");
     getCurrentFrame : function () {
       return frameSheet.getFrameByIndex(activeFrameIndex);
     },
-
     // TODO(julz): Create package ?
     storeSheet : function (event) {
       // TODO Refactor using jquery ?

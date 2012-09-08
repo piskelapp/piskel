@@ -23,10 +23,6 @@
 			this.previousCol = col;
 			this.previousRow = row;
 		    drawer.frame.setPixel(col, row, color);
-
-		    // Draw on canvas:
-		    // TODO: Remove that when we have the centralized redraw loop
-		    drawer.renderFramePixel(col, row);
 		}
 	};
 
