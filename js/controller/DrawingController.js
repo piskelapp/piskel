@@ -35,7 +35,7 @@
 			"canvas-overlay");
 		
 		this.renderer.init(this.frame);
-		this.overlayRenderer.init(this.frame);
+		this.overlayRenderer.init(this.overlayFrame);
 
 		// State of drawing controller:
 		this.isClicked = false;
