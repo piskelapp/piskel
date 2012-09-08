@@ -148,9 +148,7 @@
      */
     ns.PreviewFilmController.prototype.createPreviewTile_ = function(tileNumber, framesheet) {
     	var currentFrame = this.framesheet.getFrameByIndex(tileNumber);
-    	//var width = frame.getWidth() * this.dpi,
-    	//	height = frame.getHeight() * this.dpi;
-
+    	
 		var previewTileRoot = document.createElement("li");
 		var classname = "preview-tile";
 		previewTileRoot.setAttribute("data-tile-number", tileNumber);
@@ -162,18 +160,10 @@
 
 		var canvasContainer = document.createElement("div");
 		canvasContainer.className = "canvas-container";
-		//canvasContainer.setAttribute('style', 'width:' + width + 'px; height:' + height + 'px;');
-
+		
 		var canvasBackground = document.createElement("div");
 		canvasBackground.className = "canvas-background";
 		canvasContainer.appendChild(canvasBackground);
-		/*
-		var canvasPreview = document.createElement("canvas");
-		canvasPreview.className = "canvas tile-view"
-
-		canvasPreview.setAttribute('width', width);
-		canvasPreview.setAttribute('height', height);     
-        */
 		
 		previewTileRoot.addEventListener('click', function(evt) {
 			// has not class tile-action:
