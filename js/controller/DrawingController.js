@@ -9,11 +9,6 @@
 			"hasGrid" : true
 		};
 
-		// jQuery deep copy of the rendering config:
-		overlayRenderingOptions = $.extend(true, {}, renderingOptions);
-		overlayRenderingOptions.hasGrid = false;
-		
-
 		/**
 		 * @public
 		 */
@@ -36,7 +31,7 @@
 
 		this.overlayRenderer = new pskl.rendering.FrameRenderer(
 			this.container,
-			overlayRenderingOptions,
+			renderingOptions,
 			"canvas-overlay");
 		
 		this.renderer.init(this.frame);
@@ -75,7 +70,7 @@
         body.mouseup($.proxy(this.onMouseup_, this));
         
         // Deactivate right click:
-        //this.container.contextmenu(this.onCanvasContextMenu_);
+        this.container.contextmenu(this.onCanvasContextMenu_);
 	};
 
 	/**
@@ -152,7 +147,7 @@
         this.isClicked = false;
         this.isRightClicked = false;
         var spriteCoordinate = this.getSpriteCoordinate(event);
-        console.log("mousemove: col: " + spriteCoordinate.col + " - row: " + spriteCoordinate.row);
+        //console.log("mousemove: col: " + spriteCoordinate.col + " - row: " + spriteCoordinate.row);
         this.currentToolBehavior.releaseToolAt(
           spriteCoordinate.col,
           spriteCoordinate.row,
