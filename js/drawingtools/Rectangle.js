@@ -24,7 +24,7 @@
 		this.startRow = row;
 		
 		// Drawing the first point of the rectangle in the fake overlay canvas:
-		drawer.overlay.setPixel(col, row, color);
+		drawer.overlayFrame.setPixel(col, row, color);
 		drawer.renderOverlay();
 	};
 
@@ -42,7 +42,7 @@
 			if(color == Constants.TRANSPARENT_COLOR) {
 				color = Constants.SELECTION_TRANSPARENT_COLOR;
 			}			
-			drawer.overlay.setPixel(strokePoints[i].col, strokePoints[i].row, color);
+			drawer.overlayFrame.setPixel(strokePoints[i].col, strokePoints[i].row, color);
 		}
 		drawer.renderOverlay();
 	};
