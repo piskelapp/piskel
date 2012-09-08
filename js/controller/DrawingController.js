@@ -3,19 +3,41 @@
 	ns.DrawingController = function (frame, container, dpi) {
 		this.dpi = dpi;
 
+		// TODO(vincz): Store user prefs in a localstorage string ?
 		var renderingOptions = {
 			"dpi": dpi,
-			"displayGrid": true // Retrieve from localsotrage config 
-		}
+			"gridStrokeWidth" : 1,
+			"gridStrokeColor" : "lightgray"
+		};
 
-		// Public
+		// jQuery deep copy of the rendering config:
+		overlayRenderingOptions = $.extend(true, {}, renderingOptions);
+		overlayRenderingOptions.gridStrokeColor = "transparent";
+		
+		/**
+		 * @public
+		 */
 		this.frame = frame;
-		this.overlayFrame = pskl.model.Frame.createEmptyFromFrame(frame); // Type is frame
+		
+		/**
+		 * @public
+		 */
+		this.overlayFrame = pskl.model.Frame.createEmptyFromFrame(frame);
 
-		// Private
+		/**
+		 * @private
+		 */
 		this.container = container;
-		this.renderer = new pskl.rendering.FrameRenderer(this.container, renderingOptions, "drawing-canvas");
-		this.overlayRenderer = new pskl.rendering.FrameRenderer(this.container, renderingOptions, "canvas-overlay");
+		
+		this.renderer = new pskl.rendering.FrameRenderer(
+			this.container,
+			renderingOptions,
+			"drawing-canvas");
+
+		this.overlayRenderer = new pskl.rendering.FrameRenderer(
+			this.container,
+			overlayRenderingOptions,
+			"canvas-overlay");
 		
 		this.renderer.init(this.frame);
 		this.overlayRenderer.init(this.frame);
@@ -53,7 +75,6 @@
         body.mouseup($.proxy(this.onMouseup_, this));
         
         // Deactivate right click:
-        this.container.contextmenu(this.onCanvasContextMenu_);
         //this.container.contextmenu(this.onCanvasContextMenu_);
 	};
 
@@ -154,7 +175,7 @@
       return {
         x : clientX - canvasPageOffset.left,
         y : clientY - canvasPageOffset.top
-      }
+      };
     };
 
     /**
@@ -162,10 +183,7 @@
 	 */
     ns.DrawingController.prototype.getSpriteCoordinate = function(event) {
         var coords = this.getRelativeCoordinates(event.clientX, event.clientY);
-        return {
-          "col" : (coords.x - coords.x % this.dpi) / this.dpi,
-          "row" : (coords.y - coords.y % this.dpi) / this.dpi
-        }
+        return this.renderer.convertPixelCoordinatesIntoSpriteCoordinate(coords);
     };
 
     /**
