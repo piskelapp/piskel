@@ -1,14 +1,16 @@
 (function () {
 	var ns = $.namespace("pskl.controller");
 	ns.AnimatedPreviewController = function (framesheet, container, dpi) {
-		this.dpi = dpi;
 		this.framesheet = framesheet;
 		this.container = container;
 		this.animIndex = 0;
 
 		this.fps = parseInt($("#preview-fps")[0].value, 10);
 
-		this.renderer = new pskl.rendering.FrameRenderer(this.container, this.dpi);
+		var renderingOptions = {
+			"dpi": dpi
+		};
+		this.renderer = new pskl.rendering.FrameRenderer(this.container, renderingOptions);
 	};
 
 	ns.AnimatedPreviewController.prototype.init = function () {

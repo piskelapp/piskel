@@ -4,17 +4,18 @@
 	this.dpi = null;
 	this.canvas = null;
 
-	ns.FrameRenderer = function (container, dpi, className) {
+	ns.FrameRenderer = function (container, renderingOptions, className) {
 		if(container == undefined) {
 			throw "Bad FrameRenderer initialization. <container> undefined.";
 		}
+		this.container = container;
 
-		if(dpi == undefined || isNaN(dpi)) {
+		if(renderingOptions == undefined || renderingOptions.dpi == undefined || isNaN(dpi)) {
 			throw "Bad FrameRenderer initialization. <dpi> not well defined.";
 		}
 
-		this.container = container;
-		this.dpi = dpi;
+		this.displayGrid = !!renderingOptions.displayGrid;
+		this.dpi = renderingOptions.dpi;
 		this.className = className;
 	};
 

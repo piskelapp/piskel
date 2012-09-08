@@ -3,14 +3,19 @@
 	ns.DrawingController = function (frame, container, dpi) {
 		this.dpi = dpi;
 
+		var renderingOptions = {
+			"dpi": dpi,
+			"displayGrid": true // Retrieve from localsotrage config 
+		}
+
 		// Public
 		this.frame = frame;
 		this.overlayFrame = pskl.model.Frame.createEmptyFromFrame(frame); // Type is frame
 
 		// Private
 		this.container = container;
-		this.renderer = new pskl.rendering.FrameRenderer(this.container, dpi, "drawing-canvas");
-		this.overlayRenderer = new pskl.rendering.FrameRenderer(this.container, dpi, "canvas-overlay");
+		this.renderer = new pskl.rendering.FrameRenderer(this.container, renderingOptions, "drawing-canvas");
+		this.overlayRenderer = new pskl.rendering.FrameRenderer(this.container, renderingOptions, "canvas-overlay");
 		//this.mainCanvas = this.createMainCanvas();
 		//this.overlayCanvas = this.createOverlayCanvas();
 		this.renderer.init(this.frame);

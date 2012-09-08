@@ -5,8 +5,6 @@
 		this.dpi = dpi;
 		this.framesheet = framesheet;
 		this.container = container;
-
-		//this.renderer = new pskl.rendering.FrameRenderer(this.container, dpi);
 	};
 
 	ns.PreviewFilmController.prototype.init = function() {
@@ -189,7 +187,8 @@
 		
 		// TODO(vincz): Eventually optimize this part by not recreating a FrameRenderer. Note that the real optim
 		// is to make this update function (#createPreviewTile) less aggressive.
-		var currentFrameRenderer = new pskl.rendering.FrameRenderer(canvasContainer, this.dpi, "tile-view");
+		var renderingOptions = {"dpi": this.dpi };
+		var currentFrameRenderer = new pskl.rendering.FrameRenderer(canvasContainer, renderingOptions, "tile-view");
 		currentFrameRenderer.init(currentFrame);
 		
 		previewTileRoot.appendChild(canvasContainer);
