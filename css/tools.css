@@ -77,6 +77,13 @@
   cursor: url(../img/tools/cursors/hand.png) 14 12, pointer;
 }
 
+.tool-grid,
+.tool-grid label,
+.tool-grid input {
+  line-height: 2.5;
+  cursor: pointer;
+}
+
 .tool-icon.selected {
   cursor: auto;
   background-color: #eee;

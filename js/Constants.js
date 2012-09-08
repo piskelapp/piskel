@@ -12,5 +12,8 @@ var Constants = {
 	/*
 	 * Default entry point for piskel web service:
 	 */
-	PISKEL_SERVICE_URL: 'http://2.piskel-app.appspot.com'
+	PISKEL_SERVICE_URL: 'http://2.piskel-app.appspot.com',
+
+	GRID_STROKE_WIDTH: 1,
+	GRID_STROKE_COLOR: "lightgray"
 };
