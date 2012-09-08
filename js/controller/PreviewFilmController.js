@@ -178,6 +178,7 @@
 
 		canvasPreviewDuplicateAction.addEventListener('click', function(evt) {
 			framesheet.duplicateFrameByIndex(tileNumber);
+			$.publish(Events.LOCALSTORAGE_REQUEST);	 // Should come from model
       		$.publish('SET_ACTIVE_FRAME', [tileNumber + 1]);
 		});
 
@@ -197,7 +198,9 @@
 			canvasPreviewDeleteAction.className = "tile-action"
 			canvasPreviewDeleteAction.innerHTML = "del"
 			canvasPreviewDeleteAction.addEventListener('click', function(evt) {
-				piskel.removeFrame(tileNumber);
+				framesheet.removeFrameByIndex(tileNumber);
+				$.publish(Events.FRAMESHEET_RESET); 
+				$.publish(Events.LOCALSTORAGE_REQUEST);	// Should come from model	
 			});
 			previewTileRoot.appendChild(canvasPreviewDeleteAction);
 		}

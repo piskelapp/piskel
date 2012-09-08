@@ -80,6 +80,10 @@ $.namespace("pskl");
       $.subscribe('SET_ACTIVE_FRAME', function(evt, frameId) {
         piskel.setActiveFrameAndRedraw(frameId);
       });
+
+      $.subscribe('FRAMESHEET_RESET', function(evt, frameId) {
+        piskel.redraw();
+      });
     },
 
     /**
