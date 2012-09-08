@@ -96,6 +96,16 @@
 		this.frames.splice(index + 1, 0, frame.clone());
 	};
 
+	ns.FrameSheet.prototype.moveFrame = function(originIndex, destinationIndex) {
+		var frameToMove = this.getFrameByIndex(originIndex);
+		this.frames.splice(destinationIndex, 0,frameToMove);
+
+		if(destinationIndex <= originIndex) {
+			originIndex++;
+		}
+		this.removeFrameByIndex(originIndex);
+	};
+
 	ns.FrameSheet.prototype.swapFrames = function(indexFrame1, indexFrame2) {
 		if(isNaN(indexFrame1) || isNaN(indexFrame1) ||
 		   (!this.hasFrameAtIndex(indexFrame1) && !this.hasFrameAtIndex(indexFrame2))) {
