@@ -1,7 +1,6 @@
 (function () {
 	var ns = $.namespace("pskl.rendering");
 
-	
 	ns.FrameRenderer = function (container, renderingOptions, className) {
 		
 		this.defaultRenderingOptions = {
@@ -152,17 +151,15 @@
 			var pixelHeight =  row * this.dpi + this.gridStrokeWidth * (row - 1);
 			canvas.setAttribute("width", pixelWidth);
 			canvas.setAttribute("height", pixelHeight);
-			var canvasClassname =  "canvas";
-			if(this.className) {
-				canvasClassname += " " + this.className;	
-			}
-			canvas.setAttribute("class", canvasClassname);
+
+			canvas.classList.add("canvas");
+			if(this.className) canvas.classList.add(this.className);	
+
 			this.container.append(canvas);
 
 			if(this.gridStrokeWidth > 0) {
 				this.drawGrid_(canvas, pixelWidth, pixelHeight, col, row);
 			}
-			
 				
 			this.canvas = canvas;
 			this.canvasConfigDirty = false;
