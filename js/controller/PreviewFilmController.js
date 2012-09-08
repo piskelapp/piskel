@@ -92,7 +92,10 @@
      */
     ns.PreviewFilmController.prototype.onDrop_ = function( event, ui ) {
 		var activeFrame;
-		var originFrameId = parseInt($(event.srcElement).data("tile-number"), 10);
+		// When we drag from an element, the drag could start from a nested DOM element
+		// inside the drag target. We normalize that by taking the correct ancestor:
+		var originTile = $(event.srcElement).closest(".preview-tile");
+		var originFrameId = parseInt(originTile.data("tile-number"), 10);
 		var dropTarget = $(event.target);
 		
 		if(dropTarget.data("tile-type") == "interstitial") {
@@ -101,7 +104,7 @@
 			if(isNaN(originFrameId) || isNaN(targetInsertionId)) {
 				return;
 			}
-			console.log("origin-frame: "+originFrameId+" - targetInsertionId: "+ targetInsertionId)
+			//console.log("origin-frame: "+originFrameId+" - targetInsertionId: "+ targetInsertionId)
 			this.framesheet.moveFrame(originFrameId, targetInsertionId);
 			
 			activeFrame = targetInsertionId;
@@ -119,7 +122,7 @@
 			if(isNaN(originFrameId) || isNaN(targetSwapId)) {
 				return;
 			}
-			console.log("origin-frame: "+originFrameId+" - targetSwapId: "+ targetSwapId)
+			//console.log("origin-frame: "+originFrameId+" - targetSwapId: "+ targetSwapId)
 			this.framesheet.swapFrames(originFrameId, targetSwapId);
 			activeFrame = targetSwapId;
 		}
