@@ -1,16 +1,13 @@
 (function () {
 	var ns = $.namespace("pskl.rendering");
 
-	this.dpi = null;
-	this.canvas = null;
-
 	ns.FrameRenderer = function (container, renderingOptions, className) {
 		if(container == undefined) {
 			throw "Bad FrameRenderer initialization. <container> undefined.";
 		}
 		this.container = container;
 
-		if(renderingOptions == undefined || renderingOptions.dpi == undefined || isNaN(dpi)) {
+		if(renderingOptions == undefined || renderingOptions.dpi == undefined) {
 			throw "Bad FrameRenderer initialization. <dpi> not well defined.";
 		}
 
@@ -66,24 +63,25 @@
 	ns.FrameRenderer.prototype.getCanvas_ = function (frame) {
 		if(this.canvasConfigDirty) {
 			$(this.canvas).remove();
-			var width = frame.getWidth(),
-				height = frame.getHeight();
-			
-			var canvas = document.createElement("canvas");
-			canvas.setAttribute("width", width * this.dpi);
-			canvas.setAttribute("height", height * this.dpi);
-			
-			var canvasClassname =  "canvas";
-			if(this.className) {
-				canvasClassname += " " + this.className;	
-			}
-			canvas.setAttribute("class", canvasClassname);
-			
-			this.canvas = canvas;
+			this.canvas = this.createCanvasForFrame_(frame);
 			this.container.appendChild(this.canvas);
 
 			this.canvasConfigDirty = false;
 		}
 		return this.canvas;
+	};
+
+	/**
+	 * @private
+	 */
+	ns.FrameRenderer.prototype.createCanvasForFrame_ = function (frame) {
+		var canvas = document.createElement("canvas");
+		canvas.setAttribute("width", frame.getWidth() * this.dpi);
+		canvas.setAttribute("height", frame.getHeight() * this.dpi);
+		
+		canvas.classList.add("canvas");
+		if(this.className) canvas.classList.add(this.className);
+
+		return canvas;
 	};
 })();
