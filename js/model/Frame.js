@@ -3,7 +3,7 @@
 	
 	ns.Frame = function (pixels) {
 		this.pixels = pixels;
-		this.previousStates = [this._clonePixels()];
+		this.previousStates = [this.getPixels()];
 		this.stateIndex = 0;
 	};
 
@@ -27,12 +27,30 @@
 		return new ns.Frame(this._clonePixels());
 	};
 
-	ns.Frame.prototype._clonePixels = function () {
-		var pixels = [];
-		for (var col = 0 ; col < this.getWidth() ; col++) {
-			pixels[col] = this.pixels[col].slice(0 , this.getHeight());
+	/**
+	 * Returns a copy of the pixels used by the frame
+	 */
+	ns.Frame.prototype.getPixels = function () {
+		return this.clonePixels_(this.pixels)
+	};
+
+	/**
+	 * Copies the passed pixels into the frame.
+	 */
+	ns.Frame.prototype.setPixels = function (pixels) {
+		this.pixels = this.clonePixels_(pixels);
+	};
+
+	/**
+	 * Clone a set of pixels. Should be static utility method
+	 * @private
+	 */
+	ns.Frame.prototype.clonePixels_ = function (pixels) {
+		var clonedPixels = [];
+		for (var col = 0 ; col < pixels.length ; col++) {
+			clonedPixels[col] = pixels[col].slice(0 , this.getHeight());
 		}
-		return pixels;
+		return clonedPixels;
 	};
 
 	ns.Frame.prototype.serialize = function () {
@@ -63,7 +81,7 @@
 		// remove all states past current state
 		this.previousStates.length = this.stateIndex + 1;
 		// push new state
-		this.previousStates.push(this._clonePixels());
+		this.previousStates.push(this.getPixels());
 		// set the stateIndex to latest saved state
 		this.stateIndex = this.previousStates.length - 1;
 	};
@@ -71,14 +89,14 @@
 	ns.Frame.prototype.loadPreviousState = function () {
 		if (this.stateIndex > 0) {
 			this.stateIndex--;
-			this.pixels = this.previousStates[this.stateIndex];
+			this.setPixels(this.previousStates[this.stateIndex]);
 		}
 	};
 
 	ns.Frame.prototype.loadNextState = function () {
 		if (this.stateIndex < this.previousStates.length - 1) {
 			this.stateIndex++;
-			this.pixels = this.previousStates[this.stateIndex];
+			this.setPixels(this.previousStates[this.stateIndex]);
 		}	
 	};
 })();
