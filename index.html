@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="css/reset.css">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/tools.css">
+  <link rel="stylesheet" href="css/preview-film-section.css">
   
   
 </head>
@@ -30,6 +31,7 @@
       <li class="tool-icon tool-paint-bucket" data-tool-id="tool-paint-bucket" title="Bucket tool"></li>
       <li class="tool-icon tool-stroke" data-tool-id="tool-stroke" title="Stroke tool"></li>
       <li class="tool-icon tool-rectangle" data-tool-id="tool-rectangle" title="Rectangle tool"></li>
+      <li class="tool-icon tool-move" data-tool-id="tool-move" title="Move tool"></li>
     </ul>
     
     <ul class="tools-group">
@@ -40,6 +42,7 @@
       </li>
       <li class="tool-icon tool-color-picker">
         <input id="color-picker" class="color {hash:true}" type="text" value="" />
+        <input id="secondary-color-picker" class="color {hash:true}" type="text" value="" />
       </li>
     </ul>
 
@@ -49,12 +52,19 @@
         <span id="display-fps">12 fps</span>
       </li>
     </ul>
+
+    <ul class="tools-group">
+      <li class="tool-grid">
+        <input id="show-grid" type="checkbox"/>
+        <label for="show-grid">Show grid</label>
+      </li>
+    </ul>
   
   </div>
 
   <div class='left-nav'>
     <!-- List of frames: -->
-    <ul id="preview-list"></ul>
+    <ul class="preview-list" id="preview-list"></ul>
   </div>
 
   <div class='main-panel'>
@@ -74,6 +84,7 @@
   
   <!-- Core libraries: -->
   <script src="js/lib/jquery-1.8.0.js"></script>
+  <script src="js/lib/jquery-ui-1.8.23.custom.js"></script>
   <script src="js/lib/pubsub.js"></script> 
   
   <!-- Application wide configuration -->
@@ -87,11 +98,12 @@
   <!-- Application libraries-->
   <script src="js/model/Frame.js"></script>
   <script src="js/model/FrameSheet.js"></script>
+  <script src="js/rendering/FrameRenderer.js"></script>
   <script src="js/controller/DrawingController.js"></script>
   <script src="js/controller/PreviewFilmController.js"></script>
   <script src="js/controller/AnimatedPreviewController.js"></script>
-  <script src="js/rendering/FrameRenderer.js"></script>
   <script src="js/LocalStorageService.js"></script>
+  <script src="js/HistoryManager.js"></script>
   <script src="js/Palette.js"></script>
   <script src="js/Notification.js"></script>
   <script src="js/drawingtools/BaseTool.js"></script>
@@ -100,6 +112,7 @@
   <script src="js/drawingtools/Stroke.js"></script>
   <script src="js/drawingtools/PaintBucket.js"></script>
   <script src="js/drawingtools/Rectangle.js"></script>
+  <script src="js/drawingtools/Move.js"></script>
   <script src="js/ToolSelector.js"></script>
 
   <!-- Application controller and initialization -->

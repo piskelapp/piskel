@@ -52,41 +52,6 @@
   display : inline-block;
 }
 
-#preview-list {
-  list-style-type: none;
-}
-
-.preview-tile {
-  padding : 10px;
-  overflow: hidden;
-  background-color: gray;
-}
-
-.preview-tile .canvas-container {
-  float: left;
-}
-
-.preview-tile .tile-view {
-  float: left;
-  border: blue 1px solid;
-}
-
-.preview-tile .tile-action {
-  display: none;
-  float: right;
-}
-
-.preview-tile:hover .tile-action {
-  display: block;
-}
-
-.preview-tile:hover {
-  background-color: lightgray;
-}
-
-#preview-list .preview-tile.selected {
-  background-color: lightyellow;
-}
 
 .canvas-container {
   position: relative;
@@ -108,10 +73,7 @@
 }
 
 .drawing-canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 1;
+  float: left;
 }
 
 .canvas-overlay {

@@ -1,6 +1,8 @@
 (function () {
 	var ns = $.namespace("pskl.model");
-	ns.FrameSheet = function () {
+	ns.FrameSheet = function (width, height) {
+		this.width = width;
+		this.height = height;
 		this.frames = [];
 	};
 
@@ -9,7 +11,7 @@
 	};
 
 	ns.FrameSheet.prototype.addEmptyFrame = function () {
-		this.addFrame(ns.Frame.createEmpty(width, height));
+		this.addFrame(ns.Frame.createEmpty(this.width, this.height));
 	};
 
 	ns.FrameSheet.prototype.addFrame = function (frame) {
@@ -92,5 +94,30 @@
 	ns.FrameSheet.prototype.duplicateFrameByIndex = function(index) {
 		var frame = this.getFrameByIndex(index);
 		this.frames.splice(index + 1, 0, frame.clone());
+	};
+
+	ns.FrameSheet.prototype.moveFrame = function(originIndex, destinationIndex) {
+		var frameToMove = this.getFrameByIndex(originIndex);
+		this.frames.splice(destinationIndex, 0,frameToMove);
+
+		if(destinationIndex <= originIndex) {
+			originIndex++;
+		}
+		this.removeFrameByIndex(originIndex);
+	};
+
+	ns.FrameSheet.prototype.swapFrames = function(indexFrame1, indexFrame2) {
+		if(isNaN(indexFrame1) || isNaN(indexFrame1) ||
+		   (!this.hasFrameAtIndex(indexFrame1) && !this.hasFrameAtIndex(indexFrame2))) {
+		 	throw "Bad indexes for swapFrames Framesheet function.";
+		}
+		if(indexFrame1 == indexFrame2) {
+			return;
+		}
+		else {
+			var swapFrame = this.frames[indexFrame1];
+			this.frames[indexFrame1] = this.frames[indexFrame2];
+			this.frames[indexFrame2] = swapFrame;
+		}
 	};
 })();

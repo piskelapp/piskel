@@ -1,6 +1,7 @@
 Events = {
 	
 	TOOL_SELECTED : "TOOL_SELECTED",
+	TOOL_RELEASED : "TOOL_RELEASED",
 	COLOR_SELECTED: "COLOR_SELECTED",
 	COLOR_USED: "COLOR_USED",
 
@@ -20,6 +21,15 @@ Events = {
 	 * TODO: Remove or rework when redraw system is refactored.
 	 */
 	REFRESH: "REFRESH",
+
+	/**
+	 * Temporary event to bind the redraw of right preview film to the canvas.
+	 * This redraw should be driven by model updates.
+	 * TODO(vincz): Remove.
+	 */
+	REDRAW_PREVIEWFILM: "REDRAW_PREVIEWFILM",
+
+	GRID_DISPLAY_STATE_CHANGED: "GRID_DISPLAY_STATE_CHANGED",
 
 	/**
 	 * The framesheet was reseted and is now probably drastically different.

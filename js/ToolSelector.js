@@ -14,7 +14,8 @@ pskl.ToolSelector = (function() {
 		"eraser" : new pskl.drawingtools.Eraser(),
 		"paintBucket" : new pskl.drawingtools.PaintBucket(),
 		"stroke" : new pskl.drawingtools.Stroke(),
-		"rectangle" : new pskl.drawingtools.Rectangle()
+		"rectangle" : new pskl.drawingtools.Rectangle(),
+		"move" : new pskl.drawingtools.Move()
 	};
 	var currentSelectedTool = toolInstances.simplePen;
 	var previousSelectedTool = toolInstances.simplePen;
@@ -66,6 +67,17 @@ pskl.ToolSelector = (function() {
 		}
 	};
 
+	/**
+	 * Get state for the checkbox that control the display of the grid
+	 * on the drawing canvas.
+	 * @private
+	 */
+	var isShowGridChecked_ = function() {
+		var showGridCheckbox = $('#show-grid');
+		var isChecked = showGridCheckbox.is(':checked');
+		return isChecked;
+	};
+
 	return {
 		init: function() {
 			
@@ -75,16 +87,11 @@ pskl.ToolSelector = (function() {
 			// Activate listener on tool panel:
 			$("#tools-container").click(onToolIconClicked_);
 
-			// Special right click handlers (select the eraser tool)
-			$.subscribe(Events.CANVAS_RIGHT_CLICKED, function() {
-				previousSelectedTool = currentSelectedTool;
-				currentSelectedTool = toolInstances.eraser;
-				$.publish(Events.TOOL_SELECTED, [currentSelectedTool]);
-			});
-
-			$.subscribe(Events.CANVAS_RIGHT_CLICK_RELEASED, function() {
-				currentSelectedTool = previousSelectedTool;
-				$.publish(Events.TOOL_SELECTED, [currentSelectedTool]);
+			// Show/hide the grid on drawing canvas:
+			$.publish(Events.GRID_DISPLAY_STATE_CHANGED, [isShowGridChecked_()])
+			$('#show-grid').change(function(evt) {
+				var checked = isShowGridChecked_();
+				$.publish(Events.GRID_DISPLAY_STATE_CHANGED, [checked])		
 			});
 		}
 	};

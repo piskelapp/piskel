@@ -2,7 +2,9 @@
 	var ns = $.namespace("pskl.model");
 	
 	ns.Frame = function (pixels) {
-		this.pixels = pixels;
+		this.pixels = this.clonePixels_(pixels);
+		this.previousStates = [this.getPixels()];
+		this.stateIndex = 0;
 	};
 
 	ns.Frame.createEmpty = function (width, height) {
@@ -22,13 +24,33 @@
 	};
 
 	ns.Frame.prototype.clone = function () {
-		var clone = ns.Frame.createEmptyFromFrame(this);
-		for (var col = 0 ; col < clone.getWidth() ; col++) {
-			for (var row = 0 ; row < clone.getHeight() ; row++) {
-				clone.setPixel(col, row, this.getPixel(col, row));
-			}
+		return new ns.Frame(this.getPixels());
+	};
+
+	/**
+	 * Returns a copy of the pixels used by the frame
+	 */
+	ns.Frame.prototype.getPixels = function () {
+		return this.clonePixels_(this.pixels)
+	};
+
+	/**
+	 * Copies the passed pixels into the frame.
+	 */
+	ns.Frame.prototype.setPixels = function (pixels) {
+		this.pixels = this.clonePixels_(pixels);
+	};
+
+	/**
+	 * Clone a set of pixels. Should be static utility method
+	 * @private
+	 */
+	ns.Frame.prototype.clonePixels_ = function (pixels) {
+		var clonedPixels = [];
+		for (var col = 0 ; col < pixels.length ; col++) {
+			clonedPixels[col] = pixels[col].slice(0 , pixels[col].length);
 		}
-		return clone;
+		return clonedPixels;
 	};
 
 	ns.Frame.prototype.serialize = function () {
@@ -52,7 +74,29 @@
 	};
 
 	ns.Frame.prototype.containsPixel = function (col, row) {
-		return col >= 0 && row >= 0 && col <= this.pixels.length && row <= this.pixels[0].length;
+		return col >= 0 && row >= 0 && col < this.pixels.length && row < this.pixels[0].length;
 	};
 
+	ns.Frame.prototype.saveState = function () {
+		// remove all states past current state
+		this.previousStates.length = this.stateIndex + 1;
+		// push new state
+		this.previousStates.push(this.getPixels());
+		// set the stateIndex to latest saved state
+		this.stateIndex = this.previousStates.length - 1;
+	};
+
+	ns.Frame.prototype.loadPreviousState = function () {
+		if (this.stateIndex > 0) {
+			this.stateIndex--;
+			this.setPixels(this.previousStates[this.stateIndex]);
+		}
+	};
+
+	ns.Frame.prototype.loadNextState = function () {
+		if (this.stateIndex < this.previousStates.length - 1) {
+			this.stateIndex++;
+			this.setPixels(this.previousStates[this.stateIndex]);
+		}	
+	};
 })();

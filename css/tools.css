@@ -9,6 +9,7 @@
 
 .tool-icon {
   float: left;
+  cursor : pointer;
   width: 30px;
   height: 30px;
   background-color: transparent;
@@ -44,28 +45,43 @@
   background-image: url(../img/tools/icons/rectangle.png);
 }
 
+.tool-icon.tool-move {
+  background-image: url(../img/tools/icons/hand.png);
+}
+
 /*.tool-icon.tool-palette {
   background-image: url(../img/tools/icons/color-palette.png);
 }*/
 
 .tool-paint-bucket .drawing-canvas-container:hover {
-  cursor: url(../img/tools/cursors/paint-bucket.png) 18 17, pointer;
+  cursor: url(../img/tools/cursors/paint-bucket.png) 14 12, pointer;
 }
 
 .tool-pen .drawing-canvas-container:hover {
-  cursor: url(../img/tools/cursors/pen.png) 7 21, pointer;
+  cursor: url(../img/tools/cursors/pen.png) 2 21, pointer;
 }
 
 .tool-eraser .drawing-canvas-container:hover {
-  cursor: url(../img/tools/cursors/eraser.png) 5 21, pointer;
+  cursor: url(../img/tools/cursors/eraser.png) 2 21, pointer;
 }
 
 .tool-stroke .drawing-canvas-container:hover {
-  cursor: url(../img/tools/cursors/pen.png) 5 21, pointer;
+  cursor: url(../img/tools/cursors/pen.png) 2 21, pointer;
 }
 
 .tool-rectangle .drawing-canvas-container:hover {
   cursor: url(../img/tools/cursors/rectangle.png) 4 21, pointer;
+}
+
+.tool-move .drawing-canvas-container:hover {
+  cursor: url(../img/tools/cursors/hand.png) 14 12, pointer;
+}
+
+.tool-grid,
+.tool-grid label,
+.tool-grid input {
+  line-height: 2.5;
+  cursor: pointer;
 }
 
 .tool-icon.selected {
@@ -74,17 +90,25 @@
 }
 
 .tool-icon:hover {
-  cursor: pointer;
   background-color: #eee;
 }
 
+.tool-color-picker {
+  padding: 5px 0 0 5px;
+  cursor : default;
+}
+
 .tool-color-picker input {
-  width: 12px; height: 12px;
+  width: 8px; height: 8px;
   border: 1px solid black;
   padding: 1px;
   background: white;
-  margin: 7px 0 0 7px;
   cursor: pointer;
+  position : relative;
+}
+
+#secondary-color-picker {
+  top : 8px;
 }
 
 .tool-palette {

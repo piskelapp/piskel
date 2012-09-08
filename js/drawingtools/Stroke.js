@@ -34,18 +34,16 @@
 
 		// The fake canvas where we will draw the preview of the stroke:
 		// Drawing the first point of the stroke in the fake overlay canvas:
-		drawer.updateOverlay(col, row, color);
+		drawer.overlayFrame.setPixel(col, row, color);
 		drawer.renderOverlay();
 	};
 
 	ns.Stroke.prototype.moveToolAt = function(col, row, color, drawer) {
+		drawer.clearOverlay();
+
 		// When the user moussemove (before releasing), we dynamically compute the 
 		// pixel to draw the line and draw this line in the overlay canvas:
 		var strokePoints = this.getLinePixels_(this.startCol, col, this.startRow, row);
-
-		// Clean overlay canvas:
-		this.canvasOverlay.getContext("2d").clearRect(
-			0, 0, this.canvasOverlay.width, this.canvasOverlay.height);
 		
 		// Drawing current stroke:
 		for(var i = 0; i< strokePoints.length; i++) {
@@ -59,8 +57,9 @@
 				// eg deleting the equivalent of a stroke.		
 				color = Constants.SELECTION_TRANSPARENT_COLOR;
 			}			
-			drawer.updateOverlay(strokePoints[i].col, strokePoints[i].row, color);
+			drawer.overlayFrame.setPixel(strokePoints[i].col, strokePoints[i].row, color);
 		}
+		drawer.renderOverlay();
 	};
 
 	/**
@@ -75,7 +74,7 @@
 			var strokePoints = this.getLinePixels_(this.startCol, col, this.startRow, row);
 			for(var i = 0; i< strokePoints.length; i++) {
 				// Change model:
-				drawer.updateFrame(strokePoints[i].col, strokePoints[i].row, color);
+				drawer.frame.setPixel(strokePoints[i].col, strokePoints[i].row, color);
 			}
 			// Draw in canvas:
 			// TODO: Remove that when we have the centralized redraw loop

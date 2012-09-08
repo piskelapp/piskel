@@ -11,38 +11,21 @@ $.namespace("pskl");
    */
   var frameSheet,
 
-      // Temporary zoom implementation to easily get bigger canvases to
-      // see how good perform critical algorithms on big canvas.
-      zoom = 1,
-
       // Configuration:
       // Canvas size in pixel size (not dpi related)
-      framePixelWidth = 32 * zoom, 
-      framePixelHeight = 32 * zoom,
-
+      framePixelWidth = 32, 
+      framePixelHeight = 32,
 
       // Scaling factors for a given frameSheet rendering:
       // Main drawing area:
-      drawingCanvasDpi = Math.ceil(20/ zoom),
-      // Canvas previous in the slideshow:
-      previewTileCanvasDpi = Math.ceil(4 / zoom),
-      // Ainmated canvas preview:
-      previewAnimationCanvasDpi = Math.ceil(8 / zoom),
+      drawingCanvasDpi = 20,   
+      // Canvas preview film canvases:
+      previewTileCanvasDpi = 4,
+      // Animated canvas preview:
+      previewAnimationCanvasDpi = 8,
 
-      // DOM references:
-      drawingAreaContainer,
-      drawingAreaCanvas,
-      previewCanvas,
-      
-      // States:
-      isClicked = false, 
-      isRightClicked = false, 
-      activeFrameIndex = -1, 
-      animIndex = 0,
-      penColor = Constants.DEFAULT_PEN_COLOR,
+      activeFrameIndex = -1,       
       currentFrame = null;
-      currentToolBehavior = null,
-      previousMousemoveTime = 0;
 
   /**
    * Main application controller
@@ -50,14 +33,15 @@ $.namespace("pskl");
   var piskel = {
 
     init : function () {
-      var emptyFrame = pskl.model.Frame.createEmpty(framePixelWidth, framePixelHeight);
 
-      frameSheet = new pskl.model.FrameSheet();
-      frameSheet.addFrame(emptyFrame);
+      piskel.initDPIs_();
+
+      frameSheet = new pskl.model.FrameSheet(framePixelWidth, framePixelHeight);
+      frameSheet.addEmptyFrame();
 
       this.drawingController = new pskl.controller.DrawingController(
-        emptyFrame,
-        $('#drawing-canvas-container')[0], 
+        frameSheet.getFrameByIndex(0),
+        $('#drawing-canvas-container'), 
         drawingCanvasDpi
       );
 
@@ -65,20 +49,21 @@ $.namespace("pskl");
 
       this.animationController = new pskl.controller.AnimatedPreviewController(
         frameSheet,
-        $('#preview-canvas-container')[0], 
+        $('#preview-canvas-container'), 
         previewAnimationCanvasDpi
       );
 
 
       this.previewsController = new pskl.controller.PreviewFilmController(
         frameSheet,
-        $('#preview-list')[0], 
+        $('#preview-list'), 
         previewTileCanvasDpi
       );
 
       this.animationController.init();
       this.previewsController.init();
-          
+
+      pskl.HistoryManager.init();
       pskl.NotificationService.init();
       pskl.LocalStorageService.init(frameSheet);
 
@@ -91,27 +76,71 @@ $.namespace("pskl");
         this.finishInit();
         pskl.LocalStorageService.displayRestoreNotification();
       }
+
+      $.subscribe('SET_ACTIVE_FRAME', function(evt, frameId) {
+        piskel.setActiveFrameAndRedraw(frameId);
+      });
+
+      $.subscribe('FRAMESHEET_RESET', function(evt, frameId) {
+        piskel.redraw();
+      });
+    },
+
+    /**
+     * Override default DPIs.
+     * @private
+     */
+    initDPIs_ : function() {
+
+      drawingCanvasDpi = piskel.calculateDPIsForDrawingCanvas_();
+      // TODO(vincz): Add throttling on window.resize event.
+      $(window).resize($.proxy(function() {
+        drawingCanvasDpi = piskel.calculateDPIsForDrawingCanvas_();
+        this.drawingController.updateDPI(drawingCanvasDpi);
+      }, this));
+      // TODO(vincz): Check for user settings eventually from localstorage.
+    },
+
+    /**
+     * @private
+     */
+    calculateDPIsForDrawingCanvas_ : function() {
+      var availableViewportHeight = $('.main-panel').height() - 50,
+          availableViewportWidth = $('.main-panel').width(),
+          previewHeight = $(".preview-container").height(),
+          previewWidth = $(".preview-container").width();
+
+      var heightBoundDpi = Math.floor(availableViewportHeight / framePixelHeight),
+          widthBoundDpi = Math.floor(availableViewportWidth / framePixelWidth);
+
+      var dpi = Math.min(heightBoundDpi, widthBoundDpi);
+
+      var drawingCanvasHeight = dpi * framePixelHeight;
+      var drawingCanvasWidth = dpi * framePixelWidth;
+
+      // Check if preview and drawing canvas overlap
+      var heightGap =  drawingCanvasHeight + previewHeight - availableViewportHeight,
+          widthGap = drawingCanvasWidth + previewWidth - availableViewportWidth;
+      if (heightGap > 0 && widthGap > 0) {
+          // Calculate the DPI change needed to bridge height and width gap
+          var heightGapDpi = Math.ceil(heightGap / framePixelHeight),
+          widthGapDpi = Math.ceil(widthGap / framePixelWidth);
+
+          // substract smallest dpi change to initial dpi
+          dpi -= Math.min(heightGapDpi, widthGapDpi);
+      }
+      
+      return dpi;
     },
 
     finishInit : function () {
 
-      $.subscribe(Events.TOOL_SELECTED, function(evt, toolBehavior) {
-        console.log("Tool selected: ", toolBehavior);
-        currentToolBehavior = toolBehavior;
-      });
-
-      $.subscribe(Events.COLOR_SELECTED, function(evt, color) {
-        console.log("Color selected: ", color);
-        penColor = color;
-      });
+      
 
       $.subscribe(Events.REFRESH, function() {
         piskel.setActiveFrameAndRedraw(0);
       });
 
-      // TODO: Move this into their service or behavior files:
-      this.initDrawingArea();
-      
       pskl.ToolSelector.init();
       pskl.Palette.init(frameSheet);
     },
@@ -149,7 +178,7 @@ $.namespace("pskl");
 
     setActiveFrame: function(index) {
       activeFrameIndex = index;
-      this.drawingController.frame = frameSheet.getFrameByIndex(index); 
+      this.drawingController.frame = this.getCurrentFrame(); 
     },
 
     setActiveFrameAndRedraw: function(index) {
@@ -171,112 +200,8 @@ $.namespace("pskl");
       return activeFrameIndex;
     },
 
-    initDrawingArea : function() {
-        drawingAreaContainer = $('#drawing-canvas-container')[0];
-        document.body.addEventListener('mouseup', this.onMouseup.bind(this));
-        drawingAreaContainer.addEventListener('mousedown', this.onMousedown.bind(this));
-        drawingAreaContainer.addEventListener('mousemove', this.onMousemove.bind(this));
-        drawingAreaContainer.style.width = framePixelWidth * drawingCanvasDpi + "px";
-        drawingAreaContainer.style.height = framePixelHeight * drawingCanvasDpi + "px";
-        drawingAreaContainer.addEventListener('contextmenu', this.onCanvasContextMenu);
-    },
-
-    removeFrame: function(frameIndex) {     
-      frameSheet.removeFrameByIndex(frameIndex);
-      this.setActiveFrameAndRedraw(frameIndex - 1);
-    },
-
-    duplicateFrame: function(frameIndex) {
-      frameSheet.duplicateFrameByIndex(frameIndex);
-      this.setActiveFrameAndRedraw(frameIndex + 1);
-    },
-
-    onMousedown : function (event) {
-      isClicked = true;
-      
-      if(event.button == 2) { // right click
-        isRightClicked = true;
-        $.publish(Events.CANVAS_RIGHT_CLICKED);
-      }
-      var spriteCoordinate = this.getSpriteCoordinate(event);
-      currentToolBehavior.applyToolAt(
-        spriteCoordinate.col,
-        spriteCoordinate.row,
-        penColor,
-        this.drawingController
-      );
-        
-      $.publish(Events.LOCALSTORAGE_REQUEST);
-    },
-
-    onMousemove : function (event) {
-      var currentTime = new Date().getTime();
-      // Throttling of the mousemove event:
-      if ((currentTime - previousMousemoveTime) > 40 ) {
-        if (isClicked) {
-          var spriteCoordinate = this.getSpriteCoordinate(event);
-          currentToolBehavior.moveToolAt(
-            spriteCoordinate.col,
-            spriteCoordinate.row,
-            penColor,
-            this.drawingController
-          );
-          
-          // TODO(vincz): Find a way to move that to the model instead of being at the interaction level.
-          // Eg when drawing, it may make sense to have it here. However for a non drawing tool,
-          // you don't need to draw anything when mousemoving and you request useless localStorage.
-          $.publish(Events.LOCALSTORAGE_REQUEST);
-        }
-        previousMousemoveTime = currentTime;
-      }
-    },
-    
-    onMouseup : function (event) {
-      if(isClicked || isRightClicked) {
-        // A mouse button was clicked on the drawing canvas before this mouseup event,
-        // the user was probably drawing on the canvas.
-        // Note: The mousemove movement (and the mouseup) may end up outside
-        // of the drawing canvas.
-        // TODO: Remove that when we have the centralized redraw loop
-        this.previewsController.createPreviews();
-      }
-
-      if(isRightClicked) {
-        $.publish(Events.CANVAS_RIGHT_CLICK_RELEASED);
-      }
-      isClicked = false;
-      isRightClicked = false;
-      var spriteCoordinate = this.getSpriteCoordinate(event);
-      currentToolBehavior.releaseToolAt(
-          spriteCoordinate.col,
-          spriteCoordinate.row,
-          penColor,
-          this.drawer
-        );
-    },
-
-    onCanvasContextMenu : function (event) {
-      event.preventDefault();
-      event.stopPropagation();
-      event.cancelBubble = true;
-      return false;
-    },
-
-    getRelativeCoordinates : function (x, y) {
-      var canvasRect = $(".drawing-canvas")[0].getBoundingClientRect();
-      return {
-        x : x - canvasRect.left,
-        y : y - canvasRect.top
-      }
-    },
-
-    getSpriteCoordinate : function(event) {
-        var coord = this.getRelativeCoordinates(event.x, event.y);
-        var coords = this.getRelativeCoordinates(event.clientX, event.clientY);
-        return {
-          "col" : (coords.x - coords.x%drawingCanvasDpi) / drawingCanvasDpi,
-          "row" : (coords.y - coords.y%drawingCanvasDpi) / drawingCanvasDpi
-        }
+    getCurrentFrame : function () {
+      return frameSheet.getFrameByIndex(activeFrameIndex);
     },
 
     // TODO(julz): Create package ?
