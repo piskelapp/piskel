@@ -54,6 +54,7 @@
         
         // Deactivate right click:
         this.container.contextmenu(this.onCanvasContextMenu_);
+        //this.container.contextmenu(this.onCanvasContextMenu_);
 	};
 
 	/**

@@ -105,7 +105,7 @@ $.namespace("pskl");
      * @private
      */
     calculateDPIsForDrawingCanvas_ : function() {
-      var availableViewportHeight = $('.main-panel').height();
+      var availableViewportHeight = $('.main-panel').height() - 50;
       return Math.floor(availableViewportHeight / framePixelHeight);    
     },
 
