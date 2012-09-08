@@ -112,8 +112,37 @@ $.namespace("pskl");
      * @private
      */
     calculateDPIsForDrawingCanvas_ : function() {
-      var availableViewportHeight = $('.main-panel').height();
-      return Math.floor(availableViewportHeight / framePixelHeight);    
+      var availableViewportHeight = $('.main-panel').height(),
+          availableViewportWidth = $('.main-panel').width(),
+          previewHeight = $(".preview-container").height(),
+          previewWidth = $(".preview-container").width();
+
+      var heightBoundDpi = Math.floor(availableViewportHeight / framePixelHeight),
+          widthBoundDpi = Math.floor(availableViewportWidth / framePixelWidth);
+
+      var dpi = Math.min(heightBoundDpi, widthBoundDpi);
+
+      var drawingCanvasHeight = dpi * framePixelHeight;
+      var drawingCanvasWidth = dpi * framePixelWidth;
+
+      // Check if preview and drawing canvas overlap
+      var heightGap =  drawingCanvasHeight + previewHeight - availableViewportHeight,
+          widthGap = drawingCanvasWidth + previewWidth - availableViewportWidth;
+      if (heightGap > 0 && widthGap > 0) {
+          // Calculate the DPI change needed to bridge height and width gap
+          var heightGapDpi = Math.ceil(heightGap / framePixelHeight),
+          widthGapDpi = Math.ceil(widthGap / framePixelWidth);
+
+          // substract smallest dpi change to initial dpi
+          dpi -= Math.min(heightGapDpi, widthGapDpi);
+      }
+
+      // var drawingCanvasWidth = dpi * framePixelWidth;
+      // if (availableViewportWidth - drawingCanvasWidth < previewWidth) {
+      //     dpi -= Math.floor(previewWidth / framePixelWidth);
+      // }
+      
+      return dpi;
     },
 
     finishInit : function () {
