@@ -23,6 +23,13 @@ Events = {
 	REFRESH: "REFRESH",
 
 	/**
+	 * Temporary event to bind the redraw of right preview film to the canvas.
+	 * This redraw should be driven by model updates.
+	 * TODO(vincz): Remove.
+	 */
+	REDRAW_PREVIEWFILM: "REDRAW_PREVIEWFILM",
+
+	/**
 	 * The framesheet was reseted and is now probably drastically different.
 	 * Number of frames, content of frames, color used for the palette may have changed.
 	 */

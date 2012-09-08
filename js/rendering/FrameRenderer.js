@@ -80,7 +80,7 @@
 			canvas.setAttribute("class", canvasClassname);
 			
 			this.canvas = canvas;
-			this.container.appendChild(this.canvas);
+			this.container.append(this.canvas);
 
 			this.canvasConfigDirty = false;
 		}
