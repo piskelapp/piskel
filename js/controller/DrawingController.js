@@ -11,19 +11,19 @@
 		this.container = container;
 		this.mainCanvas = this.createMainCanvas();
 		this.overlayCanvas = this.createOverlayCanvas();
-		this.renderer = new pskl.rendering.FrameRenderer();
+		this.renderer = new pskl.rendering.FrameRenderer(dpi);
 	};
 
 	ns.DrawingController.prototype.renderFrame = function () {
-		this.renderer.render(this.frame, this.mainCanvas, this.dpi);
+		this.renderer.render(this.frame, this.mainCanvas);
 	};
 
 	ns.DrawingController.prototype.renderFramePixel = function (col, row) {
-		this.renderer.drawPixel(col, row, this.frame, this.mainCanvas, this.dpi);
+		this.renderer.drawPixel(col, row, this.frame, this.mainCanvas);
 	};
 
 	ns.DrawingController.prototype.renderOverlay = function () {
-		this.renderer.render(this.overlay, this.overlayCanvas, this.dpi);
+		this.renderer.render(this.overlay, this.overlayCanvas);
 	};
 
 	ns.DrawingController.prototype.clearOverlay = function () {

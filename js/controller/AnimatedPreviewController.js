@@ -8,7 +8,7 @@
 
 		this.fps = parseInt($("#preview-fps")[0].value, 10);
 
-		this.renderer = new pskl.rendering.FrameRenderer();
+		this.renderer = new pskl.rendering.FrameRenderer(dpi);
 	};
 
 	ns.AnimatedPreviewController.prototype.init = function () {
@@ -55,7 +55,7 @@
    			this.animIndex = 0;
    		}
 		
-		this.renderer.render(this.framesheet.getFrameByIndex(this.animIndex), this.previewCanvas, this.dpi);
+		this.renderer.render(this.framesheet.getFrameByIndex(this.animIndex), this.previewCanvas);
 		this.animIndex++;
 		this.startAnimationTimer();
     };

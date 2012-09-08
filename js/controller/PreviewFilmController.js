@@ -6,7 +6,7 @@
 		this.framesheet = framesheet;
 		this.container = container;
 
-		this.renderer = new pskl.rendering.FrameRenderer();
+		this.renderer = new pskl.rendering.FrameRenderer(dpi);
 	};
 
 	ns.PreviewFilmController.prototype.init = function() {
@@ -69,7 +69,7 @@
 			piskel.duplicateFrame(tileNumber);
 		});
 
-		this.renderer.render(this.framesheet.getFrameByIndex(tileNumber), canvasPreview, this.dpi);
+		this.renderer.render(this.framesheet.getFrameByIndex(tileNumber), canvasPreview);
 		canvasContainer.appendChild(canvasPreview);
 		previewTileRoot.appendChild(canvasContainer);
 		previewTileRoot.appendChild(canvasPreviewDuplicateAction);
