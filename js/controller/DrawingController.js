@@ -210,8 +210,22 @@
 		this.overlayRenderer.render(this.overlayFrame);
 	};
 
+  ns.DrawingController.prototype.render = function () {
+    try {
+
+      this.renderFrame();
+      this.renderOverlay();
+    } catch (e) {
+      // TODO : temporary t/c for integration
+    }
+  };
+
 	ns.DrawingController.prototype.renderFrame = function () {
-		this.renderer.render(this.frame);
+    var serializedFrame = this.frame.serialize();
+    if (this.serializedFrame != serializedFrame) {
+      this.serializedFrame = serializedFrame
+		  this.renderer.render(this.frame);
+    }
 	};
 
 	ns.DrawingController.prototype.renderFramePixel = function (col, row) {
@@ -219,7 +233,11 @@
 	};
 
 	ns.DrawingController.prototype.renderOverlay = function () {
-		this.overlayRenderer.render(this.overlayFrame);
+    var serializedOverlay = this.overlayFrame.serialize();
+    if (this.serializedOverlay != serializedOverlay) {
+      this.serializedOverlay = serializedOverlay
+      this.renderer.render(this.overlayFrame);
+    }
 	};
 
 	ns.DrawingController.prototype.clearOverlay = function () {

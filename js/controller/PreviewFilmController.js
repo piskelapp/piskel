@@ -6,40 +6,41 @@
 		this.framesheet = framesheet;
 		this.container = container;
 
+		this.dirty = false;
+
 		$.subscribe(Events.REDRAW_PREVIEWFILM, $.proxy(function(evt) {
-			this.createPreviews()
+			this.dirty = true;
 		}, this));
 	};
 
 	ns.PreviewFilmController.prototype.init = function() {
-      var addFrameButton = $('#add-frame-button')[0];
-      addFrameButton.addEventListener('mousedown', this.addFrame.bind(this));
-      this.createPreviews();
-
-
+		var addFrameButton = $('#add-frame-button')[0];
+		addFrameButton.addEventListener('mousedown', this.addFrame.bind(this));
     };
 
     ns.PreviewFilmController.prototype.addFrame = function () {
  		this.framesheet.addEmptyFrame();
-        piskel.setActiveFrameAndRedraw(this.framesheet.getFrameCount() - 1);
+        piskel.setActiveFrame(this.framesheet.getFrameCount() - 1);
     };
 
-    ns.PreviewFilmController.prototype.createPreviews = function () {
-      // TODO(vincz): Full redraw on any drawing modification, optimize.
-      this.container.html("");
+    ns.PreviewFilmController.prototype.render = function () {
+		if (!this.dirty) return
+		// TODO(vincz): Full redraw on any drawing modification, optimize.
+		this.container.html("");
 
-      var frameCount = this.framesheet.getFrameCount();
-      
-      for (var i = 0, l = frameCount; i < l ; i++) {
-        this.container.append(this.createInterstitialTile_(i));
-        this.container.append(this.createPreviewTile_(i, this.framesheet));
-      }
-      this.container.append(this.createInterstitialTile_(frameCount));
+		var frameCount = this.framesheet.getFrameCount();
 
-      var needDragndropBehavior = !!(frameCount > 1);
-      if(needDragndropBehavior) {
-      	this.initDragndropBehavior_();
-      }
+		for (var i = 0, l = frameCount; i < l ; i++) {
+		this.container.append(this.createInterstitialTile_(i));
+		this.container.append(this.createPreviewTile_(i, this.framesheet));
+		}
+		this.container.append(this.createInterstitialTile_(frameCount));
+
+		var needDragndropBehavior = !!(frameCount > 1);
+		if(needDragndropBehavior) {
+			this.initDragndropBehavior_();
+		}
+		this.dirty = false;
     };
 
     /**
@@ -135,7 +136,7 @@
 		$('#preview-list').removeClass("show-interstitial-tiles");
 
 		// TODO(vincz): deprecate.
-		piskel.setActiveFrameAndRedraw(activeFrame);
+		piskel.setActiveFrame(activeFrame);
 
 		// TODO(vincz): move localstorage request to the model layer?
 		$.publish(Events.LOCALSTORAGE_REQUEST);
@@ -168,7 +169,7 @@
 		previewTileRoot.addEventListener('click', function(evt) {
 			// has not class tile-action:
 			if(!evt.target.classList.contains('tile-action')) {
-				piskel.setActiveFrameAndRedraw(tileNumber);
+				piskel.setActiveFrame(tileNumber);
 			}    
 		});
 
