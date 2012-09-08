@@ -136,11 +136,6 @@ $.namespace("pskl");
           // substract smallest dpi change to initial dpi
           dpi -= Math.min(heightGapDpi, widthGapDpi);
       }
-
-      // var drawingCanvasWidth = dpi * framePixelWidth;
-      // if (availableViewportWidth - drawingCanvasWidth < previewWidth) {
-      //     dpi -= Math.floor(previewWidth / framePixelWidth);
-      // }
       
       return dpi;
     },
