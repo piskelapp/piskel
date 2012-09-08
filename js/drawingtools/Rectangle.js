@@ -25,7 +25,6 @@
 		
 		// Drawing the first point of the rectangle in the fake overlay canvas:
 		drawer.overlayFrame.setPixel(col, row, color);
-		drawer.renderOverlay();
 	};
 
 	ns.Rectangle.prototype.moveToolAt = function(col, row, color, drawer) {
@@ -44,13 +43,13 @@
 			}			
 			drawer.overlayFrame.setPixel(strokePoints[i].col, strokePoints[i].row, color);
 		}
-		drawer.renderOverlay();
 	};
 
 	/**
 	 * @override
 	 */
 	ns.Rectangle.prototype.releaseToolAt = function(col, row, color, drawer) {		
+		drawer.clearOverlay();
 		// If the stroke tool is released outside of the canvas, we cancel the stroke: 
 		if(drawer.frame.containsPixel(col, row)) {
 			var strokePoints = this.getRectanglePixels_(this.startCol, col, this.startRow, row);
@@ -59,12 +58,8 @@
 				drawer.frame.setPixel(strokePoints[i].col, strokePoints[i].row, color);
 			}
 			// The user released the tool to draw a line. We will compute the pixel coordinate, impact
-			// the model and draw them in the drawing canvas (not the fake overlay anymore)
-			// Draw in canvas:
-			// TODO: Remove that when we have the centralized redraw loop
-			drawer.renderFrame();		
+			// the model and draw them in the drawing canvas (not the fake overlay anymore)		
 		}
-		drawer.clearOverlay();
 	};
 
 	/**

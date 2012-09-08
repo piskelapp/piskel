@@ -29,7 +29,6 @@
 		var colDiff = col - this.startCol, rowDiff = row - this.startRow;
 		if (colDiff != 0 || rowDiff != 0) {
 			this.shiftFrame(colDiff, rowDiff, drawer.frame, this.frameClone);
-			drawer.renderFrame();
 		}
 	};
 

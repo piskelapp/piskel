@@ -21,10 +21,6 @@
 		var targetColor = drawer.frame.getPixel(col, row);
 		//this.recursiveFloodFill_(frame, col, row, targetColor, color);
 		this.queueLinearFloodFill_(drawer.frame, col, row, targetColor, color);
-		
-		// Draw in canvas:
-		// TODO: Remove that when we have the centralized redraw loop
-		drawer.renderFrame();
 	};
 
 	/**
