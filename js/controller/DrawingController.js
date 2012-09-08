@@ -6,14 +6,14 @@
 		// TODO(vincz): Store user prefs in a localstorage string ?
 		var renderingOptions = {
 			"dpi": dpi,
-			"gridStrokeWidth" : 1,
-			"gridStrokeColor" : "lightgray"
+			"hasGrid" : true
 		};
 
 		// jQuery deep copy of the rendering config:
 		overlayRenderingOptions = $.extend(true, {}, renderingOptions);
-		overlayRenderingOptions.gridStrokeColor = "transparent";
+		overlayRenderingOptions.hasGrid = false;
 		
+
 		/**
 		 * @public
 		 */

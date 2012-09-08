@@ -5,8 +5,7 @@
 	ns.FrameRenderer = function (container, renderingOptions, className) {
 		
 		this.defaultRenderingOptions = {
-			"gridStrokeWidth" : 0,
-			"gridStrokeColor" : "lightgray"
+			"hasGrid" : false
 		};
 		renderingOptions = $.extend(true, {}, this.defaultRenderingOptions, renderingOptions);
 
@@ -22,21 +21,41 @@
 		this.dpi = renderingOptions.dpi;
 		this.className = className;
 		this.canvas = null;
-		console.log(renderingOptions)
-		this.gridStrokeWidth = renderingOptions.gridStrokeWidth;
-		this.gridStrokeColor = renderingOptions.gridStrokeColor;	
+		this.hasGrid = renderingOptions.hasGrid;
+		this.gridStrokeWidth = 0;
+		
+		this.lastRenderedFrame = null;
 
 		// Flag to know if the config was altered
 		this.canvasConfigDirty = true;
+
+		if(this.hasGrid) {
+			$.subscribe(Events.GRID_DISPLAY_STATE_CHANGED, $.proxy(this.showGrid, this));	
+		}	
 	};
 
 	ns.FrameRenderer.prototype.init = function (frame) {
 		this.render(frame);
+		this.lastRenderedFrame = frame;
 	};
 
 	ns.FrameRenderer.prototype.updateDPI = function (newDPI) {
 		this.dpi = newDPI;
 		this.canvasConfigDirty = true;
+	};
+
+	ns.FrameRenderer.prototype.showGrid = function (evt, show) {
+		
+		this.gridStrokeWidth = 0;
+		if(show) {
+			this.gridStrokeWidth = Constants.GRID_STROKE_WIDTH;
+		}
+		
+		this.canvasConfigDirty = true;
+
+		if(this.lastRenderedFrame) {
+			this.render(this.lastRenderedFrame);
+		}
 	};
 
 	ns.FrameRenderer.prototype.render = function (frame) {
@@ -45,6 +64,7 @@
 				this.drawPixel(col, row, frame, this.getCanvas_(frame, col, row), this.dpi);
 			}
 		}
+		this.lastRenderedFrame = frame;
 	};
 
 	ns.FrameRenderer.prototype.drawPixel = function (col, row, frame) {
@@ -61,6 +81,7 @@
 			context.fillStyle = color;
 			context.fillRect(this.getFrameY_(col), this.getFrameY_(row), this.dpi, this.dpi);
 		}
+		this.lastRenderedFrame = frame;
 	};
 
 	ns.FrameRenderer.prototype.clear = function (col, row, frame) {
@@ -100,8 +121,8 @@
 	 */
 	ns.FrameRenderer.prototype.drawGrid_ = function(canvas, width, height, col, row) {
 		var ctx = canvas.getContext("2d");
-		ctx.lineWidth = this.gridStrokeWidth;
-		ctx.strokeStyle = this.gridStrokeColor;
+		ctx.lineWidth = Constants.GRID_STROKE_WIDTH;
+		ctx.strokeStyle = Constants.GRID_STROKE_COLOR;
 		for(var c=1; c < col; c++) {			
 	        ctx.moveTo(this.getFrameX_(c), 0);
 	        ctx.lineTo(this.getFrameX_(c), height);
@@ -121,6 +142,7 @@
 	ns.FrameRenderer.prototype.getCanvas_ = function (frame) {
 		if(this.canvasConfigDirty) {
 			$(this.canvas).remove();
+			
 			var col = frame.getWidth(),
 				row = frame.getHeight();
 			
