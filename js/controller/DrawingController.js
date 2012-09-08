@@ -16,15 +16,17 @@
 		this.container = container;
 		this.renderer = new pskl.rendering.FrameRenderer(this.container, renderingOptions, "drawing-canvas");
 		this.overlayRenderer = new pskl.rendering.FrameRenderer(this.container, renderingOptions, "canvas-overlay");
-		//this.mainCanvas = this.createMainCanvas();
-		//this.overlayCanvas = this.createOverlayCanvas();
+		
 		this.renderer.init(this.frame);
 		this.overlayRenderer.init(this.frame);
 	};
 
 	ns.DrawingController.prototype.updateDPI = function (newDPI) {
-		//this.renderer.updateDPI(newDPI);
-		//this.overlayRenderer.updateDPI(newDPI);
+		this.renderer.updateDPI(newDPI);
+		this.overlayRenderer.updateDPI(newDPI);
+
+		this.renderer.render(this.frame);
+		this.overlayRenderer.render(this.frame);
 	};
 
 	ns.DrawingController.prototype.renderFrame = function () {

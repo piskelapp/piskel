@@ -11,23 +11,18 @@ $.namespace("pskl");
    */
   var frameSheet,
 
-      // Temporary zoom implementation to easily get bigger canvases to
-      // see how good perform critical algorithms on big canvas.
-      zoom = 1,
-
       // Configuration:
       // Canvas size in pixel size (not dpi related)
-      framePixelWidth = 32 * zoom, 
-      framePixelHeight = 32 * zoom,
-
+      framePixelWidth = 32, 
+      framePixelHeight = 32,
 
       // Scaling factors for a given frameSheet rendering:
       // Main drawing area:
-      drawingCanvasDpi = Math.ceil(20/ zoom),
-      // Canvas previous in the slideshow:
-      previewTileCanvasDpi = Math.ceil(4 / zoom),
-      // Ainmated canvas preview:
-      previewAnimationCanvasDpi = Math.ceil(8 / zoom),
+      drawingCanvasDpi = 20,   
+      // Canvas preview film canvases:
+      previewTileCanvasDpi = 4,
+      // Animated canvas preview:
+      previewAnimationCanvasDpi = 8,
 
       // DOM references:
       drawingAreaContainer,
@@ -53,6 +48,9 @@ $.namespace("pskl");
   var piskel = {
 
     init : function () {
+
+      piskel.initDPIs_();
+
       frameSheet = new pskl.model.FrameSheet(framePixelWidth, framePixelHeight);
       frameSheet.addEmptyFrame();
 
@@ -93,6 +91,29 @@ $.namespace("pskl");
         this.finishInit();
         pskl.LocalStorageService.displayRestoreNotification();
       }
+    },
+
+    /**
+     * Override default DPIs.
+     * @private
+     */
+    initDPIs_ : function() {
+
+      drawingCanvasDpi = piskel.calculateDPIsForDrawingCanvas_();
+      // TODO(vincz): Add throttling on window.resize event.
+      $(window).resize($.proxy(function() {
+        drawingCanvasDpi = piskel.calculateDPIsForDrawingCanvas_();
+        this.drawingController.updateDPI(drawingCanvasDpi);
+      }, this));
+      // TODO(vincz): Check for user settings eventually from localstorage.
+    },
+
+    /**
+     * @private
+     */
+    calculateDPIsForDrawingCanvas_ : function() {
+      var availableViewportHeight = $('.main-panel').height();
+      return Math.floor(availableViewportHeight / framePixelHeight);    
     },
 
     finishInit : function () {
@@ -186,8 +207,6 @@ $.namespace("pskl");
         document.body.addEventListener('mouseup', this.onMouseup.bind(this));
         drawingAreaContainer.addEventListener('mousedown', this.onMousedown.bind(this));
         drawingAreaContainer.addEventListener('mousemove', this.onMousemove.bind(this));
-        drawingAreaContainer.style.width = framePixelWidth * drawingCanvasDpi + "px";
-        drawingAreaContainer.style.height = framePixelHeight * drawingCanvasDpi + "px";
         document.body.addEventListener('contextmenu', this.onCanvasContextMenu);
     },
 
