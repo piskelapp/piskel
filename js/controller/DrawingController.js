@@ -207,7 +207,7 @@
 		this.overlayRenderer.updateDPI(newDPI);
 
 		this.renderer.render(this.frame);
-		this.overlayRenderer.render(this.frame);
+		this.overlayRenderer.render(this.overlayFrame);
 	};
 
 	ns.DrawingController.prototype.renderFrame = function () {

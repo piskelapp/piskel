@@ -12,8 +12,6 @@
 		// Stroke's first point coordinates (set in applyToolAt)
 		this.startCol = null;
 		this.startRow = null;
-		
-		this.canvasOverlay = null;
 	};
 
 	pskl.utils.inherit(ns.Move, ns.BaseTool);
