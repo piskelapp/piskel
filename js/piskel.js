@@ -73,7 +73,7 @@ $.namespace("pskl");
 
       this.previewsController = new pskl.controller.PreviewFilmController(
         frameSheet,
-        $('#preview-list')[0], 
+        $('#preview-list'), 
         previewTileCanvasDpi
       );
 
