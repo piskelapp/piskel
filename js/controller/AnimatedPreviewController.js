@@ -8,29 +8,18 @@
 
 		this.fps = parseInt($("#preview-fps")[0].value, 10);
 
-		this.renderer = new pskl.rendering.FrameRenderer(dpi);
+		this.renderer = new pskl.rendering.FrameRenderer(this.container, this.dpi);
 	};
 
 	ns.AnimatedPreviewController.prototype.init = function () {
 		this.initDom();
+
+		this.renderer.init(this.framesheet.getFrameByIndex(this.animIndex));
+
 		this.startAnimationTimer();
 	};
 
 	ns.AnimatedPreviewController.prototype.initDom = function () {
-		var frame = this.framesheet.getFrameByIndex(0);
-		var height = frame.getHeight() * this.dpi,
-			width = frame.getWidth() * this.dpi;
-
-		previewCanvas = document.createElement('canvas');
-		previewCanvas.className = 'canvas';
-
-		this.container.setAttribute('style', 'width:' + width + 'px; height:' + height + 'px;');
-		previewCanvas.setAttribute('width', width);
-		previewCanvas.setAttribute('height', height);
-
-		this.container.appendChild(previewCanvas);
-		this.previewCanvas = previewCanvas;
-
 		$("#preview-fps")[0].addEventListener('change', this.onFPSSliderChange.bind(this));
 	};
 
@@ -54,8 +43,7 @@
    		if (!this.framesheet.hasFrameAtIndex(this.animIndex)) {
    			this.animIndex = 0;
    		}
-		
-		this.renderer.render(this.framesheet.getFrameByIndex(this.animIndex), this.previewCanvas);
+   		this.renderer.render(this.framesheet.getFrameByIndex(this.animIndex));
 		this.animIndex++;
 		this.startAnimationTimer();
     };

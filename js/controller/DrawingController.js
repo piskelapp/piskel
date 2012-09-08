@@ -5,60 +5,37 @@
 
 		// Public
 		this.frame = frame;
-		this.overlay = pskl.model.Frame.createEmptyFromFrame(frame);
+		this.overlayFrame = pskl.model.Frame.createEmptyFromFrame(frame); // Type is frame
 
 		// Private
 		this.container = container;
-		this.mainCanvas = this.createMainCanvas();
-		this.overlayCanvas = this.createOverlayCanvas();
-		this.renderer = new pskl.rendering.FrameRenderer(dpi);
+		this.renderer = new pskl.rendering.FrameRenderer(this.container, dpi, "drawing-canvas");
+		this.overlayRenderer = new pskl.rendering.FrameRenderer(this.container, dpi, "canvas-overlay");
+		//this.mainCanvas = this.createMainCanvas();
+		//this.overlayCanvas = this.createOverlayCanvas();
+		this.renderer.init(this.frame);
+		this.overlayRenderer.init(this.frame);
+	};
+
+	ns.DrawingController.prototype.updateDPI = function (newDPI) {
+		//this.renderer.updateDPI(newDPI);
+		//this.overlayRenderer.updateDPI(newDPI);
 	};
 
 	ns.DrawingController.prototype.renderFrame = function () {
-		this.renderer.render(this.frame, this.mainCanvas);
+		this.renderer.render(this.frame);
 	};
 
 	ns.DrawingController.prototype.renderFramePixel = function (col, row) {
-		this.renderer.drawPixel(col, row, this.frame, this.mainCanvas);
+		this.renderer.drawPixel(col, row, this.frame);
 	};
 
 	ns.DrawingController.prototype.renderOverlay = function () {
-		this.renderer.render(this.overlay, this.overlayCanvas);
+		this.overlayRenderer.render(this.overlayFrame);
 	};
 
 	ns.DrawingController.prototype.clearOverlay = function () {
-		this.overlay = pskl.model.Frame.createEmptyFromFrame(this.frame);
-		this.overlayCanvas.getContext("2d").clearRect(0, 0, this.overlayCanvas.width, this.overlayCanvas.height);
-	};
-
-	ns.DrawingController.prototype.createMainCanvas = function () {
-		var mainCanvas = this.createCanvas();
-		mainCanvas.className = "drawing-canvas";
-		this.container.appendChild(mainCanvas);
-		return mainCanvas;
-	};
-
-	// For some tools, we need a fake canvas that overlay the drawing canvas. These tools are
-	// generally 'drap and release' based tools (stroke, selection, etc) and the fake canvas
-	// will help to visualize the tool interaction (without modifying the canvas).
-	ns.DrawingController.prototype.createOverlayCanvas = function () {
-		var overlayCanvas = this.createCanvas();
-		overlayCanvas.className = "canvas-overlay";
-		this.container.appendChild(overlayCanvas);
-		return overlayCanvas;
-	};
-
-	// For some tools, we need a fake canvas that overlay the drawing canvas. These tools are
-	// generally 'drap and release' based tools (stroke, selection, etc) and the fake canvas
-	// will help to visualize the tool interaction (without modifying the canvas).
-	ns.DrawingController.prototype.createCanvas = function () {
-		var width = this.frame.getWidth(),
-			height = this.frame.getHeight();
-
-		var canvas = document.createElement("canvas");
-		canvas.setAttribute("width", width * this.dpi);
-		canvas.setAttribute("height", height * this.dpi);
-		
-		return canvas;
+		this.overlayFrame = pskl.model.Frame.createEmptyFromFrame(this.frame);
+		this.overlayRenderer.clear();
 	};
 })();
