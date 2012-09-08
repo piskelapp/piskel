@@ -51,6 +51,7 @@ $.namespace("pskl");
 
       piskel.initDPIs_();
 
+
       frameSheet = new pskl.model.FrameSheet(framePixelWidth, framePixelHeight);
       frameSheet.addEmptyFrame();
 
@@ -91,6 +92,16 @@ $.namespace("pskl");
         this.finishInit();
         pskl.LocalStorageService.displayRestoreNotification();
       }
+
+      var drawingLoop = new pskl.rendering.DrawingLoop();
+      drawingLoop.addCallback(this.render, this);
+      drawingLoop.start();
+    },
+
+    render : function (delta) {
+      this.drawingController.render(delta);
+      this.animationController.render(delta);
+      this.previewsController.render(delta);
     },
 
     /**
@@ -157,7 +168,7 @@ $.namespace("pskl");
       });
 
       $.subscribe(Events.REFRESH, function() {
-        piskel.setActiveFrameAndRedraw(0);
+        piskel.setActiveFrame(0);
       });
 
       // TODO: Move this into their service or behavior files:
@@ -186,13 +197,12 @@ $.namespace("pskl");
         piskel.setActiveFrame(0);  
         $.publish(Events.HIDE_NOTIFICATION);
         piskel.finishInit();
-        piskel.setActiveFrameAndRedraw(0);  
       };
 
       xhr.onerror = function () {
         $.publish(Events.HIDE_NOTIFICATION);
         piskel.finishInit();
-        piskel.setActiveFrameAndRedraw(0);
+        piskel.setActiveFrame(0);  
       };
 
       xhr.send();
@@ -201,18 +211,6 @@ $.namespace("pskl");
     setActiveFrame: function(index) {
       activeFrameIndex = index;
       this.drawingController.frame = this.getCurrentFrame(); 
-    },
-
-    setActiveFrameAndRedraw: function(index) {
-      this.setActiveFrame(index);
-      this.redraw();
-    },
-
-    redraw : function () {
-      // Update drawing canvas:
-      this.drawingController.renderFrame();
-      // Update slideshow:
-      this.previewsController.createPreviews();
     },
 
     getActiveFrameIndex: function() {
@@ -237,12 +235,12 @@ $.namespace("pskl");
     removeFrame: function(frameIndex) {     
       frameSheet.removeFrameByIndex(frameIndex);
       var activeFrameIndex = frameIndex ? frameIndex - 1 : 0;
-      this.setActiveFrameAndRedraw(activeFrameIndex);
+      this.setActiveFrame(activeFrameIndex);
     },
 
     duplicateFrame: function(frameIndex) {
       frameSheet.duplicateFrameByIndex(frameIndex);
-      this.setActiveFrameAndRedraw(frameIndex + 1);
+      this.setActiveFrame(frameIndex + 1);
     },
 
     getCurrentColor : function () {
@@ -323,8 +321,6 @@ $.namespace("pskl");
 
 
         $.publish(Events.TOOL_RELEASED);
-        // TODO: Remove that when we have the centralized redraw loop
-        this.previewsController.createPreviews();
       }
     },
 
