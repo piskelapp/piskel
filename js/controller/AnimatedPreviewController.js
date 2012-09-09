@@ -8,8 +8,7 @@
 		this.currentIndex = 0;
 
 		this.fps = parseInt($("#preview-fps")[0].value, 10);
-		this.deltaTime = 0;
-		this.previousTime = 0;
+		
 		var renderingOptions = {
 			"dpi": dpi
 		};
