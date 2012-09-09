@@ -35,7 +35,6 @@
 		// The fake canvas where we will draw the preview of the stroke:
 		// Drawing the first point of the stroke in the fake overlay canvas:
 		drawer.overlayFrame.setPixel(col, row, color);
-		drawer.renderOverlay();
 	};
 
 	ns.Stroke.prototype.moveToolAt = function(col, row, color, drawer) {
@@ -59,7 +58,6 @@
 			}			
 			drawer.overlayFrame.setPixel(strokePoints[i].col, strokePoints[i].row, color);
 		}
-		drawer.renderOverlay();
 	};
 
 	/**
@@ -78,7 +76,6 @@
 			}
 			// Draw in canvas:
 			// TODO: Remove that when we have the centralized redraw loop
-			drawer.renderFrame();
 		} 
 		// For now, we are done with the stroke tool and don't need an overlay anymore:
 		drawer.clearOverlay();   
