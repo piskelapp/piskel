@@ -206,13 +206,11 @@
 		this.renderer.updateDPI(newDPI);
 		this.overlayRenderer.updateDPI(newDPI);
 
-		this.renderer.render(this.frame);
-		this.overlayRenderer.render(this.overlayFrame);
+		this.render();
 	};
 
   ns.DrawingController.prototype.render = function () {
     try {
-
       this.renderFrame();
       this.renderOverlay();
     } catch (e) {
@@ -236,12 +234,11 @@
     var serializedOverlay = this.overlayFrame.serialize();
     if (this.serializedOverlay != serializedOverlay) {
       this.serializedOverlay = serializedOverlay
-      this.renderer.render(this.overlayFrame);
+      this.overlayRenderer.render(this.overlayFrame);
     }
 	};
 
 	ns.DrawingController.prototype.clearOverlay = function () {
 		this.overlayFrame = pskl.model.Frame.createEmptyFromFrame(this.frame);
-		this.overlayRenderer.clear();
 	};
 })();
