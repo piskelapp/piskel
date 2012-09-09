@@ -58,33 +58,42 @@
 	};
 
 	ns.FrameRenderer.prototype.render = function (frame) {
+		this.clear(frame);
+		var context = this.getCanvas_(frame).getContext('2d');
 		for(var col = 0, width = frame.getWidth(); col < width; col++) {
 			for(var row = 0, height = frame.getHeight(); row < height; row++) {
-				this.drawPixel(col, row, frame, this.getCanvas_(frame, col, row), this.dpi);
+				var color = frame.getPixel(col, row);
+				this.renderPixel_(color, col, row, context);
 			}
 		}
 		this.lastRenderedFrame = frame;
 	};
 
 	ns.FrameRenderer.prototype.drawPixel = function (col, row, frame) {
-		var context = this.getCanvas_(frame, col, row).getContext('2d');
+		var context = this.getCanvas_(frame).getContext('2d');
 		var color = frame.getPixel(col, row);
 		if(color == Constants.TRANSPARENT_COLOR) {
-			context.clearRect(this.getFrameY_(col), this.getFrameY_(row), this.dpi, this.dpi);   
-		} 
-		else {
-			if(color != Constants.SELECTION_TRANSPARENT_COLOR) {
-				// TODO(vincz): Found a better design to update the palette, it's called too frequently.
-				$.publish(Events.COLOR_USED, [color]);
-			}
-			context.fillStyle = color;
-			context.fillRect(this.getFrameY_(col), this.getFrameY_(row), this.dpi, this.dpi);
+			context.clearRect(this.getFramePos_(col), this.getFramePos_(row), this.dpi, this.dpi);   
+		} else {
+			this.renderPixel_(color, col, row, context);
 		}
 		this.lastRenderedFrame = frame;
 	};
 
-	ns.FrameRenderer.prototype.clear = function (col, row, frame) {
-		var canvas = this.getCanvas_(frame, col, row)
+	ns.FrameRenderer.prototype.renderPixel_ = function (color, col, row, context) {
+		if(color != Constants.TRANSPARENT_COLOR) {
+			context.fillStyle = color;
+			context.fillRect(this.getFramePos_(col), this.getFramePos_(row), this.dpi, this.dpi);
+		} 
+		
+		if(color != Constants.SELECTION_TRANSPARENT_COLOR) {
+			// TODO(vincz): Found a better design to update the palette, it's called too frequently.
+			$.publish(Events.COLOR_USED, [color]);
+		}
+	};
+
+	ns.FrameRenderer.prototype.clear = function (frame) {
+		var canvas = this.getCanvas_(frame);
 		canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
 	};
 
@@ -104,15 +113,8 @@
 	/**
 	 * @private
 	 */
-	ns.FrameRenderer.prototype.getFrameX_ = function(col) {
-		return col * this.dpi + ((col - 1) * this.gridStrokeWidth);
-	};
-
-	/**
-	 * @private
-	 */
-	ns.FrameRenderer.prototype.getFrameY_ = function(row) {
-		return row * this.dpi + ((row - 1) * this.gridStrokeWidth);
+	ns.FrameRenderer.prototype.getFramePos_ = function(index) {
+		return index * this.dpi + ((index - 1) * this.gridStrokeWidth);
 	};
 
 	/**
@@ -123,14 +125,14 @@
 		ctx.lineWidth = Constants.GRID_STROKE_WIDTH;
 		ctx.strokeStyle = Constants.GRID_STROKE_COLOR;
 		for(var c=1; c < col; c++) {			
-	        ctx.moveTo(this.getFrameX_(c), 0);
-	        ctx.lineTo(this.getFrameX_(c), height);
+	        ctx.moveTo(this.getFramePos_(c), 0);
+	        ctx.lineTo(this.getFramePos_(c), height);
 	        ctx.stroke();
 		}
 		
 		for(var r=1; r < row; r++) {
-	        ctx.moveTo(0, this.getFrameY_(r));
-	        ctx.lineTo(width, this.getFrameY_(r));
+	        ctx.moveTo(0, this.getFramePos_(r));
+	        ctx.lineTo(width, this.getFramePos_(r));
 	        ctx.stroke();
 		}
 	};
@@ -167,19 +169,5 @@
 			this.canvasConfigDirty = false;
 		}
 		return this.canvas;
-	};
-
-	/**
-	 * @private
-	 */
-	ns.FrameRenderer.prototype.createCanvasForFrame_ = function (frame) {
-		var canvas = document.createElement("canvas");
-		canvas.setAttribute("width", frame.getWidth() * this.dpi);
-		canvas.setAttribute("height", frame.getHeight() * this.dpi);
-		
-		canvas.classList.add("canvas");
-		if(this.className) canvas.classList.add(this.className);
-
-		return canvas;
 	};
 })();
