@@ -6,7 +6,7 @@
 		this.framesheet = framesheet;
 		this.container = container;
 
-		this.redrawFlag = false;
+		this.redrawFlag = true;
 
     	$.subscribe(Events.TOOL_RELEASED, this.flagForRedraw_.bind(this));
 		$.subscribe(Events.FRAMESHEET_RESET, this.flagForRedraw_.bind(this));
