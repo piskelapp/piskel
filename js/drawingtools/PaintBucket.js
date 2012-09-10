@@ -15,12 +15,11 @@
 	/**
 	 * @override
 	 */
-	ns.PaintBucket.prototype.applyToolAt = function(col, row, color, drawer) {
+	ns.PaintBucket.prototype.applyToolAt = function(col, row, color, frame, overlay) {
 
 		// Change model:
-		var targetColor = drawer.frame.getPixel(col, row);
-		//this.recursiveFloodFill_(frame, col, row, targetColor, color);
-		this.queueLinearFloodFill_(drawer.frame, col, row, targetColor, color);
+		var targetColor = frame.getPixel(col, row);
+		this.queueLinearFloodFill_(frame, col, row, targetColor, color);
 	};
 
 	/**

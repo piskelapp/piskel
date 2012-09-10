@@ -1,8 +1,6 @@
 (function () {
 	var ns = $.namespace("pskl.controller");
-	ns.DrawingController = function (frame, container, dpi) {
-		this.dpi = dpi;
-
+	ns.DrawingController = function (framesheet, container, dpi) {
 		// TODO(vincz): Store user prefs in a localstorage string ?
 		var renderingOptions = {
 			"dpi": dpi,
@@ -12,29 +10,22 @@
 		/**
 		 * @public
 		 */
-		this.frame = frame;
+		this.framesheet = framesheet;
 		
 		/**
 		 * @public
 		 */
-		this.overlayFrame = pskl.model.Frame.createEmptyFromFrame(frame);
+		this.overlayFrame = pskl.model.Frame.createEmptyFromFrame(framesheet.getCurrentFrame());
 
 		/**
 		 * @private
 		 */
 		this.container = container;
 		
-		this.renderer = new pskl.rendering.FrameRenderer(
-			this.container,
-			renderingOptions,
-			"drawing-canvas");
-
-		this.overlayRenderer = new pskl.rendering.FrameRenderer(
-			this.container,
-			renderingOptions,
-			"canvas-overlay");
+		this.renderer = new pskl.rendering.FrameRenderer(this.container, renderingOptions, "drawing-canvas");
+		this.overlayRenderer = new pskl.rendering.FrameRenderer(this.container, renderingOptions, "canvas-overlay");
 		
-		this.renderer.init(this.frame);
+		this.renderer.init(framesheet.getCurrentFrame());
 		this.overlayRenderer.init(this.overlayFrame);
 
 		// State of drawing controller:
@@ -48,19 +39,18 @@
 		this.initMouseBehavior();
 
 		$.subscribe(Events.TOOL_SELECTED, $.proxy(function(evt, toolBehavior) {
+      console.log("Tool selected: ", toolBehavior);
+      this.currentToolBehavior = toolBehavior;
+    }, this));
 
-          console.log("Tool selected: ", toolBehavior);
-          this.currentToolBehavior = toolBehavior;
-        }, this));
-
-        $.subscribe(Events.COLOR_SELECTED, $.proxy(function(evt, color, isPrimary) {
-          console.log("Color selected: ", color);
-          if (isPrimary) {
-            this.primaryColor = color;
-          } else {
-            this.secondaryColor = color;
-          }
-        }, this));
+    $.subscribe(Events.COLOR_SELECTED, $.proxy(function(evt, color, isPrimary) {
+      console.log("Color selected: ", color);
+      if (isPrimary) {
+        this.primaryColor = color;
+      } else {
+        this.secondaryColor = color;
+      }
+    }, this));
 	};
 
 	ns.DrawingController.prototype.initMouseBehavior = function() {
@@ -84,14 +74,13 @@
         $.publish(Events.CANVAS_RIGHT_CLICKED);
       }
 
-      var spriteCoordinate = this.getSpriteCoordinate(event);
-      //console.log("mousedown: col: " + spriteCoordinate.col + " - row: " + spriteCoordinate.row);
+      var coords = this.getSpriteCoordinates(event);
       
       this.currentToolBehavior.applyToolAt(
-        spriteCoordinate.col,
-        spriteCoordinate.row,
+        coords.col, coords.row,
         this.getCurrentColor_(),
-        this
+        this.framesheet.getCurrentFrame(),
+        this.overlayFrame
       );      
         
       $.publish(Events.LOCALSTORAGE_REQUEST);
@@ -104,27 +93,20 @@
       var currentTime = new Date().getTime();
       // Throttling of the mousemove event:
       if ((currentTime - this.previousMousemoveTime) > 40 ) {
-        var spriteCoordinate = this.getSpriteCoordinate(event);
+        var coords = this.getSpriteCoordinates(event);
         if (this.isClicked) {
        
           this.currentToolBehavior.moveToolAt(
-            spriteCoordinate.col,
-            spriteCoordinate.row,
+            coords.col, coords.row,
             this.getCurrentColor_(),
-            this
+            this.framesheet.getCurrentFrame(),
+            this.overlayFrame
           );
 		  
-          //console.log("mousemove: col: " + spriteCoordinate.col + " - row: " + spriteCoordinate.row);
-      
           // TODO(vincz): Find a way to move that to the model instead of being at the interaction level.
           // Eg when drawing, it may make sense to have it here. However for a non drawing tool,
           // you don't need to draw anything when mousemoving and you request useless localStorage.
           $.publish(Events.LOCALSTORAGE_REQUEST);
-        } else {
-            // debug mode to see the selected pixel
-            // this.clearOverlay();
-            // this.overlayFrame.setPixel( spriteCoordinate.col,spriteCoordinate.row, "#ff0000");
-            // this.renderOverlay();
         }
         this.previousMousemoveTime = currentTime;
       }
@@ -139,26 +121,20 @@
         // the user was probably drawing on the canvas.
         // Note: The mousemove movement (and the mouseup) may end up outside
         // of the drawing canvas.
-        if(this.isRightClicked) {
-          $.publish(Events.CANVAS_RIGHT_CLICK_RELEASED);
-        }
-
 
         this.isClicked = false;
         this.isRightClicked = false;
-        var spriteCoordinate = this.getSpriteCoordinate(event);
+
+        var coords = this.getSpriteCoordinates(event);
         //console.log("mousemove: col: " + spriteCoordinate.col + " - row: " + spriteCoordinate.row);
         this.currentToolBehavior.releaseToolAt(
-          spriteCoordinate.col,
-          spriteCoordinate.row,
+          coords.col, coords.row,
           this.getCurrentColor_(),
-          this
+          this.framesheet.getCurrentFrame(),
+          this.overlayFrame
         );
 
         $.publish(Events.TOOL_RELEASED);
-
-        // TODO: Remove that when we have the centralized redraw loop
-        $.publish(Events.REDRAW_PREVIEWFILM);
       }
     },
 
@@ -176,7 +152,7 @@
     /**
 	 * @private
 	 */
-    ns.DrawingController.prototype.getSpriteCoordinate = function(event) {
+    ns.DrawingController.prototype.getSpriteCoordinates = function(event) {
         var coords = this.getRelativeCoordinates(event.clientX, event.clientY);
         return this.renderer.convertPixelCoordinatesIntoSpriteCoordinate(coords);
     };
@@ -219,15 +195,12 @@
   };
 
 	ns.DrawingController.prototype.renderFrame = function () {
-    var serializedFrame = this.frame.serialize();
+    var frame = this.framesheet.getCurrentFrame();
+    var serializedFrame = frame.serialize();
     if (this.serializedFrame != serializedFrame) {
       this.serializedFrame = serializedFrame
-		  this.renderer.render(this.frame);
+		  this.renderer.render(frame);
     }
-	};
-
-	ns.DrawingController.prototype.renderFramePixel = function (col, row) {
-		this.renderer.drawPixel(col, row, this.frame);
 	};
 
 	ns.DrawingController.prototype.renderOverlay = function () {
@@ -236,9 +209,5 @@
       this.serializedOverlay = serializedOverlay
       this.overlayRenderer.render(this.overlayFrame);
     }
-	};
-
-	ns.DrawingController.prototype.clearOverlay = function () {
-		this.overlayFrame = pskl.model.Frame.createEmptyFromFrame(this.frame);
 	};
 })();
