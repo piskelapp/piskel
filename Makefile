@@ -1,2 +1,2 @@
 test:
-	jshint js/*.js --config js/.jshintrc
+	jshint js/*.js
