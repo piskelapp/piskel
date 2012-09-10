@@ -210,8 +210,4 @@
       this.overlayRenderer.render(this.overlayFrame);
     }
 	};
-
-	ns.DrawingController.prototype.clearOverlay = function () {
-		this.overlayFrame = pskl.model.Frame.createEmptyFromFrame(this.frame);
-	};
 })();
