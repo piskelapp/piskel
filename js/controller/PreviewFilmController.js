@@ -5,49 +5,62 @@
 		this.dpi = dpi;
 		this.framesheet = framesheet;
 		this.container = container;
+
+		this.redrawFlag = false;
+
+    	$.subscribe(Events.TOOL_RELEASED, this.flagForRedraw_.bind(this));
+		$.subscribe(Events.FRAMESHEET_RESET, this.flagForRedraw_.bind(this));
 	};
 
 	ns.PreviewFilmController.prototype.init = function() {
-      var addFrameButton = $('#add-frame-button')[0];
-      addFrameButton.addEventListener('mousedown', this.addFrame.bind(this));
-      this.createPreviews();
-
-
+		var addFrameButton = $('#add-frame-button')[0];
+		addFrameButton.addEventListener('mousedown', this.addFrame.bind(this));
     };
 
     ns.PreviewFilmController.prototype.addFrame = function () {
  		this.framesheet.addEmptyFrame();
-        piskel.setActiveFrameAndRedraw(this.framesheet.getFrameCount() - 1);
+        this.framesheet.setCurrentFrameIndex(this.framesheet.getFrameCount() - 1);
     };
 
-    ns.PreviewFilmController.prototype.createPreviews = function () {
-      // TODO(vincz): Full redraw on any drawing modification, optimize.
-      this.container.html("");
+    ns.PreviewFilmController.prototype.flagForRedraw_ = function () {
+    	this.redrawFlag = true;
+    };
 
-      var frameCount = this.framesheet.getFrameCount();
-      
-      for (var i = 0, l = frameCount; i < l ; i++) {
-        this.container.append(this.createInterstitialTile_(i));
-        this.container.append(this.createPreviewTile_(i));
-      }
-      this.container.append(this.createInterstitialTile_(frameCount));
+    ns.PreviewFilmController.prototype.render = function () {
+		if (this.redrawFlag) {
+			// TODO(vincz): Full redraw on any drawing modification, optimize.
+			this.createPreviews_();
+			this.redrawFlag = false;
+		}
+    };
 
-      var needDragndropBehavior = !!(frameCount > 1);
-      if(needDragndropBehavior) {
-      	this.initDragndropBehavior_();
-      }
+    ns.PreviewFilmController.prototype.createPreviews_ = function () {
+		this.container.html("");
+
+		var frameCount = this.framesheet.getFrameCount();
+
+		for (var i = 0, l = frameCount; i < l ; i++) {
+			this.container.append(this.createInterstitialTile_(i));
+			this.container.append(this.createPreviewTile_(i));
+		}
+		this.container.append(this.createInterstitialTile_(frameCount));
+
+		var needDragndropBehavior = !!(frameCount > 1);
+		if(needDragndropBehavior) {
+			this.initDragndropBehavior_();
+		}
     };
 
     /**
      * @private
      */
     ns.PreviewFilmController.prototype.createInterstitialTile_ = function (tileNumber) {
-    	var initerstitialTile = document.createElement("div");
-		initerstitialTile.className = "interstitial-tile"
-		initerstitialTile.setAttribute("data-tile-type", "interstitial");
-		initerstitialTile.setAttribute("data-inject-drop-tile-at", tileNumber);
+    	var interstitialTile = document.createElement("div");
+		interstitialTile.className = "interstitial-tile"
+		interstitialTile.setAttribute("data-tile-type", "interstitial");
+		interstitialTile.setAttribute("data-inject-drop-tile-at", tileNumber);
 
-		return initerstitialTile;
+		return interstitialTile;
     };
 
     /**
@@ -96,8 +109,8 @@
 		// inside the drag target. We normalize that by taking the correct ancestor:
 		var originTile = $(event.srcElement).closest(".preview-tile");
 		var originFrameId = parseInt(originTile.data("tile-number"), 10);
+
 		var dropTarget = $(event.target);
-		
 		if(dropTarget.data("tile-type") == "interstitial") {
 			var targetInsertionId = parseInt(dropTarget.data("inject-drop-tile-at"), 10);
 			// In case we drop outside of the tile container
@@ -115,8 +128,7 @@
 			if(activeFrame > (this.framesheet.getFrameCount() - 1)) {
 				activeFrame = targetInsertionId - 1;
 			}
-		}
-		else {
+		} else {
 			var targetSwapId = parseInt(dropTarget.data("tile-number"), 10);
 			// In case we drop outside of the tile container
 			if(isNaN(originFrameId) || isNaN(targetSwapId)) {
@@ -130,12 +142,10 @@
 		
 		$('#preview-list').removeClass("show-interstitial-tiles");
 
-		// TODO(vincz): deprecate.
-		piskel.setActiveFrameAndRedraw(activeFrame);
+		this.framesheet.setCurrentFrameIndex(activeFrame);
 
 		// TODO(vincz): move localstorage request to the model layer?
 		$.publish(Events.LOCALSTORAGE_REQUEST);
-		
 	};
 
 	/**
@@ -144,54 +154,35 @@
      */
     ns.PreviewFilmController.prototype.createPreviewTile_ = function(tileNumber) {
     	var currentFrame = this.framesheet.getFrameByIndex(tileNumber);
-    	//var width = frame.getWidth() * this.dpi,
-    	//	height = frame.getHeight() * this.dpi;
-
+    	
 		var previewTileRoot = document.createElement("li");
 		var classname = "preview-tile";
 		previewTileRoot.setAttribute("data-tile-number", tileNumber);
 
-		if (piskel.getActiveFrameIndex() == tileNumber) {
+		if (this.framesheet.getCurrentFrame() == currentFrame) {
 			classname += " selected";
 		}
 		previewTileRoot.className = classname;
 
 		var canvasContainer = document.createElement("div");
 		canvasContainer.className = "canvas-container";
-		//canvasContainer.setAttribute('style', 'width:' + width + 'px; height:' + height + 'px;');
-
+		
 		var canvasBackground = document.createElement("div");
 		canvasBackground.className = "canvas-background";
 		canvasContainer.appendChild(canvasBackground);
-		/*
-		var canvasPreview = document.createElement("canvas");
-		canvasPreview.className = "canvas tile-view"
-
-		canvasPreview.setAttribute('width', width);
-		canvasPreview.setAttribute('height', height);     
-        */
 		
-		previewTileRoot.addEventListener('click', function(evt) {
-			// has not class tile-action:
-			if(!evt.target.classList.contains('tile-action')) {
-				piskel.setActiveFrameAndRedraw(tileNumber);
-			}    
-		});
+		previewTileRoot.addEventListener('click', this.onPreviewClick_.bind(this, tileNumber));
 
 		var canvasPreviewDuplicateAction = document.createElement("button");
 		canvasPreviewDuplicateAction.className = "tile-action"
 		canvasPreviewDuplicateAction.innerHTML = "dup"
 
-		canvasPreviewDuplicateAction.addEventListener('click', function(evt) {
-			piskel.duplicateFrame(tileNumber);
-		});
+		canvasPreviewDuplicateAction.addEventListener('click', this.onAddButtonClick_.bind(this, tileNumber));
 
-		//this.renderer.render(this.framesheet.getFrameByIndex(tileNumber), canvasPreview);
-		
 		// TODO(vincz): Eventually optimize this part by not recreating a FrameRenderer. Note that the real optim
 		// is to make this update function (#createPreviewTile) less aggressive.
 		var renderingOptions = {"dpi": this.dpi };
-		var currentFrameRenderer = new pskl.rendering.FrameRenderer(canvasContainer, renderingOptions, "tile-view");
+		var currentFrameRenderer = new pskl.rendering.FrameRenderer($(canvasContainer), renderingOptions, "tile-view");
 		currentFrameRenderer.init(currentFrame);
 		
 		previewTileRoot.appendChild(canvasContainer);
@@ -201,12 +192,29 @@
 			var canvasPreviewDeleteAction = document.createElement("button");
 			canvasPreviewDeleteAction.className = "tile-action"
 			canvasPreviewDeleteAction.innerHTML = "del"
-			canvasPreviewDeleteAction.addEventListener('click', function(evt) {
-				piskel.removeFrame(tileNumber);
-			});
+			canvasPreviewDeleteAction.addEventListener('click', this.onDeleteButtonClick_.bind(this, tileNumber));
 			previewTileRoot.appendChild(canvasPreviewDeleteAction);
 		}
 
 		return previewTileRoot;
+    };
+
+    ns.PreviewFilmController.prototype.onPreviewClick_ = function (index, evt) {
+    	// has not class tile-action:
+		if(!evt.target.classList.contains('tile-action')) {
+			this.framesheet.setCurrentFrameIndex(index);
+		}    
+    };
+
+    ns.PreviewFilmController.prototype.onDeleteButtonClick_ = function (index, evt) {
+    	this.framesheet.removeFrameByIndex(index);
+		$.publish(Events.FRAMESHEET_RESET);
+		$.publish(Events.LOCALSTORAGE_REQUEST);	// Should come from model	
+    };
+
+    ns.PreviewFilmController.prototype.onAddButtonClick_ = function (index, evt) {
+    	this.framesheet.duplicateFrameByIndex(index);
+		$.publish(Events.LOCALSTORAGE_REQUEST);	 // Should come from model
+		this.framesheet.setCurrentFrameIndex(index + 1);
     };
 })();

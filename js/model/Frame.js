@@ -8,6 +8,11 @@
 	};
 
 	ns.Frame.createEmpty = function (width, height) {
+    	var pixels = ns.Frame.createEmptyPixelGrid_(width, height);
+		return new ns.Frame(pixels);
+	};
+
+	ns.Frame.createEmptyPixelGrid_ = function (width, height) {
 		var pixels = []; //new Array(width);
 		for (var columnIndex=0; columnIndex < width; columnIndex++) {
 			var columnArray = [];
@@ -16,7 +21,7 @@
 			}
 			pixels[columnIndex] = columnArray;
     	}
-		return new ns.Frame(pixels);
+		return pixels;
 	};
 
 	ns.Frame.createEmptyFromFrame = function (frame) {
@@ -41,6 +46,13 @@
 		this.pixels = this.clonePixels_(pixels);
 	};
 
+
+
+	ns.Frame.prototype.clear = function () {
+		var pixels = ns.Frame.createEmptyPixelGrid_(this.getWidth(), this.getHeight());
+		this.setPixels(pixels);
+	};
+
 	/**
 	 * Clone a set of pixels. Should be static utility method
 	 * @private
@@ -48,7 +60,7 @@
 	ns.Frame.prototype.clonePixels_ = function (pixels) {
 		var clonedPixels = [];
 		for (var col = 0 ; col < pixels.length ; col++) {
-			clonedPixels[col] = pixels[col].slice(0 , pixels[col].length-1);
+			clonedPixels[col] = pixels[col].slice(0 , pixels[col].length);
 		}
 		return clonedPixels;
 	};

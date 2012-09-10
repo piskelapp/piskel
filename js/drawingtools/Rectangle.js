@@ -19,18 +19,16 @@
 	/**
 	 * @override
 	 */
-	ns.Rectangle.prototype.applyToolAt = function(col, row, color, drawer) {
+	ns.Rectangle.prototype.applyToolAt = function(col, row, color, frame, overlay) {
 		this.startCol = col;
 		this.startRow = row;
 		
 		// Drawing the first point of the rectangle in the fake overlay canvas:
-		drawer.overlayFrame.setPixel(col, row, color);
-		drawer.renderOverlay();
+		overlay.setPixel(col, row, color);
 	};
 
-	ns.Rectangle.prototype.moveToolAt = function(col, row, color, drawer) {
-		// Clean overlay canvas:
-		drawer.clearOverlay();
+	ns.Rectangle.prototype.moveToolAt = function(col, row, color, frame, overlay) {
+		overlay.clear();
 
 		// When the user moussemove (before releasing), we dynamically compute the 
 		// pixel to draw the line and draw this line in the overlay :
@@ -42,29 +40,25 @@
 			if(color == Constants.TRANSPARENT_COLOR) {
 				color = Constants.SELECTION_TRANSPARENT_COLOR;
 			}			
-			drawer.overlayFrame.setPixel(strokePoints[i].col, strokePoints[i].row, color);
+			overlay.setPixel(strokePoints[i].col, strokePoints[i].row, color);
 		}
-		drawer.renderOverlay();
 	};
 
 	/**
 	 * @override
 	 */
-	ns.Rectangle.prototype.releaseToolAt = function(col, row, color, drawer) {		
+	ns.Rectangle.prototype.releaseToolAt = function(col, row, color, frame, overlay) {		
+		overlay.clear();
 		// If the stroke tool is released outside of the canvas, we cancel the stroke: 
-		if(drawer.frame.containsPixel(col, row)) {
+		if(frame.containsPixel(col, row)) {
 			var strokePoints = this.getRectanglePixels_(this.startCol, col, this.startRow, row);
 			for(var i = 0; i< strokePoints.length; i++) {
 				// Change model:
-				drawer.frame.setPixel(strokePoints[i].col, strokePoints[i].row, color);
+				frame.setPixel(strokePoints[i].col, strokePoints[i].row, color);
 			}
 			// The user released the tool to draw a line. We will compute the pixel coordinate, impact
-			// the model and draw them in the drawing canvas (not the fake overlay anymore)
-			// Draw in canvas:
-			// TODO: Remove that when we have the centralized redraw loop
-			drawer.renderFrame();		
+			// the model and draw them in the drawing canvas (not the fake overlay anymore)		
 		}
-		drawer.clearOverlay();
 	};
 
 	/**

@@ -12,8 +12,6 @@
 		// Stroke's first point coordinates (set in applyToolAt)
 		this.startCol = null;
 		this.startRow = null;
-		
-		this.canvasOverlay = null;
 	};
 
 	pskl.utils.inherit(ns.Stroke, ns.BaseTool);
@@ -21,7 +19,7 @@
 	/**
 	 * @override
 	 */
-	ns.Stroke.prototype.applyToolAt = function(col, row, color, drawer) {
+	ns.Stroke.prototype.applyToolAt = function(col, row, color, frame, overlay) {
 		this.startCol = col;
 		this.startRow = row;
 		
@@ -34,12 +32,11 @@
 
 		// The fake canvas where we will draw the preview of the stroke:
 		// Drawing the first point of the stroke in the fake overlay canvas:
-		drawer.overlayFrame.setPixel(col, row, color);
-		drawer.renderOverlay();
+		overlay.setPixel(col, row, color);
 	};
 
-	ns.Stroke.prototype.moveToolAt = function(col, row, color, drawer) {
-		drawer.clearOverlay();
+	ns.Stroke.prototype.moveToolAt = function(col, row, color, frame, overlay) {
+		overlay.clear();
 
 		// When the user moussemove (before releasing), we dynamically compute the 
 		// pixel to draw the line and draw this line in the overlay canvas:
@@ -57,30 +54,26 @@
 				// eg deleting the equivalent of a stroke.		
 				color = Constants.SELECTION_TRANSPARENT_COLOR;
 			}			
-			drawer.overlayFrame.setPixel(strokePoints[i].col, strokePoints[i].row, color);
+			overlay.setPixel(strokePoints[i].col, strokePoints[i].row, color);
 		}
-		drawer.renderOverlay();
 	};
 
 	/**
 	 * @override
 	 */
-	ns.Stroke.prototype.releaseToolAt = function(col, row, color, drawer) {
+	ns.Stroke.prototype.releaseToolAt = function(col, row, color, frame, overlay) {
 		// If the stroke tool is released outside of the canvas, we cancel the stroke:
 		// TODO: Mutualize this check in common method
-		if(drawer.frame.containsPixel(col, row)) {
+		if(frame.containsPixel(col, row)) {
 			// The user released the tool to draw a line. We will compute the pixel coordinate, impact
 			// the model and draw them in the drawing canvas (not the fake overlay anymore)
 			var strokePoints = this.getLinePixels_(this.startCol, col, this.startRow, row);
 			for(var i = 0; i< strokePoints.length; i++) {
 				// Change model:
-				drawer.frame.setPixel(strokePoints[i].col, strokePoints[i].row, color);
+				frame.setPixel(strokePoints[i].col, strokePoints[i].row, color);
 			}
-			// Draw in canvas:
-			// TODO: Remove that when we have the centralized redraw loop
-			drawer.renderFrame();
 		} 
 		// For now, we are done with the stroke tool and don't need an overlay anymore:
-		drawer.clearOverlay();   
+		overlay.clear();   
 	};
 })();

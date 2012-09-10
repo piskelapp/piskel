@@ -7,37 +7,37 @@
 $.namespace("pskl");
 
 pskl.Palette = (function() {
-	
-	var paletteRoot,
-		paletteColors = [];
+  
+  var paletteRoot,
+    paletteColors = [];
 
-	/**
-	 * @private
-	 */
-	 var onPickerChange_ = function(evt, isPrimary) {
+  /**
+   * @private
+   */
+   var onPickerChange_ = function(evt, isPrimary) {
         var inputPicker = $(evt.target);
         $.publish(Events.COLOR_SELECTED, [inputPicker.val(), evt.data.isPrimary]);
-	 };
+   };
 
-	 /**
-	  * @private
-	  */
-	 var createPalette_ = function (colors) {
-	 	// Always adding transparent color
-	 	paletteRoot.html('<span class="palette-color transparent-color" data-color="TRANSPARENT" title="Transparent"></span>');
-	 	for(var color in colors) {
-	 		if(color != Constants.TRANSPARENT_COLOR) {
-	 			addColorToPalette_(color);
-	 		}
-	 	}
-	 };
+   /**
+    * @private
+    */
+   var createPalette_ = function (colors) {
+    // Always adding transparent color
+    paletteRoot.html('<span class="palette-color transparent-color" data-color="TRANSPARENT" title="Transparent"></span>');
+    for(var color in colors) {
+      if(color != Constants.TRANSPARENT_COLOR) {
+        addColorToPalette_(color);
+      }
+    }
+   };
 
-	 /**
-	  * @private
-	  */
-	 var addColorToPalette_ = function (color) {
+   /**
+    * @private
+    */
+   var addColorToPalette_ = function (color) {
       if (paletteColors.indexOf(color) == -1 && color != Constants.TRANSPARENT_COLOR) {
-      	var colorEl = document.createElement("li");    
+        var colorEl = document.createElement("li");    
         colorEl.className = "palette-color";
         colorEl.setAttribute("data-color", color);
         colorEl.setAttribute("title", color);
@@ -77,37 +77,37 @@ pskl.Palette = (function() {
       } else {
         colorPicker[0].color.fromString(color);
       }
-    }
+    };
 
-	return {
-		init: function(framesheet) {
-			
-			paletteRoot = $("#palette");
+  return {
+    init: function(framesheet) {
+      
+      paletteRoot = $("#palette");
 
-			// Initialize palette:
-			createPalette_(framesheet.getUsedColors());
+      // Initialize palette:
+      createPalette_(framesheet.getUsedColors());
 
-      		$.subscribe(Events.FRAMESHEET_RESET, function(evt) {
-      			createPalette_(framesheet.getUsedColors());
-      		});
+          $.subscribe(Events.FRAMESHEET_RESET, function(evt) {
+            createPalette_(framesheet.getUsedColors());
+          });
 
-      		paletteRoot.mouseup(onPaletteColorClick_);
-      		$.subscribe(Events.COLOR_SELECTED, function(evt, color) {
-      			addColorToPalette_(color);
-      		});
+          paletteRoot.mouseup(onPaletteColorClick_);
+          $.subscribe(Events.COLOR_SELECTED, function(evt, color) {
+            addColorToPalette_(color);
+          });
 
-      		// Initialize colorpicker:
-      		var colorPicker = $('#color-picker');
-      		colorPicker.val(Constants.DEFAULT_PEN_COLOR);
-      		colorPicker.change({isPrimary : true}, onPickerChange_);
+          // Initialize colorpicker:
+          var colorPicker = $('#color-picker');
+          colorPicker.val(Constants.DEFAULT_PEN_COLOR);
+          colorPicker.change({isPrimary : true}, onPickerChange_);
 
 
           var secondaryColorPicker = $('#secondary-color-picker');
           secondaryColorPicker.val(Constants.TRANSPARENT_COLOR);
           secondaryColorPicker.change({isPrimary : false}, onPickerChange_);
 
-		}
-	};
+    }
+  };
 })();
 
 

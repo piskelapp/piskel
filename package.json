@@ -1,0 +1,15 @@
+{
+  "author": "People",
+  "name": "piskel",
+  "description": "Web based 2d animations editor",
+  "version": "0.0.1",
+  "homepage": "http://github.com/juliandescottes/piskel",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/juliandescottes/piskel.git"
+  },
+  "scripts": { "test": "make test" },
+  "devDependencies": {
+  	"jshint": "0.6.1"
+  }
+}
