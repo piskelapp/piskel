@@ -83,7 +83,7 @@ $.namespace("pskl");
       });
 
       $.subscribe('FRAMESHEET_RESET', function(evt, frameId) {
-        piskel.redraw();
+        piskel.render();
       });
       var drawingLoop = new pskl.rendering.DrawingLoop();
       drawingLoop.addCallback(this.render, this);
