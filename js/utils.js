@@ -16,7 +16,7 @@ jQuery.namespace = function() {
  *
  * @require Constants
  */
-(function(ns) { // namespace: pskl.utils
+(function() { // namespace: pskl.utils
 
     var ns = $.namespace("pskl.utils");
 
@@ -35,5 +35,5 @@ jQuery.namespace = function() {
         //prototypeskl.ToolBehavior.Eraser.prototype.constructor = pskl.ToolBehavior.Eraser;
     };
 
-})()
+})();
 

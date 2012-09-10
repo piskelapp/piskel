@@ -8,11 +8,11 @@
 
 	ns.BaseTool = function() {};
 
-	ns.BaseTool.prototype.applyToolAt = function(col, row, frame) {};
+	ns.BaseTool.prototype.applyToolAt = function(col, row, color, frame, overlay) {};
 	
-	ns.BaseTool.prototype.moveToolAt = function(col, row, frame) {};
+	ns.BaseTool.prototype.moveToolAt = function(col, row, color, frame, overlay) {};
 
-	ns.BaseTool.prototype.releaseToolAt = function(col, row, frame) {};
+	ns.BaseTool.prototype.releaseToolAt = function(col, row, color, frame, overlay) {};
 
 	/**
 	 * Bresenham line algorihtm: Get an array of pixels from

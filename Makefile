@@ -1,0 +1,2 @@
+test:
+	jshint js/*.js

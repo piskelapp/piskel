@@ -22,10 +22,7 @@ $.namespace("pskl");
       // Canvas preview film canvases:
       previewTileCanvasDpi = 4,
       // Animated canvas preview:
-      previewAnimationCanvasDpi = 8,
-
-      activeFrameIndex = -1,       
-      currentFrame = null;
+      previewAnimationCanvasDpi = 8;
 
   /**
    * Main application controller
@@ -33,20 +30,16 @@ $.namespace("pskl");
   var piskel = {
 
     init : function () {
-
       piskel.initDPIs_();
-
 
       frameSheet = new pskl.model.FrameSheet(framePixelWidth, framePixelHeight);
       frameSheet.addEmptyFrame();
 
       this.drawingController = new pskl.controller.DrawingController(
-        frameSheet.getFrameByIndex(0),
+        frameSheet,
         $('#drawing-canvas-container'), 
         drawingCanvasDpi
       );
-
-      this.setActiveFrame(0);
 
       this.animationController = new pskl.controller.AnimatedPreviewController(
         frameSheet,
@@ -64,7 +57,9 @@ $.namespace("pskl");
       this.animationController.init();
       this.previewsController.init();
 
-      pskl.HistoryManager.init();
+      this.historyManager = new pskl.HistoryManager(frameSheet);
+      this.historyManager.init();
+
       pskl.NotificationService.init();
       pskl.LocalStorageService.init(frameSheet);
 
@@ -79,12 +74,9 @@ $.namespace("pskl");
       }
 
       $.subscribe('SET_ACTIVE_FRAME', function(evt, frameId) {
-        piskel.setActiveFrame(frameId);
+        frameSheet.setCurrentFrameIndex(frameId);
       });
 
-      $.subscribe('FRAMESHEET_RESET', function(evt, frameId) {
-        piskel.render();
-      });
       var drawingLoop = new pskl.rendering.DrawingLoop();
       drawingLoop.addCallback(this.render, this);
       drawingLoop.start();
@@ -101,7 +93,6 @@ $.namespace("pskl");
      * @private
      */
     initDPIs_ : function() {
-
       drawingCanvasDpi = piskel.calculateDPIsForDrawingCanvas_();
       // TODO(vincz): Add throttling on window.resize event.
       $(window).resize($.proxy(function() {
@@ -144,13 +135,6 @@ $.namespace("pskl");
     },
 
     finishInit : function () {
-
-      
-
-      $.subscribe(Events.REFRESH, function() {
-        piskel.setActiveFrame(0);
-      });
-
       pskl.ToolSelector.init();
       pskl.Palette.init(frameSheet);
     },
@@ -171,7 +155,6 @@ $.namespace("pskl");
 
       xhr.onload = function(e) {
         frameSheet.deserialize(this.responseText);
-        piskel.setActiveFrame(0);  
         $.publish(Events.HIDE_NOTIFICATION);
         piskel.finishInit();
       };
@@ -179,27 +162,11 @@ $.namespace("pskl");
       xhr.onerror = function () {
         $.publish(Events.HIDE_NOTIFICATION);
         piskel.finishInit();
-        piskel.setActiveFrame(0);  
       };
 
       xhr.send();
     },
 
-    setActiveFrame: function(index) {
-      activeFrameIndex = index;
-      this.drawingController.frame = this.getCurrentFrame(); 
-    },
-
-    getActiveFrameIndex: function() {
-      if(-1 == activeFrameIndex) {
-        throw "Bad active frame initialization."
-      }
-      return activeFrameIndex;
-    },
-
-    getCurrentFrame : function () {
-      return frameSheet.getFrameByIndex(activeFrameIndex);
-    },
     // TODO(julz): Create package ?
     storeSheet : function (event) {
       // TODO Refactor using jquery ?
