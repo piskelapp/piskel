@@ -66,7 +66,7 @@ pskl.LocalStorageService = (function() {
 
         // TODO(vincz): Find a good place to put this UI rendering, a service should not render UI.
         displayRestoreNotification: function() {
-            if(window.localStorage && window.localStorage['snapShot']) {
+            if(window.localStorage && window.localStorage.snapShot) {
                 var reloadLink = "<a href='#' class='localstorage-restore onclick='piskel.restoreFromLocalStorage()'>reload</a>";
                 var discardLink = "<a href='#' class='localstorage-discard' onclick='piskel.cleanLocalStorage()'>discard</a>";
                 var content = "Non saved version found. " + reloadLink + " or " + discardLink;

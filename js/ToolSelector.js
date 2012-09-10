@@ -78,10 +78,10 @@ pskl.ToolSelector = (function() {
             $("#tools-container").click(onToolIconClicked_);
 
             // Show/hide the grid on drawing canvas:
-            $.publish(Events.GRID_DISPLAY_STATE_CHANGED, [isShowGridChecked_()])
+            $.publish(Events.GRID_DISPLAY_STATE_CHANGED, [isShowGridChecked_()]);
             $('#show-grid').change(function(evt) {
                 var checked = isShowGridChecked_();
-                $.publish(Events.GRID_DISPLAY_STATE_CHANGED, [checked])     
+                $.publish(Events.GRID_DISPLAY_STATE_CHANGED, [checked]);
             });
         }
     };
