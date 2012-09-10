@@ -84,11 +84,6 @@
 		if(color != Constants.TRANSPARENT_COLOR) {
 			context.fillStyle = color;
 			context.fillRect(this.getFramePos_(col), this.getFramePos_(row), this.dpi, this.dpi);
-		} 
-		
-		if(color != Constants.SELECTION_TRANSPARENT_COLOR) {
-			// TODO(vincz): Found a better design to update the palette, it's called too frequently.
-			$.publish(Events.COLOR_USED, [color]);
 		}
 	};
 
