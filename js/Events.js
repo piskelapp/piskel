@@ -3,7 +3,6 @@ Events = {
 	TOOL_SELECTED : "TOOL_SELECTED",
 	TOOL_RELEASED : "TOOL_RELEASED",
 	COLOR_SELECTED: "COLOR_SELECTED",
-	COLOR_USED: "COLOR_USED",
 
 	/**
 	 *  When this event is emitted, a request is sent to the localstorage
@@ -13,7 +12,6 @@ Events = {
 	LOCALSTORAGE_REQUEST: "LOCALSTORAGE_REQUEST",
 
 	CANVAS_RIGHT_CLICKED: "CANVAS_RIGHT_CLICKED",
-	CANVAS_RIGHT_CLICK_RELEASED: "CANVAS_RIGHT_CLICK_RELEASED",
 
 	/**
 	 * Event to request a refresh of the display.

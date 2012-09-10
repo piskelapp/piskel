@@ -43,8 +43,6 @@ pskl.LocalStorageService = (function() {
 	 */
 	var restoreFromLocalStorage_ = function() {
       frameSheet_.deserialize(window.localStorage['snapShot']);
-      // Model updated, redraw everything:
-      $.publish(Events.REFRESH);
     };
 
     /**
