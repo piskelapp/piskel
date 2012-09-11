@@ -19,16 +19,16 @@
 	/**
 	 * @override
 	 */
-	ns.Move.prototype.applyToolAt = function(col, row, color, drawer) {
+	ns.Move.prototype.applyToolAt = function(col, row, color, frame, overlay) {
 		this.startCol = col;
 		this.startRow = row;
-		this.frameClone = drawer.frame.clone();
+		this.frameClone = frame.clone();
 	};
 
-	ns.Move.prototype.moveToolAt = function(col, row, color, drawer) {	
+	ns.Move.prototype.moveToolAt = function(col, row, color, frame, overlay) {	
 		var colDiff = col - this.startCol, rowDiff = row - this.startRow;
 		if (colDiff != 0 || rowDiff != 0) {
-			this.shiftFrame(colDiff, rowDiff, drawer.frame, this.frameClone);
+			this.shiftFrame(colDiff, rowDiff, frame, this.frameClone);
 		}
 	};
 
@@ -49,7 +49,7 @@
 	/**
 	 * @override
 	 */
-	ns.Move.prototype.releaseToolAt = function(col, row, color, drawer) {
-		this.moveToolAt(col, row, color, drawer);
+	ns.Move.prototype.releaseToolAt = function(col, row, color, frame, overlay) {
+		this.moveToolAt(col, row, color, frame, overlay);
 	};
 })();

@@ -8,6 +8,11 @@
 	};
 
 	ns.Frame.createEmpty = function (width, height) {
+    	var pixels = ns.Frame.createEmptyPixelGrid_(width, height);
+		return new ns.Frame(pixels);
+	};
+
+	ns.Frame.createEmptyPixelGrid_ = function (width, height) {
 		var pixels = []; //new Array(width);
 		for (var columnIndex=0; columnIndex < width; columnIndex++) {
 			var columnArray = [];
@@ -16,7 +21,7 @@
 			}
 			pixels[columnIndex] = columnArray;
     	}
-		return new ns.Frame(pixels);
+		return pixels;
 	};
 
 	ns.Frame.createEmptyFromFrame = function (frame) {
@@ -39,6 +44,13 @@
 	 */
 	ns.Frame.prototype.setPixels = function (pixels) {
 		this.pixels = this.clonePixels_(pixels);
+	};
+
+
+
+	ns.Frame.prototype.clear = function () {
+		var pixels = ns.Frame.createEmptyPixelGrid_(this.getWidth(), this.getHeight());
+		this.setPixels(pixels);
 	};
 
 	/**

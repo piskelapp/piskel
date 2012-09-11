@@ -4,10 +4,7 @@
 		this.width = width;
 		this.height = height;
 		this.frames = [];
-	};
-
-	ns.FrameSheet.prototype.validate = function () {
-		throw "FrameSheet.prototype.validate not implemented"
+		this.currentFrameIndex = 0;
 	};
 
 	ns.FrameSheet.prototype.addEmptyFrame = function () {
@@ -20,6 +17,15 @@
 
 	ns.FrameSheet.prototype.getFrameCount = function () {
 		return this.frames.length;
+	};
+
+	ns.FrameSheet.prototype.getCurrentFrame = function () {
+		return this.frames[this.currentFrameIndex];
+	};
+
+	ns.FrameSheet.prototype.setCurrentFrameIndex = function (index) {
+		this.currentFrameIndex = index;
+		$.publish(Events.FRAMESHEET_RESET);
 	};
 
 	ns.FrameSheet.prototype.getUsedColors = function() {
