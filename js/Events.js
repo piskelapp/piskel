@@ -34,7 +34,17 @@ Events = {
      * Number of frames, content of frames, color used for the palette may have changed.
      */
     FRAMESHEET_RESET: "FRAMESHEET_RESET",
+
+    CURRENT_FRAME_SET: "CURRENT_FRAME_SET",
+
+    SELECTION_CREATED: "SELECTION_CREATED",
     
     SHOW_NOTIFICATION: "SHOW_NOTIFICATION",
-    HIDE_NOTIFICATION: "HIDE_NOTIFICATION"
+    HIDE_NOTIFICATION: "HIDE_NOTIFICATION",
+
+    UNDO: "UNDO",
+    REDO: "REDO",
+    CUT: "CUT",
+    COPY: "COPY",
+    PASTE: "PASTE"    
 };
