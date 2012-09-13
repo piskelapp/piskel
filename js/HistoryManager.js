@@ -17,16 +17,12 @@
 
   ns.HistoryManager.prototype.undo = function () {
     this.framesheet.getCurrentFrame().loadPreviousState();
-    this.redraw();
+    $.publish(Events.FRAMESHEET_RESET);
   };
 
   ns.HistoryManager.prototype.redo = function () {
     this.framesheet.getCurrentFrame().loadNextState();
-    this.redraw();
+    $.publish(Events.FRAMESHEET_RESET);
   };
 
-  ns.HistoryManager.prototype.redraw = function () {
-    this.framesheet.drawingController.renderFrame();
-    this.framesheet.previewsController.createPreviews();
-  };
 })();
