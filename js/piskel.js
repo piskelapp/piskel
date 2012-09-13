@@ -54,7 +54,7 @@ $.namespace("pskl");
         previewTileCanvasDpi
       );
 
-      // To catch the current active frame, the selection manager have to be before
+      // To catch the current active frame, the selection manager have to be initialized before
       // the 'frameSheet.setCurrentFrameIndex(0);'
       // TODO(vincz): Slice each constructor to have:
       //                  - an event(s) listening init
