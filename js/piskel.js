@@ -31,7 +31,6 @@ $.namespace("pskl");
     init : function () {
       frameSheet = new pskl.model.FrameSheet(framePixelWidth, framePixelHeight);
       frameSheet.addEmptyFrame();
-      frameSheet.setCurrentFrameIndex(0);
       
       this.drawingController = new pskl.controller.DrawingController(
         frameSheet,
@@ -60,6 +59,9 @@ $.namespace("pskl");
       // in a second batch.
       this.selectionManager =
           new pskl.selection.SelectionManager(this.drawingController.overlayFrame);
+
+      // DO NOT MOVE THIS LINE (see comment above)
+      frameSheet.setCurrentFrameIndex(0);
 
       this.animationController.init();
       this.previewsController.init();
