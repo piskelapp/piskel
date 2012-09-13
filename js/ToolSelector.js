@@ -8,14 +8,15 @@
 $.namespace("pskl");
 
 pskl.ToolSelector = (function() {
-    
+	
     var toolInstances = {
         "simplePen" : new pskl.drawingtools.SimplePen(),
         "eraser" : new pskl.drawingtools.Eraser(),
         "paintBucket" : new pskl.drawingtools.PaintBucket(),
         "stroke" : new pskl.drawingtools.Stroke(),
         "rectangle" : new pskl.drawingtools.Rectangle(),
-        "move" : new pskl.drawingtools.Move()
+        "move" : new pskl.drawingtools.Move(),
+        "select" : new pskl.drawingtools.Select()
     };
     var currentSelectedTool = toolInstances.simplePen;
     var previousSelectedTool = toolInstances.simplePen;

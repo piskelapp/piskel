@@ -34,7 +34,7 @@ $.namespace("pskl");
 
       frameSheet = new pskl.model.FrameSheet(framePixelWidth, framePixelHeight);
       frameSheet.addEmptyFrame();
-
+      
       this.drawingController = new pskl.controller.DrawingController(
         frameSheet,
         $('#drawing-canvas-container'), 
@@ -54,11 +54,27 @@ $.namespace("pskl");
         previewTileCanvasDpi
       );
 
+      // To catch the current active frame, the selection manager have to be initialized before
+      // the 'frameSheet.setCurrentFrameIndex(0);'
+      // TODO(vincz): Slice each constructor to have:
+      //                  - an event(s) listening init
+      //                  - an event(s) triggering init
+      // All listerners will be hook in a first step, then all event triggering inits will be called
+      // in a second batch.
+      this.selectionManager =
+          new pskl.selection.SelectionManager(this.drawingController.overlayFrame);
+      
+      frameSheet.setCurrentFrameIndex(0);
+
+      
+
       this.animationController.init();
       this.previewsController.init();
 
       this.historyManager = new pskl.HistoryManager(frameSheet);
       this.historyManager.init();
+
+      this.keyManager = new pskl.KeyManager();
 
       pskl.NotificationService.init();
       pskl.LocalStorageService.init(frameSheet);
@@ -72,10 +88,6 @@ $.namespace("pskl");
         this.finishInit();
         pskl.LocalStorageService.displayRestoreNotification();
       }
-
-      $.subscribe('SET_ACTIVE_FRAME', function(evt, frameId) {
-        frameSheet.setCurrentFrameIndex(frameId);
-      });
 
       var drawingLoop = new pskl.rendering.DrawingLoop();
       drawingLoop.addCallback(this.render, this);
