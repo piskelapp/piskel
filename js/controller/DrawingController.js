@@ -1,44 +1,44 @@
 (function () {
-	var ns = $.namespace("pskl.controller");
-	ns.DrawingController = function (framesheet, container, dpi) {
-		// TODO(vincz): Store user prefs in a localstorage string ?
-		var renderingOptions = {
-			"dpi": dpi,
-			"hasGrid" : true
-		};
+  var ns = $.namespace("pskl.controller");
+  ns.DrawingController = function (framesheet, container, dpi) {
+    // TODO(vincz): Store user prefs in a localstorage string ?
+    var renderingOptions = {
+      "dpi": dpi,
+      "hasGrid" : true
+    };
 
-		/**
-		 * @public
-		 */
-		this.framesheet = framesheet;
-		
-		/**
-		 * @public
-		 */
-		this.overlayFrame = pskl.model.Frame.createEmptyFromFrame(framesheet.getCurrentFrame());
+    /**
+     * @public
+     */
+    this.framesheet = framesheet;
+    
+    /**
+     * @public
+     */
+    this.overlayFrame = pskl.model.Frame.createEmptyFromFrame(framesheet.getCurrentFrame());
 
-		/**
-		 * @private
-		 */
-		this.container = container;
-		
-		this.renderer = new pskl.rendering.FrameRenderer(this.container, renderingOptions, "drawing-canvas");
-		this.overlayRenderer = new pskl.rendering.FrameRenderer(this.container, renderingOptions, "canvas-overlay");
-		
-		this.renderer.init(framesheet.getCurrentFrame());
-		this.overlayRenderer.init(this.overlayFrame);
+    /**
+     * @private
+     */
+    this.container = container;
+    
+    this.renderer = new pskl.rendering.FrameRenderer(this.container, renderingOptions, "drawing-canvas");
+    this.overlayRenderer = new pskl.rendering.FrameRenderer(this.container, renderingOptions, "canvas-overlay");
+    
+    this.renderer.init(framesheet.getCurrentFrame());
+    this.overlayRenderer.init(this.overlayFrame);
 
-		// State of drawing controller:
-		this.isClicked = false;
-		this.isRightClicked = false;
-		this.previousMousemoveTime = 0;
-		this.currentToolBehavior = null;
-		this.primaryColor =  Constants.DEFAULT_PEN_COLOR;
-		this.secondaryColor =  Constants.TRANSPARENT_COLOR;
+    // State of drawing controller:
+    this.isClicked = false;
+    this.isRightClicked = false;
+    this.previousMousemoveTime = 0;
+    this.currentToolBehavior = null;
+    this.primaryColor =  Constants.DEFAULT_PEN_COLOR;
+    this.secondaryColor =  Constants.TRANSPARENT_COLOR;
 
-		this.initMouseBehavior();
+    this.initMouseBehavior();
 
-		$.subscribe(Events.TOOL_SELECTED, $.proxy(function(evt, toolBehavior) {
+    $.subscribe(Events.TOOL_SELECTED, $.proxy(function(evt, toolBehavior) {
       console.log("Tool selected: ", toolBehavior);
       this.currentToolBehavior = toolBehavior;
     }, this));
@@ -51,22 +51,22 @@
         this.secondaryColor = color;
       }
     }, this));
-	};
+  };
 
-	ns.DrawingController.prototype.initMouseBehavior = function() {
-		var body = $('body');
+  ns.DrawingController.prototype.initMouseBehavior = function() {
+    var body = $('body');
         this.container.mousedown($.proxy(this.onMousedown_, this));
         this.container.mousemove($.proxy(this.onMousemove_, this));
         body.mouseup($.proxy(this.onMouseup_, this));
         
         // Deactivate right click:
         this.container.contextmenu(this.onCanvasContextMenu_);
-	};
+  };
 
-	/**
-	 * @private
-	 */
-	ns.DrawingController.prototype.onMousedown_ = function (event) {
+  /**
+   * @private
+   */
+  ns.DrawingController.prototype.onMousedown_ = function (event) {
       this.isClicked = true;
       
       if(event.button == 2) { // right click
@@ -87,8 +87,8 @@
     };
 
     /**
-	 * @private
-	 */
+   * @private
+   */
     ns.DrawingController.prototype.onMousemove_ = function (event) {
       var currentTime = new Date().getTime();
       // Throttling of the mousemove event:
@@ -102,19 +102,27 @@
             this.framesheet.getCurrentFrame(),
             this.overlayFrame
           );
-		  
+      
           // TODO(vincz): Find a way to move that to the model instead of being at the interaction level.
           // Eg when drawing, it may make sense to have it here. However for a non drawing tool,
           // you don't need to draw anything when mousemoving and you request useless localStorage.
           $.publish(Events.LOCALSTORAGE_REQUEST);
+        } else {
+
+          this.currentToolBehavior.moveUnactiveToolAt(
+            coords.col, coords.row,
+            this.getCurrentColor_(),
+            this.framesheet.getCurrentFrame(),
+            this.overlayFrame
+          );
         }
         this.previousMousemoveTime = currentTime;
       }
     };
 
     /**
-	 * @private
-	 */
+   * @private
+   */
     ns.DrawingController.prototype.onMouseup_ = function (event) {
       if(this.isClicked || this.isRightClicked) {
         // A mouse button was clicked on the drawing canvas before this mouseup event,
@@ -139,8 +147,8 @@
     },
 
     /**
-	 * @private
-	 */
+   * @private
+   */
     ns.DrawingController.prototype.getRelativeCoordinates = function (clientX, clientY) {
       var canvasPageOffset = this.container.offset();
       return {
@@ -150,16 +158,16 @@
     };
 
     /**
-	 * @private
-	 */
+   * @private
+   */
     ns.DrawingController.prototype.getSpriteCoordinates = function(event) {
         var coords = this.getRelativeCoordinates(event.clientX, event.clientY);
         return this.renderer.convertPixelCoordinatesIntoSpriteCoordinate(coords);
     };
 
     /**
-	 * @private
-	 */
+   * @private
+   */
     ns.DrawingController.prototype.getCurrentColor_ = function () {
       if(this.isRightClicked) {
         return this.secondaryColor;
@@ -169,45 +177,44 @@
     };
 
     /**
-	 * @private
-	 */
+   * @private
+   */
     ns.DrawingController.prototype.onCanvasContextMenu_ = function (event) {
       event.preventDefault();
       event.stopPropagation();
       event.cancelBubble = true;
       return false;
     };
-	
-	ns.DrawingController.prototype.updateDPI = function (newDPI) {
-		this.renderer.updateDPI(newDPI);
-		this.overlayRenderer.updateDPI(newDPI);
-
-		this.render();
-	};
-
-  ns.DrawingController.prototype.render = function () {
-    try {
-      this.renderFrame();
-      this.renderOverlay();
-    } catch (e) {
-      // TODO : temporary t/c for integration
-    }
+  
+  ns.DrawingController.prototype.updateDPI = function (newDPI) {
+    this.renderer.updateDPI(newDPI);
+    this.overlayRenderer.updateDPI(newDPI);
+    this.forceRendering_();
   };
 
-	ns.DrawingController.prototype.renderFrame = function () {
+  ns.DrawingController.prototype.render = function () {
+    this.renderFrame();
+    this.renderOverlay();
+  };
+
+  ns.DrawingController.prototype.renderFrame = function () {
     var frame = this.framesheet.getCurrentFrame();
     var serializedFrame = frame.serialize();
     if (this.serializedFrame != serializedFrame) {
-      this.serializedFrame = serializedFrame
-		  this.renderer.render(frame);
+      this.serializedFrame = serializedFrame;
+      this.renderer.render(frame);
     }
-	};
+  };
 
-	ns.DrawingController.prototype.renderOverlay = function () {
+  ns.DrawingController.prototype.renderOverlay = function () {
     var serializedOverlay = this.overlayFrame.serialize();
     if (this.serializedOverlay != serializedOverlay) {
-      this.serializedOverlay = serializedOverlay
+      this.serializedOverlay = serializedOverlay;
       this.overlayRenderer.render(this.overlayFrame);
     }
-	};
+  };
+
+  ns.DrawingController.prototype.forceRendering_ = function () {
+    this.serializedFrame = this.serializedOverlay = null;
+  }
 })();

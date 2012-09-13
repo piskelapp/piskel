@@ -12,6 +12,8 @@
 	
 	ns.BaseTool.prototype.moveToolAt = function(col, row, color, frame, overlay) {};
 
+	ns.BaseTool.prototype.moveUnactiveToolAt = function(col, row, color, frame, overlay) {};
+
 	ns.BaseTool.prototype.releaseToolAt = function(col, row, color, frame, overlay) {};
 
 	/**

@@ -32,14 +32,15 @@
 
 		// When the user moussemove (before releasing), we dynamically compute the 
 		// pixel to draw the line and draw this line in the overlay :
-		var strokePoints = this.getRectanglePixels_(this.startCol, col, this.startRow, row);
-		
+		var strokePoints = pskl.PixelUtils.getBoundRectanglePixels(this.startCol, this.startRow, col, row);
+		if(color == Constants.TRANSPARENT_COLOR) {
+			color = Constants.SELECTION_TRANSPARENT_COLOR;
+		}
+
 		// Drawing current stroke:
 		for(var i = 0; i< strokePoints.length; i++) {
 
-			if(color == Constants.TRANSPARENT_COLOR) {
-				color = Constants.SELECTION_TRANSPARENT_COLOR;
-			}			
+						
 			overlay.setPixel(strokePoints[i].col, strokePoints[i].row, color);
 		}
 	};
@@ -51,7 +52,7 @@
 		overlay.clear();
 		// If the stroke tool is released outside of the canvas, we cancel the stroke: 
 		if(frame.containsPixel(col, row)) {
-			var strokePoints = this.getRectanglePixels_(this.startCol, col, this.startRow, row);
+			var strokePoints = pskl.PixelUtils.getBoundRectanglePixels(this.startCol, this.startRow, col, row);
 			for(var i = 0; i< strokePoints.length; i++) {
 				// Change model:
 				frame.setPixel(strokePoints[i].col, strokePoints[i].row, color);

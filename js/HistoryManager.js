@@ -5,36 +5,24 @@
   };
 
 	ns.HistoryManager.prototype.init = function () {
-    document.body.addEventListener('keyup', this.onKeyup.bind(this));
     $.subscribe(Events.TOOL_RELEASED, this.saveState.bind(this));
+
+    $.subscribe(Events.UNDO, this.undo.bind(this));
+    $.subscribe(Events.REDO, this.redo.bind(this));
 	};
 
   ns.HistoryManager.prototype.saveState = function () {
     this.framesheet.getCurrentFrame().saveState();
   };
 
-	ns.HistoryManager.prototype.onKeyup = function (evt) {
-    if (evt.ctrlKey && evt.keyCode == 90) { // CTRL + Z
-      this.undo();
-    }
-
-    if (evt.ctrlKey && evt.keyCode == 89) { // CTRL+ Y
-      this.redo();
-    }
-  };
-
   ns.HistoryManager.prototype.undo = function () {
     this.framesheet.getCurrentFrame().loadPreviousState();
-    this.redraw();
+    $.publish(Events.FRAMESHEET_RESET);
   };
 
   ns.HistoryManager.prototype.redo = function () {
     this.framesheet.getCurrentFrame().loadNextState();
-    this.redraw();
+    $.publish(Events.FRAMESHEET_RESET);
   };
 
-  ns.HistoryManager.prototype.redraw = function () {
-    this.framesheet.drawingController.renderFrame();
-    this.framesheet.previewsController.createPreviews();
-  };
 })();

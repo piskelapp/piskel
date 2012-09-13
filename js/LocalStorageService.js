@@ -40,9 +40,12 @@ pskl.LocalStorageService = (function() {
 
     /**
      * @private
+     * TODO(vince): Move that away from LocalStorageService
      */
     var restoreFromLocalStorage_ = function() {
+
       frameSheet_.deserialize(window.localStorage.snapShot);
+      frameSheet_.setCurrentFrameIndex(0);
     };
 
     /**
