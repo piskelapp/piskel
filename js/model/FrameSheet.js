@@ -25,7 +25,8 @@
 
 	ns.FrameSheet.prototype.setCurrentFrameIndex = function (index) {
 		this.currentFrameIndex = index;
-		$.publish(Events.FRAMESHEET_RESET);
+		$.publish(Events.CURRENT_FRAME_SET, [this.getCurrentFrame()]);
+		$.publish(Events.FRAMESHEET_RESET);  // Is it no to overkill to have this here ?
 	};
 
 	ns.FrameSheet.prototype.getUsedColors = function() {

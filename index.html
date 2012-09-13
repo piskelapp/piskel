@@ -32,6 +32,7 @@
       <li class="tool-icon tool-stroke" data-tool-id="tool-stroke" title="Stroke tool"></li>
       <li class="tool-icon tool-rectangle" data-tool-id="tool-rectangle" title="Rectangle tool"></li>
       <li class="tool-icon tool-move" data-tool-id="tool-move" title="Move tool"></li>
+      <li class="tool-icon tool-select" data-tool-id="tool-select" title="Move tool"></li>
     </ul>
     
     <ul class="tools-group">
@@ -92,7 +93,8 @@
   <script src="js/Events.js"></script>
   
   <!-- Libraries -->
-  <script src="js/utils.js"></script>
+  <script src="js/utils/core.js"></script>
+  <script src="js/utils/pixelUtils.js"></script>
   <script src="js/lib/jsColor_1_4_0/jscolor.js"></script>
 
   <!-- Application libraries-->
@@ -105,6 +107,10 @@
   <script src="js/controller/AnimatedPreviewController.js"></script>
   <script src="js/LocalStorageService.js"></script>
   <script src="js/HistoryManager.js"></script>
+  <script src="js/KeyManager.js"></script>
+  <script src="js/selection/SelectionManager.js"></script>
+  <script src="js/selection/BaseSelection.js"></script>
+  <script src="js/selection/RectangularSelection.js"></script>
   <script src="js/Palette.js"></script>
   <script src="js/Notification.js"></script>
   <script src="js/drawingtools/BaseTool.js"></script>
@@ -114,6 +120,7 @@
   <script src="js/drawingtools/PaintBucket.js"></script>
   <script src="js/drawingtools/Rectangle.js"></script>
   <script src="js/drawingtools/Move.js"></script>
+  <script src="js/drawingtools/RectangularSelect.js"></script>
   <script src="js/ToolSelector.js"></script>
 
   <!-- Application controller and initialization -->

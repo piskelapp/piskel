@@ -107,6 +107,14 @@
           // Eg when drawing, it may make sense to have it here. However for a non drawing tool,
           // you don't need to draw anything when mousemoving and you request useless localStorage.
           $.publish(Events.LOCALSTORAGE_REQUEST);
+        } else {
+
+          this.currentToolBehavior.moveUnactiveToolAt(
+            coords.col, coords.row,
+            this.getCurrentColor_(),
+            this.framesheet.getCurrentFrame(),
+            this.overlayFrame
+          );
         }
         this.previousMousemoveTime = currentTime;
       }
