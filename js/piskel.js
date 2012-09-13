@@ -17,8 +17,7 @@ $.namespace("pskl");
       framePixelHeight = 32,
 
       // Scaling factors for a given frameSheet rendering:
-      // Main drawing area:
-      drawingCanvasDpi = 20,   
+      // Main drawing area dpi is calculated dynamically
       // Canvas preview film canvases:
       previewTileCanvasDpi = 4,
       // Animated canvas preview:
@@ -30,15 +29,13 @@ $.namespace("pskl");
   var piskel = {
 
     init : function () {
-      piskel.initDPIs_();
-
       frameSheet = new pskl.model.FrameSheet(framePixelWidth, framePixelHeight);
       frameSheet.addEmptyFrame();
       
       this.drawingController = new pskl.controller.DrawingController(
         frameSheet,
         $('#drawing-canvas-container'), 
-        drawingCanvasDpi
+        this.calculateDPIsForDrawingCanvas_()
       );
 
       this.animationController = new pskl.controller.AnimatedPreviewController(
@@ -46,7 +43,6 @@ $.namespace("pskl");
         $('#preview-canvas-container'), 
         previewAnimationCanvasDpi
       );
-
 
       this.previewsController = new pskl.controller.PreviewFilmController(
         frameSheet,
@@ -63,10 +59,9 @@ $.namespace("pskl");
       // in a second batch.
       this.selectionManager =
           new pskl.selection.SelectionManager(this.drawingController.overlayFrame);
-      
-      frameSheet.setCurrentFrameIndex(0);
 
-      
+      // DO NOT MOVE THIS LINE (see comment above)
+      frameSheet.setCurrentFrameIndex(0);
 
       this.animationController.init();
       this.previewsController.init();
@@ -92,6 +87,8 @@ $.namespace("pskl");
       var drawingLoop = new pskl.rendering.DrawingLoop();
       drawingLoop.addCallback(this.render, this);
       drawingLoop.start();
+
+      this.connectResizeToDpiUpdate_();
     },
 
     render : function (delta) {
@@ -100,18 +97,18 @@ $.namespace("pskl");
       this.previewsController.render(delta);
     },
 
-    /**
-     * Override default DPIs.
-     * @private
-     */
-    initDPIs_ : function() {
-      drawingCanvasDpi = piskel.calculateDPIsForDrawingCanvas_();
-      // TODO(vincz): Add throttling on window.resize event.
-      $(window).resize($.proxy(function() {
-        drawingCanvasDpi = piskel.calculateDPIsForDrawingCanvas_();
-        this.drawingController.updateDPI(drawingCanvasDpi);
-      }, this));
-      // TODO(vincz): Check for user settings eventually from localstorage.
+    connectResizeToDpiUpdate_ : function () {
+      $(window).resize($.proxy(this.startDPIUpdateTimer_, this));
+    },
+
+    startDPIUpdateTimer_ : function () {
+      if (this.dpiUpdateTimer) window.clearInterval(this.dpiUpdateTimer);
+      this.dpiUpdateTimer = window.setTimeout($.proxy(this.updateDPIForViewport, this), 200);
+    },
+
+    updateDPIForViewport : function () {
+      var dpi = piskel.calculateDPIsForDrawingCanvas_();
+      this.drawingController.updateDPI(dpi);
     },
 
     /**
