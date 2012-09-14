@@ -96,6 +96,14 @@
 			throw "Out of bound index for frameSheet object.";
 		}
 		this.frames.splice(index, 1);
+
+		// Current frame index might not be valid anymore
+		if (!this.hasFrameAtIndex(this.currentFrameIndex)) {
+			// if not select last frame available
+			this.setCurrentFrameIndex(this.getFrameCount() - 1);
+		}
+
+		$.publish(Events.FRAMESHEET_RESET);
 	};
 
 	ns.FrameSheet.prototype.duplicateFrameByIndex = function(index) {

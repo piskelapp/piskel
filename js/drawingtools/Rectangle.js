@@ -34,7 +34,7 @@
 		}
 
 		// draw in overlay
-		this.drawRectangle(col, row, color, overlay);
+		this.drawRectangle_(col, row, color, overlay);
 	};
 
 	/**
@@ -44,15 +44,15 @@
 		overlay.clear();
 		if(frame.containsPixel(col, row)) { // cancel if outside of canvas
 			// draw in frame to finalize
-			this.drawRectangle(col, row, color, frame);
+			this.drawRectangle_(col, row, color, frame);
 		}
 	};
 
-	ns.Rectangle.prototype.drawRectangle = function (col, row, color, targetFrame) {
+	ns.Rectangle.prototype.drawRectangle_ = function (col, row, color, targetFrame) {
 		var strokePoints = pskl.PixelUtils.getBoundRectanglePixels(this.startCol, this.startRow, col, row);
 		for(var i = 0; i< strokePoints.length; i++) {
 			// Change model:
 			targetFrame.setPixel(strokePoints[i].col, strokePoints[i].row, color);
 		}
-	}
+	};
 })();
