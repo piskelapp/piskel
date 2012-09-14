@@ -15,6 +15,7 @@ pskl.ToolSelector = (function() {
         "paintBucket" : new pskl.drawingtools.PaintBucket(),
         "stroke" : new pskl.drawingtools.Stroke(),
         "rectangle" : new pskl.drawingtools.Rectangle(),
+        "circle" : new pskl.drawingtools.Circle(),
         "move" : new pskl.drawingtools.Move(),
         "select" : new pskl.drawingtools.Select()
     };
