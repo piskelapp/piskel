@@ -62,7 +62,7 @@ $.namespace("pskl");
       // All listerners will be hook in a first step, then all event triggering inits will be called
       // in a second batch.
       this.selectionManager =
-          new pskl.selection.SelectionManager(this.drawingController.overlayFrame);
+          new pskl.selection.SelectionManager(frameSheet, this.drawingController.overlayFrame);
       
       frameSheet.setCurrentFrameIndex(0);
 

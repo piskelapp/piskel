@@ -2,16 +2,13 @@
 	var ns = $.namespace("pskl.selection");
 
 	
-	ns.SelectionManager = function (overlayFrame) {
+	ns.SelectionManager = function (framesheet, overlayFrame) {
 		
 		this.framesheet = framesheet;
 		this.overlayFrame = overlayFrame;
 		
 		this.currentSelection = null;
-		this.currentFrame = null; 
 		
-		$.subscribe(Events.CURRENT_FRAME_SET, $.proxy(this.onCurrentFrameChanged_, this));
-
 		$.subscribe(Events.SELECTION_CREATED, $.proxy(this.onSelectionCreated_, this));
 		$.subscribe(Events.SELECTION_DISMISSED, $.proxy(this.onSelectionDismissed_, this));	
 		$.subscribe(Events.SELECTION_MOVE_REQUEST, $.proxy(this.onSelectionMoved_, this));
@@ -36,20 +33,8 @@
 	/**
 	 * @private
 	 */
-	ns.SelectionManager.prototype.onCurrentFrameChanged_ = function(evt, currentFrame) {
-		if(currentFrame) {
-			this.currentFrame = currentFrame;
-		}
-		else {
-			throw "Bad current frame set in SelectionManager";
-		}
-	};
-
-	/**
-	 * @private
-	 */
 	ns.SelectionManager.prototype.onToolSelected_ = function(evt, tool) {
-		var isSelectionTool = (tool instanceof pskl.drawingtools.RectangleSelect) || (tool instanceof pskl.drawingtools.ShapeSelect);
+		var isSelectionTool = tool instanceof pskl.drawingtools.BaseSelect;
 		if(!isSelectionTool) {
 			this.cleanSelection_();
 		}
@@ -66,14 +51,15 @@
 	 * @private
 	 */
 	ns.SelectionManager.prototype.onCut_ = function(evt) {
-		if(this.currentSelection && this.currentFrame) {
+		if(this.currentSelection) {
 			// Put cut target into the selection:
-			this.currentSelection.fillSelectionFromFrame(this.currentFrame);
+			this.currentSelection.fillSelectionFromFrame(this.framesheet.getCurrentFrame());
 
 			var pixels = this.currentSelection.pixels;
+			var currentFrame = this.framesheet.getCurrentFrame();
 			for(var i=0, l=pixels.length; i<l; i++) {
 				try {
-					this.currentFrame.setPixel(pixels[i].col, pixels[i].row, Constants.TRANSPARENT_COLOR);
+					currentFrame.setPixel(pixels[i].col, pixels[i].row, Constants.TRANSPARENT_COLOR);
 				}
 				catch(e) {
 					// Catchng out of frame's bound pixels without testing
@@ -86,11 +72,12 @@
 	};
 
 	ns.SelectionManager.prototype.onPaste_ = function(evt) {
-		if(this.currentSelection && this.currentFrame) {
+		if(this.currentSelection) {
 			var pixels = this.currentSelection.pixels;
+			var currentFrame = this.framesheet.getCurrentFrame();
 			for(var i=0, l=pixels.length; i<l; i++) {
 				try {
-					this.currentFrame.setPixel(
+					currentFrame.setPixel(
 						pixels[i].col, pixels[i].row, 
 						pixels[i].copiedColor);
 				}
@@ -108,8 +95,8 @@
 	 * @private
 	 */
 	ns.SelectionManager.prototype.onCopy_ = function(evt) {
-		if(this.currentSelection && this.currentFrame) {
-			this.currentSelection.fillSelectionFromFrame(this.currentFrame);
+		if(this.currentSelection && this.framesheet.getCurrentFrame()) {
+			this.currentSelection.fillSelectionFromFrame(this.framesheet.getCurrentFrame());
 		}
 		else {
 			throw "Bad state for CUT callback in SelectionManager";
