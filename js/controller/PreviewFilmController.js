@@ -208,7 +208,6 @@
 
     ns.PreviewFilmController.prototype.onDeleteButtonClick_ = function (index, evt) {
     	this.framesheet.removeFrameByIndex(index);
-		$.publish(Events.FRAMESHEET_RESET);
 		$.publish(Events.LOCALSTORAGE_REQUEST);	// Should come from model	
     };
 
