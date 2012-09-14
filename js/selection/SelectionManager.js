@@ -4,6 +4,7 @@
 	
 	ns.SelectionManager = function (overlayFrame) {
 		
+		this.framesheet = framesheet;
 		this.overlayFrame = overlayFrame;
 		
 		this.currentSelection = null;
@@ -48,7 +49,8 @@
 	 * @private
 	 */
 	ns.SelectionManager.prototype.onToolSelected_ = function(evt, tool) {
-		if(!(tool instanceof pskl.drawingtools.Select)) {
+		var isSelectionTool = (tool instanceof pskl.drawingtools.RectangleSelect) || (tool instanceof pskl.drawingtools.ShapeSelect);
+		if(!isSelectionTool) {
 			this.cleanSelection_();
 		}
 	};

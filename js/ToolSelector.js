@@ -16,7 +16,8 @@ pskl.ToolSelector = (function() {
         "stroke" : new pskl.drawingtools.Stroke(),
         "rectangle" : new pskl.drawingtools.Rectangle(),
         "move" : new pskl.drawingtools.Move(),
-        "select" : new pskl.drawingtools.Select()
+        "rectangleSelect" : new pskl.drawingtools.RectangleSelect(),
+        "shapeSelect" : new pskl.drawingtools.ShapeSelect()
     };
     var currentSelectedTool = toolInstances.simplePen;
     var previousSelectedTool = toolInstances.simplePen;

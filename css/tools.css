@@ -49,8 +49,12 @@
   background-image: url(../img/tools/icons/hand.png);
 }
 
-.tool-icon.tool-select {
+.tool-icon.tool-rectangle-select {
   background-image: url(../img/tools/icons/select.png);
+}
+
+.tool-icon.tool-shape-select {
+  background-image: url(../img/tools/icons/wand.png);
 }
 
 /*.tool-icon.tool-palette {
@@ -81,8 +85,12 @@
   cursor: url(../img/tools/cursors/hand.png) 14 12, pointer;
 }
 
-.tool-select .drawing-canvas-container:hover {
+.tool-rectangle-select .drawing-canvas-container:hover {
   cursor: url(../img/tools/cursors/select.png) 14 12, pointer;
+}
+
+.tool-shape-select .drawing-canvas-container:hover {
+  cursor: url(../img/tools/cursors/wand.png) 14 12, pointer;
 }
 
 .tool-grid,

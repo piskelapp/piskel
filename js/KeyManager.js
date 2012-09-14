@@ -37,13 +37,13 @@
 		
 		if (isMac ? evt.metaKey : evt.ctrlKey) {
 			// Get key pressed:
- 			var letter = this.CharCodeToKeyCodeMap[evt.which];
+			var letter = this.CharCodeToKeyCodeMap[evt.which];
 			if(letter) {
-				var eventToTrigger = this.KeyboardActions["ctrl"][letter];
+				var eventToTrigger = this.KeyboardActions.ctrl[letter];
 				if(eventToTrigger) {
 					$.publish(eventToTrigger);
 				}
-			};
+			}
 		}
 	};
 

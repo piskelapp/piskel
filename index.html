@@ -32,7 +32,8 @@
       <li class="tool-icon tool-stroke" data-tool-id="tool-stroke" title="Stroke tool"></li>
       <li class="tool-icon tool-rectangle" data-tool-id="tool-rectangle" title="Rectangle tool"></li>
       <li class="tool-icon tool-move" data-tool-id="tool-move" title="Move tool"></li>
-      <li class="tool-icon tool-select" data-tool-id="tool-select" title="Move tool"></li>
+      <li class="tool-icon tool-rectangle-select" data-tool-id="tool-rectangle-select" title="Rectangle selection tool"></li>
+      <li class="tool-icon tool-shape-select" data-tool-id="tool-shape-select" title="Shape selection tool"></li>
     </ul>
     
     <ul class="tools-group">
@@ -111,6 +112,7 @@
   <script src="js/selection/SelectionManager.js"></script>
   <script src="js/selection/BaseSelection.js"></script>
   <script src="js/selection/RectangularSelection.js"></script>
+  <script src="js/selection/ShapeSelection.js"></script>
   <script src="js/Palette.js"></script>
   <script src="js/Notification.js"></script>
   <script src="js/drawingtools/BaseTool.js"></script>
@@ -120,7 +122,9 @@
   <script src="js/drawingtools/PaintBucket.js"></script>
   <script src="js/drawingtools/Rectangle.js"></script>
   <script src="js/drawingtools/Move.js"></script>
-  <script src="js/drawingtools/RectangularSelect.js"></script>
+  <script src="js/drawingtools/selectiontools/BaseSelect.js"></script>
+  <script src="js/drawingtools/selectiontools/RectangleSelect.js"></script>
+  <script src="js/drawingtools/selectiontools/ShapeSelect.js"></script>
   <script src="js/ToolSelector.js"></script>
 
   <!-- Application controller and initialization -->
