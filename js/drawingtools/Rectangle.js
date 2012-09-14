@@ -29,20 +29,12 @@
 
 	ns.Rectangle.prototype.moveToolAt = function(col, row, color, frame, overlay) {
 		overlay.clear();
-
-		// When the user moussemove (before releasing), we dynamically compute the 
-		// pixel to draw the line and draw this line in the overlay :
-		var strokePoints = pskl.PixelUtils.getBoundRectanglePixels(this.startCol, this.startRow, col, row);
 		if(color == Constants.TRANSPARENT_COLOR) {
 			color = Constants.SELECTION_TRANSPARENT_COLOR;
 		}
 
-		// Drawing current stroke:
-		for(var i = 0; i< strokePoints.length; i++) {
-
-						
-			overlay.setPixel(strokePoints[i].col, strokePoints[i].row, color);
-		}
+		// draw in overlay
+		this.drawRectangle_(col, row, color, overlay);
 	};
 
 	/**
@@ -50,52 +42,17 @@
 	 */
 	ns.Rectangle.prototype.releaseToolAt = function(col, row, color, frame, overlay) {		
 		overlay.clear();
-		// If the stroke tool is released outside of the canvas, we cancel the stroke: 
-		if(frame.containsPixel(col, row)) {
-			var strokePoints = pskl.PixelUtils.getBoundRectanglePixels(this.startCol, this.startRow, col, row);
-			for(var i = 0; i< strokePoints.length; i++) {
-				// Change model:
-				frame.setPixel(strokePoints[i].col, strokePoints[i].row, color);
-			}
-			// The user released the tool to draw a line. We will compute the pixel coordinate, impact
-			// the model and draw them in the drawing canvas (not the fake overlay anymore)		
+		if(frame.containsPixel(col, row)) { // cancel if outside of canvas
+			// draw in frame to finalize
+			this.drawRectangle_(col, row, color, frame);
 		}
 	};
 
-	/**
-	 * Get an array of pixels representing the rectangle.
-	 *
-	 * @private
-	 */
-	ns.Rectangle.prototype.getRectanglePixels_ = function(x0, x1, y0, y1) {
-		
-		var pixels = [];
-		var swap;
-		
-		if(x0 > x1) {
-			swap = x0;
-			x0 = x1;
-			x1 = swap;
+	ns.Rectangle.prototype.drawRectangle_ = function (col, row, color, targetFrame) {
+		var strokePoints = pskl.PixelUtils.getBoundRectanglePixels(this.startCol, this.startRow, col, row);
+		for(var i = 0; i< strokePoints.length; i++) {
+			// Change model:
+			targetFrame.setPixel(strokePoints[i].col, strokePoints[i].row, color);
 		}
-		if(y0 > y1) {
-			swap = y0;
-			y0 = y1;
-			y1 = swap;
-		}
-
-		// Creating horizontal sides of the rectangle:
-		for(var x = x0; x <= x1; x++) {
-			pixels.push({"col": x, "row": y0});
-			pixels.push({"col": x, "row": y1});
-		}
-
-		// Creating vertical sides of the rectangle:
-		for(var y = y0; y <= y1; y++) {
-			pixels.push({"col": x0, "row": y});
-			pixels.push({"col": x1, "row": y});	
-		}
-		
-		return pixels;
-     };
-
+	};
 })();
