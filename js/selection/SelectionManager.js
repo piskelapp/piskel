@@ -72,7 +72,7 @@
 	};
 
 	ns.SelectionManager.prototype.onPaste_ = function(evt) {
-		if(this.currentSelection) {
+		if(this.currentSelection && this.currentSelection.hasPastedContent) {
 			var pixels = this.currentSelection.pixels;
 			var currentFrame = this.framesheet.getCurrentFrame();
 			for(var i=0, l=pixels.length; i<l; i++) {
@@ -85,9 +85,6 @@
 					// Catchng out of frame's bound pixels without testing
 				}
 			}
-		}
-		else {
-			throw "Bad state for PASTE callback in SelectionManager";
 		}
 	};
 
