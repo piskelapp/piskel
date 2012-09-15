@@ -68,8 +68,8 @@ pskl.ToolSelector = (function() {
         var currentTool, toolMarkup = '';
         for (var toolKey in toolInstances) {
             currentTool = toolInstances[toolKey];
-            toolMarkup += '<li class="tool-icon ' + currentTool.toolId + '" data-tool-id="' + currentTool.toolId 
-                            + '" title="' + currentTool.helpText + '"></li>';
+            toolMarkup += '<li class="tool-icon ' + currentTool.toolId + '" data-tool-id="' + currentTool.toolId +
+                            '" title="' + currentTool.helpText + '"></li>';
         }
         $('#tools-container').html(toolMarkup);
     };
