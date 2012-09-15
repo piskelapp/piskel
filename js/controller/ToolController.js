@@ -1,10 +1,3 @@
-/*
- * @provide pskl.ToolSelector
- *
- * @require Constants
- * @require Events
- * @require pskl.drawingtools
- */
 (function () {
     var ns = $.namespace("pskl.controller");
 
