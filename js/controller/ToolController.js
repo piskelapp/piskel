@@ -6,6 +6,7 @@
 	
         this.toolInstances = {
             "simplePen" : new pskl.drawingtools.SimplePen(),
+            "verticalMirrorPen" : new pskl.drawingtools.VerticalMirrorPen(),
             "eraser" : new pskl.drawingtools.Eraser(),
             "paintBucket" : new pskl.drawingtools.PaintBucket(),
             "stroke" : new pskl.drawingtools.Stroke(),
@@ -68,6 +69,7 @@
      */
     ns.ToolController.prototype.createToolMarkup_ = function() {
         var currentTool, toolMarkup = '';
+        // TODO(vincz): Tools rendering order is not enforced by the data stucture (this.toolInstances), fix that.
         for (var toolKey in this.toolInstances) {
             currentTool = this.toolInstances[toolKey];
             toolMarkup += '<li class="tool-icon ' + currentTool.toolId + '" data-tool-id="' + currentTool.toolId +
