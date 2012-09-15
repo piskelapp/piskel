@@ -8,6 +8,7 @@
 
 	ns.Move = function() {
 		this.toolId = "tool-move"
+		this.helpText = "Move tool";
 		
 		// Stroke's first point coordinates (set in applyToolAt)
 		this.startCol = null;

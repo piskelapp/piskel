@@ -144,7 +144,9 @@ $.namespace("pskl");
     },
 
     finishInit : function () {
-      pskl.ToolSelector.init();
+      var toolController = new pskl.controller.ToolController();
+      toolController.init();
+      
       pskl.Palette.init(frameSheet);
     },
 
