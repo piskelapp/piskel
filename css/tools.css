@@ -34,6 +34,10 @@
   background-image: url(../img/tools/icons/pen.png);
 }
 
+.tool-icon.tool-vertical-mirror-pen {
+  background-image: url(../img/tools/icons/vertical-mirror-pen.png);
+}
+
 .tool-icon.tool-paint-bucket {
   background-image: url(../img/tools/icons/paint-bucket.png);
 }
@@ -76,6 +80,10 @@
 
 .tool-paint-bucket .drawing-canvas-container:hover {
   cursor: url(../img/tools/cursors/paint-bucket.png) 14 12, pointer;
+}
+
+.tool-vertical-mirror-pen .drawing-canvas-container:hover {
+  cursor: url(../img/tools/cursors/vertical-mirror-pen.png) 14 12, pointer;
 }
 
 .tool-pen .drawing-canvas-container:hover {
