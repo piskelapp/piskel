@@ -4,22 +4,11 @@
 	ns.PixelUtils = {
 
 		getRectanglePixels : function (x0, y0, x1, y1) {
+			var rectangle = this.getOrderedRectangleCoordinates(x0, y0, x1, y1);
 			var pixels = [];
-			var swap;
-			
-			if(x0 > x1) {
-				swap = x0;
-				x0 = x1;
-				x1 = swap;
-			}
-			if(y0 > y1) {
-				swap = y0;
-				y0 = y1;
-				y1 = swap;
-			}
 
-			for(var x = x0; x <= x1; x++) {
-				for(var y = y0; y <= y1; y++) {
+			for(var x = rectangle.x0; x <= rectangle.x1; x++) {
+				for(var y = rectangle.y0; y <= rectangle.y1; y++) {
 					pixels.push({"col": x, "row": y});
 				}
 			}
@@ -28,33 +17,33 @@
 		},
 
 		getBoundRectanglePixels : function (x0, y0, x1, y1) {
+			var rectangle = this.getOrderedRectangleCoordinates(x0, y0, x1, y1);
 			var pixels = [];
-			var swap;
-			
-			if(x0 > x1) {
-				swap = x0;
-				x0 = x1;
-				x1 = swap;
-			}
-			if(y0 > y1) {
-				swap = y0;
-				y0 = y1;
-				y1 = swap;
-			}
-
 			// Creating horizontal sides of the rectangle:
-			for(var x = x0; x <= x1; x++) {
-				pixels.push({"col": x, "row": y0});
-				pixels.push({"col": x, "row": y1});
+			for(var x = rectangle.x0; x <= rectangle.x1; x++) {
+				pixels.push({"col": x, "row": rectangle.y0});
+				pixels.push({"col": x, "row": rectangle.y1});
 			}
 
 			// Creating vertical sides of the rectangle:
-			for(var y = y0; y <= y1; y++) {
-				pixels.push({"col": x0, "row": y});
-				pixels.push({"col": x1, "row": y});	
+			for(var y = rectangle.y0; y <= rectangle.y1; y++) {
+				pixels.push({"col": rectangle.x0, "row": y});
+				pixels.push({"col": rectangle.x1, "row": y});
 			}
 			
 			return pixels;	
+		},
+
+		/**
+		 * Return an object of ordered rectangle coordinate.
+		 * In returned object {x0, y0} => top left corner - {x1, y1} => bottom right corner 
+		 * @private
+		 */
+		getOrderedRectangleCoordinates : function (x0, y0, x1, y1) {
+			return {
+				x0 : Math.min(x0, x1), y0 : Math.min(y0, y1),
+				x1 : Math.max(x0, x1), y1 : Math.max(y0, y1),
+			};
 		},
 
 		/**
