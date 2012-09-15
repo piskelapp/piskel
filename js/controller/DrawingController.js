@@ -60,7 +60,7 @@
         body.mouseup($.proxy(this.onMouseup_, this));
         
         // Deactivate right click:
-        this.container.contextmenu(this.onCanvasContextMenu_);
+        body.contextmenu(this.onCanvasContextMenu_);
   };
 
   /**
