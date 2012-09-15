@@ -51,14 +51,14 @@ $.namespace("pskl");
       );
 
       // To catch the current active frame, the selection manager have to be initialized before
-      // the 'frameSheet.setCurrentFrameIndex(0);'
+      // the 'frameSheet.setCurrentFrameIndex(0);' line below.
       // TODO(vincz): Slice each constructor to have:
       //                  - an event(s) listening init
       //                  - an event(s) triggering init
-      // All listerners will be hook in a first step, then all event triggering inits will be called
+      // All listeners will be hook in a first step, then all event triggering inits will be called
       // in a second batch.
       this.selectionManager =
-          new pskl.selection.SelectionManager(this.drawingController.overlayFrame);
+          new pskl.selection.SelectionManager(frameSheet, this.drawingController.overlayFrame);
 
       // DO NOT MOVE THIS LINE (see comment above)
       frameSheet.setCurrentFrameIndex(0);
