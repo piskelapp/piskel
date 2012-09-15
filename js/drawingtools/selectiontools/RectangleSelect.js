@@ -8,6 +8,7 @@
 
 	ns.RectangleSelect = function() {
 		this.toolId = "tool-rectangle-select";
+		this.helpText = "Rectangle selection tool";
 		
 		ns.BaseSelect.call(this);
 	};

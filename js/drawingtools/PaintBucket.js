@@ -7,7 +7,8 @@
 	var ns = $.namespace("pskl.drawingtools");
 
 	ns.PaintBucket = function() {
-		this.toolId = "tool-paint-bucket"
+		this.toolId = "tool-paint-bucket";
+		this.helpText = "Paint bucket tool";
 	};
 
 	pskl.utils.inherit(ns.PaintBucket, ns.BaseTool);

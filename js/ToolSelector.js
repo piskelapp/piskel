@@ -20,6 +20,7 @@ pskl.ToolSelector = (function() {
         "rectangleSelect" : new pskl.drawingtools.RectangleSelect(),
         "shapeSelect" : new pskl.drawingtools.ShapeSelect()
     };
+
     var currentSelectedTool = toolInstances.simplePen;
     var previousSelectedTool = toolInstances.simplePen;
 
@@ -53,11 +54,24 @@ pskl.ToolSelector = (function() {
                     selectTool_(toolInstances[tool]);
 
                     // Show tool as selected:
-                    $("#tools-container .tool-icon.selected").removeClass("selected");
-                    clickedTool.addClass("selected");
+                    $('#menubar .tool-icon.selected').removeClass('selected');
+                    clickedTool.addClass('selected');
                 }
             }
         }
+    };
+
+    /**
+     * @private
+     */
+    var createToolMarkup_ = function() {
+        var currentTool, toolMarkup = '';
+        for (var toolKey in toolInstances) {
+            currentTool = toolInstances[toolKey];
+            toolMarkup += '<li class="tool-icon ' + currentTool.toolId + '" data-tool-id="' + currentTool.toolId 
+                            + '" title="' + currentTool.helpText + '"></li>';
+        }
+        $('#tools-container').html(toolMarkup);
     };
 
     /**
@@ -74,11 +88,13 @@ pskl.ToolSelector = (function() {
     return {
         init: function() {
             
+            createToolMarkup_();
+
             // Initialize tool:
             // Set SimplePen as default selected tool:
             selectTool_(toolInstances.simplePen);
             // Activate listener on tool panel:
-            $("#tools-container").click(onToolIconClicked_);
+            $("#menubar").click(onToolIconClicked_);
 
             // Show/hide the grid on drawing canvas:
             $.publish(Events.GRID_DISPLAY_STATE_CHANGED, [isShowGridChecked_()]);
@@ -89,6 +105,3 @@ pskl.ToolSelector = (function() {
         }
     };
 })();
-
-
-
