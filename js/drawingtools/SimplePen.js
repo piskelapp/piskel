@@ -8,11 +8,12 @@
 
 	ns.SimplePen = function() {
 		this.toolId = "tool-pen";
-		this.helpText = "Pen tool"
-	};
+		this.helpText = "Pen tool";
 
-	this.previousCol = null;
-	this.previousRow = null;
+		this.previousCol = null;
+		this.previousRow = null;
+
+	};
 
 	pskl.utils.inherit(ns.SimplePen, ns.BaseTool);
 	
