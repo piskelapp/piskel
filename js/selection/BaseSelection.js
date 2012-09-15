@@ -7,6 +7,7 @@
 
 	ns.BaseSelection.prototype.reset = function () {
 		this.pixels = [];
+		this.hasPastedContent = false;
 	};
 
 	ns.BaseSelection.prototype.move = function (colDiff, rowDiff) {
@@ -28,5 +29,6 @@
 			pixelWithCopiedColor.copiedColor =
 			    targetFrame.getPixel(pixelWithCopiedColor.col, pixelWithCopiedColor.row);
 		}
+		this.hasPastedContent = true;
 	};
 })();
