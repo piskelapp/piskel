@@ -7,7 +7,7 @@ Try it at : http://juliandescottes.github.com/piskel/
 
 15 Sep 2012
 ------------------------------------
-2 weeks already since the last README.md update, and so much changed in 2 weeks. There has been a continuous stream of features added to piskel by @grosboudda, @captainbrosset (thanks guys) and myself.
+2 weeks already since the last README.md update, and so many changes ! There has been a continuous stream of features added to piskel by @grosboudda, @captainbrosset (thanks guys) and myself.
 I can't list everything here but quickly
 * __Tools__ : in addition to the regular Pen, you can now draw Rectangles, Circles. You can move stuff, copy, paste !
 * __Undo/redo__ : you can now cancel your actions using ctrl-z/ctrl-y 
