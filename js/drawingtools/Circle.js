@@ -7,7 +7,8 @@
 	var ns = $.namespace("pskl.drawingtools");
 
 	ns.Circle = function() {
-		this.toolId = "tool-circle"
+		this.toolId = "tool-circle";
+		this.helpText = "Circle tool";
 		
 		// Circle's first point coordinates (set in applyToolAt)
 		this.startCol = null;
