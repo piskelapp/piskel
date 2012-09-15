@@ -7,7 +7,8 @@
 	var ns = $.namespace("pskl.drawingtools");
 
 	ns.Rectangle = function() {
-		this.toolId = "tool-rectangle"
+		this.toolId = "tool-rectangle";
+		this.helpText = "Rectangle tool";
 		
 		// Rectangle's first point coordinates (set in applyToolAt)
 		this.startCol = null;

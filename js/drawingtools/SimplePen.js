@@ -8,6 +8,7 @@
 
 	ns.SimplePen = function() {
 		this.toolId = "tool-pen";
+		this.helpText = "Pen tool"
 	};
 
 	this.previousCol = null;

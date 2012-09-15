@@ -7,8 +7,9 @@
 	var ns = $.namespace("pskl.drawingtools");
 
 	ns.Stroke = function() {
-		this.toolId = "tool-stroke"
-		
+		this.toolId = "tool-stroke";
+		this.helpText = "Stroke tool";
+
 		// Stroke's first point coordinates (set in applyToolAt)
 		this.startCol = null;
 		this.startRow = null;

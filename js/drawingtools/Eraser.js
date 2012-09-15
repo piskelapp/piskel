@@ -9,6 +9,7 @@
 
 	ns.Eraser = function() {
 		this.toolId = "tool-eraser";
+		this.helpText = "Eraser tool";
 	};
 
 	pskl.utils.inherit(ns.Eraser, ns.SimplePen);
