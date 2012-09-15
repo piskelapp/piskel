@@ -1,24 +1,24 @@
 (function() {
 	var ns = $.namespace("pskl.drawingtools");
 
-	ns.MirrorPen = function() {
+	ns.VerticalMirrorPen = function() {
 		this.toolId = "tool-vertical-mirror-pen";
-		this.helpText = "Mirror pen tool";
+		this.helpText = "vertical mirror pen tool";
 
 		this.swap = null
 		this.mirroredPreviousCol = null;
 	    this.mirroredPreviousRow = null;
 	};
 
-	pskl.utils.inherit(ns.MirrorPen, ns.SimplePen);
+	pskl.utils.inherit(ns.VerticalMirrorPen, ns.SimplePen);
 	
 
-	ns.MirrorPen.prototype.setMirrorContext = function() {
+	ns.VerticalMirrorPen.prototype.setMirrorContext = function() {
 		this.swap = this.previousCol;
 		this.previousCol = this.mirroredPreviousCol;
 	};
 
-	ns.MirrorPen.prototype.unsetMirrorContext = function() {
+	ns.VerticalMirrorPen.prototype.unsetMirrorContext = function() {
 		this.mirroredPreviousCol = this.previousCol;
 		this.previousCol = this.swap;
 	};
@@ -26,7 +26,7 @@
 	/**
 	 * @override
 	 */
-	ns.MirrorPen.prototype.applyToolAt = function(col, row, color, frame, overlay) {
+	ns.VerticalMirrorPen.prototype.applyToolAt = function(col, row, color, frame, overlay) {
 		this.superclass.applyToolAt.call(this, col, row, color, frame, overlay);
 
 		var mirroredCol = this.getSymmetricCol_(col, frame);
@@ -40,7 +40,7 @@
 	/**
 	 * @private
 	 */
-	ns.MirrorPen.prototype.getSymmetricCol_ = function(col, frame) {
+	ns.VerticalMirrorPen.prototype.getSymmetricCol_ = function(col, frame) {
 		return frame.getWidth() - col - 1; 
 	};
 })();

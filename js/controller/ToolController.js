@@ -6,7 +6,7 @@
 	
         this.toolInstances = {
             "simplePen" : new pskl.drawingtools.SimplePen(),
-            "mirrorPen" : new pskl.drawingtools.MirrorPen(),
+            "verticalMirrorPen" : new pskl.drawingtools.VerticalMirrorPen(),
             "eraser" : new pskl.drawingtools.Eraser(),
             "paintBucket" : new pskl.drawingtools.PaintBucket(),
             "stroke" : new pskl.drawingtools.Stroke(),
