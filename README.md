@@ -5,9 +5,21 @@ The goal is to create an easy-to-use/in-the-cloud/web-based 2d animation editor.
 
 Try it at : http://juliandescottes.github.com/piskel/
 
-v0.0almostthere
+15 Sep 2012
 ------------------------------------
-**30 Aug 2012** : Many new features in 2 days :
+2 weeks already since the last README.md update, and so many changes ! There has been a continuous stream of features added to piskel by @grosboudda, @captainbrosset (thanks guys) and myself.
+I can't list everything here but quickly
+* __Tools__ : in addition to the regular Pen, you can now draw Rectangles, Circles. You can move stuff, copy, paste !
+* __Undo/redo__ : you can now cancel your actions using ctrl-z/ctrl-y 
+* __Drag and drop__ : move frames around in your framesheet, using drag and drop
+
+And a screenshot, for the record : 
+
+![Screenshot 3](https://dl.dropbox.com/u/17803671/screen_piskel_3.png "Screenshot 3")
+
+30 Aug 2012
+------------------------------------
+Many new features in 2 days :
 * __save animations__, they are persisted in the cloud, and can be retrieved via a __unique URL__
 * __color picker__, no longer limited to black and white 
 * __local storage__, your work is automatically backed up locally
@@ -18,16 +30,15 @@ UI was slightly updated :
 
 ![Screenshot 2](https://dl.dropbox.com/u/17803671/screen_piskel_2.png "Screenshot 2")
 
-v0.0something
+28 Aug 2012
 ------------------------------------
-**28 Aug 2012** : Thanks to grosbouddha, new features added to Piskel :
+Thanks to grosbouddha, new features added to Piskel :
 * modify preview speed !
 * remove frames
 * transparent background
 
-v0.0whatever (aka the thing I did last night)
+24 Aug 2012 (aka the thing I did last night)
 ------------------------------------
-**24 Aug 2012** : You can :
 * create small animations in __black__ (left click) and __white__ (right click)
 * and actually animations are always in __32x32__ zoomed 10 times
 * you can __not even save them__ ! 

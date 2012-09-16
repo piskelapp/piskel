@@ -90,6 +90,11 @@ $.namespace("pskl");
       drawingLoop.addCallback(this.render, this);
       drawingLoop.start();
 
+      // Init (event-delegated) bootstrap tooltips:
+      $('body').tooltip({
+        selector: '[rel=tooltip]'
+      });
+
       this.connectResizeToDpiUpdate_();
     },
 
@@ -117,7 +122,10 @@ $.namespace("pskl");
      * @private
      */
     calculateDPIsForDrawingCanvas_ : function() {
-      var availableViewportHeight = $('.main-panel').height() - 50,
+
+      var userMessageGap = 80; // Reserve some height to show the user message at the bottom
+
+      var availableViewportHeight = $('.main-panel').height() - userMessageGap,
           availableViewportWidth = $('.main-panel').width(),
           previewHeight = $(".preview-container").height(),
           previewWidth = $(".preview-container").width();

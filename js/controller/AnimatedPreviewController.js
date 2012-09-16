@@ -20,7 +20,8 @@
 	};
 
     ns.AnimatedPreviewController.prototype.onFPSSliderChange = function(evt) {
-		this.fps = parseInt($("#preview-fps")[0].value, 10);
+    	this.fps = parseInt($("#preview-fps")[0].value, 10);
+		$("#display-fps").html(this.fps + " FPS")
 	};
 
    	ns.AnimatedPreviewController.prototype.render = function (delta) {

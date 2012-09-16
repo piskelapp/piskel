@@ -35,7 +35,10 @@
     };
 
     ns.PreviewFilmController.prototype.createPreviews_ = function () {
-		this.container.html("");
+    	
+    	this.container.html("");
+		// Manually remove tooltips since mouseout events were shortcut by the DOM refresh:
+		$(".tooltip").remove();
 
 		var frameCount = this.framesheet.getFrameCount();
 
@@ -174,9 +177,11 @@
 		previewTileRoot.addEventListener('click', this.onPreviewClick_.bind(this, tileNumber));
 
 		var canvasPreviewDuplicateAction = document.createElement("button");
-		canvasPreviewDuplicateAction.className = "tile-action"
-		canvasPreviewDuplicateAction.innerHTML = "dup"
-
+		canvasPreviewDuplicateAction.setAttribute('rel', 'tooltip');
+		canvasPreviewDuplicateAction.setAttribute('data-placement', 'right');
+		canvasPreviewDuplicateAction.setAttribute('title', 'Duplicate this frame');
+		canvasPreviewDuplicateAction.className = "tile-action duplicate-frame-action"
+		
 		canvasPreviewDuplicateAction.addEventListener('click', this.onAddButtonClick_.bind(this, tileNumber));
 
 		// TODO(vincz): Eventually optimize this part by not recreating a FrameRenderer. Note that the real optim
@@ -190,8 +195,10 @@
 
 		if(tileNumber > 0 || this.framesheet.getFrameCount() > 1) {
 			var canvasPreviewDeleteAction = document.createElement("button");
-			canvasPreviewDeleteAction.className = "tile-action"
-			canvasPreviewDeleteAction.innerHTML = "del"
+			canvasPreviewDeleteAction.setAttribute('rel', 'tooltip');
+			canvasPreviewDeleteAction.setAttribute('data-placement', 'right');
+			canvasPreviewDeleteAction.setAttribute('title', 'Delete this frame');
+			canvasPreviewDeleteAction.className = "tile-action delete-frame-action"
 			canvasPreviewDeleteAction.addEventListener('click', this.onDeleteButtonClick_.bind(this, tileNumber));
 			previewTileRoot.appendChild(canvasPreviewDeleteAction);
 		}

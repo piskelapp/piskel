@@ -1,7 +1,7 @@
 .tools-group {
     float: left;
     height: 30px;
-    border-right: 1px solid #ccc;
+    border-left: 1px solid #ccc;
     padding: 0 3px;
 }
 
@@ -19,11 +19,11 @@
  * Framesheet level actions:
  */
 .tool-icon.tool-save {
-  background-image: url(../img/tools/icons/save.png);
+  background-image: url(../img/actions/save.png);
 }
 
 .tool-icon.tool-add-frame {
-  background-image: url(../img/tools/icons/add-frame.png);
+  background-image: url(../img/actions/add.png);
 }
 
 
@@ -31,47 +31,47 @@
  * Tool icons:
  */
 .tool-icon.tool-pen {
-  background-image: url(../img/tools/icons/pen.png);
+  background-image: url(../img/tools/pen.png);
 }
 
 .tool-icon.tool-vertical-mirror-pen {
-  background-image: url(../img/tools/icons/vertical-mirror-pen.png);
+  background-image: url(../img/tools/vertical-mirror-pen.png);
 }
 
 .tool-icon.tool-paint-bucket {
-  background-image: url(../img/tools/icons/paint-bucket.png);
+  background-image: url(../img/tools/paint-bucket.png);
 }
 
 .tool-icon.tool-eraser {
-  background-image: url(../img/tools/icons/eraser.png);
+  background-image: url(../img/tools/eraser.png);
 }
 
 .tool-icon.tool-stroke {
-  background-image: url(../img/tools/icons/stroke.png);
+  background-image: url(../img/tools/stroke.png);
 }
 
 .tool-icon.tool-rectangle {
-  background-image: url(../img/tools/icons/rectangle.png);
+  background-image: url(../img/tools/rectangle.png);
 }
 
 .tool-icon.tool-circle {
-  background-image: url(../img/tools/cursors/circle.png);
+  background-image: url(../img/tools/circle.png);
 }
 
 .tool-icon.tool-move {
-  background-image: url(../img/tools/icons/hand.png);
+  background-image: url(../img/tools/hand.png);
 }
 
 .tool-icon.tool-rectangle-select {
-  background-image: url(../img/tools/icons/select.png);
+  background-image: url(../img/tools/select.png);
 }
 
 .tool-icon.tool-shape-select {
-  background-image: url(../img/tools/icons/wand.png);
+  background-image: url(../img/tools/wand.png);
 }
 
 /*.tool-icon.tool-palette {
-  background-image: url(../img/tools/icons/color-palette.png);
+  background-image: url(../img/tools/color-palette.png);
 }*/
 
 /*
@@ -79,43 +79,43 @@
  */
 
 .tool-paint-bucket .drawing-canvas-container:hover {
-  cursor: url(../img/tools/cursors/paint-bucket.png) 14 12, pointer;
+  cursor: url(../img/tools/paint-bucket.png) 14 12, pointer;
 }
 
 .tool-vertical-mirror-pen .drawing-canvas-container:hover {
-  cursor: url(../img/tools/cursors/vertical-mirror-pen.png) 14 12, pointer;
+  cursor: url(../img/tools/vertical-mirror-pen.png) 14 12, pointer;
 }
 
 .tool-pen .drawing-canvas-container:hover {
-  cursor: url(../img/tools/cursors/pen.png) 2 21, pointer;
+  cursor: url(../img/tools/pen.png) 2 21, pointer;
 }
 
 .tool-eraser .drawing-canvas-container:hover {
-  cursor: url(../img/tools/cursors/eraser.png) 2 21, pointer;
+  cursor: url(../img/tools/eraser.png) 2 21, pointer;
 }
 
 .tool-stroke .drawing-canvas-container:hover {
-  cursor: url(../img/tools/cursors/pen.png) 2 21, pointer;
+  cursor: url(../img/tools/pen.png) 2 21, pointer;
 }
 
 .tool-rectangle .drawing-canvas-container:hover {
-  cursor: url(../img/tools/cursors/rectangle.png) 4 21, pointer;
+  cursor: url(../img/tools/rectangle.png) 4 21, pointer;
 }
 
 .tool-circle .drawing-canvas-container:hover {
-  cursor: url(../img/tools/cursors/circle.png) 4 21, pointer;
+  cursor: url(../img/tools/circle.png) 4 21, pointer;
 }
 
 .tool-move .drawing-canvas-container:hover {
-  cursor: url(../img/tools/cursors/hand.png) 14 12, pointer;
+  cursor: url(../img/tools/hand.png) 14 12, pointer;
 }
 
 .tool-rectangle-select .drawing-canvas-container:hover {
-  cursor: url(../img/tools/cursors/select.png) 14 12, pointer;
+  cursor: url(../img/tools/select.png) 14 12, pointer;
 }
 
 .tool-shape-select .drawing-canvas-container:hover {
-  cursor: url(../img/tools/cursors/wand.png) 14 12, pointer;
+  cursor: url(../img/tools/wand.png) 14 12, pointer;
 }
 
 .tool-grid,
@@ -136,6 +136,7 @@
 
 .tool-color-picker {
   padding: 5px 0 0 5px;
+  height: 25px;
   cursor : default;
 }
 
@@ -148,7 +149,7 @@
   position : relative;
 }
 
-#secondary-color-picker {
+.secondary-color-picker {
   top : 8px;
 }
 
