@@ -8,6 +8,8 @@ var Constants = {
      * strokes and rectangles:
      */
     SELECTION_TRANSPARENT_COLOR: 'rgba(255, 255, 255, 0.6)',
+
+    TOOL_TARGET_HIGHLIGHT_COLOR: 'rgba(255, 255, 255, 0.2)',
     
     /*
      * Default entry point for piskel web service:
