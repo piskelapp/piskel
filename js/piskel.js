@@ -66,13 +66,17 @@ $.namespace("pskl");
       this.animationController.init();
       this.previewsController.init();
 
-      this.historyManager = new pskl.HistoryManager(frameSheet);
-      this.historyManager.init();
+      this.historyService = new pskl.service.HistoryService(frameSheet);
+      this.historyService.init();
 
-      this.keyManager = new pskl.KeyManager();
+      this.keyboardEventService = new pskl.service.KeyboardEventService();
+      this.keyboardEventService.init();
 
-      pskl.NotificationService.init();
-      pskl.LocalStorageService.init(frameSheet);
+      this.notificationController = new pskl.controller.NotificationController();
+      this.notificationController.init();
+
+      this.localStorageService = new pskl.service.LocalStorageService(frameSheet);
+      this.localStorageService.init();
 
       // TODO: Add comments 
       var framesheetId = this.getFramesheetIdFromUrl();
@@ -81,7 +85,7 @@ $.namespace("pskl");
         this.loadFramesheetFromService(framesheetId);
       } else {
         this.finishInit();
-        pskl.LocalStorageService.displayRestoreNotification();
+        this.localStorageService.displayRestoreNotification();
       }
 
       var drawingLoop = new pskl.rendering.DrawingLoop();
@@ -155,7 +159,8 @@ $.namespace("pskl");
       var toolController = new pskl.controller.ToolController();
       toolController.init();
       
-      pskl.Palette.init(frameSheet);
+      var paletteController = new pskl.controller.PaletteController();
+      paletteController.init(frameSheet);
     },
 
     getFramesheetIdFromUrl : function() {
