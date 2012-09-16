@@ -5,17 +5,10 @@
 		$(document.body).keydown($.proxy(this.onKeyUp_, this));
 	};
 
-	// Kind of object that make you want to stop front-end _engineering_:
-	ns.KeyManager.prototype.CharCodeToKeyCodeMap = {
-
-		90 : "z",
-		89 : "y",
-		88 : "x",
-		67 : "c",
-		86 : "v"
-	};
-
-	ns.KeyManager.prototype.KeyboardActions = {
+	/**
+	 * @private
+	 */
+	ns.KeyManager.prototype.KeyboardActions_ = {
 
 		"ctrl" : {
 			"z" : Events.UNDO,
@@ -26,8 +19,21 @@
 		}
 	};
 
-	
+	/**
+	 * @private
+	 */
+	ns.KeyManager.prototype.CharCodeToKeyCodeMap_ = {
 
+		90 : "z",
+		89 : "y",
+		88 : "x",
+		67 : "c",
+		86 : "v"
+	};
+
+	/**
+	 * @private
+	 */
 	ns.KeyManager.prototype.onKeyUp_ = function(evt) {
 		var isMac = false;
 		if (navigator.appVersion.indexOf("Mac")!=-1) {
@@ -37,9 +43,9 @@
 		
 		if (isMac ? evt.metaKey : evt.ctrlKey) {
 			// Get key pressed:
-			var letter = this.CharCodeToKeyCodeMap[evt.which];
+			var letter = this.CharCodeToKeyCodeMap_[evt.which];
 			if(letter) {
-				var eventToTrigger = this.KeyboardActions.ctrl[letter];
+				var eventToTrigger = this.KeyboardActions_.ctrl[letter];
 				if(eventToTrigger) {
 					$.publish(eventToTrigger);
 				}
