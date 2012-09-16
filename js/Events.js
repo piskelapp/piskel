@@ -29,6 +29,8 @@ Events = {
 
     GRID_DISPLAY_STATE_CHANGED: "GRID_DISPLAY_STATE_CHANGED",
 
+    FRAMESHEET_RELOADED: "FRAMESHEET_RELOADED",
+    
     /**
      * The framesheet was reseted and is now probably drastically different.
      * Number of frames, content of frames, color used for the palette may have changed.

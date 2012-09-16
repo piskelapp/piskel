@@ -88,7 +88,7 @@
     // Initialize palette:
     this.createPalette_(this.framesheet.getUsedColors());
 
-    $.subscribe(Events.FRAMESHEET_RESET, $.proxy(function(evt) {
+    $.subscribe(Events.FRAMESHEET_RELOADED, $.proxy(function(evt) {
       this.createPalette_(this.framesheet.getUsedColors());
     }, this));
 
