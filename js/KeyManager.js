@@ -48,6 +48,9 @@
 				var eventToTrigger = this.KeyboardActions_.ctrl[letter];
 				if(eventToTrigger) {
 					$.publish(eventToTrigger);
+
+					evt.preventDefault();
+					return false;
 				}
 			}
 		}
