@@ -131,13 +131,13 @@
 		var deltaRow = row - this.lastRow;
 		
 		var colDiff = col - this.startCol, rowDiff = row - this.startRow;
-		if (colDiff != 0 || rowDiff != 0) {
-			// Shifting selection on overlay frame:
-			this.shiftOverlayFrame_(colDiff, rowDiff, overlay, this.overlayFrameReference);
+		
+		// Shifting selection on overlay frame:
+		this.shiftOverlayFrame_(colDiff, rowDiff, overlay, this.overlayFrameReference);
 
-			// Update selection model:
-			$.publish(Events.SELECTION_MOVE_REQUEST, [deltaCol, deltaRow]);
-		}
+		// Update selection model:
+		$.publish(Events.SELECTION_MOVE_REQUEST, [deltaCol, deltaRow]);
+
 		this.lastCol = col;
 		this.lastRow = row;	
 	};
