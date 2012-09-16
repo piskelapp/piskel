@@ -12,57 +12,51 @@
   <link rel="stylesheet" href="css/reset.css">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/tools.css">
+  <link rel="stylesheet" href="css/bootstrap/bootstrap.css">
+  <link rel="stylesheet" href="css/bootstrap/bootstrap-tooltip-custom.css">
   <link rel="stylesheet" href="css/preview-film-section.css">
-  
+  <link rel="stylesheet" href="css/preview-animation-section.css">
   
 </head>
 <body>
 
-  <!-- Tool section: -->
-  <div id="menubar" class="menubar">
-    <ul class="tools-group">
-      <!-- TODO: Remove that from here or change CSS class naming since
-           they are framesheet level actions, not tools --> 
-      <li class="tool-icon tool-save" data-tool-id="tool-save" title="Save" onclick="piskel.storeSheet()"></li>
-      <li class="tool-icon tool-add-frame" id="add-frame-button" data-tool-id="tool-add-frame" title="Add a frame"></li>
-    </ul>
-
-    <ul id="tools-container" class="tools-group"></ul>
-    
-    <ul class="tools-group">
-      <li class="tool-icon tool-palette" data-tool-id="tool-palette" title="Color palette">
-        <ul id="palette" class="palette">
-          <span class="palette-color transparent-color" data-color="TRANSPARENT" title="Transparent"></span>
-        </ul>
-      </li>
-      <li class="tool-icon tool-color-picker">
-        <input id="color-picker" class="color {hash:true}" type="text" value="" />
-        <input id="secondary-color-picker" class="color {hash:true}" type="text" value="" />
-      </li>
-    </ul>
-
-    <ul class="tools-group">
-      <li class="tool-preview-fps">
-        <input id="preview-fps" type="range" min="1" max="24" value="12" style="width:200px;"/>
-        <span id="display-fps">12 fps</span>
-      </li>
-    </ul>
-
-    <ul class="tools-group">
-      <li class="tool-grid">
-        <input id="show-grid" type="checkbox"/>
-        <label for="show-grid">Show grid</label>
-      </li>
-    </ul>
-  
-  </div>
-
-  <div class='left-nav'>
+  <div class='left-section'>
+    <div class="menubar">
+      <ul class="tools-group">
+        <!-- TODO: Remove that from here or change CSS class naming since
+          they are framesheet level actions, not tools --> 
+        <li class="tool-icon tool-save" data-tool-id="tool-save" title="Save" onclick="piskel.storeSheet()" rel="tooltip" data-placement="bottom" ></li>
+        <li class="tool-icon tool-add-frame" id="add-frame-button" data-tool-id="tool-add-frame" title="Add a frame" rel="tooltip" data-placement="bottom" ></li>
+      </ul>
+    </div>
     <!-- List of frames: -->
-    <ul class="preview-list" id="preview-list"></ul>
+    <div class="preview-list-wrapper">
+      <ul class="preview-list" id="preview-list"></ul>
+    </div>
   </div>
 
   <div class='main-panel'>
+
+    <div id="menubar" class="menubar">
+      <ul id="tools-container" class="tools-group"></ul>
+      <ul class="tools-group">
+        <li class="tool-icon tool-palette">
+          <ul id="palette" class="palette">
+            <span class="tool-icon palette-color transparent-color" data-color="TRANSPARENT" title="Transparent"></span>
+          </ul>
+        </li>
+        <li class="tool-icon tool-color-picker">
+          <input id="color-picker" class="color {hash:true}" type="text" value="" />
+          <input id="secondary-color-picker" class="secondary-color-picker color {hash:true}" type="text" value="" />
+        </li>
+      </ul>
+      <ul class="tools-group">
+        <li class="tool-grid">
+          <input id="show-grid" type="checkbox"/>
+          <label for="show-grid">Show grid</label>
+        </li>
+      </ul>
+    </div>
     <!-- Drawing area: -->
     <div id="drawing-canvas-container" class="drawing-canvas-container canvas-container">
       <div class="canvas-background"></div>
@@ -70,17 +64,19 @@
 
     <!-- Animation preview: -->
     <div class='preview-container'>
+      <input id="preview-fps" type="range" min="1" max="24" value="12" style="width:200px;"/>
+      <span id="display-fps">12 FPS</span>
       <div id='preview-canvas-container' class="canvas-container">
         <div class="canvas-background"></div>
       </div>
     </div>
   </div>
-  <div id="cursorInfo"></div>
   
   <!-- Core libraries: -->
   <script src="js/lib/jquery-1.8.0.js"></script>
   <script src="js/lib/jquery-ui-1.8.23.custom.js"></script>
-  <script src="js/lib/pubsub.js"></script> 
+  <script src="js/lib/pubsub.js"></script>
+  <script src="js/lib/bootstrap/bootstrap.js"></script> 
   
   <!-- Application wide configuration -->
   <script src="js/Constants.js"></script>
@@ -110,10 +106,10 @@
   <script src="js/Palette.js"></script>
   <script src="js/Notification.js"></script>
 
-
   <!-- Tools-->
   <script src="js/drawingtools/BaseTool.js"></script>
   <script src="js/drawingtools/SimplePen.js"></script>
+  <script src="js/drawingtools/VerticalMirrorPen.js"></script>
   <script src="js/drawingtools/Eraser.js"></script>
   <script src="js/drawingtools/Stroke.js"></script>
   <script src="js/drawingtools/PaintBucket.js"></script>

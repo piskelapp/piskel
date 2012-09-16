@@ -8,11 +8,12 @@
 
 	ns.SimplePen = function() {
 		this.toolId = "tool-pen";
-		this.helpText = "Pen tool"
-	};
+		this.helpText = "Pen tool";
 
-	this.previousCol = null;
-	this.previousRow = null;
+		this.previousCol = null;
+		this.previousRow = null;
+
+	};
 
 	pskl.utils.inherit(ns.SimplePen, ns.BaseTool);
 	
@@ -21,10 +22,10 @@
 	 */
 	ns.SimplePen.prototype.applyToolAt = function(col, row, color, frame, overlay) {
 		if (frame.containsPixel(col, row)) {
-			this.previousCol = col;
-			this.previousRow = row;
-		    frame.setPixel(col, row, color);
+			frame.setPixel(col, row, color);
 		}
+		this.previousCol = col;
+		this.previousRow = row;
 	};
 
 	ns.SimplePen.prototype.moveToolAt = function(col, row, color, frame, overlay) {

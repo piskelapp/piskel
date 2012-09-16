@@ -30,9 +30,6 @@ jQuery.namespace = function() {
         extendedObject.prototype = Object.create(inheritFrom.prototype);
         extendedObject.prototype.constructor = extendedObject;
         extendedObject.prototype.superclass = inheritFrom.prototype;
-        
-        //pskl.ToolBehavior.Eraser.prototype = Object.create(pskl.ToolBehavior.BaseTool.prototype);
-        //prototypeskl.ToolBehavior.Eraser.prototype.constructor = pskl.ToolBehavior.Eraser;
     };
 
 })();

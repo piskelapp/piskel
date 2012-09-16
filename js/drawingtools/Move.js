@@ -28,9 +28,7 @@
 
 	ns.Move.prototype.moveToolAt = function(col, row, color, frame, overlay) {	
 		var colDiff = col - this.startCol, rowDiff = row - this.startRow;
-		if (colDiff != 0 || rowDiff != 0) {
-			this.shiftFrame(colDiff, rowDiff, frame, this.frameClone);
-		}
+		this.shiftFrame(colDiff, rowDiff, frame, this.frameClone);
 	};
 
 	ns.Move.prototype.shiftFrame = function (colDiff, rowDiff, frame, reference) {
