@@ -72,7 +72,8 @@ $.namespace("pskl");
       this.keyManager = new pskl.KeyManager();
 
       pskl.NotificationService.init();
-      pskl.LocalStorageService.init(frameSheet);
+      this.localStorageService = new pskl.service.LocalStorageService(frameSheet);
+      this.localStorageService.init();
 
       // TODO: Add comments 
       var framesheetId = this.getFramesheetIdFromUrl();
@@ -81,7 +82,7 @@ $.namespace("pskl");
         this.loadFramesheetFromService(framesheetId);
       } else {
         this.finishInit();
-        pskl.LocalStorageService.displayRestoreNotification();
+        this.localStorageService.displayRestoreNotification();
       }
 
       var drawingLoop = new pskl.rendering.DrawingLoop();
