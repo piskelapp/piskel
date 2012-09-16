@@ -69,8 +69,9 @@ $.namespace("pskl");
       this.historyService = new pskl.service.HistoryService(frameSheet);
       this.historyService.init();
 
-      this.keyManager = new pskl.KeyManager();
-
+      this.KeyboardEventService = new pskl.service.KeyboardEventService();
+      this.KeyboardEventService.init();
+      
       pskl.NotificationService.init();
       this.localStorageService = new pskl.service.LocalStorageService(frameSheet);
       this.localStorageService.init();

@@ -1,14 +1,12 @@
 (function () {
 	var ns = $.namespace("pskl");
 
-	ns.KeyManager = function () {
-		$(document.body).keydown($.proxy(this.onKeyUp_, this));
-	};
+	ns.KeyboardEventService = function () {};
 
 	/**
 	 * @private
 	 */
-	ns.KeyManager.prototype.KeyboardActions_ = {
+	ns.KeyboardEventService.prototype.KeyboardActions_ = {
 
 		"ctrl" : {
 			"z" : Events.UNDO,
@@ -22,7 +20,7 @@
 	/**
 	 * @private
 	 */
-	ns.KeyManager.prototype.CharCodeToKeyCodeMap_ = {
+	ns.KeyboardEventService.prototype.CharCodeToKeyCodeMap_ = {
 
 		90 : "z",
 		89 : "y",
@@ -34,7 +32,7 @@
 	/**
 	 * @private
 	 */
-	ns.KeyManager.prototype.onKeyUp_ = function(evt) {
+	ns.KeyboardEventService.prototype.onKeyUp_ = function(evt) {
 		var isMac = false;
 		if (navigator.appVersion.indexOf("Mac")!=-1) {
 			// Welcome in mac world where vowels are consons and meta used instead of ctrl:
@@ -54,6 +52,13 @@
 				}
 			}
 		}
+	};
+
+	/**
+	 * @public
+	 */
+	ns.KeyboardEventService.prototype.init = function() {
+		$(document.body).keydown($.proxy(this.onKeyUp_, this));
 	};
 	
 })();
