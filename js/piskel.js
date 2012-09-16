@@ -71,7 +71,7 @@ $.namespace("pskl");
 
       this.KeyboardEventService = new pskl.service.KeyboardEventService();
       this.KeyboardEventService.init();
-      
+
       pskl.NotificationService.init();
       this.localStorageService = new pskl.service.LocalStorageService(frameSheet);
       this.localStorageService.init();
@@ -149,7 +149,8 @@ $.namespace("pskl");
       var toolController = new pskl.controller.ToolController();
       toolController.init();
       
-      pskl.Palette.init(frameSheet);
+      var paletteController = new pskl.controller.PaletteController();
+      paletteController.init(frameSheet);
     },
 
     getFramesheetIdFromUrl : function() {
