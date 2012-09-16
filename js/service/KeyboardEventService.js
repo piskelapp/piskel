@@ -1,5 +1,5 @@
 (function () {
-	var ns = $.namespace("pskl");
+	var ns = $.namespace("pskl.service");
 
 	ns.KeyboardEventService = function () {};
 
