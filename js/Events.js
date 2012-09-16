@@ -28,7 +28,7 @@ Events = {
     REDRAW_PREVIEWFILM: "REDRAW_PREVIEWFILM",
 
     GRID_DISPLAY_STATE_CHANGED: "GRID_DISPLAY_STATE_CHANGED",
-
+    
     /**
      * The framesheet was reseted and is now probably drastically different.
      * Number of frames, content of frames, color used for the palette may have changed.
