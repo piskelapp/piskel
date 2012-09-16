@@ -205,8 +205,6 @@
 
   ns.DrawingController.prototype.renderFrame = function () {
     var frame = this.framesheet.getCurrentFrame();
-    console.log("render", frame.getHeight());
-    if (frame.getHeight() == 32) debugger;
     var serializedFrame = frame.serialize();
     if (this.serializedFrame != serializedFrame) {
       this.serializedFrame = serializedFrame;
@@ -250,7 +248,7 @@
         // Calculate the DPI change needed to bridge height and width gap
         var gapDPI = pskl.PixelUtils.calculateDPI(heightGap, widthGap, framePixelHeight, framePixelWidth);
         // substract gap dpi to initial dpi
-        dpi -= (gapDPI - 1);
+        dpi -= (gapDPI + 1);
     }
     return dpi;
   };

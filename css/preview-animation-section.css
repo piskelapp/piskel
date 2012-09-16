@@ -2,7 +2,7 @@
 .preview-container {
   position : absolute;
   bottom : 0; right : 0;
-  height : 285px;
+  height : 282px;
   width : 256px;
   background : white;
   border : 0px Solid black;
@@ -12,7 +12,6 @@
 
 .preview-container canvas {
   border : 0px Solid transparent;
-  border-radius:5px 0px 0px 5px;
 }
 
 #preview-fps {
