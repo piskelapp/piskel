@@ -96,7 +96,7 @@ $.namespace("pskl");
       
         size = {
           height : Math.min(height, Constants.MAX_HEIGHT),
-          width : Math.min(width, Constants.MAX_WIDTH),
+          width : Math.min(width, Constants.MAX_WIDTH)
         };
       } else {
         size = Constants.DEFAULT_SIZE;
