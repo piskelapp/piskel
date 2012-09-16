@@ -24,7 +24,7 @@ pskl.Palette = (function() {
     */
    var createPalette_ = function (colors) {
     // Always adding transparent color
-    paletteRoot.html('<span class="palette-color transparent-color" data-color="TRANSPARENT" title="Transparent"></span>');
+    paletteRoot.html('<span class="palette-color transparent-color" data-color="TRANSPARENT" rel="tooltip" data-placement="bottom" title="Transparent"></span>');
     for(var color in colors) {
       if(color != Constants.TRANSPARENT_COLOR) {
         addColorToPalette_(color);
@@ -39,6 +39,8 @@ pskl.Palette = (function() {
       if (paletteColors.indexOf(color) == -1 && color != Constants.TRANSPARENT_COLOR) {
         var colorEl = document.createElement("li");    
         colorEl.className = "palette-color";
+        colorEl.setAttribute("rel", "tooltip");
+        colorEl.setAttribute("data-placement", "bottom");
         colorEl.setAttribute("data-color", color);
         colorEl.setAttribute("title", color);
         colorEl.style.background = color;

@@ -18,3 +18,16 @@ ul, li {
   padding : 0;
   list-style-type: none;
 }
+
+
+/* Force apparition of scrollbars on leopard */
+::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: rgba(180,180,180,.7);
+    -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
+}
