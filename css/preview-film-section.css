@@ -1,12 +1,32 @@
 
+.preview-list-wrapper {
+  overflow-y: scroll;
+  position: absolute;
+  top: 30px;
+  right:0;
+  bottom: 0;
+  left: 0;
+}
+
 .preview-list {
   list-style-type: none;
+  padding-left: 7px;
+  padding-right: 7px;
 }
 
 .preview-tile {
   padding : 10px;
   overflow: hidden;
   background-color: gray;
+  border-radius: 2px;
+
+  -webkit-box-shadow:  0 0 7px 0 rgba(0, 0, 0, 1);
+  box-shadow:  0 0 7px 0 rgba(0, 0, 0, 1);
+}
+
+.preview-tile:hover {
+  -webkit-box-shadow:  0 0 10px 0 rgba(0, 0, 0, 1);
+  box-shadow:  0 0 10px 0 rgba(0, 0, 0, 1);
 }
 
 .preview-tile .canvas-container {
@@ -15,16 +35,31 @@
 
 .preview-tile .tile-view {
   float: left;
-  border: blue 1px solid;
+  border: #ccc 1px solid;
 }
 
 .preview-tile .tile-action {
   display: none;
   float: right;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: 7px 7px;
+  border: none;
 }
 
 .preview-tile:hover .tile-action {
   display: block;
+}
+
+.preview-tile .tile-action.duplicate-frame-action {
+   background-image: url(../img/actions/duplicate.png);
+}
+
+.preview-tile .tile-action.delete-frame-action {
+   background-image: url(../img/actions/delete.png);
 }
 
 .preview-tile:hover {

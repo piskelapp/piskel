@@ -72,7 +72,7 @@
         // TODO(vincz): Tools rendering order is not enforced by the data stucture (this.toolInstances), fix that.
         for (var toolKey in this.toolInstances) {
             currentTool = this.toolInstances[toolKey];
-            toolMarkup += '<li class="tool-icon ' + currentTool.toolId + '" data-tool-id="' + currentTool.toolId +
+            toolMarkup += '<li rel="tooltip" data-placement="bottom" class="tool-icon ' + currentTool.toolId + '" data-tool-id="' + currentTool.toolId +
                             '" title="' + currentTool.helpText + '"></li>';
         }
         $('#tools-container').html(toolMarkup);
