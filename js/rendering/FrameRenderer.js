@@ -22,8 +22,6 @@
 		this.canvas = null;
 		this.hasGrid = renderingOptions.hasGrid;
 		this.gridStrokeWidth = 0;
-		
-		this.lastRenderedFrame = null;
 
 		// Flag to know if the config was altered
 		this.canvasConfigDirty = true;
@@ -51,10 +49,6 @@
 		}
 		
 		this.canvasConfigDirty = true;
-
-		if(this.lastRenderedFrame) {
-			this.render(this.lastRenderedFrame);
-		}
 	};
 
 	ns.FrameRenderer.prototype.render = function (frame) {

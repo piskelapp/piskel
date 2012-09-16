@@ -9,46 +9,21 @@ $.namespace("pskl");
   /**
    * FrameSheetModel instance.
    */
-  var frameSheet,
-
-      // Configuration:
-      // Canvas size in pixel size (not dpi related)
-      framePixelWidth = 32, 
-      framePixelHeight = 32,
-
-      // Scaling factors for a given frameSheet rendering:
-      // Main drawing area dpi is calculated dynamically
-      // Canvas preview film canvases:
-      previewTileCanvasDpi = 4,
-      // Animated canvas preview:
-      previewAnimationCanvasDpi = 8;
-
+  var frameSheet;
   /**
    * Main application controller
    */
   var piskel = {
 
     init : function () {
-      frameSheet = new pskl.model.FrameSheet(framePixelWidth, framePixelHeight);
+      var frameSize = this.readSizeFromURL_();
+      frameSheet = new pskl.model.FrameSheet(frameSize.height, frameSize.width);
+
       frameSheet.addEmptyFrame();
       
-      this.drawingController = new pskl.controller.DrawingController(
-        frameSheet,
-        $('#drawing-canvas-container'), 
-        this.calculateDPIsForDrawingCanvas_()
-      );
-
-      this.animationController = new pskl.controller.AnimatedPreviewController(
-        frameSheet,
-        $('#preview-canvas-container'), 
-        previewAnimationCanvasDpi
-      );
-
-      this.previewsController = new pskl.controller.PreviewFilmController(
-        frameSheet,
-        $('#preview-list'), 
-        previewTileCanvasDpi
-      );
+      this.drawingController = new pskl.controller.DrawingController(frameSheet, $('#drawing-canvas-container'));
+      this.animationController = new pskl.controller.AnimatedPreviewController(frameSheet, $('#preview-canvas-container'));
+      this.previewsController = new pskl.controller.PreviewFilmController(frameSheet, $('#preview-list'));
 
       // To catch the current active frame, the selection manager have to be initialized before
       // the 'frameSheet.setCurrentFrameIndex(0);' line below.
@@ -57,8 +32,7 @@ $.namespace("pskl");
       //                  - an event(s) triggering init
       // All listeners will be hook in a first step, then all event triggering inits will be called
       // in a second batch.
-      this.selectionManager =
-          new pskl.selection.SelectionManager(frameSheet, this.drawingController.overlayFrame);
+      this.selectionManager = new pskl.selection.SelectionManager(frameSheet, this.drawingController.overlayFrame);
 
       // DO NOT MOVE THIS LINE (see comment above)
       frameSheet.setCurrentFrameIndex(0);
@@ -79,7 +53,7 @@ $.namespace("pskl");
       this.localStorageService.init();
 
       // TODO: Add comments 
-      var framesheetId = this.getFramesheetIdFromUrl();
+      var framesheetId = this.readFramesheetIdFromURL_();
       if (framesheetId) {
         $.publish(Events.SHOW_NOTIFICATION, [{"content": "Loading animation with id : [" + framesheetId + "]"}]);
         this.loadFramesheetFromService(framesheetId);
@@ -96,64 +70,13 @@ $.namespace("pskl");
       $('body').tooltip({
         selector: '[rel=tooltip]'
       });
-
-      this.connectResizeToDpiUpdate_();
     },
 
     render : function (delta) {
       this.drawingController.render(delta);
       this.animationController.render(delta);
       this.previewsController.render(delta);
-    },
-
-    connectResizeToDpiUpdate_ : function () {
-      $(window).resize($.proxy(this.startDPIUpdateTimer_, this));
-    },
-
-    startDPIUpdateTimer_ : function () {
-      if (this.dpiUpdateTimer) window.clearInterval(this.dpiUpdateTimer);
-      this.dpiUpdateTimer = window.setTimeout($.proxy(this.updateDPIForViewport, this), 200);
-    },
-
-    updateDPIForViewport : function () {
-      var dpi = piskel.calculateDPIsForDrawingCanvas_();
-      this.drawingController.updateDPI(dpi);
-    },
-
-    /**
-     * @private
-     */
-    calculateDPIsForDrawingCanvas_ : function() {
-
-      var userMessageGap = 80; // Reserve some height to show the user message at the bottom
-
-      var availableViewportHeight = $('.main-panel').height() - userMessageGap,
-          availableViewportWidth = $('.main-panel').width(),
-          previewHeight = $(".preview-container").height(),
-          previewWidth = $(".preview-container").width();
-
-      var heightBoundDpi = Math.floor(availableViewportHeight / framePixelHeight),
-          widthBoundDpi = Math.floor(availableViewportWidth / framePixelWidth);
-
-      var dpi = Math.min(heightBoundDpi, widthBoundDpi);
-
-      var drawingCanvasHeight = dpi * framePixelHeight;
-      var drawingCanvasWidth = dpi * framePixelWidth;
-
-      // Check if preview and drawing canvas overlap
-      var heightGap =  drawingCanvasHeight + previewHeight - availableViewportHeight,
-          widthGap = drawingCanvasWidth + previewWidth - availableViewportWidth;
-      if (heightGap > 0 && widthGap > 0) {
-          // Calculate the DPI change needed to bridge height and width gap
-          var heightGapDpi = Math.ceil(heightGap / framePixelHeight),
-          widthGapDpi = Math.ceil(widthGap / framePixelWidth);
-
-          // substract smallest dpi change to initial dpi
-          dpi -= Math.min(heightGapDpi, widthGapDpi);
-      }
-      
-      return dpi;
-    },
+    },    
 
     finishInit : function () {
       var toolController = new pskl.controller.ToolController();
@@ -163,12 +86,39 @@ $.namespace("pskl");
       paletteController.init(frameSheet);
     },
 
-    getFramesheetIdFromUrl : function() {
-      var href = window.location.href;
-      // TODO: Change frameId to framesheetId on the backend
-      if (href.indexOf('frameId=') != -1) {
-        return href.substring(href.indexOf('frameId=')+8);
+    readSizeFromURL_ : function () {
+      var sizeParam = this.readUrlParameter_("size"), size;
+      // parameter expected as size=64x48 => size=widthxheight
+      var parts = sizeParam.split("x");
+      if (parts && parts.length == 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
+        var width = parseInt(parts[0], 10),
+            height = parseInt(parts[1], 10);
+      
+        size = {
+          height : Math.min(height, Constants.MAX_HEIGHT),
+          width : Math.min(width, Constants.MAX_WIDTH)
+        };
+      } else {
+        size = Constants.DEFAULT_SIZE;
       }
+      return size;
+    },
+
+    readFramesheetIdFromURL_ : function() {
+      return this.readUrlParameter_("frameId");
+    },
+
+    readUrlParameter_ : function (paramName) {
+      var searchString = window.location.search.substring(1),
+      i, val, params = searchString.split("&");
+
+      for (i=0;i<params.length;i++) {
+        val = params[i].split("=");
+        if (val[0] == paramName) {
+          return unescape(val[1]);
+        }
+      }
+      return "";
     },
 
     loadFramesheetFromService : function (frameId) {
