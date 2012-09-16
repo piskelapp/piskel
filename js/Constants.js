@@ -1,4 +1,11 @@
 var Constants = {
+    DEFAULT_SIZE : {
+        height : 32,
+        width : 32
+    },
+
+    MAX_HEIGHT : 128,
+    MAX_WIDTH : 128,
 
     DEFAULT_PEN_COLOR : '#000000',  
     TRANSPARENT_COLOR : 'TRANSPARENT',

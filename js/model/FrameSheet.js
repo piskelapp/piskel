@@ -1,6 +1,6 @@
 (function () {
 	var ns = $.namespace("pskl.model");
-	ns.FrameSheet = function (width, height) {
+	ns.FrameSheet = function (height, width) {
 		this.width = width;
 		this.height = height;
 		this.frames = [];
@@ -68,6 +68,14 @@
 		 		var frameCfg = frameConfigurations[i];
 		 		this.addFrame(new ns.Frame(frameCfg));
 		 	}
+
+		 	if (this.hasFrameAtIndex(0)) {
+			 	this.height = this.getFrameByIndex(0).getHeight();
+			 	this.width = this.getFrameByIndex(0).getWidth();
+			 	this.setCurrentFrameIndex(0);
+		 		$.publish(Events.FRAME_SIZE_CHANGED);
+		 	}
+
 		 	$.publish(Events.FRAMESHEET_RESET);
 		} catch (e) {
 	 		throw "Could not load serialized framesheet : " + e.message

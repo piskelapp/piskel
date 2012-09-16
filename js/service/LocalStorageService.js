@@ -30,8 +30,8 @@
    */
   ns.LocalStorageService.prototype.persistToLocalStorage_ = function() {
     
-    console.log('[LocalStorage service]: Snapshot stored');
-    window.localStorage.snapShot = this.framesheet.serialize();
+   // console.log('[LocalStorage service]: Snapshot stored');
+   // window.localStorage.snapShot = this.framesheet.serialize();
   };
 
   /**
