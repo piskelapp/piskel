@@ -15,6 +15,9 @@
   background-position: 7px 7px;
 }
 
+/*
+ * Framesheet level actions:
+ */
 .tool-icon.tool-save {
   background-image: url(../img/tools/icons/save.png);
 }
@@ -23,8 +26,16 @@
   background-image: url(../img/tools/icons/add-frame.png);
 }
 
+
+/*
+ * Tool icons:
+ */
 .tool-icon.tool-pen {
   background-image: url(../img/tools/icons/pen.png);
+}
+
+.tool-icon.tool-vertical-mirror-pen {
+  background-image: url(../img/tools/icons/vertical-mirror-pen.png);
 }
 
 .tool-icon.tool-paint-bucket {
@@ -63,8 +74,16 @@
   background-image: url(../img/tools/icons/color-palette.png);
 }*/
 
+/*
+ * Tool cursors:
+ */
+
 .tool-paint-bucket .drawing-canvas-container:hover {
   cursor: url(../img/tools/cursors/paint-bucket.png) 14 12, pointer;
+}
+
+.tool-vertical-mirror-pen .drawing-canvas-container:hover {
+  cursor: url(../img/tools/cursors/vertical-mirror-pen.png) 14 12, pointer;
 }
 
 .tool-pen .drawing-canvas-container:hover {
