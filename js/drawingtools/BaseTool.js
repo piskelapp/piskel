@@ -12,7 +12,24 @@
 	
 	ns.BaseTool.prototype.moveToolAt = function(col, row, color, frame, overlay) {};
 
-	ns.BaseTool.prototype.moveUnactiveToolAt = function(col, row, color, frame, overlay) {};
+	ns.BaseTool.prototype.moveUnactiveToolAt = function(col, row, color, frame, overlay) {
+		if (overlay.containsPixel(col, row)) {
+			if (!isNaN(this.highlightedPixelCol) &&
+				!isNaN(this.highlightedPixelRow) &&
+				(this.highlightedPixelRow != row ||
+					this.highlightedPixelCol != col)) {
+
+				// Clean the previously highlighted pixel:
+				overlay.clear();
+			}
+
+			// Show the current pixel targeted by the tool:
+			overlay.setPixel(col, row, Constants.TOOL_TARGET_HIGHLIGHT_COLOR);
+
+			this.highlightedPixelCol = col;
+			this.highlightedPixelRow = row;	
+		}
+	};
 
 	ns.BaseTool.prototype.releaseToolAt = function(col, row, color, frame, overlay) {};
 

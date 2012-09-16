@@ -5,6 +5,12 @@ The goal is to create an easy-to-use/in-the-cloud/web-based 2d animation editor.
 
 Try it at : http://juliandescottes.github.com/piskel/
 
+16 Sep 2012
+------------------------------------
+Just a quick update to post a new screenshot. @grosbouddha is delivering features so fast, it's hard to keep up !
+
+![Screenshot 4](https://dl.dropbox.com/u/17803671/screen_piskel_4.png "Screenshot 4")
+
 15 Sep 2012
 ------------------------------------
 2 weeks already since the last README.md update, and so many changes ! There has been a continuous stream of features added to piskel by @grosboudda, @captainbrosset (thanks guys) and myself.
