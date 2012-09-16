@@ -68,7 +68,6 @@
 		 		var frameCfg = frameConfigurations[i];
 		 		this.addFrame(new ns.Frame(frameCfg));
 		 	}
-		 	$.publish(Events.FRAMESHEET_RELOADED);
 		 	$.publish(Events.FRAMESHEET_RESET);
 		} catch (e) {
 	 		throw "Could not load serialized framesheet : " + e.message

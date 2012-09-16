@@ -28,8 +28,6 @@ Events = {
     REDRAW_PREVIEWFILM: "REDRAW_PREVIEWFILM",
 
     GRID_DISPLAY_STATE_CHANGED: "GRID_DISPLAY_STATE_CHANGED",
-
-    FRAMESHEET_RELOADED: "FRAMESHEET_RELOADED",
     
     /**
      * The framesheet was reseted and is now probably drastically different.

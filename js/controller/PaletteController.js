@@ -14,15 +14,22 @@
     $.publish(Events.COLOR_SELECTED, [inputPicker.val(), evt.data.isPrimary]);
   };
 
-   /**
+  /**
    * @private
    */
-  ns.PaletteController.prototype.createPalette_ = function (colors) {
+  ns.PaletteController.prototype.createPaletteMarkup_ = function (colors) {
     // Always adding transparent color
     this.paletteRoot.html('<span class="palette-color transparent-color" data-color="TRANSPARENT" title="Transparent"></span>');
-    for(var color in colors) {
+    
+    for(var i=0, l=this.paletteColors.length; i<l; i++) {
       if(color != Constants.TRANSPARENT_COLOR) {
-        this.addColorToPalette_(color);
+        var color = this.paletteColors[i];
+        var colorEl = document.createElement("li");    
+        colorEl.className = "palette-color";
+        colorEl.setAttribute("data-color", color);
+        colorEl.setAttribute("title", color);
+        colorEl.style.background = color;
+        this.paletteRoot.append(colorEl);
       }
     }
   };
@@ -32,13 +39,16 @@
    */
   ns.PaletteController.prototype.addColorToPalette_ = function (color) {
     if (this.paletteColors.indexOf(color) == -1 && color != Constants.TRANSPARENT_COLOR) {
-      var colorEl = document.createElement("li");    
-      colorEl.className = "palette-color";
-      colorEl.setAttribute("data-color", color);
-      colorEl.setAttribute("title", color);
-      colorEl.style.background = color;
-      this.paletteRoot.append(colorEl);
       this.paletteColors.push(color);
+    }
+  };
+
+  /**
+   * @private
+   */
+  ns.PaletteController.prototype.addColorsToPalette_ = function (colors) {
+    for(var color in colors) {
+      this.addColorToPalette_(color);
     }
   };
 
@@ -86,16 +96,19 @@
     this.framesheet = framesheet;
 
     // Initialize palette:
-    this.createPalette_(this.framesheet.getUsedColors());
+    this.addColorsToPalette_(this.framesheet.getUsedColors());
+    this.createPaletteMarkup_();
 
-    $.subscribe(Events.FRAMESHEET_RELOADED, $.proxy(function(evt) {
-      this.createPalette_(this.framesheet.getUsedColors());
+    $.subscribe(Events.FRAMESHEET_RESET, $.proxy(function(evt) {
+      this.addColorsToPalette_(this.framesheet.getUsedColors());
+      this.createPaletteMarkup_();
     }, this));
 
     this.paletteRoot.mouseup($.proxy(this.onPaletteColorClick_, this));
     
     $.subscribe(Events.COLOR_SELECTED, $.proxy(function(evt, color) {
       this.addColorToPalette_(color);
+      this.createPaletteMarkup_();
     }, this));
 
     // Initialize colorpickers:
