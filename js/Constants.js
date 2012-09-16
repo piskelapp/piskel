@@ -9,6 +9,10 @@ var Constants = {
      */
     SELECTION_TRANSPARENT_COLOR: 'rgba(255, 255, 255, 0.6)',
 
+    /*
+     * When a tool is hovering the drawing canvas, we highlight the eventual
+     * pixel target with this color:
+     */
     TOOL_TARGET_HIGHLIGHT_COLOR: 'rgba(255, 255, 255, 0.2)',
     
     /*
