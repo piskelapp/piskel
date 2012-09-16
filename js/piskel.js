@@ -66,8 +66,8 @@ $.namespace("pskl");
       this.animationController.init();
       this.previewsController.init();
 
-      this.historyManager = new pskl.HistoryManager(frameSheet);
-      this.historyManager.init();
+      this.historyService = new pskl.service.HistoryService(frameSheet);
+      this.historyService.init();
 
       this.keyManager = new pskl.KeyManager();
 
