@@ -14,10 +14,10 @@
 
 	ns.BaseTool.prototype.moveUnactiveToolAt = function(col, row, color, frame, overlay) {
 		if (overlay.containsPixel(col, row)) {
-			if (this.previouslyHighlightedPixelCol &&
-				this.previouslyHighlightedPixelRow &&
-				(this.previouslyHighlightedPixelRow != row ||
-					this.previouslyHighlightedPixelCol != col)) {
+			if (!isNaN(this.highlightedPixelCol) &&
+				!isNaN(this.highlightedPixelRow) &&
+				(this.highlightedPixelRow != row ||
+					this.highlightedPixelCol != col)) {
 
 				// Clean the previously highlighted pixel:
 				overlay.clear();
@@ -26,8 +26,8 @@
 			// Show the current pixel targeted by the tool:
 			overlay.setPixel(col, row, Constants.TOOL_TARGET_HIGHLIGHT_COLOR);
 
-			this.previouslyHighlightedPixelCol = col;
-			this.previouslyHighlightedPixelRow = row;	
+			this.highlightedPixelCol = col;
+			this.highlightedPixelRow = row;	
 		}
 	};
 
