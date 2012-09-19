@@ -1,12 +1,6 @@
 (function () {
   var ns = $.namespace("pskl.controller");
-  ns.DrawingController = function (framesheet, container, dpi) {
-    // TODO(vincz): Store user prefs in a localstorage string ?
-    var renderingOptions = {
-      "dpi": dpi,
-      "hasGrid" : true
-    };
-
+  ns.DrawingController = function (framesheet, container) {
     /**
      * @public
      */
@@ -21,6 +15,12 @@
      * @private
      */
     this.container = container;
+
+    // TODO(vincz): Store user prefs in a localstorage string ?
+    var renderingOptions = {
+      "dpi": this.calculateDPI_(),
+      "hasGrid" : true
+    };
     
     this.renderer = new pskl.rendering.FrameRenderer(this.container, renderingOptions, "drawing-canvas");
     this.overlayRenderer = new pskl.rendering.FrameRenderer(this.container, renderingOptions, "canvas-overlay");
@@ -51,6 +51,11 @@
         this.secondaryColor = color;
       }
     }, this));
+
+    $(window).resize($.proxy(this.startDPIUpdateTimer_, this));
+
+    $.subscribe(Events.FRAME_SIZE_CHANGED, $.proxy(this.updateDPI_, this));
+     $.subscribe(Events.GRID_DISPLAY_STATE_CHANGED, $.proxy(this.forceRendering_, this)); 
   };
 
   ns.DrawingController.prototype.initMouseBehavior = function() {
@@ -62,6 +67,13 @@
         // Deactivate right click:
         body.contextmenu(this.onCanvasContextMenu_);
   };
+
+
+
+  ns.DrawingController.prototype.startDPIUpdateTimer_ = function () {
+      if (this.dpiUpdateTimer) window.clearInterval(this.dpiUpdateTimer);
+      this.dpiUpdateTimer = window.setTimeout($.proxy(this.updateDPI_, this), 200);
+  },
 
   /**
    * @private
@@ -185,12 +197,6 @@
       event.cancelBubble = true;
       return false;
     };
-  
-  ns.DrawingController.prototype.updateDPI = function (newDPI) {
-    this.renderer.updateDPI(newDPI);
-    this.overlayRenderer.updateDPI(newDPI);
-    this.forceRendering_();
-  };
 
   ns.DrawingController.prototype.render = function () {
     this.renderFrame();
@@ -216,5 +222,45 @@
 
   ns.DrawingController.prototype.forceRendering_ = function () {
     this.serializedFrame = this.serializedOverlay = null;
-  }
+  };
+
+  /**
+   * @private
+   */
+  ns.DrawingController.prototype.calculateDPI_ = function() {
+    var userMessageGap = 80; // Reserve some height to show the user message at the bottom
+
+    var availableViewportHeight = $('.main-panel').height() - userMessageGap,
+        availableViewportWidth = $('.main-panel').width(),
+        previewHeight = $(".preview-container").height(),
+        previewWidth = $(".preview-container").width(),
+        framePixelHeight = this.framesheet.getCurrentFrame().getHeight(),
+        framePixelWidth = this.framesheet.getCurrentFrame().getWidth();
+    var dpi = pskl.PixelUtils.calculateDPI(availableViewportHeight, availableViewportWidth, framePixelHeight, framePixelWidth);
+
+    var drawingCanvasHeight = dpi * framePixelHeight;
+    var drawingCanvasWidth = dpi * framePixelWidth;
+
+    // Check if preview and drawing canvas overlap
+    var heightGap =  drawingCanvasHeight + previewHeight - availableViewportHeight,
+        widthGap = drawingCanvasWidth + previewWidth - availableViewportWidth;
+    if (heightGap > 0 && widthGap > 0) {
+        // Calculate the DPI change needed to bridge height and width gap
+        var gapDPI = pskl.PixelUtils.calculateDPI(heightGap, widthGap, framePixelHeight, framePixelWidth);
+        // substract gap dpi to initial dpi
+        dpi -= (gapDPI + 1);
+    }
+    return dpi;
+  };
+
+  /**
+   * @private
+   */
+  ns.DrawingController.prototype.updateDPI_ = function() {
+    var dpi = this.calculateDPI_();
+    console.log("dpi", dpi);
+    this.renderer.updateDPI(dpi);
+    this.overlayRenderer.updateDPI(dpi);
+    this.forceRendering_();
+  };
 })();
