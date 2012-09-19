@@ -22,10 +22,14 @@
   background-image: url(../img/actions/save.png);
 }
 
+.tool-icon.tool-export {
+  background-image: url(../img/actions/image-export.png);
+  background-position: 6px 3px;
+}
+
 .tool-icon.tool-add-frame {
   background-image: url(../img/actions/add.png);
 }
-
 
 /*
  * Tool icons:
