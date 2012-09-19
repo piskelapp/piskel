@@ -26,6 +26,7 @@
         <!-- TODO: Remove that from here or change CSS class naming since
           they are framesheet level actions, not tools --> 
         <li class="tool-icon tool-save" data-tool-id="tool-save" title="Save" onclick="piskel.storeSheet()" rel="tooltip" data-placement="bottom" ></li>
+        <li class="tool-icon tool-export" data-tool-id="tool-export" title="Export" onclick="piskel.exportToPNG()" rel="tooltip" data-placement="bottom" ></li>
         <li class="tool-icon tool-add-frame" id="add-frame-button" data-tool-id="tool-add-frame" title="Add a frame" rel="tooltip" data-placement="bottom" ></li>
       </ul>
     </div>
@@ -84,7 +85,8 @@
   
   <!-- Libraries -->
   <script src="js/utils/core.js"></script>
-  <script src="js/utils/pixelUtils.js"></script>
+  <script src="js/utils/PixelUtils.js"></script>
+  <script src="js/utils/CanvasUtils.js"></script>
   <script src="js/lib/jsColor_1_4_0/jscolor.js"></script>
 
   <!-- Application libraries-->
@@ -98,8 +100,9 @@
   <script src="js/selection/ShapeSelection.js"></script>
   <!-- Rendering -->
   <script src="js/rendering/FrameRenderer.js"></script>
-  <script src="js/controller/DrawingController.js"></script>
+  <script src="js/rendering/SpritesheetRenderer.js"></script>
   <!-- Controllers -->
+  <script src="js/controller/DrawingController.js"></script>
   <script src="js/controller/PreviewFilmController.js"></script>
   <script src="js/controller/AnimatedPreviewController.js"></script>
   <script src="js/controller/ToolController.js"></script>

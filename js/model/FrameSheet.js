@@ -7,6 +7,14 @@
 		this.currentFrameIndex = 0;
 	};
 
+	ns.FrameSheet.prototype.getHeight = function () {
+		return this.height;
+	};
+
+	ns.FrameSheet.prototype.getWidth = function () {
+		return this.width;
+	};
+
 	ns.FrameSheet.prototype.addEmptyFrame = function () {
 		this.addFrame(ns.Frame.createEmpty(this.width, this.height));
 	};

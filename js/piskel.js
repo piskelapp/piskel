@@ -163,6 +163,13 @@ $.namespace("pskl");
         event.preventDefault();
       }
       return false;
+    },
+
+    /**
+     * Open new window with spritesheet as PNG
+     */
+    exportToPNG : function () {
+      (new pskl.rendering.SpritesheetRenderer(frameSheet)).render();
     }
   };
 
