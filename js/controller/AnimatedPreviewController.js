@@ -22,8 +22,12 @@
     };
 
     ns.AnimatedPreviewController.prototype.onFPSSliderChange = function(evt) {
-        this.fps = parseInt($("#preview-fps")[0].value, 10);
-        $("#display-fps").html(this.fps + " FPS")
+        this.setFPS(parseInt($("#preview-fps")[0].value, 10));
+    };
+
+    ns.AnimatedPreviewController.prototype.setFPS = function (fps) {
+        this.fps = fps;
+        $("#display-fps").html(this.fps + " FPS");
     };
 
     ns.AnimatedPreviewController.prototype.render = function (delta) {

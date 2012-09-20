@@ -55,7 +55,7 @@
     $(window).resize($.proxy(this.startDPIUpdateTimer_, this));
 
     $.subscribe(Events.FRAME_SIZE_CHANGED, $.proxy(this.updateDPI_, this));
-     $.subscribe(Events.GRID_DISPLAY_STATE_CHANGED, $.proxy(this.forceRendering_, this)); 
+    $.subscribe(Events.GRID_DISPLAY_STATE_CHANGED, $.proxy(this.forceRendering_, this)); 
   };
 
   ns.DrawingController.prototype.initMouseBehavior = function() {
@@ -133,8 +133,8 @@
     };
 
     /**
-   * @private
-   */
+     * @private
+     */
     ns.DrawingController.prototype.onMouseup_ = function (event) {
       if(this.isClicked || this.isRightClicked) {
         // A mouse button was clicked on the drawing canvas before this mouseup event,
@@ -159,8 +159,8 @@
     },
 
     /**
-   * @private
-   */
+     * @private
+     */
     ns.DrawingController.prototype.getRelativeCoordinates = function (clientX, clientY) {
       var canvasPageOffset = this.container.offset();
       return {
@@ -170,16 +170,16 @@
     };
 
     /**
-   * @private
-   */
+     * @private
+     */
     ns.DrawingController.prototype.getSpriteCoordinates = function(event) {
         var coords = this.getRelativeCoordinates(event.clientX, event.clientY);
         return this.renderer.convertPixelCoordinatesIntoSpriteCoordinate(coords);
     };
 
     /**
-   * @private
-   */
+     * @private
+     */
     ns.DrawingController.prototype.getCurrentColor_ = function () {
       if(this.isRightClicked) {
         return this.secondaryColor;
@@ -189,8 +189,8 @@
     };
 
     /**
-   * @private
-   */
+     * @private
+     */
     ns.DrawingController.prototype.onCanvasContextMenu_ = function (event) {
       event.preventDefault();
       event.stopPropagation();
@@ -207,6 +207,9 @@
     var frame = this.framesheet.getCurrentFrame();
     var serializedFrame = frame.serialize();
     if (this.serializedFrame != serializedFrame) {
+      if (!frame.isSameSize(this.overlayFrame)) {
+        this.overlayFrame = pskl.model.Frame.createEmptyFromFrame(frame);
+      }
       this.serializedFrame = serializedFrame;
       this.renderer.render(frame);
     }
@@ -258,7 +261,6 @@
    */
   ns.DrawingController.prototype.updateDPI_ = function() {
     var dpi = this.calculateDPI_();
-    console.log("dpi", dpi);
     this.renderer.updateDPI(dpi);
     this.overlayRenderer.updateDPI(dpi);
     this.forceRendering_();
