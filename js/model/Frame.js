@@ -2,7 +2,7 @@
 	var ns = $.namespace("pskl.model");
 	
 	ns.Frame = function (pixels) {
-		this.pixels = this.clonePixels_(pixels);
+		this.pixels = pixels;
 		this.previousStates = [this.getPixels()];
 		this.stateIndex = 0;
 	};
