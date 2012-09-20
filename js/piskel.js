@@ -128,7 +128,9 @@ $.namespace("pskl");
       xhr.responseType = 'text';
 
       xhr.onload = function(e) {
-        frameSheet.deserialize(this.responseText);
+        var res = JSON.parse(this.responseText);
+        frameSheet.load(res.framesheet);
+        piskel.animationController.setFPS(res.fps);
         $.publish(Events.HIDE_NOTIFICATION);
         piskel.finishInit();
       };
