@@ -64,30 +64,39 @@
 	};
 
 	/**
-	 * Load a framesheet from a string that might have been persisted in db / localstorage
+	 * Load a framesheet from a model that might have been persisted in db / localstorage
 	 * Overrides existing frames.
 	 * @param {String} serialized
 	 */
 	ns.FrameSheet.prototype.deserialize = function (serialized) {
 		try {
-		 	var frameConfigurations = JSON.parse(serialized);
-		 	this.frames = [];
-		 	for (var i = 0 ; i < frameConfigurations.length ; i++) {
-		 		var frameCfg = frameConfigurations[i];
-		 		this.addFrame(new ns.Frame(frameCfg));
-		 	}
-
-		 	if (this.hasFrameAtIndex(0)) {
-			 	this.height = this.getFrameByIndex(0).getHeight();
-			 	this.width = this.getFrameByIndex(0).getWidth();
-			 	this.setCurrentFrameIndex(0);
-		 		$.publish(Events.FRAME_SIZE_CHANGED);
-		 	}
-
-		 	$.publish(Events.FRAMESHEET_RESET);
+		 	this.load(JSON.parse(serialized));
 		} catch (e) {
 	 		throw "Could not load serialized framesheet : " + e.message
 		}	
+	};
+
+
+	/**
+	 * Load a framesheet from a model that might have been persisted in db / localstorage
+	 * Overrides existing frames.
+	 * @param {String} serialized
+	 */
+	ns.FrameSheet.prototype.load = function (framesheet) {
+	 	this.frames = [];
+	 	for (var i = 0 ; i < framesheet.length ; i++) {
+	 		var frameCfg = framesheet[i];
+	 		this.addFrame(new ns.Frame(frameCfg));
+	 	}
+
+	 	if (this.hasFrameAtIndex(0)) {
+		 	this.height = this.getFrameByIndex(0).getHeight();
+		 	this.width = this.getFrameByIndex(0).getWidth();
+		 	this.setCurrentFrameIndex(0);
+	 		$.publish(Events.FRAME_SIZE_CHANGED);
+	 	}
+
+	 	$.publish(Events.FRAMESHEET_RESET);
 	};
 
 	
