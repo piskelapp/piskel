@@ -111,4 +111,8 @@
 			this.setPixels(this.previousStates[this.stateIndex]);
 		}	
 	};
+
+	ns.Frame.prototype.isSameSize = function (otherFrame) {
+		return this.getHeight() == otherFrame.getHeight() && this.getWidth() == otherFrame.getWidth();
+	};
 })();

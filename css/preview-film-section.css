@@ -39,8 +39,7 @@
 }
 
 .preview-tile .tile-action {
-  display: none;
-  float: right;
+  display: block;
   cursor: pointer;
   width: 30px;
   height: 30px;
@@ -50,8 +49,14 @@
   border: none;
 }
 
-.preview-tile:hover .tile-action {
-  display: block;
+.preview-tile .tile-action-container {
+  float: right;
+  visibility : hidden;
+  overflow: hidden;
+}
+
+.preview-tile:hover .tile-action-container {
+  visibility : visible;
 }
 
 .preview-tile .tile-action.duplicate-frame-action {

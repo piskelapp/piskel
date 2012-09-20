@@ -181,11 +181,15 @@
         
         previewTileRoot.addEventListener('click', this.onPreviewClick_.bind(this, tileNumber));
 
+        var actionContainer = document.createElement("DIV");
+        actionContainer.className = "tile-action-container";
+
         var canvasPreviewDuplicateAction = document.createElement("button");
         canvasPreviewDuplicateAction.setAttribute('rel', 'tooltip');
         canvasPreviewDuplicateAction.setAttribute('data-placement', 'right');
         canvasPreviewDuplicateAction.setAttribute('title', 'Duplicate this frame');
-        canvasPreviewDuplicateAction.className = "tile-action duplicate-frame-action"
+        canvasPreviewDuplicateAction.className = "tile-action duplicate-frame-action";
+        actionContainer.appendChild(canvasPreviewDuplicateAction);
         
         canvasPreviewDuplicateAction.addEventListener('click', this.onAddButtonClick_.bind(this, tileNumber));
 
@@ -196,7 +200,6 @@
         currentFrameRenderer.init(currentFrame);
         
         previewTileRoot.appendChild(canvasContainer);
-        previewTileRoot.appendChild(canvasPreviewDuplicateAction);
 
         if(tileNumber > 0 || this.framesheet.getFrameCount() > 1) {
             var canvasPreviewDeleteAction = document.createElement("button");
@@ -206,7 +209,10 @@
             canvasPreviewDeleteAction.className = "tile-action delete-frame-action"
             canvasPreviewDeleteAction.addEventListener('click', this.onDeleteButtonClick_.bind(this, tileNumber));
             previewTileRoot.appendChild(canvasPreviewDeleteAction);
+            actionContainer.appendChild(canvasPreviewDeleteAction);
         }
+
+        previewTileRoot.appendChild(actionContainer);
 
         return previewTileRoot;
     };
