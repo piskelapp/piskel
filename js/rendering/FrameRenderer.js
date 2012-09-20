@@ -63,17 +63,6 @@
 		this.lastRenderedFrame = frame;
 	};
 
-	ns.FrameRenderer.prototype.drawPixel = function (col, row, frame) {
-		var context = this.getCanvas_(frame).getContext('2d');
-		var color = frame.getPixel(col, row);
-		if(color == Constants.TRANSPARENT_COLOR) {
-			context.clearRect(this.getFramePos_(col), this.getFramePos_(row), this.dpi, this.dpi);   
-		} else {
-			this.renderPixel_(color, col, row, context);
-		}
-		this.lastRenderedFrame = frame;
-	};
-
 	ns.FrameRenderer.prototype.renderPixel_ = function (color, col, row, context) {
 		if(color != Constants.TRANSPARENT_COLOR) {
 			context.fillStyle = color;
@@ -136,23 +125,15 @@
 			var col = frame.getWidth(),
 				row = frame.getHeight();
 			
-			var canvas = document.createElement("canvas");
-			
 			var pixelWidth =  col * this.dpi + this.gridStrokeWidth * (col - 1);
 			var pixelHeight =  row * this.dpi + this.gridStrokeWidth * (row - 1);
-			canvas.setAttribute("width", pixelWidth);
-			canvas.setAttribute("height", pixelHeight);
-			var canvasClassname =  "canvas";
-			if(this.className) {
-				canvasClassname += " " + this.className;	
-			}
-			canvas.setAttribute("class", canvasClassname);
+			var canvas = pskl.CanvasUtils.createCanvas(pixelWidth, pixelHeight, ["canvas", this.className]);
+
 			this.container.append(canvas);
 
 			if(this.gridStrokeWidth > 0) {
 				this.drawGrid_(canvas, pixelWidth, pixelHeight, col, row);
 			}
-			
 				
 			this.canvas = canvas;
 			this.canvasConfigDirty = false;
