@@ -83,43 +83,43 @@
  */
 
 .tool-paint-bucket .drawing-canvas-container:hover {
-  cursor: url(../img/tools/paint-bucket.png) 14 12, pointer;
+  cursor: url(../img/tools/paint-bucket.png) 12 12, pointer;
 }
 
 .tool-vertical-mirror-pen .drawing-canvas-container:hover {
-  cursor: url(../img/tools/vertical-mirror-pen.png) 14 12, pointer;
+  cursor: url(../img/tools/vertical-mirror-pen.png) 5 15, pointer;
 }
 
 .tool-pen .drawing-canvas-container:hover {
-  cursor: url(../img/tools/pen.png) 2 21, pointer;
+  cursor: url(../img/tools/pen.png) 0 15, pointer;
 }
 
 .tool-eraser .drawing-canvas-container:hover {
-  cursor: url(../img/tools/eraser.png) 2 21, pointer;
+  cursor: url(../img/tools/eraser.png) 0 15, pointer;
 }
 
 .tool-stroke .drawing-canvas-container:hover {
-  cursor: url(../img/tools/pen.png) 2 21, pointer;
+  cursor: url(../img/tools/pen.png) 0 15, pointer;
 }
 
 .tool-rectangle .drawing-canvas-container:hover {
-  cursor: url(../img/tools/rectangle.png) 4 21, pointer;
+  cursor: url(../img/tools/rectangle.png) 0 15, pointer;
 }
 
 .tool-circle .drawing-canvas-container:hover {
-  cursor: url(../img/tools/circle.png) 4 21, pointer;
+  cursor: url(../img/tools/circle.png) 2 15, pointer;
 }
 
 .tool-move .drawing-canvas-container:hover {
-  cursor: url(../img/tools/hand.png) 14 12, pointer;
+  cursor: url(../img/tools/hand.png) 15 15, pointer;
 }
 
 .tool-rectangle-select .drawing-canvas-container:hover {
-  cursor: url(../img/tools/select.png) 14 12, pointer;
+  cursor: url(../img/tools/select.png) 15 15, pointer;
 }
 
 .tool-shape-select .drawing-canvas-container:hover {
-  cursor: url(../img/tools/wand.png) 14 12, pointer;
+  cursor: url(../img/tools/wand.png) 15 15, pointer;
 }
 
 .tool-grid,
