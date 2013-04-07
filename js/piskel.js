@@ -176,9 +176,10 @@ $.namespace("pskl");
 
     uploadAsGIF : function () {
       var encoder = new GIFEncoder(),
-          dpi = 8;
+          dpi = 10;
       encoder.setRepeat(0);
-      encoder.setDelay(200);
+      var fps = piskel.animationController.fps;
+      encoder.setDelay(1000/fps);
       
       encoder.start();
       encoder.setSize(frameSheet.getWidth() * dpi, frameSheet.getHeight() * dpi);
