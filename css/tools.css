@@ -24,8 +24,12 @@
 
 .tool-icon.tool-export {
   background-image: url(../img/actions/image-export.png);
-  background-position: 6px 3px;
 }
+
+.tool-icon.tool-upload {
+  background-image: url(../img/actions/image-upload.png);
+}
+
 
 .tool-icon.tool-add-frame {
   background-image: url(../img/actions/add.png);
