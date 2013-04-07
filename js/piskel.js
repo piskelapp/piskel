@@ -172,6 +172,35 @@ $.namespace("pskl");
      */
     exportToPNG : function () {
       (new pskl.rendering.SpritesheetRenderer(frameSheet)).render();
+    },
+
+    uploadAsGIF : function () {
+      var encoder = new GIFEncoder(),
+          dpi = 8;
+      encoder.setRepeat(0);
+      encoder.setDelay(200);
+      
+      encoder.start();
+      encoder.setSize(frameSheet.getWidth() * dpi, frameSheet.getHeight() * dpi);
+      for (var i = 0 ; i < frameSheet.frames.length ; i++) {
+        var frame = frameSheet.frames[i];
+        var renderer = new pskl.rendering.CanvasRenderer(frame, dpi);
+        encoder.addFrame(renderer.render());
+      }
+      encoder.finish();
+
+      var imageData = 'data:image/gif;base64,' + encode64(encoder.stream().getData());
+      var xhr = new XMLHttpRequest();
+      var formData = new FormData();
+      formData.append('data', imageData);
+      xhr.open('POST', "http://screenletstore.appspot.com/__/upload", true);
+      xhr.onload = function(e) {
+        if (this.status == 200) {
+          var baseUrl = window.open("http://screenletstore.appspot.com/img/" + this.responseText);
+        }
+      };
+
+      xhr.send(formData);
     }
   };
 

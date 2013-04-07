@@ -27,6 +27,7 @@
           they are framesheet level actions, not tools --> 
         <li class="tool-icon tool-save" data-tool-id="tool-save" title="Save" onclick="piskel.storeSheet()" rel="tooltip" data-placement="bottom" ></li>
         <li class="tool-icon tool-export" data-tool-id="tool-export" title="Export" onclick="piskel.exportToPNG()" rel="tooltip" data-placement="bottom" ></li>
+        <li class="tool-icon tool-export" data-tool-id="tool-export" title="Upload as GIF" onclick="piskel.uploadAsGIF()" rel="tooltip" data-placement="bottom" ></li>
         <li class="tool-icon tool-add-frame" id="add-frame-button" data-tool-id="tool-add-frame" title="Add a frame" rel="tooltip" data-placement="bottom" ></li>
       </ul>
     </div>
@@ -78,7 +79,13 @@
   <script src="js/lib/jquery-ui-1.8.23.custom.js"></script>
   <script src="js/lib/pubsub.js"></script>
   <script src="js/lib/bootstrap/bootstrap.js"></script> 
-  
+
+  <!-- GIF Encoding DEVICES ! -->
+  <script src="js/lib/gif/GIFEncoder.js"></script>
+  <script src="js/lib/gif/b64.js"></script>
+  <script src="js/lib/gif/NEUQuant.js"></script>
+  <script src="js/lib/gif/LZWEncoder.js"></script>
+
   <!-- Application wide configuration -->
   <script src="js/Constants.js"></script>
   <script src="js/Events.js"></script>
@@ -99,6 +106,7 @@
   <script src="js/selection/RectangularSelection.js"></script>
   <script src="js/selection/ShapeSelection.js"></script>
   <!-- Rendering -->
+  <script src="js/rendering/CanvasRenderer.js"></script>
   <script src="js/rendering/FrameRenderer.js"></script>
   <script src="js/rendering/SpritesheetRenderer.js"></script>
   <!-- Controllers -->
