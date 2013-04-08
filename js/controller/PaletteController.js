@@ -111,8 +111,6 @@
 
     this.paletteRoot.mouseup($.proxy(this.onPaletteColorClick_, this));
     
-    // Many interactions can trigger a COLOR_SELECTED event (eg the canvas colorpicker
-    // or palette color picker). Only the following code can 
     $.subscribe(Events.PRIMARY_COLOR_UPDATED, $.proxy(function(evt, color) {
       this.updateColorPicker_(color, $('#color-picker'));
       this.addColorToPalette_(color);
