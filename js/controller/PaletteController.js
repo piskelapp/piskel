@@ -11,7 +11,12 @@
    */
   ns.PaletteController.prototype.onPickerChange_ = function(evt, isPrimary) {
     var inputPicker = $(evt.target);
-    $.publish(Events.COLOR_SELECTED, [inputPicker.val(), evt.data.isPrimary]);
+    if(evt.data.isPrimary) {
+      $.publish(Events.PRIMARY_COLOR_SELECTED, [inputPicker.val()]);
+    }
+    else {
+      $.publish(Events.SECONDARY_COLOR_SELECTED, [inputPicker.val()]);
+    }
   };
 
   /**
@@ -57,12 +62,12 @@
    */
   ns.PaletteController.prototype.onPaletteColorClick_ = function (event) {
     var selectedColor = $(event.target).data("color");
-    if (event.which == 1) { // left button 
-      this.updateColorPicker_(selectedColor, $('#color-picker'));
-      $.publish(Events.COLOR_SELECTED, [selectedColor, true]);
-    } else if (event.which == 3) { // right button
-      this.updateColorPicker_(selectedColor, $('#secondary-color-picker'));
-      $.publish(Events.COLOR_SELECTED, [selectedColor, false]);
+    var isLeftClick = (event.which == 1);
+    var isRightClick = (event.which == 3);
+    if (isLeftClick) {
+      $.publish(Events.PRIMARY_COLOR_SELECTED, [selectedColor]);
+    } else if (isRightClick) {
+      $.publish(Events.SECONDARY_COLOR_SELECTED, [selectedColor]);
     }
   };
 
@@ -106,7 +111,16 @@
 
     this.paletteRoot.mouseup($.proxy(this.onPaletteColorClick_, this));
     
-    $.subscribe(Events.COLOR_SELECTED, $.proxy(function(evt, color) {
+    // Many interactions can trigger a COLOR_SELECTED event (eg the canvas colorpicker
+    // or palette color picker). Only the following code can 
+    $.subscribe(Events.PRIMARY_COLOR_UPDATED, $.proxy(function(evt, color) {
+      this.updateColorPicker_(color, $('#color-picker'));
+      this.addColorToPalette_(color);
+      this.createPaletteMarkup_();
+    }, this));
+
+    $.subscribe(Events.SECONDARY_COLOR_UPDATED, $.proxy(function(evt, color) {
+      this.updateColorPicker_(color, $('#secondary-color-picker'));
       this.addColorToPalette_(color);
       this.createPaletteMarkup_();
     }, this));

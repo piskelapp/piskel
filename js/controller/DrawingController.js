@@ -43,13 +43,19 @@
       this.currentToolBehavior = toolBehavior;
     }, this));
 
-    $.subscribe(Events.COLOR_SELECTED, $.proxy(function(evt, color, isPrimary) {
-      console.log("Color selected: ", color);
-      if (isPrimary) {
-        this.primaryColor = color;
-      } else {
-        this.secondaryColor = color;
-      }
+    /**
+     * TODO(grosbouddha): Primary/secondary color state are kept in this general controller.
+     *     Find a better place to store that. Perhaps PaletteController?
+     */
+    $.subscribe(Events.PRIMARY_COLOR_SELECTED, $.proxy(function(evt, color) {
+      console.log("Primary color selected: ", color);
+      this.primaryColor = color;
+      $.publish(Events.PRIMARY_COLOR_UPDATED, [color]);
+    }, this));
+    $.subscribe(Events.SECONDARY_COLOR_SELECTED, $.proxy(function(evt, color) {
+      console.log("Secondary color selected: ", color);
+      this.secondaryColor = color;
+      $.publish(Events.SECONDARY_COLOR_UPDATED, [color]);
     }, this));
 
     $(window).resize($.proxy(this.startDPIUpdateTimer_, this));
