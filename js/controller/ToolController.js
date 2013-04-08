@@ -14,7 +14,8 @@
             "circle" : new pskl.drawingtools.Circle(),
             "move" : new pskl.drawingtools.Move(),
             "rectangleSelect" : new pskl.drawingtools.RectangleSelect(),
-            "shapeSelect" : new pskl.drawingtools.ShapeSelect()
+            "shapeSelect" : new pskl.drawingtools.ShapeSelect(),
+            "colorPicker" : new pskl.drawingtools.ColorPicker()
         };
 
         this.currentSelectedTool = this.toolInstances.simplePen;

@@ -78,6 +78,10 @@
   background-image: url(../img/tools/wand.png);
 }
 
+.tool-icon.tool-colorpicker {
+  background-image: url(../img/tools/dropper.png);
+}
+
 /*.tool-icon.tool-palette {
   background-image: url(../img/tools/color-palette.png);
 }*/
@@ -124,6 +128,10 @@
 
 .tool-shape-select .drawing-canvas-container:hover {
   cursor: url(../img/tools/wand.png) 15 15, pointer;
+}
+
+.tool-colorpicker .drawing-canvas-container:hover {
+  cursor: url(../img/tools/dropper.png) 0 15, pointer;
 }
 
 .tool-grid,
