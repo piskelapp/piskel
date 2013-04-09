@@ -98,7 +98,8 @@
         coords.col, coords.row,
         this.getCurrentColor_(),
         this.framesheet.getCurrentFrame(),
-        this.overlayFrame
+        this.overlayFrame,
+        this.wrapEvtInfo_(event)
       );      
         
       $.publish(Events.LOCALSTORAGE_REQUEST);
@@ -118,7 +119,8 @@
             coords.col, coords.row,
             this.getCurrentColor_(),
             this.framesheet.getCurrentFrame(),
-            this.overlayFrame
+            this.overlayFrame,
+            this.wrapEvtInfo_(event)
           );
       
           // TODO(vincz): Find a way to move that to the model instead of being at the interaction level.
@@ -131,7 +133,8 @@
             coords.col, coords.row,
             this.getCurrentColor_(),
             this.framesheet.getCurrentFrame(),
-            this.overlayFrame
+            this.overlayFrame,
+            this.wrapEvtInfo_(event)
           );
         }
         this.previousMousemoveTime = currentTime;
@@ -157,12 +160,26 @@
           coords.col, coords.row,
           this.getCurrentColor_(),
           this.framesheet.getCurrentFrame(),
-          this.overlayFrame
+          this.overlayFrame,
+          this.wrapEvtInfo_(event)
         );
 
         $.publish(Events.TOOL_RELEASED);
       }
     },
+
+    /**
+     * @private
+     */
+    ns.DrawingController.prototype.wrapEvtInfo_ = function (event) {
+      var evtInfo = {};
+      if (event.button == 0) {
+        evtInfo.button = Constants.LEFT_BUTTON;
+      } else if (event.button == 2) {
+        evtInfo.button = Constants.RIGHT_BUTTON;
+      }
+      return evtInfo;
+    },    
 
     /**
      * @private

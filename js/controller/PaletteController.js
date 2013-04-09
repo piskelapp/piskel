@@ -18,27 +18,7 @@
       $.publish(Events.SECONDARY_COLOR_SELECTED, [inputPicker.val()]);
     }
   };
-
-  /**
-   * @private
-   */
-  ns.PaletteController.prototype.createPaletteMarkup_ = function (colors) {
-    // Always adding transparent color
-    this.paletteRoot.html('<span class="palette-color transparent-color" data-color="TRANSPARENT" title="Transparent"></span>');
-    
-    for(var i=0, l=this.paletteColors.length; i<l; i++) {
-      if(color != Constants.TRANSPARENT_COLOR) {
-        var color = this.paletteColors[i];
-        var colorEl = document.createElement("li");    
-        colorEl.className = "palette-color";
-        colorEl.setAttribute("data-color", color);
-        colorEl.setAttribute("title", color);
-        colorEl.style.background = color;
-        this.paletteRoot.append(colorEl);
-      }
-    }
-  };
-
+  
   /**
    * @private
    */
@@ -102,11 +82,9 @@
 
     // Initialize palette:
     this.addColorsToPalette_(this.framesheet.getUsedColors());
-    this.createPaletteMarkup_();
 
     $.subscribe(Events.FRAMESHEET_RESET, $.proxy(function(evt) {
       this.addColorsToPalette_(this.framesheet.getUsedColors());
-      this.createPaletteMarkup_();
     }, this));
 
     this.paletteRoot.mouseup($.proxy(this.onPaletteColorClick_, this));
@@ -114,13 +92,11 @@
     $.subscribe(Events.PRIMARY_COLOR_UPDATED, $.proxy(function(evt, color) {
       this.updateColorPicker_(color, $('#color-picker'));
       this.addColorToPalette_(color);
-      this.createPaletteMarkup_();
     }, this));
 
     $.subscribe(Events.SECONDARY_COLOR_UPDATED, $.proxy(function(evt, color) {
       this.updateColorPicker_(color, $('#secondary-color-picker'));
       this.addColorToPalette_(color);
-      this.createPaletteMarkup_();
     }, this));
 
     // Initialize colorpickers:

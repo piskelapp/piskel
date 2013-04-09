@@ -16,10 +16,14 @@
 	/**
 	 * @override
 	 */
-	ns.ColorPicker.prototype.applyToolAt = function(col, row, color, frame, overlay) {
+	ns.ColorPicker.prototype.applyToolAt = function(col, row, color, frame, overlay, context) {
 		if (frame.containsPixel(col, row)) {
 			var sampledColor = frame.getPixel(col, row);
-			$.publish(Events.PRIMARY_COLOR_SELECTED, [sampledColor]);
+			if (context.button == Constants.LEFT_BUTTON) {
+				$.publish(Events.PRIMARY_COLOR_SELECTED, [sampledColor]);
+			} else if (context.button == Constants.RIGHT_BUTTON) {
+				$.publish(Events.SECONDARY_COLOR_SELECTED, [sampledColor]);
+			}
 		}
 	};
 })();
