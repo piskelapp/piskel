@@ -13,13 +13,9 @@
     //"test": "make test"
   },
   "devDependencies": {
-  	//"jshint": "0.6.1",
-    "grunt": "0.4.1",
-    // Grunt task to start a web server:
+  	"grunt": "0.4.1",
     "grunt-contrib-connect": "0.3.0",
     "grunt-contrib-jshint": "0.5.4",
-    //"grunt-contrib-nodeunit": "0.1.2",
-    // Grunt task to run CasperJS tests:
     "grunt-ghost": "1.0.12"
   }
 }
