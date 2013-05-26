@@ -7,7 +7,7 @@ module.exports = function(grunt) {
 			files: [
 				'Gruntfile.js',
 				'package.json',
-				'js/**/*.js'
+				'js/*.js'
 			]
 		},
 		connect: {
