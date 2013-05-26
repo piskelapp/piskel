@@ -1,14 +1,13 @@
 module.exports = function(grunt) {
 	grunt.initConfig({
 		jshint: {
-			/*options: {
+			options: {
 				jshintrc: '.jshintrc'
-			},*/
+			},
 			files: [
 				'Gruntfile.js',
-				'package.json'
-				//,'js/**/*.js',
-				//'<%= nodeunit.tests %>'
+				'package.json',
+				'js/**/*.js'
 			]
 		},
 		connect: {
