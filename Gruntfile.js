@@ -6,9 +6,9 @@ module.exports = function(grunt) {
 			},*/
 			files: [
 				'Gruntfile.js',
-				'package.json',
-				'js/**/*.js'/*,
-				'<%= nodeunit.tests %>'*/
+				'package.json'
+				//,'js/**/*.js',
+				//'<%= nodeunit.tests %>'
 			]
 		},
 		/*
