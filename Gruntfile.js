@@ -7,7 +7,7 @@ module.exports = function(grunt) {
 			files: [
 				'Gruntfile.js',
 				'package.json',
-				'source/**/*.js'/*,
+				'js/**/*.js'/*,
 				'<%= nodeunit.tests %>'*/
 			]
 		},
@@ -33,7 +33,7 @@ module.exports = function(grunt) {
 			options: {
 				args: {
 					baseUrl: 'http://localhost:' +
-						'<%= connect.www.options.port %>/index.html'
+						'<%= connect.www.options.port %>/'
 				},
 				direct: false,
 				logLevel: 'error',
