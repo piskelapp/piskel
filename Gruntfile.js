@@ -7,6 +7,8 @@ module.exports = function(grunt) {
 			files: [
 				'Gruntfile.js',
 				'package.json',
+				// TODO(grosbouddha): change to js/**/*.js and fix the 10K jshint
+				//                    error messages or fine-tune .jshintrc file.
 				'js/*.js'
 			]
 		},
