@@ -1,6 +1,6 @@
 {
 	"evil": true,
-	"asi": true, // tolerate missing ;
-	"smarttabs": true, // Tolerate mix of space/tabs
-	"eqnull": true,	
+	"asi": true,
+	"smarttabs": true,
+	"eqnull": true
 }
