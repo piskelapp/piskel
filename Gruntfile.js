@@ -25,21 +25,26 @@ module.exports = function(grunt) {
 			}
 		},
 		ghost: {
+			dist: {
+				filesSrc:  ['tests/integration/casperjs/*_test.js'],
+				options: {
+					args: {
+						baseUrl: 'http://localhost:' +
+							'<%= connect.www.options.port %>/'
+					},
+					direct: false,
+					logLevel: 'error',
+					printCommand: false,
+					printFilePaths: true
+				}
+			}
+			/*
 			test: {
 				files: [{
 					src: ['tests/integration/casperjs/*_test.js']
 				}]
 			},
-			options: {
-				args: {
-					baseUrl: 'http://localhost:' +
-						'<%= connect.www.options.port %>/'
-				},
-				direct: false,
-				logLevel: 'error',
-				printCommand: false,
-				printFilePaths: true
-			}
+			*/
 		}
 	});
 
