@@ -11,11 +11,6 @@ module.exports = function(grunt) {
 				//'<%= nodeunit.tests %>'
 			]
 		},
-		/*
-		nodeunit: {
-			tests: ['tests/nodeunit/*_test.js']
-		},
-		*/
 		connect: {
 			www: {
 				options: {
@@ -38,21 +33,13 @@ module.exports = function(grunt) {
 					printFilePaths: true
 				}
 			}
-			/*
-			test: {
-				files: [{
-					src: ['tests/integration/casperjs/*_test.js']
-				}]
-			},
-			*/
 		}
 	});
 
 	grunt.loadNpmTasks('grunt-contrib-connect');
 	grunt.loadNpmTasks('grunt-contrib-jshint');
-	//grunt.loadNpmTasks('grunt-contrib-nodeunit');
 	grunt.loadNpmTasks('grunt-ghost');
 
-	grunt.registerTask('test', ['jshint', /*'nodeunit',*/ 'connect', 'ghost']);
+	grunt.registerTask('test', ['jshint', 'connect', 'ghost']);
 
 };
