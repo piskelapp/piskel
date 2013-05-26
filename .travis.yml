@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-  - 0.6
+  - 0.8
 before_install:
   - npm install -g grunt-cli
   - git clone git://github.com/n1k0/casperjs.git ~/casperjs

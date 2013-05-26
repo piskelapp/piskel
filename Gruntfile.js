@@ -19,7 +19,7 @@ module.exports = function(grunt) {
 		connect: {
 			www: {
 				options: {
-					base: 'source',
+					base: 'piskel',
 					port: 4545
 				}
 			}
