@@ -70,9 +70,9 @@
 	 */
 	ns.FrameSheet.prototype.deserialize = function (serialized) {
 		try {
-		 	this.load(JSON.parse(serialized));
+			this.load(JSON.parse(serialized));
 		} catch (e) {
-	 		throw "Could not load serialized framesheet : " + e.message
+			throw "Could not load serialized framesheet : " + e.message;
 		}	
 	};
 
@@ -83,20 +83,20 @@
 	 * @param {String} serialized
 	 */
 	ns.FrameSheet.prototype.load = function (framesheet) {
-	 	this.frames = [];
-	 	for (var i = 0 ; i < framesheet.length ; i++) {
-	 		var frameCfg = framesheet[i];
-	 		this.addFrame(new ns.Frame(frameCfg));
-	 	}
+		this.frames = [];
+		for (var i = 0 ; i < framesheet.length ; i++) {
+			var frameCfg = framesheet[i];
+			this.addFrame(new ns.Frame(frameCfg));
+		}
 
-	 	if (this.hasFrameAtIndex(0)) {
-		 	this.height = this.getFrameByIndex(0).getHeight();
-		 	this.width = this.getFrameByIndex(0).getWidth();
-		 	this.setCurrentFrameIndex(0);
-	 		$.publish(Events.FRAME_SIZE_CHANGED);
-	 	}
+		if (this.hasFrameAtIndex(0)) {
+			this.height = this.getFrameByIndex(0).getHeight();
+			this.width = this.getFrameByIndex(0).getWidth();
+			this.setCurrentFrameIndex(0);
+			$.publish(Events.FRAME_SIZE_CHANGED);
+		}
 
-	 	$.publish(Events.FRAMESHEET_RESET);
+		$.publish(Events.FRAMESHEET_RESET);
 	};
 
 	
@@ -148,8 +148,8 @@
 
 	ns.FrameSheet.prototype.swapFrames = function(indexFrame1, indexFrame2) {
 		if(isNaN(indexFrame1) || isNaN(indexFrame1) ||
-		   (!this.hasFrameAtIndex(indexFrame1) && !this.hasFrameAtIndex(indexFrame2))) {
-		 	throw "Bad indexes for swapFrames Framesheet function.";
+			(!this.hasFrameAtIndex(indexFrame1) && !this.hasFrameAtIndex(indexFrame2))) {
+			throw "Bad indexes for swapFrames Framesheet function.";
 		}
 		if(indexFrame1 == indexFrame2) {
 			return;

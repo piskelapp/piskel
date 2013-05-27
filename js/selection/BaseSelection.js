@@ -17,7 +17,7 @@
 			movedPixel = this.pixels[i];
 			movedPixel.col += colDiff;
 			movedPixel.row += rowDiff;
-			movedPixels.push(movedPixel)
+			movedPixels.push(movedPixel);
 		}
 		this.pixels = movedPixels;
 	};
@@ -27,7 +27,7 @@
 		for(var i=0, l=this.pixels.length; i<l; i++) {
 			pixelWithCopiedColor = this.pixels[i];
 			pixelWithCopiedColor.copiedColor =
-			    targetFrame.getPixel(pixelWithCopiedColor.col, pixelWithCopiedColor.row);
+				targetFrame.getPixel(pixelWithCopiedColor.col, pixelWithCopiedColor.row);
 		}
 		this.hasPastedContent = true;
 	};

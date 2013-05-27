@@ -8,7 +8,7 @@
 	};
 
 	ns.Frame.createEmpty = function (width, height) {
-    	var pixels = ns.Frame.createEmptyPixelGrid_(width, height);
+		var pixels = ns.Frame.createEmptyPixelGrid_(width, height);
 		return new ns.Frame(pixels);
 	};
 
@@ -20,7 +20,7 @@
 				columnArray.push(Constants.TRANSPARENT_COLOR);
 			}
 			pixels[columnIndex] = columnArray;
-    	}
+		}
 		return pixels;
 	};
 
@@ -36,7 +36,7 @@
 	 * Returns a copy of the pixels used by the frame
 	 */
 	ns.Frame.prototype.getPixels = function () {
-		return this.clonePixels_(this.pixels)
+		return this.clonePixels_(this.pixels);
 	};
 
 	/**

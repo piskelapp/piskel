@@ -173,7 +173,7 @@
      */
     ns.DrawingController.prototype.wrapEvtInfo_ = function (event) {
       var evtInfo = {};
-      if (event.button == 0) {
+      if (event.button === 0) {
         evtInfo.button = Constants.LEFT_BUTTON;
       } else if (event.button == 2) {
         evtInfo.button = Constants.RIGHT_BUTTON;
