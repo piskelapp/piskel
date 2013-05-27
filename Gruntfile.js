@@ -1,3 +1,15 @@
+/**
+ * How to run grunt tasks:
+ *   - At project root, run 'npm install' - It will install nodedependencies declared in package,json in <root>/.node_modules
+ *   - install grunt CLI tools globally, run 'npm install -g grunt-cli'
+ *   - run a grunt target defined in Gruntfiles.js, ex: 'grunt lint'
+ *
+ * Note: The 'ghost' grunt task have special deps on CasperJS and phantomjs.
+ *       For now, It's configured to run only on TravisCI where these deps are 
+ *       correctly defined.
+ *       If you run this task locally, it may require some env set up first. 
+ */
+
 module.exports = function(grunt) {
 	grunt.initConfig({
 		jshint: {
@@ -45,5 +57,4 @@ module.exports = function(grunt) {
 
 	grunt.registerTask('lint', ['jshint']);
 	grunt.registerTask('test', ['jshint', 'connect', 'ghost']);
-
 };
