@@ -53,7 +53,7 @@
         }
         this.container.append(this.createInterstitialTile_(frameCount));
 
-        var needDragndropBehavior = !!(frameCount > 1);
+        var needDragndropBehavior = (frameCount > 1) ? true : false;
         if(needDragndropBehavior) {
             this.initDragndropBehavior_();
         }
@@ -64,7 +64,7 @@
      */
     ns.PreviewFilmController.prototype.createInterstitialTile_ = function (tileNumber) {
         var interstitialTile = document.createElement("div");
-        interstitialTile.className = "interstitial-tile"
+        interstitialTile.className = "interstitial-tile";
         interstitialTile.setAttribute("data-tile-type", "interstitial");
         interstitialTile.setAttribute("data-inject-drop-tile-at", tileNumber);
 
@@ -206,7 +206,7 @@
             canvasPreviewDeleteAction.setAttribute('rel', 'tooltip');
             canvasPreviewDeleteAction.setAttribute('data-placement', 'right');
             canvasPreviewDeleteAction.setAttribute('title', 'Delete this frame');
-            canvasPreviewDeleteAction.className = "tile-action delete-frame-action"
+            canvasPreviewDeleteAction.className = "tile-action delete-frame-action";
             canvasPreviewDeleteAction.addEventListener('click', this.onDeleteButtonClick_.bind(this, tileNumber));
             previewTileRoot.appendChild(canvasPreviewDeleteAction);
             actionContainer.appendChild(canvasPreviewDeleteAction);

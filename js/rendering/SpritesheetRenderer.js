@@ -19,7 +19,7 @@
 	};
 
 	/**
-	 * TODO : (Julz) Mutualize with code already present in FrameRenderer
+	 * TODO(juliandescottes): Mutualize with code already present in FrameRenderer
 	 */
 	ns.SpritesheetRenderer.prototype.drawFrameInCanvas_ = function (frame, canvas, offsetWidth, offsetHeight) {
 		var context = canvas.getContext('2d');
@@ -41,7 +41,7 @@
 			var height = this.framesheet.getHeight();
 			return pskl.CanvasUtils.createCanvas(width, height);
 		} else {
-			throw "Cannot render empty Spritesheet"
+			throw "Cannot render empty Spritesheet";
 		}
 	};
 

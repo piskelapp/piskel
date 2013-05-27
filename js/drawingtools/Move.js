@@ -7,7 +7,7 @@
 	var ns = $.namespace("pskl.drawingtools");
 
 	ns.Move = function() {
-		this.toolId = "tool-move"
+		this.toolId = "tool-move";
 		this.helpText = "Move tool";
 		
 		// Stroke's first point coordinates (set in applyToolAt)
@@ -40,7 +40,7 @@
 				} else {
 					color = Constants.TRANSPARENT_COLOR;
 				}
-				frame.setPixel(col, row, color)
+				frame.setPixel(col, row, color);
 			}
 		}
 	};

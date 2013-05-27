@@ -45,7 +45,7 @@
 	 * @override
 	 */
 	ns.RectangleSelect.prototype.onSelectEnd_ = function (col, row, color, frame, overlay) {
-		this.onSelect_(col, row, color, frame, overlay)
+		this.onSelect_(col, row, color, frame, overlay);
 	};
 
 })();

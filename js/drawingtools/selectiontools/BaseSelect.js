@@ -103,7 +103,7 @@
 				} else {
 					color = Constants.TRANSPARENT_COLOR;
 				}
-				overlayFrame.setPixel(col, row, color)
+				overlayFrame.setPixel(col, row, color);
 			}
 		}
 	};

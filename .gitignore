@@ -1,6 +1,9 @@
 # mac artefacts
 *.DS_Store
 
+# nodejs local installs
+node_modules
+
 # sublime text stuff (the -project should actually be shared, but then we'd have to share the same disk location)
 *.sublime-project
 *.sublime-workspace
