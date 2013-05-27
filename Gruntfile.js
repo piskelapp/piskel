@@ -1,15 +1,17 @@
 module.exports = function(grunt) {
 	grunt.initConfig({
 		jshint: {
-			options: {
-				jshintrc: '.jshintrc'
-			},
+			/*options: {
+				"evil": true,
+				"asi": true,
+				"smarttabs": true,
+				"eqnull": true
+			},*/
 			files: [
 				'Gruntfile.js',
 				'package.json',
-				// TODO(grosbouddha): change to js/**/*.js and fix the 10K jshint
-				//                    error messages or fine-tune .jshintrc file.
-				'js/*.js'
+				'js/**/*.js',
+				'!js/lib/**/*.js' // Exclude lib folder (note the leading !)
 			]
 		},
 		connect: {
@@ -41,6 +43,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-ghost');
 
+	grunt.registerTask('lint', ['jshint']);
 	grunt.registerTask('test', ['jshint', 'connect', 'ghost']);
 
 };

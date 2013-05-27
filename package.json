@@ -12,7 +12,7 @@
     "test": "grunt test"
   },
   "devDependencies": {
-    "grunt": "0.4.1",
+    "grunt": "~0.4.1",
     "grunt-contrib-connect": "0.3.0",
     "grunt-contrib-jshint": "0.5.4",
     "grunt-ghost": "1.0.12"
