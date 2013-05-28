@@ -33,4 +33,4 @@
 		var height = this.frame.getHeight() * this.dpi;
 		return pskl.CanvasUtils.createCanvas(width, height);
 	};
-})()
+})();

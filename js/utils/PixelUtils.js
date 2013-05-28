@@ -101,8 +101,9 @@
             var queue = [];
             var dy = [-1, 0, 1, 0];
             var dx = [0, 1, 0, -1];
+            var targetColor;
             try {
-                var targetColor = frame.getPixel(col, row);
+                targetColor = frame.getPixel(col, row);
             } catch(e) {
                 // Frame out of bound exception.
             }
@@ -123,8 +124,8 @@
                 paintedPixels.push({"col": currentItem.col, "row": currentItem.row });
 
                 for (var i = 0; i < 4; i++) {
-                    var nextCol = currentItem.col + dx[i]
-                    var nextRow = currentItem.row + dy[i]
+                    var nextCol = currentItem.col + dx[i];
+                    var nextRow = currentItem.row + dy[i];
                     try {
                         if (frame.containsPixel(nextCol, nextRow)  && frame.getPixel(nextCol, nextRow) == targetColor) {
                             queue.push({"col": nextCol, "row": nextRow });
@@ -136,7 +137,7 @@
 
                 // Security loop breaker:
                 if(loopCount > 10 * cellCount) {
-                    console.log("loop breaker called")
+                    console.log("loop breaker called");
                     break;          
                 }
             }

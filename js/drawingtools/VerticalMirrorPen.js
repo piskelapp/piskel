@@ -5,9 +5,9 @@
 		this.toolId = "tool-vertical-mirror-pen";
 		this.helpText = "vertical mirror pen tool";
 
-		this.swap = null
+		this.swap = null;
 		this.mirroredPreviousCol = null;
-	    this.mirroredPreviousRow = null;
+		this.mirroredPreviousRow = null;
 	};
 
 	pskl.utils.inherit(ns.VerticalMirrorPen, ns.SimplePen);
