@@ -5,6 +5,16 @@ The goal is to create an easy-to-use/in-the-cloud/web-based 2d animation editor.
 
 Try it at : http://juliandescottes.github.com/piskel/
 
+29 May 2013 
+-----------------------------------
+Trying to wake up after a big 8 months nap. 
+
+![nap](http://screenletstore.appspot.com/img/68e1690f-c8a3-11e2-a431-13a291e88f09.gif)
+
+Also, new features :
+* color picker : ![color picker](http://screenletstore.appspot.com/img/18e24a63-c8a4-11e2-b479-13a291e88f09.png)
+* create an animated GIF from your piskel (uses jsgif, results may vary ...)
+
 16 Sep 2012
 ------------------------------------
 Just a quick update to post a new screenshot. @grosbouddha is delivering features so fast, it's hard to keep up !
