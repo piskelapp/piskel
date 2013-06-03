@@ -1,0 +1,145 @@
+body {
+	margin: 0;
+	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
+	font-weight: 300;
+}
+
+.main-wrapper {
+  padding: 10px;
+  position: absolute;
+  top:0; right: 0; bottom: 0; left: 0;
+  background: -webkit-radial-gradient(circle, #000, #373737);
+}
+
+.tools {
+	float: left;
+	width: 100px;
+	margin-right: 10px;
+	height: 100%;
+}
+
+.tool {
+	position: relative;
+	float: left;
+	height: 46px;
+	width: 46px;
+	background: no-repeat url(img/magicwand-icon.png);
+	background-size: 34px 34px;
+	background-position-x: 6px;
+	background-position-y: 6px;
+	background-color: rgba(200,200,200, .1);
+	margin: 1px;
+}
+
+.tool.selected,
+.tool:hover {
+	cursor: pointer;
+	background-color: rgba(240,200,230, .3);
+}
+
+.tool.has-group:after {
+	content: " ";
+	position: absolute;
+	bottom: 2px;
+	right: 2px;
+	width: 0;
+	height: 0;
+	border: 4px #eee solid;
+	border-top-color: transparent;
+	border-left-color: transparent;
+}
+
+.tool.has-group:hover:after {
+	border-color: gold;
+	border-top-color: transparent;
+	border-left-color: transparent;
+}
+
+.canvas {
+	position: relative;
+	height: 100%;
+	float: left;
+	margin-right: 10px;
+	background-color: blue;
+}
+
+.canvas .draw-area {
+	position: absolute;
+	top:0; right: 0; bottom: 0; left: 0;
+	background: repeat url(img/transparent_background.png);
+}
+
+.canvas .pusher {
+	height: 100%;
+	float: left;
+	background-color: red;
+}
+
+.previewlist {
+	float: left;
+	background-color: red;
+	height: 100%;
+	overflow-y: scroll;
+}
+
+.preview-item {
+	position: relative;
+	border: gray 1px solid;
+	width: 200px;
+	height: 200px;
+	background-color: violet;
+}
+
+.preview-item-overlay {
+	z-index: 10;
+	position: absolute;
+	background-color: rgba(0, 0, 0, 0.3);
+	font-size: 14px;
+	color: white;
+	padding: 5px 8px;
+	cursor: pointer;
+	font-weight: bold;
+	display: none;
+}
+
+
+.preview-item:hover .preview-item-overlay,
+.preview-item-overlay:hover {
+	display: block;
+	opacity: 1.0;
+}
+
+.preview-item-overlay.tile-count {
+	display: block;
+	opacity: 0.5;
+	border-bottom-right-radius: 3px;
+	top: 0;
+	left: 0;
+}
+
+.preview-item-overlay.tile-close {
+	border-bottom-left-radius: 3px;
+	top: 0;
+	right: 0;
+}
+
+.preview-item img {
+	width: 100%;
+}
+
+.animpreview {
+	overflow: hidden;
+	text-align: center;
+	display: table;
+	height: 100%;
+}
+
+.animpreview .animpreview-inner {
+	display: table-cell;
+	vertical-align: middle;
+}
+
+.animpreview img {
+	width: 50%;
+	box-shadow: 0 0 5px 5px #000;
+}
