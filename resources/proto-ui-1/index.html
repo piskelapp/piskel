@@ -5,58 +5,93 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="main.css">
 </head>
-<body>
+<body class="grid-mode">
   <div class="main-wrapper">
     <div class="tools">
-      <div class="tool"></div>
-      <div class="tool"></div>
-      <div class="tool selected"></div>
-      <div class="tool"></div>
-      <div class="tool has-group"></div>
-      <div class="tool has-group"></div>
-      <div class="tool"></div>
-      <div class="tool"></div>
-      <div class="tool has-group"></div>
+      <div class="tool pen"></div>
+      <div class="tool bucket"></div>
+      <div class="tool magicwand selected"></div>
+      <div class="tool eyedropper"></div>
+      <div class="tool pen has-group"></div>
+      <div class="tool pen has-group"></div>
+      <div class="tool magicwand"></div>
+      <div class="tool pen"></div>
+      <div class="tool bucket has-group"></div>
     </div>
     <div class="canvas">
       <img class="pusher" src="img/transparent_background.png"/>
-      <div class="draw-area"></div>
+      <div class="draw-area draw-area-5"></div>
     </div>
-    <div class="previewlist">
+    <div id="previewlist" class="previewlist">
       <div class="preview-item">
         <img src="img/preview-state-1.png">
         <div class="tile-count preview-item-overlay">1</div>
-        <div class="tile-close preview-item-overlay">x</div>
+        <div class="tile-close preview-item-overlay"></div>
       </div>
-      <div class="preview-item">
+      <div class="preview-item selected">
         <img src="img/preview-state-1.png">
         <div class="tile-count preview-item-overlay">2</div>
-        <div class="tile-close preview-item-overlay">x</div>
+        <div class="tile-close preview-item-overlay"></div>
       </div>
       <div class="preview-item">
         <img src="img/preview-state-1.png">
         <div class="tile-count preview-item-overlay">3</div>
-        <div class="tile-close preview-item-overlay">x</div>
+        <div class="tile-close preview-item-overlay"></div>
       </div>
       <div class="preview-item">
         <img src="img/preview-state-1.png">
         <div class="tile-count preview-item-overlay">4</div>
-        <div class="tile-close preview-item-overlay">x</div>
+        <div class="tile-close preview-item-overlay"></div>
       </div>
       <div class="preview-item">
         <img src="img/preview-state-1.png">
         <div class="tile-count preview-item-overlay">5</div>
-        <div class="tile-close preview-item-overlay">x</div>
+        <div class="tile-close preview-item-overlay"></div>
       </div>
       <div class="preview-item">
         <img src="img/preview-state-1.png">
         <div class="tile-count preview-item-overlay">6</div>
-        <div class="tile-close preview-item-overlay">x</div>
+        <div class="tile-close preview-item-overlay"></div>
       </div>
       <div class="preview-item">
         <img src="img/preview-state-1.png">
         <div class="tile-count preview-item-overlay">7</div>
-        <div class="tile-close preview-item-overlay">x</div>
+        <div class="tile-close preview-item-overlay"></div>
+      </div>
+      <div class="preview-item">
+        <img src="img/preview-state-1.png">
+        <div class="tile-count preview-item-overlay">8</div>
+        <div class="tile-close preview-item-overlay"></div>
+      </div>
+      <div class="preview-item">
+        <img src="img/preview-state-1.png">
+        <div class="tile-count preview-item-overlay">9</div>
+        <div class="tile-close preview-item-overlay"></div>
+      </div>
+      <div class="preview-item">
+        <img src="img/preview-state-1.png">
+        <div class="tile-count preview-item-overlay">10</div>
+        <div class="tile-close preview-item-overlay"></div>
+      </div>
+      <div class="preview-item">
+        <img src="img/preview-state-1.png">
+        <div class="tile-count preview-item-overlay">11</div>
+        <div class="tile-close preview-item-overlay"></div>
+      </div>
+      <div class="preview-item">
+        <img src="img/preview-state-1.png">
+        <div class="tile-count preview-item-overlay">12</div>
+        <div class="tile-close preview-item-overlay"></div>
+      </div>
+      <div class="preview-item">
+        <img src="img/preview-state-1.png">
+        <div class="tile-count preview-item-overlay">13</div>
+        <div class="tile-close preview-item-overlay"></div>
+      </div>
+      <div class="preview-item">
+        <img src="img/preview-state-1.png">
+        <div class="tile-count preview-item-overlay">14</div>
+        <div class="tile-close preview-item-overlay"></div>
       </div>
     </div>
     <div class="animpreview">
@@ -64,6 +99,19 @@
         <img src="img/preview.gif"/>
       </div>
     </div>
+  </div>
+  <div class="ux-options">
+    Tile view mode:
+    <button id="toggle-mode">grid</button>
+    <br/>
+    Draw canvas background:
+    <select id="change-draw-area">
+      <option value="1">rich-texture-1</value>
+      <option value="2">falloutjacket</value>
+      <option value="3">classic</value>
+      <option value="4">rich-texture-2</value>
+      <option value="5">sober</value>
+    </select>
   </div>
   <script src="jquery-1.8.0.js"></script>
   <script src="main.js"></script>
