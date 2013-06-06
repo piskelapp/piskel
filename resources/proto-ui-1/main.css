@@ -49,11 +49,19 @@ body {
 .tool.pen { background-image: url(img/pen-icon.png); }
 .tool.eyedropper { background-image: url(img/eyedropper-icon.png);}
 
-.tool.selected,
 .tool:hover {
 	cursor: pointer;
 	background-color: #6b5f68; /*rgba(240,200,230, .3);*/
 }
+
+.tool.selected {
+	cursor: default;
+	background-color: #444;
+	cursor: normal;
+	border: 1px gold solid;
+	margin: 0;
+}
+
 
 .tool.has-group:after {
 	content: " ";
@@ -85,16 +93,6 @@ body {
 	position: absolute;
 	top:0; right: 0; bottom: 0; left: 0;
 	box-shadow: 0 0 8px 5px #444;
-	/*
-	background: repeat url(img/transparent_background.png);
-	*/
-	/*
-	background-color: #eee;
-	background-image: linear-gradient(45deg, black 25%, transparent 25%, transparent 75%, black 75%, black), 
-	linear-gradient(45deg, black 25%, transparent 25%, transparent 75%, black 75%, black);
-	background-size:60px 60px;
-	background-position:0 0, 30px 30px
-	*/
 }
 
 .canvas .draw-area-1 {
@@ -141,12 +139,6 @@ body {
 	background-position:-1px -1px, -1px -1px, -1px -1px, -1px -1px;
 }
 
-.canvas .pusher {
-	height: 100%;
-	float: left;
-	background-color: red;
-}
-
 .previewlist {
 	float: left;
 	background-color: #111;
@@ -157,12 +149,15 @@ body {
 
 .preview-item {
 	position: relative;
-	border: #444 6px solid;
+	border: #444 3px solid;
 	border-radius: 3px;
 	width: 90px;
+	height: 90px;
 	margin-bottom: 5px;
 	margin-right: 5px;
 	font-size: 0;
+	background: no-repeat url(img/preview-state-1.png);
+	background-size: 90px;
 }
 
 .preview-item.selected {
@@ -195,6 +190,7 @@ body {
 	left: 0;
 	line-height: 30px;
 	text-align: center;
+	cursor: default;
 }
 
 .preview-item-overlay.tile-close {
@@ -217,9 +213,63 @@ body {
 	z-index: 10;
 }
 
+.preview-item-overlay.tile-dnd {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	background-color: rgba(0, 0, 0, 0.3);
+	border-top-right-radius: 3px;
+	height: 30px;
+	width: 30px;
+	cursor: move;
+}
+
+.preview-item-overlay.tile-dnd:after {
+	content: " ";
+	position: absolute;
+	background: no-repeat url(img/dragndrop.png) 5px 5px;
+	background-size: 20px 20px;
+	top: 0; right: 0; bottom: 0; left: 0;
+	z-index: 10;
+}
+
 .preview-item img {
 	width: 100%;
 }
+
+.drop-target.preview-item {
+	width: 0;
+	border: none;
+	background-image: none;
+	margin-right: 0;
+	background-color: #333;
+	opacity: 0;
+	transition-property: width, opacity;  
+	transition-duration: 0.15s;
+	transition-timing-function: linear;  
+}
+
+.drag-target.preview-item {
+	display: none;
+}
+
+.dnd-state1 .drop-target.preview-item {
+	border: #444 3px dashed;
+	margin-right: 5px;
+	width: 90px;
+	opacity: 1.0;
+}
+
+.dnd-state1 .drag-target.preview-item {
+	display: block;
+	position: absolute;
+	top: 30px;
+	left: 30px;
+	opacity: 0.6;
+	z-index: 10;
+}
+
+/** Grid mode */
 
 .grid-mode .previewlist {
 	float: none;
@@ -235,6 +285,47 @@ body {
 .grid-mode .animpreview {
 	display: none;
 }
+
+/** Horizontal list mode */
+
+.hor-list-mode .main-wrapper {
+	padding-bottom: 120px;
+}
+
+.hor-list-mode .previewlist {
+	float: none;
+	width: auto;
+	position: absolute;
+	bottom: 0;
+	left: 115px;
+	right: 0;
+	height: 115px;
+	overflow-x: scroll;
+	overflow-y: hidden;
+	white-space: nowrap;
+	padding-top: 5px;
+}
+
+.hor-list-mode .preview-item {
+	display: inline-block;
+}
+
+.hor-list-mode .preview-item:last-child {
+	margin-right: 1000px;
+}
+
+.hor-list-mode .preview-item.selected:after {
+	content: " ";
+	position: absolute;
+	top: -15px;
+	border: transparent 4px solid;
+	left: 38px;
+	border-bottom-color: gold;
+	border-width: 6px;
+	border-style: solid;
+}
+}
+
 
 .animpreview {
 	overflow: hidden;
