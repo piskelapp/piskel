@@ -1,47 +1,53 @@
 
 
-/**
- * Top menubars
- */
-.menubar {
-  background-color: #fff;
-  width: 100%;
-  height: 30px;
+body {
+  background: -webkit-radial-gradient(circle, #000, #373737);
 }
-
-
 /**
  * Application layout
  */
 
-.left-section {
+@toolbar-height: 104px;
+
+.column-wrapper {
+  text-align: center;
+  font-size: 0;
   position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 220px;
-  background: #666;
-}
-
-.main-panel {
-  position: absolute;
-  top: 0; 
-  right: 0;
-  bottom: 0; 
-  left: 220px;
-  background: #ccc;
-}
-
-
-/**
- * CSS Helpers
- */
-
-.overlay-total {
-  position: absolute;
-  top: 0;
-  right:0;
-  bottom: 0;
   left: 0;
+  top: @toolbar-height;
+  right: 0;
+  bottom: 0;
+}
+
+.left-column {
+  display: inline-block;
+  vertical-align: top;
+  height: 100%;
+  margin-right: 7px;
+}
+
+.main-column {
+  display: inline-block;
+  height: 100%;
+  position: relative;
+}
+
+.drawing-canvas-container {
+  font-size: 0;
+}
+
+.top-section {
+  position: absolute;
+  bottom: 100%;
+  min-width: 400px;
+  margin-bottom: 5px;
+}
+
+.right-column {
+  display: inline-block;
+  vertical-align: top;
+  background: blue;
+  margin-left: 10px;
 }
 
 
@@ -60,7 +66,7 @@
 }
 
 .canvas-container .canvas-background {
-  background: url(../img/transparent_background.png) repeat;
+  background: url(../img/canvas_background.png) repeat;
   position: absolute;
   top: 0;
   right: 0;
@@ -74,16 +80,6 @@
   left: 0;
   z-index: 10;
 }
-
-.drawing-canvas {
-  float: left;
-}
-
-.drawing-canvas-container {
-  float: left;
-}
-
-
 
 /** 
  * User messages 

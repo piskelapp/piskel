@@ -181,16 +181,12 @@
         
         previewTileRoot.addEventListener('click', this.onPreviewClick_.bind(this, tileNumber));
 
-        var actionContainer = document.createElement("DIV");
-        actionContainer.className = "tile-action-container";
-
         var canvasPreviewDuplicateAction = document.createElement("button");
         canvasPreviewDuplicateAction.setAttribute('rel', 'tooltip');
         canvasPreviewDuplicateAction.setAttribute('data-placement', 'right');
         canvasPreviewDuplicateAction.setAttribute('title', 'Duplicate this frame');
-        canvasPreviewDuplicateAction.className = "tile-action duplicate-frame-action";
-        actionContainer.appendChild(canvasPreviewDuplicateAction);
-        
+        canvasPreviewDuplicateAction.className = "tile-overlay duplicate-frame-action";
+        previewTileRoot.appendChild(canvasPreviewDuplicateAction);
         canvasPreviewDuplicateAction.addEventListener('click', this.onAddButtonClick_.bind(this, tileNumber));
 
         // TODO(vincz): Eventually optimize this part by not recreating a FrameRenderer. Note that the real optim
@@ -202,24 +198,35 @@
         previewTileRoot.appendChild(canvasContainer);
 
         if(tileNumber > 0 || this.framesheet.getFrameCount() > 1) {
-            var canvasPreviewDeleteAction = document.createElement("button");
-            canvasPreviewDeleteAction.setAttribute('rel', 'tooltip');
-            canvasPreviewDeleteAction.setAttribute('data-placement', 'right');
-            canvasPreviewDeleteAction.setAttribute('title', 'Delete this frame');
-            canvasPreviewDeleteAction.className = "tile-action delete-frame-action";
-            canvasPreviewDeleteAction.addEventListener('click', this.onDeleteButtonClick_.bind(this, tileNumber));
-            previewTileRoot.appendChild(canvasPreviewDeleteAction);
-            actionContainer.appendChild(canvasPreviewDeleteAction);
-        }
+            // Add 'remove frame' button.
+            var deleteButton = document.createElement("button");
+            deleteButton.setAttribute('rel', 'tooltip');
+            deleteButton.setAttribute('data-placement', 'right');
+            deleteButton.setAttribute('title', 'Delete this frame');
+            deleteButton.className = "tile-overlay delete-frame-action";
+            deleteButton.addEventListener('click', this.onDeleteButtonClick_.bind(this, tileNumber));
+            previewTileRoot.appendChild(deleteButton);
 
-        previewTileRoot.appendChild(actionContainer);
+            // Add 'dragndrop handle'.
+            var dndHandle = document.createElement("div");
+            dndHandle.setAttribute('rel', 'tooltip');
+            dndHandle.setAttribute('title', 'Drag\'n drop');
+            dndHandle.setAttribute('data-placement', 'right');
+            dndHandle.className = "tile-overlay dnd-action";
+            previewTileRoot.appendChild(dndHandle);
+        }
+        var tileCount = document.createElement("div");
+        tileCount.className = "tile-overlay tile-count";
+        tileCount.innerHTML = tileNumber;
+        previewTileRoot.appendChild(tileCount);
+        
 
         return previewTileRoot;
     };
 
     ns.PreviewFilmController.prototype.onPreviewClick_ = function (index, evt) {
         // has not class tile-action:
-        if(!evt.target.classList.contains('tile-action')) {
+        if(!evt.target.classList.contains('tile-overlay')) {
             this.framesheet.setCurrentFrameIndex(index);
         }    
     };
@@ -239,7 +246,7 @@
      * Calculate the preview DPI depending on the framesheet size
      */
     ns.PreviewFilmController.prototype.calculateDPI_ = function () {
-        var previewSize = 128,
+        var previewSize = 120,
             framePixelHeight = this.framesheet.getCurrentFrame().getHeight(),
             framePixelWidth = this.framesheet.getCurrentFrame().getWidth();
         // TODO (julz) : should have a utility to get a Size from framesheet easily (what about empty framesheets though ?)

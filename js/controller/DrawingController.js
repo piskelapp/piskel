@@ -71,7 +71,7 @@
         body.mouseup($.proxy(this.onMouseup_, this));
         
         // Deactivate right click:
-        body.contextmenu(this.onCanvasContextMenu_);
+        //body.contextmenu(this.onCanvasContextMenu_);
   };
 
 
@@ -254,20 +254,21 @@
    * @private
    */
   ns.DrawingController.prototype.calculateDPI_ = function() {
-    var userMessageGap = 80; // Reserve some height to show the user message at the bottom
-
-    var availableViewportHeight = $('.main-panel').height() - userMessageGap,
-        availableViewportWidth = $('.main-panel').width(),
-        previewHeight = $(".preview-container").height(),
-        previewWidth = $(".preview-container").width(),
+    var availableViewportHeight = $('.main-column').height(),
+        leftSectionWidth = $('.left-column').width(),
+        rightSectionWidth = $('.right-column').width(),
+        availableViewportWidth = $('body').width() - leftSectionWidth - rightSectionWidth,
+        //previewHeight = $(".preview-container").height(),
+        //previewWidth = $(".preview-container").width(),
         framePixelHeight = this.framesheet.getCurrentFrame().getHeight(),
         framePixelWidth = this.framesheet.getCurrentFrame().getWidth();
     var dpi = pskl.PixelUtils.calculateDPI(availableViewportHeight, availableViewportWidth, framePixelHeight, framePixelWidth);
-
+    /*
     var drawingCanvasHeight = dpi * framePixelHeight;
     var drawingCanvasWidth = dpi * framePixelWidth;
-
+    */
     // Check if preview and drawing canvas overlap
+    /*
     var heightGap =  drawingCanvasHeight + previewHeight - availableViewportHeight,
         widthGap = drawingCanvasWidth + previewWidth - availableViewportWidth;
     if (heightGap > 0 && widthGap > 0) {
@@ -275,7 +276,7 @@
         var gapDPI = pskl.PixelUtils.calculateDPI(heightGap, widthGap, framePixelHeight, framePixelWidth);
         // substract gap dpi to initial dpi
         dpi -= (gapDPI + 1);
-    }
+    }*/
     return dpi;
   };
 

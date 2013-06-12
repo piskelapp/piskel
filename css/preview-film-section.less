@@ -1,0 +1,126 @@
+
+.preview-list-wrapper {
+  overflow-y: scroll;
+  overflow-x: hidden;
+  height: 100%;
+}
+
+.preview-list {
+  list-style-type: none;
+  padding-right: 7px;
+}
+
+.preview-tile {
+  position: relative;
+  border: #444 3px solid;
+  border-radius: 3px;
+}
+
+.preview-tile:hover {
+  border: #999 3px solid;
+}
+
+.preview-tile .tile-overlay {
+  z-index: 10;
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  height: 30px;
+  width: 30px;
+  border: none;
+}
+
+.preview-tile:hover .tile-overlay {
+  opacity: 1.0;
+}
+
+.tile-overlay.tile-count {
+  display: block;
+  opacity: 0.5;
+  border-bottom-right-radius: 3px;
+  top: 0;
+  left: 0;
+  font-size: 14px;
+  line-height: 30px;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  cursor: default;
+}
+
+.preview-tile .tile-overlay.delete-frame-action {
+   background-image: url(../img/garbage.png);
+   background-repeat: no-repeat;
+   top: 0;
+   right: 0;
+   border-bottom-left-radius: 3px;
+   height: 30px;
+   width: 30px;
+   background-position: 5px 5px;
+   background-size: 20px;
+   cursor: pointer;
+}
+
+.preview-tile .tile-overlay.duplicate-frame-action {
+   bottom: 0;
+   right: 0;
+   border-bottom-left-radius: 3px;
+   background-image: url(../img/duplicate.png);
+   background-repeat: no-repeat;
+   background-position: 5px 5px;
+   background-size: 20px;
+   cursor: pointer;
+}
+
+.preview-tile .tile-overlay.dnd-action {
+   bottom: 0;
+   left: 0;
+   border-top-right-radius: 3px;
+   background-image: url(../img/dragndrop.png);
+   background-repeat: no-repeat;
+   background-position: 5px 5px;
+   background-size: 20px;
+   cursor: move;
+}
+
+.preview-tile.selected {
+  border-color: gold;
+}
+
+.preview-tile.selected:after {
+  content: " ";
+  position: absolute;
+  top: 38px;
+  right: -15px;
+  border: transparent 4px solid;
+  border-left-color: gold;
+  border-width: 6px;
+  border-style: solid;
+}
+
+.preview-tile.ui-draggable-dragging {
+  opacity: 0.3;
+}
+
+
+.preview-tile.droppable-active {
+  background-color: pink;
+}
+
+.interstitial-tile.droppable-hover-active {
+  background-color: purple;
+}
+
+.preview-tile.droppable-hover-active {
+  background-color: yellow;
+}
+
+.interstitial-tile {
+  visibility: hidden;
+  background-color: blue;
+  height: 10px;
+}
+
+.show-interstitial-tiles .interstitial-tile {
+  visibility: visible;
+}
