@@ -7,76 +7,85 @@
   <title>Piskel</title>
   <meta name="description" content="">
   <meta name="author" content="Julian Descottes">
-  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="css/reset.css">
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/tools.css">
-  <link rel="stylesheet" href="css/bootstrap/bootstrap.css">
-  <link rel="stylesheet" href="css/bootstrap/bootstrap-tooltip-custom.css">
-  <link rel="stylesheet" href="css/preview-film-section.css">
-  <link rel="stylesheet" href="css/preview-animation-section.css">
-  
+  <link rel="stylesheet" type="text/css" href="css/reset.css">
+  <link rel="stylesheet" type="text/css" href="css/style.css">
+  <link rel="stylesheet" type="text/css" href="css/tools.css">
+  <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap.css">
+  <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap-tooltip-custom.css">
+  <link rel="stylesheet" type="text/css" href="css/preview-film-section.css">
 </head>
 <body>
 
-  <div class='left-section'>
-    <div class="menubar">
-      <ul class="tools-group">
-        <!-- TODO: Remove that from here or change CSS class naming since
-          they are framesheet level actions, not tools --> 
-        <li class="tool-icon tool-save" data-tool-id="tool-save" title="Save" onclick="piskel.storeSheet()" rel="tooltip" data-placement="bottom" ></li>
-        <li class="tool-icon tool-export" data-tool-id="tool-export" title="Export" onclick="piskel.exportToPNG()" rel="tooltip" data-placement="bottom" ></li>
-        <li class="tool-icon tool-upload" data-tool-id="tool-upload" title="Upload as GIF" onclick="piskel.uploadAsGIF()" rel="tooltip" data-placement="bottom" ></li>
-        <li class="tool-icon tool-add-frame" id="add-frame-button" data-tool-id="tool-add-frame" title="Add a frame" rel="tooltip" data-placement="bottom" ></li>
-      </ul>
-    </div>
-    <!-- List of frames: -->
-    <div class="preview-list-wrapper">
-      <ul class="preview-list" id="preview-list"></ul>
-    </div>
-  </div>
-
-  <div class='main-panel'>
-
-    <div id="menubar" class="menubar">
-      <ul id="tools-container" class="tools-group"></ul>
-      <ul class="tools-group">
-        <li class="tool-icon tool-palette">
-          <ul id="palette" class="palette">
-            <span class="tool-icon palette-color transparent-color" data-color="TRANSPARENT" title="Transparent"></span>
-          </ul>
-        </li>
-        <li class="tool-icon tool-color-picker">
-          <input id="color-picker" class="color {hash:true}" type="text" value="" />
-          <input id="secondary-color-picker" class="secondary-color-picker color {hash:true}" type="text" value="" />
-        </li>
-      </ul>
-      <ul class="tools-group">
-        <li class="tool-grid">
-          <input id="show-grid" type="checkbox"/>
-          <label for="show-grid">Show grid</label>
-        </li>
-      </ul>
-    </div>
-    <!-- Drawing area: -->
-    <div id="drawing-canvas-container" class="drawing-canvas-container canvas-container">
-      <div class="canvas-background"></div>
+  <div class="column-wrapper">
+    <div class='left-column'>
+      
+      <!-- List of frames: -->
+      <div class="preview-list-wrapper">
+        <ul class="preview-list" id="preview-list"></ul>
+      </div>
     </div>
 
-    <!-- Animation preview: -->
-    <div class='preview-container'>
-      <input id="preview-fps" type="range" min="1" max="24" value="12" style="width:200px;"/>
-      <span id="display-fps">12 FPS</span>
-      <div id='preview-canvas-container' class="canvas-container">
+    <div class='main-column'>
+      
+      <div id="menubar" class="top-section">
+        <ul id="tools-container" class="tools-wrapper"></ul>
+        <ul class="palette-wrapper">
+          <li class="tool-icon tool-palette">
+            <ul id="palette" class="palette">
+              <span class="tool-icon palette-color transparent-color" data-color="TRANSPARENT" title="Transparent"></span>
+            </ul>
+          </li>
+          <li class="tool-icon tool-color-picker">
+            <input id="color-picker" class="color {hash:true}" type="text" value="" />
+            <input id="secondary-color-picker" class="secondary-color-picker color {hash:true}" type="text" value="" />
+          </li>
+        </ul>
+        <ul class="options-wrapper">
+          <li class="tool-grid">
+            <input id="show-grid" type="checkbox"/>
+            <label for="show-grid">Show grid</label>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Drawing area: -->
+      <div id="drawing-canvas-container" class="drawing-canvas-container canvas-container">
         <div class="canvas-background"></div>
+      </div>
+    </div>
+
+    <div class="right-column">
+      <!-- Animation preview: -->
+      <div class='preview-container'>
+        <div id='preview-canvas-container' class="canvas-container">
+          <div class="canvas-background"></div>
+        </div>
+        <div>
+          <span id="display-fps" class="display-fps">12 FPS</span>
+          <input id="preview-fps" class="range-fps" type="range" min="1" max="24" value="12"/>
+        </div>
+        
+        
+        
+      </div>
+
+      <div class="application-actions">
+        <ul>
+          <!-- TODO: Remove that from here or change CSS class naming since
+            they are framesheet level actions, not tools --> 
+          <li class="tool-icon tool-save" data-tool-id="tool-save" title="Save" onclick="piskel.storeSheet()" rel="tooltip" data-placement="bottom" ></li>
+          <li class="tool-icon tool-export" data-tool-id="tool-export" title="Export to PNG framesheet" onclick="piskel.exportToPNG()" rel="tooltip" data-placement="bottom" ></li>
+          <li class="tool-icon tool-upload" data-tool-id="tool-upload" title="Export to animated GIF" onclick="piskel.uploadAsGIF()" rel="tooltip" data-placement="bottom" ></li>
+          <li class="tool-icon tool-add-frame" id="add-frame-button" data-tool-id="tool-add-frame" title="Add a frame" rel="tooltip" data-placement="bottom" ></li>
+        </ul>
       </div>
     </div>
   </div>
   
   <!-- Core libraries: -->
   <script src="js/lib/jquery-1.8.0.js"></script>
-  <script src="js/lib/jquery-ui-1.8.23.custom.js"></script>
+  <script src="js/lib/jquery-ui-1.10.3.custom.js"></script>
   <script src="js/lib/pubsub.js"></script>
   <script src="js/lib/bootstrap/bootstrap.js"></script> 
 
