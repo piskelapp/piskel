@@ -137,13 +137,7 @@
 	};
 
 	ns.FrameSheet.prototype.moveFrame = function(originIndex, destinationIndex) {
-		var frameToMove = this.getFrameByIndex(originIndex);
-		this.frames.splice(destinationIndex, 0,frameToMove);
-
-		if(destinationIndex <= originIndex) {
-			originIndex++;
-		}
-		this.removeFrameByIndex(originIndex);
+		this.frames.splice(destinationIndex, 0, this.frames.splice(originIndex, 1)[0]);
 	};
 
 	ns.FrameSheet.prototype.swapFrames = function(indexFrame1, indexFrame2) {

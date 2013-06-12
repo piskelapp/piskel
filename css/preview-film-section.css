@@ -14,6 +14,11 @@
   position: relative;
   border: #444 3px solid;
   border-radius: 3px;
+  margin: 5px 0;
+}
+
+.preview-tile:first-child {
+  margin-top: 0;
 }
 
 .preview-tile:hover {
@@ -103,29 +108,9 @@
  *  Drag n drop styles.
  */
 
-.preview-tile.ui-draggable-dragging {
-  opacity: 0.3;
-}
-
-
-.preview-tile.droppable-active {
-  background-color: pink;
-}
-
-.interstitial-tile.droppable-hover-active {
-  background-color: purple;
-}
-
-.preview-tile.droppable-hover-active {
-  background-color: yellow;
-}
-
-.interstitial-tile {
-  visibility: hidden;
-  background-color: blue;
-  height: 10px;
-}
-
-.show-interstitial-tiles .interstitial-tile {
-  visibility: visible;
+.preview-tile-drop-proxy {
+  border: 3px dashed gold;
+  height: 90px;
+  border-radius: 9px;
+  background-color: rgba(255, 215,0, 0.2);
 }

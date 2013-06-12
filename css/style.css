@@ -8,14 +8,12 @@ body {
  * Application layout
  */
 
-@toolbar-height: 104px;
-
 .column-wrapper {
   text-align: center;
   font-size: 0;
   position: absolute;
   left: 0;
-  top: @toolbar-height;
+  top: 104px;
   right: 0;
   bottom: 0;
 }
