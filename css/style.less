@@ -3,6 +3,7 @@
 body {
   background: -webkit-radial-gradient(circle, #000, #373737);
 }
+
 /**
  * Application layout
  */
@@ -46,7 +47,6 @@ body {
 .right-column {
   display: inline-block;
   vertical-align: top;
-  background: blue;
   margin-left: 10px;
 }
 
@@ -79,6 +79,39 @@ body {
   top: 0;
   left: 0;
   z-index: 10;
+}
+
+
+/**
+ * Animated preview styles.
+ */
+
+.preview-container {
+  border : 0px Solid black;
+  border-radius:5px 0px 0px 5px;
+  box-shadow : 0px 0px 2px rgba(0,0,0,0.2);
+  font-size: 0;
+}
+
+.preview-container canvas {
+  border : 0px Solid transparent;
+}
+
+.display-fps {
+  float: left;
+  color: #aaa;
+  font-size: 12px;
+  min-width: 55px;
+  vertical-align: bottom;
+  line-height: 24px;
+}
+
+.range-fps {
+  overflow: hidden;
+}
+
+.application-actions {
+  margin-top: 35px;
 }
 
 /** 
