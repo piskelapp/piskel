@@ -19,7 +19,7 @@
 		var encoder = new GIFEncoder(), dpi = 10;
         encoder.setRepeat(0);
         encoder.setDelay(1000/fps);
-	      
+
         encoder.start();
         encoder.setSize(this.framesheet.getWidth() * dpi, this.framesheet.getHeight() * dpi);
         for (var i = 0 ; i < this.framesheet.frames.length ; i++) {
@@ -27,7 +27,7 @@
           var renderer = new pskl.rendering.CanvasRenderer(frame, dpi);
           encoder.addFrame(renderer.render());
         }
-	    encoder.finish();
+        encoder.finish();
 
         var imageData = 'data:image/gif;base64,' + encode64(encoder.stream().getData());
         return imageData;
