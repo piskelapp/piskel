@@ -12,17 +12,16 @@
         $.subscribe(Events.FRAMESHEET_RESET, this.flagForRedraw_.bind(this));
         $.subscribe(Events.FRAMESHEET_RESET, this.refreshDPI_.bind(this));
 
-        $('#preview-list-scroller').scroll(this.onScroll_.bind(this))
+        $('#preview-list-scroller').scroll(this.updateScrollerOverflows.bind(this));
+        this.updateScrollerOverflows();
     };
 
-    ns.PreviewFilmController.prototype.init = function() {
-
-
-    };
+    ns.PreviewFilmController.prototype.init = function() {};
 
     ns.PreviewFilmController.prototype.addFrame = function () {
         this.framesheet.addEmptyFrame();
         this.framesheet.setCurrentFrameIndex(this.framesheet.getFrameCount() - 1);
+        this.updateScrollerOverflows();
     };
 
     ns.PreviewFilmController.prototype.flagForRedraw_ = function () {
@@ -41,12 +40,12 @@
         }
     };
 
-    ns.PreviewFilmController.prototype.onScroll_ = function (evt) {
+    ns.PreviewFilmController.prototype.updateScrollerOverflows = function () {
         var scroller = $('#preview-list-scroller');
         var scrollerHeight = scroller.height();
         var scrollTop = scroller.scrollTop();
         var scrollerContentHeight = $('#preview-list').height();
-        var treshold = 30;
+        var treshold = $('.top-overflow').height();
         var overflowTop = false,
             overflowBottom = false;
         if (scrollerHeight < scrollerContentHeight) {
@@ -87,6 +86,7 @@
         if(needDragndropBehavior) {
             this.initDragndropBehavior_();
         }
+        this.updateScrollerOverflows();
     };
 
 
@@ -191,13 +191,15 @@
 
     ns.PreviewFilmController.prototype.onDeleteButtonClick_ = function (index, evt) {
         this.framesheet.removeFrameByIndex(index);
-        $.publish(Events.LOCALSTORAGE_REQUEST); // Should come from model   
+        $.publish(Events.LOCALSTORAGE_REQUEST); // Should come from model
+        this.updateScrollerOverflows();
     };
 
     ns.PreviewFilmController.prototype.onAddButtonClick_ = function (index, evt) {
         this.framesheet.duplicateFrameByIndex(index);
         $.publish(Events.LOCALSTORAGE_REQUEST);  // Should come from model
         this.framesheet.setCurrentFrameIndex(index + 1);
+        this.updateScrollerOverflows();
     };
 
     /**
