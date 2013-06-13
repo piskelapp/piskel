@@ -12,10 +12,10 @@ body {
   text-align: center;
   font-size: 0;
   position: absolute;
-  left: 0;
-  top: 104px;
+  left: 104px;
+  top: 10px;
   right: 0;
-  bottom: 0;
+  bottom: 10px;
 }
 
 .left-column {
@@ -35,17 +35,25 @@ body {
   font-size: 0;
 }
 
-.top-section {
-  position: absolute;
-  bottom: 100%;
-  min-width: 400px;
-  margin-bottom: 5px;
-}
-
 .right-column {
   display: inline-block;
   vertical-align: top;
   margin-left: 10px;
+}
+
+.sticky-section {
+  display: table;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 140px;
+}
+
+.sticky-section .wrap {
+  display: table-cell;
+  vertical-align: middle;
 }
 
 

@@ -5,10 +5,6 @@
   float: left;
 }
 
-.tools-wrapper {
-  width: 70%;
-}
-
 .tool-icon {
   float: left;
   cursor : pointer;
