@@ -1,8 +1,51 @@
-
 .preview-list-wrapper {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+}
+
+.preview-list-scroller {
   overflow-y: scroll;
   overflow-x: hidden;
   height: 100%;
+}
+
+.top-overflow,
+.bottom-overflow {
+  height: 20px;
+  position: absolute;
+  left: 0;
+  right: 12px;
+  
+  -webkit-transition: all 500ms ease-out;
+  -moz-transition: all 500ms ease-out;
+  -ms-transition: all 500ms ease-out;
+  -o-transition: all 500ms ease-out;
+  transition: all 500ms ease-out;
+
+  background-image: linear-gradient(45deg, rgba(0,0,0, 0.5) 25%, transparent 25%, transparent 75%, rgba(0,0,0, 0.5) 75%, rgba(0,0,0, 0.5)),
+                    linear-gradient(-45deg, rgba(0,0,0, 0.5) 25%, transparent 25%, transparent 75%, rgba(0,0,0, 0.5) 75%, rgba(0,0,0, 0.5));
+  background-size: 45px 45px;
+  background-repeat: repeat-x;
+  background-position-x: 3px;
+}
+
+.top-overflow {
+  top: -20px;
+}
+
+.bottom-overflow {
+  bottom: -20px;
+  background-position-x: 0;
+  background-position-y: -23px;
+}
+
+.top-overflow-visible .top-overflow {
+  top: 0;
+}
+
+.bottom-overflow-visible .bottom-overflow {
+  bottom: 0;
 }
 
 .preview-list {

@@ -45,8 +45,12 @@
     <div class='left-column'>
       
       <!-- List of frames: -->
-      <div class="preview-list-wrapper">
-        <ul class="preview-list" id="preview-list"></ul>
+      <div id="preview-list-wrapper" class="preview-list-wrapper">
+        <div id="preview-list-scroller" class="preview-list-scroller">
+          <ul class="preview-list" id="preview-list"></ul>
+        </div>
+        <div class="top-overflow"></div>
+        <div class="bottom-overflow"></div>
       </div>
     </div>
 
@@ -67,10 +71,7 @@
         <div>
           <span id="display-fps" class="display-fps">12 FPS</span>
           <input id="preview-fps" class="range-fps" type="range" min="1" max="24" value="12"/>
-        </div>
-        
-        
-        
+        </div>   
       </div>
 
       <div class="application-actions">
