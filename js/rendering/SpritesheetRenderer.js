@@ -12,25 +12,25 @@
 			var frame = this.framesheet.getFrameByIndex(i);
 			this.drawFrameInCanvas_(frame, canvas, i * this.framesheet.getWidth(), 0);
 		}
-		return canvas.toDataURL("image/png")
+		return canvas.toDataURL("image/png");
 	};
 
 	ns.SpritesheetRenderer.prototype.renderAsImageDataAnimatedGIF = function (fps) {
 		var encoder = new GIFEncoder(), dpi = 10;
         encoder.setRepeat(0);
-      	encoder.setDelay(1000/fps);
+        encoder.setDelay(1000/fps);
 	      
-	    encoder.start();
-	    encoder.setSize(this.framesheet.getWidth() * dpi, this.framesheet.getHeight() * dpi);
-	    for (var i = 0 ; i < this.framesheet.frames.length ; i++) {
-	      var frame = this.framesheet.frames[i];
-	      var renderer = new pskl.rendering.CanvasRenderer(frame, dpi);
-	      encoder.addFrame(renderer.render());
-	    }
+        encoder.start();
+        encoder.setSize(this.framesheet.getWidth() * dpi, this.framesheet.getHeight() * dpi);
+        for (var i = 0 ; i < this.framesheet.frames.length ; i++) {
+          var frame = this.framesheet.frames[i];
+          var renderer = new pskl.rendering.CanvasRenderer(frame, dpi);
+          encoder.addFrame(renderer.render());
+        }
 	    encoder.finish();
 
-	    var imageData = 'data:image/gif;base64,' + encode64(encoder.stream().getData());
-	    return imageData;
+        var imageData = 'data:image/gif;base64,' + encode64(encoder.stream().getData());
+        return imageData;
 	};
 
 
