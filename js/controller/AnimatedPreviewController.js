@@ -47,11 +47,13 @@
      * Calculate the preview DPI depending on the framesheet size
      */
     ns.AnimatedPreviewController.prototype.calculateDPI_ = function () {
-        var framePixelHeight = this.framesheet.getCurrentFrame().getHeight(),
+        var previewSize = 200,
+            framePixelHeight = this.framesheet.getCurrentFrame().getHeight(),
             framePixelWidth = this.framesheet.getCurrentFrame().getWidth();
         // TODO (julz) : should have a utility to get a Size from framesheet easily (what about empty framesheets though ?)
         
-        return pskl.PixelUtils.calculateDPIForContainer($(".preview-container"), framePixelHeight, framePixelWidth);
+        //return pskl.PixelUtils.calculateDPIForContainer($(".preview-container"), framePixelHeight, framePixelWidth);
+        return pskl.PixelUtils.calculateDPI(previewSize, previewSize, framePixelHeight, framePixelWidth);
     };
 
     ns.AnimatedPreviewController.prototype.updateDPI_ = function () {

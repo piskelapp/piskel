@@ -48,113 +48,42 @@
         var frameCount = this.framesheet.getFrameCount();
 
         for (var i = 0, l = frameCount; i < l ; i++) {
-            this.container.append(this.createInterstitialTile_(i));
             this.container.append(this.createPreviewTile_(i));
         }
-        this.container.append(this.createInterstitialTile_(frameCount));
-
-        var needDragndropBehavior = (frameCount > 1) ? true : false;
+        
+        var needDragndropBehavior = (frameCount > 1);
         if(needDragndropBehavior) {
             this.initDragndropBehavior_();
         }
     };
 
-    /**
-     * @private
-     */
-    ns.PreviewFilmController.prototype.createInterstitialTile_ = function (tileNumber) {
-        var interstitialTile = document.createElement("div");
-        interstitialTile.className = "interstitial-tile";
-        interstitialTile.setAttribute("data-tile-type", "interstitial");
-        interstitialTile.setAttribute("data-inject-drop-tile-at", tileNumber);
-
-        return interstitialTile;
-    };
 
     /**
      * @private
      */
     ns.PreviewFilmController.prototype.initDragndropBehavior_ = function () {
-        var tiles = $(".preview-tile");
-        // Each preview film tile is draggable.
-        tiles.draggable( {
-          //containment: '.left-nav',
-          stack: '.preview-tile',
-          cursor: 'move',
-          revert: true,
-          start: function(event, ui) {
-            // We only show the fake interstitial tiles when starting the 
-            // drag n drop interaction. We hide them when the DnD is done.
-            $('#preview-list').addClass("show-interstitial-tiles");
-          },
-          stop: function() {
-            $('#preview-list').removeClass("show-interstitial-tiles");
-          }
+        
+        $( "#preview-list" ).sortable({
+          placeholder: "preview-tile-drop-proxy",
+          update: $.proxy(this.onUpdate_, this)
         });
-
-
-        // Each preview film tile is a drop target. This allow us to swap two tiles.
-        // However, we want to be able to insert a tile between two other tiles.
-        // For that we created fake interstitial tiles that are used as drop targets as well.
-        var droppableTiles = $(".interstitial-tile");
-        $.merge(droppableTiles, tiles);
-
-        droppableTiles.droppable( {
-            accept: ".preview-tile",
-            tolerance: "pointer",
-            activeClass: "droppable-active",
-            hoverClass: "droppable-hover-active",
-            drop: $.proxy(this.onDrop_, this)
-        });
+        $( "#preview-list" ).disableSelection();
     };
 
     /**
      * @private
      */
-    ns.PreviewFilmController.prototype.onDrop_ = function( event, ui ) {
-        var activeFrame;
-        // When we drag from an element, the drag could start from a nested DOM element
-        // inside the drag target. We normalize that by taking the correct ancestor:
-        var originTile = $(event.srcElement).closest(".preview-tile");
-        var originFrameId = parseInt(originTile.data("tile-number"), 10);
+    ns.PreviewFilmController.prototype.onUpdate_ = function( event, ui ) {
+        var originFrameId = parseInt(ui.item.data("tile-number"), 10);
+        var targetInsertionId = $('.preview-tile').index(ui.item);
 
-        var dropTarget = $(event.target);
-        if(dropTarget.data("tile-type") == "interstitial") {
-            var targetInsertionId = parseInt(dropTarget.data("inject-drop-tile-at"), 10);
-            // In case we drop outside of the tile container
-            if(isNaN(originFrameId) || isNaN(targetInsertionId)) {
-                return;
-            }
-            //console.log("origin-frame: "+originFrameId+" - targetInsertionId: "+ targetInsertionId)
-            this.framesheet.moveFrame(originFrameId, targetInsertionId);
-            
-            activeFrame = targetInsertionId;
-            // The last fake interstitial tile is outside of the framesheet array bound.
-            // It allow us to append after the very last element in this fake slot.
-            // However, when setting back the active frame, we have to make sure the 
-            // frame does exist.
-            if(activeFrame > (this.framesheet.getFrameCount() - 1)) {
-                activeFrame = targetInsertionId - 1;
-            }
-        } else {
-            var targetSwapId = parseInt(dropTarget.data("tile-number"), 10);
-            // In case we drop outside of the tile container
-            if(isNaN(originFrameId) || isNaN(targetSwapId)) {
-                return;
-            }
-            //console.log("origin-frame: "+originFrameId+" - targetSwapId: "+ targetSwapId)
-            this.framesheet.swapFrames(originFrameId, targetSwapId);
-            activeFrame = targetSwapId;
-        }
+        this.framesheet.moveFrame(originFrameId, targetInsertionId);
+        this.framesheet.setCurrentFrameIndex(targetInsertionId);
 
-        
-        $('#preview-list').removeClass("show-interstitial-tiles");
-
-        this.framesheet.setCurrentFrameIndex(activeFrame);
-
-        // TODO(vincz): move localstorage request to the model layer?
+        // TODO(grosbouddha): move localstorage request to the model layer?
         $.publish(Events.LOCALSTORAGE_REQUEST);
     };
+
 
     /**
      * @private
@@ -181,17 +110,13 @@
         
         previewTileRoot.addEventListener('click', this.onPreviewClick_.bind(this, tileNumber));
 
-        var actionContainer = document.createElement("DIV");
-        actionContainer.className = "tile-action-container";
-
-        var canvasPreviewDuplicateAction = document.createElement("button");
-        canvasPreviewDuplicateAction.setAttribute('rel', 'tooltip');
-        canvasPreviewDuplicateAction.setAttribute('data-placement', 'right');
-        canvasPreviewDuplicateAction.setAttribute('title', 'Duplicate this frame');
-        canvasPreviewDuplicateAction.className = "tile-action duplicate-frame-action";
-        actionContainer.appendChild(canvasPreviewDuplicateAction);
-        
-        canvasPreviewDuplicateAction.addEventListener('click', this.onAddButtonClick_.bind(this, tileNumber));
+        var cloneFrameButton = document.createElement("button");
+        cloneFrameButton.setAttribute('rel', 'tooltip');
+        cloneFrameButton.setAttribute('data-placement', 'right');
+        cloneFrameButton.setAttribute('title', 'Duplicate this frame');
+        cloneFrameButton.className = "tile-overlay duplicate-frame-action";
+        previewTileRoot.appendChild(cloneFrameButton);
+        cloneFrameButton.addEventListener('click', this.onAddButtonClick_.bind(this, tileNumber));
 
         // TODO(vincz): Eventually optimize this part by not recreating a FrameRenderer. Note that the real optim
         // is to make this update function (#createPreviewTile) less aggressive.
@@ -202,24 +127,32 @@
         previewTileRoot.appendChild(canvasContainer);
 
         if(tileNumber > 0 || this.framesheet.getFrameCount() > 1) {
-            var canvasPreviewDeleteAction = document.createElement("button");
-            canvasPreviewDeleteAction.setAttribute('rel', 'tooltip');
-            canvasPreviewDeleteAction.setAttribute('data-placement', 'right');
-            canvasPreviewDeleteAction.setAttribute('title', 'Delete this frame');
-            canvasPreviewDeleteAction.className = "tile-action delete-frame-action";
-            canvasPreviewDeleteAction.addEventListener('click', this.onDeleteButtonClick_.bind(this, tileNumber));
-            previewTileRoot.appendChild(canvasPreviewDeleteAction);
-            actionContainer.appendChild(canvasPreviewDeleteAction);
-        }
+            // Add 'remove frame' button.
+            var deleteButton = document.createElement("button");
+            deleteButton.setAttribute('rel', 'tooltip');
+            deleteButton.setAttribute('data-placement', 'right');
+            deleteButton.setAttribute('title', 'Delete this frame');
+            deleteButton.className = "tile-overlay delete-frame-action";
+            deleteButton.addEventListener('click', this.onDeleteButtonClick_.bind(this, tileNumber));
+            previewTileRoot.appendChild(deleteButton);
 
-        previewTileRoot.appendChild(actionContainer);
+            // Add 'dragndrop handle'.
+            var dndHandle = document.createElement("div");
+            dndHandle.className = "tile-overlay dnd-action";
+            previewTileRoot.appendChild(dndHandle);
+        }
+        var tileCount = document.createElement("div");
+        tileCount.className = "tile-overlay tile-count";
+        tileCount.innerHTML = tileNumber;
+        previewTileRoot.appendChild(tileCount);
+        
 
         return previewTileRoot;
     };
 
     ns.PreviewFilmController.prototype.onPreviewClick_ = function (index, evt) {
         // has not class tile-action:
-        if(!evt.target.classList.contains('tile-action')) {
+        if(!evt.target.classList.contains('tile-overlay')) {
             this.framesheet.setCurrentFrameIndex(index);
         }    
     };
@@ -239,7 +172,7 @@
      * Calculate the preview DPI depending on the framesheet size
      */
     ns.PreviewFilmController.prototype.calculateDPI_ = function () {
-        var previewSize = 128,
+        var previewSize = 120,
             framePixelHeight = this.framesheet.getCurrentFrame().getHeight(),
             framePixelWidth = this.framesheet.getCurrentFrame().getWidth();
         // TODO (julz) : should have a utility to get a Size from framesheet easily (what about empty framesheets though ?)

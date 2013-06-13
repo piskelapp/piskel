@@ -1,39 +1,37 @@
-.tools-group {
-    float: left;
-    height: 30px;
-    border-left: 1px solid #ccc;
-    padding: 0 3px;
+
+.tools-wrapper,
+.options-wrapper,
+.palette-wrapper {
+  float: left;
+}
+
+.tools-wrapper {
+  width: 70%;
 }
 
 .tool-icon {
   float: left;
   cursor : pointer;
-  width: 30px;
-  height: 30px;
-  background-color: transparent;
+  width: 46px;
+  height: 46px;
+  margin: 1px;
+  background-color: rgba(200,200,200, .1);
   background-repeat: no-repeat;
-  background-position: 7px 7px;
+  background-position: 12px 12px;
+  background-size: 24px 24px;
 }
 
-/*
- * Framesheet level actions:
- */
-.tool-icon.tool-save {
-  background-image: url(../img/actions/save.png);
+.tool-icon.selected {
+  cursor: default;
+  background-color: #444;
+  cursor: normal;
+  border: 1px gold solid;
+  margin: 0;
 }
 
-.tool-icon.tool-export {
-  background-image: url(../img/actions/image-export.png);
-}
-
-.tool-icon.tool-upload {
-  background-image: url(../img/actions/image-upload.png);
-}
-
-
-.tool-icon.tool-add-frame {
-  background-image: url(../img/actions/add.png);
-}
+.tool-icon:hover {
+  background-color: #444;
+} 
 
 /*
  * Tool icons:
@@ -43,11 +41,13 @@
 }
 
 .tool-icon.tool-vertical-mirror-pen {
-  background-image: url(../img/tools/vertical-mirror-pen.png);
+  background-image: url(../img/tools/mirror.png);
+  background-position: 0px 10px;
+  background-size: 38px 27px;
 }
 
 .tool-icon.tool-paint-bucket {
-  background-image: url(../img/tools/paint-bucket.png);
+  background-image: url(../img/tools/paintbucket.png);
 }
 
 .tool-icon.tool-eraser {
@@ -60,6 +60,8 @@
 
 .tool-icon.tool-rectangle {
   background-image: url(../img/tools/rectangle.png);
+  background-position: 12px 14px;
+  background-size: 24px 20px;
 }
 
 .tool-icon.tool-circle {
@@ -68,70 +70,72 @@
 
 .tool-icon.tool-move {
   background-image: url(../img/tools/hand.png);
+  background-position: 12px 12px;
+  background-size: 24px 24px;
 }
 
 .tool-icon.tool-rectangle-select {
-  background-image: url(../img/tools/select.png);
+  background-image: url(../img/tools/rectangle_selection.png);
+  background-position: 12px 14px;
+  background-size: 24px 20px;
 }
 
 .tool-icon.tool-shape-select {
-  background-image: url(../img/tools/wand.png);
+  background-image: url(../img/tools/magicwand.png);
 }
 
 .tool-icon.tool-colorpicker {
-  background-image: url(../img/tools/dropper.png);
+  background-image: url(../img/tools/eyedropper.png);
+  background-position: 12px 12px;
+  background-size: 23px 23px;
 }
-
-/*.tool-icon.tool-palette {
-  background-image: url(../img/tools/color-palette.png);
-}*/
 
 /*
  * Tool cursors:
  */
 
 .tool-paint-bucket .drawing-canvas-container:hover {
-  cursor: url(../img/tools/paint-bucket.png) 12 12, pointer;
+  cursor: url(../img/tools_legacy/paint-bucket.png) 12 12, pointer;
 }
 
 .tool-vertical-mirror-pen .drawing-canvas-container:hover {
-  cursor: url(../img/tools/vertical-mirror-pen.png) 5 15, pointer;
+  cursor: url(../img/tools_legacy/vertical-mirror-pen.png) 5 15, pointer;
 }
 
 .tool-pen .drawing-canvas-container:hover {
-  cursor: url(../img/tools/pen.png) 0 15, pointer;
+  cursor: url(../img/tools_legacy/pen.png) 0 15, pointer;
 }
 
 .tool-eraser .drawing-canvas-container:hover {
-  cursor: url(../img/tools/eraser.png) 0 15, pointer;
+  cursor: url(../img/tools_legacy/eraser.png) 0 15, pointer;
 }
 
 .tool-stroke .drawing-canvas-container:hover {
-  cursor: url(../img/tools/pen.png) 0 15, pointer;
+  cursor: url(../img/tools_legacy/pen.png) 0 15, pointer;
 }
 
 .tool-rectangle .drawing-canvas-container:hover {
-  cursor: url(../img/tools/rectangle.png) 0 15, pointer;
+  cursor: url(../img/tools_legacy/rectangle.png) 0 15, pointer;
 }
 
 .tool-circle .drawing-canvas-container:hover {
-  cursor: url(../img/tools/circle.png) 2 15, pointer;
+  cursor: url(../img/tools_legacy/circle.png) 2 15, pointer;
 }
 
 .tool-move .drawing-canvas-container:hover {
-  cursor: url(../img/tools/hand.png) 15 15, pointer;
+  cursor: url(../img/tools_legacy/hand.png) 15 15, pointer;
 }
 
 .tool-rectangle-select .drawing-canvas-container:hover {
-  cursor: url(../img/tools/select.png) 15 15, pointer;
+  cursor: url(../img/tools_legacy/select.png) 15 15, pointer;
 }
 
 .tool-shape-select .drawing-canvas-container:hover {
-  cursor: url(../img/tools/wand.png) 15 15, pointer;
+  cursor: url(../img/tools_legacy/wand.png) 15 15, pointer;
 }
 
 .tool-colorpicker .drawing-canvas-container:hover {
-  cursor: url(../img/tools/dropper.png) 0 15, pointer;
+  cursor: url(../img/tools_legacy/dropper.png) 0 15, pointer;
 }
 
 .tool-grid,
@@ -139,15 +143,6 @@
 .tool-grid input {
   line-height: 2.5;
   cursor: pointer;
-}
-
-.tool-icon.selected {
-  cursor: auto;
-  background-color: #eee;
-}
-
-.tool-icon:hover {
-  background-color: #eee;
 }
 
 .tool-color-picker {
@@ -209,3 +204,24 @@
       #fff 100%
   );
 }
+
+/*
+ * Framesheet level actions:
+ */
+.tool-icon.tool-save {
+  background-image: url(../img/actions/save.png);
+}
+
+.tool-icon.tool-export {
+  background-image: url(../img/actions/image-export.png);
+}
+
+.tool-icon.tool-upload {
+  background-image: url(../img/actions/image-upload.png);
+}
+
+
+.tool-icon.tool-add-frame {
+  background-image: url(../img/actions/add.png);
+}
+
