@@ -30,8 +30,8 @@
    */
   ns.LocalStorageService.prototype.persistToLocalStorage_ = function() {
     
-   // console.log('[LocalStorage service]: Snapshot stored');
-   // window.localStorage.snapShot = this.framesheet.serialize();
+    console.log('[LocalStorage service]: Snapshot stored');
+    window.localStorage.snapShot = this.framesheet.serialize();
   };
 
   /**
@@ -55,7 +55,6 @@
    * @public
    */
   ns.LocalStorageService.prototype.init = function(framesheet_) {
-
     $.subscribe(Events.LOCALSTORAGE_REQUEST, $.proxy(this.persistToLocalStorageRequest_, this));
   };
 

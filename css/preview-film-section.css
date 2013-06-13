@@ -1,8 +1,52 @@
-
 .preview-list-wrapper {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+}
+
+.preview-list-scroller {
   overflow-y: scroll;
   overflow-x: hidden;
   height: 100%;
+}
+
+.top-overflow,
+.bottom-overflow {
+  height: 20px;
+  position: absolute;
+  left: 0;
+  right: 12px;
+  
+  -webkit-transition: all 500ms ease-out;
+  -moz-transition: all 500ms ease-out;
+  -ms-transition: all 500ms ease-out;
+  -o-transition: all 500ms ease-out;
+  transition: all 500ms ease-out;
+
+  background-image: linear-gradient(45deg, rgba(0,0,0, 0.8) 25%, transparent 25%, transparent 75%, rgba(0,0,0, 0.8) 75%, rgba(0,0,0, 0.8)),
+                    linear-gradient(-45deg, rgba(0,0,0, 0.8) 25%, transparent 25%, transparent 75%, rgba(0,0,0, 0.8) 75%, rgba(0,0,0, 0.8));
+  background-size: 29px 45px;
+  background-repeat: repeat-x;
+  background-position-x: 3px;
+  z-index: 10;
+}
+
+.top-overflow {
+  top: -20px;
+}
+
+.bottom-overflow {
+  bottom: -20px;
+  background-position-x: 0;
+  background-position-y: -23px;
+}
+
+.top-overflow-visible .top-overflow {
+  top: 0;
+}
+
+.bottom-overflow-visible .bottom-overflow {
+  bottom: 0;
 }
 
 .preview-list {
@@ -53,7 +97,7 @@
 .preview-tile .tile-overlay {
   z-index: 10;
   position: absolute;
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: rgba(100, 100, 100, 0.6);
   opacity: 0;
   height: 30px;
   width: 30px;
@@ -64,9 +108,9 @@
   opacity: 1.0;
 }
 
-.tile-overlay.tile-count {
+.preview-tile .tile-overlay.tile-count {
   display: block;
-  opacity: 0.5;
+  opacity: 1.0;
   border-bottom-right-radius: 3px;
   top: 0;
   left: 0;
