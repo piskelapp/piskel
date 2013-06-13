@@ -167,41 +167,42 @@ $.namespace("pskl");
       return false;
     },
 
-    /**
-     * Open new window with spritesheet as PNG
-     */
-    exportToPNG : function () {
-      (new pskl.rendering.SpritesheetRenderer(frameSheet)).render();
-    },
-
-    uploadAsGIF : function () {
-      var encoder = new GIFEncoder(),
-          dpi = 10;
-      encoder.setRepeat(0);
-      var fps = piskel.animationController.fps;
-      encoder.setDelay(1000/fps);
-      
-      encoder.start();
-      encoder.setSize(frameSheet.getWidth() * dpi, frameSheet.getHeight() * dpi);
-      for (var i = 0 ; i < frameSheet.frames.length ; i++) {
-        var frame = frameSheet.frames[i];
-        var renderer = new pskl.rendering.CanvasRenderer(frame, dpi);
-        encoder.addFrame(renderer.render());
-      }
-      encoder.finish();
-
-      var imageData = 'data:image/gif;base64,' + encode64(encoder.stream().getData());
+    uploadToScreenletstore : function(imageData) {
       var xhr = new XMLHttpRequest();
       var formData = new FormData();
       formData.append('data', imageData);
       xhr.open('POST', "http://screenletstore.appspot.com/__/upload", true);
+      var cloudURL;
+      var that = this;
       xhr.onload = function(e) {
         if (this.status == 200) {
-          var baseUrl = window.open("http://screenletstore.appspot.com/img/" + this.responseText);
+          cloudURL = "http://screenletstore.appspot.com/img/" + this.responseText;
+          that.openWindow(cloudURL);
         }
       };
 
       xhr.send(formData);
+    },
+
+    uploadAsAnimatedGIF : function () {
+      var fps = piskel.animationController.fps;
+      var imageData = (new pskl.rendering.SpritesheetRenderer(frameSheet)).renderAsImageDataAnimatedGIF(fps);
+      this.uploadToScreenletstore(imageData);
+    },
+
+    uploadAsSpritesheetPNG : function () {
+      var imageData = (new pskl.rendering.SpritesheetRenderer(frameSheet)).renderAsImageDataSpritesheetPNG();
+      this.uploadToScreenletstore(imageData);
+    },
+
+    openWindow: function(url) {
+      var options = [
+        "dialog=yes", "scrollbars=no", "status=no",
+        "width=" + frameSheet.getWidth() * frameSheet.getFrameCount(),
+        "height=" + frameSheet.getHeight()
+      ].join(",");
+
+      window.open(url, "piskel-export", options);
     }
   };
 

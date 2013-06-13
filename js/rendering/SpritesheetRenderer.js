@@ -6,17 +6,33 @@
 		this.framesheet = framesheet;
 	};
 
-	/**
-	 * Will open a new window displaying the spritesheet as a png 
-	 */
-	ns.SpritesheetRenderer.prototype.render = function () {
+	ns.SpritesheetRenderer.prototype.renderAsImageDataSpritesheetPNG = function () {
 		var canvas = this.createCanvas_();
 		for (var i = 0 ; i < this.framesheet.getFrameCount() ; i++) {
 			var frame = this.framesheet.getFrameByIndex(i);
 			this.drawFrameInCanvas_(frame, canvas, i * this.framesheet.getWidth(), 0);
 		}
-		this.openCanvasAsPNGInWindow_(canvas);
+		return canvas.toDataURL("image/png")
 	};
+
+	ns.SpritesheetRenderer.prototype.renderAsImageDataAnimatedGIF = function (fps) {
+		var encoder = new GIFEncoder(), dpi = 10;
+        encoder.setRepeat(0);
+      	encoder.setDelay(1000/fps);
+	      
+	    encoder.start();
+	    encoder.setSize(this.framesheet.getWidth() * dpi, this.framesheet.getHeight() * dpi);
+	    for (var i = 0 ; i < this.framesheet.frames.length ; i++) {
+	      var frame = this.framesheet.frames[i];
+	      var renderer = new pskl.rendering.CanvasRenderer(frame, dpi);
+	      encoder.addFrame(renderer.render());
+	    }
+	    encoder.finish();
+
+	    var imageData = 'data:image/gif;base64,' + encode64(encoder.stream().getData());
+	    return imageData;
+	};
+
 
 	/**
 	 * TODO(juliandescottes): Mutualize with code already present in FrameRenderer
@@ -43,15 +59,5 @@
 		} else {
 			throw "Cannot render empty Spritesheet";
 		}
-	};
-
-	ns.SpritesheetRenderer.prototype.openCanvasAsPNGInWindow_ = function (canvas) {
-		var options = [
-		"dialog=yes", "scrollbars=no", "status=no",
-		"width=" + this.framesheet.getWidth() * this.framesheet.getFrameCount(),
-		"height=" + this.framesheet.getHeight()
-		].join(",");
-
-		window.open(canvas.toDataURL("image/png"), "piskel-export", options);
 	};
 })();

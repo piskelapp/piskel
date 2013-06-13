@@ -74,14 +74,16 @@
       </div>
 
       <div class="application-actions">
-        <ul>
-          <!-- TODO: Remove that from here or change CSS class naming since
-            they are framesheet level actions, not tools --> 
-          <li class="tool-icon tool-save" data-tool-id="tool-save" title="Save" onclick="piskel.storeSheet()" rel="tooltip" data-placement="bottom" ></li>
-          <li class="tool-icon tool-export" data-tool-id="tool-export" title="Export to PNG framesheet" onclick="piskel.exportToPNG()" rel="tooltip" data-placement="bottom" ></li>
-          <li class="tool-icon tool-upload" data-tool-id="tool-upload" title="Export to animated GIF" onclick="piskel.uploadAsGIF()" rel="tooltip" data-placement="bottom" ></li>
-          <li class="tool-icon tool-add-frame" id="add-frame-button" data-tool-id="tool-add-frame" title="Add a frame" rel="tooltip" data-placement="bottom" ></li>
-        </ul>
+        <div class="tool-icon save-icon" title="Save to gallery" onclick="piskel.storeSheet()" rel="tooltip" data-placement="bottom" ></div>
+        <div class="tool-icon upload-cloud-icon" title="Upload as an animated GIF" onclick="piskel.uploadAsAnimatedGIF()" rel="tooltip" data-placement="bottom" >
+          <span class="label">GIF</span>
+        </div>
+        <div class="tool-icon upload-cloud-icon" title="Upload as a spritesheet PNG" onclick="piskel.uploadAsSpritesheetPNG()" rel="tooltip" data-placement="bottom" >
+          <span class="label">PNG</span>
+        </div>
+        
+
+        <div class="tool-icon tool-add-frame" id="add-frame-button" data-tool-id="tool-add-frame" title="Add a frame" rel="tooltip" data-placement="bottom" ></div>
       </div>
     </div>
   </div>
