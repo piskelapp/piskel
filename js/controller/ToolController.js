@@ -69,11 +69,15 @@
      * @private
      */
     ns.ToolController.prototype.createToolMarkup_ = function() {
-        var currentTool, toolMarkup = '';
+        var currentTool, toolMarkup = '', extraClass;
         // TODO(vincz): Tools rendering order is not enforced by the data stucture (this.toolInstances), fix that.
         for (var toolKey in this.toolInstances) {
             currentTool = this.toolInstances[toolKey];
-            toolMarkup += '<li rel="tooltip" data-placement="bottom" class="tool-icon ' + currentTool.toolId + '" data-tool-id="' + currentTool.toolId +
+            extraClass = currentTool.toolId;
+            if (this.currentSelectedTool == currentTool) {
+                extraClass = extraClass + " selected";
+            }
+            toolMarkup += '<li rel="tooltip" data-placement="right" class="tool-icon ' + extraClass + '" data-tool-id="' + currentTool.toolId +
                             '" title="' + currentTool.helpText + '"></li>';
         }
         $('#tools-container').html(toolMarkup);
