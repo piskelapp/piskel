@@ -11,9 +11,14 @@
         $.subscribe(Events.TOOL_RELEASED, this.flagForRedraw_.bind(this));
         $.subscribe(Events.FRAMESHEET_RESET, this.flagForRedraw_.bind(this));
         $.subscribe(Events.FRAMESHEET_RESET, this.refreshDPI_.bind(this));
+
+        $('#preview-list-scroller').scroll(this.onScroll_.bind(this))
     };
 
-    ns.PreviewFilmController.prototype.init = function() {};
+    ns.PreviewFilmController.prototype.init = function() {
+
+
+    };
 
     ns.PreviewFilmController.prototype.addFrame = function () {
         this.framesheet.addEmptyFrame();
@@ -33,6 +38,28 @@
             // TODO(vincz): Full redraw on any drawing modification, optimize.
             this.createPreviews_();
             this.redrawFlag = false;
+        }
+    };
+
+    ns.PreviewFilmController.prototype.onScroll_ = function (evt) {
+        var scroller = $('#preview-list-scroller');
+        var scrollerHeight = scroller.height();
+        var scrollTop = scroller.scrollTop();
+        var scrollerContentHeight = $('#preview-list').height();
+        var treshold = 30;
+        var overflowTop = false,
+            overflowBottom = false;
+        if (scrollerHeight < scrollerContentHeight) {
+            if (scrollTop > treshold) {
+                overflowTop = true;
+            }
+            var scrollBottom = (scrollerContentHeight - scrollTop) - scrollerHeight;
+            if (scrollBottom > treshold) {
+                overflowBottom = true;
+            }
+            var wrapper = $('#preview-list-wrapper');
+            wrapper.toggleClass('top-overflow-visible', overflowTop);
+            wrapper.toggleClass('bottom-overflow-visible', overflowBottom);
         }
     };
 
@@ -68,11 +95,11 @@
      */
     ns.PreviewFilmController.prototype.initDragndropBehavior_ = function () {
         
-        $( "#preview-list" ).sortable({
+        $("#preview-list").sortable({
           placeholder: "preview-tile-drop-proxy",
           update: $.proxy(this.onUpdate_, this)
         });
-        $( "#preview-list" ).disableSelection();
+        $("#preview-list").disableSelection();
     };
 
     /**
