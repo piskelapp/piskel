@@ -185,6 +185,7 @@
 /*
  * Framesheet level actions:
  */
+ 
 .tool-icon.save-icon {
   background-image: url(../img/save.png);
   background-position: 6px 6px;
@@ -206,9 +207,5 @@
   font-size: 11px;
   text-transform: uppercase;
   color: #fff;
-}
-
-.tool-icon.tool-add-frame {
-  background-image: url(../img/actions/add.png);
 }
 

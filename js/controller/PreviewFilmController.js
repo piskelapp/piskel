@@ -13,10 +13,7 @@
         $.subscribe(Events.FRAMESHEET_RESET, this.refreshDPI_.bind(this));
     };
 
-    ns.PreviewFilmController.prototype.init = function() {
-        var addFrameButton = $('#add-frame-button')[0];
-        addFrameButton.addEventListener('mousedown', this.addFrame.bind(this));
-    };
+    ns.PreviewFilmController.prototype.init = function() {};
 
     ns.PreviewFilmController.prototype.addFrame = function () {
         this.framesheet.addEmptyFrame();
@@ -50,7 +47,15 @@
         for (var i = 0, l = frameCount; i < l ; i++) {
             this.container.append(this.createPreviewTile_(i));
         }
-        
+        // Append 'new empty frame' button
+        var newFrameButton = document.createElement("div");
+        newFrameButton.id = "add-frame-action";
+        newFrameButton.className = "add-frame-action";
+        newFrameButton.innerHTML = "<p class='label'>Add new frame</p>";
+        this.container.append(newFrameButton);
+
+        $(newFrameButton).click(this.addFrame.bind(this));
+
         var needDragndropBehavior = (frameCount > 1);
         if(needDragndropBehavior) {
             this.initDragndropBehavior_();
