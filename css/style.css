@@ -125,25 +125,25 @@ body {
  */
 .user-message {
     position: absolute;
+    right: 0;
     bottom: 0;
-    left: 25%;
     background-color: #F9EDBE;
-    padding: 4px 12px;
-    padding-right: 20px;
+    padding: 10px 47px;
     border-top-left-radius: 7px;
-    border-top-right-radius: 7px;
-    border-right: 0;
     color: #222;
     border: #F0C36D 1px solid;
+    border-right: 0;
+    border-bottom: 0;
     font-weight: bold;
     font-size: 13px; 
     z-index: 10000;
+    max-width: 300px;
 }
 
 .user-message .close {
   position: absolute;
-  top: 0px;
-  right: 5px;
+  top: 6px;
+  right: 17px;
   color: gray;
   font-weight: bold;
   cursor: pointer;
