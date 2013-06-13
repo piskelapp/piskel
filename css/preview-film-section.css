@@ -10,6 +10,31 @@
   padding-right: 7px;
 }
 
+.add-frame-action {
+  border: #888 solid 4px;
+  font-size: 13px;
+  color: #888;
+  cursor: pointer;
+  padding: 6px 0;
+  border-radius: 4px;
+  margin-top: 8px;
+  background-image: url(../img/plus.png);
+  background-repeat: no-repeat;
+  background-position: 3px 7px;
+  background-size: 26px 26px;
+  text-indent: 18px;
+  background-color: #222;
+}
+
+.add-frame-action .label {
+  width: 80px;
+  margin: 0 auto;
+}
+
+.add-frame-action:hover {
+  border-color: gold;
+}
+
 .preview-tile {
   position: relative;
   border: #444 3px solid;

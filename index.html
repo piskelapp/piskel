@@ -17,6 +17,30 @@
 </head>
 <body>
 
+  <div id="menubar" class="sticky-section">
+    <div class="wrap">
+      <ul id="tools-container" class="tools-wrapper"></ul>
+      <div class="palette-wrapper">
+        <div class="tool-icon tool-color-picker">
+          <input id="color-picker" class="color {hash:true}" type="text" value="" />
+          <input id="secondary-color-picker" class="secondary-color-picker color {hash:true}" type="text" value="" />
+        </div>
+        <div class="tool-icon tool-palette">
+          <div id="palette" class="palette">
+            <span class="tool-icon palette-color transparent-color" data-color="TRANSPARENT" title="Transparent"></span>
+          </div>
+        </div>
+      </div>
+      <!-- TODO: remove grid -->
+      <div style="display:none;" class="options-wrapper">   
+        <div class="tool-grid">
+          <input id="show-grid" type="checkbox"/>
+          <label for="show-grid">Show grid</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="column-wrapper">
     <div class='left-column'>
       
@@ -27,27 +51,6 @@
     </div>
 
     <div class='main-column'>
-      
-      <div id="menubar" class="top-section">
-        <ul id="tools-container" class="tools-wrapper"></ul>
-        <ul class="palette-wrapper">
-          <li class="tool-icon tool-palette">
-            <ul id="palette" class="palette">
-              <span class="tool-icon palette-color transparent-color" data-color="TRANSPARENT" title="Transparent"></span>
-            </ul>
-          </li>
-          <li class="tool-icon tool-color-picker">
-            <input id="color-picker" class="color {hash:true}" type="text" value="" />
-            <input id="secondary-color-picker" class="secondary-color-picker color {hash:true}" type="text" value="" />
-          </li>
-        </ul>
-        <ul class="options-wrapper">
-          <li class="tool-grid">
-            <input id="show-grid" type="checkbox"/>
-            <label for="show-grid">Show grid</label>
-          </li>
-        </ul>
-      </div>
 
       <!-- Drawing area: -->
       <div id="drawing-canvas-container" class="drawing-canvas-container canvas-container">
@@ -71,14 +74,13 @@
       </div>
 
       <div class="application-actions">
-        <ul>
-          <!-- TODO: Remove that from here or change CSS class naming since
-            they are framesheet level actions, not tools --> 
-          <li class="tool-icon tool-save" data-tool-id="tool-save" title="Save" onclick="piskel.storeSheet()" rel="tooltip" data-placement="bottom" ></li>
-          <li class="tool-icon tool-export" data-tool-id="tool-export" title="Export to PNG framesheet" onclick="piskel.exportToPNG()" rel="tooltip" data-placement="bottom" ></li>
-          <li class="tool-icon tool-upload" data-tool-id="tool-upload" title="Export to animated GIF" onclick="piskel.uploadAsGIF()" rel="tooltip" data-placement="bottom" ></li>
-          <li class="tool-icon tool-add-frame" id="add-frame-button" data-tool-id="tool-add-frame" title="Add a frame" rel="tooltip" data-placement="bottom" ></li>
-        </ul>
+        <div class="tool-icon save-icon" title="Save to gallery" onclick="piskel.storeSheet()" rel="tooltip" data-placement="bottom" ></div>
+        <div class="tool-icon upload-cloud-icon" title="Upload as an animated GIF" onclick="piskel.uploadAsAnimatedGIF()" rel="tooltip" data-placement="bottom" >
+          <span class="label">GIF</span>
+        </div>
+        <div class="tool-icon upload-cloud-icon" title="Upload as a spritesheet PNG" onclick="piskel.uploadAsSpritesheetPNG()" rel="tooltip" data-placement="bottom" >
+          <span class="label">PNG</span>
+        </div>
       </div>
     </div>
   </div>
