@@ -96,7 +96,7 @@
 .preview-tile .tile-overlay {
   z-index: 10;
   position: absolute;
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: rgba(100, 100, 100, 0.6);
   opacity: 0;
   height: 30px;
   width: 30px;
@@ -107,9 +107,9 @@
   opacity: 1.0;
 }
 
-.tile-overlay.tile-count {
+.preview-tile .tile-overlay.tile-count {
   display: block;
-  opacity: 0.5;
+  opacity: 1.0;
   border-bottom-right-radius: 3px;
   top: 0;
   left: 0;

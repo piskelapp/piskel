@@ -72,7 +72,7 @@ body {
 }
 
 .canvas-container .canvas-background {
-  background: url(../img/canvas_background.png) repeat;
+  background: url(../img/medium_canvas_background.png) repeat;
   position: absolute;
   top: 0;
   right: 0;
