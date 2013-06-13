@@ -131,56 +131,37 @@
 }
 
 .tool-colorpicker .drawing-canvas-container:hover {
-}
-
-.tool-grid,
-.tool-grid label,
-.tool-grid input {
-  line-height: 2.5;
-  cursor: pointer;
-}
-
-.tool-color-picker {
-  padding: 5px 0 0 5px;
-  height: 25px;
-  cursor : default;
   cursor: url(../img/icons/dropper.png) 0 15, pointer;
 }
 
 .tool-color-picker input {
-  width: 8px; height: 8px;
+  width: 16px;
+  height: 16px;
+  text-indent: -10000px;
   border: 1px solid black;
-  padding: 1px;
   background: white;
   cursor: pointer;
   position : relative;
+  top: 10px;
+  margin-left: 2px;
 }
 
-.secondary-color-picker {
-  top : 8px;
+.tool-color-picker .secondary-color-picker {
+  top : 18px;
+  margin-left: 0;
 }
 
-.tool-palette {
-    width: auto;
-}
-.tool-palette .palette li {
-    float: left;
-}
-
-.palette .palette-color {
-  cursor: pointer;
-  display : inline-block;
-  height : 20px;
-  width : 20px;
-  margin : 5px;
-}
 
 .palette .palette-color.transparent-color {
+  position: relative;
+  top: 10px;
+  left: 10px;
   background-color: white;
   height : 16px;
   width : 16px;
   border: 2px solid #000;
-
+  background-size: 16px 16px;
+  background-position: 0 0;
   background-image: -webkit-gradient(
     linear,
     left top,
