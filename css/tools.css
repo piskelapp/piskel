@@ -185,7 +185,13 @@
 /*
  * Framesheet level actions:
  */
- 
+
+.tool-icon.gallery-icon {
+  background-image: url(../img/gallery.png);
+  background-position: 3px 3px;
+  background-size: 39px 39px;
+}
+
 .tool-icon.save-icon {
   background-image: url(../img/save.png);
   background-position: 6px 6px;
