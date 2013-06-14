@@ -71,7 +71,7 @@
         body.mouseup($.proxy(this.onMouseup_, this));
         
         // Deactivate right click:
-        //body.contextmenu(this.onCanvasContextMenu_);
+        body.contextmenu(this.onCanvasContextMenu_);
   };
 
 
@@ -217,10 +217,13 @@
      * @private
      */
     ns.DrawingController.prototype.onCanvasContextMenu_ = function (event) {
-      event.preventDefault();
-      event.stopPropagation();
-      event.cancelBubble = true;
-      return false;
+      if ($(event.target).closest('#drawing-canvas-container').length) {
+        // Deactivate right click on drawing canvas only.
+        event.preventDefault();
+        event.stopPropagation();
+        event.cancelBubble = true;
+        return false;
+      }   
     };
 
   ns.DrawingController.prototype.render = function () {
