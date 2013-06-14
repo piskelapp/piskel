@@ -64,7 +64,6 @@
     </div>
 
     <div class='main-column'>
-
       <!-- Drawing area: -->
       <div id="drawing-canvas-container" class="drawing-canvas-container canvas-container">
         <div class="canvas-background"></div>
@@ -82,7 +81,6 @@
           <input id="preview-fps" class="range-fps" type="range" min="1" max="24" value="12"/>
         </div>   
       </div>
-
       <div class="application-actions">
         <div class="tool-icon save-icon" title="Save to gallery" onclick="piskel.storeSheet()" rel="tooltip" data-placement="bottom" ></div>
         <div class="tool-icon upload-cloud-icon" title="Upload as an animated GIF" onclick="piskel.uploadAsAnimatedGIF()" rel="tooltip" data-placement="bottom" >
@@ -101,7 +99,7 @@
   <script src="js/lib/pubsub.js"></script>
   <script src="js/lib/bootstrap/bootstrap.js"></script> 
 
-  <!-- GIF Encoding DEVICES ! OH YEAY! -->
+  <!-- GIF Encoding libraries -->
   <script src="js/lib/gif/GIFEncoder.js"></script>
   <script src="js/lib/gif/b64.js"></script>
   <script src="js/lib/gif/NeuQuant.js"></script>

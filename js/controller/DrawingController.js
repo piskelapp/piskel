@@ -77,7 +77,9 @@
 
 
   ns.DrawingController.prototype.startDPIUpdateTimer_ = function () {
-      if (this.dpiUpdateTimer) window.clearInterval(this.dpiUpdateTimer);
+      if (this.dpiUpdateTimer) {
+        window.clearInterval(this.dpiUpdateTimer);
+      }
       this.dpiUpdateTimer = window.setTimeout($.proxy(this.updateDPI_, this), 200);
   },
 
@@ -258,25 +260,10 @@
         leftSectionWidth = $('.left-column').width(),
         rightSectionWidth = $('.right-column').width(),
         availableViewportWidth = $('body').width() - leftSectionWidth - rightSectionWidth,
-        //previewHeight = $(".preview-container").height(),
-        //previewWidth = $(".preview-container").width(),
         framePixelHeight = this.framesheet.getCurrentFrame().getHeight(),
         framePixelWidth = this.framesheet.getCurrentFrame().getWidth();
     var dpi = pskl.PixelUtils.calculateDPI(availableViewportHeight, availableViewportWidth, framePixelHeight, framePixelWidth);
-    /*
-    var drawingCanvasHeight = dpi * framePixelHeight;
-    var drawingCanvasWidth = dpi * framePixelWidth;
-    */
-    // Check if preview and drawing canvas overlap
-    /*
-    var heightGap =  drawingCanvasHeight + previewHeight - availableViewportHeight,
-        widthGap = drawingCanvasWidth + previewWidth - availableViewportWidth;
-    if (heightGap > 0 && widthGap > 0) {
-        // Calculate the DPI change needed to bridge height and width gap
-        var gapDPI = pskl.PixelUtils.calculateDPI(heightGap, widthGap, framePixelHeight, framePixelWidth);
-        // substract gap dpi to initial dpi
-        dpi -= (gapDPI + 1);
-    }*/
+
     return dpi;
   };
 
