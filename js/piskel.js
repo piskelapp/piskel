@@ -70,6 +70,13 @@ $.namespace("pskl");
       $('body').tooltip({
         selector: '[rel=tooltip]'
       });
+
+      $('#canvas-picker').change(function(evt) {
+        $('#canvas-picker option:selected').each(function() {
+            console.log($(this).val());
+            $('html')[0].className = $(this).val();
+        });
+      });
     },
 
     render : function (delta) {
