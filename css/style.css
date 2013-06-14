@@ -72,13 +72,30 @@ body {
 }
 
 .canvas-container .canvas-background {
-  background: url(../img/medium_canvas_background.png) repeat;
+  background: url(../img/canvas_background/medium_canvas_background.png) repeat;
   position: absolute;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
 }
+
+.light-canvas-background .canvas-background {
+  background: url(../img/canvas_background/light_canvas_background.png) repeat;
+}
+
+.medium-canvas-background .canvas-background {
+  background: url(../img/canvas_background/medium_canvas_background.png) repeat;
+}
+
+.lowcont-medium-canvas-background .canvas-background {
+  background: url(../img/canvas_background/lowcont_medium_canvas_background.png) repeat;
+}
+
+.lowcont-dark-canvas-background .canvas-background {
+  background: url(../img/canvas_background/lowcont_dark_canvas_background.png) repeat;
+}
+
 
 .canvas.canvas-overlay {
   position: absolute;
