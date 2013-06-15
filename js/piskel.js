@@ -71,6 +71,10 @@ $.namespace("pskl");
         selector: '[rel=tooltip]'
       });
 
+      $('#settings').click(function(evt) {
+        $('.right-sticky-section').toggleClass('expanded');
+      });
+
       $('#canvas-picker').change(function(evt) {
         $('#canvas-picker option:selected').each(function() {
             console.log($(this).val());

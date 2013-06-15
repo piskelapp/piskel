@@ -50,7 +50,8 @@ body {
   z-index: 10;
 }
 
-.sticky-section .wrap {
+.sticky-section .wrap,
+.sticky-section .drawer {
   display: table-cell;
   vertical-align: middle;
 }
@@ -67,12 +68,30 @@ body {
 .right-sticky-section.sticky-section {
   right: 0;
   width: 50px;
+
+  -webkit-transition: all 200ms ease-out;
+  -moz-transition: all 200ms ease-out;
+  -ms-transition: all 200ms ease-out;
+  transition: all 200ms ease-out;
+}
+
+.right-sticky-section.expanded {
+  right: 300px;
+}
+
+.drawer {
+
+}
+
+.drawer-content {
+  background-color: red;
+  height: 600px;
+  width: 300px;
 }
 
 .right-sticky-section .tool-icon {
   float: right;
 }
-
 
 /**
  * Canvases layout
