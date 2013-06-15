@@ -198,6 +198,12 @@
   background-size: 36px 36px;
 }
 
+.tool-icon.gear-icon {
+  background-image: url(../img/gear.png);
+  background-position: 6px 7px;
+  background-size: 32px 32px;
+}
+
 .tool-icon.upload-cloud-icon {
   background-image: url(../img/cloud_export.png);
   background-position: 4px 0px;
