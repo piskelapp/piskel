@@ -12,9 +12,9 @@ body {
   text-align: center;
   font-size: 0;
   position: absolute;
-  left: 104px;
+  left: 100px; /* Reserve room for tools on the left edge of the screen. */
   top: 10px;
-  right: 0;
+  right: 50px; /* Reserve room for actions on the right edge of the screen. */
   bottom: 10px;
 }
 
@@ -47,13 +47,30 @@ body {
   position: fixed;
   top: 0;
   bottom: 0;
-  left: 0;
-  width: 140px;
+  z-index: 10;
 }
 
 .sticky-section .wrap {
   display: table-cell;
   vertical-align: middle;
+}
+
+.left-sticky-section.sticky-section {
+  left: 0;
+  max-width: 100px;
+}
+
+.left-sticky-section .tool-icon {
+  float: left;
+}
+
+.right-sticky-section.sticky-section {
+  right: 0;
+  width: 50px;
+}
+
+.right-sticky-section .tool-icon {
+  float: right;
 }
 
 
@@ -131,10 +148,6 @@ body {
 
 .range-fps {
   overflow: hidden;
-}
-
-.application-actions {
-  margin-top: 35px;
 }
 
 /** 

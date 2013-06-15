@@ -17,7 +17,7 @@
 </head>
 <body>
 
-  <div id="menubar" class="sticky-section">
+  <div class="sticky-section left-sticky-section" id="tool-section">
     <div class="wrap">
       <ul id="tools-container" class="tools-wrapper"></ul>
       <div class="palette-wrapper">
@@ -46,6 +46,20 @@
           <option value="medium-canvas-background" selected="selected">Medium - high contrast</option>
           <option value="lowcont-dark-canvas-background">Dark - low constrast</option>
         </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="sticky-section right-sticky-section">
+    <div class="wrap">
+      <div class="tool-icon gear-icon" title="Preferences" rel="tooltip" data-placement="left"></div>
+      <a class="tool-icon gallery-icon" title="Visit gallery" href="http://juliandescottes.github.io/piskel-website/" rel="tooltip" data-placement="left" target="_blank"></a>
+      <div class="tool-icon save-icon" title="Save to gallery" onclick="piskel.storeSheet()" rel="tooltip" data-placement="left" ></div>
+      <div class="tool-icon upload-cloud-icon" title="Upload as an animated GIF" onclick="piskel.uploadAsAnimatedGIF()" rel="tooltip" data-placement="left">
+        <span class="label">GIF</span>
+      </div>
+      <div class="tool-icon upload-cloud-icon" title="Upload as a spritesheet PNG" onclick="piskel.uploadAsSpritesheetPNG()" rel="tooltip" data-placement="left">
+        <span class="label">PNG</span>
       </div>
     </div>
   </div>
@@ -80,18 +94,6 @@
           <span id="display-fps" class="display-fps">12 FPS</span>
           <input id="preview-fps" class="range-fps" type="range" min="1" max="24" value="12"/>
         </div>   
-      </div>
-      <div class="application-actions">
-        <a class="tool-icon gallery-icon" title="Visit gallery" href="http://juliandescottes.github.io/piskel-website/" rel="tooltip" data-placement="bottom" target="_blank"></a>
-        <div class="tool-icon save-icon" title="Save to gallery" onclick="piskel.storeSheet()" rel="tooltip" data-placement="bottom" ></div>
-        <div class="tool-icon upload-cloud-icon" title="Upload as an animated GIF" onclick="piskel.uploadAsAnimatedGIF()" rel="tooltip" data-placement="bottom">
-          <span class="label">GIF</span>
-        </div>
-        <div class="tool-icon upload-cloud-icon" title="Upload as a spritesheet PNG" onclick="piskel.uploadAsSpritesheetPNG()" rel="tooltip" data-placement="bottom">
-          <span class="label">PNG</span>
-        </div>
-        <br/>
-        <div class="tool-icon gear-icon" title="Preferences" rel="tooltip" data-placement="bottom"></div>
       </div>
     </div>
   </div>

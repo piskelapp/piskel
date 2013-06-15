@@ -6,7 +6,6 @@
 }
 
 .tool-icon {
-  float: left;
   cursor : pointer;
   width: 46px;
   height: 46px;
@@ -219,5 +218,6 @@
   font-size: 11px;
   text-transform: uppercase;
   color: #fff;
+  text-align: center;
 }
 

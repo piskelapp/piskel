@@ -58,7 +58,7 @@
                     this.selectTool_(this.toolInstances[tool]);
 
                     // Show tool as selected:
-                    $('#menubar .tool-icon.selected').removeClass('selected');
+                    $('#tool-section .tool-icon.selected').removeClass('selected');
                     clickedTool.addClass('selected');
                 }
             }
@@ -105,7 +105,7 @@
         // Set SimplePen as default selected tool:
         this.selectTool_(this.toolInstances.simplePen);
         // Activate listener on tool panel:
-        $("#menubar").click($.proxy(this.onToolIconClicked_, this));
+        $("#tool-section").click($.proxy(this.onToolIconClicked_, this));
 
         // Show/hide the grid on drawing canvas:
         $.publish(Events.GRID_DISPLAY_STATE_CHANGED, [this.isShowGridChecked_()]);
