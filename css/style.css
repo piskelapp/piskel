@@ -1,7 +1,7 @@
 
 
 body {
-  background: -webkit-radial-gradient(circle, #000, #373737);
+  background: radial-gradient(circle, #000, #373737);
 }
 
 /**
