@@ -72,10 +72,6 @@ $.namespace("pskl");
       $('body').tooltip({
         selector: '[rel=tooltip]'
       });
-
-      $('#settings').click(function(evt) {
-        $('.right-sticky-section').toggleClass('expanded');
-      });
     },
 
     render : function (delta) {

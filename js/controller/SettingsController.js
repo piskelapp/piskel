@@ -14,10 +14,18 @@
         return isChecked;
     };
 
+    // TODO(vincz): add get/set store
+
     /**
      * @public
      */
     ns.SettingsController.prototype.init = function() {
+
+    	// Expand drawer when clicking 'Settings' tab.
+    	$('#settings').click(function(evt) {
+         $('.right-sticky-section').toggleClass('expanded');
+         $('#settings').toggleClass('has-expanded-drawer')
+       });
 
         // Show/hide the grid on drawing canvas:
         $.publish(Events.GRID_DISPLAY_STATE_CHANGED, [this.isShowGridChecked_()]);
