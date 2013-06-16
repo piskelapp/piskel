@@ -48,9 +48,12 @@
     </div>
     <div class="drawer">
       <div class="drawer-content">
-        <div>
-          Canvas background:
-          <select id="canvas-picker" style="width:100px;">
+        <div class="settings-title">
+          Canvas settings:
+        </div>
+        <div class="settings-item">
+          <label>Background:</label>
+          <select id="canvas-picker">
             <option value="light-canvas-background">Light</option>
             <option value="lowcont-medium-canvas-background">Medium - low contrast</option>
             <option value="medium-canvas-background" selected="selected">Medium - high contrast</option>
@@ -58,9 +61,8 @@
           </select>
         </div>
 
-       <div class="tool-grid">
-          <input id="show-grid" type="checkbox"/>
-          <label for="show-grid">Show grid</label>
+        <div class="settings-item">
+          <label for="show-grid">Show grid:</label> <input id="show-grid" type="checkbox"/>
         </div>
       </div>
     </div>

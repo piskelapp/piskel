@@ -47,7 +47,7 @@ body {
   position: fixed;
   top: 0;
   bottom: 0;
-  z-index: 10;
+  z-index: 1000;
 }
 
 .sticky-section .wrap,
@@ -75,8 +75,8 @@ body {
   transition: all 200ms ease-out;
 }
 
-.right-sticky-section.expanded {
-  right: 300px;
+.right-sticky-section .tool-icon {
+  float: right;
 }
 
 .drawer {
@@ -84,13 +84,52 @@ body {
 }
 
 .drawer-content {
-  background-color: red;
-  height: 600px;
-  width: 300px;
+  overflow: hidden;
+  background-color: #444;
+  height: 550px;
+  max-height: 100%;
+  width: 280px;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
 }
 
-.right-sticky-section .tool-icon {
-  float: right;
+/** Righty sticky drawer expanded state. */
+
+.right-sticky-section.expanded {
+  right: 280px;
+}
+
+.right-sticky-section .tool-icon.has-expanded-drawer {
+  position: relative;
+  background-color: #444;
+}
+
+.right-sticky-section .tool-icon.has-expanded-drawer:before {
+  content: " ";
+  position: absolute;
+  background-color: #444;
+  top: 0;
+  bottom: 0;
+  right: -5px;
+  width: 10px;
+  z-index: -1;
+}
+
+.settings-title {
+  margin: 10px 20px;
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: bold;
+  color: #eee;
+  border-bottom: 1px #aaa solid;
+  padding-bottom: 5px;
+}
+
+.settings-item {
+  margin: 10px 20px;
+  color: #eee;
+  font-size: 13px;
+  cursor: pointer;
 }
 
 /**
