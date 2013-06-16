@@ -61,6 +61,8 @@
     var button = document.querySelector('.layers-button[data-action="' + buttonAction + '"]');
     if (isDisabled) {
       button.setAttribute('disabled', 'disabled');
+      // Disabled/focused buttons consume key events on Firefox, so make sure to blur.
+      button.blur();
     } else {
       button.removeAttribute('disabled');
     }
