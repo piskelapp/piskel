@@ -129,7 +129,6 @@ $.namespace("pskl");
 
     loadFramesheetFromService : function (frameId) {
       var xhr = new XMLHttpRequest();
-      // TODO: Change frameId to framesheetId on the backend
       xhr.open('GET', Constants.PISKEL_SERVICE_URL + '/get?l=' + frameId, true);
       xhr.responseType = 'text';
 
@@ -151,7 +150,6 @@ $.namespace("pskl");
 
     // TODO(julz): Create package ?
     storeSheet : function (event) {
-      // TODO Refactor using jquery ?
       var xhr = new XMLHttpRequest();
       var formData = new FormData();
       formData.append('framesheet_content', frameSheet.serialize());
