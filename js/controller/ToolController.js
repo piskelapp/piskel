@@ -84,17 +84,6 @@
     };
 
     /**
-     * Get state for the checkbox that control the display of the grid
-     * on the drawing canvas.
-     * @private
-     */
-    ns.ToolController.prototype.isShowGridChecked_ = function() {
-        var showGridCheckbox = $('#show-grid');
-        var isChecked = showGridCheckbox.is(':checked');
-        return isChecked;
-    };
-
-    /**
      * @public
      */
     ns.ToolController.prototype.init = function() {
@@ -106,12 +95,5 @@
         this.selectTool_(this.toolInstances.simplePen);
         // Activate listener on tool panel:
         $("#tool-section").click($.proxy(this.onToolIconClicked_, this));
-
-        // Show/hide the grid on drawing canvas:
-        $.publish(Events.GRID_DISPLAY_STATE_CHANGED, [this.isShowGridChecked_()]);
-        $('#show-grid').change($.proxy(function(evt) {
-            var checked = this.isShowGridChecked_();
-            $.publish(Events.GRID_DISPLAY_STATE_CHANGED, [checked]);
-        }, this));
     };
 })();

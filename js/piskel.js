@@ -24,6 +24,7 @@ $.namespace("pskl");
       this.drawingController = new pskl.controller.DrawingController(frameSheet, $('#drawing-canvas-container'));
       this.animationController = new pskl.controller.AnimatedPreviewController(frameSheet, $('#preview-canvas-container'));
       this.previewsController = new pskl.controller.PreviewFilmController(frameSheet, $('#preview-list'));
+      this.settingsController = new pskl.controller.SettingsController();
 
       // To catch the current active frame, the selection manager have to be initialized before
       // the 'frameSheet.setCurrentFrameIndex(0);' line below.
@@ -39,6 +40,7 @@ $.namespace("pskl");
 
       this.animationController.init();
       this.previewsController.init();
+      this.settingsController.init();
 
       this.historyService = new pskl.service.HistoryService(frameSheet);
       this.historyService.init();
@@ -73,13 +75,6 @@ $.namespace("pskl");
 
       $('#settings').click(function(evt) {
         $('.right-sticky-section').toggleClass('expanded');
-      });
-
-      $('#canvas-picker').change(function(evt) {
-        $('#canvas-picker option:selected').each(function() {
-            console.log($(this).val());
-            $('html')[0].className = $(this).val();
-        });
       });
     },
 
