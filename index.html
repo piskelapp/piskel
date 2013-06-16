@@ -31,22 +31,6 @@
           </div>
         </div>
       </div>
-      <!-- TODO: remove grid -->
-      <div style="display:none;" class="options-wrapper">   
-        <div class="tool-grid">
-          <input id="show-grid" type="checkbox"/>
-          <label for="show-grid">Show grid</label>
-        </div>
-      </div>
-      <div style="float: left; margin-top: 20px; color: #fff;">
-        Canvas background:
-        <select id="canvas-picker" style="width:100px;">
-          <option value="light-canvas-background">Light</option>
-          <option value="lowcont-medium-canvas-background">Medium - low contrast</option>
-          <option value="medium-canvas-background" selected="selected">Medium - high contrast</option>
-          <option value="lowcont-dark-canvas-background">Dark - low constrast</option>
-        </select>
-      </div>
     </div>
   </div>
 
@@ -63,7 +47,22 @@
       </div>
     </div>
     <div class="drawer">
-      <div class="drawer-content"></div>
+      <div class="drawer-content">
+        <div>
+          Canvas background:
+          <select id="canvas-picker" style="width:100px;">
+            <option value="light-canvas-background">Light</option>
+            <option value="lowcont-medium-canvas-background">Medium - low contrast</option>
+            <option value="medium-canvas-background" selected="selected">Medium - high contrast</option>
+            <option value="lowcont-dark-canvas-background">Dark - low constrast</option>
+          </select>
+        </div>
+
+       <div class="tool-grid">
+          <input id="show-grid" type="checkbox"/>
+          <label for="show-grid">Show grid</label>
+        </div>
+      </div>
     </div>
   </div>
 
