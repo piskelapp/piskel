@@ -25,10 +25,8 @@
 
 		// Flag to know if the config was altered
 		this.canvasConfigDirty = true;
-
-		if(this.hasGrid) {
-			$.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
-		}
+		this.updateBackgroundClass_(pskl.UserSettings.get(pskl.UserSettings.CANVAS_BACKGROUND));
+		$.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
 	};
 
 	ns.FrameRenderer.prototype.init = function (frame) {
@@ -44,20 +42,28 @@
 	/**
 	 * @private
 	 */
-	ns.FrameRenderer.prototype.onUserSettingsChange_ = function (evt, settingsName, settingsValue) {
+	ns.FrameRenderer.prototype.onUserSettingsChange_ = function (evt, settingName, settingValue) {
 		
-		if(settingsName == pskl.UserSettings.SHOW_GRID) {
-			this.enableGrid(settingsValue);
+		if(settingName == pskl.UserSettings.SHOW_GRID) {
+			this.enableGrid(settingValue);
+		}
+		else if (settingName == pskl.UserSettings.CANVAS_BACKGROUND) {
+			this.updateBackgroundClass_(settingValue);
 		}
 	};
 
-	ns.FrameRenderer.prototype.enableGrid = function (show) {
-		
-		this.gridStrokeWidth = 0;
-		if(show) {
-			this.gridStrokeWidth = Constants.GRID_STROKE_WIDTH;
-		}
-		
+	/**
+	 * @private
+	 */
+	ns.FrameRenderer.prototype.updateBackgroundClass_ = function (newClass) {
+		var currentClass = this.container.data('current-background-class');
+		if (currentClass) {
+		    this.container.removeClass(currentClass);
+		}	
+		this.container.addClass(newClass);
+        this.container.data('current-background-class', newClass);
+	};
+
 	ns.FrameRenderer.prototype.enableGrid = function (flag) {
 		this.gridStrokeWidth = (flag && this.supportGridRendering) ? Constants.GRID_STROKE_WIDTH : 0;
 		this.canvasConfigDirty = true;

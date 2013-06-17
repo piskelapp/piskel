@@ -4,9 +4,11 @@
     ns.UserSettings = {
 
         SHOW_GRID : 'SHOW_GRID',
+        CANVAS_BACKGROUND : 'CANVAS_BACKGROUND',
 
         KEY_TO_DEFAULT_VALUE_MAP_ : {
-            'SHOW_GRID' : false
+            'SHOW_GRID' : false,
+            'CANVAS_BACKGROUND' : 'medium-canvas-background' 
         },
 
         /**

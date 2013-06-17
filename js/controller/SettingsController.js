@@ -8,6 +8,13 @@
      */
     ns.SettingsController.prototype.init = function() {
 
+        // Highlight selected background picker:
+        var backgroundClass = pskl.UserSettings.get(pskl.UserSettings.CANVAS_BACKGROUND);
+        $('#background-picker-wrapper')
+            .find('.background-picker[data-background-class=' + backgroundClass + ']')
+            .addClass('selected');
+
+        // Initial state for grid display:
         var show_grid = pskl.UserSettings.get(pskl.UserSettings.SHOW_GRID);
         $('#show-grid').prop('checked', show_grid);
 
@@ -27,11 +34,8 @@
         $('#background-picker-wrapper').click(function(evt) {
           var target = $(evt.target).closest('.background-picker');
           if (target.length) {
-            var backgroundClass = target.data('background');
-            var body = $('body');
-            body.removeClass(body.data('current-background'));
-            body.addClass(backgroundClass);
-            body.data('current-background', backgroundClass);
+            var backgroundClass = target.data('background-class');
+            pskl.UserSettings.set(pskl.UserSettings.CANVAS_BACKGROUND, backgroundClass);
 
             $('.background-picker').removeClass('selected');
             target.addClass('selected');
