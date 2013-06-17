@@ -127,8 +127,39 @@ body {
   padding-bottom: 5px;
 }
 
-.settings-item {
+.settings-item {}
+
+.background-picker-wrapper {
+  overflow: hidden;
+  padding: 10px 5px 20px 5px;
+}
+
+.background-picker {
   cursor: pointer;
+  float: left;
+  height: 35px;
+  width: 35px;
+  background-color: transparent;
+  margin-right: 15px;
+  padding: 1px;
+  position: relative;
+}
+
+.background-picker:after {
+  content: " ";
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  bottom: -2px;
+  left: -2px; 
+}
+
+.background-picker:hover:after {
+  border: #eee 1px solid;
+}
+
+.background-picker.selected:after {
+  border: gold 1px solid;
 }
 
 /**
@@ -146,7 +177,6 @@ body {
 }
 
 .canvas-container .canvas-background {
-  background: url(../img/canvas_background/medium_canvas_background.png) repeat;
   position: absolute;
   top: 0;
   right: 0;
@@ -154,18 +184,22 @@ body {
   left: 0;
 }
 
+.light-picker-background,
 .light-canvas-background .canvas-background {
   background: url(../img/canvas_background/light_canvas_background.png) repeat;
 }
 
+.medium-picker-background,
 .medium-canvas-background .canvas-background {
   background: url(../img/canvas_background/medium_canvas_background.png) repeat;
 }
 
+.lowcont-medium-picker-background,
 .lowcont-medium-canvas-background .canvas-background {
   background: url(../img/canvas_background/lowcont_medium_canvas_background.png) repeat;
 }
 
+.lowcont-dark-picker-background,
 .lowcont-dark-canvas-background .canvas-background {
   background: url(../img/canvas_background/lowcont_dark_canvas_background.png) repeat;
 }

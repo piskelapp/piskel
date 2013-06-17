@@ -15,8 +15,7 @@
   <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap-tooltip-custom.css">
   <link rel="stylesheet" type="text/css" href="css/preview-film-section.css">
 </head>
-<body>
-
+<body class="medium-canvas-background"  data-current-background="medium-canvas-background">
   <div class="sticky-section left-sticky-section" id="tool-section">
     <div class="wrap">
       <ul id="tools-container" class="tools-wrapper"></ul>
@@ -54,12 +53,20 @@
           </div>
           <div class="settings-item">
             <label>Background:</label>
-            <select id="canvas-picker">
-              <option value="light-canvas-background">Light</option>
-              <option value="lowcont-medium-canvas-background">Medium - low contrast</option>
-              <option value="medium-canvas-background" selected="selected">Medium - high contrast</option>
-              <option value="lowcont-dark-canvas-background">Dark - low constrast</option>
-            </select>
+            <div id="background-picker-wrapper" class="background-picker-wrapper">
+              <div class="background-picker light-picker-background" data-background="light-canvas-background"
+                    rel="tooltip" data-placement="bottom" title="light / high contrast">
+              </div>
+              <div class="background-picker medium-picker-background selected" data-background="medium-canvas-background"
+                    rel="tooltip" data-placement="bottom" title="medium / high contrast">
+              </div>
+              <div class="background-picker lowcont-medium-picker-background" data-background="lowcont-medium-canvas-background"
+                    rel="tooltip" data-placement="bottom" title="medium / low contrast">
+              </div>
+              <div class="background-picker lowcont-dark-picker-background" data-background="lowcont-dark-canvas-background"
+                    rel="tooltip" data-placement="bottom" title="dark / low contrast">
+              </div>
+            </div>
           </div>
           <div class="settings-item">
             <label for="show-grid">Show grid:</label> <input id="show-grid" type="checkbox"/>

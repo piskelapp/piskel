@@ -35,11 +35,18 @@
         }, this));
 
         // Handle canvas background changes:
-        $('#canvas-picker').change(function(evt) {
-          $('#canvas-picker option:selected').each(function() {
-            console.log($(this).val());
-            $('html')[0].className = $(this).val();
-          });
+        $('#background-picker-wrapper').click(function(evt) {
+          var target = $(evt.target).closest('.background-picker');
+          if (target.length) {
+          	var backgroundClass = target.data('background');
+          	var body = $('body');
+          	body.removeClass(body.data('current-background'));
+          	body.addClass(backgroundClass);
+            body.data('current-background', backgroundClass);
+
+            $('.background-picker').removeClass('selected');
+            target.addClass('selected');
+          }
         });
     };
 })();
