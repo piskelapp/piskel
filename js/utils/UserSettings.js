@@ -21,7 +21,7 @@
         get : function (key) {
             this.checKeyValidity_(key);
             if (key in this.cache_) {
-                return cache[key];
+                return this.cache_[key];
             }
             return this.get_(key);
         },
