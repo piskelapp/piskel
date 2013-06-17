@@ -19,7 +19,7 @@
     // TODO(vincz): Store user prefs in a localstorage string ?
     var renderingOptions = {
       "dpi": this.calculateDPI_(),
-      "hasGrid" : true
+      "supportGridRendering" : true
     };
     
     this.renderer = new pskl.rendering.FrameRenderer(this.container, renderingOptions, "drawing-canvas");

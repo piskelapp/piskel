@@ -2,27 +2,26 @@
 	var ns = $.namespace("pskl.rendering");
 
 	ns.FrameRenderer = function (container, renderingOptions, className) {
-		
 		this.defaultRenderingOptions = {
-			"hasGrid" : false
+			'supportGridRendering' : false
 		};
 		renderingOptions = $.extend(true, {}, this.defaultRenderingOptions, renderingOptions);
 
 		if(container === undefined) {
-			throw "Bad FrameRenderer initialization. <container> undefined.";
+			throw 'Bad FrameRenderer initialization. <container> undefined.';
 		}
 		
 		if(isNaN(renderingOptions.dpi)) {
-			throw "Bad FrameRenderer initialization. <dpi> not well defined.";
+			throw 'Bad FrameRenderer initialization. <dpi> not well defined.';
 		}
 
 		this.container = container;
 		this.dpi = renderingOptions.dpi;
 		this.className = className;
 		this.canvas = null;
-		this.hasGrid = renderingOptions.hasGrid;
+		this.supportGridRendering = renderingOptions.supportGridRendering;
 
-		this.gridStrokeWidth = pskl.UserSettings.get(pskl.UserSettings.SHOW_GRID) ? Constants.GRID_STROKE_WIDTH : 0;
+		this.enableGrid(pskl.UserSettings.get(pskl.UserSettings.SHOW_GRID));
 
 		// Flag to know if the config was altered
 		this.canvasConfigDirty = true;
@@ -59,6 +58,8 @@
 			this.gridStrokeWidth = Constants.GRID_STROKE_WIDTH;
 		}
 		
+	ns.FrameRenderer.prototype.enableGrid = function (flag) {
+		this.gridStrokeWidth = (flag && this.supportGridRendering) ? Constants.GRID_STROKE_WIDTH : 0;
 		this.canvasConfigDirty = true;
 	};
 
