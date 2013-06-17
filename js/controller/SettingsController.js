@@ -21,6 +21,9 @@
      */
     ns.SettingsController.prototype.init = function() {
 
+    	var show_grid = pskl.UserSettings.get(pskl.UserSettings.SHOW_GRID);
+        $('#show-grid').prop('checked', show_grid);
+
         // Expand drawer when clicking 'Settings' tab.
         $('#settings').click(function(evt) {
             $('.right-sticky-section').toggleClass('expanded');
@@ -32,6 +35,7 @@
         $('#show-grid').change($.proxy(function(evt) {
             var checked = this.isShowGridChecked_();
             $.publish(Events.GRID_DISPLAY_STATE_CHANGED, [checked]);
+            pskl.UserSettings.set(pskl.UserSettings.SHOW_GRID, checked);
         }, this));
 
         // Handle canvas background changes:
