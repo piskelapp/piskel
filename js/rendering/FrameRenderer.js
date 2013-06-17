@@ -21,13 +21,14 @@
 		this.className = className;
 		this.canvas = null;
 		this.hasGrid = renderingOptions.hasGrid;
-		this.gridStrokeWidth = 0;
+
+		this.gridStrokeWidth = pskl.UserSettings.get(pskl.UserSettings.SHOW_GRID) ? Constants.GRID_STROKE_WIDTH : 0;
 
 		// Flag to know if the config was altered
 		this.canvasConfigDirty = true;
 
 		if(this.hasGrid) {
-			$.subscribe(Events.GRID_DISPLAY_STATE_CHANGED, $.proxy(this.showGrid, this));	
+			$.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
 		}
 	};
 
@@ -41,7 +42,17 @@
 		this.canvasConfigDirty = true;
 	};
 
-	ns.FrameRenderer.prototype.showGrid = function (evt, show) {
+	/**
+	 * @private
+	 */
+	ns.FrameRenderer.prototype.onUserSettingsChange_ = function (evt, settingsName, settingsValue) {
+		
+		if(settingsName == pskl.UserSettings.SHOW_GRID) {
+			this.enableGrid(settingsValue);
+		}
+	};
+
+	ns.FrameRenderer.prototype.enableGrid = function (show) {
 		
 		this.gridStrokeWidth = 0;
 		if(show) {

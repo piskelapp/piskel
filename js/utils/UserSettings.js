@@ -12,9 +12,7 @@
         /**
          * @private
          */
-        cache_: {
-
-        },
+        cache_: {},
 
         /**
          * Static method to access a user defined settings value ot its default 
@@ -31,7 +29,9 @@
         set : function (key, value) {
            this.checKeyValidity_(key);
            this.cache_[key] = value;
-           this.set_(key, value);  
+           this.set_(key, value);
+
+           $.publish(Events.USER_SETTINGS_CHANGED, [key, value]);    
         },
 
         /**

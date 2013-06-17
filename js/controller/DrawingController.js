@@ -61,7 +61,7 @@
     $(window).resize($.proxy(this.startDPIUpdateTimer_, this));
 
     $.subscribe(Events.FRAME_SIZE_CHANGED, $.proxy(this.updateDPI_, this));
-    $.subscribe(Events.GRID_DISPLAY_STATE_CHANGED, $.proxy(this.forceRendering_, this)); 
+    $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this)); 
   };
 
   ns.DrawingController.prototype.initMouseBehavior = function() {
@@ -81,6 +81,15 @@
         window.clearInterval(this.dpiUpdateTimer);
       }
       this.dpiUpdateTimer = window.setTimeout($.proxy(this.updateDPI_, this), 200);
+  },
+
+  /**
+   * @private
+   */
+  ns.DrawingController.prototype.onUserSettingsChange_ = function (evt, settingsName, settingsValue) {
+    if(settingsName == pskl.UserSettings.SHOW_GRID) {
+      this.forceRendering_();
+    }
   },
 
   /**

@@ -4,19 +4,6 @@
     ns.SettingsController = function () {};
 
     /**
-     * Get state for the checkbox that control the display of the grid
-     * on the drawing canvas.
-     * @private
-     */
-    ns.SettingsController.prototype.isShowGridChecked_ = function() {
-        var showGridCheckbox = $('#show-grid');
-        var isChecked = showGridCheckbox.is(':checked');
-        return isChecked;
-    };
-
-    // TODO(vincz): add get/set store
-
-    /**
      * @public
      */
     ns.SettingsController.prototype.init = function() {
@@ -30,11 +17,9 @@
             $('#settings').toggleClass('has-expanded-drawer');
         });
 
-        // Show/hide the grid on drawing canvas:
-        $.publish(Events.GRID_DISPLAY_STATE_CHANGED, [this.isShowGridChecked_()]);
+        // Handle grid display changes:
         $('#show-grid').change($.proxy(function(evt) {
-            var checked = this.isShowGridChecked_();
-            $.publish(Events.GRID_DISPLAY_STATE_CHANGED, [checked]);
+            var checked = $('#show-grid').prop('checked');
             pskl.UserSettings.set(pskl.UserSettings.SHOW_GRID, checked);
         }, this));
 
