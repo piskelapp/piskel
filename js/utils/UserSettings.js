@@ -3,7 +3,7 @@
 
     ns.UserSettings = {
 
-        SHOW_GRID: 'SHOW_GRID',
+        SHOW_GRID : 'SHOW_GRID',
 
         KEY_TO_DEFAULT_VALUE_MAP_ : {
             'SHOW_GRID' : false
@@ -12,7 +12,7 @@
         /**
          * @private
          */
-        cache_: {},
+        cache_ : {},
 
         /**
          * Static method to access a user defined settings value ot its default 
@@ -57,11 +57,14 @@
             window.localStorage[key] = JSON.stringify(entry);
         },
 
+        /**
+         * @private
+         */
         checKeyValidity_ : function(key) {
             if(key in this.KEY_TO_DEFAULT_VALUE_MAP_) {
                 return true;
             }
-            console.log("UserSettings key <"+ key +"> not find in supported keys.")
+            console.log("UserSettings key <"+ key +"> not find in supported keys.");
             return false;
         }
     };

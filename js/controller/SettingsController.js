@@ -8,7 +8,7 @@
      */
     ns.SettingsController.prototype.init = function() {
 
-    	var show_grid = pskl.UserSettings.get(pskl.UserSettings.SHOW_GRID);
+        var show_grid = pskl.UserSettings.get(pskl.UserSettings.SHOW_GRID);
         $('#show-grid').prop('checked', show_grid);
 
         // Expand drawer when clicking 'Settings' tab.
@@ -27,10 +27,10 @@
         $('#background-picker-wrapper').click(function(evt) {
           var target = $(evt.target).closest('.background-picker');
           if (target.length) {
-          	var backgroundClass = target.data('background');
-          	var body = $('body');
-          	body.removeClass(body.data('current-background'));
-          	body.addClass(backgroundClass);
+            var backgroundClass = target.data('background');
+            var body = $('body');
+            body.removeClass(body.data('current-background'));
+            body.addClass(backgroundClass);
             body.data('current-background', backgroundClass);
 
             $('.background-picker').removeClass('selected');
