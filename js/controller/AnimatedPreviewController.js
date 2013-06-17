@@ -18,15 +18,19 @@
     };
 
     ns.AnimatedPreviewController.prototype.init = function () {
-        $("#preview-fps")[0].addEventListener('change', this.onFPSSliderChange.bind(this));
+        // the oninput event won't work on IE10 unfortunately, but at least will provide a
+        // consistent behavior across all other browsers that support the input type range
+        // see https://bugzilla.mozilla.org/show_bug.cgi?id=853670
+        $("#preview-fps")[0].addEventListener('input', this.onFPSSliderChange.bind(this));
     };
 
-    ns.AnimatedPreviewController.prototype.onFPSSliderChange = function(evt) {
+    ns.AnimatedPreviewController.prototype.onFPSSliderChange = function (evt) {
         this.setFPS(parseInt($("#preview-fps")[0].value, 10));
     };
 
     ns.AnimatedPreviewController.prototype.setFPS = function (fps) {
         this.fps = fps;
+        $("#preview-fps").val(this.fps);
         $("#display-fps").html(this.fps + " FPS");
     };
 
