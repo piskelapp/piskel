@@ -206,6 +206,7 @@ $.namespace("pskl");
     }
   };
 
+  // TODO(grosbouddha): Remove this window.piskel global (eventually pskl.piskel or pskl.app instead)
   window.piskel = piskel;
   piskel.init();
 

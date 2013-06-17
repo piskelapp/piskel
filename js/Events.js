@@ -1,3 +1,4 @@
+// TODO(grosbouddha): put under pskl namespace.
 Events = {
     
     TOOL_SELECTED : "TOOL_SELECTED",
