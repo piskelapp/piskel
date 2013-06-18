@@ -6,12 +6,11 @@
 }
 
 .tool-icon {
-  float: left;
   cursor : pointer;
   width: 46px;
   height: 46px;
   margin: 1px;
-  background-color: rgba(200,200,200, .1);
+  background-color: #3a3a3a;
   background-repeat: no-repeat;
   background-position: 12px 12px;
   background-size: 24px 24px;
@@ -198,6 +197,12 @@
   background-size: 36px 36px;
 }
 
+.tool-icon.gear-icon {
+  background-image: url(../img/gear.png);
+  background-position: 6px 7px;
+  background-size: 32px 32px;
+}
+
 .tool-icon.upload-cloud-icon {
   background-image: url(../img/cloud_export.png);
   background-position: 4px 0px;
@@ -213,5 +218,6 @@
   font-size: 11px;
   text-transform: uppercase;
   color: #fff;
+  text-align: center;
 }
 
