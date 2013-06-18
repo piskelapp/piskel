@@ -21,7 +21,7 @@
         // the oninput event won't work on IE10 unfortunately, but at least will provide a
         // consistent behavior across all other browsers that support the input type range
         // see https://bugzilla.mozilla.org/show_bug.cgi?id=853670
-        $("#preview-fps")[0].addEventListener('input', this.onFPSSliderChange.bind(this));
+        $("#preview-fps")[0].addEventListener('change', this.onFPSSliderChange.bind(this));
     };
 
     ns.AnimatedPreviewController.prototype.onFPSSliderChange = function (evt) {
