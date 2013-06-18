@@ -145,7 +145,11 @@
             
             var pixelWidth =  col * this.dpi + this.gridStrokeWidth * (col - 1);
             var pixelHeight =  row * this.dpi + this.gridStrokeWidth * (row - 1);
-            var canvas = pskl.CanvasUtils.createCanvas(pixelWidth, pixelHeight, ["canvas", this.className]);
+            var classes = ['canvas'];
+            if (this.className) {
+              classes.push(this.className);  
+            }
+            var canvas = pskl.CanvasUtils.createCanvas(pixelWidth, pixelHeight, classes);
 
             this.container.append(canvas);
 

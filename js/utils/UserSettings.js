@@ -21,17 +21,18 @@
          * value if not defined yet.
          */
         get : function (key) {
-            this.checKeyValidity_(key);
-            if (key in this.cache_) {
-                return this.cache_[key];
+            this.checkKeyValidity_(key);
+            if (!(key in this.cache_)) {
+                this.cache_[key] =
+                    this.readFromLocalStorage_(key) || this.readFromDefaults_(key);
             }
-            return this.get_(key);
+            return this.cache_[key];
         },
 
         set : function (key, value) {
-           this.checKeyValidity_(key);
+           this.checkKeyValidity_(key);
            this.cache_[key] = value;
-           this.set_(key, value);
+           this.writeToLocalStorage_(key, value);
 
            $.publish(Events.USER_SETTINGS_CHANGED, [key, value]);    
         },
@@ -39,14 +40,10 @@
         /**
          * @private
          */
-        get_ : function(key) {
+        readFromLocalStorage_ : function(key) {
             var value = window.localStorage[key];
-            if (value === undefined) {
-                value = this.KEY_TO_DEFAULT_VALUE_MAP_[key];
-            }
-            else {
-                var entry = JSON.parse(value);
-                value = entry.jsonValue;
+            if (typeof value != "undefined") {
+                value = JSON.parse(value);
             }
             return value;
         },
@@ -54,20 +51,26 @@
         /**
          * @private
          */
-        set_ : function(key, value) {
-            var entry = { 'jsonValue': value };
-            window.localStorage[key] = JSON.stringify(entry);
+        writeToLocalStorage_ : function(key, value) {
+            // TODO(grosbouddha): Catch storage exception here.
+            window.localStorage[key] = JSON.stringify(value);
         },
 
         /**
          * @private
          */
-        checKeyValidity_ : function(key) {
-            if(key in this.KEY_TO_DEFAULT_VALUE_MAP_) {
-                return true;
+        readFromDefaults_ : function (key) {
+            return this.KEY_TO_DEFAULT_VALUE_MAP_[key];
+        },
+
+        /**
+         * @private
+         */
+        checkKeyValidity_ : function(key) {
+            if(!(key in this.KEY_TO_DEFAULT_VALUE_MAP_)) {
+                // TODO(grosbouddha): Define error catching strategy and throw exception from here.
+                console.log("UserSettings key <"+ key +"> not find in supported keys.");
             }
-            console.log("UserSettings key <"+ key +"> not find in supported keys.");
-            return false;
         }
     };
 })();
