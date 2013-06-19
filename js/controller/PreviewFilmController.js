@@ -94,10 +94,11 @@
      * @private
      */
     ns.PreviewFilmController.prototype.initDragndropBehavior_ = function () {
-        
+
         $("#preview-list").sortable({
           placeholder: "preview-tile-drop-proxy",
-          update: $.proxy(this.onUpdate_, this)
+          update: $.proxy(this.onUpdate_, this),
+          items: "li:not(#add-frame-action)"
         });
         $("#preview-list").disableSelection();
     };
