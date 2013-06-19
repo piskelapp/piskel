@@ -1,3 +1,4 @@
+// TODO(grosbouddha): put under pskl namespace.
 Events = {
     
     TOOL_SELECTED : "TOOL_SELECTED",
@@ -30,7 +31,13 @@ Events = {
      */
     REDRAW_PREVIEWFILM: "REDRAW_PREVIEWFILM",
 
-    GRID_DISPLAY_STATE_CHANGED: "GRID_DISPLAY_STATE_CHANGED",
+    /**
+     * Fired each time a user setting change.
+     * The payload will be:
+     *   1st argument: Name of the settings
+     *   2nd argument: New value
+     */
+    USER_SETTINGS_CHANGED: "USER_SETTINGS_CHANGED",
     
     /**
      * The framesheet was reseted and is now probably drastically different.

@@ -1,3 +1,4 @@
+// TODO(grosbouddha): put under pskl namespace.
 var Constants = {
     DEFAULT_SIZE : {
         height : 32,

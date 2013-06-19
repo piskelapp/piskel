@@ -16,9 +16,9 @@ body {
   text-align: center;
   font-size: 0;
   position: absolute;
-  left: 104px;
+  left: 100px; /* Reserve room for tools on the left edge of the screen. */
   top: 10px;
-  right: 0;
+  right: 50px; /* Reserve room for actions on the right edge of the screen. */
   bottom: 10px;
 }
 
@@ -51,15 +51,120 @@ body {
   position: fixed;
   top: 0;
   bottom: 0;
-  left: 0;
-  width: 140px;
+  z-index: 1000;
 }
 
-.sticky-section .wrap {
+.sticky-section .wrap,
+.sticky-section .drawer {
   display: table-cell;
   vertical-align: middle;
 }
 
+.left-sticky-section.sticky-section {
+  left: 0;
+  max-width: 100px;
+}
+
+.left-sticky-section .tool-icon {
+  float: left;
+}
+
+.right-sticky-section.sticky-section {
+  right: 0;
+  width: 50px;
+
+  -webkit-transition: all 200ms ease-out;
+  -moz-transition: all 200ms ease-out;
+  -ms-transition: all 200ms ease-out;
+  transition: all 200ms ease-out;
+}
+
+.right-sticky-section .tool-icon {
+  float: right;
+  margin-right: 0;
+}
+
+.drawer {
+
+}
+
+.drawer-content {
+  overflow: hidden;
+  background-color: #444;
+  height: 550px;
+  max-height: 100%;
+  width: 280px;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+
+/** Righty sticky drawer expanded state. */
+
+.right-sticky-section.expanded {
+  right: 280px;
+}
+
+.right-sticky-section.expanded .tool-icon {
+  margin-right: 1px;
+}
+
+.right-sticky-section .tool-icon.has-expanded-drawer {
+  position: relative;
+  background-color: #444;
+  margin-right: 0;
+  padding-right: 1px;
+}
+
+.settings-section {
+  margin: 10px 20px;
+  font-size: 12px;
+  font-weight: bold;
+  color: #ccc;
+  text-shadow: 1px 1px #000;
+}
+
+.settings-title {
+  margin-top: 20px;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  border-bottom: 1px #aaa solid;
+  padding-bottom: 5px;
+}
+
+.settings-item {}
+
+.background-picker-wrapper {
+  overflow: hidden;
+  padding: 10px 5px 20px 5px;
+}
+
+.background-picker {
+  cursor: pointer;
+  float: left;
+  height: 35px;
+  width: 35px;
+  background-color: transparent;
+  margin-right: 15px;
+  padding: 1px;
+  position: relative;
+}
+
+.background-picker:after {
+  content: " ";
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  bottom: -2px;
+  left: -2px; 
+}
+
+.background-picker:hover:after {
+  border: #eee 1px solid;
+}
+
+.background-picker.selected:after {
+  border: gold 1px solid;
+}
 
 /**
  * Canvases layout
@@ -76,7 +181,6 @@ body {
 }
 
 .canvas-container .canvas-background {
-  background: url(../img/canvas_background/medium_canvas_background.png) repeat;
   position: absolute;
   top: 0;
   right: 0;
@@ -84,18 +188,22 @@ body {
   left: 0;
 }
 
+.light-picker-background,
 .light-canvas-background .canvas-background {
   background: url(../img/canvas_background/light_canvas_background.png) repeat;
 }
 
+.medium-picker-background,
 .medium-canvas-background .canvas-background {
   background: url(../img/canvas_background/medium_canvas_background.png) repeat;
 }
 
+.lowcont-medium-picker-background,
 .lowcont-medium-canvas-background .canvas-background {
   background: url(../img/canvas_background/lowcont_medium_canvas_background.png) repeat;
 }
 
+.lowcont-dark-picker-background,
 .lowcont-dark-canvas-background .canvas-background {
   background: url(../img/canvas_background/lowcont_dark_canvas_background.png) repeat;
 }
@@ -135,10 +243,6 @@ body {
 
 .range-fps {
   overflow: hidden;
-}
-
-.application-actions {
-  margin-top: 35px;
 }
 
 /** 

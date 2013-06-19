@@ -24,6 +24,7 @@ $.namespace("pskl");
       this.drawingController = new pskl.controller.DrawingController(frameSheet, $('#drawing-canvas-container'));
       this.animationController = new pskl.controller.AnimatedPreviewController(frameSheet, $('#preview-canvas-container'));
       this.previewsController = new pskl.controller.PreviewFilmController(frameSheet, $('#preview-list'));
+      this.settingsController = new pskl.controller.SettingsController();
 
       // To catch the current active frame, the selection manager have to be initialized before
       // the 'frameSheet.setCurrentFrameIndex(0);' line below.
@@ -39,6 +40,7 @@ $.namespace("pskl");
 
       this.animationController.init();
       this.previewsController.init();
+      this.settingsController.init();
 
       this.historyService = new pskl.service.HistoryService(frameSheet);
       this.historyService.init();
@@ -69,13 +71,6 @@ $.namespace("pskl");
       // Init (event-delegated) bootstrap tooltips:
       $('body').tooltip({
         selector: '[rel=tooltip]'
-      });
-
-      $('#canvas-picker').change(function(evt) {
-        $('#canvas-picker option:selected').each(function() {
-            console.log($(this).val());
-            $('html')[0].className = $(this).val();
-        });
       });
     },
 
@@ -130,7 +125,6 @@ $.namespace("pskl");
 
     loadFramesheetFromService : function (frameId) {
       var xhr = new XMLHttpRequest();
-      // TODO: Change frameId to framesheetId on the backend
       xhr.open('GET', Constants.PISKEL_SERVICE_URL + '/get?l=' + frameId, true);
       xhr.responseType = 'text';
 
@@ -152,7 +146,6 @@ $.namespace("pskl");
 
     // TODO(julz): Create package ?
     storeSheet : function (event) {
-      // TODO Refactor using jquery ?
       var xhr = new XMLHttpRequest();
       var formData = new FormData();
       formData.append('framesheet_content', frameSheet.serialize());
@@ -213,6 +206,7 @@ $.namespace("pskl");
     }
   };
 
+  // TODO(grosbouddha): Remove this window.piskel global (eventually pskl.piskel or pskl.app instead)
   window.piskel = piskel;
   piskel.init();
 
