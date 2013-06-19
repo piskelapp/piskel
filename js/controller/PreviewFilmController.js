@@ -97,7 +97,8 @@
         
         $("#preview-list").sortable({
           placeholder: "preview-tile-drop-proxy",
-          update: $.proxy(this.onUpdate_, this)
+          update: $.proxy(this.onUpdate_, this),
+          items: ".preview-tile"
         });
         $("#preview-list").disableSelection();
     };
