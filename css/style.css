@@ -12,37 +12,46 @@ body {
  * Application layout
  */
 
+.main-wrapper {
+  position: absolute;
+  top: 5px;
+  right: 0;
+  bottom: 5px;
+  left: 0;
+}
+
 .column-wrapper {
   text-align: center;
   font-size: 0;
   position: absolute;
   left: 100px; /* Reserve room for tools on the left edge of the screen. */
-  top: 10px;
+  top: 0;
   right: 50px; /* Reserve room for actions on the right edge of the screen. */
-  bottom: 10px;
+  bottom: 0;
+}
+
+.column {
+  display: inline-block;
 }
 
 .left-column {
-  display: inline-block;
   vertical-align: top;
   height: 100%;
   margin-right: 7px;
 }
 
 .main-column {
-  display: inline-block;
   height: 100%;
   position: relative;
 }
 
-.drawing-canvas-container {
-  font-size: 0;
-}
-
 .right-column {
-  display: inline-block;
   vertical-align: top;
   margin-left: 10px;
+}
+
+.drawing-canvas-container {
+  font-size: 0;
 }
 
 .sticky-section {

@@ -60,8 +60,10 @@
 
     $(window).resize($.proxy(this.startDPIUpdateTimer_, this));
 
+    $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
     $.subscribe(Events.FRAME_SIZE_CHANGED, $.proxy(this.updateDPI_, this));
-    $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this)); 
+
+    this.updateDPI_();
   };
 
   ns.DrawingController.prototype.initMouseBehavior = function() {
@@ -88,7 +90,7 @@
    */
   ns.DrawingController.prototype.onUserSettingsChange_ = function (evt, settingsName, settingsValue) {
     if(settingsName == pskl.UserSettings.SHOW_GRID) {
-      this.forceRendering_();
+      this.updateDPI_();
     }
   },
 
@@ -268,13 +270,20 @@
    * @private
    */
   ns.DrawingController.prototype.calculateDPI_ = function() {
-    var availableViewportHeight = $('.main-column').height(),
-        leftSectionWidth = $('.left-column').width(),
-        rightSectionWidth = $('.right-column').width(),
-        availableViewportWidth = $('body').width() - leftSectionWidth - rightSectionWidth,
+    var availableViewportHeight = $('#main-wrapper').height(),
+        leftSectionWidth = $('.left-column').outerWidth(true),
+        rightSectionWidth = $('.right-column').outerWidth(true),
+        availableViewportWidth = $('#main-wrapper').width() - leftSectionWidth - rightSectionWidth,
         framePixelHeight = this.framesheet.getCurrentFrame().getHeight(),
         framePixelWidth = this.framesheet.getCurrentFrame().getWidth();
-    var dpi = pskl.PixelUtils.calculateDPI(availableViewportHeight, availableViewportWidth, framePixelHeight, framePixelWidth);
+
+    if (pskl.UserSettings.get(pskl.UserSettings.SHOW_GRID)) {
+      availableViewportWidth = availableViewportWidth - (framePixelWidth * Constants.GRID_STROKE_WIDTH);
+      availableViewportHeight = availableViewportHeight - (framePixelHeight * Constants.GRID_STROKE_WIDTH);
+    }
+
+    var dpi = pskl.PixelUtils.calculateDPI(
+      availableViewportHeight, availableViewportWidth, framePixelHeight, framePixelWidth);
 
     return dpi;
   };
@@ -286,6 +295,19 @@
     var dpi = this.calculateDPI_();
     this.renderer.updateDPI(dpi);
     this.overlayRenderer.updateDPI(dpi);
+
+    var currentFrameHeight =  this.framesheet.getCurrentFrame().getHeight();
+    var canvasHeight = currentFrameHeight * dpi;
+    if (pskl.UserSettings.get(pskl.UserSettings.SHOW_GRID)) {
+        canvasHeight += Constants.GRID_STROKE_WIDTH * currentFrameHeight;
+    }
+    
+    var verticalGapInPixel = Math.floor(($('#main-wrapper').height() - canvasHeight) / 2);
+    $('#column-wrapper').css({
+      'top': verticalGapInPixel + 'px',
+      'height': canvasHeight + 'px'
+    });
+
     this.forceRendering_();
   };
 })();
