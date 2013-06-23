@@ -16,79 +16,101 @@
   <link rel="stylesheet" type="text/css" href="css/preview-film-section.css">
 </head>
 <body>
-
-  <div id="menubar" class="sticky-section">
-    <div class="wrap">
-      <ul id="tools-container" class="tools-wrapper"></ul>
-      <div class="palette-wrapper">
-        <div class="tool-icon tool-color-picker">
-          <input id="color-picker" class="color {hash:true}" type="text" value="" />
-          <input id="secondary-color-picker" class="secondary-color-picker color {hash:true}" type="text" value="" />
-        </div>
-        <div class="tool-icon tool-palette">
-          <div id="palette" class="palette">
-            <span class="tool-icon palette-color transparent-color" data-color="TRANSPARENT" title="Transparent"></span>
+  <div id="main-wrapper" class="main-wrapper">
+    <div class="sticky-section left-sticky-section" id="tool-section">
+      <div class="sticky-section-wrap">
+        <div class="vertical-centerer">
+          <ul id="tools-container" class="tools-wrapper"></ul>
+          <div class="palette-wrapper">
+            <div class="tool-icon tool-color-picker">
+              <input id="color-picker" class="color {hash:true}" type="text" value="" />
+              <input id="secondary-color-picker" class="secondary-color-picker color {hash:true}" type="text" value="" />
+            </div>
+            <div class="tool-icon tool-palette">
+              <div id="palette" class="palette">
+                <span class="tool-icon palette-color transparent-color" data-color="TRANSPARENT" title="Transparent"></span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-      <!-- TODO: remove grid -->
-      <div style="display:none;" class="options-wrapper">   
-        <div class="tool-grid">
-          <input id="show-grid" type="checkbox"/>
-          <label for="show-grid">Show grid</label>
+    </div>
+
+    <div id="application-action-section" class="sticky-section right-sticky-section">
+      <div class="sticky-section-wrap">
+        <div class="vertical-centerer">
+          <div id="settings" class="tool-icon gear-icon" title="Preferences" rel="tooltip" data-placement="left"></div>
+          <a class="tool-icon gallery-icon" title="Visit gallery" href="http://juliandescottes.github.io/piskel-website/" rel="tooltip" data-placement="left" target="_blank"></a>
+          <div class="tool-icon save-icon" title="Save to gallery" onclick="piskel.storeSheet()" rel="tooltip" data-placement="left" ></div>
+          <div class="tool-icon upload-cloud-icon" title="Upload as an animated GIF" onclick="piskel.uploadAsAnimatedGIF()" rel="tooltip" data-placement="left">
+            <span class="label">GIF</span>
+          </div>
+          <div class="tool-icon upload-cloud-icon" title="Upload as a spritesheet PNG" onclick="piskel.uploadAsSpritesheetPNG()" rel="tooltip" data-placement="left">
+            <span class="label">PNG</span>
+          </div>
+        </div>
+        <div class="drawer vertical-centerer">
+          <div class="drawer-content">
+            <div class="settings-section">
+              <div class="settings-title">
+                Canvas settings:
+              </div>
+              <div class="settings-item">
+                <label>Background:</label>
+                <div id="background-picker-wrapper" class="background-picker-wrapper">
+                  <div class="background-picker light-picker-background" data-background-class="light-canvas-background"
+                        rel="tooltip" data-placement="bottom" title="light / high contrast">
+                  </div>
+                  <div class="background-picker medium-picker-background" data-background-class="medium-canvas-background"
+                        rel="tooltip" data-placement="bottom" title="medium / high contrast">
+                  </div>
+                  <div class="background-picker lowcont-medium-picker-background" data-background-class="lowcont-medium-canvas-background"
+                        rel="tooltip" data-placement="bottom" title="medium / low contrast">
+                  </div>
+                  <div class="background-picker lowcont-dark-picker-background" data-background-class="lowcont-dark-canvas-background"
+                        rel="tooltip" data-placement="bottom" title="dark / low contrast">
+                  </div>
+                </div>
+              </div>
+              <div class="settings-item">
+                <label for="show-grid">Show grid:</label> <input id="show-grid" type="checkbox"/>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <div style="float: left; margin-top: 20px; color: #fff;">
-        Canvas background:
-        <select id="canvas-picker" style="width:100px;">
-          <option value="light-canvas-background">Light</option>
-          <option value="lowcont-medium-canvas-background">Medium - low contrast</option>
-          <option value="medium-canvas-background" selected="selected">Medium - high contrast</option>
-          <option value="lowcont-dark-canvas-background">Dark - low constrast</option>
-        </select>
-      </div>
     </div>
-  </div>
 
-  <div class="column-wrapper">
-    <div class='left-column'>
-      
-      <!-- List of frames: -->
-      <div id="preview-list-wrapper" class="preview-list-wrapper">
-        <div id="preview-list-scroller" class="preview-list-scroller">
-          <ul class="preview-list" id="preview-list"></ul>
+    <div id="column-wrapper" class="column-wrapper">
+      <div class='column left-column'>
+        
+        <!-- List of frames: -->
+        <div id="preview-list-wrapper" class="preview-list-wrapper">
+          <div id="preview-list-scroller" class="preview-list-scroller">
+            <ul class="preview-list" id="preview-list"></ul>
+          </div>
+          <div class="top-overflow"></div>
+          <div class="bottom-overflow"></div>
         </div>
-        <div class="top-overflow"></div>
-        <div class="bottom-overflow"></div>
       </div>
-    </div>
 
-    <div class='main-column'>
-      <!-- Drawing area: -->
-      <div id="drawing-canvas-container" class="drawing-canvas-container canvas-container">
-        <div class="canvas-background"></div>
-      </div>
-    </div>
-
-    <div class="right-column">
-      <!-- Animation preview: -->
-      <div class='preview-container'>
-        <div id='preview-canvas-container' class="canvas-container">
+      <div class='column main-column'>
+        <!-- Drawing area: -->
+        <div id="drawing-canvas-container" class="drawing-canvas-container canvas-container">
           <div class="canvas-background"></div>
         </div>
-        <div>
-          <span id="display-fps" class="display-fps">12 FPS</span>
-          <input id="preview-fps" class="range-fps" type="range" min="1" max="24" value="12"/>
-        </div>   
       </div>
-      <div class="application-actions">
-        <a class="tool-icon gallery-icon" title="Visit gallery" href="http://juliandescottes.github.io/piskel-website/" rel="tooltip" data-placement="bottom" target="_blank"></a>
-        <div class="tool-icon save-icon" title="Save to gallery" onclick="piskel.storeSheet()" rel="tooltip" data-placement="bottom" ></div>
-        <div class="tool-icon upload-cloud-icon" title="Upload as an animated GIF" onclick="piskel.uploadAsAnimatedGIF()" rel="tooltip" data-placement="bottom" >
-          <span class="label">GIF</span>
-        </div>
-        <div class="tool-icon upload-cloud-icon" title="Upload as a spritesheet PNG" onclick="piskel.uploadAsSpritesheetPNG()" rel="tooltip" data-placement="bottom" >
-          <span class="label">PNG</span>
+
+      <div class="column right-column">
+        <!-- Animation preview: -->
+        <div class='preview-container'>
+          <div id='preview-canvas-container' class="canvas-container">
+            <div class="canvas-background"></div>
+          </div>
+          <div>
+            <span id="display-fps" class="display-fps">12 FPS</span>
+            <input id="preview-fps" class="range-fps" type="range" min="1" max="24" value="12"/>
+          </div>   
         </div>
       </div>
     </div>
@@ -114,6 +136,7 @@
   <script src="js/utils/core.js"></script>
   <script src="js/utils/PixelUtils.js"></script>
   <script src="js/utils/CanvasUtils.js"></script>
+  <script src="js/utils/UserSettings.js"></script>
   <script src="js/lib/jsColor_1_4_0/jscolor.js"></script>
 
   <!-- Application libraries-->
@@ -136,6 +159,7 @@
   <script src="js/controller/ToolController.js"></script>
   <script src="js/controller/PaletteController.js"></script>
   <script src="js/controller/NotificationController.js"></script>
+  <script src="js/controller/SettingsController.js"></script>
   <!-- Services -->
   <script src="js/service/LocalStorageService.js"></script>
   <script src="js/service/HistoryService.js"></script>

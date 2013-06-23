@@ -56,10 +56,10 @@
             if (scrollBottom > treshold) {
                 overflowBottom = true;
             }
-            var wrapper = $('#preview-list-wrapper');
-            wrapper.toggleClass('top-overflow-visible', overflowTop);
-            wrapper.toggleClass('bottom-overflow-visible', overflowBottom);
         }
+        var wrapper = $('#preview-list-wrapper');
+        wrapper.toggleClass('top-overflow-visible', overflowTop);
+        wrapper.toggleClass('bottom-overflow-visible', overflowBottom);
     };
 
     ns.PreviewFilmController.prototype.createPreviews_ = function () {
@@ -97,7 +97,8 @@
         
         $("#preview-list").sortable({
           placeholder: "preview-tile-drop-proxy",
-          update: $.proxy(this.onUpdate_, this)
+          update: $.proxy(this.onUpdate_, this),
+          items: ".preview-tile"
         });
         $("#preview-list").disableSelection();
     };
