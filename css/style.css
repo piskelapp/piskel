@@ -55,16 +55,18 @@ body {
 }
 
 .sticky-section {
-  display: table;
-  height: 100%;
   position: fixed;
   top: 0;
   bottom: 0;
   z-index: 1000;
 }
 
-.sticky-section .wrap,
-.sticky-section .drawer {
+.sticky-section .sticky-section-wrap {
+  display: table;
+  height: 100%;
+}
+
+.sticky-section .vertical-centerer {
   display: table-cell;
   vertical-align: middle;
 }
