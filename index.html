@@ -18,18 +18,16 @@
 <body>
   <div id="main-wrapper" class="main-wrapper">
     <div class="sticky-section left-sticky-section" id="tool-section">
-      <div class="sticky-section-wrap">
-        <div class="vertical-centerer">
-          <ul id="tools-container" class="tools-wrapper"></ul>
-          <div class="palette-wrapper">
-            <div class="tool-icon tool-color-picker">
-              <input id="color-picker" class="color {hash:true}" type="text" value="" />
-              <input id="secondary-color-picker" class="secondary-color-picker color {hash:true}" type="text" value="" />
-            </div>
-            <div class="tool-icon tool-palette">
-              <div id="palette" class="palette">
-                <span class="tool-icon palette-color transparent-color" data-color="TRANSPARENT" title="Transparent"></span>
-              </div>
+      <div class="wrap">
+        <ul id="tools-container" class="tools-wrapper"></ul>
+        <div class="palette-wrapper">
+          <div class="tool-icon tool-color-picker">
+            <input id="color-picker" class="color {hash:true}" type="text" value="" />
+            <input id="secondary-color-picker" class="secondary-color-picker color {hash:true}" type="text" value="" />
+          </div>
+          <div class="tool-icon tool-palette">
+            <div id="palette" class="palette">
+              <span class="tool-icon palette-color transparent-color" data-color="TRANSPARENT" title="Transparent"></span>
             </div>
           </div>
         </div>
@@ -37,44 +35,42 @@
     </div>
 
     <div id="application-action-section" class="sticky-section right-sticky-section">
-      <div class="sticky-section-wrap">
-        <div class="vertical-centerer">
-          <div id="settings" class="tool-icon gear-icon" title="Preferences" rel="tooltip" data-placement="left"></div>
-          <a class="tool-icon gallery-icon" title="Visit gallery" href="http://juliandescottes.github.io/piskel-website/" rel="tooltip" data-placement="left" target="_blank"></a>
-          <div class="tool-icon save-icon" title="Save to gallery" onclick="piskel.storeSheet()" rel="tooltip" data-placement="left" ></div>
-          <div class="tool-icon upload-cloud-icon" title="Upload as an animated GIF" onclick="piskel.uploadAsAnimatedGIF()" rel="tooltip" data-placement="left">
-            <span class="label">GIF</span>
-          </div>
-          <div class="tool-icon upload-cloud-icon" title="Upload as a spritesheet PNG" onclick="piskel.uploadAsSpritesheetPNG()" rel="tooltip" data-placement="left">
-            <span class="label">PNG</span>
-          </div>
+      <div class="wrap">
+        <div id="settings" class="tool-icon gear-icon" title="Preferences" rel="tooltip" data-placement="left"></div>
+        <a class="tool-icon gallery-icon" title="Visit gallery" href="http://juliandescottes.github.io/piskel-website/" rel="tooltip" data-placement="left" target="_blank"></a>
+        <div class="tool-icon save-icon" title="Save to gallery" onclick="pskl.app.storeSheet()" rel="tooltip" data-placement="left" ></div>
+        <div class="tool-icon upload-cloud-icon" title="Upload as an animated GIF" onclick="pskl.app.uploadAsAnimatedGIF()" rel="tooltip" data-placement="left">
+          <span class="label">GIF</span>
         </div>
-        <div class="drawer vertical-centerer">
-          <div class="drawer-content">
-            <div class="settings-section">
-              <div class="settings-title">
-                Canvas settings:
-              </div>
-              <div class="settings-item">
-                <label>Background:</label>
-                <div id="background-picker-wrapper" class="background-picker-wrapper">
-                  <div class="background-picker light-picker-background" data-background-class="light-canvas-background"
-                        rel="tooltip" data-placement="bottom" title="light / high contrast">
-                  </div>
-                  <div class="background-picker medium-picker-background" data-background-class="medium-canvas-background"
-                        rel="tooltip" data-placement="bottom" title="medium / high contrast">
-                  </div>
-                  <div class="background-picker lowcont-medium-picker-background" data-background-class="lowcont-medium-canvas-background"
-                        rel="tooltip" data-placement="bottom" title="medium / low contrast">
-                  </div>
-                  <div class="background-picker lowcont-dark-picker-background" data-background-class="lowcont-dark-canvas-background"
-                        rel="tooltip" data-placement="bottom" title="dark / low contrast">
-                  </div>
+        <div class="tool-icon upload-cloud-icon" title="Upload as a spritesheet PNG" onclick="pskl.app.uploadAsSpritesheetPNG()" rel="tooltip" data-placement="left">
+          <span class="label">PNG</span>
+        </div>
+      </div>
+      <div class="drawer">
+        <div class="drawer-content">
+          <div class="settings-section">
+            <div class="settings-title">
+              Canvas settings:
+            </div>
+            <div class="settings-item">
+              <label>Background:</label>
+              <div id="background-picker-wrapper" class="background-picker-wrapper">
+                <div class="background-picker light-picker-background" data-background-class="light-canvas-background"
+                      rel="tooltip" data-placement="bottom" title="light / high contrast">
+                </div>
+                <div class="background-picker medium-picker-background" data-background-class="medium-canvas-background"
+                      rel="tooltip" data-placement="bottom" title="medium / high contrast">
+                </div>
+                <div class="background-picker lowcont-medium-picker-background" data-background-class="lowcont-medium-canvas-background"
+                      rel="tooltip" data-placement="bottom" title="medium / low contrast">
+                </div>
+                <div class="background-picker lowcont-dark-picker-background" data-background-class="lowcont-dark-canvas-background"
+                      rel="tooltip" data-placement="bottom" title="dark / low contrast">
                 </div>
               </div>
-              <div class="settings-item">
-                <label for="show-grid">Show grid:</label> <input id="show-grid" type="checkbox"/>
-              </div>
+            </div>
+            <div class="settings-item">
+              <label for="show-grid">Show grid:</label> <input id="show-grid" type="checkbox"/>
             </div>
           </div>
         </div>

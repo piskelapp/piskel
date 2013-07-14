@@ -30,6 +30,24 @@ body {
   bottom: 0;
 }
 
+.piskel-name-container {
+  overflow:hidden;
+  position:fixed;
+  top:10px;
+  left:10px;
+  color:white;
+  font-family:Tahoma;
+  z-index: 10000;
+}
+
+.piskel-name-container #piskel-name {
+  border :none;
+  color : lightgrey;
+  background: transparent;
+  font-size:16pt;
+
+}
+
 .column {
   display: inline-block;
 }
@@ -55,18 +73,16 @@ body {
 }
 
 .sticky-section {
+  display: table;
+  height: 100%;
   position: fixed;
   top: 0;
   bottom: 0;
   z-index: 1000;
 }
 
-.sticky-section .sticky-section-wrap {
-  display: table;
-  height: 100%;
-}
-
-.sticky-section .vertical-centerer {
+.sticky-section .wrap,
+.sticky-section .drawer {
   display: table-cell;
   vertical-align: middle;
 }
@@ -82,7 +98,7 @@ body {
 
 .right-sticky-section.sticky-section {
   right: 0;
-  width: 47px;
+  width: 50px;
 
   -webkit-transition: all 200ms ease-out;
   -moz-transition: all 200ms ease-out;
