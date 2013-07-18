@@ -63,8 +63,8 @@
    */
   ns.LocalStorageService.prototype.displayRestoreNotification = function() {
     if(window.localStorage && window.localStorage.snapShot) {
-      var reloadLink = "<a href='#' class='localstorage-restore onclick='piskel.restoreFromLocalStorage()'>reload</a>";
-      var discardLink = "<a href='#' class='localstorage-discard' onclick='piskel.cleanLocalStorage()'>discard</a>";
+      var reloadLink = "<a href='#' class='localstorage-restore onclick='pskl.app.restoreFromLocalStorage()'>reload</a>";
+      var discardLink = "<a href='#' class='localstorage-discard' onclick='pskl.app.cleanLocalStorage()'>discard</a>";
       var content = "Non saved version found. " + reloadLink + " or " + discardLink;
 
       $.publish(Events.SHOW_NOTIFICATION, [{

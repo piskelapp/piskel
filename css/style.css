@@ -30,6 +30,24 @@ body {
   bottom: 0;
 }
 
+.piskel-name-container {
+  overflow:hidden;
+  position:fixed;
+  top:10px;
+  left:10px;
+  color:white;
+  font-family:Tahoma;
+  z-index: 10000;
+}
+
+.piskel-name-container #piskel-name {
+  border :none;
+  color : lightgrey;
+  background: transparent;
+  font-size:16pt;
+
+}
+
 .column {
   display: inline-block;
 }

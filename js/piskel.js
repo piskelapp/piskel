@@ -2,10 +2,8 @@
  * @require Constants
  * @require Events
  */
-$.namespace("pskl");
-
 (function () {
-
+  var ns = $.namespace("pskl");
   /**
    * FrameSheetModel instance.
    */
@@ -13,13 +11,18 @@ $.namespace("pskl");
   /**
    * Main application controller
    */
-  var piskel = {
+  ns.app = {
 
     init : function () {
       var frameSize = this.readSizeFromURL_();
       frameSheet = new pskl.model.FrameSheet(frameSize.height, frameSize.width);
-
       frameSheet.addEmptyFrame();
+
+      /**
+       * True when piskel is running in static mode (no back end needed).
+       * When started from APP Engine, appEngineToken_ (Boolean) should be set on window.pskl
+       */
+      this.isStaticVersion = !pskl.appEngineToken_;
       
       this.drawingController = new pskl.controller.DrawingController(frameSheet, $('#drawing-canvas-container'));
       this.animationController = new pskl.controller.AnimatedPreviewController(frameSheet, $('#preview-canvas-container'));
@@ -54,14 +57,20 @@ $.namespace("pskl");
       this.localStorageService = new pskl.service.LocalStorageService(frameSheet);
       this.localStorageService.init();
 
-      // TODO: Add comments 
-      var framesheetId = this.readFramesheetIdFromURL_();
-      if (framesheetId) {
-        $.publish(Events.SHOW_NOTIFICATION, [{"content": "Loading animation with id : [" + framesheetId + "]"}]);
-        this.loadFramesheetFromService(framesheetId);
+      if (this.isStaticVersion) {
+        var framesheetId = this.readFramesheetIdFromURL_();
+        if (framesheetId) {
+          $.publish(Events.SHOW_NOTIFICATION, [{"content": "Loading animation with id : [" + framesheetId + "]"}]);
+          this.loadFramesheetFromService(framesheetId);
+        } else {
+          this.finishInit();
+          this.localStorageService.displayRestoreNotification();
+        }
       } else {
+        if (pskl.framesheetData_) {
+          frameSheet.load(pskl.framesheetData_);
+        }
         this.finishInit();
-        this.localStorageService.displayRestoreNotification();
       }
 
       var drawingLoop = new pskl.rendering.DrawingLoop();
@@ -131,17 +140,23 @@ $.namespace("pskl");
       xhr.onload = function(e) {
         var res = JSON.parse(this.responseText);
         frameSheet.load(res.framesheet);
-        piskel.animationController.setFPS(res.fps);
+        pskl.app.animationController.setFPS(res.fps);
         $.publish(Events.HIDE_NOTIFICATION);
-        piskel.finishInit();
+        pskl.app.finishInit();
       };
 
       xhr.onerror = function () {
         $.publish(Events.HIDE_NOTIFICATION);
-        piskel.finishInit();
+        pskl.app.finishInit();
       };
 
       xhr.send();
+    },
+
+    getFirstFrameAsPNGData_ : function () {
+      var tmpSheet = new pskl.model.FrameSheet(frameSheet.getWidth(), frameSheet.getHeight());
+      tmpSheet.addFrame(frameSheet.getFrameByIndex(0));
+      return (new pskl.rendering.SpritesheetRenderer(tmpSheet)).renderAsImageDataSpritesheetPNG();
     },
 
     // TODO(julz): Create package ?
@@ -150,14 +165,36 @@ $.namespace("pskl");
       var formData = new FormData();
       formData.append('framesheet_content', frameSheet.serialize());
       formData.append('fps_speed', $('#preview-fps').val());
-      xhr.open('POST', Constants.PISKEL_SERVICE_URL + "/store", true);
+
+      if (this.isStaticVersion) {
+        // anonymous save on old app-engine backend
+        xhr.open('POST', Constants.PISKEL_SERVICE_URL + "/store", true);
+      } else {
+        // additional values only used with latest app-engine backend
+        formData.append('name', $('#piskel-name').val());
+        formData.append('frames', frameSheet.getFrameCount());
+        // Get image/png data for first frame
+       
+        formData.append('preview', this.getFirstFrameAsPNGData_());
+
+        xhr.open('POST', "save", true);
+      }
+     
       xhr.onload = function(e) {
         if (this.status == 200) {
-          var baseUrl = window.location.href.replace(window.location.search, "");
-          window.location.href = baseUrl + "?frameId=" + this.responseText;
+          if (pskl.app.isStaticVersion) {
+            var baseUrl = window.location.href.replace(window.location.search, "");
+           window.location.href = baseUrl + "?frameId=" + this.responseText;
+          } else {
+            $.publish(Events.SHOW_NOTIFICATION, [{"content": "Successfully saved !"}]);
+          }
+        } else {
+          this.onerror(e);
         }
       };
-
+      xhr.onerror = function(e) {
+        $.publish(Events.SHOW_NOTIFICATION, [{"content": "Saving failed ("+this.status+")"}]);
+      };
       xhr.send(formData);
 
       if(event) {
@@ -185,7 +222,7 @@ $.namespace("pskl");
     },
 
     uploadAsAnimatedGIF : function () {
-      var fps = piskel.animationController.fps;
+      var fps = pskl.app.animationController.fps;
       var imageData = (new pskl.rendering.SpritesheetRenderer(frameSheet)).renderAsImageDataAnimatedGIF(fps);
       this.uploadToScreenletstore(imageData);
     },
@@ -206,8 +243,6 @@ $.namespace("pskl");
     }
   };
 
-  // TODO(grosbouddha): Remove this window.piskel global (eventually pskl.piskel or pskl.app instead)
-  window.piskel = piskel;
-  piskel.init();
+  pskl.app.init();
 
 })();
