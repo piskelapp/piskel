@@ -20,9 +20,9 @@
 
       /**
        * True when piskel is running in static mode (no back end needed).
-       * When started from APP Engine, _appEngineToken (Boolean) should be set on window
+       * When started from APP Engine, appEngineToken_ (Boolean) should be set on window.pskl
        */
-      this.isStaticVersion = !window._appEngineToken;
+      this.isStaticVersion = !pskl.appEngineToken_;
       
       this.drawingController = new pskl.controller.DrawingController(frameSheet, $('#drawing-canvas-container'));
       this.animationController = new pskl.controller.AnimatedPreviewController(frameSheet, $('#preview-canvas-container'));
@@ -67,8 +67,8 @@
           this.localStorageService.displayRestoreNotification();
         }
       } else {
-        if (window._framesheetData) {
-          frameSheet.load(window._framesheetData);
+        if (pskl.framesheetData_) {
+          frameSheet.load(pskl.framesheetData_);
         }
         this.finishInit();
       }
