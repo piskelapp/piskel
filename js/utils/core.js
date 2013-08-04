@@ -11,6 +11,19 @@ jQuery.namespace = function() {
     return o;
 };
 
+/**
+ * Need a polyfill for PhantomJS
+ */
+if (typeof Function.prototype.bind !== "function") {
+    Function.prototype.bind = function(scope) {
+        "use strict";
+        var _function = this;
+        return function() {
+            return _function.apply(scope, arguments);
+        };
+    };
+}
+
 /*
  * @provide pskl.utils
  *

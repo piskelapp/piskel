@@ -14,11 +14,11 @@ module.exports = function (grunt) {
   grunt.initConfig({
     jshint : {
       /*options: {
-				"evil": true,
-				"asi": true,
-				"smarttabs": true,
-				"eqnull": true
-			},*/
+        "evil": true,
+        "asi": true,
+        "smarttabs": true,
+        "eqnull": true
+      },*/
       files : [
         'Gruntfile.js',
         'package.json',
@@ -39,10 +39,10 @@ module.exports = function (grunt) {
         filesSrc : ['tests/integration/casperjs/*_test.js'],
         options : {
           args : {
-            baseUrl : 'http://localhost:' + '<%= connect.www.options.port %>/?debug'
+            baseUrl : 'http://localhost:' + '<%= connect.www.options.port %>/'
           },
           direct : false,
-          logLevel : 'error',
+          logLevel : 'debug',
           printCommand : false,
           printFilePaths : true
         }

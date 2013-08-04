@@ -121,29 +121,30 @@
   
   <script type="text/javascript">
     (function () {
+
       var loadScript = function (src, callback) {
-        document.write('<scr'+'ipt src ="'+src+'" onload="'+callback+'"></sc'+'ript>');
+        var script = window.document.createElement('script');
+        script.setAttribute('src',src);
+        script.setAttribute('onload',callback);
+        window.document.body.appendChild(script);
       };
+
       if (window.location.href.indexOf("debug") != -1) {
         window.exports = {};
-        loadScript("script-load-list.js", "loadDebugScripts()");
-        window.loadDebugScripts = function () {
-          exports.scripts.forEach(function (script){
-            loadScript(script, "done()")
-          })
-        }
-        var loaded = 0;
-        window.done = function () {
-          loaded ++;
-          if (loaded == exports.scripts.length) {
+        var scriptIndex = 0;
+        window.loadNextScript = function () {
+          if (scriptIndex == exports.scripts.length) {
             pskl.app.init();
             // cleanup
             delete window.exports;
             delete window.loadDebugScripts;
             delete window.done;
+          } else {
+            loadScript(exports.scripts[scriptIndex], "loadNextScript()");
+            scriptIndex ++;
           }
         };
-
+        loadScript("script-load-list.js", "loadNextScript()");
       } else {
         var script;
         if (window.location.href.indexOf("pack") != -1) {
@@ -154,7 +155,6 @@
         loadScript(script, "pskl.app.init()");
       }
     })();
-    
   </script>
 </body>
 </html>
