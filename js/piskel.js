@@ -23,7 +23,7 @@
        * When started from APP Engine, appEngineToken_ (Boolean) should be set on window.pskl
        */
       this.isStaticVersion = !pskl.appEngineToken_;
-      
+
       this.drawingController = new pskl.controller.DrawingController(frameSheet, $('#drawing-canvas-container'));
       this.animationController = new pskl.controller.AnimatedPreviewController(frameSheet, $('#preview-canvas-container'));
       this.previewsController = new pskl.controller.PreviewFilmController(frameSheet, $('#preview-list'));
@@ -60,7 +60,9 @@
       if (this.isStaticVersion) {
         var framesheetId = this.readFramesheetIdFromURL_();
         if (framesheetId) {
-          $.publish(Events.SHOW_NOTIFICATION, [{"content": "Loading animation with id : [" + framesheetId + "]"}]);
+          $.publish(Events.SHOW_NOTIFICATION, [{
+            "content" : "Loading animation with id : [" + framesheetId + "]"
+          }]);
           this.loadFramesheetFromService(framesheetId);
         } else {
           this.finishInit();
@@ -79,7 +81,7 @@
 
       // Init (event-delegated) bootstrap tooltips:
       $('body').tooltip({
-        selector: '[rel=tooltip]'
+        selector : '[rel=tooltip]'
       });
     },
 
@@ -87,24 +89,25 @@
       this.drawingController.render(delta);
       this.animationController.render(delta);
       this.previewsController.render(delta);
-    },    
+    },
 
     finishInit : function () {
       var toolController = new pskl.controller.ToolController();
       toolController.init();
-      
+
       var paletteController = new pskl.controller.PaletteController();
       paletteController.init(frameSheet);
     },
 
     readSizeFromURL_ : function () {
-      var sizeParam = this.readUrlParameter_("size"), size;
+      var sizeParam = this.readUrlParameter_("size"),
+        size;
       // parameter expected as size=64x48 => size=widthxheight
       var parts = sizeParam.split("x");
       if (parts && parts.length == 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
         var width = parseInt(parts[0], 10),
-            height = parseInt(parts[1], 10);
-      
+          height = parseInt(parts[1], 10);
+
         size = {
           height : Math.min(height, Constants.MAX_HEIGHT),
           width : Math.min(width, Constants.MAX_WIDTH)
@@ -115,15 +118,15 @@
       return size;
     },
 
-    readFramesheetIdFromURL_ : function() {
+    readFramesheetIdFromURL_ : function () {
       return this.readUrlParameter_("frameId");
     },
 
     readUrlParameter_ : function (paramName) {
       var searchString = window.location.search.substring(1),
-      i, val, params = searchString.split("&");
+        i, val, params = searchString.split("&");
 
-      for (i=0;i<params.length;i++) {
+      for (i = 0; i < params.length; i++) {
         val = params[i].split("=");
         if (val[0] == paramName) {
           return unescape(val[1]);
@@ -137,7 +140,7 @@
       xhr.open('GET', Constants.PISKEL_SERVICE_URL + '/get?l=' + frameId, true);
       xhr.responseType = 'text';
 
-      xhr.onload = function(e) {
+      xhr.onload = function (e) {
         var res = JSON.parse(this.responseText);
         frameSheet.load(res.framesheet);
         pskl.app.animationController.setFPS(res.fps);
@@ -174,44 +177,48 @@
         formData.append('name', $('#piskel-name').val());
         formData.append('frames', frameSheet.getFrameCount());
         // Get image/png data for first frame
-       
+
         formData.append('preview', this.getFirstFrameAsPNGData_());
 
         xhr.open('POST', "save", true);
       }
-     
-      xhr.onload = function(e) {
+
+      xhr.onload = function (e) {
         if (this.status == 200) {
           if (pskl.app.isStaticVersion) {
             var baseUrl = window.location.href.replace(window.location.search, "");
-           window.location.href = baseUrl + "?frameId=" + this.responseText;
+            window.location.href = baseUrl + "?frameId=" + this.responseText;
           } else {
-            $.publish(Events.SHOW_NOTIFICATION, [{"content": "Successfully saved !"}]);
+            $.publish(Events.SHOW_NOTIFICATION, [{
+              "content" : "Successfully saved !"
+            }]);
           }
         } else {
           this.onerror(e);
         }
       };
-      xhr.onerror = function(e) {
-        $.publish(Events.SHOW_NOTIFICATION, [{"content": "Saving failed ("+this.status+")"}]);
+      xhr.onerror = function (e) {
+        $.publish(Events.SHOW_NOTIFICATION, [{
+          "content" : "Saving failed (" + this.status + ")"
+        }]);
       };
       xhr.send(formData);
 
-      if(event) {
+      if (event) {
         event.stopPropagation();
         event.preventDefault();
       }
       return false;
     },
 
-    uploadToScreenletstore : function(imageData) {
+    uploadToScreenletstore : function (imageData) {
       var xhr = new XMLHttpRequest();
       var formData = new FormData();
       formData.append('data', imageData);
       xhr.open('POST', "http://screenletstore.appspot.com/__/upload", true);
       var cloudURL;
       var that = this;
-      xhr.onload = function(e) {
+      xhr.onload = function (e) {
         if (this.status == 200) {
           cloudURL = "http://screenletstore.appspot.com/img/" + this.responseText;
           that.openWindow(cloudURL);
@@ -232,7 +239,7 @@
       this.uploadToScreenletstore(imageData);
     },
 
-    openWindow: function(url) {
+    openWindow : function (url) {
       var options = [
         "dialog=yes", "scrollbars=no", "status=no",
         "width=" + frameSheet.getWidth() * frameSheet.getFrameCount(),
@@ -242,7 +249,4 @@
       window.open(url, "piskel-export", options);
     }
   };
-
-  pskl.app.init();
-
 })();
