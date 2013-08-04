@@ -39,7 +39,7 @@ module.exports = function (grunt) {
         filesSrc : ['tests/integration/casperjs/*_test.js'],
         options : {
           args : {
-            baseUrl : 'http://localhost:' + '<%= connect.www.options.port %>/'
+            baseUrl : 'http://localhost:' + '<%= connect.www.options.port %>/?debug'
           },
           direct : false,
           logLevel : 'error',
