@@ -1,7 +1,10 @@
 casper
-  .start(casper.cli.get('baseUrl')+"?pack")
+  .start(casper.cli.get('baseUrl')+"?debug")
   .then(function () {
-    this.echo(casper.cli.get('baseUrl')+"?pack");
+  	this.wait(3000);
+  })
+  .then(function () {
+    this.echo(casper.cli.get('baseUrl')+"?debug");
   	// If there was a JS error after the page load, casper won't perform asserts
     this.test.assertExists('html', 'Casper JS cannot assert DOM elements. A JS error has probably occured.');
     
