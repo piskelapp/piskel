@@ -35,7 +35,7 @@ var jscolor = {
 
 
 	getDir : function() {
-		return "js/lib/jsColor_1_4_0/";
+		return "/" + window.location.pathname.split("/")[1] + "/js/lib/jsColor_1_4_0/";
 	},
 
 

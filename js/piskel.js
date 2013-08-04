@@ -69,8 +69,9 @@
           this.localStorageService.displayRestoreNotification();
         }
       } else {
-        if (pskl.framesheetData_) {
-          frameSheet.load(pskl.framesheetData_);
+        if (pskl.framesheetData_ && pskl.framesheetData_.content) {
+          frameSheet.load(pskl.framesheetData_.content);
+          pskl.app.animationController.setFPS(pskl.framesheetData_.fps);
         }
         this.finishInit();
       }
