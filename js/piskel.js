@@ -178,34 +178,33 @@
         formData.append('name', $('#piskel-name').val());
         formData.append('frames', frameSheet.getFrameCount());
         // Get image/png data for first frame
-
+       
         formData.append('preview', this.getFirstFrameAsPNGData_());
+
+        var imageData = (new pskl.rendering.SpritesheetRenderer(frameSheet)).renderAsImageDataSpritesheetPNG();
+        formData.append('framesheet', imageData);
 
         xhr.open('POST', "save", true);
       }
-
-      xhr.onload = function (e) {
+     
+      xhr.onload = function(e) {
         if (this.status == 200) {
           if (pskl.app.isStaticVersion) {
             var baseUrl = window.location.href.replace(window.location.search, "");
-            window.location.href = baseUrl + "?frameId=" + this.responseText;
+           window.location.href = baseUrl + "?frameId=" + this.responseText;
           } else {
-            $.publish(Events.SHOW_NOTIFICATION, [{
-              "content" : "Successfully saved !"
-            }]);
+            $.publish(Events.SHOW_NOTIFICATION, [{"content": "Successfully saved !"}]);
           }
         } else {
           this.onerror(e);
         }
       };
-      xhr.onerror = function (e) {
-        $.publish(Events.SHOW_NOTIFICATION, [{
-          "content" : "Saving failed (" + this.status + ")"
-        }]);
+      xhr.onerror = function(e) {
+        $.publish(Events.SHOW_NOTIFICATION, [{"content": "Saving failed ("+this.status+")"}]);
       };
       xhr.send(formData);
 
-      if (event) {
+      if(event) {
         event.stopPropagation();
         event.preventDefault();
       }
