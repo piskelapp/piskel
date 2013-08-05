@@ -215,6 +215,6 @@
         var previewHeight = Constants.PREVIEW_FILM_SIZE * frameHeight / maxFrameDim;
         var previewWidth = Constants.PREVIEW_FILM_SIZE * frameWidth / maxFrameDim;
 
-        return pskl.PixelUtils.calculateDPI(previewHeight, previewWidth, frameHeight, frameWidth);
+        return pskl.PixelUtils.calculateDPI(previewHeight, previewWidth, frameHeight, frameWidth) || 1;
     };
 })();
