@@ -24,11 +24,14 @@
 	ns.ShapeSelect.prototype.onSelectStart_ = function (col, row, color, frame, overlay) {
 		// Clean previous selection:
 		$.publish(Events.SELECTION_DISMISSED);
+		overlay.clear();
 		
 		// From the pixel cliked, get shape using an algorithm similar to the paintbucket one:
 		var pixels = pskl.PixelUtils.getSimilarConnectedPixelsFromFrame(frame, col, row);
 		var selection = new pskl.selection.ShapeSelection(pixels);
+
 		$.publish(Events.SELECTION_CREATED, [selection]);
+		this.drawSelectionOnOverlay_(selection, overlay);
 	};
 
 })();

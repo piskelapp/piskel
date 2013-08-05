@@ -23,6 +23,20 @@
     };
 
     /**
+     * @public
+     */
+    ns.ToolController.prototype.init = function() {
+
+        this.createToolMarkup_();
+
+        // Initialize tool:
+        // Set SimplePen as default selected tool:
+        this.selectTool_(this.toolInstances.simplePen);
+        // Activate listener on tool panel:
+        $("#tool-section").click($.proxy(this.onToolIconClicked_, this));
+    };
+
+    /**
      * @private
      */
     ns.ToolController.prototype.activateToolOnStage_ = function(tool) {
@@ -81,19 +95,5 @@
                             '" title="' + currentTool.helpText + '"></li>';
         }
         $('#tools-container').html(toolMarkup);
-    };
-
-    /**
-     * @public
-     */
-    ns.ToolController.prototype.init = function() {
-
-        this.createToolMarkup_();
-
-        // Initialize tool:
-        // Set SimplePen as default selected tool:
-        this.selectTool_(this.toolInstances.simplePen);
-        // Activate listener on tool panel:
-        $("#tool-section").click($.proxy(this.onToolIconClicked_, this));
     };
 })();

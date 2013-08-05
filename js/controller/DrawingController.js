@@ -25,8 +25,6 @@
     this.renderer = new pskl.rendering.FrameRenderer(this.container, renderingOptions, "drawing-canvas");
     this.overlayRenderer = new pskl.rendering.FrameRenderer(this.container, renderingOptions, "canvas-overlay");
     
-    this.renderer.init(framesheet.getCurrentFrame());
-    this.overlayRenderer.init(this.overlayFrame);
 
     // State of drawing controller:
     this.isClicked = false;
@@ -35,12 +33,18 @@
     this.currentToolBehavior = null;
     this.primaryColor =  Constants.DEFAULT_PEN_COLOR;
     this.secondaryColor =  Constants.TRANSPARENT_COLOR;
+  };
 
+  ns.DrawingController.prototype.init = function () {
+    this.renderer.render(this.framesheet.getCurrentFrame());
+    this.overlayRenderer.render(this.overlayFrame);
+    
     this.initMouseBehavior();
 
     $.subscribe(Events.TOOL_SELECTED, $.proxy(function(evt, toolBehavior) {
       console.log("Tool selected: ", toolBehavior);
       this.currentToolBehavior = toolBehavior;
+      this.overlayFrame.clear();
     }, this));
 
     /**

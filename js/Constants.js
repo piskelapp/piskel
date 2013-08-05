@@ -8,6 +8,8 @@ var Constants = {
     MAX_HEIGHT : 128,
     MAX_WIDTH : 128,
 
+    PREVIEW_FILM_SIZE : 120,
+
     DEFAULT_PEN_COLOR : '#000000',  
     TRANSPARENT_COLOR : 'TRANSPARENT',
     

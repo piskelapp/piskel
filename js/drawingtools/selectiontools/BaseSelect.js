@@ -91,6 +91,17 @@
 	};
 
 	/**
+	 * For each pixel in the selection draw it in white transparent on the tool overlay
+	 * @protected
+	 */
+	ns.BaseSelect.prototype.drawSelectionOnOverlay_ = function (selection, overlay) {
+		var pixels = selection.pixels;
+		for(var i=0, l=pixels.length; i<l; i++) {
+			overlay.setPixel(pixels[i].col, pixels[i].row, Constants.SELECTION_TRANSPARENT_COLOR);
+		}
+	};
+
+	/**
 	 * Move the overlay frame filled with semi-transparent pixels that represent the selection.
 	 * @private
 	 */

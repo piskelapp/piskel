@@ -17,33 +17,23 @@
       var frameSize = this.readSizeFromURL_();
       frameSheet = new pskl.model.FrameSheet(frameSize.height, frameSize.width);
       frameSheet.addEmptyFrame();
-
-      /**
-       * True when piskel is running in static mode (no back end needed).
-       * When started from APP Engine, appEngineToken_ (Boolean) should be set on window.pskl
-       */
-      this.isStaticVersion = !pskl.appEngineToken_;
-      
-      this.drawingController = new pskl.controller.DrawingController(frameSheet, $('#drawing-canvas-container'));
-      this.animationController = new pskl.controller.AnimatedPreviewController(frameSheet, $('#preview-canvas-container'));
-      this.previewsController = new pskl.controller.PreviewFilmController(frameSheet, $('#preview-list'));
-      this.settingsController = new pskl.controller.SettingsController();
-
-      // To catch the current active frame, the selection manager have to be initialized before
-      // the 'frameSheet.setCurrentFrameIndex(0);' line below.
-      // TODO(vincz): Slice each constructor to have:
-      //                  - an event(s) listening init
-      //                  - an event(s) triggering init
-      // All listeners will be hook in a first step, then all event triggering inits will be called
-      // in a second batch.
-      this.selectionManager = new pskl.selection.SelectionManager(frameSheet, this.drawingController.overlayFrame);
-
-      // DO NOT MOVE THIS LINE (see comment above)
       frameSheet.setCurrentFrameIndex(0);
 
+      
+      this.drawingController = new pskl.controller.DrawingController(frameSheet, $('#drawing-canvas-container'));
+      this.drawingController.init();
+
+      this.animationController = new pskl.controller.AnimatedPreviewController(frameSheet, $('#preview-canvas-container'));
       this.animationController.init();
+      
+      this.previewsController = new pskl.controller.PreviewFilmController(frameSheet, $('#preview-list'));
       this.previewsController.init();
+
+      this.settingsController = new pskl.controller.SettingsController();
       this.settingsController.init();
+
+      this.selectionManager = new pskl.selection.SelectionManager(frameSheet);
+      this.selectionManager.init();
 
       this.historyService = new pskl.service.HistoryService(frameSheet);
       this.historyService.init();
@@ -57,21 +47,11 @@
       this.localStorageService = new pskl.service.LocalStorageService(frameSheet);
       this.localStorageService.init();
 
-      if (this.isStaticVersion) {
-        var framesheetId = this.readFramesheetIdFromURL_();
-        if (framesheetId) {
-          $.publish(Events.SHOW_NOTIFICATION, [{"content": "Loading animation with id : [" + framesheetId + "]"}]);
-          this.loadFramesheetFromService(framesheetId);
-        } else {
-          this.finishInit();
-          this.localStorageService.displayRestoreNotification();
-        }
-      } else {
-        if (pskl.framesheetData_) {
-          frameSheet.load(pskl.framesheetData_);
-        }
-        this.finishInit();
-      }
+      this.toolController = new pskl.controller.ToolController();
+      this.toolController.init();
+      
+      this.paletteController = new pskl.controller.PaletteController();
+      this.paletteController.init(frameSheet);
 
       var drawingLoop = new pskl.rendering.DrawingLoop();
       drawingLoop.addCallback(this.render, this);
@@ -81,6 +61,27 @@
       $('body').tooltip({
         selector: '[rel=tooltip]'
       });
+
+      
+      /**
+       * True when piskel is running in static mode (no back end needed).
+       * When started from APP Engine, appEngineToken_ (Boolean) should be set on window.pskl
+       */
+      this.isStaticVersion = !pskl.appEngineToken_;
+
+      if (this.isStaticVersion) {
+        var framesheetId = this.readFramesheetIdFromURL_();
+        if (framesheetId) {
+          $.publish(Events.SHOW_NOTIFICATION, [{"content": "Loading animation with id : [" + framesheetId + "]"}]);
+          this.loadFramesheetFromService(framesheetId);
+        } else {
+          this.localStorageService.displayRestoreNotification();
+        }
+      } else {
+        if (pskl.framesheetData_) {
+          frameSheet.load(pskl.framesheetData_);
+        }
+      }
     },
 
     render : function (delta) {
@@ -88,14 +89,6 @@
       this.animationController.render(delta);
       this.previewsController.render(delta);
     },    
-
-    finishInit : function () {
-      var toolController = new pskl.controller.ToolController();
-      toolController.init();
-      
-      var paletteController = new pskl.controller.PaletteController();
-      paletteController.init(frameSheet);
-    },
 
     readSizeFromURL_ : function () {
       var sizeParam = this.readUrlParameter_("size"), size;
@@ -142,12 +135,10 @@
         frameSheet.load(res.framesheet);
         pskl.app.animationController.setFPS(res.fps);
         $.publish(Events.HIDE_NOTIFICATION);
-        pskl.app.finishInit();
       };
 
       xhr.onerror = function () {
         $.publish(Events.HIDE_NOTIFICATION);
-        pskl.app.finishInit();
       };
 
       xhr.send();
