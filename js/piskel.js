@@ -158,7 +158,7 @@
     },
 
     getFirstFrameAsPNGData_ : function () {
-      var tmpSheet = new pskl.model.FrameSheet(frameSheet.getWidth(), frameSheet.getHeight());
+      var tmpSheet = new pskl.model.FrameSheet(frameSheet.getHeight(), frameSheet.getWidth());
       tmpSheet.addFrame(frameSheet.getFrameByIndex(0));
       return (new pskl.rendering.SpritesheetRenderer(tmpSheet)).renderAsImageDataSpritesheetPNG();
     },
