@@ -1,9 +1,9 @@
 (function () {
-	var ns = $.namespace("pskl.selection");
+  var ns = $.namespace("pskl.selection");
 
-	ns.ShapeSelection = function (pixels) {
-		this.pixels = pixels;
-	};
+  ns.ShapeSelection = function (pixels) {
+    this.pixels = pixels;
+  };
 
-	pskl.utils.inherit(ns.ShapeSelection, ns.BaseSelection);
+  pskl.utils.inherit(ns.ShapeSelection, ns.BaseSelection);
 })();
