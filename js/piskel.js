@@ -184,7 +184,7 @@
         if (this.status == 200) {
           if (pskl.app.isStaticVersion) {
             var baseUrl = window.location.href.replace(window.location.search, "");
-           window.location.href = baseUrl + "?frameId=" + this.responseText;
+            window.location.href = baseUrl + "?frameId=" + this.responseText;
           } else {
             $.publish(Events.SHOW_NOTIFICATION, [{"content": "Successfully saved !"}]);
           }

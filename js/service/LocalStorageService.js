@@ -4,7 +4,7 @@
   ns.LocalStorageService = function (framesheet_) {
 
     if(framesheet_ === undefined) {
-        throw "Bad LocalStorageService initialization: <undefined frameSheet>";
+      throw "Bad LocalStorageService initialization: <undefined frameSheet>";
     }
     this.framesheet = framesheet_;
     this.localStorageThrottler_ = null;

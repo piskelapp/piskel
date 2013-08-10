@@ -1,15 +1,15 @@
 (function () {
-	var ns = $.namespace("pskl.service");
-	ns.HistoryService = function (framesheet) {
+  var ns = $.namespace("pskl.service");
+  ns.HistoryService = function (framesheet) {
     this.framesheet = framesheet; 
   };
 
-	ns.HistoryService.prototype.init = function () {
+  ns.HistoryService.prototype.init = function () {
     
     $.subscribe(Events.TOOL_RELEASED, this.saveState.bind(this));
     $.subscribe(Events.UNDO, this.undo.bind(this));
     $.subscribe(Events.REDO, this.redo.bind(this));
-	};
+  };
 
   ns.HistoryService.prototype.saveState = function () {
     this.framesheet.getCurrentFrame().saveState();
