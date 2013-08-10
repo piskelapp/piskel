@@ -23,6 +23,19 @@
   };
 
   /**
+   * @public
+   */
+  ns.ToolController.prototype.init = function() {
+    this.createToolMarkup_();
+
+    // Initialize tool:
+    // Set SimplePen as default selected tool:
+    this.selectTool_(this.toolInstances.simplePen);
+    // Activate listener on tool panel:
+    $("#tool-section").click($.proxy(this.onToolIconClicked_, this));
+  };
+
+  /**
    * @private
    */
   ns.ToolController.prototype.activateToolOnStage_ = function(tool) {
@@ -53,16 +66,25 @@
     var clickedTool = target.closest(".tool-icon");
 
     if(clickedTool.length) {
-      for(var tool in this.toolInstances) {
-        if (this.toolInstances[tool].toolId == clickedTool.data().toolId) {
-          this.selectTool_(this.toolInstances[tool]);
+      var toolId = clickedTool.data().toolId;
+      var tool = this.getToolById_(toolId);
+      if (tool) {
+        this.selectTool_(tool);
 
-          // Show tool as selected:
-          $('#tool-section .tool-icon.selected').removeClass('selected');
-          clickedTool.addClass('selected');
-        }
+        // Show tool as selected:
+        $('#tool-section .tool-icon.selected').removeClass('selected');
+        clickedTool.addClass('selected');
       }
     }
+  };
+
+  ns.ToolController.prototype.getToolById_ = function (toolId) {
+    for(var key in this.toolInstances) {
+      if (this.toolInstances[key].toolId == toolId) {
+        return this.toolInstances[key];
+      }
+    }
+    return null;
   };
 
   /**
@@ -81,19 +103,5 @@
               '" title="' + currentTool.helpText + '"></li>';
     }
     $('#tools-container').html(toolMarkup);
-  };
-
-  /**
-   * @public
-   */
-  ns.ToolController.prototype.init = function() {
-
-    this.createToolMarkup_();
-
-    // Initialize tool:
-    // Set SimplePen as default selected tool:
-    this.selectTool_(this.toolInstances.simplePen);
-    // Activate listener on tool panel:
-    $("#tool-section").click($.proxy(this.onToolIconClicked_, this));
   };
 })();

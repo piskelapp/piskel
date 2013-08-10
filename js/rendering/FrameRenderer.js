@@ -29,11 +29,6 @@
     $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
   };
 
-  ns.FrameRenderer.prototype.init = function (frame) {
-    this.render(frame);
-    this.lastRenderedFrame = frame;
-  };
-
   ns.FrameRenderer.prototype.updateDPI = function (newDPI) {
     this.dpi = newDPI;
     this.canvasConfigDirty = true;

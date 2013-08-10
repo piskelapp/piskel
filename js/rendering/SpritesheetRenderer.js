@@ -16,7 +16,7 @@
   };
 
   ns.SpritesheetRenderer.prototype.renderAsImageDataAnimatedGIF = function (fps) {
-    var encoder = new GIFEncoder(), dpi = 10;
+    var encoder = new window.GIFEncoder(), dpi = 10;
     encoder.setRepeat(0);
     encoder.setDelay(1000/fps);
 
@@ -29,7 +29,7 @@
     }
     encoder.finish();
 
-    var imageData = 'data:image/gif;base64,' + encode64(encoder.stream().getData());
+    var imageData = 'data:image/gif;base64,' + window.encode64(encoder.stream().getData());
     return imageData;
   };
 

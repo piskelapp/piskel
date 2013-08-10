@@ -1,4 +1,4 @@
-function encode64(input) {
+window.encode64(input) {
 	var output = "", i = 0, l = input.length,
 	key = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=", 
 	chr1, chr2, chr3, enc1, enc2, enc3, enc4;

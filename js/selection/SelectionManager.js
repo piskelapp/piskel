@@ -1,14 +1,14 @@
 (function () {
   var ns = $.namespace("pskl.selection");
 
-  
-  ns.SelectionManager = function (framesheet, overlayFrame) {
+  ns.SelectionManager = function (framesheet) {
     
     this.framesheet = framesheet;
-    this.overlayFrame = overlayFrame;
     
     this.currentSelection = null;
-    
+  };
+
+  ns.SelectionManager.prototype.init = function () {
     $.subscribe(Events.SELECTION_CREATED, $.proxy(this.onSelectionCreated_, this));
     $.subscribe(Events.SELECTION_DISMISSED, $.proxy(this.onSelectionDismissed_, this)); 
     $.subscribe(Events.SELECTION_MOVE_REQUEST, $.proxy(this.onSelectionMoved_, this));
@@ -23,11 +23,10 @@
   /**
    * @private
    */
-  ns.SelectionManager.prototype.cleanSelection_ = function(selection) {
+  ns.SelectionManager.prototype.cleanSelection_ = function() {
     if(this.currentSelection) {
       this.currentSelection.reset();
     }
-    this.overlayFrame.clear();
   };
 
   /**
@@ -106,12 +105,7 @@
   ns.SelectionManager.prototype.onSelectionCreated_ = function(evt, selection) {
     if(selection) {
       this.currentSelection = selection;
-      var pixels = selection.pixels;
-      for(var i=0, l=pixels.length; i<l; i++) {
-        this.overlayFrame.setPixel(pixels[i].col, pixels[i].row, Constants.SELECTION_TRANSPARENT_COLOR);
-      }
-    }
-    else {
+    } else {
       throw "No selection set in SelectionManager";
     }
   };

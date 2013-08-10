@@ -63,7 +63,6 @@
    */
   ns.BaseSelect.prototype.releaseToolAt = function(col, row, color, frame, overlay) {   
     if(this.mode == "select") {
-      
       this.onSelectEnd_(col, row, color, frame, overlay);
     } else if(this.mode == "moveSelection") {
       
@@ -87,6 +86,17 @@
       // We're not hovering the selection, show create selection tool:
       this.BodyRoot.addClass(this.secondaryToolId);
       this.BodyRoot.removeClass(this.toolId);
+    }
+  };
+
+  /**
+   * For each pixel in the selection draw it in white transparent on the tool overlay
+   * @protected
+   */
+  ns.BaseSelect.prototype.drawSelectionOnOverlay_ = function (selection, overlay) {
+    var pixels = selection.pixels;
+    for(var i=0, l=pixels.length; i<l; i++) {
+      overlay.setPixel(pixels[i].col, pixels[i].row, Constants.SELECTION_TRANSPARENT_COLOR);
     }
   };
 
@@ -125,6 +135,7 @@
     // we clone it to have a reference for the later shifting process.
     this.overlayFrameReference = overlay.clone();
   };
+  
   /** @private */
   ns.BaseSelect.prototype.onSelectionDrag_ = function (col, row, color, frame, overlay) {
     var deltaCol = col - this.lastCol;
@@ -141,10 +152,9 @@
     this.lastCol = col;
     this.lastRow = row; 
   };
+
   /** @private */
   ns.BaseSelect.prototype.onSelectionDragEnd_ = function (col, row, color, frame, overlay) {
     this.onSelectionDrag_(col, row, color, frame, overlay);
   };
-
-
 })();
