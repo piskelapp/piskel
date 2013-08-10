@@ -16,7 +16,7 @@
 	//import flash.net.URLRequest;
 	//import flash.net.navigateToURL;
 	
-	GIFEncoder = function()
+window.GIFEncoder = function()
 	{
 	    for(var i = 0, chr = {}; i < 256; i++)
         chr[i] = String.fromCharCode(i);
