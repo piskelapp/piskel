@@ -10,16 +10,24 @@
  *       If you run this task locally, it may require some env set up first.
  */
 
-module.exports = function (grunt) {
+module.exports = function(grunt) {
   grunt.initConfig({
-    jshint : {
+    jshint: {
       /*options: {
-        "evil": true,
-        "asi": true,
-        "smarttabs": true,
-        "eqnull": true
-      },*/
-      files : [
+				"evil": true,
+				"asi": true,
+				"smarttabs": true,
+				"eqnull": true
+			},*/
+      options: {
+        indent:2,
+        undef : true,
+        latedef : true,
+        browser : true,
+        jquery : true,
+        globals : {'pskl':true, 'Events':true, 'Constants':true, 'console' : true, 'module':true, 'require':true}
+      },
+      files: [
         'Gruntfile.js',
         'package.json',
         'js/**/*.js',
@@ -69,13 +77,23 @@ module.exports = function (grunt) {
     }
   });
 
+  grunt.config.set('leadingIndent.indentation', 'spaces');
+  grunt.config.set('leadingIndent.jsFiles', {
+    src: ['js/**/*.js','!js/lib/**/*.js']
+  });
+  grunt.config.set('leadingIndent.cssFiles', {
+    src: ['css/**/*.css']
+  });
+
   grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-ghost');
+  grunt.loadNpmTasks('grunt-leading-indent');
+
+  grunt.registerTask('lint', ['leadingIndent:jsFiles', 'leadingIndent:cssFiles', 'jshint']);
+  grunt.registerTask('test', ['leadingIndent:jsFiles', 'leadingIndent:cssFiles', 'jshint', 'connect', 'ghost']);
 
   grunt.registerTask('default', ['jshint', 'concat', 'uglify']);
-  grunt.registerTask('lint', ['jshint']);
-  grunt.registerTask('test', ['jshint', 'connect', 'ghost']);
 };
