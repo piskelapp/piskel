@@ -15,22 +15,37 @@
     return canvas.toDataURL("image/png");
   };
 
-  ns.SpritesheetRenderer.prototype.renderAsImageDataAnimatedGIF = function (fps) {
-    var encoder = new window.GIFEncoder(), dpi = 10;
-    encoder.setRepeat(0);
-    encoder.setDelay(1000/fps);
+  ns.SpritesheetRenderer.prototype.blobToBase64_ = function(blob, cb) {
+    var reader = new FileReader();
+    reader.onload = function() {
+      var dataUrl = reader.result;
+      cb(dataUrl);
+    };
+    reader.readAsDataURL(blob);
+  };
 
-    encoder.start();
-    encoder.setSize(this.framesheet.getWidth() * dpi, this.framesheet.getHeight() * dpi);
-    for (var i = 0 ; i < this.framesheet.frames.length ; i++) {
+  ns.SpritesheetRenderer.prototype.renderAsImageDataAnimatedGIF = function(fps, cb) {
+    var dpi = 10;
+    var gif = new window.GIF({
+      workers: 2,
+      quality: 10,
+      width: 320,
+      height: 320
+    });
+
+    for (var i = 0; i < this.framesheet.frames.length; i++) {
       var frame = this.framesheet.frames[i];
       var renderer = new pskl.rendering.CanvasRenderer(frame, dpi);
-      encoder.addFrame(renderer.render());
+      gif.addFrame(renderer.render(), {
+        delay: 1000 / fps
+      });
     }
-    encoder.finish();
 
-    var imageData = 'data:image/gif;base64,' + window.encode64(encoder.stream().getData());
-    return imageData;
+    gif.on('finished', function(blob) {
+      this.blobToBase64_(blob, cb);
+    }.bind(this));
+
+    gif.render();
   };
 
 
