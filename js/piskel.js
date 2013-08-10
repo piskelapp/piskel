@@ -226,8 +226,10 @@
 
     uploadAsAnimatedGIF : function () {
       var fps = pskl.app.animationController.fps;
-      var imageData = (new pskl.rendering.SpritesheetRenderer(frameSheet)).renderAsImageDataAnimatedGIF(fps);
-      this.uploadToScreenletstore(imageData);
+      var renderer = new pskl.rendering.SpritesheetRenderer(frameSheet);
+      var cb = this.uploadToScreenletstore.bind(this);
+
+      renderer.renderAsImageDataAnimatedGIF(fps, cb);
     },
 
     uploadAsSpritesheetPNG : function () {
