@@ -7,7 +7,9 @@
     this.dpi = this.calculateDPI_();
 
     this.redrawFlag = true;
+  };
 
+  ns.PreviewFilmController.prototype.init = function() {
     $.subscribe(Events.TOOL_RELEASED, this.flagForRedraw_.bind(this));
     $.subscribe(Events.FRAMESHEET_RESET, this.flagForRedraw_.bind(this));
     $.subscribe(Events.FRAMESHEET_RESET, this.refreshDPI_.bind(this));
@@ -15,8 +17,6 @@
     $('#preview-list-scroller').scroll(this.updateScrollerOverflows.bind(this));
     this.updateScrollerOverflows();
   };
-
-  ns.PreviewFilmController.prototype.init = function() {};
 
   ns.PreviewFilmController.prototype.addFrame = function () {
     this.framesheet.addEmptyFrame();
@@ -155,7 +155,7 @@
     // is to make this update function (#createPreviewTile) less aggressive.
     var renderingOptions = {"dpi": this.dpi };
     var currentFrameRenderer = new pskl.rendering.FrameRenderer($(canvasContainer), renderingOptions, "tile-view");
-    currentFrameRenderer.init(currentFrame);
+    currentFrameRenderer.render(currentFrame);
     
     previewTileRoot.appendChild(canvasContainer);
 
@@ -207,11 +207,14 @@
    * Calculate the preview DPI depending on the framesheet size
    */
   ns.PreviewFilmController.prototype.calculateDPI_ = function () {
-    var previewSize = 120,
-      framePixelHeight = this.framesheet.getCurrentFrame().getHeight(),
-      framePixelWidth = this.framesheet.getCurrentFrame().getWidth();
-    // TODO (julz) : should have a utility to get a Size from framesheet easily (what about empty framesheets though ?)
+    var curFrame = this.framesheet.getCurrentFrame(),
+      frameHeight = curFrame.getHeight(),
+      frameWidth = curFrame.getWidth(),
+      maxFrameDim = Math.max(frameWidth, frameHeight);
 
-    return pskl.PixelUtils.calculateDPI(previewSize, previewSize, framePixelHeight, framePixelWidth);
+    var previewHeight = Constants.PREVIEW_FILM_SIZE * frameHeight / maxFrameDim;
+    var previewWidth = Constants.PREVIEW_FILM_SIZE * frameWidth / maxFrameDim;
+
+    return pskl.PixelUtils.calculateDPI(previewHeight, previewWidth, frameHeight, frameWidth) || 1;
   };
 })();

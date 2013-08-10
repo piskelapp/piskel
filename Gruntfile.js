@@ -20,7 +20,12 @@ module.exports = function(grunt) {
 				"eqnull": true
 			},*/
       options: {
-        indent:2
+        indent:2,
+        undef : true,
+        latedef : true,
+        browser : true,
+        jquery : true,
+        globals : {'pskl':true, 'Events':true, 'Constants':true, 'console' : true, 'module':true}
       },
       files: [
         'Gruntfile.js',

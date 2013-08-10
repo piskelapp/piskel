@@ -38,6 +38,7 @@
       var selection = new pskl.selection.RectangularSelection(
         this.startCol, this.startRow, col, row);
       $.publish(Events.SELECTION_CREATED, [selection]);
+      this.drawSelectionOnOverlay_(selection, overlay);
     }
   };
 
