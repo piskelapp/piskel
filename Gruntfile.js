@@ -18,7 +18,7 @@ module.exports = function(grunt) {
       filesSrc : ['tests/integration/casperjs/*_test.js'],
       options : {
         args : {
-          baseUrl : 'http://localhost:' + '<%= connect.www.options.port %>/',
+          baseUrl : 'http://localhost:' + '<%= connect.test.options.port %>/',
           mode : '?debug',
           delay : delay
         },
@@ -32,12 +32,6 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
     jshint: {
-      /*options: {
-				"evil": true,
-				"asi": true,
-				"smarttabs": true,
-				"eqnull": true
-			},*/
       options: {
         indent:2,
         undef : true,
@@ -54,10 +48,17 @@ module.exports = function(grunt) {
       ]
     },
     connect : {
-      www : {
+      test : {
         options : {
           base : '.',
-          port : 7357
+          port : 4321
+        }
+      },
+      serve : {
+        options : {
+          base : '.',
+          port : 1234,
+          keepalive : true
         }
       }
     },
@@ -101,9 +102,19 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-ghost');
   grunt.loadNpmTasks('grunt-leading-indent');
 
+  // Validate
   grunt.registerTask('lint', ['leadingIndent:jsFiles', 'leadingIndent:cssFiles', 'jshint']);
-  grunt.registerTask('test', ['leadingIndent:jsFiles', 'leadingIndent:cssFiles', 'jshint', 'connect', 'ghost:default']);
-  grunt.registerTask('precommit', ['leadingIndent:jsFiles', 'leadingIndent:cssFiles', 'jshint', 'connect', 'ghost:local']);
 
-  grunt.registerTask('default', ['jshint', 'concat', 'uglify']);
+  // Validate & Test 
+  grunt.registerTask('test', ['leadingIndent:jsFiles', 'leadingIndent:cssFiles', 'jshint', 'connect:test', 'ghost:default']);
+
+  // Validate & Test (faster version) will NOT work on travis !!
+  grunt.registerTask('precommit', ['leadingIndent:jsFiles', 'leadingIndent:cssFiles', 'jshint', 'connect:test', 'ghost:local']);
+
+  // Validate & Build
+  grunt.registerTask('default', ['leadingIndent:jsFiles', 'leadingIndent:cssFiles', 'jshint', 'concat', 'uglify']);
+
+  // Start webserver
+  grunt.registerTask('serve', ['connect:serve']);
+
 };
