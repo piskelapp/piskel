@@ -3,6 +3,7 @@
 
 # nodejs local installs
 node_modules
+npm-debug.log
 
 # sublime text stuff (the -project should actually be shared, but then we'd have to share the same disk location)
 *.sublime-project
@@ -10,3 +11,6 @@ node_modules
 
 # git stackdumps
 *.stackdump
+
+# builds
+build
