@@ -22,7 +22,7 @@
         scriptIndex ++;
       }
     };
-    loadScript("script-load-list.js", "loadNextScript()");
+    loadScript("piskel-script-list.js", "loadNextScript()");
   } else {
     var script;
     if (window.location.href.indexOf("pack") != -1) {
