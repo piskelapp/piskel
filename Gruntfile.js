@@ -61,7 +61,7 @@ module.exports = function(grunt) {
         separator : ';',
       },
       dist : {
-        src : require('./script-load-list.js').scripts,
+        src : require('./piskel-script-list.js').scripts,
         dest : 'build/piskel-packaged.js',
       },
     },
