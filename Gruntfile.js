@@ -11,6 +11,25 @@
  */
 
 module.exports = function(grunt) {
+
+  var piskelScripts = require('./piskel-script-list.js').scripts;
+  var getGhostConfig = function (delay) {
+    return {
+      filesSrc : ['tests/integration/casperjs/*_test.js'],
+      options : {
+        args : {
+          baseUrl : 'http://localhost:' + '<%= connect.www.options.port %>/',
+          mode : '?debug',
+          delay : delay
+        },
+        direct : false,
+        logLevel : 'info',
+        printCommand : false,
+        printFilePaths : true
+      }
+    };
+  };
+
   grunt.initConfig({
     jshint: {
       /*options: {
@@ -38,30 +57,20 @@ module.exports = function(grunt) {
       www : {
         options : {
           base : '.',
-          port : 4545
+          port : 7357
         }
       }
     },
     ghost : {
-      dist : {
-        filesSrc : ['tests/integration/casperjs/*_test.js'],
-        options : {
-          args : {
-            baseUrl : 'http://localhost:' + '<%= connect.www.options.port %>/'
-          },
-          direct : false,
-          logLevel : 'debug',
-          printCommand : false,
-          printFilePaths : true
-        }
-      }
+      default : getGhostConfig(3000),
+      local : getGhostConfig(50)
     },
     concat : {
       options : {
         separator : ';',
       },
       dist : {
-        src : require('./script-load-list.js').scripts,
+        src : piskelScripts,
         dest : 'build/piskel-packaged.js',
       },
     },
@@ -93,7 +102,8 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-leading-indent');
 
   grunt.registerTask('lint', ['leadingIndent:jsFiles', 'leadingIndent:cssFiles', 'jshint']);
-  grunt.registerTask('test', ['leadingIndent:jsFiles', 'leadingIndent:cssFiles', 'jshint', 'connect', 'ghost']);
+  grunt.registerTask('test', ['leadingIndent:jsFiles', 'leadingIndent:cssFiles', 'jshint', 'connect', 'ghost:default']);
+  grunt.registerTask('precommit', ['leadingIndent:jsFiles', 'leadingIndent:cssFiles', 'jshint', 'connect', 'ghost:local']);
 
   grunt.registerTask('default', ['jshint', 'concat', 'uglify']);
 };
