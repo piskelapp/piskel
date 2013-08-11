@@ -1,7 +1,7 @@
 casper
   .start(casper.cli.get('baseUrl')+"?debug")
   .then(function () {
-    this.wait(3000);
+    this.wait(casper.cli.get('delay'));
   })
   .then(function () {
     this.echo(casper.cli.get('baseUrl')+"?debug");
