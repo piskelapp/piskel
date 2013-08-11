@@ -25,7 +25,7 @@ module.exports = function(grunt) {
         latedef : true,
         browser : true,
         jquery : true,
-        globals : {'pskl':true, 'Events':true, 'Constants':true, 'console' : true, 'module':true}
+        globals : {'pskl':true, 'Events':true, 'Constants':true, 'console' : true, 'module':true, 'require':true}
       },
       files: [
         'Gruntfile.js',
@@ -34,25 +34,44 @@ module.exports = function(grunt) {
         '!js/lib/**/*.js' // Exclude lib folder (note the leading !)
       ]
     },
-    connect: {
-      www: {
-        options: {
-          base: '.',
-          port: 4545
+    connect : {
+      www : {
+        options : {
+          base : '.',
+          port : 4545
         }
       }
     },
-    ghost: {
-      dist: {
-        filesSrc: ['tests/integration/casperjs/*_test.js'],
-        options: {
-          args: {
-            baseUrl: 'http://localhost:' + '<%= connect.www.options.port %>/'
+    ghost : {
+      dist : {
+        filesSrc : ['tests/integration/casperjs/*_test.js'],
+        options : {
+          args : {
+            baseUrl : 'http://localhost:' + '<%= connect.www.options.port %>/'
           },
-          direct: false,
-          logLevel: 'error',
-          printCommand: false,
-          printFilePaths: true
+          direct : false,
+          logLevel : 'debug',
+          printCommand : false,
+          printFilePaths : true
+        }
+      }
+    },
+    concat : {
+      options : {
+        separator : ';',
+      },
+      dist : {
+        src : require('./script-load-list.js').scripts,
+        dest : 'build/piskel-packaged.js',
+      },
+    },
+    uglify : {
+      options : {
+        mangle : true
+      },
+      my_target : {
+        files : {
+          'build/piskel-packaged-min.js' : ['build/piskel-packaged.js']
         }
       }
     }
@@ -66,13 +85,15 @@ module.exports = function(grunt) {
     src: ['css/**/*.css']
   });
 
-
-  grunt.loadNpmTasks('grunt-leading-indent');
   grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-contrib-concat');
+  grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-ghost');
+  grunt.loadNpmTasks('grunt-leading-indent');
 
-  grunt.registerTask('check-indent', ['leadingIndent:jsFiles', 'leadingIndent:cssFiles']);
-  grunt.registerTask('lint', ['jshint']);
+  grunt.registerTask('lint', ['leadingIndent:jsFiles', 'leadingIndent:cssFiles', 'jshint']);
   grunt.registerTask('test', ['leadingIndent:jsFiles', 'leadingIndent:cssFiles', 'jshint', 'connect', 'ghost']);
+
+  grunt.registerTask('default', ['jshint', 'concat', 'uglify']);
 };

@@ -19,7 +19,12 @@
       frameSheet.addEmptyFrame();
       frameSheet.setCurrentFrameIndex(0);
 
-      
+      /**
+       * True when piskel is running in static mode (no back end needed).
+       * When started from APP Engine, appEngineToken_ (Boolean) should be set on window.pskl
+       */
+      this.isStaticVersion = !pskl.appEngineToken_;
+
       this.drawingController = new pskl.controller.DrawingController(frameSheet, $('#drawing-canvas-container'));
       this.drawingController.init();
 
@@ -72,14 +77,17 @@
       if (this.isStaticVersion) {
         var framesheetId = this.readFramesheetIdFromURL_();
         if (framesheetId) {
-          $.publish(Events.SHOW_NOTIFICATION, [{"content": "Loading animation with id : [" + framesheetId + "]"}]);
+          $.publish(Events.SHOW_NOTIFICATION, [{
+            "content" : "Loading animation with id : [" + framesheetId + "]"
+          }]);
           this.loadFramesheetFromService(framesheetId);
         } else {
           this.localStorageService.displayRestoreNotification();
         }
       } else {
-        if (pskl.framesheetData_) {
-          frameSheet.load(pskl.framesheetData_);
+        if (pskl.framesheetData_ && pskl.framesheetData_.content) {
+          frameSheet.load(pskl.framesheetData_.content);
+          pskl.app.animationController.setFPS(pskl.framesheetData_.fps);
         }
       }
     },
@@ -88,16 +96,17 @@
       this.drawingController.render(delta);
       this.animationController.render(delta);
       this.previewsController.render(delta);
-    },    
-
+    },
+    
     readSizeFromURL_ : function () {
-      var sizeParam = this.readUrlParameter_("size"), size;
+      var sizeParam = this.readUrlParameter_("size"),
+        size;
       // parameter expected as size=64x48 => size=widthxheight
       var parts = sizeParam.split("x");
       if (parts && parts.length == 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
         var width = parseInt(parts[0], 10),
-            height = parseInt(parts[1], 10);
-      
+          height = parseInt(parts[1], 10);
+
         size = {
           height : Math.min(height, Constants.MAX_HEIGHT),
           width : Math.min(width, Constants.MAX_WIDTH)
@@ -108,15 +117,15 @@
       return size;
     },
 
-    readFramesheetIdFromURL_ : function() {
+    readFramesheetIdFromURL_ : function () {
       return this.readUrlParameter_("frameId");
     },
 
     readUrlParameter_ : function (paramName) {
       var searchString = window.location.search.substring(1),
-      i, val, params = searchString.split("&");
+        i, val, params = searchString.split("&");
 
-      for (i=0;i<params.length;i++) {
+      for (i = 0; i < params.length; i++) {
         val = params[i].split("=");
         if (val[0] == paramName) {
           return window.unescape(val[1]);
@@ -130,7 +139,7 @@
       xhr.open('GET', Constants.PISKEL_SERVICE_URL + '/get?l=' + frameId, true);
       xhr.responseType = 'text';
 
-      xhr.onload = function(e) {
+      xhr.onload = function (e) {
         var res = JSON.parse(this.responseText);
         frameSheet.load(res.framesheet);
         pskl.app.animationController.setFPS(res.fps);
@@ -145,7 +154,7 @@
     },
 
     getFirstFrameAsPNGData_ : function () {
-      var tmpSheet = new pskl.model.FrameSheet(frameSheet.getWidth(), frameSheet.getHeight());
+      var tmpSheet = new pskl.model.FrameSheet(frameSheet.getHeight(), frameSheet.getWidth());
       tmpSheet.addFrame(frameSheet.getFrameByIndex(0));
       return (new pskl.rendering.SpritesheetRenderer(tmpSheet)).renderAsImageDataSpritesheetPNG();
     },
@@ -167,6 +176,9 @@
         // Get image/png data for first frame
        
         formData.append('preview', this.getFirstFrameAsPNGData_());
+
+        var imageData = (new pskl.rendering.SpritesheetRenderer(frameSheet)).renderAsImageDataSpritesheetPNG();
+        formData.append('framesheet', imageData);
 
         xhr.open('POST', "save", true);
       }
@@ -195,14 +207,14 @@
       return false;
     },
 
-    uploadToScreenletstore : function(imageData) {
+    uploadToScreenletstore : function (imageData) {
       var xhr = new XMLHttpRequest();
       var formData = new FormData();
       formData.append('data', imageData);
       xhr.open('POST', "http://screenletstore.appspot.com/__/upload", true);
       var cloudURL;
       var that = this;
-      xhr.onload = function(e) {
+      xhr.onload = function (e) {
         if (this.status == 200) {
           cloudURL = "http://screenletstore.appspot.com/img/" + this.responseText;
           that.openWindow(cloudURL);
@@ -214,8 +226,10 @@
 
     uploadAsAnimatedGIF : function () {
       var fps = pskl.app.animationController.fps;
-      var imageData = (new pskl.rendering.SpritesheetRenderer(frameSheet)).renderAsImageDataAnimatedGIF(fps);
-      this.uploadToScreenletstore(imageData);
+      var renderer = new pskl.rendering.SpritesheetRenderer(frameSheet);
+      var cb = this.uploadToScreenletstore.bind(this);
+
+      renderer.renderAsImageDataAnimatedGIF(fps, cb);
     },
 
     uploadAsSpritesheetPNG : function () {
@@ -223,7 +237,7 @@
       this.uploadToScreenletstore(imageData);
     },
 
-    openWindow: function(url) {
+    openWindow : function (url) {
       var options = [
         "dialog=yes", "scrollbars=no", "status=no",
         "width=" + frameSheet.getWidth() * frameSheet.getFrameCount(),
@@ -233,7 +247,4 @@
       window.open(url, "piskel-export", options);
     }
   };
-
-  pskl.app.init();
-
 })();

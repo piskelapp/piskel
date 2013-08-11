@@ -11,6 +11,13 @@
   };
 
   /**
+   * @public
+   */
+  ns.LocalStorageService.prototype.init = function(framesheet_) {
+    $.subscribe(Events.LOCALSTORAGE_REQUEST, $.proxy(this.persistToLocalStorageRequest_, this));
+  };
+
+  /**
    * @private
    */
   ns.LocalStorageService.prototype.persistToLocalStorageRequest_ = function () {
@@ -49,13 +56,6 @@
   ns.LocalStorageService.prototype.cleanLocalStorage_ = function() {
     console.log('[LocalStorage service]: Snapshot removed');
     delete window.localStorage.snapShot;
-  };
-
-  /**
-   * @public
-   */
-  ns.LocalStorageService.prototype.init = function(framesheet_) {
-    $.subscribe(Events.LOCALSTORAGE_REQUEST, $.proxy(this.persistToLocalStorageRequest_, this));
   };
 
   /**
