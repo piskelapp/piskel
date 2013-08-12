@@ -24,8 +24,14 @@
 
     <div id="application-action-section" class="sticky-section right-sticky-section">
       <div class="sticky-section-wrap">
-        <iframe src="templates/options.html" class="_ctl" onload="_ctl(event)"></iframe>
-        <iframe src="templates/user-settings-drawer.html" class="cheap-template" onload="_ctl(event)"></iframe>
+        <iframe src="templates/settings.html" class="_ctl" onload="_ctl(event)"></iframe>
+        <div class="drawer vertical-centerer">
+          <div class="drawer-content" id="drawer-container">
+            <!-- these templates are only preloaded in script tags for reusing in JS later -->
+            <iframe src="templates/settings-application.html" onload="_ctp(event)"></iframe>
+            <iframe src="templates/settings-export-gif.html" onload="_ctp(event)"></iframe>
+          </div>
+        </div>
       </div>
     </div>
 

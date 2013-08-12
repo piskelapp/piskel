@@ -41,6 +41,8 @@ exports.scripts = [
   "js/controller/ToolController.js",
   "js/controller/PaletteController.js",
   "js/controller/NotificationController.js",
+  "js/controller/settings/ApplicationSettingsController.js",
+  "js/controller/settings/GifExportController.js",
   "js/controller/SettingsController.js",
 
   // Services
