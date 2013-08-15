@@ -153,6 +153,10 @@
       xhr.send();
     },
 
+    loadFramesheet : function (framesheet) {
+      frameSheet.load(framesheet);
+    },
+
     getFirstFrameAsPNGData_ : function () {
       var tmpSheet = new pskl.model.FrameSheet(frameSheet.getHeight(), frameSheet.getWidth());
       tmpSheet.addFrame(frameSheet.getFrameByIndex(0));
