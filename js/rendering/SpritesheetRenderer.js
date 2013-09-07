@@ -15,40 +15,6 @@
     return canvas.toDataURL("image/png");
   };
 
-  ns.SpritesheetRenderer.prototype.blobToBase64_ = function(blob, cb) {
-    var reader = new FileReader();
-    reader.onload = function() {
-      var dataUrl = reader.result;
-      cb(dataUrl);
-    };
-    reader.readAsDataURL(blob);
-  };
-
-  ns.SpritesheetRenderer.prototype.renderAsImageDataAnimatedGIF = function(fps, cb) {
-    var dpi = 10;
-    var gif = new window.GIF({
-      workers: 2,
-      quality: 10,
-      width: 320,
-      height: 320
-    });
-
-    for (var i = 0; i < this.framesheet.frames.length; i++) {
-      var frame = this.framesheet.frames[i];
-      var renderer = new pskl.rendering.CanvasRenderer(frame, dpi);
-      gif.addFrame(renderer.render(), {
-        delay: 1000 / fps
-      });
-    }
-
-    gif.on('finished', function(blob) {
-      this.blobToBase64_(blob, cb);
-    }.bind(this));
-
-    gif.render();
-  };
-
-
   /**
    * TODO(juliandescottes): Mutualize with code already present in FrameRenderer
    */

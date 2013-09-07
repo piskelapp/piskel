@@ -13,6 +13,7 @@ exports.scripts = [
   
   // Libraries
   "js/utils/core.js",
+  "js/utils/Template.js",
   "js/utils/PixelUtils.js",
   "js/utils/CanvasUtils.js",
   "js/utils/UserSettings.js",
@@ -49,6 +50,7 @@ exports.scripts = [
   "js/service/LocalStorageService.js",
   "js/service/HistoryService.js",
   "js/service/KeyboardEventService.js",  
+  "js/service/ImageUploadService.js",
 
   // Tools
   "js/drawingtools/BaseTool.js",

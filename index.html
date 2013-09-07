@@ -9,6 +9,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" type="text/css" href="css/reset.css">
   <link rel="stylesheet" type="text/css" href="css/style.css">
+  <link rel="stylesheet" type="text/css" href="css/settings.css">
   <link rel="stylesheet" type="text/css" href="css/tools.css">
   <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap.css">
   <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap-tooltip-custom.css">
@@ -22,37 +23,34 @@
   <div id="main-wrapper" class="main-wrapper">
     <iframe src="templates/drawing-tools.html" class="_ctl" onload="_ctl(event)"></iframe>
 
-    <div id="application-action-section" class="sticky-section right-sticky-section">
-      <div class="sticky-section-wrap">
-        <iframe src="templates/settings.html" class="_ctl" onload="_ctl(event)"></iframe>
-        <div class="drawer vertical-centerer">
-          <div class="drawer-content" id="drawer-container">
-            <!-- these templates are only preloaded in script tags for reusing in JS later -->
-            <iframe src="templates/settings-application.html" onload="_ctp(event)"></iframe>
-            <iframe src="templates/settings-export-gif.html" onload="_ctp(event)"></iframe>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <div id="column-wrapper" class="column-wrapper">
       <div class='column left-column'>
-        <!-- List of frames: -->
         <iframe src="templates/frames-list.html" class="_ctl" onload="_ctl(event)"></iframe>
       </div>
 
       <div class='column main-column'>
-        <!-- Drawing area: -->
         <div id="drawing-canvas-container" class="drawing-canvas-container canvas-container">
           <div class="canvas-background"></div>
         </div>
       </div>
 
       <div class="column right-column">
-        <!-- Animation preview: -->
         <iframe src="templates/preview.html" class="_ctl" onload="_ctl(event)"></iframe>
       </div>
     </div>
+
+    <div id="application-action-section" data-pskl-controller="settings" class="sticky-section right-sticky-section">
+      <div class="sticky-section-wrap">
+        <iframe src="templates/settings.html" class="_ctl" onload="_ctl(event)"></iframe>
+        <div class="drawer vertical-centerer">
+          <div class="drawer-content" id="drawer-container">
+            <iframe src="templates/settings-application.html" onload="_ctp(event)"></iframe>
+            <iframe src="templates/settings-export-gif.html" onload="_ctp(event)"></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+    
   </div>
   
   <script type="text/javascript" src="piskel-boot.js"></script>

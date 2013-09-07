@@ -34,7 +34,7 @@
       this.previewsController = new pskl.controller.PreviewFilmController(frameSheet, $('#preview-list'));
       this.previewsController.init();
 
-      this.settingsController = new pskl.controller.SettingsController();
+      this.settingsController = new pskl.controller.SettingsController(frameSheet);
       this.settingsController.init();
 
       this.selectionManager = new pskl.selection.SelectionManager(frameSheet);
@@ -51,6 +51,9 @@
 
       this.localStorageService = new pskl.service.LocalStorageService(frameSheet);
       this.localStorageService.init();
+
+      this.imageUploadService = new pskl.service.ImageUploadService();
+      this.imageUploadService.init();
 
       this.toolController = new pskl.controller.ToolController();
       this.toolController.init();
@@ -211,34 +214,18 @@
       return false;
     },
 
-    uploadToScreenletstore : function (imageData) {
-      var xhr = new XMLHttpRequest();
-      var formData = new FormData();
-      formData.append('data', imageData);
-      xhr.open('POST', "http://screenletstore.appspot.com/__/upload", true);
-      var cloudURL;
-      var that = this;
-      xhr.onload = function (e) {
-        if (this.status == 200) {
-          cloudURL = "http://screenletstore.appspot.com/img/" + this.responseText;
-          that.openWindow(cloudURL);
-        }
-      };
-
-      xhr.send(formData);
-    },
-
     uploadAsAnimatedGIF : function () {
       var fps = pskl.app.animationController.fps;
       var renderer = new pskl.rendering.SpritesheetRenderer(frameSheet);
-      var cb = this.uploadToScreenletstore.bind(this);
 
-      renderer.renderAsImageDataAnimatedGIF(fps, cb);
+      renderer.renderAsImageDataAnimatedGIF(fps, function (imageData) {
+        this.imageUploadService.upload(imageData, this.openWindow);
+      }.bind(this));
     },
 
     uploadAsSpritesheetPNG : function () {
       var imageData = (new pskl.rendering.SpritesheetRenderer(frameSheet)).renderAsImageDataSpritesheetPNG();
-      this.uploadToScreenletstore(imageData);
+      this.imageUploadService.upload(imageData, this.openWindow);
     },
 
     openWindow : function (url) {
