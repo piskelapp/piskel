@@ -1,9 +1,9 @@
 (function () {
   var ns = $.namespace("pskl.selection");
 
-  ns.SelectionManager = function (framesheet) {
+  ns.SelectionManager = function (piskelController) {
     
-    this.framesheet = framesheet;
+    this.piskelController = piskelController;
     
     this.currentSelection = null;
   };
@@ -52,10 +52,10 @@
   ns.SelectionManager.prototype.onCut_ = function(evt) {
     if(this.currentSelection) {
       // Put cut target into the selection:
-      this.currentSelection.fillSelectionFromFrame(this.framesheet.getCurrentFrame());
+      this.currentSelection.fillSelectionFromFrame(this.piskelController.getCurrentFrame());
 
       var pixels = this.currentSelection.pixels;
-      var currentFrame = this.framesheet.getCurrentFrame();
+      var currentFrame = this.piskelController.getCurrentFrame();
       for(var i=0, l=pixels.length; i<l; i++) {
         try {
           currentFrame.setPixel(pixels[i].col, pixels[i].row, Constants.TRANSPARENT_COLOR);
@@ -73,7 +73,7 @@
   ns.SelectionManager.prototype.onPaste_ = function(evt) {
     if(this.currentSelection && this.currentSelection.hasPastedContent) {
       var pixels = this.currentSelection.pixels;
-      var currentFrame = this.framesheet.getCurrentFrame();
+      var currentFrame = this.piskelController.getCurrentFrame();
       for(var i=0, l=pixels.length; i<l; i++) {
         try {
           currentFrame.setPixel(
@@ -91,8 +91,8 @@
    * @private
    */
   ns.SelectionManager.prototype.onCopy_ = function(evt) {
-    if(this.currentSelection && this.framesheet.getCurrentFrame()) {
-      this.currentSelection.fillSelectionFromFrame(this.framesheet.getCurrentFrame());
+    if(this.currentSelection && this.piskelController.getCurrentFrame()) {
+      this.currentSelection.fillSelectionFromFrame(this.piskelController.getCurrentFrame());
     }
     else {
       throw "Bad state for CUT callback in SelectionManager";

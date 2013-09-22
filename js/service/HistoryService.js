@@ -1,7 +1,7 @@
 (function () {
   var ns = $.namespace("pskl.service");
-  ns.HistoryService = function (framesheet) {
-    this.framesheet = framesheet; 
+  ns.HistoryService = function (piskelController) {
+    this.piskelController = piskelController; 
   };
 
   ns.HistoryService.prototype.init = function () {
@@ -12,16 +12,16 @@
   };
 
   ns.HistoryService.prototype.saveState = function () {
-    this.framesheet.getCurrentFrame().saveState();
+    this.piskelController.getCurrentFrame().saveState();
   };
 
   ns.HistoryService.prototype.undo = function () {
-    this.framesheet.getCurrentFrame().loadPreviousState();
+    this.piskelController.getCurrentFrame().loadPreviousState();
     $.publish(Events.FRAMESHEET_RESET);
   };
 
   ns.HistoryService.prototype.redo = function () {
-    this.framesheet.getCurrentFrame().loadNextState();
+    this.piskelController.getCurrentFrame().loadNextState();
     $.publish(Events.FRAMESHEET_RESET);
   };
 

@@ -13,9 +13,11 @@ exports.scripts = [
   
   // Libraries
   "js/utils/core.js",
-  "js/utils/Template.js",
-  "js/utils/PixelUtils.js",
   "js/utils/CanvasUtils.js",
+  "js/utils/FrameUtils.js",
+  "js/utils/PixelUtils.js",
+  "js/utils/Serializer.js",
+  "js/utils/Template.js",
   "js/utils/UserSettings.js",
   "js/lib/jsColor_1_4_0/jscolor.js",
 
@@ -24,7 +26,10 @@ exports.scripts = [
 
   // Models
   "js/model/Frame.js",
-  "js/model/FrameSheet.js",
+  "js/model/Layer.js",
+  "js/model/Piskel.js",
+
+  // Selection
   "js/selection/SelectionManager.js",
   "js/selection/BaseSelection.js",
   "js/selection/RectangularSelection.js",
@@ -36,6 +41,7 @@ exports.scripts = [
   "js/rendering/SpritesheetRenderer.js",
 
   // Controllers
+  "js/controller/PiskelController.js",
   "js/controller/DrawingController.js",
   "js/controller/PreviewFilmController.js",
   "js/controller/AnimatedPreviewController.js",
@@ -68,5 +74,5 @@ exports.scripts = [
   "js/drawingtools/ColorPicker.js",
 
   // Application controller and initialization
-  "js/piskel.js"
+  "js/app.js"
 ];

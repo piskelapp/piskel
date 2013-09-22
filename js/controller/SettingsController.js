@@ -15,8 +15,8 @@
   var SEL_SETTING_CLS = 'has-expanded-drawer';
   var EXP_DRAWER_CLS = 'expanded';
 
-  ns.SettingsController = function (framesheet) {
-    this.framesheet = framesheet;
+  ns.SettingsController = function (piskelController) {
+    this.piskelController = piskelController;
     this.drawerContainer = document.getElementById("drawer-container");
     this.settingsContainer = $('[data-pskl-controller=settings]');
     this.expanded = false;
@@ -48,7 +48,7 @@
 
   ns.SettingsController.prototype.loadSetting = function (setting) {
     this.drawerContainer.innerHTML = pskl.utils.Template.get(settings[setting].template);
-    (new settings[setting].controller(this.framesheet)).init();
+    (new settings[setting].controller(this.piskelController)).init();
     
     this.settingsContainer.addClass(EXP_DRAWER_CLS);
     

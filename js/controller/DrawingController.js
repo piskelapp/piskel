@@ -1,15 +1,15 @@
 (function () {
   var ns = $.namespace("pskl.controller");
-  ns.DrawingController = function (framesheet, container) {
+  ns.DrawingController = function (piskelController, container) {
     /**
      * @public
      */
-    this.framesheet = framesheet;
+    this.piskelController = piskelController;
     
     /**
      * @public
      */
-    this.overlayFrame = pskl.model.Frame.createEmptyFromFrame(framesheet.getCurrentFrame());
+    this.overlayFrame = pskl.model.Frame.createEmptyFromFrame(piskelController.getCurrentFrame());
 
     /**
      * @private
@@ -36,7 +36,7 @@
   };
 
   ns.DrawingController.prototype.init = function () {
-    this.renderer.render(this.framesheet.getCurrentFrame());
+    this.renderer.render(this.piskelController.getCurrentFrame());
     this.overlayRenderer.render(this.overlayFrame);
     
     this.initMouseBehavior();
@@ -114,7 +114,7 @@
     this.currentToolBehavior.applyToolAt(
       coords.col, coords.row,
       this.getCurrentColor_(),
-      this.framesheet.getCurrentFrame(),
+      this.piskelController.getCurrentFrame(),
       this.overlayFrame,
       this.wrapEvtInfo_(event)
     );      
@@ -135,7 +135,7 @@
         this.currentToolBehavior.moveToolAt(
           coords.col, coords.row,
           this.getCurrentColor_(),
-          this.framesheet.getCurrentFrame(),
+          this.piskelController.getCurrentFrame(),
           this.overlayFrame,
           this.wrapEvtInfo_(event)
         );
@@ -149,7 +149,7 @@
         this.currentToolBehavior.moveUnactiveToolAt(
           coords.col, coords.row,
           this.getCurrentColor_(),
-          this.framesheet.getCurrentFrame(),
+          this.piskelController.getCurrentFrame(),
           this.overlayFrame,
           this.wrapEvtInfo_(event)
         );
@@ -176,7 +176,7 @@
       this.currentToolBehavior.releaseToolAt(
         coords.col, coords.row,
         this.getCurrentColor_(),
-        this.framesheet.getCurrentFrame(),
+        this.piskelController.getCurrentFrame(),
         this.overlayFrame,
         this.wrapEvtInfo_(event)
       );
@@ -247,7 +247,7 @@
   };
 
   ns.DrawingController.prototype.renderFrame = function () {
-    var frame = this.framesheet.getCurrentFrame();
+    var frame = this.piskelController.getCurrentFrame();
     var serializedFrame = frame.serialize();
     if (this.serializedFrame != serializedFrame) {
       if (!frame.isSameSize(this.overlayFrame)) {
@@ -278,8 +278,8 @@
       leftSectionWidth = $('.left-column').outerWidth(true),
       rightSectionWidth = $('.right-column').outerWidth(true),
       availableViewportWidth = $('#main-wrapper').width() - leftSectionWidth - rightSectionWidth,
-      framePixelHeight = this.framesheet.getCurrentFrame().getHeight(),
-      framePixelWidth = this.framesheet.getCurrentFrame().getWidth();
+      framePixelHeight = this.piskelController.getCurrentFrame().getHeight(),
+      framePixelWidth = this.piskelController.getCurrentFrame().getWidth();
 
     if (pskl.UserSettings.get(pskl.UserSettings.SHOW_GRID)) {
       availableViewportWidth = availableViewportWidth - (framePixelWidth * Constants.GRID_STROKE_WIDTH);
@@ -300,7 +300,7 @@
     this.renderer.updateDPI(dpi);
     this.overlayRenderer.updateDPI(dpi);
 
-    var currentFrameHeight =  this.framesheet.getCurrentFrame().getHeight();
+    var currentFrameHeight =  this.piskelController.getCurrentFrame().getHeight();
     var canvasHeight = currentFrameHeight * dpi;
     if (pskl.UserSettings.get(pskl.UserSettings.SHOW_GRID)) {
       canvasHeight += Constants.GRID_STROKE_WIDTH * currentFrameHeight;

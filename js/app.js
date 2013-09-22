@@ -5,42 +5,38 @@
 (function () {
   var ns = $.namespace("pskl");
   /**
-   * FrameSheetModel instance.
-   */
-  var frameSheet;
-  /**
    * Main application controller
    */
   ns.app = {
 
     init : function () {
-      var frameSize = this.readSizeFromURL_();
-      frameSheet = new pskl.model.FrameSheet(frameSize.height, frameSize.width);
-      frameSheet.addEmptyFrame();
-      frameSheet.setCurrentFrameIndex(0);
+      var size = this.readSizeFromURL_();
+      var piskel = new pskl.model.Piskel(size.width, size.height, Constants.DEFAULT.FPS);
 
-      /**
-       * True when piskel is running in static mode (no back end needed).
-       * When started from APP Engine, appEngineToken_ (Boolean) should be set on window.pskl
-       */
-      this.isStaticVersion = !pskl.appEngineToken_;
+      var layer = new pskl.model.Layer("Default layer");
+      var frame = new pskl.model.Frame(size.width, size.height);
+      layer.addFrame(frame);
 
-      this.drawingController = new pskl.controller.DrawingController(frameSheet, $('#drawing-canvas-container'));
+      piskel.addLayer(layer);
+
+      this.piskelController = new pskl.controller.PiskelController(piskel);
+
+      this.drawingController = new pskl.controller.DrawingController(this.piskelController, $('#drawing-canvas-container'));
       this.drawingController.init();
 
-      this.animationController = new pskl.controller.AnimatedPreviewController(frameSheet, $('#preview-canvas-container'));
+      this.animationController = new pskl.controller.AnimatedPreviewController(this.piskelController, $('#preview-canvas-container'));
       this.animationController.init();
       
-      this.previewsController = new pskl.controller.PreviewFilmController(frameSheet, $('#preview-list'));
+      this.previewsController = new pskl.controller.PreviewFilmController(this.piskelController, $('#preview-list'));
       this.previewsController.init();
 
-      this.settingsController = new pskl.controller.SettingsController(frameSheet);
+      this.settingsController = new pskl.controller.SettingsController(this.piskelController);
       this.settingsController.init();
 
-      this.selectionManager = new pskl.selection.SelectionManager(frameSheet);
+      this.selectionManager = new pskl.selection.SelectionManager(this.piskelController);
       this.selectionManager.init();
 
-      this.historyService = new pskl.service.HistoryService(frameSheet);
+      this.historyService = new pskl.service.HistoryService(this.piskelController);
       this.historyService.init();
 
       this.keyboardEventService = new pskl.service.KeyboardEventService();
@@ -49,7 +45,7 @@
       this.notificationController = new pskl.controller.NotificationController();
       this.notificationController.init();
 
-      this.localStorageService = new pskl.service.LocalStorageService(frameSheet);
+      this.localStorageService = new pskl.service.LocalStorageService(this.piskelController);
       this.localStorageService.init();
 
       this.imageUploadService = new pskl.service.ImageUploadService();
@@ -59,17 +55,14 @@
       this.toolController.init();
       
       this.paletteController = new pskl.controller.PaletteController();
-      this.paletteController.init(frameSheet);
+      this.paletteController.init();
 
       var drawingLoop = new pskl.rendering.DrawingLoop();
       drawingLoop.addCallback(this.render, this);
       drawingLoop.start();
 
-      // Init (event-delegated) bootstrap tooltips:
-      $('body').tooltip({
-        selector: '[rel=tooltip]'
-      });
-
+      this.initBootstrapTooltips_();
+      
       
       /**
        * True when piskel is running in static mode (no back end needed).
@@ -89,10 +82,16 @@
         }
       } else {
         if (pskl.framesheetData_ && pskl.framesheetData_.content) {
-          frameSheet.load(pskl.framesheetData_.content);
+          this.piskelController.load(pskl.framesheetData_.content);
           pskl.app.animationController.setFPS(pskl.framesheetData_.fps);
         }
       }
+    },
+
+    initBootstrapTooltips_ : function () {
+      $('body').tooltip({
+        selector: '[rel=tooltip]'
+      });
     },
 
     render : function (delta) {
@@ -115,7 +114,10 @@
           width : Math.min(width, Constants.MAX_WIDTH)
         };
       } else {
-        size = Constants.DEFAULT_SIZE;
+        size = {
+          height : Constants.DEFAULT.HEIGHT,
+          width : Constants.DEFAULT.WIDTH
+        };
       }
       return size;
     },
@@ -141,10 +143,10 @@
       var xhr = new XMLHttpRequest();
       xhr.open('GET', Constants.PISKEL_SERVICE_URL + '/get?l=' + frameId, true);
       xhr.responseType = 'text';
-
+      var piskelController = this.piskelController;
       xhr.onload = function (e) {
         var res = JSON.parse(this.responseText);
-        frameSheet.load(res.framesheet);
+        piskelController.deserialize(JSON.stringify(res.framesheet));
         pskl.app.animationController.setFPS(res.fps);
         $.publish(Events.HIDE_NOTIFICATION);
       };
@@ -156,21 +158,15 @@
       xhr.send();
     },
 
-    loadFramesheet : function (framesheet) {
-      frameSheet.load(framesheet);
-    },
-
     getFirstFrameAsPNGData_ : function () {
-      var tmpSheet = new pskl.model.FrameSheet(frameSheet.getHeight(), frameSheet.getWidth());
-      tmpSheet.addFrame(frameSheet.getFrameByIndex(0));
-      return (new pskl.rendering.SpritesheetRenderer(tmpSheet)).renderAsImageDataSpritesheetPNG();
+      throw 'getFirstFrameAsPNGData_ not implemented';
     },
 
     // TODO(julz): Create package ?
     storeSheet : function (event) {
       var xhr = new XMLHttpRequest();
       var formData = new FormData();
-      formData.append('framesheet_content', frameSheet.serialize());
+      formData.append('framesheet_content', this.piskelController.serialize());
       formData.append('fps_speed', $('#preview-fps').val());
 
       if (this.isStaticVersion) {
@@ -179,12 +175,12 @@
       } else {
         // additional values only used with latest app-engine backend
         formData.append('name', $('#piskel-name').val());
-        formData.append('frames', frameSheet.getFrameCount());
+        formData.append('frames', this.piskelController.getFrameCount());
+        
         // Get image/png data for first frame
-       
         formData.append('preview', this.getFirstFrameAsPNGData_());
 
-        var imageData = (new pskl.rendering.SpritesheetRenderer(frameSheet)).renderAsImageDataSpritesheetPNG();
+        var imageData = (new pskl.rendering.SpritesheetRenderer(this.piskelController)).renderAsImageDataSpritesheetPNG();
         formData.append('framesheet', imageData);
 
         xhr.open('POST', "save", true);
@@ -214,25 +210,16 @@
       return false;
     },
 
-    uploadAsAnimatedGIF : function () {
-      var fps = pskl.app.animationController.fps;
-      var renderer = new pskl.rendering.SpritesheetRenderer(frameSheet);
-
-      renderer.renderAsImageDataAnimatedGIF(fps, function (imageData) {
-        this.imageUploadService.upload(imageData, this.openWindow);
-      }.bind(this));
-    },
-
     uploadAsSpritesheetPNG : function () {
-      var imageData = (new pskl.rendering.SpritesheetRenderer(frameSheet)).renderAsImageDataSpritesheetPNG();
-      this.imageUploadService.upload(imageData, this.openWindow);
+      var imageData = (new pskl.rendering.SpritesheetRenderer(this.piskelController)).renderAsImageDataSpritesheetPNG();
+      this.imageUploadService.upload(imageData, this.openWindow.bind(this));
     },
 
     openWindow : function (url) {
       var options = [
         "dialog=yes", "scrollbars=no", "status=no",
-        "width=" + frameSheet.getWidth() * frameSheet.getFrameCount(),
-        "height=" + frameSheet.getHeight()
+        "width=" + this.piskelController.getWidth() * this.piskelController.getFrameCount(),
+        "height=" + this.piskelController.getHeight()
       ].join(",");
 
       window.open(url, "piskel-export", options);

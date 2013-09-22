@@ -4,6 +4,14 @@
   ns.NotificationController = function () {};
 
   /**
+   * @public
+   */
+  ns.NotificationController.prototype.init = function() {
+    $.subscribe(Events.SHOW_NOTIFICATION, $.proxy(this.displayMessage_, this));
+    $.subscribe(Events.HIDE_NOTIFICATION, $.proxy(this.removeMessage_, this));
+  };
+
+  /**
    * @private
    */
   ns.NotificationController.prototype.displayMessage_ = function (evt, messageInfo) {
@@ -27,13 +35,5 @@
     if (message.length) {
       message.remove();
     }
-  };
-
-  /**
-   * @public
-   */
-  ns.NotificationController.prototype.init = function() {
-    $.subscribe(Events.SHOW_NOTIFICATION, $.proxy(this.displayMessage_, this));
-    $.subscribe(Events.HIDE_NOTIFICATION, $.proxy(this.removeMessage_, this));
   };
 })();

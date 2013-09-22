@@ -2,15 +2,15 @@
 
   var ns = $.namespace("pskl.rendering");
 
-  ns.SpritesheetRenderer = function (framesheet) {
-    this.framesheet = framesheet;
+  ns.SpritesheetRenderer = function (piskelController) {
+    this.piskelController = piskelController;
   };
 
   ns.SpritesheetRenderer.prototype.renderAsImageDataSpritesheetPNG = function () {
     var canvas = this.createCanvas_();
-    for (var i = 0 ; i < this.framesheet.getFrameCount() ; i++) {
-      var frame = this.framesheet.getFrameByIndex(i);
-      this.drawFrameInCanvas_(frame, canvas, i * this.framesheet.getWidth(), 0);
+    for (var i = 0 ; i < this.piskelController.getFrameCount() ; i++) {
+      var frame = this.piskelController.getFrameAt(i);
+      this.drawFrameInCanvas_(frame, canvas, i * this.piskelController.getWidth(), 0);
     }
     return canvas.toDataURL("image/png");
   };
@@ -32,10 +32,10 @@
   };
 
   ns.SpritesheetRenderer.prototype.createCanvas_ = function () {
-    var frameCount = this.framesheet.getFrameCount();
+    var frameCount = this.piskelController.getFrameCount();
     if (frameCount > 0){
-      var width = frameCount * this.framesheet.getWidth();
-      var height = this.framesheet.getHeight();
+      var width = frameCount * this.piskelController.getWidth();
+      var height = this.piskelController.getHeight();
       return pskl.CanvasUtils.createCanvas(width, height);
     } else {
       throw "Cannot render empty Spritesheet";

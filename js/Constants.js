@@ -1,9 +1,12 @@
 // TODO(grosbouddha): put under pskl namespace.
 var Constants = {
-  DEFAULT_SIZE : {
-    height : 32,
-    width : 32
+  DEFAULT : {
+    HEIGHT : 32,
+    WIDTH : 32,
+    FPS : 12
   },
+
+  MODEL_VERSION : 1,
 
   MAX_HEIGHT : 128,
   MAX_WIDTH : 128,

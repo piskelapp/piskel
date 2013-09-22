@@ -23,12 +23,12 @@
     this.frames.push(frame);
   };
 
-  ns.FrameSheet.prototype.getFrameCount = function () {
-    return this.frames.length;
-  };
-
   ns.FrameSheet.prototype.getCurrentFrame = function () {
     return this.frames[this.currentFrameIndex];
+  };
+
+  ns.FrameSheet.prototype.getFrameCount = function () {
+    return this.frames.length;
   };
 
   ns.FrameSheet.prototype.setCurrentFrameIndex = function (index) {
@@ -101,7 +101,7 @@
 
   
   ns.FrameSheet.prototype.hasFrameAtIndex = function(index) {
-    return (index >= 0 && index < this.getFrameCount());
+    return (index >= 0 && index < this.frames.length);
   };
 
   ns.FrameSheet.prototype.getFrameByIndex = function(index) {
@@ -122,10 +122,9 @@
     }
     this.frames.splice(index, 1);
 
-    // Current frame index might not be valid anymore
-    if (!this.hasFrameAtIndex(this.currentFrameIndex)) {
-      // if not select last frame available
-      this.setCurrentFrameIndex(this.getFrameCount() - 1);
+    // Current frame index is impacted if the removed frame was before the current frame
+    if (this.currentFrameIndex >= index) {
+      this.setCurrentFrameIndex(this.currentFrameIndex - 1);
     }
 
     $.publish(Events.FRAMESHEET_RESET);

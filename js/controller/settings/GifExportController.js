@@ -1,7 +1,7 @@
 (function () {
   var ns = $.namespace("pskl.controller.settings");
-  ns.GifExportController = function (framesheet) {
-    this.framesheet = framesheet;
+  ns.GifExportController = function (piskelController) {
+    this.piskelController = piskelController;
   };
 
   ns.GifExportController.prototype.init = function () {
@@ -61,7 +61,7 @@
   };
 
   ns.GifExportController.prototype.createRadioForDpi_ = function (dpi, template) {
-    var label = dpi[0]*this.framesheet.getWidth() + "x" + dpi[0]*this.framesheet.getHeight();
+    var label = dpi[0]*this.piskelController.getWidth() + "x" + dpi[0]*this.piskelController.getHeight();
     var value = dpi[0];
     var radioHTML = pskl.utils.Template.replace(template, {value : value, label : label});
     var radio = pskl.utils.Template.createFromHTML(radioHTML);
@@ -86,12 +86,12 @@
     var gif = new window.GIF({
       workers: 2,
       quality: 10,
-      width: this.framesheet.getWidth()*dpi,
-      height: this.framesheet.getHeight()*dpi
+      width: this.piskelController.getWidth()*dpi,
+      height: this.piskelController.getHeight()*dpi
     });
 
-    for (var i = 0; i < this.framesheet.frames.length; i++) {
-      var frame = this.framesheet.frames[i];
+    for (var i = 0; i < this.piskelController.getFrameCount(); i++) {
+      var frame = this.piskelController.getFrameAt(i);
       var renderer = new pskl.rendering.CanvasRenderer(frame, dpi);
       gif.addFrame(renderer.render(), {
         delay: 1000 / fps
