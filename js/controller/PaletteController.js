@@ -12,12 +12,10 @@
 
     $.subscribe(Events.PRIMARY_COLOR_UPDATED, $.proxy(function(evt, color) {
       this.updateColorPicker_(color, $('#color-picker'));
-      this.addColorToPalette_(color);
     }, this));
 
     $.subscribe(Events.SECONDARY_COLOR_UPDATED, $.proxy(function(evt, color) {
       this.updateColorPicker_(color, $('#secondary-color-picker'));
-      this.addColorToPalette_(color);
     }, this));
 
     // Initialize colorpickers:

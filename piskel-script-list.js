@@ -44,6 +44,7 @@ exports.scripts = [
   "js/controller/PiskelController.js",
   "js/controller/DrawingController.js",
   "js/controller/PreviewFilmController.js",
+  "js/controller/LayersController.js",
   "js/controller/AnimatedPreviewController.js",
   "js/controller/ToolController.js",
   "js/controller/PaletteController.js",

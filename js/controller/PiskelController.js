@@ -22,6 +22,10 @@
     return this.piskel.getWidth();
   };
 
+  ns.PiskelController.prototype.getLayers = function () {
+    return this.piskel.getLayers();
+  };
+
   ns.PiskelController.prototype.getCurrentLayer = function () {
     return this.piskel.getLayerAt(this.currentLayerIndex);
   };
@@ -32,7 +36,7 @@
   };
 
   ns.PiskelController.prototype.getFrameAt = function (index) {
-    var frames = this.piskel.getLayers().map(function (l) {
+    var frames = this.getLayers().map(function (l) {
       return l.getFrameAt(index);
     });
     return pskl.utils.FrameUtils.merge(frames);
@@ -47,7 +51,7 @@
     ns.PiskelController.prototype.getMergedFrameAt;
 
   ns.PiskelController.prototype.addEmptyFrame = function () {
-    var layers = this.piskel.getLayers();
+    var layers = this.getLayers();
     layers.forEach(function (l) {
       l.addFrame(this.createEmptyFrame_());
     }.bind(this));
@@ -59,7 +63,7 @@
   };
 
   ns.PiskelController.prototype.removeFrameAt = function (index) {
-    var layers = this.piskel.getLayers();
+    var layers = this.getLayers();
     layers.forEach(function (l) {
       l.removeFrameAt(index);
     });
@@ -72,14 +76,14 @@
   };
 
   ns.PiskelController.prototype.duplicateFrameAt = function (index) {
-    var layers = this.piskel.getLayers();
+    var layers = this.getLayers();
     layers.forEach(function (l) {
       l.duplicateFrameAt(index);
     });
   };
 
   ns.PiskelController.prototype.moveFrame = function (fromIndex, toIndex) {
-    var layers = this.piskel.getLayers();
+    var layers = this.getLayers();
     layers.forEach(function (l) {
       l.moveFrame(fromIndex, toIndex);
     });
@@ -100,13 +104,58 @@
     $.publish(Events.FRAMESHEET_RESET);
   };
 
-  ns.PiskelController.prototype.createLayer = function (name) {
-    var layer = new pskl.model.Layer(name);
-    for (var i = 0 ; i < this.getFrameCount() ; i++) {
-      layer.addFrame(this.createEmptyFrame_());
+  ns.PiskelController.prototype.selectLayer = function (layer) {
+    var index = this.getLayers().indexOf(layer);
+    if (index != -1) {
+      this.setCurrentLayerIndex(index);
     }
-    this.piskel.addLayer(layer);
-    this.setCurrentLayerIndex(this.piskel.getLayers().length - 1);
+  };
+
+  ns.PiskelController.prototype.selectLayerByName = function (name) {
+    if (this.hasLayerForName_(name)) {
+      var layer = this.piskel.getLayersByName(name)[0];
+      this.selectLayer(layer);
+    }
+  };
+
+  ns.PiskelController.prototype.createLayer = function (name) {
+    if (!name) {
+      name = "Layer " + (this.getLayers().length + 1);
+    }
+    if (!this.hasLayerForName_(name)) {
+      var layer = new pskl.model.Layer(name);
+      for (var i = 0 ; i < this.getFrameCount() ; i++) {
+        layer.addFrame(this.createEmptyFrame_());
+      }
+      this.piskel.addLayer(layer);
+      this.setCurrentLayerIndex(this.piskel.getLayers().length - 1);
+    } else {
+      throw 'Layer name should be unique';
+    }
+  };
+
+  ns.PiskelController.prototype.hasLayerForName_ = function (name) {
+    return this.piskel.getLayersByName(name).length > 0;
+  };
+
+  ns.PiskelController.prototype.moveLayerUp = function () {
+    var layer = this.getCurrentLayer();
+    this.piskel.moveLayerUp(layer);
+    this.selectLayer(layer);
+  };
+
+  ns.PiskelController.prototype.moveLayerDown = function () {
+    var layer = this.getCurrentLayer();
+    this.piskel.moveLayerDown(layer);
+    this.selectLayer(layer);
+  };
+
+  ns.PiskelController.prototype.removeCurrentLayer = function () {
+    if (this.getLayers().length > 1) {
+      var layer = this.getCurrentLayer();
+      this.piskel.removeLayer(layer);
+      this.setCurrentLayerIndex(0);
+    }
   };
 
   ns.PiskelController.prototype.serialize = function () {

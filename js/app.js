@@ -29,6 +29,9 @@
       
       this.previewsController = new pskl.controller.PreviewFilmController(this.piskelController, $('#preview-list'));
       this.previewsController.init();
+      
+      this.layersController = new pskl.controller.LayersController(this.piskelController);
+      this.layersController.init();
 
       this.settingsController = new pskl.controller.SettingsController(this.piskelController);
       this.settingsController.init();

@@ -177,6 +177,71 @@ body {
   overflow: hidden;
 }
 
+/**
+ * Layers container
+ */
+.layers-container {
+  border : 1px solid #444;
+  font-size : medium;
+  color: white;
+  text-align: left;
+}
+
+.layers-title {
+  padding : 10px;
+  margin: 0;
+  font-size : 18px;
+}
+
+.layers-list {
+  font-size : 12px;
+  border-bottom: 1px solid #444;
+}
+
+.layer-item {
+  height:24px;
+  line-height: 24px;
+  padding : 0 10px;
+  border-top: 1px solid #444;
+  cursor : pointer;
+}
+
+.layer-item:hover {
+  background : #222;
+}
+
+.current-layer-item, .current-layer-item:hover {
+  background : #333;
+  font-weight: bold;
+}
+
+.layers-button-container {
+  padding: 10px;
+}
+
+.layers-button {
+  line-height: 24px;
+  padding: 0 10px;
+  display: inline-block;
+  border: none;
+  border-top: 1px solid #666;
+  border-bottom: 1px solid #222;
+  border-radius: 3px;
+  background-color: #3f3f3f;
+  cursor: pointer;
+  color: white;
+  font-size: 0.7em;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  text-shadow: 0px -1px 0 #000;
+  transition: background-color 0.2s linear;
+}
+
+.layers-button:hover {
+  text-decoration: none;
+  background-color: #484848;
+}
 /** 
  * User messages 
  */

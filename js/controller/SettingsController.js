@@ -30,7 +30,7 @@
     // Expand drawer when clicking 'Settings' tab.
     $('[data-setting]').click(function(evt) {
       var el = evt.originalEvent.currentTarget;
-      var setting = el.dataset.setting;
+      var setting = el.getAttribute("data-setting");
       if (this.currentSetting != setting) {
         this.loadSetting(setting);
       } else {

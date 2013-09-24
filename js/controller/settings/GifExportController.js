@@ -5,12 +5,14 @@
   };
 
   ns.GifExportController.prototype.init = function () {
-    this.initRadioElements_();
+    this.radioTemplate_ = pskl.utils.Template.get("export-gif-radio-template");
 
     this.previewContainer = document.querySelectorAll(".export-gif-preview div")[0];
-    this.uploadForm = $("[name=gif-export-upload-form]");
     
+    this.uploadForm = $("[name=gif-export-upload-form]");    
     this.uploadForm.submit(this.upload.bind(this));
+
+    this.initRadioElements_();
   };
 
   ns.GifExportController.prototype.upload = function (evt) {
@@ -52,18 +54,17 @@
       [10,true] //default
     ];
 
-    var radioTpl = $("#export-gif-radio-template").get(0);
     for (var i = 0 ; i < dpis.length ; i++) {
       var dpi = dpis[i];
-      var radio = this.createRadioForDpi_(dpi, radioTpl.innerHTML);
-      radioTpl.parentNode.insertBefore(radio, radioTpl);
+      var radio = this.createRadioForDpi_(dpi);
+      this.uploadForm.get(0).appendChild(radio);
     }
   };
 
-  ns.GifExportController.prototype.createRadioForDpi_ = function (dpi, template) {
+  ns.GifExportController.prototype.createRadioForDpi_ = function (dpi) {
     var label = dpi[0]*this.piskelController.getWidth() + "x" + dpi[0]*this.piskelController.getHeight();
     var value = dpi[0];
-    var radioHTML = pskl.utils.Template.replace(template, {value : value, label : label});
+    var radioHTML = pskl.utils.Template.replace(this.radioTemplate_, {value : value, label : label});
     var radio = pskl.utils.Template.createFromHTML(radioHTML);
     
     if (dpi[1]) {

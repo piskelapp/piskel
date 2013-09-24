@@ -48,8 +48,30 @@
     return this.layers[index];
   };
 
+  ns.Piskel.prototype.getLayersByName = function (name) {
+    return this.layers.filter(function (l) {
+      return l.getName() == name;
+    });
+  };
+
   ns.Piskel.prototype.addLayer = function (layer) {
     this.layers.push(layer);
+  };
+
+  ns.Piskel.prototype.moveLayerUp = function (layer) {
+    var index = this.layers.indexOf(layer);
+    if (index > -1 && index < this.layers.length-1) {
+      this.layers[index] = this.layers[index+1];
+      this.layers[index+1] = layer;
+    }
+  };
+
+  ns.Piskel.prototype.moveLayerDown = function (layer) {
+    var index = this.layers.indexOf(layer);
+    if (index > 0) {
+      this.layers[index] = this.layers[index-1];
+      this.layers[index-1] = layer;
+    }
   };
 
   ns.Piskel.prototype.removeLayer = function (layer) {
