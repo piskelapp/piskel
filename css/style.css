@@ -185,17 +185,18 @@ body {
   font-size : medium;
   color: white;
   text-align: left;
+  margin-top: 10px;
 }
 
 .layers-title {
   padding : 10px;
   margin: 0;
   font-size : 18px;
+  background : #222;
 }
 
 .layers-list {
   font-size : 12px;
-  border-bottom: 1px solid #444;
 }
 
 .layer-item {
@@ -216,17 +217,19 @@ body {
 }
 
 .layers-button-container {
-  padding: 10px;
+  overflow : hidden;
 }
 
 .layers-button {
   line-height: 24px;
-  padding: 0 10px;
-  display: inline-block;
+  margin: 0;
+  width: 25%;
+  float : left;
   border: none;
+  box-sizing: border-box;
   border-top: 1px solid #666;
-  border-bottom: 1px solid #222;
-  border-radius: 3px;
+  border-right: 1px solid #333;
+  border-bottom: 1px solid #333;
   background-color: #3f3f3f;
   cursor: pointer;
   color: white;
@@ -236,6 +239,10 @@ body {
   text-decoration: none;
   text-shadow: 0px -1px 0 #000;
   transition: background-color 0.2s linear;
+}
+
+.layers-button:last-child {
+  border-right-width: 0;
 }
 
 .layers-button:hover {
