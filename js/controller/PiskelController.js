@@ -10,6 +10,8 @@
     this.currentLayerIndex = 0;
     this.currentFrameIndex = 0;
 
+    this.layerIdCounter = 0;
+
     $.publish(Events.FRAMESHEET_RESET);
     $.publish(Events.FRAME_SIZE_CHANGED);
   };
@@ -118,9 +120,18 @@
     }
   };
 
+  ns.PiskelController.prototype.generateLayerName_ = function () {
+    var name = "Layer " + this.layerIdCounter;
+    while (this.hasLayerForName_(name)) {
+      this.layerIdCounter++;
+      name = "Layer " + this.layerIdCounter;
+    }
+    return name;
+  };
+
   ns.PiskelController.prototype.createLayer = function (name) {
     if (!name) {
-      name = "Layer " + (this.getLayers().length + 1);
+      name = this.generateLayerName_();
     }
     if (!this.hasLayerForName_(name)) {
       var layer = new pskl.model.Layer(name);

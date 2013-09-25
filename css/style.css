@@ -193,6 +193,10 @@ body {
   margin: 0;
   font-size : 18px;
   background : #222;
+  background-image: url('../img/layers.svg');
+  background-size: 24px 24px;
+  background-repeat: no-repeat;
+  background-position: 95%; 
 }
 
 .layers-list {
@@ -213,7 +217,7 @@ body {
 
 .current-layer-item, .current-layer-item:hover {
   background : #333;
-  font-weight: bold;
+  color: gold;
 }
 
 .layers-button-container {
@@ -248,6 +252,7 @@ body {
 .layers-button:hover {
   text-decoration: none;
   background-color: #484848;
+  color: gold;
 }
 /** 
  * User messages 

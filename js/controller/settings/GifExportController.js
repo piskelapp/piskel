@@ -7,10 +7,11 @@
   ns.GifExportController.prototype.init = function () {
     this.radioTemplate_ = pskl.utils.Template.get("export-gif-radio-template");
 
-    this.previewContainer = document.querySelectorAll(".export-gif-preview div")[0];
-    
-    this.uploadForm = $("[name=gif-export-upload-form]");    
-    this.uploadForm.submit(this.upload.bind(this));
+    this.previewContainerEl = document.querySelectorAll(".export-gif-preview div")[0];
+    this.radioGroupEl = document.querySelectorAll(".gif-export-radio-group")[0];
+
+    this.uploadFormJQ = $("[name=gif-export-upload-form]");    
+    this.uploadFormJQ.submit(this.upload.bind(this));
 
     this.initRadioElements_();
   };
@@ -23,20 +24,20 @@
 
     this.renderAsImageDataAnimatedGIF(dpi, fps, function (imageData) {
       this.updatePreview_(imageData);
-      this.previewContainer.classList.add("preview-upload-ongoing");
+      this.previewContainerEl.classList.add("preview-upload-ongoing");
       pskl.app.imageUploadService.upload(imageData, function (imageUrl) {
         this.updatePreview_(imageUrl);
-        this.previewContainer.classList.remove("preview-upload-ongoing");
+        this.previewContainerEl.classList.remove("preview-upload-ongoing");
       }.bind(this));
     }.bind(this));
   };
 
   ns.GifExportController.prototype.updatePreview_ = function (src) {
-    this.previewContainer.innerHTML = "<img style='max-width:240px;' src='"+src+"'/>";
+    this.previewContainerEl.innerHTML = "<img style='max-width:240px;' src='"+src+"'/>";
   };
 
   ns.GifExportController.prototype.getSelectedDpi_ = function () {
-    var radiosColl = this.uploadForm.get(0).querySelectorAll("[name=gif-dpi]"),
+    var radiosColl = this.uploadFormJQ.get(0).querySelectorAll("[name=gif-dpi]"),
         radios = Array.prototype.slice.call(radiosColl,0);
     var selectedRadios = radios.filter(function(radio) {return !!radio.checked;});
 
@@ -51,13 +52,14 @@
     var dpis = [
       [1],
       [5],
-      [10,true] //default
+      [10,true], //default
+      [20],
     ];
 
     for (var i = 0 ; i < dpis.length ; i++) {
       var dpi = dpis[i];
       var radio = this.createRadioForDpi_(dpi);
-      this.uploadForm.get(0).appendChild(radio);
+      this.radioGroupEl.appendChild(radio);
     }
   };
 
