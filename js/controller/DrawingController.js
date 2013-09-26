@@ -22,8 +22,10 @@
       "supportGridRendering" : true
     };
     
-    this.renderer = new pskl.rendering.FrameRenderer(this.container, renderingOptions, "drawing-canvas");
     this.overlayRenderer = new pskl.rendering.FrameRenderer(this.container, renderingOptions, "canvas-overlay");
+    this.renderer = new pskl.rendering.FrameRenderer(this.container, renderingOptions, "drawing-canvas");
+    this.layersDownRenderer = new pskl.rendering.FrameRenderer(this.container, renderingOptions, "layers-canvas layers-down-canvas");
+    this.layersUpRenderer = new pskl.rendering.FrameRenderer(this.container, renderingOptions, "layers-canvas layers-up-canvas");
     
 
     // State of drawing controller:
@@ -36,8 +38,7 @@
   };
 
   ns.DrawingController.prototype.init = function () {
-    this.renderer.render(this.piskelController.getCurrentFrame());
-    this.overlayRenderer.render(this.overlayFrame);
+    // this.render();
     
     this.initMouseBehavior();
 
@@ -242,6 +243,7 @@
   };
 
   ns.DrawingController.prototype.render = function () {
+    this.renderLayers();
     this.renderFrame();
     this.renderOverlay();
   };
@@ -264,6 +266,35 @@
       this.serializedOverlay = serializedOverlay;
       this.overlayRenderer.render(this.overlayFrame);
     }
+  };
+
+  ns.DrawingController.prototype.renderLayers = function () {
+    var layers = this.piskelController.getLayers();
+    var currentFrameIndex = this.piskelController.currentFrameIndex;
+    var currentLayerIndex = this.piskelController.currentLayerIndex;
+
+    var serialized = [currentFrameIndex, this.piskelController.currentLayerIndex, layers.length].join("-");
+    if (this.serializedLayerFrame != serialized) {
+      var downLayers = layers.slice(0, currentLayerIndex);
+      var downFrame = this.getFrameForLayersAt_(currentFrameIndex, downLayers);
+      this.layersDownRenderer.render(downFrame);
+
+      // try {this.layersUpRenderer.clear();}catch(e) {}
+      if (currentLayerIndex + 1 < layers.length) {
+        var upLayers = layers.slice(currentLayerIndex + 1, layers.length);
+        var upFrame = this.getFrameForLayersAt_(currentFrameIndex, upLayers);
+        this.layersUpRenderer.render(upFrame);
+      }
+
+      this.serializedLayerFrame = serialized;
+    }
+  };
+
+  ns.DrawingController.prototype.getFrameForLayersAt_ = function (frameIndex, layers) {
+    var frames = layers.map(function (l) {
+      return l.getFrameAt(frameIndex);
+    });
+    return pskl.utils.FrameUtils.merge(frames);
   };
 
   ns.DrawingController.prototype.forceRendering_ = function () {
@@ -297,8 +328,8 @@
    */
   ns.DrawingController.prototype.updateDPI_ = function() {
     var dpi = this.calculateDPI_();
-    this.renderer.updateDPI(dpi);
     this.overlayRenderer.updateDPI(dpi);
+    this.renderer.updateDPI(dpi);
 
     var currentFrameHeight =  this.piskelController.getCurrentFrame().getHeight();
     var canvasHeight = currentFrameHeight * dpi;

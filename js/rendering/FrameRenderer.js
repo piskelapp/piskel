@@ -65,15 +65,17 @@
   };
 
   ns.FrameRenderer.prototype.render = function (frame) {
-    this.clear(frame);
-    var context = this.getCanvas_(frame).getContext('2d');
-    for(var col = 0, width = frame.getWidth(); col < width; col++) {
-      for(var row = 0, height = frame.getHeight(); row < height; row++) {
-        var color = frame.getPixel(col, row);
-        this.renderPixel_(color, col, row, context);
+    if (frame) {
+      this.clear(frame);
+      var context = this.getCanvas_(frame).getContext('2d');
+      for(var col = 0, width = frame.getWidth(); col < width; col++) {
+        for(var row = 0, height = frame.getHeight(); row < height; row++) {
+          var color = frame.getPixel(col, row);
+          this.renderPixel_(color, col, row, context);
+        }
       }
+      this.lastRenderedFrame = frame;
     }
-    this.lastRenderedFrame = frame;
   };
 
   ns.FrameRenderer.prototype.renderPixel_ = function (color, col, row, context) {
@@ -142,7 +144,7 @@
       var pixelHeight =  row * this.dpi + this.gridStrokeWidth * (row - 1);
       var classes = ['canvas'];
       if (this.className) {
-        classes.push(this.className);  
+        classes = classes.concat(this.className.split(' '));
       }
       var canvas = pskl.CanvasUtils.createCanvas(pixelWidth, pixelHeight, classes);
 

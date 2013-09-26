@@ -3,10 +3,13 @@
 
   ns.FrameUtils = {
     merge : function (frames) {
-      var merged = frames[0].clone();
-      var w = merged.getWidth(), h = merged.getHeight();
-      for (var i = 1 ; i < frames.length ; i++) {
-        pskl.utils.FrameUtils.mergeFrames_(merged, frames[i]);
+      var merged = null;
+      if (frames.length) {
+        merged = frames[0].clone();
+        var w = merged.getWidth(), h = merged.getHeight();
+        for (var i = 1 ; i < frames.length ; i++) {
+          pskl.utils.FrameUtils.mergeFrames_(merged, frames[i]);
+        }
       }
       return merged;
     },
