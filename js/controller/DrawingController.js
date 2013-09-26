@@ -333,6 +333,10 @@
     this.overlayRenderer.updateDPI(dpi);
     this.renderer.updateDPI(dpi);
 
+    this.layersUpRenderer.updateDPI(dpi);
+    this.layersDownRenderer.updateDPI(dpi);
+    this.serializedLayerFrame ="";
+    
     var currentFrameHeight =  this.piskelController.getCurrentFrame().getHeight();
     var canvasHeight = currentFrameHeight * dpi;
     if (pskl.UserSettings.get(pskl.UserSettings.SHOW_GRID)) {

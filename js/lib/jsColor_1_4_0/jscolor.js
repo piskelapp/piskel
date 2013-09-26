@@ -20,7 +20,11 @@ var jscolor = {
 
 
 	install : function() {
-		jscolor.addEvent(window, 'load', jscolor.init);
+		if (document.readyState === "complete") { 
+			jscolor.init(); 
+		} else {
+			jscolor.addEvent(window, 'load', jscolor.init);
+		}
 	},
 
 
@@ -921,6 +925,3 @@ var jscolor = {
 	}
 
 };
-
-
-jscolor.install();

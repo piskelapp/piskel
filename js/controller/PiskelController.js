@@ -10,7 +10,7 @@
     this.currentLayerIndex = 0;
     this.currentFrameIndex = 0;
 
-    this.layerIdCounter = 0;
+    this.layerIdCounter = 1;
 
     $.publish(Events.FRAMESHEET_RESET);
     $.publish(Events.FRAME_SIZE_CHANGED);

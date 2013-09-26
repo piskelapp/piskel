@@ -66,7 +66,7 @@
 
   ns.FrameRenderer.prototype.render = function (frame) {
     if (frame) {
-      this.clear(frame);
+      this.clear();
       var context = this.getCanvas_(frame).getContext('2d');
       for(var col = 0, width = frame.getWidth(); col < width; col++) {
         for(var row = 0, height = frame.getHeight(); row < height; row++) {

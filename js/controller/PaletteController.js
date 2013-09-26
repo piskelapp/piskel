@@ -28,6 +28,7 @@
     secondaryColorPicker.val(Constants.TRANSPARENT_COLOR);
     secondaryColorPicker.change({isPrimary : false}, $.proxy(this.onPickerChange_, this));
 
+    window.jscolor.install();
   };
 
   /**
