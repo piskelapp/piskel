@@ -275,11 +275,13 @@
 
     var serialized = [currentFrameIndex, this.piskelController.currentLayerIndex, layers.length].join("-");
     if (this.serializedLayerFrame != serialized) {
+      this.layersUpRenderer.clear();
+      this.layersDownRenderer.clear();
+      
       var downLayers = layers.slice(0, currentLayerIndex);
       var downFrame = this.getFrameForLayersAt_(currentFrameIndex, downLayers);
       this.layersDownRenderer.render(downFrame);
 
-      // try {this.layersUpRenderer.clear();}catch(e) {}
       if (currentLayerIndex + 1 < layers.length) {
         var upLayers = layers.slice(currentLayerIndex + 1, layers.length);
         var upFrame = this.getFrameForLayersAt_(currentFrameIndex, upLayers);

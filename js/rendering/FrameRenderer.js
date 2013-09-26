@@ -85,9 +85,10 @@
     }
   };
 
-  ns.FrameRenderer.prototype.clear = function (frame) {
-    var canvas = this.getCanvas_(frame);
-    canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
+  ns.FrameRenderer.prototype.clear = function () {
+    if (this.canvas) {
+      this.canvas.getContext("2d").clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
   };
 
   /**
