@@ -1,0 +1,118 @@
+
+/** Righty sticky drawer expanded state. */
+
+.right-sticky-section.sticky-section {
+  right: 0;
+  width: 47px;
+
+  -webkit-transition: all 200ms ease-out;
+  -moz-transition: all 200ms ease-out;
+  -ms-transition: all 200ms ease-out;
+  transition: all 200ms ease-out;
+}
+
+.right-sticky-section.expanded {
+  right: 280px;
+}
+
+.right-sticky-section .tool-icon {
+  float: right;
+  margin-right: 0;
+}
+
+.drawer-content {
+  overflow: hidden;
+  background-color: #444;
+  height: 550px;
+  max-height: 100%;
+  width: 280px;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+
+.right-sticky-section.expanded .tool-icon {
+  margin-right: 1px;
+}
+
+.right-sticky-section .tool-icon.has-expanded-drawer {
+  position: relative;
+  background-color: #444;
+  margin-right: 0;
+  padding-right: 1px;
+}
+
+.settings-section {
+  margin: 10px 20px;
+  font-size: 12px;
+  font-weight: bold;
+  color: #ccc;
+  text-shadow: 1px 1px #000;
+}
+
+.settings-title {
+  margin-top: 20px;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  border-bottom: 1px #aaa solid;
+  padding-bottom: 5px;
+}
+
+.settings-item {}
+
+.background-picker-wrapper {
+  overflow: hidden;
+  padding: 10px 5px 20px 5px;
+}
+
+.background-picker {
+  cursor: pointer;
+  float: left;
+  height: 35px;
+  width: 35px;
+  background-color: transparent;
+  margin-right: 15px;
+  padding: 1px;
+  position: relative;
+}
+
+.background-picker:after {
+  content: " ";
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  bottom: -2px;
+  left: -2px; 
+}
+
+.background-picker:hover:after {
+  border: #eee 1px solid;
+}
+
+.background-picker.selected:after {
+  border: gold 1px solid;
+}
+
+/* Gif Export Setting panel*/
+.export-gif-upload-button {
+  margin-top : 10px;
+}
+
+.export-gif-preview {
+  margin-top:20px;
+  max-width:240px;
+  position:relative;
+}
+
+.preview-upload-ongoing:before{
+  content: "Upload ongoing ...";
+  position: absolute;
+  display: block;
+  height: 100%;
+  width: 100%;
+  text-align: center;
+  padding-top: 45%;
+  box-sizing:border-box;
+  -moz-box-sizing:border-box;
+  background: rgba(0,0,0,0.5);
+  color: white;
+}

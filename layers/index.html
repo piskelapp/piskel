@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Piskel</title>
+  <meta name="description" content="">
+  <meta name="author" content="Julian Descottes">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="css/reset.css">
+  <link rel="stylesheet" type="text/css" href="css/style.css">
+  <link rel="stylesheet" type="text/css" href="css/settings.css">
+  <link rel="stylesheet" type="text/css" href="css/tools.css">
+  <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap.css">
+  <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap-tooltip-custom.css">
+  <link rel="stylesheet" type="text/css" href="css/preview-film-section.css">
+</head>
+<body>
+  <script src="cheap-partials.js" type="text/javascript"></script>
+  <div class="piskel-name-container">
+    <input readonly id="piskel-name" type="text" value=""/>
+  </div>
+  <div id="main-wrapper" class="main-wrapper">
+    <iframe src="templates/drawing-tools.html" class="_ctl" onload="_ctl(event)"></iframe>
+
+    <div id="column-wrapper" class="column-wrapper">
+      <div class='column left-column'>
+        <iframe src="templates/frames-list.html" class="_ctl" onload="_ctl(event)"></iframe>
+      </div>
+
+      <div class='column main-column'>
+        <div id="drawing-canvas-container" class="drawing-canvas-container canvas-container">
+          <div class="canvas-background"></div>
+        </div>
+      </div>
+
+      <div class="column right-column">
+        <iframe src="templates/preview.html" class="_ctl" onload="_ctl(event)"></iframe>
+        <iframe src="templates/layers.html" class="_ctl" onload="_ctl(event)"></iframe>
+      </div>
+    </div>
+
+    <div id="application-action-section" data-pskl-controller="settings" class="sticky-section right-sticky-section">
+      <div class="sticky-section-wrap">
+        <iframe src="templates/settings.html" class="_ctl" onload="_ctl(event)"></iframe>
+        <div class="drawer vertical-centerer">
+          <div class="drawer-content" id="drawer-container">
+            <iframe src="templates/settings-application.html" onload="_ctp(event)"></iframe>
+            <iframe src="templates/settings-export-gif.html" onload="_ctp(event)"></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+  
+  <script type="text/javascript" src="piskel-boot.js"></script>
+</body>
+</html>

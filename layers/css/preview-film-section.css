@@ -1,0 +1,185 @@
+.preview-list-wrapper {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+}
+
+.preview-list-scroller {
+  overflow-y: scroll;
+  overflow-x: hidden;
+  height: 100%;
+}
+
+.top-overflow,
+.bottom-overflow {
+  height: 20px;
+  position: absolute;
+  left: 0;
+  right: 12px;
+  
+  -webkit-transition: all 500ms ease-out;
+  -moz-transition: all 500ms ease-out;
+  -ms-transition: all 500ms ease-out;
+  -o-transition: all 500ms ease-out;
+  transition: all 500ms ease-out;
+
+  background-image: linear-gradient(45deg, rgba(0,0,0, 0.8) 25%, transparent 25%, transparent 75%, rgba(0,0,0, 0.8) 75%, rgba(0,0,0, 0.8)),
+                    linear-gradient(-45deg, rgba(0,0,0, 0.8) 25%, transparent 25%, transparent 75%, rgba(0,0,0, 0.8) 75%, rgba(0,0,0, 0.8));
+  background-size: 29px 45px;
+  background-repeat: repeat-x;
+  background-position-x: 3px;
+  z-index: 10;
+}
+
+.top-overflow {
+  top: -20px;
+}
+
+.bottom-overflow {
+  bottom: -20px;
+  background-position-x: 0;
+  background-position-y: -23px;
+}
+
+.top-overflow-visible .top-overflow {
+  top: 0;
+}
+
+.bottom-overflow-visible .bottom-overflow {
+  bottom: 0;
+}
+
+.preview-list {
+  list-style-type: none;
+  padding-right: 7px;
+}
+
+.add-frame-action {
+  border: #888 solid 4px;
+  font-size: 13px;
+  color: #888;
+  cursor: pointer;
+  padding: 6px 0;
+  border-radius: 4px;
+  margin-top: 8px;
+  background-image: url(../img/plus.png);
+  background-repeat: no-repeat;
+  background-position: 3px 7px;
+  background-size: 26px 26px;
+  text-indent: 18px;
+  background-color: #222;
+}
+
+.add-frame-action .label {
+  width: 80px;
+  margin: 0 auto;
+}
+
+.add-frame-action:hover {
+  border-color: gold;
+}
+
+.preview-tile {
+  position: relative;
+  border: #444 3px solid;
+  border-radius: 3px;
+  margin: 5px 0;
+}
+
+.preview-tile:first-child {
+  margin-top: 0;
+}
+
+.preview-tile:hover {
+  border: #999 3px solid;
+}
+
+.preview-tile .tile-overlay {
+  z-index: 10;
+  position: absolute;
+  background-color: rgba(100, 100, 100, 0.6);
+  opacity: 0;
+  height: 30px;
+  width: 30px;
+  border: none;
+}
+
+.preview-tile:hover .tile-overlay {
+  opacity: 1.0;
+}
+
+.preview-tile .tile-overlay.tile-count {
+  display: block;
+  opacity: 1.0;
+  border-bottom-right-radius: 3px;
+  top: 0;
+  left: 0;
+  font-size: 14px;
+  line-height: 30px;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  cursor: default;
+}
+
+.preview-tile .tile-overlay.delete-frame-action {
+   background-image: url(../img/garbage.png);
+   background-repeat: no-repeat;
+   top: 0;
+   right: 0;
+   border-bottom-left-radius: 3px;
+   height: 30px;
+   width: 30px;
+   background-position: 5px 5px;
+   background-size: 20px;
+   cursor: pointer;
+}
+
+.preview-tile .tile-overlay.duplicate-frame-action {
+   bottom: 0;
+   right: 0;
+   border-bottom-left-radius: 3px;
+   background-image: url(../img/duplicate.png);
+   background-repeat: no-repeat;
+   background-position: 5px 5px;
+   background-size: 20px;
+   cursor: pointer;
+}
+
+.preview-tile .tile-overlay.dnd-action {
+   bottom: 0;
+   left: 0;
+   border-top-right-radius: 3px;
+   background-image: url(../img/dragndrop.png);
+   background-repeat: no-repeat;
+   background-position: 5px 5px;
+   background-size: 20px;
+   cursor: move;
+}
+
+.preview-tile.selected {
+  border-color: gold;
+}
+
+.preview-tile.selected:after {
+  content: " ";
+  position: absolute;
+  top: 38px;
+  right: -15px;
+  border: transparent 4px solid;
+  border-left-color: gold;
+  border-width: 6px;
+  border-style: solid;
+}
+
+
+/**
+ *  Drag n drop styles.
+ */
+
+.preview-tile-drop-proxy {
+  border: 3px dashed gold;
+  height: 90px;
+  border-radius: 9px;
+  background-color: rgba(255, 215,0, 0.2);
+}
