@@ -239,7 +239,7 @@ body {
 }
 
 .layers-button {
-  line-height: 24px;
+  height: 24px;
   margin: 0;
   width: 25%;
   float : left;
