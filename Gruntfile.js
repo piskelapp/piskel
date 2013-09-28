@@ -11,7 +11,6 @@
  */
 
 module.exports = function(grunt) {
-
   var piskelScripts = require('./piskel-script-list.js').scripts;
   var getGhostConfig = function (delay) {
     return {
@@ -88,8 +87,7 @@ module.exports = function(grunt) {
     closureCompiler:  {
       options: {
         // [REQUIRED] Path to closure compiler
-        compilerFile: process.env.CLOSURE_COMPILER_FILEPATH ?
-            process.env.CLOSURE_COMPILER_FILEPATH : 'closure_compiler_20130823.jar',
+        compilerFile: 'closure_compiler_20130823.jar',
 
         // [OPTIONAL] set to true if you want to check if files were modified
         // before starting compilation (can save some time in large sourcebases)
@@ -108,20 +106,20 @@ module.exports = function(grunt) {
            * Following are some directive samples...
            */
            //compilation_level: 'ADVANCED_OPTIMIZATIONS',
-           compilation_level: 'SIMPLE_OPTIMIZATIONS',
-           //externs: ['path/to/file.js', '/source/**/*.js'],
-           define: ["'goog.DEBUG=false'"],
-           warning_level: 'verbose',
-           jscomp_off: ['checkTypes', 'fileoverviewTags'],
-           summary_detail_level: 1,
-           output_wrapper: '"(function(){%output%}).call(this);"'
+          compilation_level: 'SIMPLE_OPTIMIZATIONS',
+          //externs: ['path/to/file.js', '/source/**/*.js'],
+          define: ["'goog.DEBUG=false'"],
+          warning_level: 'verbose',
+          jscomp_off: ['checkTypes', 'fileoverviewTags'],
+          summary_detail_level: 1,
+          output_wrapper: '"(function(){%output%}).call(this);"'
         },
         execOpts: { // [OPTIONAL] Set exec method options
            /**
             * Set maxBuffer if you got message "Error: maxBuffer exceeded."
             * Node default: 200*1024
             */
-           maxBuffer: 999999 * 1024
+          maxBuffer: 999999 * 1024
         }
 
       },
@@ -175,11 +173,11 @@ module.exports = function(grunt) {
   // Validate & Test (faster version) will NOT work on travis !!
   grunt.registerTask('precommit', ['leadingIndent:jsFiles', 'leadingIndent:cssFiles', 'jshint', 'connect:test', 'ghost:local']);
 
-  // Validate & Build
-  grunt.registerTask('default', ['leadingIndent:jsFiles', 'leadingIndent:cssFiles', 'jshint', 'concat', 'uglify']);
-
   // Compile JS code (eg verify JSDoc annotation and types, no actual minified code generated).
   grunt.registerTask('compile', ['closureCompiler:compile']);
+
+  // Validate & Build
+  grunt.registerTask('default', ['leadingIndent:jsFiles', 'leadingIndent:cssFiles', 'jshint', 'concat', 'uglify', 'compile']);
 
   // Start webserver
   grunt.registerTask('serve', ['connect:serve']);
