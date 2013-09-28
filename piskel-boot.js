@@ -9,9 +9,6 @@
 
   if (window.location.href.indexOf("debug") != -1) {
     window.exports = {};
-    //debug shortcuts
-    cl = function () {console.log.apply(console, arguments)};
-    d = function () {debugger};
     var scriptIndex = 0;
     window.loadNextScript = function () {
       if (scriptIndex == window.exports.scripts.length) {
