@@ -1,4 +1,4 @@
-/*
+/**
  * @provide pskl.drawingtools.SimplePen
  *
  * @require pskl.utils

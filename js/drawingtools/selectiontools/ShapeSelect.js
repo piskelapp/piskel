@@ -1,4 +1,4 @@
-/*
+/**
  * @provide pskl.drawingtools.ShapeSelect
  *
  * @require pskl.utils
