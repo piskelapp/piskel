@@ -91,7 +91,7 @@ module.exports = function(grunt) {
 
         // [OPTIONAL] set to true if you want to check if files were modified
         // before starting compilation (can save some time in large sourcebases)
-        checkModified: true,
+        //checkModified: true,
 
         // [OPTIONAL] Set Closure Compiler Directives here
         compilerOpts: {
@@ -103,7 +103,8 @@ module.exports = function(grunt) {
           //compilation_level: 'ADVANCED_OPTIMIZATIONS',
           compilation_level: 'SIMPLE_OPTIMIZATIONS',
           externs: ['piskel-closure-externs.js'],
-          define: ["'goog.DEBUG=false'"],
+          // Inject some constants in JS code, could we use that for appengine wiring ?
+          //define: ["'goog.DEBUG=false'"],
           warning_level: 'verbose',
           jscomp_off: ['checkTypes', 'fileoverviewTags'],
           summary_detail_level: 1,
@@ -111,10 +112,6 @@ module.exports = function(grunt) {
           //output_wrapper: '"(function(){%output%}).call(this);"'
         },
         execOpts: { // [OPTIONAL] Set exec method options
-           /**
-            * Set maxBuffer if you got message "Error: maxBuffer exceeded."
-            * Node default: 200*1024
-            */
           maxBuffer: 999999 * 1024
         }
 
@@ -128,10 +125,6 @@ module.exports = function(grunt) {
          */
         TEMPcompilerOpts: {
         },
-
-        // [OPTIONAL] Target files to compile. Can be a string, an array of strings
-        // or grunt file syntax (<config:...>, *)
-        //src: 'path/to/file.js',
         src: [
           'js/**/*.js',
           //'!js/lib/**/*.js',
@@ -140,10 +133,10 @@ module.exports = function(grunt) {
           '!js/lib/gif/**/*.js',
           'piskel-boot.js',
           'piskel-script-list.js'
-        ]
+        ],
 
-        // [OPTIONAL] set an output file
-        //dest: 'path/to/compiled_file.js'
+        // This generated JS binary is currently not used and even excluded from source control using .gitignore.
+        dest: 'closure_compiled_binary.js'
       }
     }
   });
