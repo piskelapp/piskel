@@ -1,4 +1,4 @@
-/*
+/**
  * @provide pskl.drawingtools.PaintBucket
  *
  * @require pskl.utils

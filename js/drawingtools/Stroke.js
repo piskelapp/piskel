@@ -1,4 +1,4 @@
-/*
+/**
  * @provide pskl.drawingtools.Stroke
  *
  * @require pskl.utils

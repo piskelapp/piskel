@@ -1,4 +1,4 @@
-/*
+/**
  * @provide pskl.drawingtools.ColorPicker
  *
  * @require pskl.utils
