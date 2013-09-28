@@ -84,6 +84,69 @@ module.exports = function(grunt) {
           'build/piskel-packaged-min.js' : ['build/piskel-packaged.js']
         }
       }
+    },
+    closureCompiler:  {
+      options: {
+        // [REQUIRED] Path to closure compiler
+        compilerFile: process.env.CLOSURE_COMPILER_FILEPATH ?
+            process.env.CLOSURE_COMPILER_FILEPATH : 'closure_compiler_20130823.jar',
+
+        // [OPTIONAL] set to true if you want to check if files were modified
+        // before starting compilation (can save some time in large sourcebases)
+        checkModified: true,
+
+        // [OPTIONAL] Set Closure Compiler Directives here
+        compilerOpts: {
+          /**
+           * Keys will be used as directives for the compiler
+           * values can be strings or arrays.
+           * If no value is required use null
+           *
+           * The directive 'externs' is treated as a special case
+           * allowing a grunt file syntax (<config:...>, *)
+           *
+           * Following are some directive samples...
+           */
+           //compilation_level: 'ADVANCED_OPTIMIZATIONS',
+           compilation_level: 'SIMPLE_OPTIMIZATIONS',
+           //externs: ['path/to/file.js', '/source/**/*.js'],
+           define: ["'goog.DEBUG=false'"],
+           warning_level: 'verbose',
+           jscomp_off: ['checkTypes', 'fileoverviewTags'],
+           summary_detail_level: 1,
+           output_wrapper: '"(function(){%output%}).call(this);"'
+        },
+        execOpts: { // [OPTIONAL] Set exec method options
+           /**
+            * Set maxBuffer if you got message "Error: maxBuffer exceeded."
+            * Node default: 200*1024
+            */
+           maxBuffer: 999999 * 1024
+        }
+
+      },
+      compile: {
+
+        /**
+         *[OPTIONAL] Here you can add new or override previous option of the Closure Compiler Directives.
+         * IMPORTANT! The feature is enabled as a temporary solution to [#738](https://github.com/gruntjs/grunt/issues/738).
+         * As soon as issue will be fixed this feature will be removed.
+         */
+        TEMPcompilerOpts: {
+        },
+
+        // [OPTIONAL] Target files to compile. Can be a string, an array of strings
+        // or grunt file syntax (<config:...>, *)
+        //src: 'path/to/file.js',
+        src: [
+          'js/**/*.js',
+          'piskel-boot.js',
+          'piskel-script-list.js'
+        ]
+
+        // [OPTIONAL] set an output file
+        //dest: 'path/to/compiled_file.js'
+      }
     }
   });
 
@@ -99,6 +162,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-uglify');
+  grunt.loadNpmTasks('grunt-closure-tools');
   grunt.loadNpmTasks('grunt-ghost');
   grunt.loadNpmTasks('grunt-leading-indent');
 
@@ -114,7 +178,9 @@ module.exports = function(grunt) {
   // Validate & Build
   grunt.registerTask('default', ['leadingIndent:jsFiles', 'leadingIndent:cssFiles', 'jshint', 'concat', 'uglify']);
 
+  // Compile JS code (eg verify JSDoc annotation and types, no actual minified code generated).
+  grunt.registerTask('compile', ['closureCompiler:compile']);
+
   // Start webserver
   grunt.registerTask('serve', ['connect:serve']);
-
 };
