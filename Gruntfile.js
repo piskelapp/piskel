@@ -168,7 +168,7 @@ module.exports = function(grunt) {
   grunt.registerTask('lint', ['leadingIndent:jsFiles', 'leadingIndent:cssFiles', 'jshint']);
 
   // Validate & Test 
-  grunt.registerTask('test', ['leadingIndent:jsFiles', 'leadingIndent:cssFiles', 'jshint', 'connect:test', 'ghost:default']);
+  grunt.registerTask('test', ['leadingIndent:jsFiles', 'leadingIndent:cssFiles', 'jshint', 'compile', 'connect:test', 'ghost:default']);
 
   // Validate & Test (faster version) will NOT work on travis !!
   grunt.registerTask('precommit', ['leadingIndent:jsFiles', 'leadingIndent:cssFiles', 'jshint', 'connect:test', 'ghost:local']);
