@@ -17,12 +17,12 @@
 
   ns.HistoryService.prototype.undo = function () {
     this.piskelController.getCurrentFrame().loadPreviousState();
-    $.publish(Events.FRAMESHEET_RESET);
+    $.publish(Events.PISKEL_RESET);
   };
 
   ns.HistoryService.prototype.redo = function () {
     this.piskelController.getCurrentFrame().loadNextState();
-    $.publish(Events.FRAMESHEET_RESET);
+    $.publish(Events.PISKEL_RESET);
   };
 
 })();

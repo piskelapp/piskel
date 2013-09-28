@@ -12,7 +12,7 @@
 
     this.layerIdCounter = 1;
 
-    $.publish(Events.FRAMESHEET_RESET);
+    $.publish(Events.PISKEL_RESET);
     $.publish(Events.FRAME_SIZE_CHANGED);
   };
 
@@ -74,7 +74,7 @@
       this.setCurrentFrameIndex(this.currentFrameIndex - 1);
     }
 
-    $.publish(Events.FRAMESHEET_RESET);
+    $.publish(Events.PISKEL_RESET);
   };
 
   ns.PiskelController.prototype.duplicateFrameAt = function (index) {
@@ -98,12 +98,12 @@
 
   ns.PiskelController.prototype.setCurrentFrameIndex = function (index) {
     this.currentFrameIndex = index;
-    $.publish(Events.FRAMESHEET_RESET);
+    $.publish(Events.PISKEL_RESET);
   };
 
   ns.PiskelController.prototype.setCurrentLayerIndex = function (index) {
     this.currentLayerIndex = index;
-    $.publish(Events.FRAMESHEET_RESET);
+    $.publish(Events.PISKEL_RESET);
   };
 
   ns.PiskelController.prototype.selectLayer = function (layer) {

@@ -1,6 +1,6 @@
 // TODO(grosbouddha): put under pskl namespace.
 var Events = {
-  
+
   TOOL_SELECTED : "TOOL_SELECTED",
   TOOL_RELEASED : "TOOL_RELEASED",
   PRIMARY_COLOR_SELECTED: "PRIMARY_COLOR_SELECTED",
@@ -10,7 +10,7 @@ var Events = {
 
   /**
    *  When this event is emitted, a request is sent to the localstorage
-   *  Service to save the current framesheet. The storage service 
+   *  Service to save the current framesheet. The storage service
    *  may not immediately store data (internal throttling of requests).
    */
   LOCALSTORAGE_REQUEST: "LOCALSTORAGE_REQUEST",
@@ -38,12 +38,12 @@ var Events = {
    *   2nd argument: New value
    */
   USER_SETTINGS_CHANGED: "USER_SETTINGS_CHANGED",
-  
+
   /**
    * The framesheet was reseted and is now probably drastically different.
    * Number of frames, content of frames, color used for the palette may have changed.
    */
-  FRAMESHEET_RESET: "FRAMESHEET_RESET",
+  PISKEL_RESET: "PISKEL_RESET",
 
   FRAME_SIZE_CHANGED : "FRAME_SIZE_CHANGED",
 
@@ -52,7 +52,7 @@ var Events = {
   SELECTION_CREATED: "SELECTION_CREATED",
   SELECTION_MOVE_REQUEST: "SELECTION_MOVE_REQUEST",
   SELECTION_DISMISSED: "SELECTION_DISMISSED",
-  
+
   SHOW_NOTIFICATION: "SHOW_NOTIFICATION",
   HIDE_NOTIFICATION: "HIDE_NOTIFICATION",
 

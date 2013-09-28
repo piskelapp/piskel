@@ -12,7 +12,7 @@
 
     this.rootEl.addEventListener('click', this.onClick_.bind(this));
 
-    $.subscribe(Events.FRAMESHEET_RESET, this.renderLayerList_.bind(this));
+    $.subscribe(Events.PISKEL_RESET, this.renderLayerList_.bind(this));
 
     this.renderLayerList_();
   };

@@ -11,8 +11,8 @@
 
   ns.PreviewFilmController.prototype.init = function() {
     $.subscribe(Events.TOOL_RELEASED, this.flagForRedraw_.bind(this));
-    $.subscribe(Events.FRAMESHEET_RESET, this.flagForRedraw_.bind(this));
-    $.subscribe(Events.FRAMESHEET_RESET, this.refreshDPI_.bind(this));
+    $.subscribe(Events.PISKEL_RESET, this.flagForRedraw_.bind(this));
+    $.subscribe(Events.PISKEL_RESET, this.refreshDPI_.bind(this));
 
     $('#preview-list-scroller').scroll(this.updateScrollerOverflows.bind(this));
     this.updateScrollerOverflows();
