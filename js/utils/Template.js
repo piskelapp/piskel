@@ -23,7 +23,7 @@
           var value = dict[key];
           template = template.replace(new RegExp('\\{\\{'+key+'\\}\\}', 'g'), value);
         }
-      } 
+      }
       return template;
     }
   };

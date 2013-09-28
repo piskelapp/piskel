@@ -8,7 +8,7 @@
 
     KEY_TO_DEFAULT_VALUE_MAP_ : {
       'SHOW_GRID' : false,
-      'CANVAS_BACKGROUND' : 'medium-canvas-background' 
+      'CANVAS_BACKGROUND' : 'medium-canvas-background'
     },
 
     /**
@@ -17,7 +17,7 @@
     cache_ : {},
 
     /**
-     * Static method to access a user defined settings value ot its default 
+     * Static method to access a user defined settings value ot its default
      * value if not defined yet.
      */
     get : function (key) {
@@ -34,7 +34,7 @@
       this.cache_[key] = value;
       this.writeToLocalStorage_(key, value);
 
-      $.publish(Events.USER_SETTINGS_CHANGED, [key, value]);    
+      $.publish(Events.USER_SETTINGS_CHANGED, [key, value]);
     },
 
     /**

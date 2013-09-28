@@ -5,7 +5,7 @@
      * @public
      */
     this.piskelController = piskelController;
-    
+
     /**
      * @public
      */
@@ -21,12 +21,12 @@
       "dpi": this.calculateDPI_(),
       "supportGridRendering" : true
     };
-    
+
     this.overlayRenderer = new pskl.rendering.FrameRenderer(this.container, renderingOptions, "canvas-overlay");
     this.renderer = new pskl.rendering.FrameRenderer(this.container, renderingOptions, "drawing-canvas");
     this.layersDownRenderer = new pskl.rendering.FrameRenderer(this.container, renderingOptions, "layers-canvas layers-down-canvas");
     this.layersUpRenderer = new pskl.rendering.FrameRenderer(this.container, renderingOptions, "layers-canvas layers-up-canvas");
-    
+
 
     // State of drawing controller:
     this.isClicked = false;
@@ -39,7 +39,7 @@
 
   ns.DrawingController.prototype.init = function () {
     // this.render();
-    
+
     this.initMouseBehavior();
 
     $.subscribe(Events.TOOL_SELECTED, $.proxy(function(evt, toolBehavior) {
@@ -76,7 +76,7 @@
     this.container.mousedown($.proxy(this.onMousedown_, this));
     this.container.mousemove($.proxy(this.onMousemove_, this));
     body.mouseup($.proxy(this.onMouseup_, this));
-    
+
     // Deactivate right click:
     body.contextmenu(this.onCanvasContextMenu_);
   };
@@ -104,22 +104,22 @@
    */
   ns.DrawingController.prototype.onMousedown_ = function (event) {
     this.isClicked = true;
-    
+
     if(event.button == 2) { // right click
       this.isRightClicked = true;
       $.publish(Events.CANVAS_RIGHT_CLICKED);
     }
 
     var coords = this.getSpriteCoordinates(event);
-    
+
     this.currentToolBehavior.applyToolAt(
       coords.col, coords.row,
       this.getCurrentColor_(),
       this.piskelController.getCurrentFrame(),
       this.overlayFrame,
       this.wrapEvtInfo_(event)
-    );      
-      
+    );
+
     $.publish(Events.LOCALSTORAGE_REQUEST);
   };
 
@@ -132,7 +132,7 @@
     if ((currentTime - this.previousMousemoveTime) > 40 ) {
       var coords = this.getSpriteCoordinates(event);
       if (this.isClicked) {
-     
+
         this.currentToolBehavior.moveToolAt(
           coords.col, coords.row,
           this.getCurrentColor_(),
@@ -140,7 +140,7 @@
           this.overlayFrame,
           this.wrapEvtInfo_(event)
         );
-    
+
         // TODO(vincz): Find a way to move that to the model instead of being at the interaction level.
         // Eg when drawing, it may make sense to have it here. However for a non drawing tool,
         // you don't need to draw anything when mousemoving and you request useless localStorage.
@@ -197,7 +197,7 @@
       evtInfo.button = Constants.RIGHT_BUTTON;
     }
     return evtInfo;
-  }; 
+  };
 
   /**
    * @private
@@ -239,7 +239,7 @@
       event.stopPropagation();
       event.cancelBubble = true;
       return false;
-    }   
+    }
   };
 
   ns.DrawingController.prototype.render = function () {
@@ -277,7 +277,7 @@
     if (this.serializedLayerFrame != serialized) {
       this.layersUpRenderer.clear();
       this.layersDownRenderer.clear();
-      
+
       var downLayers = layers.slice(0, currentLayerIndex);
       var downFrame = this.getFrameForLayersAt_(currentFrameIndex, downLayers);
       this.layersDownRenderer.render(downFrame);
@@ -336,13 +336,13 @@
     this.layersUpRenderer.updateDPI(dpi);
     this.layersDownRenderer.updateDPI(dpi);
     this.serializedLayerFrame ="";
-    
+
     var currentFrameHeight =  this.piskelController.getCurrentFrame().getHeight();
     var canvasHeight = currentFrameHeight * dpi;
     if (pskl.UserSettings.get(pskl.UserSettings.SHOW_GRID)) {
       canvasHeight += Constants.GRID_STROKE_WIDTH * currentFrameHeight;
     }
-    
+
     var verticalGapInPixel = Math.floor(($('#main-wrapper').height() - canvasHeight) / 2);
     $('#column-wrapper').css({
       'top': verticalGapInPixel + 'px',

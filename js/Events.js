@@ -60,5 +60,5 @@ var Events = {
   REDO: "REDO",
   CUT: "CUT",
   COPY: "COPY",
-  PASTE: "PASTE"    
+  PASTE: "PASTE"
 };

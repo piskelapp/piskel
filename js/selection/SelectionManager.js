@@ -2,22 +2,22 @@
   var ns = $.namespace("pskl.selection");
 
   ns.SelectionManager = function (piskelController) {
-    
+
     this.piskelController = piskelController;
-    
+
     this.currentSelection = null;
   };
 
   ns.SelectionManager.prototype.init = function () {
     $.subscribe(Events.SELECTION_CREATED, $.proxy(this.onSelectionCreated_, this));
-    $.subscribe(Events.SELECTION_DISMISSED, $.proxy(this.onSelectionDismissed_, this)); 
+    $.subscribe(Events.SELECTION_DISMISSED, $.proxy(this.onSelectionDismissed_, this));
     $.subscribe(Events.SELECTION_MOVE_REQUEST, $.proxy(this.onSelectionMoved_, this));
-    
+
     $.subscribe(Events.PASTE, $.proxy(this.onPaste_, this));
     $.subscribe(Events.COPY, $.proxy(this.onCopy_, this));
     $.subscribe(Events.CUT, $.proxy(this.onCut_, this));
 
-    $.subscribe(Events.TOOL_SELECTED, $.proxy(this.onToolSelected_, this)); 
+    $.subscribe(Events.TOOL_SELECTED, $.proxy(this.onToolSelected_, this));
   };
 
   /**
@@ -77,7 +77,7 @@
       for(var i=0, l=pixels.length; i<l; i++) {
         try {
           currentFrame.setPixel(
-            pixels[i].col, pixels[i].row, 
+            pixels[i].col, pixels[i].row,
             pixels[i].copiedColor);
         }
         catch(e) {

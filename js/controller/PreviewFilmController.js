@@ -63,7 +63,7 @@
   };
 
   ns.PreviewFilmController.prototype.createPreviews_ = function () {
-    
+
     this.container.html("");
     // Manually remove tooltips since mouseout events were shortcut by the DOM refresh:
     $(".tooltip").remove();
@@ -94,7 +94,7 @@
    * @private
    */
   ns.PreviewFilmController.prototype.initDragndropBehavior_ = function () {
-    
+
     $("#preview-list").sortable({
       placeholder: "preview-tile-drop-proxy",
       update: $.proxy(this.onUpdate_, this),
@@ -124,7 +124,7 @@
    */
   ns.PreviewFilmController.prototype.createPreviewTile_ = function(tileNumber) {
     var currentFrame = this.piskelController.getCurrentLayer().getFrameAt(tileNumber);
-    
+
     var previewTileRoot = document.createElement("li");
     var classname = "preview-tile";
     previewTileRoot.setAttribute("data-tile-number", tileNumber);
@@ -136,11 +136,11 @@
 
     var canvasContainer = document.createElement("div");
     canvasContainer.className = "canvas-container";
-    
+
     var canvasBackground = document.createElement("div");
     canvasBackground.className = "canvas-background";
     canvasContainer.appendChild(canvasBackground);
-    
+
     previewTileRoot.addEventListener('click', this.onPreviewClick_.bind(this, tileNumber));
 
     var cloneFrameButton = document.createElement("button");
@@ -156,7 +156,7 @@
     var renderingOptions = {"dpi": this.dpi };
     var currentFrameRenderer = new pskl.rendering.FrameRenderer($(canvasContainer), renderingOptions, "tile-view");
     currentFrameRenderer.render(currentFrame);
-    
+
     previewTileRoot.appendChild(canvasContainer);
 
     if(tileNumber > 0 || this.piskelController.getFrameCount() > 1) {
@@ -178,7 +178,7 @@
     tileCount.className = "tile-overlay tile-count";
     tileCount.innerHTML = tileNumber;
     previewTileRoot.appendChild(tileCount);
-    
+
 
     return previewTileRoot;
   };
@@ -187,7 +187,7 @@
     // has not class tile-action:
     if(!evt.target.classList.contains('tile-overlay')) {
       this.piskelController.setCurrentFrameIndex(index);
-    }    
+    }
   };
 
   ns.PreviewFilmController.prototype.onDeleteButtonClick_ = function (index, evt) {

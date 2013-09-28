@@ -10,7 +10,7 @@
     if(container === undefined) {
       throw 'Bad FrameRenderer initialization. <container> undefined.';
     }
-    
+
     if(isNaN(renderingOptions.dpi)) {
       throw 'Bad FrameRenderer initialization. <dpi> not well defined.';
     }
@@ -38,7 +38,7 @@
    * @private
    */
   ns.FrameRenderer.prototype.onUserSettingsChange_ = function (evt, settingName, settingValue) {
-    
+
     if(settingName == pskl.UserSettings.SHOW_GRID) {
       this.enableGrid(settingValue);
     }
@@ -54,7 +54,7 @@
     var currentClass = this.container.data('current-background-class');
     if (currentClass) {
       this.container.removeClass(currentClass);
-    }   
+    }
     this.container.addClass(newClass);
     this.container.data('current-background-class', newClass);
   };
@@ -118,12 +118,12 @@
     var ctx = canvas.getContext("2d");
     ctx.lineWidth = Constants.GRID_STROKE_WIDTH;
     ctx.strokeStyle = Constants.GRID_STROKE_COLOR;
-    for(var c=1; c < col; c++) {            
+    for(var c=1; c < col; c++) {
       ctx.moveTo(this.getFramePos_(c), 0);
       ctx.lineTo(this.getFramePos_(c), height);
       ctx.stroke();
     }
-    
+
     for(var r=1; r < row; r++) {
       ctx.moveTo(0, this.getFramePos_(r));
       ctx.lineTo(width, this.getFramePos_(r));
@@ -137,10 +137,10 @@
   ns.FrameRenderer.prototype.getCanvas_ = function (frame) {
     if(this.canvasConfigDirty) {
       $(this.canvas).remove();
-      
+
       var col = frame.getWidth(),
         row = frame.getHeight();
-      
+
       var pixelWidth =  col * this.dpi + this.gridStrokeWidth * (col - 1);
       var pixelHeight =  row * this.dpi + this.gridStrokeWidth * (row - 1);
       var classes = ['canvas'];
@@ -154,7 +154,7 @@
       if(this.gridStrokeWidth > 0) {
         this.drawGrid_(canvas, pixelWidth, pixelHeight, col, row);
       }
-        
+
       this.canvas = canvas;
       this.canvasConfigDirty = false;
     }

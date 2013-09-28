@@ -11,7 +11,7 @@
   };
 
   pskl.utils.inherit(ns.VerticalMirrorPen, ns.SimplePen);
-  
+
 
   ns.VerticalMirrorPen.prototype.setMirrorContext = function() {
     this.swap = this.previousCol;
@@ -41,6 +41,6 @@
    * @private
    */
   ns.VerticalMirrorPen.prototype.getSymmetricCol_ = function(col, frame) {
-    return frame.getWidth() - col - 1; 
+    return frame.getWidth() - col - 1;
   };
 })();

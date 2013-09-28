@@ -1,6 +1,6 @@
 (function () {
   var ns = $.namespace("pskl.model");
-  
+
   ns.Frame = function (width, height) {
     if (width && height) {
       this.width = width;
@@ -130,7 +130,7 @@
     if (this.stateIndex < this.previousStates.length - 1) {
       this.stateIndex++;
       this.setPixels(this.previousStates[this.stateIndex]);
-    } 
+    }
   };
 
   ns.Frame.prototype.isSameSize = function (otherFrame) {

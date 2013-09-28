@@ -49,7 +49,7 @@
   };
 
   // backward from framesheet
-  ns.PiskelController.prototype.getFrameByIndex = 
+  ns.PiskelController.prototype.getFrameByIndex =
     ns.PiskelController.prototype.getMergedFrameAt;
 
   ns.PiskelController.prototype.addEmptyFrame = function () {

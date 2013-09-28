@@ -10,7 +10,7 @@
     this.previewContainerEl = document.querySelectorAll(".export-gif-preview div")[0];
     this.radioGroupEl = document.querySelectorAll(".gif-export-radio-group")[0];
 
-    this.uploadFormJQ = $("[name=gif-export-upload-form]");    
+    this.uploadFormJQ = $("[name=gif-export-upload-form]");
     this.uploadFormJQ.submit(this.upload.bind(this));
 
     this.initRadioElements_();
@@ -53,7 +53,7 @@
       [1],
       [5],
       [10,true], //default
-      [20],
+      [20]
     ];
 
     for (var i = 0 ; i < dpis.length ; i++) {
@@ -68,7 +68,7 @@
     var value = dpi[0];
     var radioHTML = pskl.utils.Template.replace(this.radioTemplate_, {value : value, label : label});
     var radio = pskl.utils.Template.createFromHTML(radioHTML);
-    
+
     if (dpi[1]) {
       radio.getElementsByTagName("input")[0].setAttribute("checked", "checked");
     }

@@ -9,7 +9,7 @@
   ns.BaseTool = function() {};
 
   ns.BaseTool.prototype.applyToolAt = function(col, row, color, frame, overlay) {};
-  
+
   ns.BaseTool.prototype.moveToolAt = function(col, row, color, frame, overlay) {};
 
   ns.BaseTool.prototype.moveUnactiveToolAt = function(col, row, color, frame, overlay) {
@@ -27,7 +27,7 @@
       overlay.setPixel(col, row, Constants.TOOL_TARGET_HIGHLIGHT_COLOR);
 
       this.highlightedPixelCol = col;
-      this.highlightedPixelRow = row; 
+      this.highlightedPixelRow = row;
     }
   };
 
@@ -43,7 +43,7 @@
    * @private
    */
   ns.BaseTool.prototype.getLinePixels_ = function(x0, x1, y0, y1) {
-    
+
     var pixels = [];
     var dx = Math.abs(x1-x0);
     var dy = Math.abs(y1-y0);
@@ -56,7 +56,10 @@
       // Do what you need to for this
       pixels.push({"col": x0, "row": y0});
 
-      if ((x0==x1) && (y0==y1)) break;
+      if ((x0==x1) && (y0==y1)) {
+        break;
+      }
+
       var e2 = 2*err;
       if (e2>-dy){
         err -= dy;

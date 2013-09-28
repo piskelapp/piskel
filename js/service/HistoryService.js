@@ -1,11 +1,11 @@
 (function () {
   var ns = $.namespace("pskl.service");
   ns.HistoryService = function (piskelController) {
-    this.piskelController = piskelController; 
+    this.piskelController = piskelController;
   };
 
   ns.HistoryService.prototype.init = function () {
-    
+
     $.subscribe(Events.TOOL_RELEASED, this.saveState.bind(this));
     $.subscribe(Events.UNDO, this.undo.bind(this));
     $.subscribe(Events.REDO, this.redo.bind(this));

@@ -32,7 +32,7 @@
         var pData = data.piskel;
         var layers = pData.layers.map(function (serializedLayer) {
           return pskl.utils.Serializer.deserializeLayer(serializedLayer);
-        }); 
+        });
         var piskel = new pskl.model.Piskel(pData.width, pData.height, pData.fps);
         layers.forEach(function (layer) {
           piskel.addLayer(layer);

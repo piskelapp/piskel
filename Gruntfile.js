@@ -36,6 +36,8 @@ module.exports = function(grunt) {
         undef : true,
         latedef : true,
         browser : true,
+        curly : true,
+        es3 : true,
         globals : {'$':true, 'jQuery' : true, 'pskl':true, 'Events':true, 'Constants':true, 'console' : true, 'module':true, 'require':true}
       },
       files: [
@@ -61,17 +63,17 @@ module.exports = function(grunt) {
       }
     },
     ghost : {
-      default : getGhostConfig(3000),
+      'default' : getGhostConfig(3000),
       local : getGhostConfig(50)
     },
     concat : {
       options : {
-        separator : ';',
+        separator : ';'
       },
       dist : {
         src : piskelScripts,
-        dest : 'build/piskel-packaged.js',
-      },
+        dest : 'build/piskel-packaged.js'
+      }
     },
     uglify : {
       options : {
@@ -159,7 +161,7 @@ module.exports = function(grunt) {
   // Validate
   grunt.registerTask('lint', ['leadingIndent:jsFiles', 'leadingIndent:cssFiles', 'jshint']);
 
-  // Validate & Test 
+  // Validate & Test
   grunt.registerTask('test', ['leadingIndent:jsFiles', 'leadingIndent:cssFiles', 'jshint', 'compile', 'connect:test', 'ghost:default']);
 
   // Validate & Test (faster version) will NOT work on travis !!

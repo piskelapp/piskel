@@ -52,7 +52,7 @@
     return colors;
   };
 
-  // Could be used to pass around model using long GET param (good enough for simple models) and 
+  // Could be used to pass around model using long GET param (good enough for simple models) and
   // do some temporary locastorage
   ns.FrameSheet.prototype.serialize = function() {
     var serializedFrames = [];
@@ -73,7 +73,7 @@
       this.load(JSON.parse(serialized));
     } catch (e) {
       throw "Could not load serialized framesheet : " + e.message;
-    } 
+    }
   };
 
 
@@ -99,7 +99,7 @@
     $.publish(Events.FRAMESHEET_RESET);
   };
 
-  
+
   ns.FrameSheet.prototype.hasFrameAtIndex = function(index) {
     return (index >= 0 && index < this.frames.length);
   };
@@ -107,7 +107,7 @@
   ns.FrameSheet.prototype.getFrameByIndex = function(index) {
     if (isNaN(index)) {
       throw "Bad argument value for getFrameByIndex method: <" + index + ">";
-    } 
+    }
 
     if (!this.hasFrameAtIndex(index)) {
       throw "Out of bound index for frameSheet object.";
