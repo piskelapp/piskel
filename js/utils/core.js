@@ -24,7 +24,7 @@ if (typeof Function.prototype.bind !== "function") {
   };
 }
 
-/*
+/**
  * @provide pskl.utils
  *
  * @require Constants

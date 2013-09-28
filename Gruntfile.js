@@ -99,20 +99,16 @@ module.exports = function(grunt) {
            * Keys will be used as directives for the compiler
            * values can be strings or arrays.
            * If no value is required use null
-           *
-           * The directive 'externs' is treated as a special case
-           * allowing a grunt file syntax (<config:...>, *)
-           *
-           * Following are some directive samples...
            */
-           //compilation_level: 'ADVANCED_OPTIMIZATIONS',
+          //compilation_level: 'ADVANCED_OPTIMIZATIONS',
           compilation_level: 'SIMPLE_OPTIMIZATIONS',
-          //externs: ['path/to/file.js', '/source/**/*.js'],
+          externs: ['piskel-closure-externs.js'],
           define: ["'goog.DEBUG=false'"],
           warning_level: 'verbose',
           jscomp_off: ['checkTypes', 'fileoverviewTags'],
           summary_detail_level: 1,
-          output_wrapper: '"(function(){%output%}).call(this);"'
+          language_in: 'ECMASCRIPT3'
+          //output_wrapper: '"(function(){%output%}).call(this);"'
         },
         execOpts: { // [OPTIONAL] Set exec method options
            /**
@@ -138,6 +134,10 @@ module.exports = function(grunt) {
         //src: 'path/to/file.js',
         src: [
           'js/**/*.js',
+          //'!js/lib/**/*.js',
+          '!js/lib/bootstrap/**/*.js',
+          '!js/lib/jsColor_1_4_0/**/*.js',
+          '!js/lib/gif/**/*.js',
           'piskel-boot.js',
           'piskel-script-list.js'
         ]
@@ -171,13 +171,13 @@ module.exports = function(grunt) {
   grunt.registerTask('test', ['leadingIndent:jsFiles', 'leadingIndent:cssFiles', 'jshint', 'compile', 'connect:test', 'ghost:default']);
 
   // Validate & Test (faster version) will NOT work on travis !!
-  grunt.registerTask('precommit', ['leadingIndent:jsFiles', 'leadingIndent:cssFiles', 'jshint', 'connect:test', 'ghost:local']);
+  grunt.registerTask('precommit', ['leadingIndent:jsFiles', 'leadingIndent:cssFiles', 'jshint', 'compile', 'connect:test', 'ghost:local']);
 
   // Compile JS code (eg verify JSDoc annotation and types, no actual minified code generated).
   grunt.registerTask('compile', ['closureCompiler:compile']);
 
   // Validate & Build
-  grunt.registerTask('default', ['leadingIndent:jsFiles', 'leadingIndent:cssFiles', 'jshint', 'concat', 'uglify', 'compile']);
+  grunt.registerTask('default', ['leadingIndent:jsFiles', 'leadingIndent:cssFiles', 'jshint', 'concat', 'compile', 'uglify']);
 
   // Start webserver
   grunt.registerTask('serve', ['connect:serve']);

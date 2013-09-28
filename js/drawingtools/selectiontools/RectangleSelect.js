@@ -1,4 +1,4 @@
-/*
+/**
  * @provide pskl.drawingtools.RectangleSelect
  *
  * @require pskl.utils

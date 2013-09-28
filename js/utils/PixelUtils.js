@@ -44,7 +44,7 @@
         x0 : Math.min(x0, x1), 
         y0 : Math.min(y0, y1),
         x1 : Math.max(x0, x1), 
-        y1 : Math.max(y0, y1),
+        y1 : Math.max(y0, y1)
       };
     },
 
@@ -172,6 +172,6 @@
         widthBoundDpi = Math.floor(width / pictureWidth);
 
       return Math.min(heightBoundDpi, widthBoundDpi);
-    },
+    }
   };
 })();
