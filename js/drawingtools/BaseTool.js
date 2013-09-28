@@ -1,4 +1,4 @@
-/*
+/**
  * @provide pskl.drawingtools.BaseTool
  *
  * @require pskl.utils

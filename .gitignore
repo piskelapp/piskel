@@ -14,3 +14,6 @@ npm-debug.log
 
 # builds
 build
+
+# Closure compiler generated JS binary.
+closure_compiled_binary.js

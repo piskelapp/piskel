@@ -1,4 +1,4 @@
-/*
+/**
  * @provide pskl.drawingtools.Move
  *
  * @require pskl.utils

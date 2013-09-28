@@ -1,4 +1,4 @@
-/*
+/**
  * @provide pskl.drawingtools.Circle
  *
  * @require pskl.utils

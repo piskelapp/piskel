@@ -18,6 +18,7 @@
     "grunt-contrib-jshint": "0.5.4",
     "grunt-contrib-uglify": "0.2.2",
     "grunt-ghost": "1.0.12",
-    "grunt-leading-indent" : "0.1.0"
+    "grunt-leading-indent": "0.1.0",
+    "grunt-closure-tools": "~0.8.3"
   }
 }

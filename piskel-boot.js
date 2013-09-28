@@ -11,14 +11,14 @@
     window.exports = {};
     var scriptIndex = 0;
     window.loadNextScript = function () {
-      if (scriptIndex == exports.scripts.length) {
+      if (scriptIndex == window.exports.scripts.length) {
         pskl.app.init();
         // cleanup
         delete window.exports;
         delete window.loadDebugScripts;
         delete window.done;
       } else {
-        loadScript(exports.scripts[scriptIndex], "loadNextScript()");
+        loadScript(window.exports.scripts[scriptIndex], "loadNextScript()");
         scriptIndex ++;
       }
     };

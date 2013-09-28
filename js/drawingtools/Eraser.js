@@ -1,4 +1,4 @@
-/*
+/**
  * @provide pskl.drawingtools.Eraser
  *
  * @require Constants
