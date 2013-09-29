@@ -2,7 +2,7 @@
 
 body {
   background: radial-gradient(circle, #000, #373737);
-  /* 16/06/2013 : -webkit still needed for 
+  /* 16/06/2013 : -webkit still needed for
   safari, safari mobile and android browser and chrome for android
   cf http://caniuse.com/css-gradients */
   background: -webkit-radial-gradient(circle, #000, #373737);
@@ -145,7 +145,8 @@ body {
 }
 
 
-.canvas.canvas-overlay, .canvas.layers-canvas {
+.canvas.canvas-overlay,
+.canvas.layers-canvas {
   position: absolute;
   top: 0;
   left: 0;
@@ -224,7 +225,8 @@ body {
   background : #222;
 }
 
-.current-layer-item, .current-layer-item:hover {
+.current-layer-item,
+.current-layer-item:hover {
   background : #333;
   color: gold;
 }
@@ -268,8 +270,8 @@ body {
   background-color: #484848;
   color: gold;
 }
-/** 
- * User messages 
+/**
+ * User messages
  */
 .user-message {
   position: absolute;
@@ -283,7 +285,7 @@ body {
   border-right: 0;
   border-bottom: 0;
   font-weight: bold;
-  font-size: 13px; 
+  font-size: 13px;
   z-index: 10000;
   max-width: 300px;
 }
