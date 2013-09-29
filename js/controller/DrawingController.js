@@ -328,12 +328,13 @@
    */
   ns.DrawingController.prototype.updateDPI_ = function() {
     var dpi = this.calculateDPI_();
+
     this.overlayRenderer.updateDPI(dpi);
     this.renderer.updateDPI(dpi);
-
     this.layersAboveRenderer.updateDPI(dpi);
     this.layersBelowRenderer.updateDPI(dpi);
-    this.serializedLayerFrame ="";
+
+    this.serializedLayerFrame = "";
 
     var currentFrameHeight =  this.piskelController.getCurrentFrame().getHeight();
     var canvasHeight = currentFrameHeight * dpi;
