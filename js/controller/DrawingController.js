@@ -24,8 +24,8 @@
 
     this.overlayRenderer = new pskl.rendering.FrameRenderer(this.container, renderingOptions, "canvas-overlay");
     this.renderer = new pskl.rendering.FrameRenderer(this.container, renderingOptions, "drawing-canvas");
-    this.layersDownRenderer = new pskl.rendering.FrameRenderer(this.container, renderingOptions, "layers-canvas layers-down-canvas");
-    this.layersUpRenderer = new pskl.rendering.FrameRenderer(this.container, renderingOptions, "layers-canvas layers-up-canvas");
+    this.layersDownRenderer = new pskl.rendering.FrameRenderer(this.container, renderingOptions, "layers-canvas layers-below-canvas");
+    this.layersUpRenderer = new pskl.rendering.FrameRenderer(this.container, renderingOptions, "layers-canvas layers-above-canvas");
 
 
     // State of drawing controller:

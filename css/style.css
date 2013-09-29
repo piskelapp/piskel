@@ -72,10 +72,6 @@ body {
   font-size: 0;
 }
 
-.layers-canvas {
-  opacity: 0.2;
-}
-
 .sticky-section {
   position: fixed;
   top: 0;
@@ -144,6 +140,9 @@ body {
   background: url(../img/canvas_background/lowcont_dark_canvas_background.png) repeat;
 }
 
+.layers-canvas {
+  opacity: 0.2;
+}
 
 .canvas.canvas-overlay,
 .canvas.layers-canvas {
@@ -152,11 +151,17 @@ body {
   left: 0;
 }
 
-.canvas.layers-down-canvas  {z-index: 7;}
-.canvas.drawing-canvas  {z-index: 8;}
-.canvas.layers-up-canvas  {z-index: 9;}
-.canvas.canvas-overlay {z-index: 10;}
-
+/**
+ * Z-indexes should match the drawing area canvas superposition order :
+ * - 1 : draw layers below current layer
+ * - 2 : draw current layer
+ * - 3 : draw layers above current layer
+ * - 4 : draw the tools overlay
+ */
+.canvas.layers-below-canvas  {z-index:  7;}
+.canvas.drawing-canvas       {z-index:  8;}
+.canvas.layers-above-canvas  {z-index:  9;}
+.canvas.canvas-overlay       {z-index: 10;}
 
 /**
  * Animated preview styles.
