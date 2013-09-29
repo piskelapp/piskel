@@ -24,8 +24,8 @@
 
     this.overlayRenderer = new pskl.rendering.FrameRenderer(this.container, renderingOptions, ["canvas-overlay"]);
     this.renderer = new pskl.rendering.FrameRenderer(this.container, renderingOptions, ["drawing-canvas"]);
-    this.layersDownRenderer = new pskl.rendering.FrameRenderer(this.container, renderingOptions, ["layers-canvas", "layers-below-canvas"]);
-    this.layersUpRenderer = new pskl.rendering.FrameRenderer(this.container, renderingOptions, ["layers-canvas", "layers-above-canvas"]);
+    this.layersBelowRenderer = new pskl.rendering.FrameRenderer(this.container, renderingOptions, ["layers-canvas", "layers-below-canvas"]);
+    this.layersAboveRenderer = new pskl.rendering.FrameRenderer(this.container, renderingOptions, ["layers-canvas", "layers-above-canvas"]);
 
 
     // State of drawing controller:
@@ -38,8 +38,6 @@
   };
 
   ns.DrawingController.prototype.init = function () {
-    // this.render();
-
     this.initMouseBehavior();
 
     $.subscribe(Events.TOOL_SELECTED, $.proxy(function(evt, toolBehavior) {
@@ -275,17 +273,17 @@
 
     var serialized = [currentFrameIndex, this.piskelController.currentLayerIndex, layers.length].join("-");
     if (this.serializedLayerFrame != serialized) {
-      this.layersUpRenderer.clear();
-      this.layersDownRenderer.clear();
+      this.layersAboveRenderer.clear();
+      this.layersBelowRenderer.clear();
 
       var downLayers = layers.slice(0, currentLayerIndex);
       var downFrame = this.getFrameForLayersAt_(currentFrameIndex, downLayers);
-      this.layersDownRenderer.render(downFrame);
+      this.layersBelowRenderer.render(downFrame);
 
       if (currentLayerIndex + 1 < layers.length) {
         var upLayers = layers.slice(currentLayerIndex + 1, layers.length);
         var upFrame = this.getFrameForLayersAt_(currentFrameIndex, upLayers);
-        this.layersUpRenderer.render(upFrame);
+        this.layersAboveRenderer.render(upFrame);
       }
 
       this.serializedLayerFrame = serialized;
@@ -333,8 +331,8 @@
     this.overlayRenderer.updateDPI(dpi);
     this.renderer.updateDPI(dpi);
 
-    this.layersUpRenderer.updateDPI(dpi);
-    this.layersDownRenderer.updateDPI(dpi);
+    this.layersAboveRenderer.updateDPI(dpi);
+    this.layersBelowRenderer.updateDPI(dpi);
     this.serializedLayerFrame ="";
 
     var currentFrameHeight =  this.piskelController.getCurrentFrame().getHeight();
