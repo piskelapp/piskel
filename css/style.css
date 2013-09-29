@@ -194,7 +194,7 @@ body {
 /**
  * Layers container
  */
-.layers-container {
+.layers-list-container {
   border: 4px solid #888;
   font-size: medium;
   color: white;

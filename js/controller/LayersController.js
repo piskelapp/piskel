@@ -7,7 +7,7 @@
 
   ns.LayersController.prototype.init = function () {
     this.layerItemTemplate_ = pskl.utils.Template.get('layer-item-template');
-    this.rootEl = document.querySelectorAll('.layers-container')[0];
+    this.rootEl = document.querySelectorAll('.layers-list-container')[0];
     this.layersListEl = document.querySelectorAll('.layers-list')[0];
 
     this.rootEl.addEventListener('click', this.onClick_.bind(this));

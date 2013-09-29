@@ -15,7 +15,7 @@ var Constants = {
 
   DEFAULT_PEN_COLOR : '#000000',
   TRANSPARENT_COLOR : 'TRANSPARENT',
-  
+
   /*
    * Fake semi-transparent color used to highlight transparent
    * strokes and rectangles:
@@ -27,15 +27,17 @@ var Constants = {
    * pixel target with this color:
    */
   TOOL_TARGET_HIGHLIGHT_COLOR: 'rgba(255, 255, 255, 0.2)',
-  
+
   /*
    * Default entry point for piskel web service:
    */
   PISKEL_SERVICE_URL: 'http://3.piskel-app.appspot.com',
+  IMAGE_SERVICE_UPLOAD_URL : 'http://screenletstore.appspot.com/__/upload',
+  IMAGE_SERVICE_GET_URL : 'http://screenletstore.appspot.com/img/',
 
   GRID_STROKE_WIDTH: 1,
-  GRID_STROKE_COLOR: "lightgray",
+  GRID_STROKE_COLOR: 'lightgray',
 
-  LEFT_BUTTON : "left_button_1",
-  RIGHT_BUTTON : "right_button_2"
+  LEFT_BUTTON : 'left_button_1',
+  RIGHT_BUTTON : 'right_button_2'
 };

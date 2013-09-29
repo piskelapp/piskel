@@ -1,12 +1,7 @@
 (function () {
   var ns = $.namespace("pskl.service");
-  ns.ImageUploadService = function () {
-    this.serviceUrl_ = "http://screenletstore.appspot.com/__/upload";
-  };
-
-  ns.ImageUploadService.prototype.init = function () {
-    // service interface
-  };
+  ns.ImageUploadService = function () {};
+  ns.ImageUploadService.prototype.init = function () {};
 
   /**
    * Upload a base64 image data to distant service. If successful, will call provided callback with the image URL as first argument;
@@ -18,10 +13,10 @@
     var xhr = new XMLHttpRequest();
     var formData = new FormData();
     formData.append('data', imageData);
-    xhr.open('POST', this.serviceUrl_, true);
+    xhr.open('POST', Constants.IMAGE_SERVICE_UPLOAD_URL, true);
     xhr.onload = function (e) {
       if (this.status == 200) {
-        var imageUrl = "http://screenletstore.appspot.com/img/" + this.responseText;
+        var imageUrl = Constants.IMAGE_SERVICE_GET_URL + this.responseText;
         cbSuccess(imageUrl);
       } else {
         cbError();
@@ -30,5 +25,4 @@
 
     xhr.send(formData);
   };
-
 })();
