@@ -154,7 +154,7 @@
     // TODO(vincz): Eventually optimize this part by not recreating a FrameRenderer. Note that the real optim
     // is to make this update function (#createPreviewTile) less aggressive.
     var renderingOptions = {"dpi": this.dpi };
-    var currentFrameRenderer = new pskl.rendering.FrameRenderer($(canvasContainer), renderingOptions, "tile-view");
+    var currentFrameRenderer = new pskl.rendering.FrameRenderer($(canvasContainer), renderingOptions, ["tile-view"]);
     currentFrameRenderer.render(currentFrame);
 
     previewTileRoot.appendChild(canvasContainer);

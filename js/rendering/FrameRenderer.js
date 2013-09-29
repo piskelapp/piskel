@@ -1,7 +1,13 @@
 (function () {
   var ns = $.namespace("pskl.rendering");
 
-  ns.FrameRenderer = function (container, renderingOptions, className) {
+  /**
+   * FrameRenderer will display a given frame inside a canvas element.
+   * @param {HtmlElement} container HtmlElement to use as parentNode of the Frame
+   * @param {Object} renderingOptions
+   * @param {Array} classes array of strings to use for css classes
+   */
+  ns.FrameRenderer = function (container, renderingOptions, classes) {
     this.defaultRenderingOptions = {
       'supportGridRendering' : false
     };
@@ -16,10 +22,14 @@
     }
 
     this.container = container;
+
     this.dpi = renderingOptions.dpi;
-    this.className = className;
-    this.canvas = null;
     this.supportGridRendering = renderingOptions.supportGridRendering;
+
+    this.classes = classes || [];
+    this.classes.push('canvas');
+
+    this.canvas = null;
 
     this.enableGrid(pskl.UserSettings.get(pskl.UserSettings.SHOW_GRID));
 
@@ -143,12 +153,8 @@
 
       var pixelWidth =  col * this.dpi + this.gridStrokeWidth * (col - 1);
       var pixelHeight =  row * this.dpi + this.gridStrokeWidth * (row - 1);
-      var classes = ['canvas'];
-      if (this.className) {
-        classes = classes.concat(this.className.split(' '));
-      }
-      var canvas = pskl.CanvasUtils.createCanvas(pixelWidth, pixelHeight, classes);
 
+      var canvas = pskl.CanvasUtils.createCanvas(pixelWidth, pixelHeight, this.classes);
       this.container.append(canvas);
 
       if(this.gridStrokeWidth > 0) {
