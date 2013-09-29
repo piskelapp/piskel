@@ -36,6 +36,7 @@ module.exports = function(grunt) {
         undef : true,
         latedef : true,
         browser : true,
+        trailing : true,
         curly : true,
         es3 : true,
         globals : {'$':true, 'jQuery' : true, 'pskl':true, 'Events':true, 'Constants':true, 'console' : true, 'module':true, 'require':true}
