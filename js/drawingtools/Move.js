@@ -9,14 +9,14 @@
   ns.Move = function() {
     this.toolId = "tool-move";
     this.helpText = "Move tool";
-    
+
     // Stroke's first point coordinates (set in applyToolAt)
     this.startCol = null;
     this.startRow = null;
   };
 
   pskl.utils.inherit(ns.Move, ns.BaseTool);
-  
+
   /**
    * @override
    */
@@ -26,7 +26,7 @@
     this.frameClone = frame.clone();
   };
 
-  ns.Move.prototype.moveToolAt = function(col, row, color, frame, overlay) {  
+  ns.Move.prototype.moveToolAt = function(col, row, color, frame, overlay) {
     var colDiff = col - this.startCol, rowDiff = row - this.startRow;
     this.shiftFrame(colDiff, rowDiff, frame, this.frameClone);
   };

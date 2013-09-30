@@ -2,52 +2,18 @@
 
   var ns = $.namespace("pskl.rendering");
 
-  ns.SpritesheetRenderer = function (framesheet) {
-    this.framesheet = framesheet;
+  ns.SpritesheetRenderer = function (piskelController) {
+    this.piskelController = piskelController;
   };
 
   ns.SpritesheetRenderer.prototype.renderAsImageDataSpritesheetPNG = function () {
     var canvas = this.createCanvas_();
-    for (var i = 0 ; i < this.framesheet.getFrameCount() ; i++) {
-      var frame = this.framesheet.getFrameByIndex(i);
-      this.drawFrameInCanvas_(frame, canvas, i * this.framesheet.getWidth(), 0);
+    for (var i = 0 ; i < this.piskelController.getFrameCount() ; i++) {
+      var frame = this.piskelController.getFrameAt(i);
+      this.drawFrameInCanvas_(frame, canvas, i * this.piskelController.getWidth(), 0);
     }
     return canvas.toDataURL("image/png");
   };
-
-  ns.SpritesheetRenderer.prototype.blobToBase64_ = function(blob, cb) {
-    var reader = new FileReader();
-    reader.onload = function() {
-      var dataUrl = reader.result;
-      cb(dataUrl);
-    };
-    reader.readAsDataURL(blob);
-  };
-
-  ns.SpritesheetRenderer.prototype.renderAsImageDataAnimatedGIF = function(fps, cb) {
-    var dpi = 10;
-    var gif = new window.GIF({
-      workers: 2,
-      quality: 10,
-      width: 320,
-      height: 320
-    });
-
-    for (var i = 0; i < this.framesheet.frames.length; i++) {
-      var frame = this.framesheet.frames[i];
-      var renderer = new pskl.rendering.CanvasRenderer(frame, dpi);
-      gif.addFrame(renderer.render(), {
-        delay: 1000 / fps
-      });
-    }
-
-    gif.on('finished', function(blob) {
-      this.blobToBase64_(blob, cb);
-    }.bind(this));
-
-    gif.render();
-  };
-
 
   /**
    * TODO(juliandescottes): Mutualize with code already present in FrameRenderer
@@ -66,10 +32,10 @@
   };
 
   ns.SpritesheetRenderer.prototype.createCanvas_ = function () {
-    var frameCount = this.framesheet.getFrameCount();
+    var frameCount = this.piskelController.getFrameCount();
     if (frameCount > 0){
-      var width = frameCount * this.framesheet.getWidth();
-      var height = this.framesheet.getHeight();
+      var width = frameCount * this.piskelController.getWidth();
+      var height = this.piskelController.getHeight();
       return pskl.CanvasUtils.createCanvas(width, height);
     } else {
       throw "Cannot render empty Spritesheet";

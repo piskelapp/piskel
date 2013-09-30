@@ -1,14 +1,14 @@
 (function () {
   var ns = $.namespace("pskl.controller");
-  ns.AnimatedPreviewController = function (framesheet, container, dpi) {
-    this.framesheet = framesheet;
+  ns.AnimatedPreviewController = function (piskelController, container, dpi) {
+    this.piskelController = piskelController;
     this.container = container;
 
     this.elapsedTime = 0;
     this.currentIndex = 0;
 
-    this.fps = parseInt($("#preview-fps")[0].value, 10);
-    
+    this.setFPS(Constants.DEFAULT.FPS);
+
     var renderingOptions = {
       "dpi": this.calculateDPI_()
     };
@@ -34,16 +34,20 @@
     $("#display-fps").html(this.fps + " FPS");
   };
 
+  ns.AnimatedPreviewController.prototype.getFPS = function () {
+    return this.fps;
+  };
+
   ns.AnimatedPreviewController.prototype.render = function (delta) {
     this.elapsedTime += delta;
     var index = Math.floor(this.elapsedTime / (1000/this.fps));
     if (index != this.currentIndex) {
       this.currentIndex = index;
-      if (!this.framesheet.hasFrameAtIndex(this.currentIndex)) {
+      if (!this.piskelController.hasFrameAt(this.currentIndex)) {
         this.currentIndex = 0;
         this.elapsedTime = 0;
       }
-      this.renderer.render(this.framesheet.getFrameByIndex(this.currentIndex));
+      this.renderer.render(this.piskelController.getFrameAt(this.currentIndex));
     }
   };
 
@@ -52,16 +56,16 @@
    */
   ns.AnimatedPreviewController.prototype.calculateDPI_ = function () {
     var previewSize = 200,
-      framePixelHeight = this.framesheet.getCurrentFrame().getHeight(),
-      framePixelWidth = this.framesheet.getCurrentFrame().getWidth();
+      framePixelHeight = this.piskelController.getCurrentFrame().getHeight(),
+      framePixelWidth = this.piskelController.getCurrentFrame().getWidth();
     // TODO (julz) : should have a utility to get a Size from framesheet easily (what about empty framesheets though ?)
-    
+
     //return pskl.PixelUtils.calculateDPIForContainer($(".preview-container"), framePixelHeight, framePixelWidth);
     return pskl.PixelUtils.calculateDPI(previewSize, previewSize, framePixelHeight, framePixelWidth);
   };
 
   ns.AnimatedPreviewController.prototype.updateDPI_ = function () {
     this.dpi = this.calculateDPI_();
-    this.renderer.updateDPI(this.dpi);
+    this.renderer.setDPI(this.dpi);
   };
 })();

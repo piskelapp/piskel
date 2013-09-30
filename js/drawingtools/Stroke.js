@@ -16,14 +16,14 @@
   };
 
   pskl.utils.inherit(ns.Stroke, ns.BaseTool);
-  
+
   /**
    * @override
    */
   ns.Stroke.prototype.applyToolAt = function(col, row, color, frame, overlay) {
     this.startCol = col;
     this.startRow = row;
-    
+
     // When drawing a stroke we don't change the model instantly, since the
     // user can move his cursor to change the stroke direction and length
     // dynamically. Instead we draw the (preview) stroke in a fake canvas that
@@ -39,10 +39,10 @@
   ns.Stroke.prototype.moveToolAt = function(col, row, color, frame, overlay) {
     overlay.clear();
 
-    // When the user moussemove (before releasing), we dynamically compute the 
+    // When the user moussemove (before releasing), we dynamically compute the
     // pixel to draw the line and draw this line in the overlay canvas:
     var strokePoints = this.getLinePixels_(this.startCol, col, this.startRow, row);
-    
+
     // Drawing current stroke:
     for(var i = 0; i< strokePoints.length; i++) {
 
@@ -51,10 +51,10 @@
         // If the stroke color is transparent, we won't be
         // able to see it during the movement.
         // We set it to a semi-opaque white during the tool mousemove allowing to see colors below the stroke.
-        // When the stroke tool will be released, It will draw a transparent stroke, 
-        // eg deleting the equivalent of a stroke.    
+        // When the stroke tool will be released, It will draw a transparent stroke,
+        // eg deleting the equivalent of a stroke.
         color = Constants.SELECTION_TRANSPARENT_COLOR;
-      }     
+      }
       overlay.setPixel(strokePoints[i].col, strokePoints[i].row, color);
     }
   };
@@ -73,8 +73,8 @@
         // Change model:
         frame.setPixel(strokePoints[i].col, strokePoints[i].row, color);
       }
-    } 
+    }
     // For now, we are done with the stroke tool and don't need an overlay anymore:
-    overlay.clear();   
+    overlay.clear();
   };
 })();

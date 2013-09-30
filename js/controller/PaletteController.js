@@ -1,9 +1,34 @@
 (function () {
   var ns = $.namespace("pskl.controller");
 
-  ns.PaletteController = function () {
-    this.paletteRoot = null;
-    this.paletteColors = [];
+  ns.PaletteController = function () {};
+
+  /**
+   * @public
+   */
+  ns.PaletteController.prototype.init = function() {
+    var transparentColorPalette = $(".palette-color[data-color=TRANSPARENT]");
+    transparentColorPalette.mouseup($.proxy(this.onPaletteColorClick_, this));
+
+    $.subscribe(Events.PRIMARY_COLOR_UPDATED, $.proxy(function(evt, color) {
+      this.updateColorPicker_(color, $('#color-picker'));
+    }, this));
+
+    $.subscribe(Events.SECONDARY_COLOR_UPDATED, $.proxy(function(evt, color) {
+      this.updateColorPicker_(color, $('#secondary-color-picker'));
+    }, this));
+
+    // Initialize colorpickers:
+    var colorPicker = $('#color-picker');
+    colorPicker.val(Constants.DEFAULT_PEN_COLOR);
+    colorPicker.change({isPrimary : true}, $.proxy(this.onPickerChange_, this));
+
+
+    var secondaryColorPicker = $('#secondary-color-picker');
+    secondaryColorPicker.val(Constants.TRANSPARENT_COLOR);
+    secondaryColorPicker.change({isPrimary : false}, $.proxy(this.onPickerChange_, this));
+
+    window.jscolor.install();
   };
 
   /**
@@ -13,27 +38,8 @@
     var inputPicker = $(evt.target);
     if(evt.data.isPrimary) {
       $.publish(Events.PRIMARY_COLOR_SELECTED, [inputPicker.val()]);
-    }
-    else {
+    } else {
       $.publish(Events.SECONDARY_COLOR_SELECTED, [inputPicker.val()]);
-    }
-  };
-  
-  /**
-   * @private
-   */
-  ns.PaletteController.prototype.addColorToPalette_ = function (color) {
-    if (this.paletteColors.indexOf(color) == -1 && color != Constants.TRANSPARENT_COLOR) {
-      this.paletteColors.push(color);
-    }
-  };
-
-  /**
-   * @private
-   */
-  ns.PaletteController.prototype.addColorsToPalette_ = function (colors) {
-    for(var color in colors) {
-      this.addColorToPalette_(color);
     }
   };
 
@@ -70,45 +76,6 @@
     } else {
       colorPicker[0].color.fromString(color);
     }
-  };
-
-  /**
-   * @public
-   */
-  ns.PaletteController.prototype.init = function(framesheet) {
-      
-    this.paletteRoot = $("#palette");
-    this.framesheet = framesheet;
-
-    // Initialize palette:
-    this.addColorsToPalette_(this.framesheet.getUsedColors());
-
-    $.subscribe(Events.FRAMESHEET_RESET, $.proxy(function(evt) {
-      this.addColorsToPalette_(this.framesheet.getUsedColors());
-    }, this));
-
-    this.paletteRoot.mouseup($.proxy(this.onPaletteColorClick_, this));
-    
-    $.subscribe(Events.PRIMARY_COLOR_UPDATED, $.proxy(function(evt, color) {
-      this.updateColorPicker_(color, $('#color-picker'));
-      this.addColorToPalette_(color);
-    }, this));
-
-    $.subscribe(Events.SECONDARY_COLOR_UPDATED, $.proxy(function(evt, color) {
-      this.updateColorPicker_(color, $('#secondary-color-picker'));
-      this.addColorToPalette_(color);
-    }, this));
-
-    // Initialize colorpickers:
-    var colorPicker = $('#color-picker');
-    colorPicker.val(Constants.DEFAULT_PEN_COLOR);
-    colorPicker.change({isPrimary : true}, $.proxy(this.onPickerChange_, this));
-
-
-    var secondaryColorPicker = $('#secondary-color-picker');
-    secondaryColorPicker.val(Constants.TRANSPARENT_COLOR);
-    secondaryColorPicker.change({isPrimary : false}, $.proxy(this.onPickerChange_, this));
-
   };
 })();
 
