@@ -6,13 +6,10 @@
    * @param {Number} width
    * @param {Number} height
    */
-  ns.Piskel = function (width, height, fps) {
-    if (width && height && fps) {
+  ns.Piskel = function (width, height) {
+    if (width && height) {
       /** @type {Array} */
       this.layers = [];
-
-      /** @type {Number} */
-      this.fps = fps;
 
       /** @type {Number} */
       this.width = width;
@@ -34,10 +31,6 @@
 
   ns.Piskel.prototype.getWidth = function () {
     return this.width;
-  };
-
-  ns.Piskel.prototype.getFps = function () {
-    return this.fps;
   };
 
   ns.Piskel.prototype.getLayers = function () {

@@ -1,8 +1,27 @@
 (function () {
   var ns = $.namespace("pskl.controller.settings");
+
   ns.GifExportController = function (piskelController) {
     this.piskelController = piskelController;
   };
+
+  /**
+   * List of Resolutions applicable for Gif export
+   * @static
+   * @type {Array} array of Objects {dpi:{Number}, default:{Boolean}}
+   */
+  ns.GifExportController.RESOLUTIONS = [
+    {
+      'dpi' : 1
+    },{
+      'dpi' : 5
+    },{
+      'dpi' : 10,
+      'default' : true
+    },{
+      'dpi' : 20
+    }
+  ];
 
   ns.GifExportController.prototype.init = function () {
     this.radioTemplate_ = pskl.utils.Template.get("export-gif-radio-template");
@@ -10,26 +29,30 @@
     this.previewContainerEl = document.querySelectorAll(".export-gif-preview div")[0];
     this.radioGroupEl = document.querySelectorAll(".gif-export-radio-group")[0];
 
-    this.uploadFormJQ = $("[name=gif-export-upload-form]");
-    this.uploadFormJQ.submit(this.upload.bind(this));
+    this.uploadForm = $("[name=gif-export-upload-form]");
+    this.uploadForm.submit(this.onUploadFormSubmit_.bind(this));
 
-    this.initRadioElements_();
+    this.createRadioElements_();
   };
 
-  ns.GifExportController.prototype.upload = function (evt) {
+  ns.GifExportController.prototype.onUploadFormSubmit_ = function (evt) {
     evt.originalEvent.preventDefault();
     var selectedDpi = this.getSelectedDpi_(),
-        fps = pskl.app.animationController.fps,
+        fps = this.piskelController.getFPS(),
         dpi = selectedDpi;
 
-    this.renderAsImageDataAnimatedGIF(dpi, fps, function (imageData) {
-      this.updatePreview_(imageData);
-      this.previewContainerEl.classList.add("preview-upload-ongoing");
-      pskl.app.imageUploadService.upload(imageData, function (imageUrl) {
-        this.updatePreview_(imageUrl);
-        this.previewContainerEl.classList.remove("preview-upload-ongoing");
-      }.bind(this));
-    }.bind(this));
+    this.renderAsImageDataAnimatedGIF(dpi, fps, this.onGifRenderingCompleted_.bind(this));
+  };
+
+  ns.GifExportController.prototype.onGifRenderingCompleted_ = function (imageData) {
+    this.updatePreview_(imageData);
+    this.previewContainerEl.classList.add("preview-upload-ongoing");
+    pskl.app.imageUploadService.upload(imageData, this.onImageUploadCompleted_.bind(this));
+  };
+
+  ns.GifExportController.prototype.onImageUploadCompleted_ = function (imageUrl) {
+    this.updatePreview_(imageUrl);
+    this.previewContainerEl.classList.remove("preview-upload-ongoing");
   };
 
   ns.GifExportController.prototype.updatePreview_ = function (src) {
@@ -37,7 +60,7 @@
   };
 
   ns.GifExportController.prototype.getSelectedDpi_ = function () {
-    var radiosColl = this.uploadFormJQ.get(0).querySelectorAll("[name=gif-dpi]"),
+    var radiosColl = this.uploadForm.get(0).querySelectorAll("[name=gif-dpi]"),
         radios = Array.prototype.slice.call(radiosColl,0);
     var selectedRadios = radios.filter(function(radio) {return !!radio.checked;});
 
@@ -48,32 +71,28 @@
     }
   };
 
-  ns.GifExportController.prototype.initRadioElements_ = function () {
-    var dpis = [
-      [1],
-      [5],
-      [10,true], //default
-      [20]
-    ];
-
-    for (var i = 0 ; i < dpis.length ; i++) {
-      var dpi = dpis[i];
-      var radio = this.createRadioForDpi_(dpi);
+  ns.GifExportController.prototype.createRadioElements_ = function () {
+    var resolutions = ns.GifExportController.RESOLUTIONS;
+    for (var i = 0 ; i < resolutions.length ; i++) {
+      var radio = this.createRadioForResolution_(resolutions[i]);
       this.radioGroupEl.appendChild(radio);
     }
   };
 
-  ns.GifExportController.prototype.createRadioForDpi_ = function (dpi) {
-    var label = dpi[0]*this.piskelController.getWidth() + "x" + dpi[0]*this.piskelController.getHeight();
-    var value = dpi[0];
-    var radioHTML = pskl.utils.Template.replace(this.radioTemplate_, {value : value, label : label});
-    var radio = pskl.utils.Template.createFromHTML(radioHTML);
+  ns.GifExportController.prototype.createRadioForResolution_ = function (resolution) {
+    var dpi = resolution.dpi;
+    var label = dpi*this.piskelController.getWidth() + "x" + dpi*this.piskelController.getHeight();
+    var value = dpi;
 
-    if (dpi[1]) {
-      radio.getElementsByTagName("input")[0].setAttribute("checked", "checked");
+    var radioHTML = pskl.utils.Template.replace(this.radioTemplate_, {value : value, label : label});
+    var radioEl = pskl.utils.Template.createFromHTML(radioHTML);
+
+    if (resolution['default']) {
+      var input = radioEl.getElementsByTagName("input")[0];
+      input.setAttribute("checked", "checked");
     }
 
-    return radio;
+    return radioEl;
   };
 
   ns.GifExportController.prototype.blobToBase64_ = function(blob, cb) {
