@@ -1,11 +1,11 @@
 (function () {
   var ns = $.namespace('pskl.controller');
 
-  ns.LayersController = function (piskelController) {
+  ns.LayersListController = function (piskelController) {
     this.piskelController = piskelController;
   };
 
-  ns.LayersController.prototype.init = function () {
+  ns.LayersListController.prototype.init = function () {
     this.layerItemTemplate_ = pskl.utils.Template.get('layer-item-template');
     this.rootEl = document.querySelectorAll('.layers-list-container')[0];
     this.layersListEl = document.querySelectorAll('.layers-list')[0];
@@ -17,13 +17,13 @@
     this.renderLayerList_();
   };
 
-  ns.LayersController.prototype.renderLayerList_ = function () {
+  ns.LayersListController.prototype.renderLayerList_ = function () {
     this.layersListEl.innerHTML = '';
     var layers = this.piskelController.getLayers();
     layers.forEach(this.addLayerItem.bind(this));
   };
 
-  ns.LayersController.prototype.addLayerItem = function (layer) {
+  ns.LayersListController.prototype.addLayerItem = function (layer) {
     var layerItemHtml = pskl.utils.Template.replace(this.layerItemTemplate_, {
       layername : layer.getName()
     });
@@ -34,7 +34,7 @@
     this.layersListEl.insertBefore(layerItem, this.layersListEl.firstChild);
   };
 
-  ns.LayersController.prototype.onClick_ = function (evt) {
+  ns.LayersListController.prototype.onClick_ = function (evt) {
     var el = evt.target || evt.srcElement;
     if (el.nodeName == 'BUTTON') {
       this.onButtonClick_(el);
@@ -44,7 +44,7 @@
     }
   };
 
-  ns.LayersController.prototype.onButtonClick_ = function (button) {
+  ns.LayersListController.prototype.onButtonClick_ = function (button) {
     var action = button.getAttribute('data-action');
     if (action == 'up') {
       this.piskelController.moveLayerUp();

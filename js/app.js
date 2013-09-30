@@ -26,12 +26,12 @@
 
       this.animationController = new pskl.controller.AnimatedPreviewController(this.piskelController, $('#preview-canvas-container'));
       this.animationController.init();
-      
+
       this.previewsController = new pskl.controller.PreviewFilmController(this.piskelController, $('#preview-list'));
       this.previewsController.init();
-      
-      this.layersController = new pskl.controller.LayersController(this.piskelController);
-      this.layersController.init();
+
+      this.layersListController = new pskl.controller.LayersListController(this.piskelController);
+      this.layersListController.init();
 
       this.settingsController = new pskl.controller.SettingsController(this.piskelController);
       this.settingsController.init();
@@ -56,7 +56,7 @@
 
       this.toolController = new pskl.controller.ToolController();
       this.toolController.init();
-      
+
       this.paletteController = new pskl.controller.PaletteController();
       this.paletteController.init();
 
@@ -65,8 +65,8 @@
       drawingLoop.start();
 
       this.initBootstrapTooltips_();
-      
-      
+
+
       /**
        * True when piskel is running in static mode (no back end needed).
        * When started from APP Engine, appEngineToken_ (Boolean) should be set on window.pskl
@@ -102,7 +102,7 @@
       this.animationController.render(delta);
       this.previewsController.render(delta);
     },
-    
+
     readSizeFromURL_ : function () {
       var sizeParam = this.readUrlParameter_("size"),
         size;
@@ -179,7 +179,7 @@
         // additional values only used with latest app-engine backend
         formData.append('name', $('#piskel-name').val());
         formData.append('frames', this.piskelController.getFrameCount());
-        
+
         // Get image/png data for first frame
         formData.append('preview', this.getFirstFrameAsPNGData_());
 
@@ -188,7 +188,7 @@
 
         xhr.open('POST', "save", true);
       }
-     
+
       xhr.onload = function(e) {
         if (this.status == 200) {
           if (pskl.app.isStaticVersion) {
