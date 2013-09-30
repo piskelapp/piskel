@@ -9,7 +9,7 @@
   ns.BaseSelect = function() {
     this.secondaryToolId = "tool-move";
     this.BodyRoot = $('body');
-    
+
     // Select's first point coordinates (set in applyToolAt)
     this.startCol = null;
     this.startRow = null;
@@ -23,17 +23,17 @@
   ns.BaseSelect.prototype.applyToolAt = function(col, row, color, frame, overlay) {
     this.startCol = col;
     this.startRow = row;
-    
+
     this.lastCol = col;
     this.lastRow = row;
-    
+
     // The select tool can be in two different state.
     // If the inital click of the tool is not on a selection, we go in "select"
     // mode to create a selection.
     // If the initial click is on a previous selection, we go in "moveSelection"
     // mode to allow to move the selection by drag'n dropping it.
     if(overlay.getPixel(col, row) != Constants.SELECTION_TRANSPARENT_COLOR) {
-      
+
       this.mode = "select";
       this.onSelectStart_(col, row, color, frame, overlay);
     }
@@ -49,11 +49,11 @@
    */
   ns.BaseSelect.prototype.moveToolAt = function(col, row, color, frame, overlay) {
     if(this.mode == "select") {
-      
+
       this.onSelect_(col, row, color, frame, overlay);
     }
     else if(this.mode == "moveSelection") {
-      
+
       this.onSelectionDrag_(col, row, color, frame, overlay);
     }
   };
@@ -61,11 +61,11 @@
   /**
    * @override
    */
-  ns.BaseSelect.prototype.releaseToolAt = function(col, row, color, frame, overlay) {   
+  ns.BaseSelect.prototype.releaseToolAt = function(col, row, color, frame, overlay) {
     if(this.mode == "select") {
       this.onSelectEnd_(col, row, color, frame, overlay);
     } else if(this.mode == "moveSelection") {
-      
+
       this.onSelectionDragEnd_(col, row, color, frame, overlay);
     }
   };
@@ -77,7 +77,7 @@
    * @override
    */
   ns.BaseSelect.prototype.moveUnactiveToolAt = function(col, row, color, frame, overlay) {
-    
+
     if(overlay.getPixel(col, row) != Constants.SELECTION_TRANSPARENT_COLOR) {
       // We're hovering the selection, show the move tool:
       this.BodyRoot.addClass(this.toolId);
@@ -135,14 +135,14 @@
     // we clone it to have a reference for the later shifting process.
     this.overlayFrameReference = overlay.clone();
   };
-  
+
   /** @private */
   ns.BaseSelect.prototype.onSelectionDrag_ = function (col, row, color, frame, overlay) {
     var deltaCol = col - this.lastCol;
     var deltaRow = row - this.lastRow;
-    
+
     var colDiff = col - this.startCol, rowDiff = row - this.startRow;
-    
+
     // Shifting selection on overlay frame:
     this.shiftOverlayFrame_(colDiff, rowDiff, overlay, this.overlayFrameReference);
 
@@ -150,7 +150,7 @@
     $.publish(Events.SELECTION_MOVE_REQUEST, [deltaCol, deltaRow]);
 
     this.lastCol = col;
-    this.lastRow = row; 
+    this.lastRow = row;
   };
 
   /** @private */

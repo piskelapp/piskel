@@ -1,7 +1,13 @@
 (function () {
   var ns = $.namespace("pskl.rendering");
 
-  ns.FrameRenderer = function (container, renderingOptions, className) {
+  /**
+   * FrameRenderer will display a given frame inside a canvas element.
+   * @param {HtmlElement} container HtmlElement to use as parentNode of the Frame
+   * @param {Object} renderingOptions
+   * @param {Array} classes array of strings to use for css classes
+   */
+  ns.FrameRenderer = function (container, renderingOptions, classes) {
     this.defaultRenderingOptions = {
       'supportGridRendering' : false
     };
@@ -10,16 +16,20 @@
     if(container === undefined) {
       throw 'Bad FrameRenderer initialization. <container> undefined.';
     }
-    
+
     if(isNaN(renderingOptions.dpi)) {
       throw 'Bad FrameRenderer initialization. <dpi> not well defined.';
     }
 
     this.container = container;
+
     this.dpi = renderingOptions.dpi;
-    this.className = className;
-    this.canvas = null;
     this.supportGridRendering = renderingOptions.supportGridRendering;
+
+    this.classes = classes || [];
+    this.classes.push('canvas');
+
+    this.canvas = null;
 
     this.enableGrid(pskl.UserSettings.get(pskl.UserSettings.SHOW_GRID));
 
@@ -29,8 +39,8 @@
     $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
   };
 
-  ns.FrameRenderer.prototype.updateDPI = function (newDPI) {
-    this.dpi = newDPI;
+  ns.FrameRenderer.prototype.setDPI = function (dpi) {
+    this.dpi = dpi;
     this.canvasConfigDirty = true;
   };
 
@@ -38,7 +48,7 @@
    * @private
    */
   ns.FrameRenderer.prototype.onUserSettingsChange_ = function (evt, settingName, settingValue) {
-    
+
     if(settingName == pskl.UserSettings.SHOW_GRID) {
       this.enableGrid(settingValue);
     }
@@ -54,7 +64,7 @@
     var currentClass = this.container.data('current-background-class');
     if (currentClass) {
       this.container.removeClass(currentClass);
-    }   
+    }
     this.container.addClass(newClass);
     this.container.data('current-background-class', newClass);
   };
@@ -65,15 +75,17 @@
   };
 
   ns.FrameRenderer.prototype.render = function (frame) {
-    this.clear(frame);
-    var context = this.getCanvas_(frame).getContext('2d');
-    for(var col = 0, width = frame.getWidth(); col < width; col++) {
-      for(var row = 0, height = frame.getHeight(); row < height; row++) {
-        var color = frame.getPixel(col, row);
-        this.renderPixel_(color, col, row, context);
+    if (frame) {
+      this.clear();
+      var context = this.getCanvas_(frame).getContext('2d');
+      for(var col = 0, width = frame.getWidth(); col < width; col++) {
+        for(var row = 0, height = frame.getHeight(); row < height; row++) {
+          var color = frame.getPixel(col, row);
+          this.renderPixel_(color, col, row, context);
+        }
       }
+      this.lastRenderedFrame = frame;
     }
-    this.lastRenderedFrame = frame;
   };
 
   ns.FrameRenderer.prototype.renderPixel_ = function (color, col, row, context) {
@@ -83,9 +95,10 @@
     }
   };
 
-  ns.FrameRenderer.prototype.clear = function (frame) {
-    var canvas = this.getCanvas_(frame);
-    canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
+  ns.FrameRenderer.prototype.clear = function () {
+    if (this.canvas) {
+      this.canvas.getContext("2d").clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
   };
 
   /**
@@ -111,47 +124,19 @@
   /**
    * @private
    */
-  ns.FrameRenderer.prototype.drawGrid_ = function(canvas, width, height, col, row) {
-    var ctx = canvas.getContext("2d");
-    ctx.lineWidth = Constants.GRID_STROKE_WIDTH;
-    ctx.strokeStyle = Constants.GRID_STROKE_COLOR;
-    for(var c=1; c < col; c++) {            
-      ctx.moveTo(this.getFramePos_(c), 0);
-      ctx.lineTo(this.getFramePos_(c), height);
-      ctx.stroke();
-    }
-    
-    for(var r=1; r < row; r++) {
-      ctx.moveTo(0, this.getFramePos_(r));
-      ctx.lineTo(width, this.getFramePos_(r));
-      ctx.stroke();
-    }
-  };
-
-  /**
-   * @private
-   */
   ns.FrameRenderer.prototype.getCanvas_ = function (frame) {
     if(this.canvasConfigDirty) {
       $(this.canvas).remove();
-      
+
       var col = frame.getWidth(),
         row = frame.getHeight();
-      
+
       var pixelWidth =  col * this.dpi + this.gridStrokeWidth * (col - 1);
       var pixelHeight =  row * this.dpi + this.gridStrokeWidth * (row - 1);
-      var classes = ['canvas'];
-      if (this.className) {
-        classes.push(this.className);  
-      }
-      var canvas = pskl.CanvasUtils.createCanvas(pixelWidth, pixelHeight, classes);
 
+      var canvas = pskl.CanvasUtils.createCanvas(pixelWidth, pixelHeight, this.classes);
       this.container.append(canvas);
 
-      if(this.gridStrokeWidth > 0) {
-        this.drawGrid_(canvas, pixelWidth, pixelHeight, col, row);
-      }
-        
       this.canvas = canvas;
       this.canvasConfigDirty = false;
     }

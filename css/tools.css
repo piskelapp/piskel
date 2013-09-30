@@ -19,7 +19,6 @@
 .tool-icon.selected {
   cursor: default;
   background-color: #444;
-  cursor: normal;
   border: 1px gold solid;
   margin: 0;
 }
@@ -151,7 +150,7 @@
 }
 
 
-.palette .palette-color.transparent-color {
+.palette-color[data-color=TRANSPARENT] {
   position: relative;
   top: 10px;
   left: 10px;

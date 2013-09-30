@@ -1,30 +1,34 @@
 (function () {
   var ns = $.namespace("pskl.controller");
-  ns.DrawingController = function (framesheet, container) {
+  ns.DrawingController = function (piskelController, container) {
     /**
      * @public
      */
-    this.framesheet = framesheet;
-    
+    this.piskelController = piskelController;
+
     /**
      * @public
      */
-    this.overlayFrame = pskl.model.Frame.createEmptyFromFrame(framesheet.getCurrentFrame());
+    this.overlayFrame = pskl.model.Frame.createEmptyFromFrame(piskelController.getCurrentFrame());
 
     /**
      * @private
      */
     this.container = container;
 
+    this.dpi = this.calculateDPI_();
+
     // TODO(vincz): Store user prefs in a localstorage string ?
     var renderingOptions = {
-      "dpi": this.calculateDPI_(),
+      "dpi": this.dpi,
       "supportGridRendering" : true
     };
-    
-    this.renderer = new pskl.rendering.FrameRenderer(this.container, renderingOptions, "drawing-canvas");
-    this.overlayRenderer = new pskl.rendering.FrameRenderer(this.container, renderingOptions, "canvas-overlay");
-    
+
+    this.overlayRenderer = new pskl.rendering.FrameRenderer(this.container, renderingOptions, ["canvas-overlay"]);
+    this.renderer = new pskl.rendering.FrameRenderer(this.container, renderingOptions, ["drawing-canvas"]);
+    this.layersBelowRenderer = new pskl.rendering.FrameRenderer(this.container, renderingOptions, ["layers-canvas", "layers-below-canvas"]);
+    this.layersAboveRenderer = new pskl.rendering.FrameRenderer(this.container, renderingOptions, ["layers-canvas", "layers-above-canvas"]);
+
 
     // State of drawing controller:
     this.isClicked = false;
@@ -36,9 +40,6 @@
   };
 
   ns.DrawingController.prototype.init = function () {
-    this.renderer.render(this.framesheet.getCurrentFrame());
-    this.overlayRenderer.render(this.overlayFrame);
-    
     this.initMouseBehavior();
 
     $.subscribe(Events.TOOL_SELECTED, $.proxy(function(evt, toolBehavior) {
@@ -75,7 +76,7 @@
     this.container.mousedown($.proxy(this.onMousedown_, this));
     this.container.mousemove($.proxy(this.onMousemove_, this));
     body.mouseup($.proxy(this.onMouseup_, this));
-    
+
     // Deactivate right click:
     body.contextmenu(this.onCanvasContextMenu_);
   };
@@ -103,22 +104,22 @@
    */
   ns.DrawingController.prototype.onMousedown_ = function (event) {
     this.isClicked = true;
-    
+
     if(event.button == 2) { // right click
       this.isRightClicked = true;
       $.publish(Events.CANVAS_RIGHT_CLICKED);
     }
 
     var coords = this.getSpriteCoordinates(event);
-    
+
     this.currentToolBehavior.applyToolAt(
       coords.col, coords.row,
       this.getCurrentColor_(),
-      this.framesheet.getCurrentFrame(),
+      this.piskelController.getCurrentFrame(),
       this.overlayFrame,
       this.wrapEvtInfo_(event)
-    );      
-      
+    );
+
     $.publish(Events.LOCALSTORAGE_REQUEST);
   };
 
@@ -131,15 +132,15 @@
     if ((currentTime - this.previousMousemoveTime) > 40 ) {
       var coords = this.getSpriteCoordinates(event);
       if (this.isClicked) {
-     
+
         this.currentToolBehavior.moveToolAt(
           coords.col, coords.row,
           this.getCurrentColor_(),
-          this.framesheet.getCurrentFrame(),
+          this.piskelController.getCurrentFrame(),
           this.overlayFrame,
           this.wrapEvtInfo_(event)
         );
-    
+
         // TODO(vincz): Find a way to move that to the model instead of being at the interaction level.
         // Eg when drawing, it may make sense to have it here. However for a non drawing tool,
         // you don't need to draw anything when mousemoving and you request useless localStorage.
@@ -149,7 +150,7 @@
         this.currentToolBehavior.moveUnactiveToolAt(
           coords.col, coords.row,
           this.getCurrentColor_(),
-          this.framesheet.getCurrentFrame(),
+          this.piskelController.getCurrentFrame(),
           this.overlayFrame,
           this.wrapEvtInfo_(event)
         );
@@ -176,7 +177,7 @@
       this.currentToolBehavior.releaseToolAt(
         coords.col, coords.row,
         this.getCurrentColor_(),
-        this.framesheet.getCurrentFrame(),
+        this.piskelController.getCurrentFrame(),
         this.overlayFrame,
         this.wrapEvtInfo_(event)
       );
@@ -196,7 +197,7 @@
       evtInfo.button = Constants.RIGHT_BUTTON;
     }
     return evtInfo;
-  }; 
+  };
 
   /**
    * @private
@@ -238,17 +239,18 @@
       event.stopPropagation();
       event.cancelBubble = true;
       return false;
-    }   
+    }
   };
 
   ns.DrawingController.prototype.render = function () {
+    this.renderLayers();
     this.renderFrame();
     this.renderOverlay();
   };
 
   ns.DrawingController.prototype.renderFrame = function () {
-    var frame = this.framesheet.getCurrentFrame();
-    var serializedFrame = frame.serialize();
+    var frame = this.piskelController.getCurrentFrame();
+    var serializedFrame = this.dpi + "-" + frame.serialize();
     if (this.serializedFrame != serializedFrame) {
       if (!frame.isSameSize(this.overlayFrame)) {
         this.overlayFrame = pskl.model.Frame.createEmptyFromFrame(frame);
@@ -259,15 +261,48 @@
   };
 
   ns.DrawingController.prototype.renderOverlay = function () {
-    var serializedOverlay = this.overlayFrame.serialize();
+    var serializedOverlay = this.dpi + "-" + this.overlayFrame.serialize();
     if (this.serializedOverlay != serializedOverlay) {
       this.serializedOverlay = serializedOverlay;
       this.overlayRenderer.render(this.overlayFrame);
     }
   };
 
-  ns.DrawingController.prototype.forceRendering_ = function () {
-    this.serializedFrame = this.serializedOverlay = null;
+  ns.DrawingController.prototype.renderLayers = function () {
+    var layers = this.piskelController.getLayers();
+    var currentFrameIndex = this.piskelController.currentFrameIndex;
+    var currentLayerIndex = this.piskelController.currentLayerIndex;
+
+    var serializedLayerFrame = [
+      this.dpi,
+      currentFrameIndex,
+      currentLayerIndex,
+      layers.length
+    ].join("-");
+
+    if (this.serializedLayerFrame != serializedLayerFrame) {
+      this.layersAboveRenderer.clear();
+      this.layersBelowRenderer.clear();
+
+      var downLayers = layers.slice(0, currentLayerIndex);
+      var downFrame = this.getFrameForLayersAt_(currentFrameIndex, downLayers);
+      this.layersBelowRenderer.render(downFrame);
+
+      if (currentLayerIndex + 1 < layers.length) {
+        var upLayers = layers.slice(currentLayerIndex + 1, layers.length);
+        var upFrame = this.getFrameForLayersAt_(currentFrameIndex, upLayers);
+        this.layersAboveRenderer.render(upFrame);
+      }
+
+      this.serializedLayerFrame = serializedLayerFrame;
+    }
+  };
+
+  ns.DrawingController.prototype.getFrameForLayersAt_ = function (frameIndex, layers) {
+    var frames = layers.map(function (l) {
+      return l.getFrameAt(frameIndex);
+    });
+    return pskl.utils.FrameUtils.merge(frames);
   };
 
   /**
@@ -278,8 +313,8 @@
       leftSectionWidth = $('.left-column').outerWidth(true),
       rightSectionWidth = $('.right-column').outerWidth(true),
       availableViewportWidth = $('#main-wrapper').width() - leftSectionWidth - rightSectionWidth,
-      framePixelHeight = this.framesheet.getCurrentFrame().getHeight(),
-      framePixelWidth = this.framesheet.getCurrentFrame().getWidth();
+      framePixelHeight = this.piskelController.getCurrentFrame().getHeight(),
+      framePixelWidth = this.piskelController.getCurrentFrame().getWidth();
 
     if (pskl.UserSettings.get(pskl.UserSettings.SHOW_GRID)) {
       availableViewportWidth = availableViewportWidth - (framePixelWidth * Constants.GRID_STROKE_WIDTH);
@@ -296,22 +331,23 @@
    * @private
    */
   ns.DrawingController.prototype.updateDPI_ = function() {
-    var dpi = this.calculateDPI_();
-    this.renderer.updateDPI(dpi);
-    this.overlayRenderer.updateDPI(dpi);
+    this.dpi = this.calculateDPI_();
 
-    var currentFrameHeight =  this.framesheet.getCurrentFrame().getHeight();
-    var canvasHeight = currentFrameHeight * dpi;
+    this.overlayRenderer.setDPI(this.dpi);
+    this.renderer.setDPI(this.dpi);
+    this.layersAboveRenderer.setDPI(this.dpi);
+    this.layersBelowRenderer.setDPI(this.dpi);
+
+    var currentFrameHeight =  this.piskelController.getCurrentFrame().getHeight();
+    var canvasHeight = currentFrameHeight * this.dpi;
     if (pskl.UserSettings.get(pskl.UserSettings.SHOW_GRID)) {
       canvasHeight += Constants.GRID_STROKE_WIDTH * currentFrameHeight;
     }
-    
+
     var verticalGapInPixel = Math.floor(($('#main-wrapper').height() - canvasHeight) / 2);
     $('#column-wrapper').css({
       'top': verticalGapInPixel + 'px',
       'height': canvasHeight + 'px'
     });
-
-    this.forceRendering_();
   };
 })();

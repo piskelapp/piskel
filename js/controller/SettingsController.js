@@ -1,45 +1,70 @@
 (function () {
   var ns = $.namespace("pskl.controller");
   
-  ns.SettingsController = function () {};
+  var settings = {
+    user : {
+      template : 'templates/settings-application.html',
+      controller : ns.settings.ApplicationSettingsController
+    },
+    gif : {
+      template : 'templates/settings-export-gif.html',
+      controller : ns.settings.GifExportController
+    }
+  };
+
+  var SEL_SETTING_CLS = 'has-expanded-drawer';
+  var EXP_DRAWER_CLS = 'expanded';
+
+  ns.SettingsController = function (piskelController) {
+    this.piskelController = piskelController;
+    this.drawerContainer = document.getElementById("drawer-container");
+    this.settingsContainer = $('[data-pskl-controller=settings]');
+    this.expanded = false;
+    this.currentSetting = null;
+  };
 
   /**
    * @public
    */
   ns.SettingsController.prototype.init = function() {
-
-    // Highlight selected background picker:
-    var backgroundClass = pskl.UserSettings.get(pskl.UserSettings.CANVAS_BACKGROUND);
-    $('#background-picker-wrapper')
-      .find('.background-picker[data-background-class=' + backgroundClass + ']')
-      .addClass('selected');
-
-    // Initial state for grid display:
-    var show_grid = pskl.UserSettings.get(pskl.UserSettings.SHOW_GRID);
-    $('#show-grid').prop('checked', show_grid);
-
     // Expand drawer when clicking 'Settings' tab.
-    $('#settings').click(function(evt) {
-      $('.right-sticky-section').toggleClass('expanded');
-      $('#settings').toggleClass('has-expanded-drawer');
-    });
-
-    // Handle grid display changes:
-    $('#show-grid').change($.proxy(function(evt) {
-      var checked = $('#show-grid').prop('checked');
-      pskl.UserSettings.set(pskl.UserSettings.SHOW_GRID, checked);
-    }, this));
-
-    // Handle canvas background changes:
-    $('#background-picker-wrapper').click(function(evt) {
-      var target = $(evt.target).closest('.background-picker');
-      if (target.length) {
-        var backgroundClass = target.data('background-class');
-        pskl.UserSettings.set(pskl.UserSettings.CANVAS_BACKGROUND, backgroundClass);
-
-        $('.background-picker').removeClass('selected');
-        target.addClass('selected');
+    $('[data-setting]').click(function(evt) {
+      var el = evt.originalEvent.currentTarget;
+      var setting = el.getAttribute("data-setting");
+      if (this.currentSetting != setting) {
+        this.loadSetting(setting);
+      } else {
+        this.closeDrawer();
       }
-    });
+    }.bind(this));
+
+    $('body').click(function (evt) {
+      var isInSettingsContainer = $.contains(this.settingsContainer.get(0), evt.target);
+      if (this.expanded && !isInSettingsContainer) {
+        this.closeDrawer();
+      }
+    }.bind(this));
   };
+
+  ns.SettingsController.prototype.loadSetting = function (setting) {
+    this.drawerContainer.innerHTML = pskl.utils.Template.get(settings[setting].template);
+    (new settings[setting].controller(this.piskelController)).init();
+    
+    this.settingsContainer.addClass(EXP_DRAWER_CLS);
+    
+    $('.' + SEL_SETTING_CLS).removeClass(SEL_SETTING_CLS);
+    $('[data-setting='+setting+']').addClass(SEL_SETTING_CLS);
+
+    this.expanded = true;
+    this.currentSetting = setting;
+  };
+
+  ns.SettingsController.prototype.closeDrawer = function () {
+    this.settingsContainer.removeClass(EXP_DRAWER_CLS);
+    $('.' + SEL_SETTING_CLS).removeClass(SEL_SETTING_CLS);
+
+    this.expanded = false;
+    this.currentSetting = null;
+  };
+  
 })();

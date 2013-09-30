@@ -2,7 +2,7 @@
 
 body {
   background: radial-gradient(circle, #000, #373737);
-  /* 16/06/2013 : -webkit still needed for 
+  /* 16/06/2013 : -webkit still needed for
   safari, safari mobile and android browser and chrome for android
   cf http://caniuse.com/css-gradients */
   background: -webkit-radial-gradient(circle, #000, #373737);
@@ -98,103 +98,6 @@ body {
   float: left;
 }
 
-.right-sticky-section.sticky-section {
-  right: 0;
-  width: 47px;
-
-  -webkit-transition: all 200ms ease-out;
-  -moz-transition: all 200ms ease-out;
-  -ms-transition: all 200ms ease-out;
-  transition: all 200ms ease-out;
-}
-
-.right-sticky-section .tool-icon {
-  float: right;
-  margin-right: 0;
-}
-
-.drawer {
-
-}
-
-.drawer-content {
-  overflow: hidden;
-  background-color: #444;
-  height: 550px;
-  max-height: 100%;
-  width: 280px;
-  border-top-left-radius: 4px;
-  border-bottom-left-radius: 4px;
-}
-
-/** Righty sticky drawer expanded state. */
-
-.right-sticky-section.expanded {
-  right: 280px;
-}
-
-.right-sticky-section.expanded .tool-icon {
-  margin-right: 1px;
-}
-
-.right-sticky-section .tool-icon.has-expanded-drawer {
-  position: relative;
-  background-color: #444;
-  margin-right: 0;
-  padding-right: 1px;
-}
-
-.settings-section {
-  margin: 10px 20px;
-  font-size: 12px;
-  font-weight: bold;
-  color: #ccc;
-  text-shadow: 1px 1px #000;
-}
-
-.settings-title {
-  margin-top: 20px;
-  margin-bottom: 10px;
-  text-transform: uppercase;
-  border-bottom: 1px #aaa solid;
-  padding-bottom: 5px;
-}
-
-.settings-item {}
-
-.background-picker-wrapper {
-  overflow: hidden;
-  padding: 10px 5px 20px 5px;
-}
-
-.background-picker {
-  cursor: pointer;
-  float: left;
-  height: 35px;
-  width: 35px;
-  background-color: transparent;
-  margin-right: 15px;
-  padding: 1px;
-  position: relative;
-}
-
-.background-picker:after {
-  content: " ";
-  position: absolute;
-  top: -2px;
-  right: -2px;
-  bottom: -2px;
-  left: -2px; 
-}
-
-.background-picker:hover:after {
-  border: #eee 1px solid;
-}
-
-.background-picker.selected:after {
-  border: gold 1px solid;
-}
-
 /**
  * Canvases layout
  */
@@ -237,14 +140,28 @@ body {
   background: url(../img/canvas_background/lowcont_dark_canvas_background.png) repeat;
 }
 
+.layers-canvas {
+  opacity: 0.2;
+}
 
-.canvas.canvas-overlay {
+.canvas.canvas-overlay,
+.canvas.layers-canvas {
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 10;
 }
 
+/**
+ * Z-indexes should match the drawing area canvas superposition order :
+ * - 1 : draw layers below current layer
+ * - 2 : draw current layer
+ * - 3 : draw layers above current layer
+ * - 4 : draw the tools overlay
+ */
+.canvas.layers-below-canvas  {z-index:  7;}
+.canvas.drawing-canvas       {z-index:  8;}
+.canvas.layers-above-canvas  {z-index:  9;}
+.canvas.canvas-overlay       {z-index: 10;}
 
 /**
  * Animated preview styles.
@@ -274,8 +191,92 @@ body {
   overflow: hidden;
 }
 
-/** 
- * User messages 
+/**
+ * Layers container
+ */
+.layers-list-container {
+  border: 4px solid #888;
+  font-size: medium;
+  color: white;
+  text-align: left;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
+.layers-title {
+  padding: 8px;
+  margin: 0;
+  font-size: 15px;
+  background: #222;
+  background-image: url('../img/layers.svg');
+  background-size: 22px;
+  background-repeat: no-repeat;
+  background-position: 97%;
+}
+
+.layers-list {
+  font-size : 12px;
+}
+
+.layer-item {
+  height:24px;
+  line-height: 24px;
+  padding : 0 10px;
+  border-top: 1px solid #444;
+  cursor : pointer;
+}
+
+.layer-item:hover {
+  background : #222;
+}
+
+.current-layer-item,
+.current-layer-item:hover {
+  background : #333;
+  color: gold;
+}
+
+.layers-button-container {
+  overflow : hidden;
+}
+
+.layers-button-arrow {
+  font-family : 'Lucida Grande', Calibri;
+  padding : 2px 6px 0 6px;
+}
+
+.layers-button {
+  height: 24px;
+  margin: 0;
+  width: 25%;
+  float : left;
+  border: none;
+  box-sizing: border-box;
+  border-top: 1px solid #666;
+  border-right: 1px solid #333;
+  border-bottom: 1px solid #333;
+  background-color: #3f3f3f;
+  cursor: pointer;
+  color: white;
+  font-size: 0.7em;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  text-shadow: 0px -1px 0 #000;
+  transition: background-color 0.2s linear;
+}
+
+.layers-button:last-child {
+  border-right-width: 0;
+}
+
+.layers-button:hover {
+  text-decoration: none;
+  background-color: #484848;
+  color: gold;
+}
+/**
+ * User messages
  */
 .user-message {
   position: absolute;
@@ -289,7 +290,7 @@ body {
   border-right: 0;
   border-bottom: 0;
   font-weight: bold;
-  font-size: 13px; 
+  font-size: 13px;
   z-index: 10000;
   max-width: 300px;
 }

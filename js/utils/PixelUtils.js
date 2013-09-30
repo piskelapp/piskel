@@ -12,8 +12,8 @@
           pixels.push({"col": x, "row": y});
         }
       }
-      
-      return pixels;      
+
+      return pixels;
     },
 
     getBoundRectanglePixels : function (x0, y0, x1, y1) {
@@ -30,32 +30,32 @@
         pixels.push({"col": rectangle.x0, "row": y});
         pixels.push({"col": rectangle.x1, "row": y});
       }
-      
-      return pixels;  
+
+      return pixels;
     },
 
     /**
      * Return an object of ordered rectangle coordinate.
-     * In returned object {x0, y0} => top left corner - {x1, y1} => bottom right corner 
+     * In returned object {x0, y0} => top left corner - {x1, y1} => bottom right corner
      * @private
      */
     getOrderedRectangleCoordinates : function (x0, y0, x1, y1) {
       return {
-        x0 : Math.min(x0, x1), 
+        x0 : Math.min(x0, x1),
         y0 : Math.min(y0, y1),
-        x1 : Math.max(x0, x1), 
+        x1 : Math.max(x0, x1),
         y1 : Math.max(y0, y1)
       };
     },
 
     /**
-     * Return the list of pixels that would have been filled by a paintbucket tool applied 
+     * Return the list of pixels that would have been filled by a paintbucket tool applied
      * on pixel at coordinate (x,y).
-     * This function is not altering the Frame object argument. 
+     * This function is not altering the Frame object argument.
      *
      * @param frame pskl.model.Frame The frame target in which we want to paintbucket
-     * @param col number Column coordinate in the frame 
-     * @param row number Row coordinate in the frame 
+     * @param col number Column coordinate in the frame
+     * @param row number Row coordinate in the frame
      *
      * @return an array of the pixel coordinates paint with the replacement color
      */
@@ -73,10 +73,10 @@
     /**
      * Apply the paintbucket tool in a frame at the (col, row) initial position
      * with the replacement color.
-     * 
+     *
      * @param frame pskl.model.Frame The frame target in which we want to paintbucket
-     * @param col number Column coordinate in the frame 
-     * @param row number Row coordinate in the frame 
+     * @param col number Column coordinate in the frame
+     * @param row number Row coordinate in the frame
      * @param replacementColor string Hexadecimal color used to fill the area
      *
      * @return an array of the pixel coordinates paint with the replacement color
@@ -109,11 +109,11 @@
       } catch(e) {
         // Frame out of bound exception.
       }
-      
+
       if(targetColor == replacementColor) {
         return;
       }
-      
+
 
       queue.push({"col": col, "row": row});
       var loopCount = 0;
@@ -140,7 +140,7 @@
         // Security loop breaker:
         if(loopCount > 10 * cellCount) {
           console.log("loop breaker called");
-          break;          
+          break;
         }
       }
       return paintedPixels;

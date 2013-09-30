@@ -9,21 +9,21 @@
   ns.Rectangle = function() {
     this.toolId = "tool-rectangle";
     this.helpText = "Rectangle tool";
-    
+
     // Rectangle's first point coordinates (set in applyToolAt)
     this.startCol = null;
     this.startRow = null;
   };
 
   pskl.utils.inherit(ns.Rectangle, ns.BaseTool);
-  
+
   /**
    * @override
    */
   ns.Rectangle.prototype.applyToolAt = function(col, row, color, frame, overlay) {
     this.startCol = col;
     this.startRow = row;
-    
+
     // Drawing the first point of the rectangle in the fake overlay canvas:
     overlay.setPixel(col, row, color);
   };
@@ -41,7 +41,7 @@
   /**
    * @override
    */
-  ns.Rectangle.prototype.releaseToolAt = function(col, row, color, frame, overlay) {    
+  ns.Rectangle.prototype.releaseToolAt = function(col, row, color, frame, overlay) {
     overlay.clear();
     if(frame.containsPixel(col, row)) { // cancel if outside of canvas
       // draw in frame to finalize

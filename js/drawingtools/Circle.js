@@ -9,21 +9,21 @@
   ns.Circle = function() {
     this.toolId = "tool-circle";
     this.helpText = "Circle tool";
-    
+
     // Circle's first point coordinates (set in applyToolAt)
     this.startCol = null;
     this.startRow = null;
   };
 
   pskl.utils.inherit(ns.Circle, ns.BaseTool);
-  
+
   /**
    * @override
    */
   ns.Circle.prototype.applyToolAt = function(col, row, color, frame, overlay) {
     this.startCol = col;
     this.startRow = row;
-    
+
     // Drawing the first point of the rectangle in the fake overlay canvas:
     overlay.setPixel(col, row, color);
   };
@@ -41,7 +41,7 @@
   /**
    * @override
    */
-  ns.Circle.prototype.releaseToolAt = function(col, row, color, frame, overlay) {   
+  ns.Circle.prototype.releaseToolAt = function(col, row, color, frame, overlay) {
     overlay.clear();
     if(frame.containsPixel(col, row)) { // cancel if outside of canvas
       // draw in frame to finalize
@@ -61,7 +61,7 @@
     var coords = pskl.PixelUtils.getOrderedRectangleCoordinates(x0, y0, x1, y1);
     var xC = (coords.x0 + coords.x1)/2;
     var yC = (coords.y0 + coords.y1)/2;
-    
+
     var rX = coords.x1 - xC;
     var rY = coords.y1 - yC;
 

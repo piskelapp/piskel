@@ -1,8 +1,8 @@
 (function () {
   var ns = $.namespace("pskl.controller");
-  ns.PreviewFilmController = function (framesheet, container, dpi) {
+  ns.PreviewFilmController = function (piskelController, container, dpi) {
 
-    this.framesheet = framesheet;
+    this.piskelController = piskelController;
     this.container = container;
     this.dpi = this.calculateDPI_();
 
@@ -11,16 +11,16 @@
 
   ns.PreviewFilmController.prototype.init = function() {
     $.subscribe(Events.TOOL_RELEASED, this.flagForRedraw_.bind(this));
-    $.subscribe(Events.FRAMESHEET_RESET, this.flagForRedraw_.bind(this));
-    $.subscribe(Events.FRAMESHEET_RESET, this.refreshDPI_.bind(this));
+    $.subscribe(Events.PISKEL_RESET, this.flagForRedraw_.bind(this));
+    $.subscribe(Events.PISKEL_RESET, this.refreshDPI_.bind(this));
 
     $('#preview-list-scroller').scroll(this.updateScrollerOverflows.bind(this));
     this.updateScrollerOverflows();
   };
 
   ns.PreviewFilmController.prototype.addFrame = function () {
-    this.framesheet.addEmptyFrame();
-    this.framesheet.setCurrentFrameIndex(this.framesheet.getFrameCount() - 1);
+    this.piskelController.addEmptyFrame();
+    this.piskelController.setCurrentFrameIndex(this.piskelController.getFrameCount() - 1);
     this.updateScrollerOverflows();
   };
 
@@ -63,12 +63,12 @@
   };
 
   ns.PreviewFilmController.prototype.createPreviews_ = function () {
-    
+
     this.container.html("");
     // Manually remove tooltips since mouseout events were shortcut by the DOM refresh:
     $(".tooltip").remove();
 
-    var frameCount = this.framesheet.getFrameCount();
+    var frameCount = this.piskelController.getFrameCount();
 
     for (var i = 0, l = frameCount; i < l ; i++) {
       this.container.append(this.createPreviewTile_(i));
@@ -94,7 +94,7 @@
    * @private
    */
   ns.PreviewFilmController.prototype.initDragndropBehavior_ = function () {
-    
+
     $("#preview-list").sortable({
       placeholder: "preview-tile-drop-proxy",
       update: $.proxy(this.onUpdate_, this),
@@ -110,8 +110,8 @@
     var originFrameId = parseInt(ui.item.data("tile-number"), 10);
     var targetInsertionId = $('.preview-tile').index(ui.item);
 
-    this.framesheet.moveFrame(originFrameId, targetInsertionId);
-    this.framesheet.setCurrentFrameIndex(targetInsertionId);
+    this.piskelController.moveFrame(originFrameId, targetInsertionId);
+    this.piskelController.setCurrentFrameIndex(targetInsertionId);
 
     // TODO(grosbouddha): move localstorage request to the model layer?
     $.publish(Events.LOCALSTORAGE_REQUEST);
@@ -123,24 +123,24 @@
    * TODO(vincz): clean this giant rendering function & remove listeners.
    */
   ns.PreviewFilmController.prototype.createPreviewTile_ = function(tileNumber) {
-    var currentFrame = this.framesheet.getFrameByIndex(tileNumber);
-    
+    var currentFrame = this.piskelController.getCurrentLayer().getFrameAt(tileNumber);
+
     var previewTileRoot = document.createElement("li");
     var classname = "preview-tile";
     previewTileRoot.setAttribute("data-tile-number", tileNumber);
 
-    if (this.framesheet.getCurrentFrame() == currentFrame) {
+    if (this.piskelController.getCurrentFrame() == currentFrame) {
       classname += " selected";
     }
     previewTileRoot.className = classname;
 
     var canvasContainer = document.createElement("div");
     canvasContainer.className = "canvas-container";
-    
+
     var canvasBackground = document.createElement("div");
     canvasBackground.className = "canvas-background";
     canvasContainer.appendChild(canvasBackground);
-    
+
     previewTileRoot.addEventListener('click', this.onPreviewClick_.bind(this, tileNumber));
 
     var cloneFrameButton = document.createElement("button");
@@ -154,12 +154,12 @@
     // TODO(vincz): Eventually optimize this part by not recreating a FrameRenderer. Note that the real optim
     // is to make this update function (#createPreviewTile) less aggressive.
     var renderingOptions = {"dpi": this.dpi };
-    var currentFrameRenderer = new pskl.rendering.FrameRenderer($(canvasContainer), renderingOptions, "tile-view");
+    var currentFrameRenderer = new pskl.rendering.FrameRenderer($(canvasContainer), renderingOptions, ["tile-view"]);
     currentFrameRenderer.render(currentFrame);
-    
+
     previewTileRoot.appendChild(canvasContainer);
 
-    if(tileNumber > 0 || this.framesheet.getFrameCount() > 1) {
+    if(tileNumber > 0 || this.piskelController.getFrameCount() > 1) {
       // Add 'remove frame' button.
       var deleteButton = document.createElement("button");
       deleteButton.setAttribute('rel', 'tooltip');
@@ -178,7 +178,7 @@
     tileCount.className = "tile-overlay tile-count";
     tileCount.innerHTML = tileNumber;
     previewTileRoot.appendChild(tileCount);
-    
+
 
     return previewTileRoot;
   };
@@ -186,28 +186,28 @@
   ns.PreviewFilmController.prototype.onPreviewClick_ = function (index, evt) {
     // has not class tile-action:
     if(!evt.target.classList.contains('tile-overlay')) {
-      this.framesheet.setCurrentFrameIndex(index);
-    }    
+      this.piskelController.setCurrentFrameIndex(index);
+    }
   };
 
   ns.PreviewFilmController.prototype.onDeleteButtonClick_ = function (index, evt) {
-    this.framesheet.removeFrameByIndex(index);
+    this.piskelController.removeFrameAt(index);
     $.publish(Events.LOCALSTORAGE_REQUEST); // Should come from model
     this.updateScrollerOverflows();
   };
 
   ns.PreviewFilmController.prototype.onAddButtonClick_ = function (index, evt) {
-    this.framesheet.duplicateFrameByIndex(index);
+    this.piskelController.duplicateFrameAt(index);
     $.publish(Events.LOCALSTORAGE_REQUEST);  // Should come from model
-    this.framesheet.setCurrentFrameIndex(index + 1);
+    this.piskelController.setCurrentFrameIndex(index + 1);
     this.updateScrollerOverflows();
   };
 
   /**
-   * Calculate the preview DPI depending on the framesheet size
+   * Calculate the preview DPI depending on the piskel size
    */
   ns.PreviewFilmController.prototype.calculateDPI_ = function () {
-    var curFrame = this.framesheet.getCurrentFrame(),
+    var curFrame = this.piskelController.getCurrentFrame(),
       frameHeight = curFrame.getHeight(),
       frameWidth = curFrame.getWidth(),
       maxFrameDim = Math.max(frameWidth, frameHeight);

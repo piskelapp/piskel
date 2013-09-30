@@ -1,0 +1,13 @@
+<div class="layers-list-container">
+  <h3 class="layers-title">Layers</h3>
+  <div class="layers-button-container">
+    <button class="layers-button" data-action="add"  >Add</button>
+    <button class="layers-button" data-action="delete"  >Delete</button>
+    <button class="layers-button layers-button-arrow" data-action="up"   >&#8593;</button>
+    <button class="layers-button layers-button-arrow" data-action="down" >&#8595;</button>
+  </div>
+  <script type="text/template" id="layer-item-template">
+    <li class="layer-item" data-layer-name="{{layername}}">{{layername}}</li>
+  </script>
+  <ul class="layers-list"></ul>
+</div>

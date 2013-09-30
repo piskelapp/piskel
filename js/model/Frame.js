@@ -1,15 +1,28 @@
 (function () {
   var ns = $.namespace("pskl.model");
-  
-  ns.Frame = function (pixels) {
-    this.pixels = pixels;
-    this.previousStates = [this.getPixels()];
-    this.stateIndex = 0;
+
+  ns.Frame = function (width, height) {
+    if (width && height) {
+      this.width = width;
+      this.height = height;
+
+      this.pixels = ns.Frame.createEmptyPixelGrid_(width, height);
+      this.previousStates = [this.getPixels()];
+      this.stateIndex = 0;
+    } else {
+      throw 'Bad arguments in pskl.model.Frame constructor : ' + width + ', ' + height;
+    }
   };
 
-  ns.Frame.createEmpty = function (width, height) {
-    var pixels = ns.Frame.createEmptyPixelGrid_(width, height);
-    return new ns.Frame(pixels);
+  ns.Frame.fromPixelGrid = function (pixels) {
+    if (pixels.length && pixels[0].length) {
+      var w = pixels.length, h = pixels[0].length;
+      var frame = new pskl.model.Frame(w, h);
+      frame.setPixels(pixels);
+      return frame;
+    } else {
+      throw 'Bad arguments in pskl.model.Frame.fromPixelGrid : ' + pixels;
+    }
   };
 
   ns.Frame.createEmptyPixelGrid_ = function (width, height) {
@@ -25,11 +38,13 @@
   };
 
   ns.Frame.createEmptyFromFrame = function (frame) {
-    return ns.Frame.createEmpty(frame.getWidth(), frame.getHeight());
+    return new ns.Frame(frame.getWidth(), frame.getHeight());
   };
 
   ns.Frame.prototype.clone = function () {
-    return new ns.Frame(this.getPixels());
+    var clone = new ns.Frame(this.width, this.height);
+    clone.setPixels(this.getPixels());
+    return clone;
   };
 
   /**
@@ -45,8 +60,6 @@
   ns.Frame.prototype.setPixels = function (pixels) {
     this.pixels = this.clonePixels_(pixels);
   };
-
-
 
   ns.Frame.prototype.clear = function () {
     var pixels = ns.Frame.createEmptyPixelGrid_(this.getWidth(), this.getHeight());
@@ -77,12 +90,20 @@
     return this.pixels[col][row];
   };
 
+  ns.Frame.prototype.forEachPixel = function (callback) {
+    for (var col = 0 ; col < this.getWidth() ; col++) {
+      for (var row = 0 ; row < this.getHeight() ; row++) {
+        callback(this.getPixel(col, row), col, row);
+      }
+    }
+  };
+
   ns.Frame.prototype.getWidth = function () {
-    return this.pixels.length;
+    return this.width;
   };
 
   ns.Frame.prototype.getHeight = function () {
-    return this.pixels[0].length;
+    return this.height;
   };
 
   ns.Frame.prototype.containsPixel = function (col, row) {
@@ -109,7 +130,7 @@
     if (this.stateIndex < this.previousStates.length - 1) {
       this.stateIndex++;
       this.setPixels(this.previousStates[this.stateIndex]);
-    } 
+    }
   };
 
   ns.Frame.prototype.isSameSize = function (otherFrame) {
