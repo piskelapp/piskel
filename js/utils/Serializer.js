@@ -10,7 +10,6 @@
         piskel : {
           height : piskel.getHeight(),
           width : piskel.getWidth(),
-          fps : piskel.getFps(),
           layers : serializedLayers
         }
       });
@@ -33,7 +32,7 @@
         var layers = pData.layers.map(function (serializedLayer) {
           return pskl.utils.Serializer.deserializeLayer(serializedLayer);
         });
-        var piskel = new pskl.model.Piskel(pData.width, pData.height, pData.fps);
+        var piskel = new pskl.model.Piskel(pData.width, pData.height);
         layers.forEach(function (layer) {
           piskel.addLayer(layer);
         });

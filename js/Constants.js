@@ -36,7 +36,6 @@ var Constants = {
   IMAGE_SERVICE_GET_URL : 'http://screenletstore.appspot.com/img/',
 
   GRID_STROKE_WIDTH: 1,
-  GRID_STROKE_COLOR: 'lightgray',
 
   LEFT_BUTTON : 'left_button_1',
   RIGHT_BUTTON : 'right_button_2'

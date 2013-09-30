@@ -16,9 +16,11 @@
      */
     this.container = container;
 
+    this.dpi = this.calculateDPI_();
+
     // TODO(vincz): Store user prefs in a localstorage string ?
     var renderingOptions = {
-      "dpi": this.calculateDPI_(),
+      "dpi": this.dpi,
       "supportGridRendering" : true
     };
 
@@ -248,7 +250,7 @@
 
   ns.DrawingController.prototype.renderFrame = function () {
     var frame = this.piskelController.getCurrentFrame();
-    var serializedFrame = frame.serialize();
+    var serializedFrame = this.dpi + "-" + frame.serialize();
     if (this.serializedFrame != serializedFrame) {
       if (!frame.isSameSize(this.overlayFrame)) {
         this.overlayFrame = pskl.model.Frame.createEmptyFromFrame(frame);
@@ -259,7 +261,7 @@
   };
 
   ns.DrawingController.prototype.renderOverlay = function () {
-    var serializedOverlay = this.overlayFrame.serialize();
+    var serializedOverlay = this.dpi + "-" + this.overlayFrame.serialize();
     if (this.serializedOverlay != serializedOverlay) {
       this.serializedOverlay = serializedOverlay;
       this.overlayRenderer.render(this.overlayFrame);
@@ -271,8 +273,14 @@
     var currentFrameIndex = this.piskelController.currentFrameIndex;
     var currentLayerIndex = this.piskelController.currentLayerIndex;
 
-    var serialized = [currentFrameIndex, this.piskelController.currentLayerIndex, layers.length].join("-");
-    if (this.serializedLayerFrame != serialized) {
+    var serializedLayerFrame = [
+      this.dpi,
+      currentFrameIndex,
+      currentLayerIndex,
+      layers.length
+    ].join("-");
+
+    if (this.serializedLayerFrame != serializedLayerFrame) {
       this.layersAboveRenderer.clear();
       this.layersBelowRenderer.clear();
 
@@ -286,7 +294,7 @@
         this.layersAboveRenderer.render(upFrame);
       }
 
-      this.serializedLayerFrame = serialized;
+      this.serializedLayerFrame = serializedLayerFrame;
     }
   };
 
@@ -295,10 +303,6 @@
       return l.getFrameAt(frameIndex);
     });
     return pskl.utils.FrameUtils.merge(frames);
-  };
-
-  ns.DrawingController.prototype.forceRendering_ = function () {
-    this.serializedFrame = this.serializedOverlay = null;
   };
 
   /**
@@ -327,17 +331,15 @@
    * @private
    */
   ns.DrawingController.prototype.updateDPI_ = function() {
-    var dpi = this.calculateDPI_();
+    this.dpi = this.calculateDPI_();
 
-    this.overlayRenderer.updateDPI(dpi);
-    this.renderer.updateDPI(dpi);
-    this.layersAboveRenderer.updateDPI(dpi);
-    this.layersBelowRenderer.updateDPI(dpi);
-
-    this.serializedLayerFrame = "";
+    this.overlayRenderer.setDPI(this.dpi);
+    this.renderer.setDPI(this.dpi);
+    this.layersAboveRenderer.setDPI(this.dpi);
+    this.layersBelowRenderer.setDPI(this.dpi);
 
     var currentFrameHeight =  this.piskelController.getCurrentFrame().getHeight();
-    var canvasHeight = currentFrameHeight * dpi;
+    var canvasHeight = currentFrameHeight * this.dpi;
     if (pskl.UserSettings.get(pskl.UserSettings.SHOW_GRID)) {
       canvasHeight += Constants.GRID_STROKE_WIDTH * currentFrameHeight;
     }
@@ -347,7 +349,5 @@
       'top': verticalGapInPixel + 'px',
       'height': canvasHeight + 'px'
     });
-
-    this.forceRendering_();
   };
 })();

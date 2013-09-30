@@ -66,6 +66,6 @@
 
   ns.AnimatedPreviewController.prototype.updateDPI_ = function () {
     this.dpi = this.calculateDPI_();
-    this.renderer.updateDPI(this.dpi);
+    this.renderer.setDPI(this.dpi);
   };
 })();

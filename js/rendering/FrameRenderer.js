@@ -39,8 +39,8 @@
     $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
   };
 
-  ns.FrameRenderer.prototype.updateDPI = function (newDPI) {
-    this.dpi = newDPI;
+  ns.FrameRenderer.prototype.setDPI = function (dpi) {
+    this.dpi = dpi;
     this.canvasConfigDirty = true;
   };
 
@@ -124,26 +124,6 @@
   /**
    * @private
    */
-  ns.FrameRenderer.prototype.drawGrid_ = function(canvas, width, height, col, row) {
-    var ctx = canvas.getContext("2d");
-    ctx.lineWidth = Constants.GRID_STROKE_WIDTH;
-    ctx.strokeStyle = Constants.GRID_STROKE_COLOR;
-    for(var c=1; c < col; c++) {
-      ctx.moveTo(this.getFramePos_(c), 0);
-      ctx.lineTo(this.getFramePos_(c), height);
-      ctx.stroke();
-    }
-
-    for(var r=1; r < row; r++) {
-      ctx.moveTo(0, this.getFramePos_(r));
-      ctx.lineTo(width, this.getFramePos_(r));
-      ctx.stroke();
-    }
-  };
-
-  /**
-   * @private
-   */
   ns.FrameRenderer.prototype.getCanvas_ = function (frame) {
     if(this.canvasConfigDirty) {
       $(this.canvas).remove();
@@ -156,10 +136,6 @@
 
       var canvas = pskl.CanvasUtils.createCanvas(pixelWidth, pixelHeight, this.classes);
       this.container.append(canvas);
-
-      if(this.gridStrokeWidth > 0) {
-        this.drawGrid_(canvas, pixelWidth, pixelHeight, col, row);
-      }
 
       this.canvas = canvas;
       this.canvasConfigDirty = false;
