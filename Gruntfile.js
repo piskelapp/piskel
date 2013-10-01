@@ -129,12 +129,12 @@ module.exports = function(grunt) {
         },
         src: [
           'js/**/*.js',
-          //'!js/lib/**/*.js',
-          '!js/lib/bootstrap/**/*.js',
-          '!js/lib/jsColor_1_4_0/**/*.js',
-          '!js/lib/gif/**/*.js',
           'piskel-boot.js',
-          'piskel-script-list.js'
+          'piskel-script-list.js',
+          '!js/lib/bootstrap/**/*.js',
+          '!js/lib/gif/**/*.js',
+          '!js/lib/jquery-1.8.0.js',
+          '!js/lib/jsColor_1_4_0/**/*.js'
         ],
 
         // This generated JS binary is currently not used and even excluded from source control using .gitignore.
