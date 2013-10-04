@@ -4,7 +4,7 @@
    * @param  {HTMLElement} iframe
    */
   var processFrame = function (iframe) {
-    var type = iframe.dataset.iframeLoader;
+    var type = iframe.getAttribute('data-iframe-loader');
     if (type === "display") {
       displayFrame(iframe);
     } else if (type === "store") {
@@ -43,19 +43,10 @@
     document.body.appendChild(script);
   };
 
-  /**
-   * Retrieve iFrames with a data-attribute data-iframe-loader
-   * Converts the nodeList to an array for easier manipulation
-   * @return {Array} array of iframe elements
-   */
-  var getLoaderFrames = function () {
-    var iframes = document.querySelectorAll("[data-iframe-loader]");
-    return Array.prototype.slice.call(iframes, 0);
-  };
-
-  var init = function () {
-    getLoaderFrames().forEach(processFrame);
-  };
-
-  init();
+  window.iframeloader = {
+    onLoad : function (event) {
+      var iframe = event.target || event.srcElement;
+      processFrame(iframe);
+    }
+  }
 })();
