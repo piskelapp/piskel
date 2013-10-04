@@ -26,38 +26,53 @@
     },
 
     deserializePiskel : function (json) {
+      var piskel = null;
       var data = JSON.parse(json);
       if (data.modelVersion == Constants.MODEL_VERSION) {
         var pData = data.piskel;
-        var layers = pData.layers.map(function (serializedLayer) {
-          return pskl.utils.Serializer.deserializeLayer(serializedLayer);
-        });
-        var piskel = new pskl.model.Piskel(pData.width, pData.height);
-        layers.forEach(function (layer) {
+        piskel = new pskl.model.Piskel(pData.width, pData.height);
+
+        pData.layers.forEach(function (serializedLayer) {
+          var layer = pskl.utils.Serializer.deserializeLayer(serializedLayer);
           piskel.addLayer(layer);
         });
-        return piskel;
       } else {
-        //  pre-layer implementation adapter
+        piskel = pskl.utils.Serializer.backwardDeserializer_(data);
       }
+
+      return piskel;
     },
 
     deserializeLayer : function (json) {
       var lData = JSON.parse(json);
-      var frames = lData.frames.map(function (serializedFrame) {
-        return pskl.utils.Serializer.deserializeFrame(serializedFrame);
-      });
-
       var layer = new pskl.model.Layer(lData.name);
-      frames.forEach(function (frame) {
+
+      lData.frames.forEach(function (serializedFrame) {
+        var frame = pskl.utils.Serializer.deserializeFrame(serializedFrame);
         layer.addFrame(frame);
       });
+
       return layer;
     },
 
     deserializeFrame : function (json) {
       var framePixelGrid = JSON.parse(json);
       return pskl.model.Frame.fromPixelGrid(framePixelGrid);
+    },
+
+    /**
+     * Deserialize old piskel framesheets. Initially piskels were stored as arrays of frames : "[[pixelGrid],[pixelGrid],[pixelGrid]]".
+     */
+    backwardDeserializer_ : function (frames) {
+      var layer = new pskl.model.Layer('Layer 1');
+      frames.forEach(function (frame) {
+        layer.addFrame(pskl.model.Frame.fromPixelGrid(frame));
+      });
+      var width = layer.getFrameAt(0).getWidth(), height = layer.getFrameAt(0).getHeight();
+      var piskel = new pskl.model.Piskel(width, height);
+      piskel.addLayer(layer);
+
+      return piskel;
     }
   };
 })();
