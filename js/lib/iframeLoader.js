@@ -23,7 +23,9 @@
   var displayFrame = function (iframe) {
     var div=document.createElement("div");
     div.innerHTML = iframe.contentWindow.document.body.innerHTML;
-    if (div.children.length == 1) div = div.children[0];
+    if (div.children.length == 1) {
+      div = div.children[0];
+    }
     iframe.parentNode.replaceChild(div, iframe);
   };
 
@@ -43,7 +45,8 @@
 
   /**
    * Retrieve iFrames with a data-attribute data-iframe-loader
-   * @return {[type]} [description]
+   * Converts the nodeList to an array for easier manipulation
+   * @return {Array} array of iframe elements
    */
   var getLoaderFrames = function () {
     var iframes = document.querySelectorAll("[data-iframe-loader]");
