@@ -37,7 +37,7 @@
           piskel.addLayer(layer);
         });
       } else {
-        piskel = pskl.utils.Serializer.__backwardDeserializer(data);
+        piskel = pskl.utils.Serializer.backwardDeserializer_(data);
       }
 
       return piskel;
@@ -63,7 +63,7 @@
     /**
      * Deserialize old piskel framesheets. Initially piskels were stored as arrays of frames : "[[pixelGrid],[pixelGrid],[pixelGrid]]".
      */
-    __backwardDeserializer : function (frames) {
+    backwardDeserializer_ : function (frames) {
       var layer = new pskl.model.Layer('Layer 1');
       frames.forEach(function (frame) {
         layer.addFrame(pskl.model.Frame.fromPixelGrid(frame));
