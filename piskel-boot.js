@@ -30,13 +30,6 @@
     } else {
       script = "build/piskel-packaged-min.js";
     }
-    var loaderInterval = window.setInterval(function () {
-      if (document.querySelectorAll("._ctl").length === 0) {
-        window.clearInterval(loaderInterval);
-        loadScript(script, "pskl.app.init()");
-      } else {
-        console.log("waiting for templates to load ....");
-      }
-    }, 100);
+    loadScript(script, "pskl.app.init()");
   }
 })();

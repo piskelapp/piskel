@@ -1,6 +1,8 @@
 // This list is used both by the grunt build and index.html (in debug mode)
 
 exports.scripts = [
+// iframe loader
+  "js/lib/iframeLoader.js",
   // Core libraries
   "js/lib/jquery-1.8.0.js","js/lib/jquery-ui-1.10.3.custom.js","js/lib/pubsub.js","js/lib/bootstrap/bootstrap.js",
   // GIF Encoding libraries
