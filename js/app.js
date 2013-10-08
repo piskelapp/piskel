@@ -180,7 +180,11 @@
         formData.append('frames', this.piskelController.getFrameCount());
 
         // Get image/png data for first frame
-        formData.append('preview', this.getFirstFrameAsPNGData_());
+        var firstFrame = this.piskelController.getFrameAt(0);
+        var frameRenderer = new pskl.rendering.CanvasRenderer(firstFrame, 1);
+        frameRenderer.drawTransparentAs('rgba(0,0,0,0)');
+        var firstFrameCanvas = frameRenderer.render().canvas;
+        formData.append('preview', firstFrameCanvas.toDataURL("image/png"));
 
         var imageData = (new pskl.rendering.SpritesheetRenderer(this.piskelController)).renderAsImageDataSpritesheetPNG();
         formData.append('framesheet', imageData);
