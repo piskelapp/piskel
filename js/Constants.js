@@ -31,7 +31,17 @@ var Constants = {
   /*
    * Default entry point for piskel web service:
    */
-  PISKEL_SERVICE_URL: 'http://3.piskel-app.appspot.com',
+  STATIC : {
+    URL : {
+      SAVE : 'http://3.piskel-app.appspot.com/store',
+      GET : 'http://3.piskel-app.appspot.com/get'
+    }
+  },
+  APPENGINE : {
+    URL : {
+      SAVE : 'save'
+    }
+  },
   IMAGE_SERVICE_UPLOAD_URL : 'http://screenletstore.appspot.com/__/upload',
   IMAGE_SERVICE_GET_URL : 'http://screenletstore.appspot.com/img/',
 
