@@ -31,14 +31,14 @@
 }
 
 .right-sticky-section.expanded .tool-icon {
-  margin-right: 1px;
+  padding-right: 1px;
 }
 
 .right-sticky-section .tool-icon.has-expanded-drawer {
   position: relative;
   background-color: #444;
   margin-right: 0;
-  padding-right: 1px;
+  padding-right: 2px;
 }
 
 .settings-section {
@@ -81,7 +81,7 @@
   top: -2px;
   right: -2px;
   bottom: -2px;
-  left: -2px; 
+  left: -2px;
 }
 
 .background-picker:hover:after {

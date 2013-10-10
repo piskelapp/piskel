@@ -1,14 +1,18 @@
 (function () {
-  var ns = $.namespace("pskl.controller");
-  
+  var ns = $.namespace("pskl.controller.settings");
+
   var settings = {
-    user : {
-      template : 'templates/settings-application.html',
-      controller : ns.settings.ApplicationSettingsController
+    'user' : {
+      template : 'templates/settings/application.html',
+      controller : ns.ApplicationSettingsController
     },
-    gif : {
-      template : 'templates/settings-export-gif.html',
-      controller : ns.settings.GifExportController
+    'gif' : {
+      template : 'templates/settings/export-gif.html',
+      controller : ns.GifExportController
+    },
+    'import' : {
+      template : 'templates/settings/import.html',
+      controller : ns.ImportController
     }
   };
 
@@ -49,9 +53,9 @@
   ns.SettingsController.prototype.loadSetting = function (setting) {
     this.drawerContainer.innerHTML = pskl.utils.Template.get(settings[setting].template);
     (new settings[setting].controller(this.piskelController)).init();
-    
+
     this.settingsContainer.addClass(EXP_DRAWER_CLS);
-    
+
     $('.' + SEL_SETTING_CLS).removeClass(SEL_SETTING_CLS);
     $('[data-setting='+setting+']').addClass(SEL_SETTING_CLS);
 
@@ -66,5 +70,5 @@
     this.expanded = false;
     this.currentSetting = null;
   };
-  
+
 })();
