@@ -33,7 +33,7 @@
     /**
      * Similar to deserializePiskel, but dealing directly with a parsed piskel
      * @param  {Object} piskelData JSON.parse of a serialized piskel
-     * @return {Piskel} a piskel
+     * @return {pskl.model.Piskel} a piskel
      */
     createPiskel : function (piskelData) {
       var piskel = null;
