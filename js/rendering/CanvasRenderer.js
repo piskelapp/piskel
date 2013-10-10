@@ -4,9 +4,19 @@
   ns.CanvasRenderer = function (frame, dpi) {
     this.frame = frame;
     this.dpi = dpi;
+    this.transparentColor_ = 'white';
   };
 
-  ns.CanvasRenderer.prototype.render = function  (frame, dpi) {
+  /**
+   * Decide which color should be used to represent transparent pixels
+   * Default : white
+   * @param  {String} color the color to use either as '#ABCDEF' or 'red' or 'rgb(x,y,z)' or 'rgba(x,y,z,a)'
+   */
+  ns.CanvasRenderer.prototype.drawTransparentAs = function (color) {
+    this.transparentColor_ = color;
+  };
+
+  ns.CanvasRenderer.prototype.render = function  () {
     var canvas = this.createCanvas_();
     var context = canvas.getContext('2d');
     for(var col = 0, width = this.frame.getWidth(); col < width; col++) {
@@ -20,11 +30,12 @@
   };
 
   ns.CanvasRenderer.prototype.renderPixel_ = function (color, col, row, context) {
-    if(color == Constants.TRANSPARENT_COLOR) {
-      color = "#FFF";
-    }
 
+    if(color == Constants.TRANSPARENT_COLOR) {
+      color = this.transparentColor_;
+    }
     context.fillStyle = color;
+
     context.fillRect(col * this.dpi, row * this.dpi, this.dpi, this.dpi);
   };
 

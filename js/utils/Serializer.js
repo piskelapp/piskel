@@ -25,11 +25,20 @@
       });
     },
 
-    deserializePiskel : function (json) {
+    deserializePiskel : function (piskelString) {
+      var piskelData = JSON.parse(piskelString);
+      return this.createPiskelFromData(piskelData);
+    },
+
+    /**
+     * Similar to deserializePiskel, but dealing directly with a parsed piskel
+     * @param  {Object} piskelData JSON.parse of a serialized piskel
+     * @return {pskl.model.Piskel} a piskel
+     */
+    createPiskel : function (piskelData) {
       var piskel = null;
-      var data = JSON.parse(json);
-      if (data.modelVersion == Constants.MODEL_VERSION) {
-        var pData = data.piskel;
+      if (piskelData.modelVersion == Constants.MODEL_VERSION) {
+        var pData = piskelData.piskel;
         piskel = new pskl.model.Piskel(pData.width, pData.height);
 
         pData.layers.forEach(function (serializedLayer) {
@@ -37,14 +46,14 @@
           piskel.addLayer(layer);
         });
       } else {
-        piskel = pskl.utils.Serializer.backwardDeserializer_(data);
+        piskel = pskl.utils.Serializer.backwardDeserializer_(piskelData);
       }
 
       return piskel;
     },
 
-    deserializeLayer : function (json) {
-      var lData = JSON.parse(json);
+    deserializeLayer : function (layerString) {
+      var lData = JSON.parse(layerString);
       var layer = new pskl.model.Layer(lData.name);
 
       lData.frames.forEach(function (serializedFrame) {
@@ -55,8 +64,8 @@
       return layer;
     },
 
-    deserializeFrame : function (json) {
-      var framePixelGrid = JSON.parse(json);
+    deserializeFrame : function (frameString) {
+      var framePixelGrid = JSON.parse(frameString);
       return pskl.model.Frame.fromPixelGrid(framePixelGrid);
     },
 
