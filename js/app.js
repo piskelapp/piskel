@@ -73,20 +73,29 @@
       this.isStaticVersion = !pskl.appEngineToken_;
 
       if (this.isStaticVersion) {
-        var framesheetId = this.readFramesheetIdFromURL_();
-        if (framesheetId) {
-          $.publish(Events.SHOW_NOTIFICATION, [{
-            "content" : "Loading animation with id : [" + framesheetId + "]"
-          }]);
-          this.loadFramesheetFromService(framesheetId);
-        } else {
-          this.localStorageService.displayRestoreNotification();
-        }
+        this.finishInitStatic_();
       } else {
-        if (pskl.framesheetData_ && pskl.framesheetData_.content) {
-          this.piskelController.load(pskl.framesheetData_.content);
-          pskl.app.animationController.setFPS(pskl.framesheetData_.fps);
-        }
+        this.finishInitAppEngine_();
+      }
+    },
+
+    finishInitStatic_ : function () {
+      var framesheetId = this.readFramesheetIdFromURL_();
+      if (framesheetId) {
+        $.publish(Events.SHOW_NOTIFICATION, [{
+          "content" : "Loading animation with id : [" + framesheetId + "]"
+        }]);
+        this.loadFramesheetFromService(framesheetId);
+      } else {
+        this.localStorageService.displayRestoreNotification();
+      }
+    },
+
+    finishInitAppEngine_ : function () {
+      if (pskl.framesheetData_ && pskl.framesheetData_.content) {
+        var piskel = pskl.utils.Serializer.createPiskel(pskl.framesheetData_.content);
+        piskel.app.PiskelController.setPiskel(piskel);
+        pskl.app.animationController.setFPS(pskl.framesheetData_.fps);
       }
     },
 
@@ -143,12 +152,12 @@
 
     loadFramesheetFromService : function (frameId) {
       var xhr = new XMLHttpRequest();
-      xhr.open('GET', Constants.PISKEL_SERVICE_URL + '/get?l=' + frameId, true);
+      xhr.open('GET', Constants.STATIC.URL.GET + '?l=' + frameId, true);
       xhr.responseType = 'text';
-      var piskelController = this.piskelController;
       xhr.onload = function (e) {
         var res = JSON.parse(this.responseText);
-        piskelController.deserialize(JSON.stringify(res.framesheet));
+        var piskel = pskl.utils.Serializer.createPiskel(res.framesheet);
+        pskl.app.piskelController.setPiskel(piskel);
         pskl.app.animationController.setFPS(res.fps);
         $.publish(Events.HIDE_NOTIFICATION);
       };
@@ -160,50 +169,12 @@
       xhr.send();
     },
 
-    getFirstFrameAsPNGData_ : function () {
-      throw 'getFirstFrameAsPNGData_ not implemented';
-    },
-
-    // TODO(julz): Create package ?
     storeSheet : function (event) {
-      var xhr = new XMLHttpRequest();
-      var formData = new FormData();
-      formData.append('framesheet_content', this.piskelController.serialize());
-      formData.append('fps_speed', $('#preview-fps').val());
-
       if (this.isStaticVersion) {
-        // anonymous save on old app-engine backend
-        xhr.open('POST', Constants.PISKEL_SERVICE_URL + "/store", true);
+        this.storeSheetStatic_();
       } else {
-        // additional values only used with latest app-engine backend
-        formData.append('name', $('#piskel-name').val());
-        formData.append('frames', this.piskelController.getFrameCount());
-
-        // Get image/png data for first frame
-        formData.append('preview', this.getFirstFrameAsPNGData_());
-
-        var imageData = (new pskl.rendering.SpritesheetRenderer(this.piskelController)).renderAsImageDataSpritesheetPNG();
-        formData.append('framesheet', imageData);
-
-        xhr.open('POST', "save", true);
+        this.storeSheetAppEngine_();
       }
-
-      xhr.onload = function(e) {
-        if (this.status == 200) {
-          if (pskl.app.isStaticVersion) {
-            var baseUrl = window.location.href.replace(window.location.search, "");
-            window.location.href = baseUrl + "?frameId=" + this.responseText;
-          } else {
-            $.publish(Events.SHOW_NOTIFICATION, [{"content": "Successfully saved !"}]);
-          }
-        } else {
-          this.onerror(e);
-        }
-      };
-      xhr.onerror = function(e) {
-        $.publish(Events.SHOW_NOTIFICATION, [{"content": "Saving failed ("+this.status+")"}]);
-      };
-      xhr.send(formData);
 
       if(event) {
         event.stopPropagation();
@@ -212,8 +183,69 @@
       return false;
     },
 
+    storeSheetStatic_ : function () {
+      var xhr = new XMLHttpRequest();
+      var formData = new FormData();
+      formData.append('framesheet_content', this.piskelController.serialize());
+      formData.append('fps_speed', $('#preview-fps').val());
+
+      xhr.open('POST', Constants.STATIC.URL.SAVE, true);
+
+      xhr.onload = function(e) {
+        if (this.status == 200) {
+          var baseUrl = window.location.href.replace(window.location.search, "");
+          window.location.href = baseUrl + "?frameId=" + this.responseText;
+        } else {
+          this.onerror(e);
+        }
+      };
+      xhr.onerror = function(e) {
+        $.publish(Events.SHOW_NOTIFICATION, [{"content": "Saving failed ("+this.status+")"}]);
+      };
+      xhr.send(formData);
+    },
+
+    storeSheetAppEngine_ : function () {
+      var xhr = new XMLHttpRequest();
+      var formData = new FormData();
+      formData.append('framesheet_content', this.piskelController.serialize());
+      formData.append('fps_speed', $('#preview-fps').val());
+      formData.append('name', $('#piskel-name').val());
+      formData.append('frames', this.piskelController.getFrameCount());
+      formData.append('preview', this.getFirstFrameAsPng());
+      formData.append('framesheet', this.getFramesheetAsPng());
+
+      xhr.open('POST', Constants.APPENGINE.URL.SAVE, true);
+
+      xhr.onload = function(e) {
+        if (this.status == 200) {
+          $.publish(Events.SHOW_NOTIFICATION, [{"content": "Successfully saved !"}]);
+        } else {
+          this.onerror(e);
+        }
+      };
+      xhr.onerror = function(e) {
+        $.publish(Events.SHOW_NOTIFICATION, [{"content": "Saving failed ("+this.status+")"}]);
+      };
+      xhr.send(formData);
+    },
+
+    getFirstFrameAsPng : function () {
+      var firstFrame = this.piskelController.getFrameAt(0);
+      var frameRenderer = new pskl.rendering.CanvasRenderer(firstFrame, 1);
+      frameRenderer.drawTransparentAs('rgba(0,0,0,0)');
+      var firstFrameCanvas = frameRenderer.render().canvas;
+      return firstFrameCanvas.toDataURL("image/png");
+    },
+
+    getFramesheetAsPng : function () {
+      var renderer = new pskl.rendering.SpritesheetRenderer(this.piskelController);
+      var framesheetCanvas = renderer.render();
+      return framesheetCanvas.toDataURL("image/png");
+    },
+
     uploadAsSpritesheetPNG : function () {
-      var imageData = (new pskl.rendering.SpritesheetRenderer(this.piskelController)).renderAsImageDataSpritesheetPNG();
+      var imageData = this.getFramesheetAsPng();
       this.imageUploadService.upload(imageData, this.openWindow.bind(this));
     },
 
