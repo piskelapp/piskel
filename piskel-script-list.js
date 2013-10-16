@@ -14,6 +14,7 @@ exports.scripts = [
   // Libraries
   "js/utils/core.js",
   "js/utils/CanvasUtils.js",
+  "js/utils/FileUtils.js",
   "js/utils/FrameUtils.js",
   "js/utils/PixelUtils.js",
   "js/utils/Serializer.js",
