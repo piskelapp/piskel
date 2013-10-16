@@ -1,16 +1,22 @@
 <div class="settings-section">
   <div class="settings-title">
-    Import stuff
+    Import Picture
   </div>
   <div class="settings-item">
-    <label>PASTE DA URL</label>
     <form action="" method="POST" name="gif-export-upload-form">
-      <script type="text/template" id="export-gif-radio-template">
-          <label style="display:block"><input type="radio" name="gif-dpi" value="{{value}}"/>
-          {{label}}</label>
-      </script>
-      <div class="gif-export-radio-group"></div>
-      <input type="submit" class="export-gif-upload-button" value="Upload" />
+      <div>
+        <input type="radio" name="upload-source-type" checked="checked  " value="1"/>
+        <label>From your computer :
+          <input type="file" value="file" />
+        </label>
+      </div>
+      <div>
+        <input type="radio" name="upload-source-type" value="2"/>
+        <label>From the web :
+          <input type="text" placeholder="url" value="url" />
+        </label>
+      </div>
+      <input type="submit" class="export-gif-upload-button" value="Import" />
     </form>
   </div>
 </div>
