@@ -6,13 +6,13 @@
     this.piskelController = piskelController;
   };
 
-  ns.SpritesheetRenderer.prototype.renderAsImageDataSpritesheetPNG = function () {
+  ns.SpritesheetRenderer.prototype.render = function () {
     var canvas = this.createCanvas_();
     for (var i = 0 ; i < this.piskelController.getFrameCount() ; i++) {
       var frame = this.piskelController.getFrameAt(i);
       this.drawFrameInCanvas_(frame, canvas, i * this.piskelController.getWidth(), 0);
     }
-    return canvas.toDataURL("image/png");
+    return canvas;
   };
 
   /**

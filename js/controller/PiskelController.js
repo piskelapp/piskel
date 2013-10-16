@@ -2,7 +2,11 @@
   var ns = $.namespace('pskl.controller');
 
   ns.PiskelController = function (piskel) {
-    this.setPiskel(piskel);
+    if (piskel) {
+      this.setPiskel(piskel);
+    } else {
+      throw 'A piskel instance is mandatory for instanciating PiskelController';
+    }
   };
 
   ns.PiskelController.prototype.setPiskel = function (piskel) {
@@ -184,13 +188,7 @@
     return pskl.utils.Serializer.serializePiskel(this.piskel);
   };
 
-  ns.PiskelController.prototype.deserialize = function (json) {
-    try {
-      var piskel = pskl.utils.Serializer.deserializePiskel(json);
-      this.setPiskel(piskel);
-    } catch (e) {
-      console.error('Failed to deserialize');
-      console.error(e.stack);
-    }
+  ns.PiskelController.prototype.load = function (data) {
+    this.deserialize(JSON.stringify(data));
   };
 })();
