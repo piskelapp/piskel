@@ -21,14 +21,17 @@
     // Initialize colorpickers:
     var colorPicker = $('#color-picker');
     colorPicker.val(Constants.DEFAULT_PEN_COLOR);
-    colorPicker.change({isPrimary : true}, $.proxy(this.onPickerChange_, this));
-
-
     var secondaryColorPicker = $('#secondary-color-picker');
     secondaryColorPicker.val(Constants.TRANSPARENT_COLOR);
-    secondaryColorPicker.change({isPrimary : false}, $.proxy(this.onPickerChange_, this));
-
-    window.jscolor.install();
+    PDColorPicker.setColorPicker(colorPicker[0], { usealpha: true, nobutton: true});
+    PDColorPicker.setColorPicker(secondaryColorPicker[0],{ usealpha: true, nobutton: true});
+    var thisObj=this;
+    PDColorPicker.getColorChangeEvent().add(function(c,element){
+      var isPrimary=element.id==="color-picker";
+      thisObj.onPickerChange_({target:element,data:{
+        isPrimary: isPrimary
+      }},isPrimary);
+    })
   };
 
   /**
@@ -71,10 +74,10 @@
       // The colorpicker can't be set to a transparent state.
       // We set its background to white and insert the
       // string "TRANSPARENT" to mimic this state:
-      colorPicker[0].color.fromString("#fff");
+      colorPicker[0].style.backgroundColor="#fff";
       colorPicker.val(Constants.TRANSPARENT_COLOR);
     } else {
-      colorPicker[0].color.fromString(color);
+      colorPicker[0].style.backgroundColor=color;
     }
   };
 })();
