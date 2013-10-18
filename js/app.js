@@ -94,7 +94,7 @@
     finishInitAppEngine_ : function () {
       if (pskl.framesheetData_ && pskl.framesheetData_.content) {
         var piskel = pskl.utils.Serializer.createPiskel(pskl.framesheetData_.content);
-        piskel.app.PiskelController.setPiskel(piskel);
+        pskl.app.piskelController.setPiskel(piskel);
         pskl.app.animationController.setFPS(pskl.framesheetData_.fps);
       }
     },

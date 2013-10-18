@@ -7,32 +7,94 @@
 
   ns.ImportController.prototype.init = function () {
     this.fileUploadInput = $("[name=file-upload-input]");
-
+    this.urlInput = $("[name=url-input]");
     this.importForm = $("[name=import-form]");
     this.importForm.submit(this.onImportFormSubmit_.bind(this));
   };
 
+  ns.ImportController.prototype.reset_ = function () {
+    this.importForm.get(0).reset();
+  };
+
   ns.ImportController.prototype.onImportFormSubmit_ = function (evt) {
     evt.originalEvent.preventDefault();
+    var importType = this.getSelectedRadioValue_();
+    if (importType === 'FILE') {
+      this.importFromFile_();
+    } else if (importType === 'URL') {
+      this.importFromUrl_();
+    }
+  };
+
+  ns.ImportController.prototype.getSelectedRadioValue_ = function () {
+    var radios = this.getRadios_();
+    var selectedRadios = radios.filter(function(radio) {
+      return !!radio.checked;
+    });
+
+    if (selectedRadios.length == 1) {
+      return selectedRadios[0].value;
+    } else {
+      throw "Unexpected error when retrieving selected radio";
+    }
+  };
+
+  ns.ImportController.prototype.importFromFile_ = function () {
     var files = this.fileUploadInput.get(0).files;
     if (files.length == 1) {
       var file = files[0];
       if (this.isImage_(file)) {
         this.readImageFile_(file);
       } else {
+        this.reset_();
         throw "File is not an image : " + file.type;
       }
     }
   };
 
-  ns.ImportController.prototype.readImageFile_ = function (imageFile) {
-    pskl.utils.FileUtils.readFile(imageFile, this.processImageData_.bind(this));
+  ns.ImportController.prototype.importFromUrl_ = function () {
+    var url = this.urlInput.get(0).value;
+    if (this.isUrl_(url)) {
+      this.processImageSource_(url);
+    } else {
+      this.reset_();
+      throw "Not a url : " + url;
+    }
   };
 
-  ns.ImportController.prototype.processImageData_ = function (imageData) {
+  /**
+   * TODO : implement it properly
+   * @param  {String}  url potential url to test
+   * @return {Boolean} true if url looks like a URL
+   */
+  ns.ImportController.prototype.isUrl_ = function (url) {
+    if (typeof url === 'string') {
+      return (/^http/).test(url);
+    } else {
+      return false;
+    }
+  };
+
+  ns.ImportController.prototype.getRadios_ = function () {
+    var radiosColl = this.importForm.get(0).querySelectorAll("[name=upload-source-type]"),
+    radios = Array.prototype.slice.call(radiosColl,0);
+    return radios;
+  };
+
+  ns.ImportController.prototype.readImageFile_ = function (imageFile) {
+    pskl.utils.FileUtils.readFile(imageFile, this.processImageSource_.bind(this));
+  };
+
+  /**
+   * Create an image from the given source (url or data-url), and onload forward to onImageLoaded
+   * TODO : should be a generic utility method, should take a callback
+   * @param  {String} imageSource url or data-url, will be used as src for the image
+   */
+  ns.ImportController.prototype.processImageSource_ = function (imageSource) {
     var image = new Image();
     image.onload = this.onImageLoaded_.bind(this);
-    image.src = imageData;
+    image.crossOrigin = '';
+    image.src = imageSource;
   };
 
   ns.ImportController.prototype.onImageLoaded_ = function (evt) {
@@ -66,10 +128,12 @@
       "A new Piskel will be created from your picture, size : " + w + "x" + h;
 
     if (window.confirm(confirmationMessage)) {
-      console.log(framesheet);
-    } else {
-      console.log("ABORT ABORT");
+      var piskel = pskl.utils.Serializer.createPiskel([framesheet]);
+      pskl.app.piskelController.setPiskel(piskel);
+      pskl.app.animationController.setFPS(12);
     }
+
+    this.reset_();
   };
 
   ns.ImportController.prototype.rgbToHex_ = function (r, g, b) {

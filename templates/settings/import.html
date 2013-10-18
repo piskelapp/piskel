@@ -5,15 +5,15 @@
   <div class="settings-item">
     <form action="" method="POST" name="import-form">
       <div>
-        <input type="radio" name="upload-source-type" checked="checked  " value="1"/>
+        <input type="radio" name="upload-source-type" checked="checked  " value="FILE"/>
         <label>From your computer :
           <input type="file" name="file-upload-input" value="file" />
         </label>
       </div>
       <div>
-        <input type="radio" name="upload-source-type" value="2"/>
+        <input type="radio" name="upload-source-type" value="URL"/>
         <label>From the web :
-          <input type="text" placeholder="url" value="url" />
+          <input type="text" name="url-input" placeholder="url"/>
         </label>
       </div>
       <input type="submit" class="export-gif-upload-button" value="Import" />
