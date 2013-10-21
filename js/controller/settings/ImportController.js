@@ -93,7 +93,6 @@
   ns.ImportController.prototype.processImageSource_ = function (imageSource) {
     var image = new Image();
     image.onload = this.onImageLoaded_.bind(this);
-    image.crossOrigin = '';
     image.src = imageSource;
   };
 
