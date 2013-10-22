@@ -116,3 +116,39 @@
   background: rgba(0,0,0,0.5);
   color: white;
 }
+
+/* Import panel */
+.import-section {
+  margin: 15px 0;
+}
+
+.import-resize-field {
+  width: 30px;
+  margin: 0px 8px;
+  text-align: right;
+}
+
+.file-input-button {
+  margin: 0px 8px;
+  border-radius: 2px;
+}
+
+.file-input-status {
+  font-style: italic;
+  font-weight: normal;
+  text-shadow : none;
+}
+
+.import-button {
+  float: right;
+  padding : 8px 10px;
+  height: auto;
+  background: gold;
+  color: black;
+  text-shadow: 0px 1px 0 #fff;
+  border-radius: 2px;
+  font-size : 1.2rem;
+  border-color: rgb(179, 164, 0);
+  border-top-color: white;
+  border-bottom-color: rgb(151, 133, 0);
+}

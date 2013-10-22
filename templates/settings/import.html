@@ -4,19 +4,24 @@
   </div>
   <div class="settings-item">
     <form action="" method="POST" name="import-form">
-      <div>
-        <input type="radio" name="upload-source-type" checked="checked  " value="FILE"/>
-        <label>From your computer :
-          <input type="file" name="file-upload-input" value="file" />
+      <div class="import-section">
+        <input style="display:none" type="file" name="file-upload-input" value="file" />
+        <label>File :
+          <button type="button" class="button file-input-button">Browse</button>
+          <span class="file-input-status"></span>
+      </div>
+      <div class="import-section">
+        <label>Size :
+          <input type="text" class="textfield import-resize-field" name="resize-width"/>x
+          <input type="text" class="textfield import-resize-field" name="resize-height"/>
         </label>
       </div>
-      <div>
-        <input type="radio" name="upload-source-type" value="URL"/>
-        <label>From the web :
-          <input type="text" name="url-input" placeholder="url"/>
+      <div class="import-section">
+        <label>Smooth resize :
+          <input type="checkbox" checked="checked" name="smooth-resize-checkbox"/>
         </label>
       </div>
-      <input type="submit" class="export-gif-upload-button" value="Import" />
+      <input type="submit" class="button import-button" value="Import" />
     </form>
   </div>
 </div>

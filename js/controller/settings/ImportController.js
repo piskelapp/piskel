@@ -1,46 +1,47 @@
 (function () {
   var ns = $.namespace('pskl.controller.settings');
-
+  var DEFAULT_FILE_STATUS = 'No file selected ...';
   ns.ImportController = function (piskelController) {
     this.piskelController = piskelController;
+    this.importedImage_ = null;
   };
 
   ns.ImportController.prototype.init = function () {
-    this.fileUploadInput = $("[name=file-upload-input]");
-    this.urlInput = $("[name=url-input]");
     this.importForm = $("[name=import-form]");
+    this.hiddenFileInput = $("[name=file-upload-input]");
+    this.fileInputButton = $(".file-input-button");
+    this.fileInputStatus=$(".file-input-status");
+    this.fileInputStatus.html(DEFAULT_FILE_STATUS);
+
+    this.resizeWidth = $("[name=resize-width]");
+    this.resizeHeight = $("[name=resize-height]");
+
     this.importForm.submit(this.onImportFormSubmit_.bind(this));
+    this.hiddenFileInput.change(this.onFileUploadChange_.bind(this));
+    this.fileInputButton.click(this.onFileInputClick_.bind(this));
   };
 
   ns.ImportController.prototype.reset_ = function () {
     this.importForm.get(0).reset();
+    this.fileInputStatus.html(DEFAULT_FILE_STATUS);
+
   };
 
   ns.ImportController.prototype.onImportFormSubmit_ = function (evt) {
     evt.originalEvent.preventDefault();
-    var importType = this.getSelectedRadioValue_();
-    if (importType === 'FILE') {
-      this.importFromFile_();
-    } else if (importType === 'URL') {
-      this.importFromUrl_();
-    }
+    this.importImageToPiskel_();
   };
 
-  ns.ImportController.prototype.getSelectedRadioValue_ = function () {
-    var radios = this.getRadios_();
-    var selectedRadios = radios.filter(function(radio) {
-      return !!radio.checked;
-    });
+  ns.ImportController.prototype.onFileUploadChange_ = function (evt) {
+    this.importFromFile_();
+  };
 
-    if (selectedRadios.length == 1) {
-      return selectedRadios[0].value;
-    } else {
-      throw "Unexpected error when retrieving selected radio";
-    }
+  ns.ImportController.prototype.onFileInputClick_ = function (evt) {
+    this.hiddenFileInput.click();
   };
 
   ns.ImportController.prototype.importFromFile_ = function () {
-    var files = this.fileUploadInput.get(0).files;
+    var files = this.hiddenFileInput.get(0).files;
     if (files.length == 1) {
       var file = files[0];
       if (this.isImage_(file)) {
@@ -50,35 +51,6 @@
         throw "File is not an image : " + file.type;
       }
     }
-  };
-
-  ns.ImportController.prototype.importFromUrl_ = function () {
-    var url = this.urlInput.get(0).value;
-    if (this.isUrl_(url)) {
-      this.processImageSource_(url);
-    } else {
-      this.reset_();
-      throw "Not a url : " + url;
-    }
-  };
-
-  /**
-   * TODO : implement it properly
-   * @param  {String}  url potential url to test
-   * @return {Boolean} true if url looks like a URL
-   */
-  ns.ImportController.prototype.isUrl_ = function (url) {
-    if (typeof url === 'string') {
-      return (/^http/).test(url);
-    } else {
-      return false;
-    }
-  };
-
-  ns.ImportController.prototype.getRadios_ = function () {
-    var radiosColl = this.importForm.get(0).querySelectorAll("[name=upload-source-type]"),
-    radios = Array.prototype.slice.call(radiosColl,0);
-    return radios;
   };
 
   ns.ImportController.prototype.readImageFile_ = function (imageFile) {
@@ -91,24 +63,63 @@
    * @param  {String} imageSource url or data-url, will be used as src for the image
    */
   ns.ImportController.prototype.processImageSource_ = function (imageSource) {
-    var image = new Image();
-    image.onload = this.onImageLoaded_.bind(this);
-    image.src = imageSource;
+    this.importedImage_ = new Image();
+    this.importedImage_.onload = this.onImageLoaded_.bind(this);
+    this.importedImage_.src = imageSource;
   };
 
   ns.ImportController.prototype.onImageLoaded_ = function (evt) {
-    var image = evt.target;
+    var w = this.importedImage_.width,
+        h = this.importedImage_.height;
+    this.resizeWidth.val(w);
+    this.resizeHeight.val(h);
 
-    var w = image.width, h = image.height;
+    var filePath = this.hiddenFileInput.val();
+    var fileName = this.extractFileNameFromPath_(filePath);
+    this.fileInputStatus.html(fileName);
+  };
+
+  ns.ImportController.prototype.extractFileNameFromPath_ = function (path) {
+    var parts = [];
+    if (path.indexOf('/') !== -1) {
+      parts = path.split('/');
+    } else if (path.indexOf('\\') !== -1) {
+      parts = path.split('\\');
+    } else {
+      parts = [path];
+    }
+    return parts[parts.length-1];
+  };
+
+  ns.ImportController.prototype.importImageToPiskel_ = function () {
+    if (this.importedImage_) {
+      var image = this.importedImage_;
+      var frames = this.createFramesFromImage(image);
+      var confirmationMessage = "You are about to erase your current Piskel. " +
+        "A new Piskel will be created from your picture, size : " + image.width + "x" + image.height;
+
+      if (window.confirm(confirmationMessage)) {
+        var piskel = pskl.utils.Serializer.createPiskel([frames]);
+        pskl.app.piskelController.setPiskel(piskel);
+        pskl.app.animationController.setFPS(12);
+      }
+
+      this.reset_();
+    }
+  };
+
+  ns.ImportController.prototype.createFramesFromImage = function (image) {
+    var w = image.width,
+      h = image.height;
     var canvas = pskl.CanvasUtils.createCanvas(w, h);
     var context = canvas.getContext('2d');
 
     context.drawImage(image, 0,0,w,h,0,0,w,h);
     var imgData = context.getImageData(0,0,w,h).data;
     // Draw the zoomed-up pixels to a different canvas context
-    var framesheet = [];
+    var frames = [];
     for (var x=0;x<image.width;++x){
-      framesheet[x] = [];
+      frames[x] = [];
       for (var y=0;y<image.height;++y){
         // Find the starting index in the one-dimensional image data
         var i = (y*image.width + x)*4;
@@ -117,22 +128,13 @@
         var b = imgData[i+2];
         var a = imgData[i+3];
         if (a < 125) {
-          framesheet[x][y] = "TRANSPARENT";
+          frames[x][y] = "TRANSPARENT";
         } else {
-          framesheet[x][y] = this.rgbToHex_(r,g,b);
+          frames[x][y] = this.rgbToHex_(r,g,b);
         }
       }
     }
-    var confirmationMessage = "You are about to erase your current Piskel. " +
-      "A new Piskel will be created from your picture, size : " + w + "x" + h;
-
-    if (window.confirm(confirmationMessage)) {
-      var piskel = pskl.utils.Serializer.createPiskel([framesheet]);
-      pskl.app.piskelController.setPiskel(piskel);
-      pskl.app.animationController.setFPS(12);
-    }
-
-    this.reset_();
+    return frames;
   };
 
   ns.ImportController.prototype.rgbToHex_ = function (r, g, b) {
