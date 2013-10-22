@@ -48,6 +48,8 @@
         this.closeDrawer();
       }
     }.bind(this));
+
+    $.subscribe(Events.CLOSE_SETTINGS_DRAWER, this.closeDrawer.bind(this));
   };
 
   ns.SettingsController.prototype.loadSetting = function (setting) {

@@ -16,6 +16,7 @@ exports.scripts = [
   "js/utils/CanvasUtils.js",
   "js/utils/FileUtils.js",
   "js/utils/FrameUtils.js",
+  "js/utils/ImageResizer.js",
   "js/utils/PixelUtils.js",
   "js/utils/Serializer.js",
   "js/utils/Template.js",

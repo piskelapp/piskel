@@ -134,9 +134,15 @@
 }
 
 .file-input-status {
+  display: inline-block;
+  width: 130px;
+  overflow: hidden;
+
+  height: 1rem;
+  vertical-align: middle;
   font-style: italic;
   font-weight: normal;
-  text-shadow : none;
+  text-shadow: none;
 }
 
 .import-button {

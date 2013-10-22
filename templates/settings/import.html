@@ -5,21 +5,21 @@
   <div class="settings-item">
     <form action="" method="POST" name="import-form">
       <div class="import-section">
-        <input style="display:none" type="file" name="file-upload-input" value="file" />
-        <label>File :
-          <button type="button" class="button file-input-button">Browse</button>
-          <span class="file-input-status"></span>
+        <span class="import-section-title">File :</span>
+        <button type="button" class="button file-input-button">Browse</button>
+        <span class="file-input-status"></span>
+        <input style="display:none"
+          type="file" name="file-upload-input"
+          value="file" accept="image/*"/>
       </div>
       <div class="import-section">
-        <label>Size :
-          <input type="text" class="textfield import-resize-field" name="resize-width"/>x
-          <input type="text" class="textfield import-resize-field" name="resize-height"/>
-        </label>
+        <span class="import-section-title">Size :</span>
+        <input type="text" disabled="disabled" class="textfield import-resize-field" name="resize-width"/>x
+        <input type="text" disabled="disabled" class="textfield import-resize-field" name="resize-height"/>
       </div>
       <div class="import-section">
-        <label>Smooth resize :
-          <input type="checkbox" checked="checked" name="smooth-resize-checkbox"/>
-        </label>
+        <span class="import-section-title">Smooth resize :</span>
+        <input type="checkbox" disabled="disabled" checked="checked" name="smooth-resize-checkbox"/>
       </div>
       <input type="submit" class="button import-button" value="Import" />
     </form>
