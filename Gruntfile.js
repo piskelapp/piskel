@@ -5,9 +5,9 @@
  *   - run a grunt target defined in Gruntfiles.js, ex: 'grunt lint'
  *
  * Note: The 'ghost' grunt task have special deps on CasperJS and phantomjs.
- *       For now, It's configured to run only on TravisCI where these deps are 
+ *       For now, It's configured to run only on TravisCI where these deps are
  *       correctly defined.
- *       If you run this task locally, it may require some env set up first. 
+ *       If you run this task locally, it may require some env set up first.
  */
 
 module.exports = function(grunt) {
