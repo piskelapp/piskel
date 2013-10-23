@@ -1,6 +1,8 @@
 (function () {
   var ns = $.namespace('pskl.controller.settings');
   var DEFAULT_FILE_STATUS = 'No file selected ...';
+  var PREVIEW_HEIGHT  = 60;
+
   ns.ImportController = function (piskelController) {
     this.piskelController = piskelController;
     this.importedImage_ = null;
@@ -10,12 +12,15 @@
     this.importForm = $("[name=import-form]");
     this.hiddenFileInput = $("[name=file-upload-input]");
     this.fileInputButton = $(".file-input-button");
-    this.fileInputStatus=$(".file-input-status");
+    this.fileInputStatus = $(".file-input-status");
     this.fileInputStatus.html(DEFAULT_FILE_STATUS);
+
+    this.importPreview = $(".import-section-preview");
 
     this.resizeWidth = $("[name=resize-width]");
     this.resizeHeight = $("[name=resize-height]");
     this.smoothResize =  $("[name=smooth-resize-checkbox]");
+    this.submitButton =  $("[name=import-submit]");
 
     this.importForm.submit(this.onImportFormSubmit_.bind(this));
     this.hiddenFileInput.change(this.onFileUploadChange_.bind(this));
@@ -69,7 +74,7 @@
       var file = files[0];
       if (this.isImage_(file)) {
         this.readImageFile_(file);
-        this.enableAdditionalInputs_();
+        this.enableDisabledSections_();
       } else {
         this.reset_();
         throw "File is not an image : " + file.type;
@@ -77,10 +82,16 @@
     }
   };
 
-  ns.ImportController.prototype.enableAdditionalInputs_ = function () {
+  ns.ImportController.prototype.enableDisabledSections_ = function () {
     this.resizeWidth.removeAttr('disabled');
     this.resizeHeight.removeAttr('disabled');
     this.smoothResize.removeAttr('disabled');
+    this.submitButton.removeAttr('disabled');
+
+    this.fileInputButton.removeClass('button-primary');
+    this.fileInputButton.blur();
+
+    $('.import-section-disabled').removeClass('import-section-disabled');
   };
 
   ns.ImportController.prototype.readImageFile_ = function (imageFile) {
@@ -101,12 +112,22 @@
   ns.ImportController.prototype.onImageLoaded_ = function (evt) {
     var w = this.importedImage_.width,
         h = this.importedImage_.height;
-    this.resizeWidth.val(w);
-    this.resizeHeight.val(h);
-
     var filePath = this.hiddenFileInput.val();
     var fileName = this.extractFileNameFromPath_(filePath);
     this.fileInputStatus.html(fileName);
+
+    this.resizeWidth.val(w);
+    this.resizeHeight.val(h);
+
+    this.importPreview.width("auto");
+    this.importPreview.append(this.createImagePreview_());
+  };
+
+  ns.ImportController.prototype.createImagePreview_ = function () {
+    var image = document.createElement('IMG');
+    image.src = this.importedImage_.src;
+    image.setAttribute('height', PREVIEW_HEIGHT);
+    return image;
   };
 
   ns.ImportController.prototype.extractFileNameFromPath_ = function (path) {
@@ -123,57 +144,21 @@
 
   ns.ImportController.prototype.importImageToPiskel_ = function () {
     if (this.importedImage_) {
-      var image = pskl.utils.ImageResizer.resize(this.importedImage_, this.resizeWidth.val(), this.resizeHeight.val());
-      var frames = this.createFramesFromImage(image);
-      var confirmationMessage = "You are about to erase your current Piskel. " +
-        "A new Piskel will be created from your picture, size : " + image.width + "x" + image.height;
+      if (window.confirm("You are about to create a new Piskel, unsaved changes will be lost.")) {
+        var w = this.resizeWidth.val(),
+          h = this.resizeHeight.val(),
+          smoothing = !!this.smoothResize.prop('checked');
 
-      if (window.confirm(confirmationMessage)) {
-        var piskel = pskl.utils.Serializer.createPiskel([frames]);
+        var image = pskl.utils.ImageResizer.resize(this.importedImage_, w, h, smoothing);
+        var frame = pskl.utils.FrameUtils.createFromImage(image);
+
+        var piskel = pskl.utils.Serializer.createPiskel([frame]);
         pskl.app.piskelController.setPiskel(piskel);
-        pskl.app.animationController.setFPS(12);
+        pskl.app.animationController.setFPS(Constants.DEFAULT.FPS);
 
         this.reset_();
       }
     }
-  };
-
-  ns.ImportController.prototype.createFramesFromImage = function (image) {
-    var w = image.width,
-      h = image.height;
-    var canvas = pskl.CanvasUtils.createCanvas(w, h);
-    var context = canvas.getContext('2d');
-
-    context.drawImage(image, 0,0,w,h,0,0,w,h);
-    var imgData = context.getImageData(0,0,w,h).data;
-    // Draw the zoomed-up pixels to a different canvas context
-    var frames = [];
-    for (var x=0;x<image.width;++x){
-      frames[x] = [];
-      for (var y=0;y<image.height;++y){
-        // Find the starting index in the one-dimensional image data
-        var i = (y*image.width + x)*4;
-        var r = imgData[i  ];
-        var g = imgData[i+1];
-        var b = imgData[i+2];
-        var a = imgData[i+3];
-        if (a < 125) {
-          frames[x][y] = "TRANSPARENT";
-        } else {
-          frames[x][y] = this.rgbToHex_(r,g,b);
-        }
-      }
-    }
-    return frames;
-  };
-
-  ns.ImportController.prototype.rgbToHex_ = function (r, g, b) {
-    return "#" + this.componentToHex_(r) + this.componentToHex_(g) + this.componentToHex_(b);
-  };
-
-  ns.ImportController.prototype.componentToHex_ = function (c) {
-    var hex = c.toString(16);
-    return hex.length == 1 ? "0" + hex : hex;
   };
 
   ns.ImportController.prototype.isImage_ = function (file) {
