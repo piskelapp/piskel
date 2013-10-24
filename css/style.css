@@ -1,4 +1,6 @@
-
+::-ms-clear {
+  display: none;
+}
 
 body {
   background: radial-gradient(circle, #000, #373737);
