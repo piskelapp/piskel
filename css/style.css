@@ -1,13 +1,14 @@
-::-ms-clear {
-  display: none;
-}
-
 body {
   background: radial-gradient(circle, #000, #373737);
   /* 16/06/2013 : -webkit still needed for
   safari, safari mobile and android browser and chrome for android
   cf http://caniuse.com/css-gradients */
   background: -webkit-radial-gradient(circle, #000, #373737);
+}
+
+/* Browser fixes */
+::-ms-clear {
+  display: none;
 }
 
 /**
