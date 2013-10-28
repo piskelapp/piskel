@@ -63,7 +63,7 @@
 
   ns.Layer.prototype.duplicateFrame = function (frame) {
     var index = this.frames.indexOf(frame);
-    this.duplicateFrameAt();
+    this.duplicateFrameAt(index);
   };
 
   ns.Layer.prototype.duplicateFrameAt = function (index) {
