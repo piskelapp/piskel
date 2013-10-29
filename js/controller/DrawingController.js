@@ -16,12 +16,18 @@
      */
     this.container = container;
 
-    this.dpi = this.calculateDPI_();
+    this.zoom = this.calculateZoom_();
+    this.xOffset = 0;
+    this.yOffset = 0;
 
     // TODO(vincz): Store user prefs in a localstorage string ?
     var renderingOptions = {
-      "dpi": this.dpi,
-      "supportGridRendering" : true
+      "zoom": this.zoom,
+      "supportGridRendering" : true,
+      "height" : this.getContainerHeight_(),
+      "width" : this.getContainerWidth_(),
+      "xOffset" : this.xOffset,
+      "yOffset" : this.yOffset
     };
 
     this.overlayRenderer = new pskl.rendering.FrameRenderer(this.container, renderingOptions, ["canvas-overlay"]);
@@ -66,28 +72,28 @@
     $(window).resize($.proxy(this.startDPIUpdateTimer_, this));
 
     $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
-    $.subscribe(Events.FRAME_SIZE_CHANGED, $.proxy(this.updateDPI_, this));
+    $.subscribe(Events.FRAME_SIZE_CHANGED, $.proxy(this.updateZoom_, this));
 
-    this.updateDPI_();
+    this.updateZoom_();
   };
 
   ns.DrawingController.prototype.initMouseBehavior = function() {
     var body = $('body');
     this.container.mousedown($.proxy(this.onMousedown_, this));
     this.container.mousemove($.proxy(this.onMousemove_, this));
+    this.container.on('mousewheel', $.proxy(this.onMousewheel_, this));
+
     body.mouseup($.proxy(this.onMouseup_, this));
 
     // Deactivate right click:
     body.contextmenu(this.onCanvasContextMenu_);
   };
 
-
-
   ns.DrawingController.prototype.startDPIUpdateTimer_ = function () {
-    if (this.dpiUpdateTimer) {
-      window.clearInterval(this.dpiUpdateTimer);
+    if (this.zoomUpdateTimer) {
+      window.clearInterval(this.zoomUpdateTimer);
     }
-    this.dpiUpdateTimer = window.setTimeout($.proxy(this.updateDPI_, this), 200);
+    this.zoomUpdateTimer = window.setTimeout($.proxy(this.updateZoom_, this), 200);
   },
 
   /**
@@ -95,7 +101,7 @@
    */
   ns.DrawingController.prototype.onUserSettingsChange_ = function (evt, settingsName, settingsValue) {
     if(settingsName == pskl.UserSettings.SHOW_GRID) {
-      this.updateDPI_();
+      this.updateZoom_();
     }
   },
 
@@ -156,6 +162,16 @@
         );
       }
       this.previousMousemoveTime = currentTime;
+    }
+  };
+
+  ns.DrawingController.prototype.onMousewheel_ = function (jQueryEvent) {
+    var event = jQueryEvent.originalEvent;
+    var delta = event.wheelDeltaY;
+    if (delta > 0) {
+      this.setZoom(this.zoom + 1);
+    } else if (delta < 0) {
+      this.setZoom(this.zoom - 1);
     }
   };
 
@@ -250,7 +266,7 @@
 
   ns.DrawingController.prototype.renderFrame = function () {
     var frame = this.piskelController.getCurrentFrame();
-    var serializedFrame = this.dpi + "-" + frame.serialize();
+    var serializedFrame = [this.zoom, this.xOffset, this.yOffset, frame.serialize()].join('-');
     if (this.serializedFrame != serializedFrame) {
       if (!frame.isSameSize(this.overlayFrame)) {
         this.overlayFrame = pskl.model.Frame.createEmptyFromFrame(frame);
@@ -261,7 +277,7 @@
   };
 
   ns.DrawingController.prototype.renderOverlay = function () {
-    var serializedOverlay = this.dpi + "-" + this.overlayFrame.serialize();
+    var serializedOverlay = [this.zoom, this.xOffset, this.yOffset, this.overlayFrame.serialize()].join('-');
     if (this.serializedOverlay != serializedOverlay) {
       this.serializedOverlay = serializedOverlay;
       this.overlayRenderer.render(this.overlayFrame);
@@ -274,7 +290,7 @@
     var currentLayerIndex = this.piskelController.currentLayerIndex;
 
     var serializedLayerFrame = [
-      this.dpi,
+      this.zoom,
       currentFrameIndex,
       currentLayerIndex,
       layers.length
@@ -308,38 +324,39 @@
   /**
    * @private
    */
-  ns.DrawingController.prototype.calculateDPI_ = function() {
-    var availableViewportHeight = $('#main-wrapper').height(),
-      leftSectionWidth = $('.left-column').outerWidth(true),
-      rightSectionWidth = $('.right-column').outerWidth(true),
-      availableViewportWidth = $('#main-wrapper').width() - leftSectionWidth - rightSectionWidth,
-      framePixelHeight = this.piskelController.getCurrentFrame().getHeight(),
-      framePixelWidth = this.piskelController.getCurrentFrame().getWidth();
+  ns.DrawingController.prototype.calculateZoom_ = function() {
+    var frameHeight = this.piskelController.getCurrentFrame().getHeight(),
+        frameWidth = this.piskelController.getCurrentFrame().getWidth();
 
-    if (pskl.UserSettings.get(pskl.UserSettings.SHOW_GRID)) {
-      availableViewportWidth = availableViewportWidth - (framePixelWidth * Constants.GRID_STROKE_WIDTH);
-      availableViewportHeight = availableViewportHeight - (framePixelHeight * Constants.GRID_STROKE_WIDTH);
-    }
-
-    var dpi = pskl.PixelUtils.calculateDPI(
-      availableViewportHeight, availableViewportWidth, framePixelHeight, framePixelWidth);
-
-    return dpi;
+    return Math.min(this.getAvailableWidth_()/frameWidth, this.getAvailableHeight_()/frameHeight);
   };
 
+  ns.DrawingController.prototype.getAvailableHeight_ = function () {
+    return $('#main-wrapper').height();
+  };
+
+  ns.DrawingController.prototype.getAvailableWidth_ = function () {
+    var leftSectionWidth = $('.left-column').outerWidth(true),
+    rightSectionWidth = $('.right-column').outerWidth(true),
+    availableWidth = $('#main-wrapper').width() - leftSectionWidth - rightSectionWidth;
+    return availableWidth;
+  };
+
+  ns.DrawingController.prototype.getContainerHeight_ = function () {
+    return this.calculateZoom_() * this.piskelController.getCurrentFrame().getHeight();
+  };
+
+  ns.DrawingController.prototype.getContainerWidth_ = function () {
+    return this.calculateZoom_() * this.piskelController.getCurrentFrame().getWidth();
+  };
   /**
    * @private
    */
-  ns.DrawingController.prototype.updateDPI_ = function() {
-    this.dpi = this.calculateDPI_();
-
-    this.overlayRenderer.setDPI(this.dpi);
-    this.renderer.setDPI(this.dpi);
-    this.layersAboveRenderer.setDPI(this.dpi);
-    this.layersBelowRenderer.setDPI(this.dpi);
+  ns.DrawingController.prototype.updateZoom_ = function() {
+    this.setZoom(this.calculateZoom_());
 
     var currentFrameHeight =  this.piskelController.getCurrentFrame().getHeight();
-    var canvasHeight = currentFrameHeight * this.dpi;
+    var canvasHeight = currentFrameHeight * this.zoom;
     if (pskl.UserSettings.get(pskl.UserSettings.SHOW_GRID)) {
       canvasHeight += Constants.GRID_STROKE_WIDTH * currentFrameHeight;
     }
@@ -349,5 +366,22 @@
       'top': verticalGapInPixel + 'px',
       'height': canvasHeight + 'px'
     });
+  };
+
+  ns.DrawingController.prototype.setZoom = function (zoom) {
+    this.zoom = zoom;
+    this.overlayRenderer.setZoom(this.zoom);
+    this.renderer.setZoom(this.zoom);
+    this.layersAboveRenderer.setZoom(this.zoom);
+    this.layersBelowRenderer.setZoom(this.zoom);
+  };
+
+  ns.DrawingController.prototype.moveOffset = function (xOffset, yOffset) {
+    this.xOffset = xOffset;
+    this.yOffset = yOffset;
+    this.overlayRenderer.setDisplayOffset(xOffset, yOffset);
+    this.renderer.setDisplayOffset(xOffset, yOffset);
+    this.layersAboveRenderer.setDisplayOffset(xOffset, yOffset);
+    this.layersBelowRenderer.setDisplayOffset(xOffset, yOffset);
   };
 })();

@@ -1,10 +1,10 @@
 (function () {
   var ns = $.namespace("pskl.controller");
-  ns.PreviewFilmController = function (piskelController, container, dpi) {
+  ns.PreviewFilmController = function (piskelController, container) {
 
     this.piskelController = piskelController;
     this.container = container;
-    this.dpi = this.calculateDPI_();
+    this.refreshZoom_();
 
     this.redrawFlag = true;
   };
@@ -12,7 +12,7 @@
   ns.PreviewFilmController.prototype.init = function() {
     $.subscribe(Events.TOOL_RELEASED, this.flagForRedraw_.bind(this));
     $.subscribe(Events.PISKEL_RESET, this.flagForRedraw_.bind(this));
-    $.subscribe(Events.PISKEL_RESET, this.refreshDPI_.bind(this));
+    $.subscribe(Events.PISKEL_RESET, this.refreshZoom_.bind(this));
 
     $('#preview-list-scroller').scroll(this.updateScrollerOverflows.bind(this));
     this.updateScrollerOverflows();
@@ -28,8 +28,8 @@
     this.redrawFlag = true;
   };
 
-  ns.PreviewFilmController.prototype.refreshDPI_ = function () {
-    this.dpi = this.calculateDPI_();
+  ns.PreviewFilmController.prototype.refreshZoom_ = function () {
+    this.zoom = this.calculateZoom_();
   };
 
   ns.PreviewFilmController.prototype.render = function () {
@@ -153,7 +153,11 @@
 
     // TODO(vincz): Eventually optimize this part by not recreating a FrameRenderer. Note that the real optim
     // is to make this update function (#createPreviewTile) less aggressive.
-    var renderingOptions = {"dpi": this.dpi };
+    var renderingOptions = {
+      "zoom" : this.zoom,
+      "height" : "auto",
+      "width" : "auto"
+    };
     var currentFrameRenderer = new pskl.rendering.FrameRenderer($(canvasContainer), renderingOptions, ["tile-view"]);
     currentFrameRenderer.render(currentFrame);
 
@@ -206,7 +210,7 @@
   /**
    * Calculate the preview DPI depending on the piskel size
    */
-  ns.PreviewFilmController.prototype.calculateDPI_ = function () {
+  ns.PreviewFilmController.prototype.calculateZoom_ = function () {
     var curFrame = this.piskelController.getCurrentFrame(),
       frameHeight = curFrame.getHeight(),
       frameWidth = curFrame.getWidth(),

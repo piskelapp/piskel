@@ -10,7 +10,9 @@
     this.setFPS(Constants.DEFAULT.FPS);
 
     var renderingOptions = {
-      "dpi": this.calculateDPI_()
+      "zoom": this.calculateZoom_(),
+      "height" : "auto",
+      "width" : "auto"
     };
     this.renderer = new pskl.rendering.FrameRenderer(this.container, renderingOptions);
 
@@ -54,7 +56,7 @@
   /**
    * Calculate the preview DPI depending on the framesheet size
    */
-  ns.AnimatedPreviewController.prototype.calculateDPI_ = function () {
+  ns.AnimatedPreviewController.prototype.calculateZoom_ = function () {
     var previewSize = 200,
       framePixelHeight = this.piskelController.getCurrentFrame().getHeight(),
       framePixelWidth = this.piskelController.getCurrentFrame().getWidth();

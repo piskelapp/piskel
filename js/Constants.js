@@ -8,8 +8,8 @@ var Constants = {
 
   MODEL_VERSION : 1,
 
-  MAX_HEIGHT : 128,
-  MAX_WIDTH : 128,
+  MAX_HEIGHT : 1024,
+  MAX_WIDTH : 1024,
 
   PREVIEW_FILM_SIZE : 120,
 
