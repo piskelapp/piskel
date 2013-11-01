@@ -19,7 +19,9 @@ exports.scripts = [
   "js/utils/Serializer.js",
   "js/utils/Template.js",
   "js/utils/UserSettings.js",
-  "js/lib/jsColor_1_4_0/jscolor.js",
+  
+  "js/lib/objlib.js",
+  "js/lib/cbox.js",
 
   // Application libraries-->
   "js/rendering/DrawingLoop.js",
