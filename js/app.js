@@ -232,9 +232,9 @@
 
     getFirstFrameAsPng : function () {
       var firstFrame = this.piskelController.getFrameAt(0);
-      var frameRenderer = new pskl.rendering.CanvasRenderer(firstFrame, 1);
-      frameRenderer.drawTransparentAs('rgba(0,0,0,0)');
-      var firstFrameCanvas = frameRenderer.render().canvas;
+      var canvasRenderer = new pskl.rendering.CanvasRenderer(firstFrame, 1);
+      canvasRenderer.drawTransparentAs('rgba(0,0,0,0)');
+      var firstFrameCanvas = canvasRenderer.render().canvas;
       return firstFrameCanvas.toDataURL("image/png");
     },
 

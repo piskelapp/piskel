@@ -36,8 +36,12 @@ exports.scripts = [
   "js/selection/ShapeSelection.js",
 
   // Rendering
+  "js/rendering/RendererManager.js",
+  "js/rendering/AbstractRenderer.js",
+  "js/rendering/CachedRenderer.js",
+  "js/rendering/frame/FrameRenderer.js",
+  "js/rendering/frame/CachedFrameRenderer.js",
   "js/rendering/CanvasRenderer.js",
-  "js/rendering/FrameRenderer.js",
   "js/rendering/SpritesheetRenderer.js",
 
   // Controllers

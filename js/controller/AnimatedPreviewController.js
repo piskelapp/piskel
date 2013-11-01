@@ -9,14 +9,15 @@
 
     this.setFPS(Constants.DEFAULT.FPS);
 
+    var zoom = this.calculateZoom_();
     var renderingOptions = {
-      "zoom": this.calculateZoom_(),
-      "height" : "auto",
-      "width" : "auto"
+      "zoom": zoom,
+      "height" : this.piskelController.getCurrentFrame().getHeight() * zoom,
+      "width" : this.piskelController.getCurrentFrame().getWidth() * zoom
     };
-    this.renderer = new pskl.rendering.FrameRenderer(this.container, renderingOptions);
+    this.renderer = new pskl.rendering.frame.FrameRenderer(this.container, renderingOptions);
 
-    $.subscribe(Events.FRAME_SIZE_CHANGED, this.updateDPI_.bind(this));
+    $.subscribe(Events.FRAME_SIZE_CHANGED, this.updateZoom_.bind(this));
   };
 
   ns.AnimatedPreviewController.prototype.init = function () {
@@ -58,16 +59,14 @@
    */
   ns.AnimatedPreviewController.prototype.calculateZoom_ = function () {
     var previewSize = 200,
-      framePixelHeight = this.piskelController.getCurrentFrame().getHeight(),
-      framePixelWidth = this.piskelController.getCurrentFrame().getWidth();
-    // TODO (julz) : should have a utility to get a Size from framesheet easily (what about empty framesheets though ?)
+      hZoom = previewSize / this.piskelController.getCurrentFrame().getHeight(),
+      wZoom = previewSize / this.piskelController.getCurrentFrame().getWidth();
 
-    //return pskl.PixelUtils.calculateDPIForContainer($(".preview-container"), framePixelHeight, framePixelWidth);
-    return pskl.PixelUtils.calculateDPI(previewSize, previewSize, framePixelHeight, framePixelWidth);
+    return Math.min(hZoom, wZoom);
   };
 
-  ns.AnimatedPreviewController.prototype.updateDPI_ = function () {
-    this.dpi = this.calculateDPI_();
-    this.renderer.setDPI(this.dpi);
+  ns.AnimatedPreviewController.prototype.updateZoom_ = function () {
+    var zoom = this.calculateZoom_();
+    this.renderer.setZoom(zoom);
   };
 })();

@@ -155,10 +155,10 @@
     // is to make this update function (#createPreviewTile) less aggressive.
     var renderingOptions = {
       "zoom" : this.zoom,
-      "height" : "auto",
-      "width" : "auto"
+      "height" : this.piskelController.getCurrentFrame().getHeight() * this.zoom,
+      "width" : this.piskelController.getCurrentFrame().getWidth() * this.zoom
     };
-    var currentFrameRenderer = new pskl.rendering.FrameRenderer($(canvasContainer), renderingOptions, ["tile-view"]);
+    var currentFrameRenderer = new pskl.rendering.frame.FrameRenderer($(canvasContainer), renderingOptions, ["tile-view"]);
     currentFrameRenderer.render(currentFrame);
 
     previewTileRoot.appendChild(canvasContainer);
