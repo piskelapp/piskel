@@ -11840,7 +11840,8 @@ var Constants = {
   GRID_STROKE_WIDTH: 1,
 
   LEFT_BUTTON : 'left_button_1',
-  RIGHT_BUTTON : 'right_button_2'
+  RIGHT_BUTTON : 'right_button_2',
+  MOUSEMOVE_THROTTLING : 10
 };;// TODO(grosbouddha): put under pskl namespace.
 var Events = {
 
@@ -11994,6 +11995,14 @@ if (typeof Function.prototype.bind !== "function") {
 })();;(function () {
   var ns = $.namespace('pskl.utils');
 
+  ns.Math = {
+    minmax : function (val, min, max) {
+      return Math.max(Math.min(val, max), min);
+    }
+  };
+})();;(function () {
+  var ns = $.namespace('pskl.utils');
+  var colorCache = {};
   ns.FrameUtils = {
     merge : function (frames) {
       var merged = null;
@@ -12013,9 +12022,81 @@ if (typeof Function.prototype.bind !== "function") {
           frameA.setPixel(col, row, p);
         }
       });
+    },
+
+    /**
+     * Alpha compositing using porter duff algorithm :
+     * http://en.wikipedia.org/wiki/Alpha_compositing
+     * http://keithp.com/~keithp/porterduff/p253-porter.pdf
+     * @param  {String} strColor1 color over
+     * @param  {String} strColor2 color under
+     * @return {String} the composite color
+     */
+    mergePixels : function (strColor1, strColor2, globalOpacity1) {
+      var col1 = pskl.utils.FrameUtils.toRgba(strColor1);
+      var col2 = pskl.utils.FrameUtils.toRgba(strColor2);
+      if (typeof globalOpacity1 == 'number') {
+        col1 = JSON.parse(JSON.stringify(col1));
+        col1.a = globalOpacity1 * col1.a;
+      }
+      var a = col1.a + col2.a * (1 - col1.a);
+
+      var r = ((col1.r * col1.a + col2.r * col2.a * (1 - col1.a)) / a)|0;
+      var g = ((col1.g * col1.a + col2.g * col2.a * (1 - col1.a)) / a)|0;
+      var b = ((col1.b * col1.a + col2.b * col2.a * (1 - col1.a)) / a)|0;
+
+      return 'rgba('+r+','+g+','+b+','+a+')';
+    },
+
+    /**
+     * Convert a color defined as a string (hex, rgba, rgb, 'TRANSPARENT') to an Object with r,g,b,a properties.
+     * r, g and b are integers between 0 and 255, a is a float between 0 and 1
+     * @param  {String} c color as a string
+     * @return {Object} {r:Number,g:Number,b:Number,a:Number}
+     */
+    toRgba : function (c) {
+      if (colorCache[c]) {
+        return colorCache[c];
+      }
+      var color, matches;
+      if (c === 'TRANSPARENT') {
+        color = {
+          r : 0,
+          g : 0,
+          b : 0,
+          a : 0
+        };
+      } else if (c.indexOf('rgba(') != -1) {
+        matches = /rgba\((\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(1|0\.\d+)\s*\)/.exec(c);
+        color = {
+          r : parseInt(matches[1],10),
+          g : parseInt(matches[2],10),
+          b : parseInt(matches[3],10),
+          a : parseFloat(matches[4])
+        };
+      } else if (c.indexOf('rgb(') != -1) {
+        matches = /rgb\((\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/.exec(c);
+        color = {
+          r : parseInt(matches[1],10),
+          g : parseInt(matches[2],10),
+          b : parseInt(matches[3],10),
+          a : 1
+        };
+      } else {
+        matches = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(c);
+        color = {
+          r : parseInt(matches[1], 16),
+          g : parseInt(matches[2], 16),
+          b : parseInt(matches[3], 16),
+          a : 1
+        };
+      }
+      colorCache[c] = color;
+      return color;
     }
   };
-})();;(function () {
+})();
+;(function () {
   var ns = $.namespace("pskl");
 
   ns.PixelUtils = {
@@ -13842,6 +13923,427 @@ var jscolor = {
 
   pskl.utils.inherit(ns.ShapeSelection, ns.BaseSelection);
 })();;(function () {
+  var ns = $.namespace('pskl.rendering');
+
+  ns.AbstractRenderer = function () {};
+
+  ns.AbstractRenderer.prototype.clear =          function ()       {throw 'abstract method should be implemented';};
+
+  ns.AbstractRenderer.prototype.getCoordinates = function (x, y)   {throw 'abstract method should be implemented';};
+
+  ns.AbstractRenderer.prototype.setGridEnabled = function (b)      {throw 'abstract method should be implemented';};
+  ns.AbstractRenderer.prototype.isGridEnabled =  function ()       {throw 'abstract method should be implemented';};
+
+  ns.AbstractRenderer.prototype.setZoom =        function (zoom)   {throw 'abstract method should be implemented';};
+  ns.AbstractRenderer.prototype.getZoom =        function ()       {throw 'abstract method should be implemented';};
+
+  ns.AbstractRenderer.prototype.moveOffset =     function (x, y)   {throw 'abstract method should be implemented';};
+  ns.AbstractRenderer.prototype.setOffset =      function (x, y)   {throw 'abstract method should be implemented';};
+  ns.AbstractRenderer.prototype.getOffset =      function ()       {throw 'abstract method should be implemented';};
+
+  ns.AbstractRenderer.prototype.setDisplaySize = function (w, h)   {throw 'abstract method should be implemented';};
+  ns.AbstractRenderer.prototype.getDisplaySize = function ()       {throw 'abstract method should be implemented';};
+})();;(function () {
+  var ns = $.namespace('pskl.rendering');
+
+  ns.CompositeRenderer = function () {
+    this.renderers = [];
+  };
+
+  pskl.utils.inherit(pskl.rendering.CompositeRenderer, pskl.rendering.AbstractRenderer);
+
+  ns.CompositeRenderer.prototype.add = function (renderer) {
+    this.renderers.push(renderer);
+    return this;
+  };
+
+  ns.CompositeRenderer.prototype.clear = function () {
+    this.renderers.forEach(function (renderer) {
+      renderer.clear();
+    });
+  };
+
+  ns.CompositeRenderer.prototype.setZoom = function (zoom) {
+    this.renderers.forEach(function (renderer) {
+      renderer.setZoom(zoom);
+    });
+  };
+
+  ns.CompositeRenderer.prototype.getZoom = function () {
+    return this.getSampleRenderer_().getZoom();
+  };
+
+  ns.CompositeRenderer.prototype.setDisplaySize = function (w, h) {
+    this.renderers.forEach(function (renderer) {
+      renderer.setDisplaySize(w, h);
+    });
+  };
+
+  ns.CompositeRenderer.prototype.getDisplaySize = function () {
+    return this.getSampleRenderer_().getDisplaySize();
+  };
+
+  ns.CompositeRenderer.prototype.moveOffset = function (x, y) {
+    this.renderers.forEach(function (renderer) {
+      renderer.moveOffset(x, y);
+    });
+  };
+
+  ns.CompositeRenderer.prototype.setOffset = function (x, y) {
+    this.renderers.forEach(function (renderer) {
+      renderer.setOffset(x, y);
+    });
+  };
+
+  ns.CompositeRenderer.prototype.getOffset = function () {
+    return this.getSampleRenderer_().getOffset();
+  };
+
+
+  ns.CompositeRenderer.prototype.setGridEnabled = function (b) {
+    this.renderers.forEach(function (renderer) {
+      renderer.setGridEnabled(b);
+    });
+  };
+
+  ns.CompositeRenderer.prototype.isGridEnabled = function () {
+    return this.getSampleRenderer_().isGridEnabled();
+  };
+
+  ns.CompositeRenderer.prototype.getSampleRenderer_ = function () {
+    if (this.renderers.length > 0) {
+      return this.renderers[0];
+    } else {
+      throw 'Renderer manager is empty';
+    }
+  };
+})();;(function () {
+  var ns = $.namespace('pskl.rendering.layer');
+
+  ns.LayersRenderer = function (container, renderingOptions, piskelController) {
+    pskl.rendering.CompositeRenderer.call(this);
+
+    this.piskelController = piskelController;
+
+    this.belowRenderer = new pskl.rendering.frame.CachedFrameRenderer(container, renderingOptions, ["layers-canvas", "layers-below-canvas"]);
+    this.aboveRenderer = new pskl.rendering.frame.CachedFrameRenderer(container, renderingOptions, ["layers-canvas", "layers-above-canvas"]);
+
+    this.add(this.belowRenderer);
+    this.add(this.aboveRenderer);
+
+    this.serializedRendering = '';
+  };
+
+  pskl.utils.inherit(pskl.rendering.layer.LayersRenderer, pskl.rendering.CompositeRenderer);
+
+  ns.LayersRenderer.prototype.render = function () {
+    var layers = this.piskelController.getLayers();
+    var currentFrameIndex = this.piskelController.currentFrameIndex;
+    var currentLayerIndex = this.piskelController.currentLayerIndex;
+
+    var serializedRendering = [
+      this.getZoom(),
+      currentFrameIndex,
+      currentLayerIndex,
+      layers.length
+    ].join("-");
+
+    if (this.serializedRendering != serializedRendering) {
+      this.serializedRendering = serializedRendering;
+
+      this.clear();
+
+      var downLayers = layers.slice(0, currentLayerIndex);
+      if (downLayers.length > 0) {
+        var downFrame = this.getFrameForLayersAt_(currentFrameIndex, downLayers);
+        this.belowRenderer.render(downFrame);
+      }
+
+      var upLayers = layers.slice(currentLayerIndex + 1, layers.length);
+      if (upLayers.length > 0) {
+        var upFrame = this.getFrameForLayersAt_(currentFrameIndex, upLayers);
+        this.aboveRenderer.render(upFrame);
+      }
+
+    }
+  };
+
+  ns.LayersRenderer.prototype.getFrameForLayersAt_ = function (frameIndex, layers) {
+    var frames = layers.map(function (l) {
+      return l.getFrameAt(frameIndex);
+    });
+    return pskl.utils.FrameUtils.merge(frames);
+  };
+})();
+;(function () {
+  var ns = $.namespace("pskl.rendering.frame");
+
+  /**
+   * FrameRenderer will display a given frame inside a canvas element.
+   * @param {HtmlElement} container HtmlElement to use as parentNode of the Frame
+   * @param {Object} renderingOptions
+   * @param {Array} classes array of strings to use for css classes
+   */
+  ns.FrameRenderer = function (container, renderingOptions, classes) {
+    this.defaultRenderingOptions = {
+      'supportGridRendering' : false,
+      'zoom' : 1
+    };
+
+    renderingOptions = $.extend(true, {}, this.defaultRenderingOptions, renderingOptions);
+
+    if(container === undefined) {
+      throw 'Bad FrameRenderer initialization. <container> undefined.';
+    }
+
+    if(isNaN(renderingOptions.zoom)) {
+      throw 'Bad FrameRenderer initialization. <zoom> not well defined.';
+    }
+
+    this.container = container;
+
+    this.zoom = renderingOptions.zoom;
+
+    this.offset = {
+      x : 0,
+      y : 0
+    };
+
+    this.margin = {
+      x : 0,
+      y : 0
+    };
+
+    this.supportGridRendering = renderingOptions.supportGridRendering;
+
+    this.classes = classes || [];
+    this.classes.push('canvas');
+
+    /**
+     * Off dom canvas, will be used to draw the frame at 1:1 ratio
+     * @type {HTMLElement}
+     */
+    this.canvas = null;
+
+    /**
+     * Displayed canvas, scaled-up from the offdom canvas
+     * @type {HTMLElement}
+     */
+    this.displayCanvas = null;
+    this.setDisplaySize(renderingOptions.width, renderingOptions.height);
+
+    this.setGridEnabled(pskl.UserSettings.get(pskl.UserSettings.SHOW_GRID));
+
+    this.updateBackgroundClass_(pskl.UserSettings.get(pskl.UserSettings.CANVAS_BACKGROUND));
+    $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
+  };
+
+  pskl.utils.inherit(pskl.rendering.frame.FrameRenderer, pskl.rendering.AbstractRenderer);
+
+  ns.FrameRenderer.prototype.render = function (frame) {
+    if (frame) {
+      this.clear();
+      this.renderFrame_(frame);
+    }
+  };
+
+  ns.FrameRenderer.prototype.clear = function () {
+    pskl.CanvasUtils.clear(this.canvas);
+    pskl.CanvasUtils.clear(this.displayCanvas);
+  };
+
+  ns.FrameRenderer.prototype.setZoom = function (zoom) {
+    // back up center coordinates
+    var centerX = this.offset.x + (this.displayWidth/(2*this.zoom));
+    var centerY = this.offset.y + (this.displayHeight/(2*this.zoom));
+
+    this.zoom = Math.max(1, zoom);
+
+    // recenter
+    this.setOffset(
+      centerX - (this.displayWidth/(2*this.zoom)),
+      centerY - (this.displayHeight/(2*this.zoom))
+    );
+  };
+
+  ns.FrameRenderer.prototype.getZoom = function () {
+    return this.zoom;
+  };
+
+  ns.FrameRenderer.prototype.setDisplaySize = function (width, height) {
+    this.displayWidth = width;
+    this.displayHeight = height;
+    if (this.displayCanvas) {
+      $(this.displayCanvas).remove();
+      this.displayCanvas = null;
+    }
+    this.createDisplayCanvas_();
+  };
+
+  ns.FrameRenderer.prototype.getDisplaySize = function () {
+    return {
+      height : this.displayHeight,
+      width : this.displayWidth
+    };
+  };
+
+  ns.FrameRenderer.prototype.getOffset = function () {
+    return {
+      x : this.offset.x,
+      y : this.offset.y
+    };
+  },
+
+  ns.FrameRenderer.prototype.moveOffset = function (x, y) {
+    this.setOffset(this.offset.x + x, this.offset.y + y);
+  };
+
+  ns.FrameRenderer.prototype.setOffset = function (x, y) {
+    // TODO : provide frame size information to the FrameRenderer constructor
+    // here I first need to verify I have a 'canvas' which I can use to infer the frame information
+    // and then perform my boundaries checking. This sucks
+    if (this.canvas) {
+      var maxX = this.canvas.width - (this.displayWidth/this.zoom);
+      x = pskl.utils.Math.minmax(x, 0, maxX);
+      var maxY = this.canvas.height - (this.displayHeight/this.zoom);
+      y = pskl.utils.Math.minmax(y, 0, maxY);
+    }
+    this.offset.x = x;
+    this.offset.y = y;
+  };
+
+  ns.FrameRenderer.prototype.setGridEnabled = function (flag) {
+    this.gridStrokeWidth = (flag && this.supportGridRendering) ? Constants.GRID_STROKE_WIDTH : 0;
+    this.canvasConfigDirty = true;
+  };
+
+  ns.FrameRenderer.prototype.updateMargins_ = function () {
+    var deltaX = this.displayWidth - (this.zoom * this.canvas.width);
+    this.margin.x = Math.max(0, deltaX) / 2;
+
+    var deltaY = this.displayHeight - (this.zoom * this.canvas.height);
+    this.margin.y = Math.max(0, deltaY) / 2;
+  };
+
+  ns.FrameRenderer.prototype.createDisplayCanvas_ = function () {
+    var height = this.displayHeight;
+    var width = this.displayWidth;
+
+    this.displayCanvas = pskl.CanvasUtils.createCanvas(width, height, this.classes);
+    if (true || this.zoom > 2) {
+      pskl.CanvasUtils.disableImageSmoothing(this.displayCanvas);
+    }
+    this.container.append(this.displayCanvas);
+  };
+
+  ns.FrameRenderer.prototype.onUserSettingsChange_ = function (evt, settingName, settingValue) {
+    if(settingName == pskl.UserSettings.SHOW_GRID) {
+      this.setGridEnabled(settingValue);
+    } else if (settingName == pskl.UserSettings.CANVAS_BACKGROUND) {
+      this.updateBackgroundClass_(settingValue);
+    }
+  };
+
+  ns.FrameRenderer.prototype.updateBackgroundClass_ = function (newClass) {
+    var currentClass = this.container.data('current-background-class');
+    if (currentClass) {
+      this.container.removeClass(currentClass);
+    }
+    this.container.addClass(newClass);
+    this.container.data('current-background-class', newClass);
+  };
+
+  ns.FrameRenderer.prototype.renderPixel_ = function (color, x, y, context) {
+    if(color != Constants.TRANSPARENT_COLOR) {
+      context.fillStyle = color;
+      context.fillRect(x, y, 1, 1);
+    }
+  };
+
+  /**
+   * Transform a screen pixel-based coordinate (relative to the top-left corner of the rendered
+   * frame) into a sprite coordinate in column and row.
+   * @public
+   */
+  ns.FrameRenderer.prototype.getCoordinates = function(x, y) {
+    var containerOffset = this.container.offset();
+    x = x - containerOffset.left;
+    y = y - containerOffset.top;
+
+    // apply margins
+    x = x - this.margin.x;
+    y = y - this.margin.y;
+
+    var cellSize = this.zoom + this.gridStrokeWidth;
+    // apply frame offset
+    x = x + this.offset.x * cellSize;
+    y = y + this.offset.y * cellSize;
+
+    return {
+      x : (x / cellSize) | 0,
+      y : (y / cellSize) | 0
+    };
+  };
+
+  /**
+   * @private
+   */
+  ns.FrameRenderer.prototype.renderFrame_ = function (frame) {
+    if (!this.canvas) {
+      this.canvas = pskl.CanvasUtils.createCanvas(frame.getWidth(), frame.getHeight());
+    }
+
+    var context = this.canvas.getContext('2d');
+    for(var x = 0, width = frame.getWidth(); x < width; x++) {
+      for(var y = 0, height = frame.getHeight(); y < height; y++) {
+        var color = frame.getPixel(x, y);
+        this.renderPixel_(color, x, y, context);
+      }
+    }
+
+    this.updateMargins_();
+
+    context = this.displayCanvas.getContext('2d');
+    context.save();
+    // zoom < 1
+    context.fillStyle = "#aaa";
+    // zoom < 1
+    context.fillRect(0,0,this.displayCanvas.width, this.displayCanvas.height);
+    context.translate(this.margin.x, this.margin.y);
+    context.scale(this.zoom, this.zoom);
+    context.translate(-this.offset.x, -this.offset.y);
+    // zoom < 1
+    context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    context.drawImage(this.canvas, 0, 0);
+    context.restore();
+  };
+})();;(function () {
+  var ns = $.namespace('pskl.rendering.frame');
+
+  /**
+   * FrameRenderer implementation that prevents unnecessary redraws.
+   * @param {HtmlElement} container HtmlElement to use as parentNode of the Frame
+   * @param {Object} renderingOptions
+   * @param {Array} classes array of strings to use for css classes
+   */
+  ns.CachedFrameRenderer = function (container, renderingOptions, classes) {
+    pskl.rendering.frame.FrameRenderer.call(this, container, renderingOptions, classes);
+    this.serializedFrame = '';
+  };
+
+  pskl.utils.inherit(pskl.rendering.frame.CachedFrameRenderer, pskl.rendering.frame.FrameRenderer);
+
+  ns.CachedFrameRenderer.prototype.render = function (frame) {
+    var offset = this.getOffset();
+    var size = this.getDisplaySize();
+    var serializedFrame = [this.getZoom(), offset.x, offset.y, size.width, size.height, frame.serialize()].join('-');
+    if (this.serializedFrame != serializedFrame) {
+      this.serializedFrame = serializedFrame;
+      this.superclass.render.call(this, frame);
+    }
+  };
+})();
+;(function () {
 
   var ns = $.namespace("pskl.rendering");
   ns.CanvasRenderer = function (frame, dpi) {
@@ -13886,221 +14388,6 @@ var jscolor = {
     var width = this.frame.getWidth() * this.dpi;
     var height = this.frame.getHeight() * this.dpi;
     return pskl.CanvasUtils.createCanvas(width, height);
-  };
-})();;(function () {
-  var ns = $.namespace("pskl.rendering");
-
-  /**
-   * FrameRenderer will display a given frame inside a canvas element.
-   * @param {HtmlElement} container HtmlElement to use as parentNode of the Frame
-   * @param {Object} renderingOptions
-   * @param {Array} classes array of strings to use for css classes
-   */
-  ns.FrameRenderer = function (container, renderingOptions, classes) {
-    this.defaultRenderingOptions = {
-      'supportGridRendering' : false,
-      'zoom' : 1,
-      'xOffset' : 0,
-      'yOffset' : 0
-    };
-
-    renderingOptions = $.extend(true, {}, this.defaultRenderingOptions, renderingOptions);
-
-    if(container === undefined) {
-      throw 'Bad FrameRenderer initialization. <container> undefined.';
-    }
-
-    if(isNaN(renderingOptions.zoom)) {
-      throw 'Bad FrameRenderer initialization. <zoom> not well defined.';
-    }
-
-    this.container = container;
-
-    this.zoom = renderingOptions.zoom;
-    this.xOffset = renderingOptions.xOffset;
-    this.yOffset = renderingOptions.yOffset;
-
-    this.pixelOffsetHeight = 0;
-    this.pixelOffsetWidth = 0;
-
-    this.supportGridRendering = renderingOptions.supportGridRendering;
-
-    this.classes = classes || [];
-    this.classes.push('canvas');
-
-    /**
-     * Off dom canvas, will be used to draw the frame at 1:1 ratio
-     * @type {HTMLElement}
-     */
-    this.canvas = null;
-
-    /**
-     * Displayed canvas, scaled-up from the offdom canvas
-     * @type {HTMLElement}
-     */
-    this.scaledCanvas = null;
-    this.setDisplaySize(renderingOptions.width, renderingOptions.height);
-
-    this.enableGrid(pskl.UserSettings.get(pskl.UserSettings.SHOW_GRID));
-
-    this.updateBackgroundClass_(pskl.UserSettings.get(pskl.UserSettings.CANVAS_BACKGROUND));
-    $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
-  };
-
-  ns.FrameRenderer.prototype.setZoom = function (zoom) {
-    this.zoom = zoom;
-  };
-
-  ns.FrameRenderer.prototype.isAutoSized_ = function () {
-    return this.displayHeight === 'auto' && this.displayWidth === 'auto';
-  };
-
-  ns.FrameRenderer.prototype.setDisplaySize = function (width, height) {
-    this.displayHeight = height;
-    this.displayWidth = width;
-    if (this.scaledCanvas) {
-      $(this.scaledCanvas).remove();
-      this.scaledCanvas = null;
-    }
-  };
-
-  ns.FrameRenderer.prototype.updatePixelOffsets_ = function () {
-    if (!this.isAutoSized_()) {
-      var deltaH = this.displayHeight - (this.zoom * this.canvas.height);
-      this.pixelOffsetHeight = Math.max(0, deltaH) / 2;
-
-      var deltaW = this.displayWidth - (this.zoom * this.canvas.width);
-      this.pixelOffsetWidth = Math.max(0, deltaW) / 2;
-    }
-  };
-
-  ns.FrameRenderer.prototype.createScaledCanvas_ = function () {
-    var height = this.displayHeight;
-    var width = this.displayWidth;
-
-    if (this.isAutoSized_()) {
-      height = this.zoom * this.canvas.height;
-      width = this.zoom * this.canvas.width;
-    }
-
-    this.scaledCanvas = pskl.CanvasUtils.createCanvas(width, height, this.classes);
-    if (true || this.zoom > 2) {
-      pskl.CanvasUtils.disableImageSmoothing(this.scaledCanvas);
-    }
-    this.container.append(this.scaledCanvas);
-  };
-
-  ns.FrameRenderer.prototype.setDisplayOffset = function (xOffset, yOffset) {
-    this.xOffset = xOffset;
-    this.yOffset = yOffset;
-  };
-
-  /**
-   * @private
-   */
-  ns.FrameRenderer.prototype.onUserSettingsChange_ = function (evt, settingName, settingValue) {
-    if(settingName == pskl.UserSettings.SHOW_GRID) {
-      this.enableGrid(settingValue);
-    }
-    else if (settingName == pskl.UserSettings.CANVAS_BACKGROUND) {
-      this.updateBackgroundClass_(settingValue);
-    }
-  };
-
-  /**
-   * @private
-   */
-  ns.FrameRenderer.prototype.updateBackgroundClass_ = function (newClass) {
-    var currentClass = this.container.data('current-background-class');
-    if (currentClass) {
-      this.container.removeClass(currentClass);
-    }
-    this.container.addClass(newClass);
-    this.container.data('current-background-class', newClass);
-  };
-
-  ns.FrameRenderer.prototype.enableGrid = function (flag) {
-    this.gridStrokeWidth = (flag && this.supportGridRendering) ? Constants.GRID_STROKE_WIDTH : 0;
-    this.canvasConfigDirty = true;
-  };
-
-  ns.FrameRenderer.prototype.render = function (frame) {
-    if (frame) {
-      this.clear();
-      this.drawFrameInCanvas_(frame);
-      this.lastRenderedFrame = frame;
-    }
-  };
-
-  ns.FrameRenderer.prototype.clear = function () {
-    pskl.CanvasUtils.clear(this.canvas);
-    pskl.CanvasUtils.clear(this.scaledCanvas);
-  };
-
-  ns.FrameRenderer.prototype.renderPixel_ = function (color, col, row, context) {
-    if(color != Constants.TRANSPARENT_COLOR) {
-      context.fillStyle = color;
-      context.fillRect(col, row, 1, 1);
-    }
-  };
-
-  /**
-   * Transform a screen pixel-based coordinate (relative to the top-left corner of the rendered
-   * frame) into a sprite coordinate in column and row.
-   * @public
-   */
-  ns.FrameRenderer.prototype.convertPixelCoordinatesIntoSpriteCoordinate = function(coords) {
-    var cellSize = this.zoom + this.gridStrokeWidth;
-    var xCoord = (coords.x - this.pixelOffsetWidth) + (this.xOffset * cellSize),
-        yCoord = (coords.y - this.pixelOffsetHeight)  + (this.yOffset * cellSize);
-    return {
-      "col" : (xCoord - xCoord % cellSize) / cellSize,
-      "row" : (yCoord - yCoord % cellSize) / cellSize
-    };
-  };
-
-  /**
-   * @private
-   */
-  ns.FrameRenderer.prototype.getFramePos_ = function(index) {
-    return index * this.dpi + ((index - 1) * this.gridStrokeWidth);
-  };
-
-  /**
-   * @private
-   */
-  ns.FrameRenderer.prototype.drawFrameInCanvas_ = function (frame) {
-    if (!this.canvas) {
-      this.canvas = pskl.CanvasUtils.createCanvas(frame.getWidth(), frame.getHeight());
-    }
-
-    if (!this.scaledCanvas) {
-      this.createScaledCanvas_();
-    }
-
-    this.updatePixelOffsets_();
-
-    var context = this.canvas.getContext('2d');
-    for(var col = 0, width = frame.getWidth(); col < width; col++) {
-      for(var row = 0, height = frame.getHeight(); row < height; row++) {
-        var color = frame.getPixel(col, row);
-        this.renderPixel_(color, col, row, context);
-      }
-    }
-
-    context = this.scaledCanvas.getContext('2d');
-    context.save();
-    // zoom < 1
-    context.fillStyle = "#aaa";
-    // zoom < 1
-    context.fillRect(0,0,this.scaledCanvas.width, this.scaledCanvas.height);
-    context.translate(this.pixelOffsetWidth, this.pixelOffsetHeight);
-    context.scale(this.zoom, this.zoom);
-    context.translate(-this.xOffset, -this.yOffset);
-    // zoom < 1
-    context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    context.drawImage(this.canvas, 0, 0);
-    context.restore();
   };
 })();;(function () {
 
@@ -14356,25 +14643,25 @@ var jscolor = {
      */
     this.container = container;
 
-    this.zoom = this.calculateZoom_();
-    this.xOffset = 0;
-    this.yOffset = 0;
-
     // TODO(vincz): Store user prefs in a localstorage string ?
     var renderingOptions = {
-      "zoom": this.zoom,
+      "zoom": this.calculateZoom_(),
       "supportGridRendering" : true,
       "height" : this.getContainerHeight_(),
       "width" : this.getContainerWidth_(),
-      "xOffset" : this.xOffset,
-      "yOffset" : this.yOffset
+      "xOffset" : 0,
+      "yOffset" : 0
     };
 
-    this.overlayRenderer = new pskl.rendering.FrameRenderer(this.container, renderingOptions, ["canvas-overlay"]);
-    this.renderer = new pskl.rendering.FrameRenderer(this.container, renderingOptions, ["drawing-canvas"]);
-    this.layersBelowRenderer = new pskl.rendering.FrameRenderer(this.container, renderingOptions, ["layers-canvas", "layers-below-canvas"]);
-    this.layersAboveRenderer = new pskl.rendering.FrameRenderer(this.container, renderingOptions, ["layers-canvas", "layers-above-canvas"]);
+    this.overlayRenderer = new pskl.rendering.frame.CachedFrameRenderer(this.container, renderingOptions, ["canvas-overlay"]);
+    this.renderer = new pskl.rendering.frame.CachedFrameRenderer(this.container, renderingOptions, ["drawing-canvas"]);
+    this.layersRenderer = new pskl.rendering.layer.LayersRenderer(this.container, renderingOptions, piskelController);
 
+    this.compositeRenderer = new pskl.rendering.CompositeRenderer();
+    this.compositeRenderer
+      .add(this.overlayRenderer)
+      .add(this.renderer)
+      .add(this.layersRenderer);
 
     // State of drawing controller:
     this.isClicked = false;
@@ -14409,12 +14696,12 @@ var jscolor = {
       $.publish(Events.SECONDARY_COLOR_UPDATED, [color]);
     }, this));
 
-    $(window).resize($.proxy(this.startDPIUpdateTimer_, this));
+    $(window).resize($.proxy(this.startResizeTimer_, this));
 
     $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
-    $.subscribe(Events.FRAME_SIZE_CHANGED, $.proxy(this.updateZoom_, this));
+    $.subscribe(Events.FRAME_SIZE_CHANGED, $.proxy(this.onFrameSizeChanged_, this));
 
-    this.updateZoom_();
+    this.centerColumnWrapperHorizontally_();
   };
 
   ns.DrawingController.prototype.initMouseBehavior = function() {
@@ -14422,6 +14709,7 @@ var jscolor = {
     this.container.mousedown($.proxy(this.onMousedown_, this));
     this.container.mousemove($.proxy(this.onMousemove_, this));
     this.container.on('mousewheel', $.proxy(this.onMousewheel_, this));
+    this.container.on('wheel', $.proxy(this.onMousewheel_, this));
 
     body.mouseup($.proxy(this.onMouseup_, this));
 
@@ -14429,11 +14717,15 @@ var jscolor = {
     body.contextmenu(this.onCanvasContextMenu_);
   };
 
-  ns.DrawingController.prototype.startDPIUpdateTimer_ = function () {
-    if (this.zoomUpdateTimer) {
-      window.clearInterval(this.zoomUpdateTimer);
+  ns.DrawingController.prototype.startResizeTimer_ = function () {
+    if (this.resizeTimer) {
+      window.clearInterval(this.resizeTimer);
     }
-    this.zoomUpdateTimer = window.setTimeout($.proxy(this.updateZoom_, this), 200);
+    this.resizeTimer = window.setTimeout($.proxy(this.afterWindowResize_, this), 200);
+  },
+
+  ns.DrawingController.prototype.afterWindowResize_ = function () {
+    this.compositeRenderer.setDisplaySize(this.getContainerWidth_(), this.getContainerHeight_());
   },
 
   /**
@@ -14441,7 +14733,7 @@ var jscolor = {
    */
   ns.DrawingController.prototype.onUserSettingsChange_ = function (evt, settingsName, settingsValue) {
     if(settingsName == pskl.UserSettings.SHOW_GRID) {
-      this.updateZoom_();
+      console.warn('DrawingController:onUserSettingsChange_ not implemented !');
     }
   },
 
@@ -14456,10 +14748,11 @@ var jscolor = {
       $.publish(Events.CANVAS_RIGHT_CLICKED);
     }
 
-    var coords = this.getSpriteCoordinates(event);
+    var coords = this.renderer.getCoordinates(event.clientX, event.clientY);
 
     this.currentToolBehavior.applyToolAt(
-      coords.col, coords.row,
+      coords.x,
+      coords.y,
       this.getCurrentColor_(),
       this.piskelController.getCurrentFrame(),
       this.overlayFrame,
@@ -14475,12 +14768,14 @@ var jscolor = {
   ns.DrawingController.prototype.onMousemove_ = function (event) {
     var currentTime = new Date().getTime();
     // Throttling of the mousemove event:
-    if ((currentTime - this.previousMousemoveTime) > 40 ) {
-      var coords = this.getSpriteCoordinates(event);
+    if ((currentTime - this.previousMousemoveTime) > Constants.MOUSEMOVE_THROTTLING ) {
+      var coords = this.renderer.getCoordinates(event.clientX, event.clientY);
+
       if (this.isClicked) {
 
         this.currentToolBehavior.moveToolAt(
-          coords.col, coords.row,
+          coords.x,
+          coords.y,
           this.getCurrentColor_(),
           this.piskelController.getCurrentFrame(),
           this.overlayFrame,
@@ -14494,7 +14789,8 @@ var jscolor = {
       } else {
 
         this.currentToolBehavior.moveUnactiveToolAt(
-          coords.col, coords.row,
+          coords.x,
+          coords.y,
           this.getCurrentColor_(),
           this.piskelController.getCurrentFrame(),
           this.overlayFrame,
@@ -14507,12 +14803,14 @@ var jscolor = {
 
   ns.DrawingController.prototype.onMousewheel_ = function (jQueryEvent) {
     var event = jQueryEvent.originalEvent;
-    var delta = event.wheelDeltaY;
+    var delta = event.wheelDeltaY || (-2 * event.deltaY);
+    var currentZoom = this.renderer.getZoom();
     if (delta > 0) {
-      this.setZoom(this.zoom + 1);
+      this.compositeRenderer.setZoom(currentZoom + 1);
     } else if (delta < 0) {
-      this.setZoom(this.zoom - 1);
+      this.compositeRenderer.setZoom(currentZoom - 1);
     }
+    pskl.app.minimapController.onDrawingControllerMove_();
   };
 
   /**
@@ -14528,10 +14826,11 @@ var jscolor = {
       this.isClicked = false;
       this.isRightClicked = false;
 
-      var coords = this.getSpriteCoordinates(event);
+      var coords = this.renderer.getCoordinates(event.clientX, event.clientY);
       //console.log("mousemove: col: " + spriteCoordinate.col + " - row: " + spriteCoordinate.row);
       this.currentToolBehavior.releaseToolAt(
-        coords.col, coords.row,
+        coords.x,
+        coords.y,
         this.getCurrentColor_(),
         this.piskelController.getCurrentFrame(),
         this.overlayFrame,
@@ -14555,23 +14854,12 @@ var jscolor = {
     return evtInfo;
   };
 
-  /**
-   * @private
-   */
-  ns.DrawingController.prototype.getRelativeCoordinates = function (clientX, clientY) {
-    var canvasPageOffset = this.container.offset();
-    return {
-      x : clientX - canvasPageOffset.left,
-      y : clientY - canvasPageOffset.top
-    };
-  };
 
   /**
    * @private
    */
   ns.DrawingController.prototype.getSpriteCoordinates = function(event) {
-    var coords = this.getRelativeCoordinates(event.clientX, event.clientY);
-    return this.renderer.convertPixelCoordinatesIntoSpriteCoordinate(coords);
+    return this.renderer.getCoordinates(event.clientX, event.clientY);
   };
 
   /**
@@ -14599,66 +14887,14 @@ var jscolor = {
   };
 
   ns.DrawingController.prototype.render = function () {
-    this.renderLayers();
-    this.renderFrame();
-    this.renderOverlay();
-  };
-
-  ns.DrawingController.prototype.renderFrame = function () {
-    var frame = this.piskelController.getCurrentFrame();
-    var serializedFrame = [this.zoom, this.xOffset, this.yOffset, frame.serialize()].join('-');
-    if (this.serializedFrame != serializedFrame) {
-      if (!frame.isSameSize(this.overlayFrame)) {
-        this.overlayFrame = pskl.model.Frame.createEmptyFromFrame(frame);
-      }
-      this.serializedFrame = serializedFrame;
-      this.renderer.render(frame);
+    var currentFrame = this.piskelController.getCurrentFrame();
+    if (!currentFrame.isSameSize(this.overlayFrame)) {
+      this.overlayFrame = pskl.model.Frame.createEmptyFromFrame(currentFrame);
     }
-  };
 
-  ns.DrawingController.prototype.renderOverlay = function () {
-    var serializedOverlay = [this.zoom, this.xOffset, this.yOffset, this.overlayFrame.serialize()].join('-');
-    if (this.serializedOverlay != serializedOverlay) {
-      this.serializedOverlay = serializedOverlay;
-      this.overlayRenderer.render(this.overlayFrame);
-    }
-  };
-
-  ns.DrawingController.prototype.renderLayers = function () {
-    var layers = this.piskelController.getLayers();
-    var currentFrameIndex = this.piskelController.currentFrameIndex;
-    var currentLayerIndex = this.piskelController.currentLayerIndex;
-
-    var serializedLayerFrame = [
-      this.zoom,
-      currentFrameIndex,
-      currentLayerIndex,
-      layers.length
-    ].join("-");
-
-    if (this.serializedLayerFrame != serializedLayerFrame) {
-      this.layersAboveRenderer.clear();
-      this.layersBelowRenderer.clear();
-
-      var downLayers = layers.slice(0, currentLayerIndex);
-      var downFrame = this.getFrameForLayersAt_(currentFrameIndex, downLayers);
-      this.layersBelowRenderer.render(downFrame);
-
-      if (currentLayerIndex + 1 < layers.length) {
-        var upLayers = layers.slice(currentLayerIndex + 1, layers.length);
-        var upFrame = this.getFrameForLayersAt_(currentFrameIndex, upLayers);
-        this.layersAboveRenderer.render(upFrame);
-      }
-
-      this.serializedLayerFrame = serializedLayerFrame;
-    }
-  };
-
-  ns.DrawingController.prototype.getFrameForLayersAt_ = function (frameIndex, layers) {
-    var frames = layers.map(function (l) {
-      return l.getFrameAt(frameIndex);
-    });
-    return pskl.utils.FrameUtils.merge(frames);
+    this.layersRenderer.render();
+    this.renderer.render(currentFrame);
+    this.overlayRenderer.render(this.overlayFrame);
   };
 
   /**
@@ -14689,40 +14925,25 @@ var jscolor = {
   ns.DrawingController.prototype.getContainerWidth_ = function () {
     return this.calculateZoom_() * this.piskelController.getCurrentFrame().getWidth();
   };
+
   /**
    * @private
    */
-  ns.DrawingController.prototype.updateZoom_ = function() {
-    this.setZoom(this.calculateZoom_());
-
-    var currentFrameHeight =  this.piskelController.getCurrentFrame().getHeight();
-    var canvasHeight = currentFrameHeight * this.zoom;
-    if (pskl.UserSettings.get(pskl.UserSettings.SHOW_GRID)) {
-      canvasHeight += Constants.GRID_STROKE_WIDTH * currentFrameHeight;
-    }
-
-    var verticalGapInPixel = Math.floor(($('#main-wrapper').height() - canvasHeight) / 2);
+  ns.DrawingController.prototype.centerColumnWrapperHorizontally_ = function() {
+    var containerHeight = this.getContainerHeight_();
+    var verticalGapInPixel = Math.floor(($('#main-wrapper').height() - containerHeight) / 2);
     $('#column-wrapper').css({
-      'top': verticalGapInPixel + 'px',
-      'height': canvasHeight + 'px'
+      'top': verticalGapInPixel + 'px'
     });
   };
 
-  ns.DrawingController.prototype.setZoom = function (zoom) {
-    this.zoom = zoom;
-    this.overlayRenderer.setZoom(this.zoom);
-    this.renderer.setZoom(this.zoom);
-    this.layersAboveRenderer.setZoom(this.zoom);
-    this.layersBelowRenderer.setZoom(this.zoom);
+  ns.DrawingController.prototype.getRenderer = function () {
+    return this.compositeRenderer;
   };
 
-  ns.DrawingController.prototype.moveOffset = function (xOffset, yOffset) {
-    this.xOffset = xOffset;
-    this.yOffset = yOffset;
-    this.overlayRenderer.setDisplayOffset(xOffset, yOffset);
-    this.renderer.setDisplayOffset(xOffset, yOffset);
-    this.layersAboveRenderer.setDisplayOffset(xOffset, yOffset);
-    this.layersBelowRenderer.setDisplayOffset(xOffset, yOffset);
+  ns.DrawingController.prototype.setOffset = function (x, y) {
+    this.compositeRenderer.setOffset(x, y);
+    pskl.app.minimapController.onDrawingControllerMove_();
   };
 })();;(function () {
   var ns = $.namespace("pskl.controller");
@@ -14881,10 +15102,10 @@ var jscolor = {
     // is to make this update function (#createPreviewTile) less aggressive.
     var renderingOptions = {
       "zoom" : this.zoom,
-      "height" : "auto",
-      "width" : "auto"
+      "height" : this.piskelController.getCurrentFrame().getHeight() * this.zoom,
+      "width" : this.piskelController.getCurrentFrame().getWidth() * this.zoom
     };
-    var currentFrameRenderer = new pskl.rendering.FrameRenderer($(canvasContainer), renderingOptions, ["tile-view"]);
+    var currentFrameRenderer = new pskl.rendering.frame.FrameRenderer($(canvasContainer), renderingOptions, ["tile-view"]);
     currentFrameRenderer.render(currentFrame);
 
     previewTileRoot.appendChild(canvasContainer);
@@ -15016,14 +15237,15 @@ var jscolor = {
 
     this.setFPS(Constants.DEFAULT.FPS);
 
+    var zoom = this.calculateZoom_();
     var renderingOptions = {
-      "zoom": this.calculateZoom_(),
-      "height" : "auto",
-      "width" : "auto"
+      "zoom": zoom,
+      "height" : this.piskelController.getCurrentFrame().getHeight() * zoom,
+      "width" : this.piskelController.getCurrentFrame().getWidth() * zoom
     };
-    this.renderer = new pskl.rendering.FrameRenderer(this.container, renderingOptions);
+    this.renderer = new pskl.rendering.frame.FrameRenderer(this.container, renderingOptions);
 
-    $.subscribe(Events.FRAME_SIZE_CHANGED, this.updateDPI_.bind(this));
+    $.subscribe(Events.FRAME_SIZE_CHANGED, this.updateZoom_.bind(this));
   };
 
   ns.AnimatedPreviewController.prototype.init = function () {
@@ -15065,17 +15287,99 @@ var jscolor = {
    */
   ns.AnimatedPreviewController.prototype.calculateZoom_ = function () {
     var previewSize = 200,
-      framePixelHeight = this.piskelController.getCurrentFrame().getHeight(),
-      framePixelWidth = this.piskelController.getCurrentFrame().getWidth();
-    // TODO (julz) : should have a utility to get a Size from framesheet easily (what about empty framesheets though ?)
+      hZoom = previewSize / this.piskelController.getCurrentFrame().getHeight(),
+      wZoom = previewSize / this.piskelController.getCurrentFrame().getWidth();
 
-    //return pskl.PixelUtils.calculateDPIForContainer($(".preview-container"), framePixelHeight, framePixelWidth);
-    return pskl.PixelUtils.calculateDPI(previewSize, previewSize, framePixelHeight, framePixelWidth);
+    return Math.min(hZoom, wZoom);
   };
 
-  ns.AnimatedPreviewController.prototype.updateDPI_ = function () {
-    this.dpi = this.calculateDPI_();
-    this.renderer.setDPI(this.dpi);
+  ns.AnimatedPreviewController.prototype.updateZoom_ = function () {
+    var zoom = this.calculateZoom_();
+    this.renderer.setZoom(zoom);
+  };
+})();;(function () {
+  var ns = $.namespace('pskl.controller');
+
+  ns.MinimapController = function (piskelController, animationController, drawingController, container) {
+    this.piskelController = piskelController;
+    this.animationController = animationController;
+    this.drawingController = drawingController;
+    this.container = container;
+
+    this.isClicked = false;
+  };
+
+  ns.MinimapController.prototype.init = function () {
+    this.cropFrame = document.createElement('DIV');
+    this.cropFrame.className = 'minimap-crop-frame';
+    this.cropFrame.style.display = 'none';
+    $(this.container).mousedown(this.onMinimapMousedown_.bind(this));
+    $(this.container).mousemove(this.onMinimapMousemove_.bind(this));
+    $(this.container).mouseup(this.onMinimapMouseup_.bind(this));
+    $(this.container).append(this.cropFrame);
+  };
+
+  ns.MinimapController.prototype.onDrawingControllerMove_ = function () {
+    var zoomRatio = this.getDrawingAreaZoomRatio_();
+    if (zoomRatio > 1) {
+      this.displayCropFrame_(zoomRatio, this.drawingController.getRenderer().getOffset());
+    } else {
+      this.hideCropFrame_();
+    }
+  };
+
+  ns.MinimapController.prototype.displayCropFrame_ = function (ratio, offset) {
+    this.cropFrame.style.display = 'block';
+    this.cropFrame.style.top = (offset.y * this.animationController.renderer.getZoom()) +  'px';
+    this.cropFrame.style.left = (offset.x * this.animationController.renderer.getZoom()) +  'px';
+    var zoomRatio = this.getDrawingAreaZoomRatio_();
+    this.cropFrame.style.width = (this.container.width() / zoomRatio) +  'px';
+    this.cropFrame.style.height = (this.container.height() / zoomRatio) +  'px';
+
+  };
+
+  ns.MinimapController.prototype.hideCropFrame_ = function () {
+    this.cropFrame.style.display = 'none';
+  };
+
+  ns.MinimapController.prototype.onMinimapMousemove_ = function (evt) {
+    if (this.isClicked) {
+      if (this.getDrawingAreaZoomRatio_() > 1) {
+        var coords = this.getCoordinatesCenteredAround_(evt.clientX, evt.clientY);
+        this.drawingController.setOffset(coords.x, coords.y);
+      }
+    }
+  };
+
+  ns.MinimapController.prototype.onMinimapMousedown_ = function (evt) {
+    this.isClicked = true;
+  };
+
+  ns.MinimapController.prototype.onMinimapMouseup_ = function (evt) {
+    this.isClicked = false;
+  };
+
+  ns.MinimapController.prototype.getCoordinatesCenteredAround_ = function (x, y) {
+    var frameCoords = this.animationController.renderer.getCoordinates(x, y);
+    var zoomRatio = this.getDrawingAreaZoomRatio_();
+    var frameWidth = this.piskelController.getCurrentFrame().getWidth();
+    var frameHeight = this.piskelController.getCurrentFrame().getHeight();
+
+    var width = frameWidth / zoomRatio;
+    var height = frameHeight / zoomRatio;
+
+    return {
+      x : frameCoords.x - (width/2),
+      y : frameCoords.y - (height/2)
+    };
+  };
+
+  ns.MinimapController.prototype.getDrawingAreaZoomRatio_ = function () {
+    var drawingAreaZoom = this.drawingController.getRenderer().getZoom();
+    var drawingAreaFullHeight = this.piskelController.getCurrentFrame().getHeight() * drawingAreaZoom;
+    var zoomRatio = drawingAreaFullHeight / this.drawingController.getRenderer().getDisplaySize().height;
+
+    return zoomRatio;
   };
 })();;(function () {
   var ns = $.namespace("pskl.controller");
@@ -15307,7 +15611,7 @@ var jscolor = {
 })();
 ;(function () {
   var ns = $.namespace("pskl.controller.settings");
-  
+
   ns.ApplicationSettingsController = function () {};
 
   /**
@@ -15325,23 +15629,28 @@ var jscolor = {
     $('#show-grid').prop('checked', show_grid);
 
     // Handle grid display changes:
-    $('#show-grid').change($.proxy(function(evt) {
-      var checked = $('#show-grid').prop('checked');
-      pskl.UserSettings.set(pskl.UserSettings.SHOW_GRID, checked);
-    }, this));
+    $('#show-grid').change(this.onShowGridClick.bind(this));
 
     // Handle canvas background changes:
-    $('#background-picker-wrapper').click(function(evt) {
-      var target = $(evt.target).closest('.background-picker');
-      if (target.length) {
-        var backgroundClass = target.data('background-class');
-        pskl.UserSettings.set(pskl.UserSettings.CANVAS_BACKGROUND, backgroundClass);
-
-        $('.background-picker').removeClass('selected');
-        target.addClass('selected');
-      }
-    });
+    $('#background-picker-wrapper').click(this.onBackgroundClick.bind(this));
   };
+
+  ns.ApplicationSettingsController.prototype.onShowGridClick = function (evt) {
+    var checked = $('#show-grid').prop('checked');
+    pskl.UserSettings.set(pskl.UserSettings.SHOW_GRID, checked);
+  };
+
+  ns.ApplicationSettingsController.prototype.onBackgroundClick = function (evt) {
+    var target = $(evt.target).closest('.background-picker');
+    if (target.length) {
+      var backgroundClass = target.data('background-class');
+      pskl.UserSettings.set(pskl.UserSettings.CANVAS_BACKGROUND, backgroundClass);
+
+      $('.background-picker').removeClass('selected');
+      target.addClass('selected');
+    }
+  };
+
 })();;(function () {
   var ns = $.namespace("pskl.controller.settings");
 
@@ -16556,6 +16865,9 @@ var jscolor = {
       this.animationController = new pskl.controller.AnimatedPreviewController(this.piskelController, $('#preview-canvas-container'));
       this.animationController.init();
 
+      this.minimapController = new pskl.controller.MinimapController(this.piskelController, this.animationController, this.drawingController, $('#preview-canvas-container'));
+      this.minimapController.init();
+
       this.previewsController = new pskl.controller.PreviewFilmController(this.piskelController, $('#preview-list'));
       this.previewsController.init();
 
@@ -16761,9 +17073,9 @@ var jscolor = {
 
     getFirstFrameAsPng : function () {
       var firstFrame = this.piskelController.getFrameAt(0);
-      var frameRenderer = new pskl.rendering.CanvasRenderer(firstFrame, 1);
-      frameRenderer.drawTransparentAs('rgba(0,0,0,0)');
-      var firstFrameCanvas = frameRenderer.render().canvas;
+      var canvasRenderer = new pskl.rendering.CanvasRenderer(firstFrame, 1);
+      canvasRenderer.drawTransparentAs('rgba(0,0,0,0)');
+      var firstFrameCanvas = canvasRenderer.render().canvas;
       return firstFrameCanvas.toDataURL("image/png");
     },
 

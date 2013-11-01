@@ -48,5 +48,6 @@ var Constants = {
   GRID_STROKE_WIDTH: 1,
 
   LEFT_BUTTON : 'left_button_1',
-  RIGHT_BUTTON : 'right_button_2'
+  RIGHT_BUTTON : 'right_button_2',
+  MOUSEMOVE_THROTTLING : 10
 };
