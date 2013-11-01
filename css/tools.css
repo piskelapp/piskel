@@ -25,7 +25,7 @@
 
 .tool-icon:hover {
   background-color: #444;
-} 
+}
 
 /*
  * Tool icons:
@@ -206,6 +206,13 @@
   background-image: url(../img/cloud_export.png);
   background-position: 4px 0px;
   background-size: 36px 36px;
+  position: relative;
+}
+
+.tool-icon.import-icon {
+  background-image: url(../img/import-icon.png);
+  background-position: 10px 5px;
+  background-size: 26px;
   position: relative;
 }
 

@@ -14,7 +14,9 @@ exports.scripts = [
   // Libraries
   "js/utils/core.js",
   "js/utils/CanvasUtils.js",
+  "js/utils/FileUtils.js",
   "js/utils/FrameUtils.js",
+  "js/utils/ImageResizer.js",
   "js/utils/PixelUtils.js",
   "js/utils/Serializer.js",
   "js/utils/Template.js",
@@ -49,9 +51,13 @@ exports.scripts = [
   "js/controller/ToolController.js",
   "js/controller/PaletteController.js",
   "js/controller/NotificationController.js",
+
+  // Settings sub-controllers
   "js/controller/settings/ApplicationSettingsController.js",
   "js/controller/settings/GifExportController.js",
-  "js/controller/SettingsController.js",
+  "js/controller/settings/ImportController.js",
+  // Settings controller
+  "js/controller/settings/SettingsController.js",
 
   // Services
   "js/service/LocalStorageService.js",

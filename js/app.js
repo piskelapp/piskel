@@ -33,7 +33,7 @@
       this.layersListController = new pskl.controller.LayersListController(this.piskelController);
       this.layersListController.init();
 
-      this.settingsController = new pskl.controller.SettingsController(this.piskelController);
+      this.settingsController = new pskl.controller.settings.SettingsController(this.piskelController);
       this.settingsController.init();
 
       this.selectionManager = new pskl.selection.SelectionManager(this.piskelController);
@@ -94,7 +94,7 @@
     finishInitAppEngine_ : function () {
       if (pskl.framesheetData_ && pskl.framesheetData_.content) {
         var piskel = pskl.utils.Serializer.createPiskel(pskl.framesheetData_.content);
-        piskel.app.PiskelController.setPiskel(piskel);
+        pskl.app.piskelController.setPiskel(piskel);
         pskl.app.animationController.setFPS(pskl.framesheetData_.fps);
       }
     },

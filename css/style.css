@@ -1,11 +1,14 @@
-
-
 body {
   background: radial-gradient(circle, #000, #373737);
   /* 16/06/2013 : -webkit still needed for
   safari, safari mobile and android browser and chrome for android
   cf http://caniuse.com/css-gradients */
   background: -webkit-radial-gradient(circle, #000, #373737);
+}
+
+/* Browser fixes */
+::-ms-clear {
+  display: none;
 }
 
 /**
@@ -246,34 +249,18 @@ body {
 }
 
 .layers-button {
-  height: 24px;
   margin: 0;
   width: 25%;
   float : left;
-  border: none;
-  box-sizing: border-box;
-  border-top: 1px solid #666;
-  border-right: 1px solid #333;
-  border-bottom: 1px solid #333;
-  background-color: #3f3f3f;
-  cursor: pointer;
-  color: white;
-  font-size: 0.7em;
-  font-weight: bold;
-  text-align: center;
-  text-decoration: none;
-  text-shadow: 0px -1px 0 #000;
-  transition: background-color 0.2s linear;
+}
+
+/* @override */
+.button.layers-button {
+  border-left-width: 0;
 }
 
 .layers-button:last-child {
   border-right-width: 0;
-}
-
-.layers-button:hover {
-  text-decoration: none;
-  background-color: #484848;
-  color: gold;
 }
 /**
  * User messages

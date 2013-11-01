@@ -5,13 +5,14 @@
   <div class="settings-item">
     <label>Select resolution:</label>
     <form action="" method="POST" name="gif-export-upload-form">
-      <script type="text/template" id="export-gif-radio-template">
+      <script type="text/template" id="gif-export-radio-template">
           <label style="display:block"><input type="radio" name="gif-dpi" value="{{value}}"/>
           {{label}}</label>
       </script>
       <div class="gif-export-radio-group"></div>
-      <input type="submit" class="export-gif-upload-button" value="Upload" />
+      <input type="submit" class="button button-primary gif-upload-button" value="Upload" />
+      <button type="button" class="button gif-render-button">Render</button>
     </form>
-    <div class="export-gif-preview"><div></div></div>
+    <div class="gif-export-preview"></div>
   </div>
 </div>

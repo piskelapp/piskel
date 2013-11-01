@@ -1,7 +1,7 @@
 (function () {
-  var ns = $.namespace("pskl");
+  var ns = $.namespace("pskl.utils");
 
-  ns.utils.Template = {
+  ns.Template = {
     get : function (templateId) {
       var template = document.getElementById(templateId);
       if (template) {
