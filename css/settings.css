@@ -31,14 +31,14 @@
 }
 
 .right-sticky-section.expanded .tool-icon {
-  margin-right: 1px;
+  padding-right: 1px;
 }
 
 .right-sticky-section .tool-icon.has-expanded-drawer {
   position: relative;
   background-color: #444;
   margin-right: 0;
-  padding-right: 1px;
+  padding-right: 2px;
 }
 
 .settings-section {
@@ -81,7 +81,7 @@
   top: -2px;
   right: -2px;
   bottom: -2px;
-  left: -2px; 
+  left: -2px;
 }
 
 .background-picker:hover:after {
@@ -93,11 +93,18 @@
 }
 
 /* Gif Export Setting panel*/
-.export-gif-upload-button {
+.gif-upload-button,
+.gif-render-button {
+  /*float : right;*/
   margin-top : 10px;
+  margin-right : 10px;
 }
 
-.export-gif-preview {
+.gif-export-radio-group {
+  margin:10px 0;
+}
+
+.gif-export-preview {
   margin-top:20px;
   max-width:240px;
   position:relative;
@@ -115,4 +122,46 @@
   -moz-box-sizing:border-box;
   background: rgba(0,0,0,0.5);
   color: white;
+}
+
+/* Import panel */
+.import-section {
+  margin: 15px 0;
+}
+
+.import-section-disabled {
+  color : #888;
+}
+
+.import-section-preview {
+  display : inline-block;
+  height : 60px;
+  width: 60px;
+  border : 1px dashed #999;
+  border-radius: 3px;
+  margin-left : 10px;
+}
+
+.import-resize-field {
+  width: 30px;
+  margin: 0px 8px;
+  text-align: right;
+}
+
+.file-input-button {
+  margin: 0px 8px;
+  border-radius: 2px;
+}
+
+.file-input-status {
+  display: inline-block;
+  width: 130px;
+  overflow: hidden;
+
+  height: 1.5rem;
+  word-break : break-all;
+  vertical-align: middle;
+  font-style: italic;
+  font-weight: normal;
+  text-shadow: none;
 }
