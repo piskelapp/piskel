@@ -143,7 +143,7 @@
   ns.DrawingController.prototype.onMousemove_ = function (event) {
     var currentTime = new Date().getTime();
     // Throttling of the mousemove event:
-    if ((currentTime - this.previousMousemoveTime) > 40 ) {
+    if ((currentTime - this.previousMousemoveTime) > Constants.MOUSEMOVE_THROTTLING ) {
       var coords = this.renderer.getCoordinates(event.clientX, event.clientY);
 
       if (this.isClicked) {
