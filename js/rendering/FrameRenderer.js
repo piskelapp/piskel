@@ -10,9 +10,7 @@
   ns.FrameRenderer = function (container, renderingOptions, classes) {
     this.defaultRenderingOptions = {
       'supportGridRendering' : false,
-      'zoom' : 1,
-      'xOffset' : 0,
-      'yOffset' : 0
+      'zoom' : 1
     };
 
     renderingOptions = $.extend(true, {}, this.defaultRenderingOptions, renderingOptions);
@@ -28,11 +26,12 @@
     this.container = container;
 
     this.zoom = renderingOptions.zoom;
-    this.xOffset = renderingOptions.xOffset;
-    this.yOffset = renderingOptions.yOffset;
 
-    this.pixelOffsetHeight = 0;
-    this.pixelOffsetWidth = 0;
+    this.frameOffsetX = 0;
+    this.frameOffsetY = 0;
+
+    this.marginY = 0;
+    this.marginX = 0;
 
     this.supportGridRendering = renderingOptions.supportGridRendering;
 
@@ -49,7 +48,7 @@
      * Displayed canvas, scaled-up from the offdom canvas
      * @type {HTMLElement}
      */
-    this.scaledCanvas = null;
+    this.displayCanvas = null;
     this.setDisplaySize(renderingOptions.width, renderingOptions.height);
 
     this.enableGrid(pskl.UserSettings.get(pskl.UserSettings.SHOW_GRID));
@@ -69,23 +68,23 @@
   ns.FrameRenderer.prototype.setDisplaySize = function (width, height) {
     this.displayHeight = height;
     this.displayWidth = width;
-    if (this.scaledCanvas) {
-      $(this.scaledCanvas).remove();
-      this.scaledCanvas = null;
+    if (this.displayCanvas) {
+      $(this.displayCanvas).remove();
+      this.displayCanvas = null;
     }
   };
 
-  ns.FrameRenderer.prototype.updatePixelOffsets_ = function () {
+  ns.FrameRenderer.prototype.updateMargins_ = function () {
     if (!this.isAutoSized_()) {
-      var deltaH = this.displayHeight - (this.zoom * this.canvas.height);
-      this.pixelOffsetHeight = Math.max(0, deltaH) / 2;
+      var deltaX = this.displayWidth - (this.zoom * this.canvas.width);
+      this.marginX = Math.max(0, deltaX) / 2;
 
-      var deltaW = this.displayWidth - (this.zoom * this.canvas.width);
-      this.pixelOffsetWidth = Math.max(0, deltaW) / 2;
+      var deltaY = this.displayHeight - (this.zoom * this.canvas.height);
+      this.marginY = Math.max(0, deltaY) / 2;
     }
   };
 
-  ns.FrameRenderer.prototype.createScaledCanvas_ = function () {
+  ns.FrameRenderer.prototype.createDisplayCanvas_ = function () {
     var height = this.displayHeight;
     var width = this.displayWidth;
 
@@ -94,16 +93,20 @@
       width = this.zoom * this.canvas.width;
     }
 
-    this.scaledCanvas = pskl.CanvasUtils.createCanvas(width, height, this.classes);
+    this.displayCanvas = pskl.CanvasUtils.createCanvas(width, height, this.classes);
     if (true || this.zoom > 2) {
-      pskl.CanvasUtils.disableImageSmoothing(this.scaledCanvas);
+      pskl.CanvasUtils.disableImageSmoothing(this.displayCanvas);
     }
-    this.container.append(this.scaledCanvas);
+    this.container.append(this.displayCanvas);
   };
 
-  ns.FrameRenderer.prototype.setDisplayOffset = function (xOffset, yOffset) {
-    this.xOffset = xOffset;
-    this.yOffset = yOffset;
+  ns.FrameRenderer.prototype.setDisplayOffset = function (frameOffsetX, frameOffsetY) {
+    this.frameOffsetX = frameOffsetX;
+    this.frameOffsetY = frameOffsetY;
+  };
+
+  ns.FrameRenderer.prototype.moveOffset = function (frameOffsetX, frameOffsetY) {
+    this.setDisplayOffset(this.frameOffsetX + frameOffsetX, this.frameOffsetY + frameOffsetY);
   };
 
   /**
@@ -138,14 +141,13 @@
   ns.FrameRenderer.prototype.render = function (frame) {
     if (frame) {
       this.clear();
-      this.drawFrameInCanvas_(frame);
-      this.lastRenderedFrame = frame;
+      this.renderFrame_(frame);
     }
   };
 
   ns.FrameRenderer.prototype.clear = function () {
     pskl.CanvasUtils.clear(this.canvas);
-    pskl.CanvasUtils.clear(this.scaledCanvas);
+    pskl.CanvasUtils.clear(this.displayCanvas);
   };
 
   ns.FrameRenderer.prototype.renderPixel_ = function (color, col, row, context) {
@@ -162,8 +164,8 @@
    */
   ns.FrameRenderer.prototype.convertPixelCoordinatesIntoSpriteCoordinate = function(coords) {
     var cellSize = this.zoom + this.gridStrokeWidth;
-    var xCoord = (coords.x - this.pixelOffsetWidth) + (this.xOffset * cellSize),
-        yCoord = (coords.y - this.pixelOffsetHeight)  + (this.yOffset * cellSize);
+    var xCoord = (coords.x - this.marginX) + (this.frameOffsetX * cellSize),
+        yCoord = (coords.y - this.marginY)  + (this.frameOffsetY * cellSize);
     return {
       "col" : (xCoord - xCoord % cellSize) / cellSize,
       "row" : (yCoord - yCoord % cellSize) / cellSize
@@ -180,16 +182,10 @@
   /**
    * @private
    */
-  ns.FrameRenderer.prototype.drawFrameInCanvas_ = function (frame) {
+  ns.FrameRenderer.prototype.renderFrame_ = function (frame) {
     if (!this.canvas) {
       this.canvas = pskl.CanvasUtils.createCanvas(frame.getWidth(), frame.getHeight());
     }
-
-    if (!this.scaledCanvas) {
-      this.createScaledCanvas_();
-    }
-
-    this.updatePixelOffsets_();
 
     var context = this.canvas.getContext('2d');
     for(var col = 0, width = frame.getWidth(); col < width; col++) {
@@ -199,15 +195,21 @@
       }
     }
 
-    context = this.scaledCanvas.getContext('2d');
+    if (!this.displayCanvas) {
+      this.createDisplayCanvas_();
+    }
+
+    this.updateMargins_();
+
+    context = this.displayCanvas.getContext('2d');
     context.save();
     // zoom < 1
     context.fillStyle = "#aaa";
     // zoom < 1
-    context.fillRect(0,0,this.scaledCanvas.width, this.scaledCanvas.height);
-    context.translate(this.pixelOffsetWidth, this.pixelOffsetHeight);
+    context.fillRect(0,0,this.displayCanvas.width, this.displayCanvas.height);
+    context.translate(this.marginX, this.marginY);
     context.scale(this.zoom, this.zoom);
-    context.translate(-this.xOffset, -this.yOffset);
+    context.translate(-this.frameOffsetX, -this.frameOffsetY);
     // zoom < 1
     context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     context.drawImage(this.canvas, 0, 0);
