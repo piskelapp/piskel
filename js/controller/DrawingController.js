@@ -110,6 +110,11 @@
     }
   },
 
+  ns.DrawingController.prototype.onFrameSizeChanged_ = function () {
+    this.compositeRenderer.setZoom(this.calculateZoom_());
+    this.compositeRenderer.setDisplaySize(this.getContainerWidth_(), this.getContainerHeight_());
+  };
+
   /**
    * @private
    */
