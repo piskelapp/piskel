@@ -3,7 +3,6 @@
 
   ns.AbstractRenderer = function () {};
 
-  ns.AbstractRenderer.prototype.render =         function (frame)  {throw 'abstract method should be implemented';};
   ns.AbstractRenderer.prototype.clear =          function ()       {throw 'abstract method should be implemented';};
 
   ns.AbstractRenderer.prototype.getCoordinates = function (x, y)   {throw 'abstract method should be implemented';};

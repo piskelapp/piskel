@@ -28,16 +28,13 @@
 
     this.overlayRenderer = new pskl.rendering.frame.CachedFrameRenderer(this.container, renderingOptions, ["canvas-overlay"]);
     this.renderer = new pskl.rendering.frame.CachedFrameRenderer(this.container, renderingOptions, ["drawing-canvas"]);
+    this.layersRenderer = new pskl.rendering.layer.LayersRenderer(this.container, renderingOptions, piskelController);
 
-    this.layersBelowRenderer = new pskl.rendering.frame.FrameRenderer(this.container, renderingOptions, ["layers-canvas", "layers-below-canvas"]);
-    this.layersAboveRenderer = new pskl.rendering.frame.FrameRenderer(this.container, renderingOptions, ["layers-canvas", "layers-above-canvas"]);
-
-    this.rendererManager = new pskl.rendering.RendererManager();
-    this.rendererManager
+    this.compositeRenderer = new pskl.rendering.CompositeRenderer();
+    this.compositeRenderer
       .add(this.overlayRenderer)
       .add(this.renderer)
-      .add(this.layersBelowRenderer)
-      .add(this.layersAboveRenderer);
+      .add(this.layersRenderer);
 
     // State of drawing controller:
     this.isClicked = false;
@@ -100,7 +97,7 @@
   },
 
   ns.DrawingController.prototype.afterWindowResize_ = function () {
-    this.rendererManager.setDisplaySize(this.getContainerWidth_(), this.getContainerHeight_());
+    this.compositeRenderer.setDisplaySize(this.getContainerWidth_(), this.getContainerHeight_());
   },
 
   /**
@@ -181,9 +178,9 @@
     var delta = event.wheelDeltaY;
     var currentZoom = this.renderer.getZoom();
     if (delta > 0) {
-      this.rendererManager.setZoom(currentZoom + 1);
+      this.compositeRenderer.setZoom(currentZoom + 1);
     } else if (delta < 0) {
-      this.rendererManager.setZoom(currentZoom - 1);
+      this.compositeRenderer.setZoom(currentZoom - 1);
     }
   };
 
@@ -261,58 +258,14 @@
   };
 
   ns.DrawingController.prototype.render = function () {
-    this.renderLayers();
-    this.renderFrame();
-    this.renderOverlay();
-  };
-
-  ns.DrawingController.prototype.renderFrame = function () {
-    this.renderer.render(this.piskelController.getCurrentFrame());
-  };
-
-  ns.DrawingController.prototype.renderOverlay = function () {
     var currentFrame = this.piskelController.getCurrentFrame();
     if (!currentFrame.isSameSize(this.overlayFrame)) {
       this.overlayFrame = pskl.model.Frame.createEmptyFromFrame(currentFrame);
     }
+
+    this.layersRenderer.render();
+    this.renderer.render(currentFrame);
     this.overlayRenderer.render(this.overlayFrame);
-  };
-
-  ns.DrawingController.prototype.renderLayers = function () {
-    var layers = this.piskelController.getLayers();
-    var currentFrameIndex = this.piskelController.currentFrameIndex;
-    var currentLayerIndex = this.piskelController.currentLayerIndex;
-
-    var serializedLayerFrame = [
-      this.zoom,
-      currentFrameIndex,
-      currentLayerIndex,
-      layers.length
-    ].join("-");
-
-    if (this.serializedLayerFrame != serializedLayerFrame) {
-      this.layersAboveRenderer.clear();
-      this.layersBelowRenderer.clear();
-
-      var downLayers = layers.slice(0, currentLayerIndex);
-      var downFrame = this.getFrameForLayersAt_(currentFrameIndex, downLayers);
-      this.layersBelowRenderer.render(downFrame);
-
-      if (currentLayerIndex + 1 < layers.length) {
-        var upLayers = layers.slice(currentLayerIndex + 1, layers.length);
-        var upFrame = this.getFrameForLayersAt_(currentFrameIndex, upLayers);
-        this.layersAboveRenderer.render(upFrame);
-      }
-
-      this.serializedLayerFrame = serializedLayerFrame;
-    }
-  };
-
-  ns.DrawingController.prototype.getFrameForLayersAt_ = function (frameIndex, layers) {
-    var frames = layers.map(function (l) {
-      return l.getFrameAt(frameIndex);
-    });
-    return pskl.utils.FrameUtils.merge(frames);
   };
 
   /**
@@ -356,6 +309,6 @@
   };
 
   ns.DrawingController.prototype.moveOffset = function (xOffset, yOffset) {
-    this.rendererManager.moveOffset(xOffset, yOffset);
+    this.compositeRenderer.moveOffset(xOffset, yOffset);
   };
 })();

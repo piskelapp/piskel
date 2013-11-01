@@ -61,6 +61,8 @@
     $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
   };
 
+  pskl.utils.inherit(pskl.rendering.frame.FrameRenderer, pskl.rendering.AbstractRenderer);
+
   ns.FrameRenderer.prototype.render = function (frame) {
     if (frame) {
       this.clear();
