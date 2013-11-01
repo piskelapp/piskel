@@ -14,6 +14,7 @@
   ns.AbstractRenderer.prototype.getZoom =        function ()       {throw 'abstract method should be implemented';};
 
   ns.AbstractRenderer.prototype.moveOffset =     function (x, y)   {throw 'abstract method should be implemented';};
+  ns.AbstractRenderer.prototype.setOffset =      function (x, y)   {throw 'abstract method should be implemented';};
   ns.AbstractRenderer.prototype.getOffset =      function ()       {throw 'abstract method should be implemented';};
 
   ns.AbstractRenderer.prototype.setDisplaySize = function (w, h)   {throw 'abstract method should be implemented';};

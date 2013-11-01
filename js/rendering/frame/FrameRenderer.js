@@ -76,7 +76,17 @@
   };
 
   ns.FrameRenderer.prototype.setZoom = function (zoom) {
-    this.zoom = zoom;
+    // back up center coordinates
+    var centerX = this.offset.x + (this.displayWidth/(2*this.zoom));
+    var centerY = this.offset.y + (this.displayHeight/(2*this.zoom));
+
+    this.zoom = Math.max(1, zoom);
+
+    // recenter
+    this.setOffset(
+      centerX - (this.displayWidth/(2*this.zoom)),
+      centerY - (this.displayHeight/(2*this.zoom))
+    );
   };
 
   ns.FrameRenderer.prototype.getZoom = function () {
@@ -108,7 +118,21 @@
   },
 
   ns.FrameRenderer.prototype.moveOffset = function (x, y) {
-    this.setOffset_(this.offset.x + x, this.offset.y + y);
+    this.setOffset(this.offset.x + x, this.offset.y + y);
+  };
+
+  ns.FrameRenderer.prototype.setOffset = function (x, y) {
+    // TODO : provide frame size information to the FrameRenderer constructor
+    // here I first need to verify I have a 'canvas' which I can use to infer the frame information
+    // and then perform my boundaries checking. This sucks
+    if (this.canvas) {
+      var maxX = this.canvas.width - (this.displayWidth/this.zoom);
+      x = pskl.utils.Math.minmax(x, 0, maxX);
+      var maxY = this.canvas.height - (this.displayHeight/this.zoom);
+      y = pskl.utils.Math.minmax(y, 0, maxY);
+    }
+    this.offset.x = x;
+    this.offset.y = y;
   };
 
   ns.FrameRenderer.prototype.setGridEnabled = function (flag) {
@@ -133,11 +157,6 @@
       pskl.CanvasUtils.disableImageSmoothing(this.displayCanvas);
     }
     this.container.append(this.displayCanvas);
-  };
-
-  ns.FrameRenderer.prototype.setOffset_ = function (x, y) {
-    this.offset.x = x;
-    this.offset.y = y;
   };
 
   ns.FrameRenderer.prototype.onUserSettingsChange_ = function (evt, settingName, settingValue) {
@@ -187,13 +206,6 @@
       x : (x / cellSize) | 0,
       y : (y / cellSize) | 0
     };
-  };
-
-  /**
-   * @private
-   */
-  ns.FrameRenderer.prototype.getFramePos_ = function(index) {
-    return index * this.dpi + ((index - 1) * this.gridStrokeWidth);
   };
 
   /**

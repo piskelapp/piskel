@@ -14,6 +14,7 @@ exports.scripts = [
   // Libraries
   "js/utils/core.js",
   "js/utils/CanvasUtils.js",
+  "js/utils/Math.js",
   "js/utils/FrameUtils.js",
   "js/utils/PixelUtils.js",
   "js/utils/Serializer.js",
@@ -50,6 +51,7 @@ exports.scripts = [
   "js/controller/PreviewFilmController.js",
   "js/controller/LayersListController.js",
   "js/controller/AnimatedPreviewController.js",
+  "js/controller/MinimapController.js",
   "js/controller/ToolController.js",
   "js/controller/PaletteController.js",
   "js/controller/NotificationController.js",

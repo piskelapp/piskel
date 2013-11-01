@@ -82,6 +82,7 @@
     this.container.mousedown($.proxy(this.onMousedown_, this));
     this.container.mousemove($.proxy(this.onMousemove_, this));
     this.container.on('mousewheel', $.proxy(this.onMousewheel_, this));
+    this.container.on('wheel', $.proxy(this.onMousewheel_, this));
 
     body.mouseup($.proxy(this.onMouseup_, this));
 
@@ -175,13 +176,14 @@
 
   ns.DrawingController.prototype.onMousewheel_ = function (jQueryEvent) {
     var event = jQueryEvent.originalEvent;
-    var delta = event.wheelDeltaY;
+    var delta = event.wheelDeltaY || (-2 * event.deltaY);
     var currentZoom = this.renderer.getZoom();
     if (delta > 0) {
       this.compositeRenderer.setZoom(currentZoom + 1);
     } else if (delta < 0) {
       this.compositeRenderer.setZoom(currentZoom - 1);
     }
+    pskl.app.minimapController.onDrawingControllerMove_();
   };
 
   /**
@@ -308,7 +310,12 @@
     });
   };
 
-  ns.DrawingController.prototype.moveOffset = function (xOffset, yOffset) {
-    this.compositeRenderer.moveOffset(xOffset, yOffset);
+  ns.DrawingController.prototype.getRenderer = function () {
+    return this.compositeRenderer;
+  };
+
+  ns.DrawingController.prototype.setOffset = function (x, y) {
+    this.compositeRenderer.setOffset(x, y);
+    pskl.app.minimapController.onDrawingControllerMove_();
   };
 })();
