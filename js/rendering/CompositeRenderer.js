@@ -1,0 +1,69 @@
+(function () {
+  var ns = $.namespace('pskl.rendering');
+
+  ns.CompositeRenderer = function () {
+    this.renderers = [];
+  };
+
+  pskl.utils.inherit(pskl.rendering.CompositeRenderer, pskl.rendering.AbstractRenderer);
+
+  ns.CompositeRenderer.prototype.add = function (renderer) {
+    this.renderers.push(renderer);
+    return this;
+  };
+
+  ns.CompositeRenderer.prototype.clear = function () {
+    this.renderers.forEach(function (renderer) {
+      renderer.clear();
+    });
+  };
+
+  ns.CompositeRenderer.prototype.setZoom = function (zoom) {
+    this.renderers.forEach(function (renderer) {
+      renderer.setZoom(zoom);
+    });
+  };
+
+  ns.CompositeRenderer.prototype.getZoom = function () {
+    return this.getSampleRenderer_().getZoom();
+  };
+
+  ns.CompositeRenderer.prototype.setDisplaySize = function (w, h) {
+    this.renderers.forEach(function (renderer) {
+      renderer.setDisplaySize(w, h);
+    });
+  };
+
+  ns.CompositeRenderer.prototype.getDisplaySize = function () {
+    return this.getSampleRenderer_().getDisplaySize();
+  };
+
+  ns.CompositeRenderer.prototype.moveOffset = function (offsetX, offsetY) {
+    this.renderers.forEach(function (renderer) {
+      renderer.moveOffset(offsetX, offsetY);
+    });
+  };
+
+  ns.CompositeRenderer.prototype.getOffset = function () {
+    return this.getSampleRenderer_().getOffset();
+  };
+
+
+  ns.CompositeRenderer.prototype.setGridEnabled = function (b) {
+    this.renderers.forEach(function (renderer) {
+      renderer.setGridEnabled(b);
+    });
+  };
+
+  ns.CompositeRenderer.prototype.isGridEnabled = function () {
+    return this.getSampleRenderer_().isGridEnabled();
+  };
+
+  ns.CompositeRenderer.prototype.getSampleRenderer_ = function () {
+    if (this.renderers.length > 0) {
+      return this.renderers[0];
+    } else {
+      throw 'Renderer manager is empty';
+    }
+  };
+})();
