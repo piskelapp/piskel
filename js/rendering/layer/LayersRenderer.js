@@ -6,8 +6,9 @@
 
     this.piskelController = piskelController;
 
-    this.belowRenderer = new pskl.rendering.frame.CachedFrameRenderer(container, renderingOptions, ["layers-canvas", "layers-below-canvas"]);
-    this.aboveRenderer = new pskl.rendering.frame.CachedFrameRenderer(container, renderingOptions, ["layers-canvas", "layers-above-canvas"]);
+    // Do not use CachedFrameRenderers here, since the caching will be performed in the render method of LayersRenderer
+    this.belowRenderer = new pskl.rendering.frame.FrameRenderer(container, renderingOptions, ["layers-canvas", "layers-below-canvas"]);
+    this.aboveRenderer = new pskl.rendering.frame.FrameRenderer(container, renderingOptions, ["layers-canvas", "layers-above-canvas"]);
 
     this.add(this.belowRenderer);
     this.add(this.aboveRenderer);
@@ -18,18 +19,26 @@
   pskl.utils.inherit(pskl.rendering.layer.LayersRenderer, pskl.rendering.CompositeRenderer);
 
   ns.LayersRenderer.prototype.render = function () {
+    var offset = this.getOffset();
+    var size = this.getDisplaySize();
     var layers = this.piskelController.getLayers();
     var currentFrameIndex = this.piskelController.currentFrameIndex;
     var currentLayerIndex = this.piskelController.currentLayerIndex;
 
     var serializedRendering = [
       this.getZoom(),
+      offset.x,
+      offset.y,
+      size.width,
+      size.height,
       currentFrameIndex,
       currentLayerIndex,
       layers.length
     ].join("-");
 
+
     if (this.serializedRendering != serializedRendering) {
+      console.log(serializedRendering);
       this.serializedRendering = serializedRendering;
 
       this.clear();
