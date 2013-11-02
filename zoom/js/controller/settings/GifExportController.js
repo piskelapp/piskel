@@ -24,9 +24,9 @@
   ];
 
   ns.GifExportController.prototype.init = function () {
-    this.radioTemplate_ = pskl.utils.Template.get("export-gif-radio-template");
+    this.radioTemplate_ = pskl.utils.Template.get("gif-export-radio-template");
 
-    this.previewContainerEl = document.querySelectorAll(".export-gif-preview div")[0];
+    this.previewContainerEl = document.querySelectorAll(".gif-export-preview")[0];
     this.radioGroupEl = document.querySelectorAll(".gif-export-radio-group")[0];
 
     this.uploadForm = $("[name=gif-export-upload-form]");
@@ -56,7 +56,7 @@
   };
 
   ns.GifExportController.prototype.updatePreview_ = function (src) {
-    this.previewContainerEl.innerHTML = "<img style='max-width:240px;' src='"+src+"'/>";
+    this.previewContainerEl.innerHTML = "<div><img style='max-width:240px;' src='"+src+"'/></div>";
   };
 
   ns.GifExportController.prototype.getSelectedDpi_ = function () {

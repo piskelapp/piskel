@@ -10,10 +10,11 @@
     this.setFPS(Constants.DEFAULT.FPS);
 
     var zoom = this.calculateZoom_();
+    var frame = this.piskelController.getCurrentFrame();
     var renderingOptions = {
       "zoom": zoom,
-      "height" : this.piskelController.getCurrentFrame().getHeight() * zoom,
-      "width" : this.piskelController.getCurrentFrame().getWidth() * zoom
+      "height" : frame.getHeight() * zoom,
+      "width" : frame.getWidth() * zoom
     };
     this.renderer = new pskl.rendering.frame.FrameRenderer(this.container, renderingOptions);
 
@@ -58,15 +59,18 @@
    * Calculate the preview DPI depending on the framesheet size
    */
   ns.AnimatedPreviewController.prototype.calculateZoom_ = function () {
+    var frame = this.piskelController.getCurrentFrame();
     var previewSize = 200,
-      hZoom = previewSize / this.piskelController.getCurrentFrame().getHeight(),
-      wZoom = previewSize / this.piskelController.getCurrentFrame().getWidth();
+      hZoom = previewSize / frame.getHeight(),
+      wZoom = previewSize / frame.getWidth();
 
     return Math.min(hZoom, wZoom);
   };
 
   ns.AnimatedPreviewController.prototype.updateZoom_ = function () {
+    var frame = this.piskelController.getCurrentFrame();
     var zoom = this.calculateZoom_();
     this.renderer.setZoom(zoom);
+    this.renderer.setDisplaySize(frame.getWidth() * zoom, frame.getHeight() * zoom);
   };
 })();

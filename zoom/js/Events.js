@@ -39,6 +39,9 @@ var Events = {
    */
   USER_SETTINGS_CHANGED: "USER_SETTINGS_CHANGED",
 
+  /* Listened to by SettingsController */
+  CLOSE_SETTINGS_DRAWER : "CLOSE_SETTINGS_DRAWER",
+
   /**
    * The framesheet was reseted and is now probably drastically different.
    * Number of frames, content of frames, color used for the palette may have changed.

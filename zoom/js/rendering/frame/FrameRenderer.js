@@ -212,7 +212,7 @@
    * @private
    */
   ns.FrameRenderer.prototype.renderFrame_ = function (frame) {
-    if (!this.canvas) {
+    if (!this.canvas || frame.getWidth() != this.canvas.width || frame.getHeight() != this.canvas.height) {
       this.canvas = pskl.CanvasUtils.createCanvas(frame.getWidth(), frame.getHeight());
     }
 
