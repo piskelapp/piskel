@@ -9,18 +9,18 @@
   };
 
   ns.ImportController.prototype.init = function () {
-    this.importForm = $("[name=import-form]");
-    this.hiddenFileInput = $("[name=file-upload-input]");
-    this.fileInputButton = $(".file-input-button");
-    this.fileInputStatus = $(".file-input-status");
+    this.importForm = $('[name=import-form]');
+    this.hiddenFileInput = $('[name=file-upload-input]');
+    this.fileInputButton = $('.file-input-button');
+    this.fileInputStatus = $('.file-input-status');
     this.fileInputStatus.html(DEFAULT_FILE_STATUS);
 
-    this.importPreview = $(".import-section-preview");
+    this.importPreview = $('.import-section-preview');
 
-    this.resizeWidth = $("[name=resize-width]");
-    this.resizeHeight = $("[name=resize-height]");
-    this.smoothResize =  $("[name=smooth-resize-checkbox]");
-    this.submitButton =  $("[name=import-submit]");
+    this.resizeWidth = $('[name=resize-width]');
+    this.resizeHeight = $('[name=resize-height]');
+    this.smoothResize =  $('[name=smooth-resize-checkbox]');
+    this.submitButton =  $('[name=import-submit]');
 
     this.importForm.submit(this.onImportFormSubmit_.bind(this));
     this.hiddenFileInput.change(this.onFileUploadChange_.bind(this));
@@ -77,7 +77,7 @@
         this.enableDisabledSections_();
       } else {
         this.reset_();
-        throw "File is not an image : " + file.type;
+        throw 'File is not an image : ' + file.type;
       }
     }
   };
@@ -119,7 +119,8 @@
     this.resizeWidth.val(w);
     this.resizeHeight.val(h);
 
-    this.importPreview.width("auto");
+    this.importPreview.width('auto');
+    this.importPreview.html('');
     this.importPreview.append(this.createImagePreview_());
   };
 
@@ -144,7 +145,7 @@
 
   ns.ImportController.prototype.importImageToPiskel_ = function () {
     if (this.importedImage_) {
-      if (window.confirm("You are about to create a new Piskel, unsaved changes will be lost.")) {
+      if (window.confirm('You are about to create a new Piskel, unsaved changes will be lost.')) {
         var w = this.resizeWidth.val(),
           h = this.resizeHeight.val(),
           smoothing = !!this.smoothResize.prop('checked');

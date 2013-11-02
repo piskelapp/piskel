@@ -129,6 +129,14 @@
   margin: 15px 0;
 }
 
+.import-section-title {
+  display : inline-block;
+}
+
+.import-section-title-small {
+  width: 35px;
+}
+
 .import-section-disabled {
   color : #888;
 }
@@ -139,17 +147,20 @@
   width: 60px;
   border : 1px dashed #999;
   border-radius: 3px;
-  margin-left : 10px;
 }
 
 .import-resize-field {
   width: 30px;
-  margin: 0px 8px;
+  margin-right: 8px;
   text-align: right;
 }
 
+.import-resize-field:nth-of-type(2) {
+  margin-left: 5px;
+}
+
 .file-input-button {
-  margin: 0px 8px;
+  margin-right: 8px;
   border-radius: 2px;
 }
 
@@ -164,4 +175,9 @@
   font-style: italic;
   font-weight: normal;
   text-shadow: none;
+}
+
+[name=smooth-resize-checkbox] {
+  margin : 0 8px;
+  vertical-align: middle;
 }
