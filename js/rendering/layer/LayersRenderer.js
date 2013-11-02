@@ -38,7 +38,6 @@
 
 
     if (this.serializedRendering != serializedRendering) {
-      console.log(serializedRendering);
       this.serializedRendering = serializedRendering;
 
       this.clear();
