@@ -17,7 +17,13 @@
   ns.CachedFrameRenderer.prototype.render = function (frame) {
     var offset = this.getOffset();
     var size = this.getDisplaySize();
-    var serializedFrame = [this.getZoom(), offset.x, offset.y, size.width, size.height, frame.serialize()].join('-');
+    var serializedFrame = [
+      this.getZoom(),
+      this.isGridEnabled(),
+      offset.x, offset.y,
+      size.width, size.height,
+      frame.serialize()
+    ].join('-');
     if (this.serializedFrame != serializedFrame) {
       this.serializedFrame = serializedFrame;
       this.superclass.render.call(this, frame);
