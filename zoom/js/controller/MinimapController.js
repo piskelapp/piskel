@@ -11,13 +11,16 @@
   };
 
   ns.MinimapController.prototype.init = function () {
+    // Create minimap DOM elements
     this.cropFrame = document.createElement('DIV');
     this.cropFrame.className = 'minimap-crop-frame';
     this.cropFrame.style.display = 'none';
-    $(this.container).mousedown(this.onMinimapMousedown_.bind(this));
-    $(this.container).mousemove(this.onMinimapMousemove_.bind(this));
-    $(this.container).mouseup(this.onMinimapMouseup_.bind(this));
     $(this.container).append(this.cropFrame);
+
+    // Init mouse events
+    $(this.container).mousedown(this.onMinimapMousedown_.bind(this));
+    $('body').mousemove(this.onMinimapMousemove_.bind(this));
+    $('body').mouseup(this.onMinimapMouseup_.bind(this));
   };
 
   ns.MinimapController.prototype.onDrawingControllerMove_ = function () {

@@ -13,6 +13,7 @@ exports.scripts = [
 
   // Libraries
   "js/utils/core.js",
+  "js/utils/UserAgent.js",
   "js/utils/CanvasUtils.js",
   "js/utils/Math.js",
   "js/utils/FileUtils.js",

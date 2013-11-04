@@ -11838,6 +11838,7 @@ var Constants = {
   IMAGE_SERVICE_GET_URL : 'http://screenletstore.appspot.com/img/',
 
   GRID_STROKE_WIDTH: 1,
+  ZOOMED_OUT_BACKGROUND_COLOR : '#A0A0A0',
 
   LEFT_BUTTON : 'left_button_1',
   RIGHT_BUTTON : 'right_button_2',
@@ -11960,6 +11961,25 @@ if (typeof Function.prototype.bind !== "function") {
 })();
 
 ;(function () {
+  var ns = $.namespace('pskl.utils');
+  var ua = navigator.userAgent;
+
+  ns.UserAgent = {
+    isIE : /MSIE/i.test( ua ),
+    isChrome : /Chrome/i.test( ua ),
+    isFirefox : /Firefox/i.test( ua )
+  };
+
+  ns.UserAgent.version = (function () {
+    if (pskl.utils.UserAgent.isIE) {
+      return parseInt(/MSIE\s?(\d+)/i.exec( ua )[1], 10);
+    } else if (pskl.utils.UserAgent.isChrome) {
+      return parseInt(/Chrome\/(\d+)/i.exec( ua )[1], 10);
+    } else if (pskl.utils.UserAgent.isFirefox) {
+      return parseInt(/Firefox\/(\d+)/i.exec( ua )[1], 10);
+    }
+  })();
+})();;(function () {
   var ns = $.namespace("pskl");
 
   ns.CanvasUtils = {
@@ -11993,6 +12013,11 @@ if (typeof Function.prototype.bind !== "function") {
       if (canvas) {
         canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
       }
+    },
+
+    getImageDataFromCanvas : function (canvas) {
+      var sourceContext = canvas.getContext('2d');
+      return sourceContext.getImageData(0, 0, canvas.width, canvas.height).data;
     }
   };
 })();;(function () {
@@ -12177,7 +12202,7 @@ if (typeof Function.prototype.bind !== "function") {
       context.save();
 
       if (!smoothingEnabled) {
-        this.disableSmoothingOnContext(context);
+        pskl.CanvasUtils.disableImageSmoothing(canvas);
       }
 
       context.translate(canvas.width / 2, canvas.height / 2);
@@ -12188,12 +12213,58 @@ if (typeof Function.prototype.bind !== "function") {
       return canvas;
     },
 
-    disableSmoothingOnContext : function (context) {
-      context.imageSmoothingEnabled = false;
-      context.mozImageSmoothingEnabled = false;
-      context.oImageSmoothingEnabled = false;
-      context.webkitImageSmoothingEnabled = false;
-      context.msImageSmoothingEnabled = false;
+    /**
+     * Manual implementation of resize using a nearest neighbour algorithm
+     * It is slower than relying on the native 'disabledImageSmoothing' available on CanvasRenderingContext2d.
+     * But it can be useful if :
+     * - IE < 11 (doesn't support msDisableImageSmoothing)
+     * - need to display a gap between pixel
+     *
+     * @param  {Canvas2d} source original image to be resized, as a 2d canvas
+     * @param  {Number} zoom   ratio between desired dim / source dim
+     * @param  {Number} margin gap to be displayed between pixels
+     * @return {Canvas2d} the resized canvas
+     */
+    resizeNearestNeighbour : function (source, zoom, margin) {
+      margin = margin || 0;
+      var canvas = pskl.CanvasUtils.createCanvas(zoom*source.width, zoom*source.height);
+      var context = canvas.getContext('2d');
+
+      var imgData = pskl.CanvasUtils.getImageDataFromCanvas(source);
+
+      var yRanges = {},
+        xOffset = 0,
+        yOffset = 0,
+        xRange,
+        yRange;
+      // Draw the zoomed-up pixels to a different canvas context
+      for (var x = 0; x < source.width; x++) {
+        // Calculate X Range
+        xRange = (((x + 1) * zoom) | 0) - xOffset;
+
+        for (var y = 0; y < source.height; y++) {
+          // Calculate Y Range
+          if (!yRanges[y + ""]) {
+            // Cache Y Range
+            yRanges[y + ""] = (((y + 1) * zoom) | 0) - yOffset;
+          }
+          yRange = yRanges[y + ""];
+
+          var i = (y * source.width + x) * 4;
+          var r = imgData[i];
+          var g = imgData[i + 1];
+          var b = imgData[i + 2];
+          var a = imgData[i + 3];
+
+          context.fillStyle = "rgba(" + r + "," + g + "," + b + "," + (a / 255) + ")";
+          context.fillRect(xOffset, yOffset, xRange-margin, yRange-margin);
+
+          yOffset += yRange;
+        }
+        yOffset = 0;
+        xOffset += xRange;
+      }
+      return canvas;
     }
   };
 })();;(function () {
@@ -14125,8 +14196,9 @@ var jscolor = {
 
     this.piskelController = piskelController;
 
-    this.belowRenderer = new pskl.rendering.frame.CachedFrameRenderer(container, renderingOptions, ["layers-canvas", "layers-below-canvas"]);
-    this.aboveRenderer = new pskl.rendering.frame.CachedFrameRenderer(container, renderingOptions, ["layers-canvas", "layers-above-canvas"]);
+    // Do not use CachedFrameRenderers here, since the caching will be performed in the render method of LayersRenderer
+    this.belowRenderer = new pskl.rendering.frame.FrameRenderer(container, renderingOptions, ["layers-canvas", "layers-below-canvas"]);
+    this.aboveRenderer = new pskl.rendering.frame.FrameRenderer(container, renderingOptions, ["layers-canvas", "layers-above-canvas"]);
 
     this.add(this.belowRenderer);
     this.add(this.aboveRenderer);
@@ -14137,16 +14209,24 @@ var jscolor = {
   pskl.utils.inherit(pskl.rendering.layer.LayersRenderer, pskl.rendering.CompositeRenderer);
 
   ns.LayersRenderer.prototype.render = function () {
+    var offset = this.getOffset();
+    var size = this.getDisplaySize();
     var layers = this.piskelController.getLayers();
     var currentFrameIndex = this.piskelController.currentFrameIndex;
     var currentLayerIndex = this.piskelController.currentLayerIndex;
 
     var serializedRendering = [
       this.getZoom(),
+      this.isGridEnabled(),
+      offset.x,
+      offset.y,
+      size.width,
+      size.height,
       currentFrameIndex,
       currentLayerIndex,
       layers.length
     ].join("-");
+
 
     if (this.serializedRendering != serializedRendering) {
       this.serializedRendering = serializedRendering;
@@ -14214,6 +14294,7 @@ var jscolor = {
       y : 0
     };
 
+    this.isGridEnabled_ = false;
     this.supportGridRendering = renderingOptions.supportGridRendering;
 
     this.classes = classes || [];
@@ -14292,7 +14373,7 @@ var jscolor = {
       x : this.offset.x,
       y : this.offset.y
     };
-  },
+  };
 
   ns.FrameRenderer.prototype.moveOffset = function (x, y) {
     this.setOffset(this.offset.x + x, this.offset.y + y);
@@ -14313,8 +14394,11 @@ var jscolor = {
   };
 
   ns.FrameRenderer.prototype.setGridEnabled = function (flag) {
-    this.gridStrokeWidth = (flag && this.supportGridRendering) ? Constants.GRID_STROKE_WIDTH : 0;
-    this.canvasConfigDirty = true;
+    this.isGridEnabled_ = flag && this.supportGridRendering;
+  };
+
+  ns.FrameRenderer.prototype.isGridEnabled = function () {
+    return this.isGridEnabled_;
   };
 
   ns.FrameRenderer.prototype.updateMargins_ = function () {
@@ -14374,7 +14458,7 @@ var jscolor = {
     x = x - this.margin.x;
     y = y - this.margin.y;
 
-    var cellSize = this.zoom + this.gridStrokeWidth;
+    var cellSize = this.zoom;
     // apply frame offset
     x = x + this.offset.x * cellSize;
     y = y + this.offset.y * cellSize;
@@ -14405,16 +14489,28 @@ var jscolor = {
 
     context = this.displayCanvas.getContext('2d');
     context.save();
-    // zoom < 1
-    context.fillStyle = "#aaa";
-    // zoom < 1
-    context.fillRect(0,0,this.displayCanvas.width, this.displayCanvas.height);
-    context.translate(this.margin.x, this.margin.y);
-    context.scale(this.zoom, this.zoom);
-    context.translate(-this.offset.x, -this.offset.y);
-    // zoom < 1
-    context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    context.drawImage(this.canvas, 0, 0);
+
+    if (this.canvas.width*this.zoom < this.displayCanvas.width) {
+      context.fillStyle = Constants.ZOOMED_OUT_BACKGROUND_COLOR;
+      context.fillRect(0,0,this.displayCanvas.width, this.displayCanvas.height);
+    }
+
+    context.translate(
+      this.margin.x-this.offset.x*this.zoom,
+      this.margin.y-this.offset.y*this.zoom
+    );
+
+    context.clearRect(0, 0, this.canvas.width*this.zoom, this.canvas.height*this.zoom);
+
+    var isIE10 = pskl.utils.UserAgent.isIE && pskl.utils.UserAgent.version === 10;
+    if (this.isGridEnabled() || isIE10) {
+      var gridWidth = this.isGridEnabled() ? Constants.GRID_STROKE_WIDTH : 0;
+      var scaled = pskl.utils.ImageResizer.resizeNearestNeighbour(this.canvas, this.zoom, gridWidth);
+      context.drawImage(scaled, 0, 0);
+    } else {
+      context.scale(this.zoom, this.zoom);
+      context.drawImage(this.canvas, 0, 0);
+    }
     context.restore();
   };
 })();;(function () {
@@ -14436,7 +14532,13 @@ var jscolor = {
   ns.CachedFrameRenderer.prototype.render = function (frame) {
     var offset = this.getOffset();
     var size = this.getDisplaySize();
-    var serializedFrame = [this.getZoom(), offset.x, offset.y, size.width, size.height, frame.serialize()].join('-');
+    var serializedFrame = [
+      this.getZoom(),
+      this.isGridEnabled(),
+      offset.x, offset.y,
+      size.width, size.height,
+      frame.serialize()
+    ].join('-');
     if (this.serializedFrame != serializedFrame) {
       this.serializedFrame = serializedFrame;
       this.superclass.render.call(this, frame);
@@ -15419,13 +15521,16 @@ var jscolor = {
   };
 
   ns.MinimapController.prototype.init = function () {
+    // Create minimap DOM elements
     this.cropFrame = document.createElement('DIV');
     this.cropFrame.className = 'minimap-crop-frame';
     this.cropFrame.style.display = 'none';
-    $(this.container).mousedown(this.onMinimapMousedown_.bind(this));
-    $(this.container).mousemove(this.onMinimapMousemove_.bind(this));
-    $(this.container).mouseup(this.onMinimapMouseup_.bind(this));
     $(this.container).append(this.cropFrame);
+
+    // Init mouse events
+    $(this.container).mousedown(this.onMinimapMousedown_.bind(this));
+    $('body').mousemove(this.onMinimapMousemove_.bind(this));
+    $('body').mouseup(this.onMinimapMouseup_.bind(this));
   };
 
   ns.MinimapController.prototype.onDrawingControllerMove_ = function () {
@@ -15899,18 +16004,18 @@ var jscolor = {
   };
 
   ns.ImportController.prototype.init = function () {
-    this.importForm = $("[name=import-form]");
-    this.hiddenFileInput = $("[name=file-upload-input]");
-    this.fileInputButton = $(".file-input-button");
-    this.fileInputStatus = $(".file-input-status");
+    this.importForm = $('[name=import-form]');
+    this.hiddenFileInput = $('[name=file-upload-input]');
+    this.fileInputButton = $('.file-input-button');
+    this.fileInputStatus = $('.file-input-status');
     this.fileInputStatus.html(DEFAULT_FILE_STATUS);
 
-    this.importPreview = $(".import-section-preview");
+    this.importPreview = $('.import-section-preview');
 
-    this.resizeWidth = $("[name=resize-width]");
-    this.resizeHeight = $("[name=resize-height]");
-    this.smoothResize =  $("[name=smooth-resize-checkbox]");
-    this.submitButton =  $("[name=import-submit]");
+    this.resizeWidth = $('[name=resize-width]');
+    this.resizeHeight = $('[name=resize-height]');
+    this.smoothResize =  $('[name=smooth-resize-checkbox]');
+    this.submitButton =  $('[name=import-submit]');
 
     this.importForm.submit(this.onImportFormSubmit_.bind(this));
     this.hiddenFileInput.change(this.onFileUploadChange_.bind(this));
@@ -15967,7 +16072,7 @@ var jscolor = {
         this.enableDisabledSections_();
       } else {
         this.reset_();
-        throw "File is not an image : " + file.type;
+        throw 'File is not an image : ' + file.type;
       }
     }
   };
@@ -16009,7 +16114,8 @@ var jscolor = {
     this.resizeWidth.val(w);
     this.resizeHeight.val(h);
 
-    this.importPreview.width("auto");
+    this.importPreview.width('auto');
+    this.importPreview.html('');
     this.importPreview.append(this.createImagePreview_());
   };
 
@@ -16034,7 +16140,7 @@ var jscolor = {
 
   ns.ImportController.prototype.importImageToPiskel_ = function () {
     if (this.importedImage_) {
-      if (window.confirm("You are about to create a new Piskel, unsaved changes will be lost.")) {
+      if (window.confirm('You are about to create a new Piskel, unsaved changes will be lost.')) {
         var w = this.resizeWidth.val(),
           h = this.resizeHeight.val(),
           smoothing = !!this.smoothResize.prop('checked');

@@ -37,6 +37,7 @@
       y : 0
     };
 
+    this.isGridEnabled_ = false;
     this.supportGridRendering = renderingOptions.supportGridRendering;
 
     this.classes = classes || [];
@@ -115,7 +116,7 @@
       x : this.offset.x,
       y : this.offset.y
     };
-  },
+  };
 
   ns.FrameRenderer.prototype.moveOffset = function (x, y) {
     this.setOffset(this.offset.x + x, this.offset.y + y);
@@ -136,8 +137,11 @@
   };
 
   ns.FrameRenderer.prototype.setGridEnabled = function (flag) {
-    this.gridStrokeWidth = (flag && this.supportGridRendering) ? Constants.GRID_STROKE_WIDTH : 0;
-    this.canvasConfigDirty = true;
+    this.isGridEnabled_ = flag && this.supportGridRendering;
+  };
+
+  ns.FrameRenderer.prototype.isGridEnabled = function () {
+    return this.isGridEnabled_;
   };
 
   ns.FrameRenderer.prototype.updateMargins_ = function () {
@@ -197,7 +201,7 @@
     x = x - this.margin.x;
     y = y - this.margin.y;
 
-    var cellSize = this.zoom + this.gridStrokeWidth;
+    var cellSize = this.zoom;
     // apply frame offset
     x = x + this.offset.x * cellSize;
     y = y + this.offset.y * cellSize;
@@ -228,16 +232,28 @@
 
     context = this.displayCanvas.getContext('2d');
     context.save();
-    // zoom < 1
-    context.fillStyle = "#aaa";
-    // zoom < 1
-    context.fillRect(0,0,this.displayCanvas.width, this.displayCanvas.height);
-    context.translate(this.margin.x, this.margin.y);
-    context.scale(this.zoom, this.zoom);
-    context.translate(-this.offset.x, -this.offset.y);
-    // zoom < 1
-    context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    context.drawImage(this.canvas, 0, 0);
+
+    if (this.canvas.width*this.zoom < this.displayCanvas.width) {
+      context.fillStyle = Constants.ZOOMED_OUT_BACKGROUND_COLOR;
+      context.fillRect(0,0,this.displayCanvas.width, this.displayCanvas.height);
+    }
+
+    context.translate(
+      this.margin.x-this.offset.x*this.zoom,
+      this.margin.y-this.offset.y*this.zoom
+    );
+
+    context.clearRect(0, 0, this.canvas.width*this.zoom, this.canvas.height*this.zoom);
+
+    var isIE10 = pskl.utils.UserAgent.isIE && pskl.utils.UserAgent.version === 10;
+    if (this.isGridEnabled() || isIE10) {
+      var gridWidth = this.isGridEnabled() ? Constants.GRID_STROKE_WIDTH : 0;
+      var scaled = pskl.utils.ImageResizer.resizeNearestNeighbour(this.canvas, this.zoom, gridWidth);
+      context.drawImage(scaled, 0, 0);
+    } else {
+      context.scale(this.zoom, this.zoom);
+      context.drawImage(this.canvas, 0, 0);
+    }
     context.restore();
   };
 })();

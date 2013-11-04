@@ -32,6 +32,11 @@
       if (canvas) {
         canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
       }
+    },
+
+    getImageDataFromCanvas : function (canvas) {
+      var sourceContext = canvas.getContext('2d');
+      return sourceContext.getImageData(0, 0, canvas.width, canvas.height).data;
     }
   };
 })();
