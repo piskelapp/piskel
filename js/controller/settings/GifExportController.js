@@ -8,18 +8,18 @@
   /**
    * List of Resolutions applicable for Gif export
    * @static
-   * @type {Array} array of Objects {dpi:{Number}, default:{Boolean}}
+   * @type {Array} array of Objects {zoom:{Number}, default:{Boolean}}
    */
   ns.GifExportController.RESOLUTIONS = [
     {
-      'dpi' : 1
+      'zoom' : 1
     },{
-      'dpi' : 5
+      'zoom' : 5
     },{
-      'dpi' : 10,
+      'zoom' : 10,
       'default' : true
     },{
-      'dpi' : 20
+      'zoom' : 20
     }
   ];
 
@@ -37,11 +37,11 @@
 
   ns.GifExportController.prototype.onUploadFormSubmit_ = function (evt) {
     evt.originalEvent.preventDefault();
-    var selectedDpi = this.getSelectedDpi_(),
+    var selectedZoom = this.getSelectedZoom_(),
         fps = this.piskelController.getFPS(),
-        dpi = selectedDpi;
+        zoom = selectedZoom;
 
-    this.renderAsImageDataAnimatedGIF(dpi, fps, this.onGifRenderingCompleted_.bind(this));
+    this.renderAsImageDataAnimatedGIF(zoom, fps, this.onGifRenderingCompleted_.bind(this));
   };
 
   ns.GifExportController.prototype.onGifRenderingCompleted_ = function (imageData) {
@@ -59,15 +59,15 @@
     this.previewContainerEl.innerHTML = "<div><img style='max-width:240px;' src='"+src+"'/></div>";
   };
 
-  ns.GifExportController.prototype.getSelectedDpi_ = function () {
-    var radiosColl = this.uploadForm.get(0).querySelectorAll("[name=gif-dpi]"),
+  ns.GifExportController.prototype.getSelectedZoom_ = function () {
+    var radiosColl = this.uploadForm.get(0).querySelectorAll("[name=gif-zoom-level]"),
         radios = Array.prototype.slice.call(radiosColl,0);
     var selectedRadios = radios.filter(function(radio) {return !!radio.checked;});
 
     if (selectedRadios.length == 1) {
       return selectedRadios[0].value;
     } else {
-      throw "Unexpected error when retrieving selected dpi";
+      throw "Unexpected error when retrieving selected zoom";
     }
   };
 
@@ -80,9 +80,9 @@
   };
 
   ns.GifExportController.prototype.createRadioForResolution_ = function (resolution) {
-    var dpi = resolution.dpi;
-    var label = dpi*this.piskelController.getWidth() + "x" + dpi*this.piskelController.getHeight();
-    var value = dpi;
+    var zoom = resolution.zoom;
+    var label = zoom*this.piskelController.getWidth() + "x" + zoom*this.piskelController.getHeight();
+    var value = zoom;
 
     var radioHTML = pskl.utils.Template.replace(this.radioTemplate_, {value : value, label : label});
     var radioEl = pskl.utils.Template.createFromHTML(radioHTML);
@@ -104,17 +104,17 @@
     reader.readAsDataURL(blob);
   };
 
-  ns.GifExportController.prototype.renderAsImageDataAnimatedGIF = function(dpi, fps, cb) {
+  ns.GifExportController.prototype.renderAsImageDataAnimatedGIF = function(zoom, fps, cb) {
     var gif = new window.GIF({
       workers: 2,
       quality: 10,
-      width: this.piskelController.getWidth()*dpi,
-      height: this.piskelController.getHeight()*dpi
+      width: this.piskelController.getWidth()*zoom,
+      height: this.piskelController.getHeight()*zoom
     });
 
     for (var i = 0; i < this.piskelController.getFrameCount(); i++) {
       var frame = this.piskelController.getFrameAt(i);
-      var renderer = new pskl.rendering.CanvasRenderer(frame, dpi);
+      var renderer = new pskl.rendering.CanvasRenderer(frame, zoom);
       gif.addFrame(renderer.render(), {
         delay: 1000 / fps
       });

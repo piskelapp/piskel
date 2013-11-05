@@ -1,9 +1,9 @@
 (function () {
 
   var ns = $.namespace("pskl.rendering");
-  ns.CanvasRenderer = function (frame, dpi) {
+  ns.CanvasRenderer = function (frame, zoom) {
     this.frame = frame;
-    this.dpi = dpi;
+    this.zoom = zoom;
     this.transparentColor_ = 'white';
   };
 
@@ -36,12 +36,12 @@
     }
     context.fillStyle = color;
 
-    context.fillRect(col * this.dpi, row * this.dpi, this.dpi, this.dpi);
+    context.fillRect(col * this.zoom, row * this.zoom, this.zoom, this.zoom);
   };
 
   ns.CanvasRenderer.prototype.createCanvas_ = function () {
-    var width = this.frame.getWidth() * this.dpi;
-    var height = this.frame.getHeight() * this.dpi;
+    var width = this.frame.getWidth() * this.zoom;
+    var height = this.frame.getHeight() * this.zoom;
     return pskl.CanvasUtils.createCanvas(width, height);
   };
 })();

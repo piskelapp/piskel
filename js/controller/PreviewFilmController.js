@@ -208,7 +208,7 @@
   };
 
   /**
-   * Calculate the preview DPI depending on the piskel size
+   * Calculate the preview zoom depending on the piskel size
    */
   ns.PreviewFilmController.prototype.calculateZoom_ = function () {
     var curFrame = this.piskelController.getCurrentFrame(),
@@ -219,6 +219,6 @@
     var previewHeight = Constants.PREVIEW_FILM_SIZE * frameHeight / maxFrameDim;
     var previewWidth = Constants.PREVIEW_FILM_SIZE * frameWidth / maxFrameDim;
 
-    return pskl.PixelUtils.calculateDPI(previewHeight, previewWidth, frameHeight, frameWidth) || 1;
+    return pskl.PixelUtils.calculateZoom(previewHeight, previewWidth, frameHeight, frameWidth) || 1;
   };
 })();

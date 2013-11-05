@@ -1,6 +1,6 @@
 (function () {
   var ns = $.namespace("pskl.controller");
-  ns.AnimatedPreviewController = function (piskelController, container, dpi) {
+  ns.AnimatedPreviewController = function (piskelController, container) {
     this.piskelController = piskelController;
     this.container = container;
 
@@ -56,7 +56,7 @@
   };
 
   /**
-   * Calculate the preview DPI depending on the framesheet size
+   * Calculate the preview zoom depending on the framesheet size
    */
   ns.AnimatedPreviewController.prototype.calculateZoom_ = function () {
     var frame = this.piskelController.getCurrentFrame();
