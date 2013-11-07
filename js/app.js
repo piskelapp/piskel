@@ -239,8 +239,8 @@
     },
 
     getFramesheetAsPng : function () {
-      var renderer = new pskl.rendering.SpritesheetRenderer(this.piskelController);
-      var framesheetCanvas = renderer.render();
+      var renderer = new pskl.rendering.PiskelRenderer(this.piskelController);
+      var framesheetCanvas = renderer.renderAsCanvas();
       return framesheetCanvas.toDataURL("image/png");
     },
 

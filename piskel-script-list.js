@@ -16,6 +16,7 @@ exports.scripts = [
   "js/utils/CanvasUtils.js",
   "js/utils/FileUtils.js",
   "js/utils/FrameUtils.js",
+  "js/utils/LayerUtils.js",
   "js/utils/ImageResizer.js",
   "js/utils/PixelUtils.js",
   "js/utils/Serializer.js",
@@ -40,7 +41,8 @@ exports.scripts = [
   // Rendering
   "js/rendering/CanvasRenderer.js",
   "js/rendering/FrameRenderer.js",
-  "js/rendering/SpritesheetRenderer.js",
+  "js/rendering/FramesheetRenderer.js",
+  "js/rendering/PiskelRenderer.js",
 
   // Controllers
   "js/controller/PiskelController.js",
