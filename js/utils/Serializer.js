@@ -30,13 +30,7 @@
       });
     },
 
-    deserializePiskel : function (piskelString) {
-      var data = JSON.parse(piskelString);
-      return this.createPiskel(data);
-    },
-
     /**
-     * Similar to deserializePiskel, but dealing directly with a parsed piskel
      * @param  {Object} data JSON.parse of a serialized piskel
      * @return {pskl.model.Piskel} a piskel
      */
@@ -45,13 +39,13 @@
       if (data.modelVersion == Constants.MODEL_VERSION) {
         var piskelData = data.piskel;
         piskel = new pskl.model.Piskel(piskelData.width, piskelData.height);
-        layersToLoad = piskelData.layers;
+
         piskelData.layers.forEach(function (serializedLayer) {
           var layer = pskl.utils.Serializer.deserializeLayer(serializedLayer);
           piskel.addLayer(layer);
         });
       } else if (data.modelVersion == 1) {
-        throw 'No backward compatible adapter for modelVersion 1';
+        piskel = pskl.utils.Serializer.backwardDeserializer_v1(data);
       } else {
         piskel = pskl.utils.Serializer.backwardDeserializer_(data);
       }
@@ -91,6 +85,23 @@
       return layer;
     },
 
+    deserializeFrame : function (frameString) {
+      var framePixelGrid = JSON.parse(frameString);
+      return pskl.model.Frame.fromPixelGrid(framePixelGrid);
+    },
+
+    backwardDeserializer_v1 : function (data) {
+      var piskelData = data.piskel;
+      var piskel = new pskl.model.Piskel(piskelData.width, piskelData.height);
+
+      piskelData.layers.forEach(function (serializedLayer) {
+        var layer = pskl.utils.Serializer.deserializeLayer_v1(serializedLayer);
+        piskel.addLayer(layer);
+      });
+
+      return piskel;
+    },
+
     deserializeLayer_v1 : function (layerString) {
       var layerData = JSON.parse(layerString);
       var layer = new pskl.model.Layer(layerData.name);
@@ -100,11 +111,6 @@
       });
 
       return layer;
-    },
-
-    deserializeFrame : function (frameString) {
-      var framePixelGrid = JSON.parse(frameString);
-      return pskl.model.Frame.fromPixelGrid(framePixelGrid);
     },
 
     /**
