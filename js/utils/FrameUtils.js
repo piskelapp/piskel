@@ -36,7 +36,7 @@
 
       context.drawImage(image, 0,0,w,h,0,0,w,h);
       var imgData = context.getImageData(0,0,w,h).data;
-      return pskl.utils.FrameUtils.createFromImageData(imgData);
+      return pskl.utils.FrameUtils.createFromImageData(imgData, w, h);
     },
 
     createFromImageData : function (imageData, width, height) {
