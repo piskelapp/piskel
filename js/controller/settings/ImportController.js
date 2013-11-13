@@ -153,11 +153,15 @@
         var image = pskl.utils.ImageResizer.resize(this.importedImage_, w, h, smoothing);
         var frame = pskl.utils.FrameUtils.createFromImage(image);
 
-        var piskel = pskl.utils.Serializer.createPiskel([frame]);
-        pskl.app.piskelController.setPiskel(piskel);
-        pskl.app.animationController.setFPS(Constants.DEFAULT.FPS);
-
-        this.reset_();
+        // TODO : juliandescottes : here we only want to create a layer from an array of frames, and create a new piskel using this layer
+        // we shouldn't use the deserializer for this ... it's only working because it's falling back to the old implementation
+        // bad, very bad
+        var deserializer = new pskl.utils.Deserializer([frame], function (piskel) {
+          pskl.app.piskelController.setPiskel(piskel);
+          pskl.app.animationController.setFPS(Constants.DEFAULT.FPS);
+          this.reset_();
+        }.bind(this));
+        deserializer.deserialize();
       }
     }
   };

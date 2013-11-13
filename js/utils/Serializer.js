@@ -30,29 +30,6 @@
       });
     },
 
-    /**
-     * @param  {Object} data JSON.parse of a serialized piskel
-     * @return {pskl.model.Piskel} a piskel
-     */
-    createPiskel : function (data) {
-      var piskel = null;
-      if (data.modelVersion == Constants.MODEL_VERSION) {
-        var piskelData = data.piskel;
-        piskel = new pskl.model.Piskel(piskelData.width, piskelData.height);
-
-        piskelData.layers.forEach(function (serializedLayer) {
-          var layer = pskl.utils.Serializer.deserializeLayer(serializedLayer);
-          piskel.addLayer(layer);
-        });
-      } else if (data.modelVersion == 1) {
-        piskel = pskl.utils.Serializer.backwardDeserializer_v1(data);
-      } else {
-        piskel = pskl.utils.Serializer.backwardDeserializer_(data);
-      }
-
-      return piskel;
-    },
-
     deserializeLayer : function (layerString) {
       var layerData = JSON.parse(layerString);
       var layer = new pskl.model.Layer(layerData.name);
@@ -85,11 +62,6 @@
       return layer;
     },
 
-    deserializeFrame : function (frameString) {
-      var framePixelGrid = JSON.parse(frameString);
-      return pskl.model.Frame.fromPixelGrid(framePixelGrid);
-    },
-
     backwardDeserializer_v1 : function (data) {
       var piskelData = data.piskel;
       var piskel = new pskl.model.Piskel(piskelData.width, piskelData.height);
@@ -106,11 +78,16 @@
       var layerData = JSON.parse(layerString);
       var layer = new pskl.model.Layer(layerData.name);
       layerData.frames.forEach(function (serializedFrame) {
-        var frame = pskl.utils.Serializer.deserializeFrame(serializedFrame);
+        var frame = pskl.utils.Serializer.deserializeFrame_v1(serializedFrame);
         layer.addFrame(frame);
       });
 
       return layer;
+    },
+
+    deserializeFrame_v1 : function (frameString) {
+      var framePixelGrid = JSON.parse(frameString);
+      return pskl.model.Frame.fromPixelGrid(framePixelGrid);
     },
 
     /**

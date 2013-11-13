@@ -1,0 +1,64 @@
+(function () {
+  var ns = $.namespace('pskl.utils');
+
+  ns.Deserializer = function (data, callback) {
+    this.layersToLoad_ = 0;
+    this.data_ = data;
+    this.callback_ = callback;
+    this.piskel_ = null;
+  };
+
+  ns.Deserializer.prototype.deserialize = function () {
+    var data = this.data_;
+    if (data.modelVersion == Constants.MODEL_VERSION) {
+      var piskelData = data.piskel;
+      this.piskel_ = new pskl.model.Piskel(piskelData.width, piskelData.height);
+
+      this.layersToLoad_ = piskelData.layers.length;
+
+      piskelData.layers.forEach(function (serializedLayer) {
+        var layer = this.deserializeLayer(serializedLayer);
+        this.piskel_.addLayer(layer);
+      }.bind(this));
+    } else if (data.modelVersion == 1) {
+      this.callback_(pskl.utils.Serializer.backwardDeserializer_v1(data));
+    } else {
+      this.callback_(pskl.utils.Serializer.backwardDeserializer_(data));
+    }
+  };
+
+  ns.Deserializer.prototype.deserializeLayer = function (layerString) {
+    var layerData = JSON.parse(layerString);
+    var layer = new pskl.model.Layer(layerData.name);
+
+    // 1 - create an image to load the base64PNG representing the layer
+    var base64PNG = layerData.base64PNG;
+    var image = new Image();
+
+    // 2 - attach the onload callback that will be triggered asynchronously
+    image.onload = function () {
+      // 5 - extract the frames from the loaded image
+      var frames = pskl.utils.LayerUtils.createFromImage(image, layerData.frameCount);
+
+      // 6 - add each image to the layer
+      frames.forEach(function (frame) {
+        layer.addFrame(pskl.model.Frame.fromPixelGrid(frame));
+      });
+
+      this.onLayerLoaded_();
+    }.bind(this);
+
+    // 3 - set the source of the image
+    image.src = base64PNG;
+
+    // 4 - return a pointer to the new layer instance
+    return layer;
+  };
+
+  ns.Deserializer.prototype.onLayerLoaded_ = function () {
+    this.layersToLoad_ = this.layersToLoad_ - 1;
+    if (this.layersToLoad_ === 0) {
+      this.callback_(this.piskel_);
+    }
+  };
+})();

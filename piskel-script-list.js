@@ -19,6 +19,7 @@ exports.scripts = [
   "js/utils/LayerUtils.js",
   "js/utils/ImageResizer.js",
   "js/utils/PixelUtils.js",
+  "js/utils/Deserializer.js",
   "js/utils/Serializer.js",
   "js/utils/Template.js",
   "js/utils/UserSettings.js",
