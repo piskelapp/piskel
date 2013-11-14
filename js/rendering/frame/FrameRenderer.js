@@ -207,8 +207,8 @@
     y = y + this.offset.y * cellSize;
 
     return {
-      x : (x / cellSize) | 0,
-      y : (y / cellSize) | 0
+      x : Math.floor(x / cellSize),
+      y : Math.floor(y / cellSize)
     };
   };
 

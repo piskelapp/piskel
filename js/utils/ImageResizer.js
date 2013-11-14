@@ -46,13 +46,13 @@
       // Draw the zoomed-up pixels to a different canvas context
       for (var x = 0; x < source.width; x++) {
         // Calculate X Range
-        xRange = (((x + 1) * zoom) | 0) - xOffset;
+        xRange = Math.floor((x + 1) * zoom) - xOffset;
 
         for (var y = 0; y < source.height; y++) {
           // Calculate Y Range
           if (!yRanges[y + ""]) {
             // Cache Y Range
-            yRanges[y + ""] = (((y + 1) * zoom) | 0) - yOffset;
+            yRanges[y + ""] = Math.floor((y + 1) * zoom) - yOffset;
           }
           yRange = yRanges[y + ""];
 
