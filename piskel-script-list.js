@@ -19,10 +19,12 @@ exports.scripts = [
   "js/utils/LayerUtils.js",
   "js/utils/ImageResizer.js",
   "js/utils/PixelUtils.js",
-  "js/utils/Deserializer.js",
-  "js/utils/Serializer.js",
   "js/utils/Template.js",
   "js/utils/UserSettings.js",
+  "js/utils/serialization/Serializer.js",
+  "js/utils/serialization/Deserializer.js",
+  "js/utils/serialization/backward/Deserializer_v0.js",
+  "js/utils/serialization/backward/Deserializer_v1.js",
   "js/lib/jsColor_1_4_0/jscolor.js",
 
   // Application libraries-->

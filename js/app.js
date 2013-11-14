@@ -93,11 +93,10 @@
 
     finishInitAppEngine_ : function () {
       if (pskl.framesheetData_ && pskl.framesheetData_.content) {
-        var deserializer = new pskl.utils.Deserializer(pskl.framesheetData_.content, function (piskel) {
+        pskl.utils.serialization.Deserializer.deserialize(pskl.framesheetData_.content, function (piskel) {
           pskl.app.piskelController.setPiskel(piskel);
           pskl.app.animationController.setFPS(pskl.framesheetData_.fps);
         });
-        deserializer.deserialize();
       }
     },
 
@@ -158,12 +157,11 @@
       xhr.responseType = 'text';
       xhr.onload = function (e) {
         var res = JSON.parse(this.responseText);
-        var deserializer = new pskl.utils.Deserializer(res.framesheet, function (piskel) {
+        pskl.utils.serialization.Deserializer.deserialize(res.framesheet, function (piskel) {
           pskl.app.piskelController.setPiskel(piskel);
           pskl.app.animationController.setFPS(res.fps);
           $.publish(Events.HIDE_NOTIFICATION);
         });
-        deserializer.deserialize();
       };
 
       xhr.onerror = function () {
