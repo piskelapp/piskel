@@ -81,8 +81,12 @@
     var body = $('body');
     this.container.mousedown($.proxy(this.onMousedown_, this));
     this.container.mousemove($.proxy(this.onMousemove_, this));
-    this.container.on('mousewheel', $.proxy(this.onMousewheel_, this));
-    this.container.on('wheel', $.proxy(this.onMousewheel_, this));
+
+    if (pskl.utils.UserAgent.isChrome) {
+      this.container.on('mousewheel', $.proxy(this.onMousewheel_, this));
+    } else {
+      this.container.on('wheel', $.proxy(this.onMousewheel_, this));
+    }
 
     body.mouseup($.proxy(this.onMouseup_, this));
 

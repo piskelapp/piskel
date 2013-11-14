@@ -50,5 +50,7 @@ var Constants = {
 
   LEFT_BUTTON : 'left_button_1',
   RIGHT_BUTTON : 'right_button_2',
-  MOUSEMOVE_THROTTLING : 10
+  MOUSEMOVE_THROTTLING : 10,
+
+  ABSTRACT_FUNCTION : function () {throw 'abstract method should be implemented';}
 };

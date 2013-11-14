@@ -3,20 +3,20 @@
 
   ns.AbstractRenderer = function () {};
 
-  ns.AbstractRenderer.prototype.clear =          function ()       {throw 'abstract method should be implemented';};
+  ns.AbstractRenderer.prototype.clear = Constants.ABSTRACT_FUNCTION;
 
-  ns.AbstractRenderer.prototype.getCoordinates = function (x, y)   {throw 'abstract method should be implemented';};
+  ns.AbstractRenderer.prototype.getCoordinates = Constants.ABSTRACT_FUNCTION;
 
-  ns.AbstractRenderer.prototype.setGridEnabled = function (b)      {throw 'abstract method should be implemented';};
-  ns.AbstractRenderer.prototype.isGridEnabled =  function ()       {throw 'abstract method should be implemented';};
+  ns.AbstractRenderer.prototype.setGridEnabled = Constants.ABSTRACT_FUNCTION;
+  ns.AbstractRenderer.prototype.isGridEnabled =  Constants.ABSTRACT_FUNCTION;
 
-  ns.AbstractRenderer.prototype.setZoom =        function (zoom)   {throw 'abstract method should be implemented';};
-  ns.AbstractRenderer.prototype.getZoom =        function ()       {throw 'abstract method should be implemented';};
+  ns.AbstractRenderer.prototype.setZoom = Constants.ABSTRACT_FUNCTION;
+  ns.AbstractRenderer.prototype.getZoom = Constants.ABSTRACT_FUNCTION;
 
-  ns.AbstractRenderer.prototype.moveOffset =     function (x, y)   {throw 'abstract method should be implemented';};
-  ns.AbstractRenderer.prototype.setOffset =      function (x, y)   {throw 'abstract method should be implemented';};
-  ns.AbstractRenderer.prototype.getOffset =      function ()       {throw 'abstract method should be implemented';};
+  ns.AbstractRenderer.prototype.moveOffset = Constants.ABSTRACT_FUNCTION;
+  ns.AbstractRenderer.prototype.setOffset = Constants.ABSTRACT_FUNCTION;
+  ns.AbstractRenderer.prototype.getOffset = Constants.ABSTRACT_FUNCTION;
 
-  ns.AbstractRenderer.prototype.setDisplaySize = function (w, h)   {throw 'abstract method should be implemented';};
-  ns.AbstractRenderer.prototype.getDisplaySize = function ()       {throw 'abstract method should be implemented';};
+  ns.AbstractRenderer.prototype.setDisplaySize = Constants.ABSTRACT_FUNCTION;
+  ns.AbstractRenderer.prototype.getDisplaySize = Constants.ABSTRACT_FUNCTION;
 })();

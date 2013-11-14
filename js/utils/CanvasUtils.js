@@ -19,6 +19,13 @@
       return canvas;
     },
 
+    /**
+     * By default, all scaling operations on a Canvas 2D Context are performed using antialiasing.
+     * Resizing a 32x32 image to 320x320 will lead to a blurry output.
+     * On Chrome, FF and IE>=11, this can be disabled by setting a property on the Canvas 2D Context.
+     * In this case the browser will use a nearest-neighbor scaling.
+     * @param  {Canvas} canvas
+     */
     disableImageSmoothing : function (canvas) {
       var context = canvas.getContext('2d');
       context.imageSmoothingEnabled = false;
