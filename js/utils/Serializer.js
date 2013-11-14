@@ -30,38 +30,6 @@
       });
     },
 
-    deserializeLayer : function (layerString) {
-      var layerData = JSON.parse(layerString);
-      var layer = new pskl.model.Layer(layerData.name);
-      // TODO : nasty trick to keep the whole loading process lazily synchronous
-      // 1 - adding a fake frame so that the rendering can start
-      layer.addFrame(new pskl.model.Frame(32,32));
-
-      // 2 - create an image to load the base64PNG representing the layer
-      var base64PNG = layerData.base64PNG;
-      var image = new Image();
-
-      // 3 - attach the onload callback that will be triggered asynchronously
-      image.onload = function () {
-        // 6 - remove the fake frame
-        layer.removeFrameAt(0);
-
-        // 7 - extract the frames from the loaded image
-        var frames = pskl.utils.LayerUtils.createFromImage(image, layerData.frameCount);
-
-        // 8 - add each image to the layer
-        frames.forEach(function (frame) {
-          layer.addFrame(pskl.model.Frame.fromPixelGrid(frame));
-        });
-      };
-
-      // 4 - set the source of the image
-      image.src = base64PNG;
-
-      // 5 - return a pointer to the new layer instance, which at this point contains a fake frame
-      return layer;
-    },
-
     backwardDeserializer_v1 : function (data) {
       var piskelData = data.piskel;
       var piskel = new pskl.model.Piskel(piskelData.width, piskelData.height);
@@ -91,18 +59,14 @@
     },
 
     /**
-     * Deserialize old piskel framesheets. Initially piskels were stored as arrays of frames : "[[pixelGrid],[pixelGrid],[pixelGrid]]".
+     * Deserialize old piskel framesheets. Initially piskels were stored as arrays of pixelGrids : "[[pixelGrid],[pixelGrid],[pixelGrid]]".
      */
-    backwardDeserializer_ : function (frames) {
-      var layer = new pskl.model.Layer('Layer 1');
-      frames.forEach(function (frame) {
-        layer.addFrame(pskl.model.Frame.fromPixelGrid(frame));
+    backwardDeserializer_ : function (pixelGrids) {
+      var frames = pixelGrids.map(function (grid) {
+        return pskl.model.Frame.fromPixelGrid(grid);
       });
-      var width = layer.getFrameAt(0).getWidth(), height = layer.getFrameAt(0).getHeight();
-      var piskel = new pskl.model.Piskel(width, height);
-      piskel.addLayer(layer);
-
-      return piskel;
+      var layer = pskl.model.Layer.fromFrames('Layer 1', frames);
+      return pskl.model.Piskel.fromLayers([layer]);
     }
   };
 })();

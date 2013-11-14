@@ -1,0 +1,179 @@
+diff --git a/js/controller/settings/ImportController.js b/js/controller/settings/ImportController.js
+index 3fca048..3c94eaa 100644
+--- a/js/controller/settings/ImportController.js
++++ b/js/controller/settings/ImportController.js
+@@ -153,15 +153,12 @@
+         var image = pskl.utils.ImageResizer.resize(this.importedImage_, w, h, smoothing);
+         var frame = pskl.utils.FrameUtils.createFromImage(image);
+ 
+-        // TODO : juliandescottes : here we only want to create a layer from an array of frames, and create a new piskel using this layer
+-        // we shouldn't use the deserializer for this ... it's only working because it's falling back to the old implementation
+-        // bad, very bad
+-        var deserializer = new pskl.utils.Deserializer([frame], function (piskel) {
+-          pskl.app.piskelController.setPiskel(piskel);
+-          pskl.app.animationController.setFPS(Constants.DEFAULT.FPS);
+-          this.reset_();
+-        }.bind(this));
+-        deserializer.deserialize();
++        var layer = pskl.model.Layer.fromFrames('Layer 1', [frame]);
++        var piskel = pskl.model.Piskel.fromLayers([layer]);
++
++        pskl.app.piskelController.setPiskel(piskel);
++        pskl.app.animationController.setFPS(Constants.DEFAULT.FPS);
++        this.reset_();
+       }
+     }
+   };
+diff --git a/js/model/Layer.js b/js/model/Layer.js
+index 0132e6a..464b1f9 100644
+--- a/js/model/Layer.js
++++ b/js/model/Layer.js
+@@ -10,6 +10,12 @@
+     }
+   };
+ 
++  ns.Layer.fromFrames = function (name, frames) {
++    var layer = new ns.Layer(name);
++    frames.forEach(layer.addFrame.bind(layer));
++    return layer;
++  };
++
+   ns.Layer.prototype.getName = function () {
+     return this.name;
+   };
+diff --git a/js/model/Piskel.js b/js/model/Piskel.js
+index 7748408..223d618 100644
+--- a/js/model/Piskel.js
++++ b/js/model/Piskel.js
+@@ -21,6 +21,18 @@
+     }
+   };
+ 
++  ns.Piskel.fromLayers = function (layers) {
++    var piskel = null;
++    if (layers.length > 0 && layers[0].length() > 0) {
++      var sampleFrame = layers[0].getFrameAt(0);
++      piskel = new pskl.model.Piskel(sampleFrame.getWidth(), sampleFrame.getHeight());
++      layers.forEach(piskel.addLayer.bind(piskel));
++    } else {
++      throw 'Piskel.fromLayers expects array of non empty pskl.model.Layer as first argument'
++    }
++    return piskel;
++  };
++
+   ns.Piskel.prototype.getLayers = function () {
+     return this.layers;
+   };
+diff --git a/js/utils/Deserializer.js b/js/utils/Deserializer.js
+index 5a248ba..56f64e4 100644
+--- a/js/utils/Deserializer.js
++++ b/js/utils/Deserializer.js
+@@ -41,9 +41,7 @@
+       var frames = pskl.utils.LayerUtils.createFromImage(image, layerData.frameCount);
+ 
+       // 6 - add each image to the layer
+-      frames.forEach(function (frame) {
+-        layer.addFrame(pskl.model.Frame.fromPixelGrid(frame));
+-      });
++      frames.forEach(layer.addFrame.bind(layer));
+ 
+       this.onLayerLoaded_();
+     }.bind(this);
+diff --git a/js/utils/FrameUtils.js b/js/utils/FrameUtils.js
+index b20d84f..055c8ed 100644
+--- a/js/utils/FrameUtils.js
++++ b/js/utils/FrameUtils.js
+@@ -41,9 +41,9 @@
+ 
+     createFromImageData : function (imageData, width, height) {
+       // Draw the zoomed-up pixels to a different canvas context
+-      var frame = [];
++      var grid = [];
+       for (var x = 0 ; x < width ; x++){
+-        frame[x] = [];
++        grid[x] = [];
+         for (var y = 0 ; y < height ; y++){
+           // Find the starting index in the one-dimensional image data
+           var i = (y * width + x)*4;
+@@ -52,13 +52,13 @@
+           var b = imageData[i+2];
+           var a = imageData[i+3];
+           if (a < 125) {
+-            frame[x][y] = Constants.TRANSPARENT_COLOR;
++            grid[x][y] = Constants.TRANSPARENT_COLOR;
+           } else {
+-            frame[x][y] = pskl.utils.FrameUtils.rgbToHex(r,g,b);
++            grid[x][y] = pskl.utils.FrameUtils.rgbToHex(r,g,b);
+           }
+         }
+       }
+-      return frame;
++      return pskl.model.Frame.fromPixelGrid(grid);
+     },
+ 
+     /**
+diff --git a/js/utils/Serializer.js b/js/utils/Serializer.js
+index d103ad7..5841e6b 100644
+--- a/js/utils/Serializer.js
++++ b/js/utils/Serializer.js
+@@ -30,38 +30,6 @@
+       });
+     },
+ 
+-    deserializeLayer : function (layerString) {
+-      var layerData = JSON.parse(layerString);
+-      var layer = new pskl.model.Layer(layerData.name);
+-      // TODO : nasty trick to keep the whole loading process lazily synchronous
+-      // 1 - adding a fake frame so that the rendering can start
+-      layer.addFrame(new pskl.model.Frame(32,32));
+-
+-      // 2 - create an image to load the base64PNG representing the layer
+-      var base64PNG = layerData.base64PNG;
+-      var image = new Image();
+-
+-      // 3 - attach the onload callback that will be triggered asynchronously
+-      image.onload = function () {
+-        // 6 - remove the fake frame
+-        layer.removeFrameAt(0);
+-
+-        // 7 - extract the frames from the loaded image
+-        var frames = pskl.utils.LayerUtils.createFromImage(image, layerData.frameCount);
+-
+-        // 8 - add each image to the layer
+-        frames.forEach(function (frame) {
+-          layer.addFrame(pskl.model.Frame.fromPixelGrid(frame));
+-        });
+-      };
+-
+-      // 4 - set the source of the image
+-      image.src = base64PNG;
+-
+-      // 5 - return a pointer to the new layer instance, which at this point contains a fake frame
+-      return layer;
+-    },
+-
+     backwardDeserializer_v1 : function (data) {
+       var piskelData = data.piskel;
+       var piskel = new pskl.model.Piskel(piskelData.width, piskelData.height);
+@@ -93,16 +61,12 @@
+     /**
+      * Deserialize old piskel framesheets. Initially piskels were stored as arrays of frames : "[[pixelGrid],[pixelGrid],[pixelGrid]]".
+      */
+-    backwardDeserializer_ : function (frames) {
+-      var layer = new pskl.model.Layer('Layer 1');
+-      frames.forEach(function (frame) {
+-        layer.addFrame(pskl.model.Frame.fromPixelGrid(frame));
++    backwardDeserializer_ : function (pixelGrids) {
++      var frames = pixelGrids.map(function (grid) {
++        return pskl.model.Frame.fromPixelGrid(grid);
+       });
+-      var width = layer.getFrameAt(0).getWidth(), height = layer.getFrameAt(0).getHeight();
+-      var piskel = new pskl.model.Piskel(width, height);
+-      piskel.addLayer(layer);
+-
+-      return piskel;
++      var layer = pskl.model.Layer.fromFrames('Layer 1', frames);
++      return pskl.model.Piskel.fromLayers([layer]);
+     }
+   };
+ })();

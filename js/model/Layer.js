@@ -10,6 +10,19 @@
     }
   };
 
+  /**
+   * Create a Layer instance from an already existing set a Frames
+   * @static
+   * @param  {String} name layer's name
+   * @param  {Array<pskl.model.Frame>} frames should all have the same dimensions
+   * @return {pskl.model.Layer}
+   */
+  ns.Layer.fromFrames = function (name, frames) {
+    var layer = new ns.Layer(name);
+    frames.forEach(layer.addFrame.bind(layer));
+    return layer;
+  };
+
   ns.Layer.prototype.getName = function () {
     return this.name;
   };

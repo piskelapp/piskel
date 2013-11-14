@@ -41,9 +41,7 @@
       var frames = pskl.utils.LayerUtils.createFromImage(image, layerData.frameCount);
 
       // 6 - add each image to the layer
-      frames.forEach(function (frame) {
-        layer.addFrame(pskl.model.Frame.fromPixelGrid(frame));
-      });
+      frames.forEach(layer.addFrame.bind(layer));
 
       this.onLayerLoaded_();
     }.bind(this);

@@ -41,9 +41,9 @@
 
     createFromImageData : function (imageData, width, height) {
       // Draw the zoomed-up pixels to a different canvas context
-      var frame = [];
+      var grid = [];
       for (var x = 0 ; x < width ; x++){
-        frame[x] = [];
+        grid[x] = [];
         for (var y = 0 ; y < height ; y++){
           // Find the starting index in the one-dimensional image data
           var i = (y * width + x)*4;
@@ -52,13 +52,13 @@
           var b = imageData[i+2];
           var a = imageData[i+3];
           if (a < 125) {
-            frame[x][y] = Constants.TRANSPARENT_COLOR;
+            grid[x][y] = Constants.TRANSPARENT_COLOR;
           } else {
-            frame[x][y] = pskl.utils.FrameUtils.rgbToHex(r,g,b);
+            grid[x][y] = pskl.utils.FrameUtils.rgbToHex(r,g,b);
           }
         }
       }
-      return frame;
+      return pskl.model.Frame.fromPixelGrid(grid);
     },
 
     /**
