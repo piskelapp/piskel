@@ -57,9 +57,15 @@
    * @private
    */
   ns.ToolController.prototype.selectTool_ = function(tool) {
-    console.log("Selecting Tool:" , this.currentSelectedTool.name);
     this.currentSelectedTool = tool;
     this.activateToolOnStage_(this.currentSelectedTool);
+
+    var selectedToolElement = $('#tool-section .tool-icon.selected');
+    var toolElement = $('[data-tool-id=' + tool.instance.toolId + ']');
+
+    selectedToolElement.removeClass('selected');
+    toolElement.addClass('selected');
+
     $.publish(Events.TOOL_SELECTED, [tool.instance]);
   };
 
@@ -75,10 +81,6 @@
       var tool = this.getToolById_(toolId);
       if (tool) {
         this.selectTool_(tool);
-
-        // Show tool as selected:
-        $('#tool-section .tool-icon.selected').removeClass('selected');
-        clickedTool.addClass('selected');
       }
     }
   };
