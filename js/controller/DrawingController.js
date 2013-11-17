@@ -43,7 +43,6 @@
     this.initMouseBehavior();
 
     $.subscribe(Events.TOOL_SELECTED, $.proxy(function(evt, toolBehavior) {
-      console.log("Tool selected: ", toolBehavior);
       this.currentToolBehavior = toolBehavior;
       this.overlayFrame.clear();
     }, this));
@@ -107,7 +106,6 @@
 
     if(event.button == 2) { // right click
       this.isRightClicked = true;
-      $.publish(Events.CANVAS_RIGHT_CLICKED);
     }
 
     var coords = this.getSpriteCoordinates(event);
