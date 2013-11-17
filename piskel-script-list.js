@@ -62,6 +62,7 @@ exports.scripts = [
   // Services
   "js/service/LocalStorageService.js",
   "js/service/HistoryService.js",
+  "js/service/keyboard/KeycodeTranslator.js",
   "js/service/KeyboardEventService.js",
   "js/service/ImageUploadService.js",
 
