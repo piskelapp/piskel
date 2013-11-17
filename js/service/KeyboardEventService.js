@@ -11,6 +11,13 @@
         "v" : Events.PASTE
       }
     };
+
+    // See ToolController
+    // TODO : Allow for other classes to register new shortcuts
+    var toolKeys = 'pveblrcmzso'.split('');
+    toolKeys.forEach(function (key) {
+      this.keyboardActions_[key] = Events.SELECT_TOOL;
+    }.bind(this));
   };
 
 
@@ -34,12 +41,14 @@
     if(charkey) {
       if (this.isCtrlKeyPressed_(evt)) {
         eventToTrigger = this.keyboardActions_.ctrl[charkey];
+      } else {
+        eventToTrigger = this.keyboardActions_[charkey];
       }
-    }
 
-    if(eventToTrigger) {
-      $.publish(eventToTrigger);
-      evt.preventDefault();
+      if(eventToTrigger) {
+        $.publish(eventToTrigger, charkey);
+        evt.preventDefault();
+      }
     }
   };
 

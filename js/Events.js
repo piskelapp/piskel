@@ -40,9 +40,11 @@ var Events = {
   SHOW_NOTIFICATION: "SHOW_NOTIFICATION",
   HIDE_NOTIFICATION: "HIDE_NOTIFICATION",
 
+  // Events triggered by keyboard
   UNDO: "UNDO",
   REDO: "REDO",
   CUT: "CUT",
   COPY: "COPY",
-  PASTE: "PASTE"
+  PASTE: "PASTE",
+  SELECT_TOOL : "SELECT_TOOL"
 };

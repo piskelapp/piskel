@@ -1,7 +1,7 @@
 (function () {
   var specialKeys = {};
 
-  var ns = $.namespace('service.keyboard');
+  var ns = $.namespace('pskl.service.keyboard');
 
   ns.KeycodeTranslator= {
     toChar : function (keycode) {
