@@ -1,5 +1,7 @@
 (function () {
-  var specialKeys = {};
+  var specialKeys = {
+    191 : "?"
+  };
 
   var ns = $.namespace('pskl.service.keyboard');
 

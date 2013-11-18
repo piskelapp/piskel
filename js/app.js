@@ -57,6 +57,9 @@
       this.toolController = new pskl.controller.ToolController();
       this.toolController.init();
 
+      this.cheatsheetService = new pskl.service.keyboard.CheatsheetService();
+      this.cheatsheetService.init();
+
       this.paletteController = new pskl.controller.PaletteController();
       this.paletteController.init();
 

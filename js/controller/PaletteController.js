@@ -18,6 +18,8 @@
       this.updateColorPicker_(color, $('#secondary-color-picker'));
     }, this));
 
+    $.subscribe(Events.SWAP_COLORS, this.onSwapColorsEvent_.bind(this));
+
     // Initialize colorpickers:
     var colorPicker = $('#color-picker');
     colorPicker.val(Constants.DEFAULT_PEN_COLOR);
@@ -43,6 +45,15 @@
     }
   };
 
+  ns.PaletteController.prototype.onSwapColorsEvent_ = function () {
+    // TODO : juliandescottes : oooooh huge crap ... palette controller doesn't know which colors are selected !!
+    // JC Denton commented : 'what a shame'
+    var primaryColor = pskl.app.drawingController.primaryColor;
+    var secondaryColor = pskl.app.drawingController.secondaryColor;
+    $.publish(Events.PRIMARY_COLOR_SELECTED, [secondaryColor]);
+    $.publish(Events.SECONDARY_COLOR_SELECTED, [primaryColor]);
+  };
+
   /**
    * @private
    */
@@ -64,7 +75,7 @@
     if (color == Constants.TRANSPARENT_COLOR) {
       // We can set the current palette color to transparent.
       // You can then combine this transparent color with an advanced
-      // tool for customized deletions. 
+      // tool for customized deletions.
       // Eg: bucket + transparent: Delete a colored area
       //     Stroke + transparent: hollow out the equivalent of a stroke
 

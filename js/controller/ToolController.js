@@ -109,7 +109,7 @@
    */
   ns.ToolController.prototype.createToolMarkup_ = function() {
     var currentTool, toolMarkup = '', extraClass;
-    // TODO(vincz): Tools rendering order is not enforced by the data stucture (this.toolInstances), fix that.
+
     for(var i = 0 ; i < this.tools.length ; i++) {
       var tool = this.tools[i];
       var instance = tool.instance;

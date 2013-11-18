@@ -9,7 +9,11 @@
         "x" : Events.CUT,
         "c" : Events.COPY,
         "v" : Events.PASTE
-      }
+      },
+      "shift" : {
+        "?" : Events.TOGGLE_HELP
+      },
+      "x" : Events.SWAP_COLORS
     };
 
     // See ToolController
@@ -41,6 +45,8 @@
     if(charkey) {
       if (this.isCtrlKeyPressed_(evt)) {
         eventToTrigger = this.keyboardActions_.ctrl[charkey];
+      } else if (this.isShiftKeyPressed_(evt)) {
+        eventToTrigger = this.keyboardActions_.shift[charkey];
       } else {
         eventToTrigger = this.keyboardActions_[charkey];
       }
@@ -54,6 +60,10 @@
 
   ns.KeyboardEventService.prototype.isCtrlKeyPressed_ = function (evt) {
     return this.isMac_() ? evt.metaKey : evt.ctrlKey;
+  };
+
+  ns.KeyboardEventService.prototype.isShiftKeyPressed_ = function (evt) {
+    return evt.shiftKey;
   };
 
   ns.KeyboardEventService.prototype.isMac_ = function () {
