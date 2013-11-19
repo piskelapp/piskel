@@ -35,8 +35,7 @@
 
   ns.CheatsheetService.prototype.initMarkup_ = function () {
     this.initMarkupForTools_();
-
-
+    this.initMarkupForMisc_();
   };
 
   ns.CheatsheetService.prototype.initMarkupForTools_ = function () {
