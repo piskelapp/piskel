@@ -56,7 +56,7 @@
     }
   };
 
-  this.initMarkupForMisc_ = function () {
+  ns.CheatsheetService.prototype.initMarkupForMisc_ = function () {
     var shortcutTemplate = pskl.utils.Template.get('cheatsheet-shortcut-template');
 
     var miscShortcutsContainer = $('.cheatsheet-misc-shortcuts', this.cheatsheetEl_).get(0);
