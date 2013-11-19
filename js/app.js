@@ -21,7 +21,10 @@
 
       this.piskelController = new pskl.controller.PiskelController(piskel);
 
-      this.drawingController = new pskl.controller.DrawingController(this.piskelController, $('#drawing-canvas-container'));
+      this.paletteController = new pskl.controller.PaletteController();
+      this.paletteController.init();
+
+      this.drawingController = new pskl.controller.DrawingController(this.piskelController, this.paletteController, $('#drawing-canvas-container'));
       this.drawingController.init();
 
       this.animationController = new pskl.controller.AnimatedPreviewController(this.piskelController, $('#preview-canvas-container'));
@@ -60,8 +63,6 @@
       this.cheatsheetService = new pskl.service.keyboard.CheatsheetService();
       this.cheatsheetService.init();
 
-      this.paletteController = new pskl.controller.PaletteController();
-      this.paletteController.init();
 
       var drawingLoop = new pskl.rendering.DrawingLoop();
       drawingLoop.addCallback(this.render, this);

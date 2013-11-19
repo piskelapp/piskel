@@ -1,7 +1,10 @@
 (function () {
   var ns = $.namespace("pskl.controller");
 
-  ns.PaletteController = function () {};
+  ns.PaletteController = function () {
+    this.primaryColor =  Constants.DEFAULT_PEN_COLOR;
+    this.secondaryColor =  Constants.TRANSPARENT_COLOR;
+  };
 
   /**
    * @public
@@ -10,24 +13,18 @@
     var transparentColorPalette = $(".palette-color[data-color=TRANSPARENT]");
     transparentColorPalette.mouseup($.proxy(this.onPaletteColorClick_, this));
 
-    $.subscribe(Events.PRIMARY_COLOR_UPDATED, $.proxy(function(evt, color) {
-      this.updateColorPicker_(color, $('#color-picker'));
-    }, this));
-
-    $.subscribe(Events.SECONDARY_COLOR_UPDATED, $.proxy(function(evt, color) {
-      this.updateColorPicker_(color, $('#secondary-color-picker'));
-    }, this));
-
+    $.subscribe(Events.SELECT_PRIMARY_COLOR, this.onColorSelected_.bind(this, {isPrimary:true}));
+    $.subscribe(Events.SELECT_SECONDARY_COLOR, this.onColorSelected_.bind(this, {isPrimary:false}));
     $.subscribe(Events.SWAP_COLORS, this.onSwapColorsEvent_.bind(this));
 
     // Initialize colorpickers:
     var colorPicker = $('#color-picker');
-    colorPicker.val(Constants.DEFAULT_PEN_COLOR);
+    colorPicker.val(this.primaryColor);
     colorPicker.change({isPrimary : true}, $.proxy(this.onPickerChange_, this));
 
 
     var secondaryColorPicker = $('#secondary-color-picker');
-    secondaryColorPicker.val(Constants.TRANSPARENT_COLOR);
+    secondaryColorPicker.val(this.secondaryColor);
     secondaryColorPicker.change({isPrimary : false}, $.proxy(this.onPickerChange_, this));
 
     window.jscolor.install();
@@ -39,19 +36,46 @@
   ns.PaletteController.prototype.onPickerChange_ = function(evt, isPrimary) {
     var inputPicker = $(evt.target);
     if(evt.data.isPrimary) {
-      $.publish(Events.PRIMARY_COLOR_SELECTED, [inputPicker.val()]);
+      this.setPrimaryColor(inputPicker.val());
     } else {
-      $.publish(Events.SECONDARY_COLOR_SELECTED, [inputPicker.val()]);
+      this.setSecondaryColor(inputPicker.val());
     }
   };
 
+  /**
+   * @private
+   */
+  ns.PaletteController.prototype.onColorSelected_ = function(args, evt, color) {
+    var inputPicker = $(evt.target);
+    if(args.isPrimary) {
+      this.setPrimaryColor(color);
+    } else {
+      this.setSecondaryColor(color);
+    }
+  };
+
+  ns.PaletteController.prototype.setPrimaryColor = function (color) {
+    this.primaryColor = color;
+    this.updateColorPicker_(color, $('#color-picker'));
+  };
+
+  ns.PaletteController.prototype.setSecondaryColor = function (color) {
+    this.secondaryColor = color;
+    this.updateColorPicker_(color, $('#secondary-color-picker'));
+  };
+
+  ns.PaletteController.prototype.getPrimaryColor = function () {
+    return this.primaryColor;
+  };
+
+  ns.PaletteController.prototype.getSecondaryColor = function () {
+    return this.secondaryColor;
+  };
+
   ns.PaletteController.prototype.onSwapColorsEvent_ = function () {
-    // TODO : juliandescottes : oooooh huge crap ... palette controller doesn't know which colors are selected !!
-    // JC Denton commented : 'what a shame'
-    var primaryColor = pskl.app.drawingController.primaryColor;
-    var secondaryColor = pskl.app.drawingController.secondaryColor;
-    $.publish(Events.PRIMARY_COLOR_SELECTED, [secondaryColor]);
-    $.publish(Events.SECONDARY_COLOR_SELECTED, [primaryColor]);
+    var primaryColor = this.getPrimaryColor();
+    this.setPrimaryColor(this.getSecondaryColor());
+    this.setSecondaryColor(primaryColor);
   };
 
   /**

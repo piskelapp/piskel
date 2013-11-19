@@ -1,10 +1,12 @@
 (function () {
   var ns = $.namespace("pskl.controller");
-  ns.DrawingController = function (piskelController, container) {
+  ns.DrawingController = function (piskelController, paletteController,container) {
     /**
      * @public
      */
     this.piskelController = piskelController;
+
+    this.paletteController = paletteController;
 
     /**
      * @public
@@ -35,8 +37,6 @@
     this.isRightClicked = false;
     this.previousMousemoveTime = 0;
     this.currentToolBehavior = null;
-    this.primaryColor =  Constants.DEFAULT_PEN_COLOR;
-    this.secondaryColor =  Constants.TRANSPARENT_COLOR;
   };
 
   ns.DrawingController.prototype.init = function () {
@@ -45,21 +45,6 @@
     $.subscribe(Events.TOOL_SELECTED, $.proxy(function(evt, toolBehavior) {
       this.currentToolBehavior = toolBehavior;
       this.overlayFrame.clear();
-    }, this));
-
-    /**
-     * TODO(grosbouddha): Primary/secondary color state are kept in this general controller.
-     *     Find a better place to store that. Perhaps PaletteController?
-     */
-    $.subscribe(Events.PRIMARY_COLOR_SELECTED, $.proxy(function(evt, color) {
-      console.log("Primary color selected: ", color);
-      this.primaryColor = color;
-      $.publish(Events.PRIMARY_COLOR_UPDATED, [color]);
-    }, this));
-    $.subscribe(Events.SECONDARY_COLOR_SELECTED, $.proxy(function(evt, color) {
-      console.log("Secondary color selected: ", color);
-      this.secondaryColor = color;
-      $.publish(Events.SECONDARY_COLOR_UPDATED, [color]);
     }, this));
 
     $(window).resize($.proxy(this.startDPIUpdateTimer_, this));
@@ -221,9 +206,9 @@
    */
   ns.DrawingController.prototype.getCurrentColor_ = function () {
     if(this.isRightClicked) {
-      return this.secondaryColor;
+      return this.paletteController.getSecondaryColor();
     } else {
-      return this.primaryColor;
+      return this.paletteController.getPrimaryColor();
     }
   };
 
