@@ -15,6 +15,11 @@
     this.currentFrameIndex = 0;
 
     this.layerIdCounter = 1;
+  };
+
+  ns.PiskelController.prototype.init = function () {
+    pskl.app.shortcutService.addShortcut('up', this.selectPreviousFrame.bind(this));
+    pskl.app.shortcutService.addShortcut('down', this.selectNextFrame.bind(this));
 
     $.publish(Events.PISKEL_RESET);
     $.publish(Events.FRAME_SIZE_CHANGED);
@@ -114,6 +119,20 @@
   ns.PiskelController.prototype.setCurrentFrameIndex = function (index) {
     this.currentFrameIndex = index;
     $.publish(Events.PISKEL_RESET);
+  };
+
+  ns.PiskelController.prototype.selectNextFrame = function () {
+    var nextIndex = this.currentFrameIndex + 1;
+    if (nextIndex < this.getFrameCount()) {
+      this.setCurrentFrameIndex(nextIndex);
+    }
+  };
+
+  ns.PiskelController.prototype.selectPreviousFrame = function () {
+    var nextIndex = this.currentFrameIndex - 1;
+    if (nextIndex >= 0) {
+      this.setCurrentFrameIndex(nextIndex);
+    }
   };
 
   ns.PiskelController.prototype.setCurrentLayerIndex = function (index) {

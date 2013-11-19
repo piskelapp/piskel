@@ -11,7 +11,10 @@
       throw 'cheatsheetEl_ DOM element could not be retrieved';
     }
     this.initMarkup_();
+    pskl.app.shortcutService.addShortcut('shift+?', this.toggleCheatsheet_.bind(this));
+    pskl.app.shortcutService.addShortcut('?', this.toggleCheatsheet_.bind(this));
     $.subscribe(Events.TOGGLE_HELP, this.toggleCheatsheet_.bind(this));
+    $.subscribe(Events.ESCAPE, this.onEscape_.bind(this));
   };
 
   ns.CheatsheetService.prototype.toggleCheatsheet_ = function () {
@@ -22,13 +25,21 @@
     }
   };
 
+  ns.CheatsheetService.prototype.onEscape_ = function () {
+    if (this.isDisplayed_) {
+      this.hideCheatsheet_();
+    }
+  };
+
   ns.CheatsheetService.prototype.showCheatsheet_ = function () {
+    pskl.app.shortcutService.addShortcut('ESC', this.hideCheatsheet_.bind(this));
     this.cheatsheetEl_.style.display = 'block';
     this.isDisplayed_ = true;
   };
 
 
   ns.CheatsheetService.prototype.hideCheatsheet_ = function () {
+    pskl.app.shortcutService.removeShortcut('ESC');
     this.cheatsheetEl_.style.display = 'none';
     this.isDisplayed_ = false;
   };
@@ -65,11 +76,16 @@
     };
     var miscKeys = [
       toDescriptor('X', 'Swap primary/secondary colors'),
+      toDescriptor('D', 'Reset default colors'),
       toDescriptor('ctrl + X', 'Cut selection'),
       toDescriptor('ctrl + C', 'Copy selection'),
       toDescriptor('ctrl + V', 'Paste selection'),
       toDescriptor('ctrl + Z', 'Undo'),
-      toDescriptor('ctrl + Y', 'Redo')
+      toDescriptor('ctrl + Y', 'Redo'),
+      toDescriptor('&#65514;', 'Select previous frame'), /* ASCII for up-arrow */
+      toDescriptor('&#65516;', 'Select next frame'), /* ASCII for down-arrow */
+      toDescriptor('N', 'Create new frame'),
+      toDescriptor('shift + ?', 'Open/Close this popup')
     ];
     for (var i = 0 ; i < miscKeys.length ; i++) {
       var key = miscKeys[i];

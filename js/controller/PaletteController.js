@@ -15,7 +15,9 @@
 
     $.subscribe(Events.SELECT_PRIMARY_COLOR, this.onColorSelected_.bind(this, {isPrimary:true}));
     $.subscribe(Events.SELECT_SECONDARY_COLOR, this.onColorSelected_.bind(this, {isPrimary:false}));
-    $.subscribe(Events.SWAP_COLORS, this.onSwapColorsEvent_.bind(this));
+
+    pskl.app.shortcutService.addShortcut('X', this.swapColors.bind(this));
+    pskl.app.shortcutService.addShortcut('D', this.resetColors.bind(this));
 
     // Initialize colorpickers:
     var colorPicker = $('#color-picker');
@@ -72,10 +74,15 @@
     return this.secondaryColor;
   };
 
-  ns.PaletteController.prototype.onSwapColorsEvent_ = function () {
+  ns.PaletteController.prototype.swapColors = function () {
     var primaryColor = this.getPrimaryColor();
     this.setPrimaryColor(this.getSecondaryColor());
     this.setSecondaryColor(primaryColor);
+  };
+
+  ns.PaletteController.prototype.resetColors = function () {
+    this.setPrimaryColor(Constants.DEFAULT_PEN_COLOR);
+    this.setSecondaryColor(Constants.TRANSPARENT_COLOR);
   };
 
   /**

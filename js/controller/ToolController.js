@@ -29,15 +29,14 @@
    * @public
    */
   ns.ToolController.prototype.init = function() {
-    this.createToolMarkup_();
+    this.createToolsDom_();
+    this.addKeyboardShortcuts_();
 
     // Initialize tool:
     // Set SimplePen as default selected tool:
     this.selectTool_(this.tools[0]);
     // Activate listener on tool panel:
     $("#tool-section").click($.proxy(this.onToolIconClicked_, this));
-
-    $.subscribe(Events.SELECT_TOOL, $.proxy(this.onKeyboardShortcut_, this));
   };
 
   /**
@@ -85,7 +84,7 @@
     }
   };
 
-  ns.ToolController.prototype.onKeyboardShortcut_ = function(evt, charkey) {
+  ns.ToolController.prototype.onKeyboardShortcut_ = function(charkey) {
     for (var i = 0 ; i < this.tools.length ; i++) {
       var tool = this.tools[i];
       if (tool.shortcut.toLowerCase() === charkey.toLowerCase()) {
@@ -107,20 +106,32 @@
   /**
    * @private
    */
-  ns.ToolController.prototype.createToolMarkup_ = function() {
-    var currentTool, toolMarkup = '', extraClass;
-
+  ns.ToolController.prototype.createToolsDom_ = function() {
+    var toolMarkup = '';
     for(var i = 0 ; i < this.tools.length ; i++) {
-      var tool = this.tools[i];
-      var instance = tool.instance;
-
-      extraClass = instance.toolId;
-      if (this.currentSelectedTool == tool) {
-        extraClass = extraClass + " selected";
-      }
-      toolMarkup += '<li rel="tooltip" data-placement="right" class="tool-icon ' + extraClass + '" data-tool-id="' + instance.toolId +
-              '" title="' + instance.helpText + '"></li>';
+      toolMarkup += this.getToolMarkup_(this.tools[i]);
     }
     $('#tools-container').html(toolMarkup);
+  };
+
+  /**
+   * @private
+   */
+  ns.ToolController.prototype.getToolMarkup_ = function(tool) {
+    var instance = tool.instance;
+
+    var classList = ['tool-icon', instance.toolId];
+    if (this.currentSelectedTool == tool) {
+      classList.push('selected');
+    }
+
+    return '<li rel="tooltip" data-placement="right" class="' + classList.join(' ') + '" data-tool-id="' + instance.toolId +
+              '" title="' + instance.helpText + '"></li>';
+  };
+
+  ns.ToolController.prototype.addKeyboardShortcuts_ = function () {
+    for(var i = 0 ; i < this.tools.length ; i++) {
+      pskl.app.shortcutService.addShortcut(this.tools[i].shortcut, this.onKeyboardShortcut_.bind(this));
+    }
   };
 })();

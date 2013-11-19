@@ -39,12 +39,5 @@ var Events = {
   HIDE_NOTIFICATION: "HIDE_NOTIFICATION",
 
   // Events triggered by keyboard
-  UNDO: "UNDO",
-  REDO: "REDO",
-  CUT: "CUT",
-  COPY: "COPY",
-  PASTE: "PASTE",
-  SELECT_TOOL : "SELECT_TOOL",
-  TOGGLE_HELP : "TOGGLE_HELP",
-  SWAP_COLORS : "SWAP_COLORS"
+  SELECT_TOOL : "SELECT_TOOL"
 };
