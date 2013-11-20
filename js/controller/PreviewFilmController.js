@@ -19,7 +19,7 @@
   };
 
   ns.PreviewFilmController.prototype.addFrame = function () {
-    this.piskelController.addEmptyFrame();
+    this.piskelController.addFrame();
     this.piskelController.setCurrentFrameIndex(this.piskelController.getFrameCount() - 1);
     this.updateScrollerOverflows();
   };

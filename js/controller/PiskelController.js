@@ -20,6 +20,8 @@
   ns.PiskelController.prototype.init = function () {
     pskl.app.shortcutService.addShortcut('up', this.selectPreviousFrame.bind(this));
     pskl.app.shortcutService.addShortcut('down', this.selectNextFrame.bind(this));
+    pskl.app.shortcutService.addShortcut('n', this.addFrameAtCurrentIndex.bind(this));
+    pskl.app.shortcutService.addShortcut('shift+n', this.duplicateCurrentFrame.bind(this));
 
     $.publish(Events.PISKEL_RESET);
     $.publish(Events.FRAME_SIZE_CHANGED);
@@ -68,15 +70,21 @@
     return !!this.getCurrentLayer().getFrameAt(index);
   };
 
-  // backward from framesheet
-  ns.PiskelController.prototype.getFrameByIndex =
-    ns.PiskelController.prototype.getMergedFrameAt;
+  ns.PiskelController.prototype.addFrame = function () {
+    this.addFrameAt(this.getFrameCount());
+  };
 
-  ns.PiskelController.prototype.addEmptyFrame = function () {
+  ns.PiskelController.prototype.addFrameAtCurrentIndex = function () {
+    this.addFrameAt(this.currentFrameIndex + 1);
+  };
+
+  ns.PiskelController.prototype.addFrameAt = function (index) {
     var layers = this.getLayers();
     layers.forEach(function (l) {
-      l.addFrame(this.createEmptyFrame_());
+      l.addFrameAt(this.createEmptyFrame_(), index);
     }.bind(this));
+
+    $.publish(Events.PISKEL_RESET);
   };
 
   ns.PiskelController.prototype.createEmptyFrame_ = function () {
@@ -97,11 +105,17 @@
     $.publish(Events.PISKEL_RESET);
   };
 
+  ns.PiskelController.prototype.duplicateCurrentFrame = function () {
+    this.duplicateFrameAt(this.currentFrameIndex);
+  };
+
   ns.PiskelController.prototype.duplicateFrameAt = function (index) {
     var layers = this.getLayers();
     layers.forEach(function (l) {
       l.duplicateFrameAt(index);
     });
+
+    $.publish(Events.PISKEL_RESET);
   };
 
   ns.PiskelController.prototype.moveFrame = function (fromIndex, toIndex) {
