@@ -14,7 +14,7 @@ var Constants = {
   PREVIEW_FILM_SIZE : 120,
 
   DEFAULT_PEN_COLOR : '#000000',
-  TRANSPARENT_COLOR : 'TRANSPARENT',
+  TRANSPARENT_COLOR : 'rgba(0, 0, 0, 0)',
 
   /*
    * Fake semi-transparent color used to highlight transparent

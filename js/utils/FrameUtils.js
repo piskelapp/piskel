@@ -48,7 +48,7 @@
           var b = imgData[i+2];
           var a = imgData[i+3];
           if (a < 125) {
-            frame[x][y] = "TRANSPARENT";
+            frame[x][y] = Constants.TRANSPARENT_COLOR;
           } else {
             frame[x][y] = this.rgbToHex(r,g,b);
           }

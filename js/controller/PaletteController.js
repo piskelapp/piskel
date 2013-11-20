@@ -18,17 +18,25 @@
       this.updateColorPicker_(color, $('#secondary-color-picker'));
     }, this));
 
+    var spectrumCfg = {
+      showPalette: true,
+      palette: [
+        ['rgba(0,0,0,0)']
+      ],
+      clickoutFiresChange : true,
+      beforeShow : function(tinycolor) {
+        tinycolor.setAlpha(1);
+      }
+    };
+
     // Initialize colorpickers:
     var colorPicker = $('#color-picker');
-    colorPicker.val(Constants.DEFAULT_PEN_COLOR);
+    colorPicker.spectrum($.extend({color: Constants.DEFAULT_PEN_COLOR}, spectrumCfg));
     colorPicker.change({isPrimary : true}, $.proxy(this.onPickerChange_, this));
 
-
     var secondaryColorPicker = $('#secondary-color-picker');
-    secondaryColorPicker.val(Constants.TRANSPARENT_COLOR);
+    secondaryColorPicker.spectrum($.extend({color: Constants.TRANSPARENT_COLOR}, spectrumCfg));
     secondaryColorPicker.change({isPrimary : false}, $.proxy(this.onPickerChange_, this));
-
-    window.jscolor.install();
   };
 
   /**
@@ -64,17 +72,17 @@
     if (color == Constants.TRANSPARENT_COLOR) {
       // We can set the current palette color to transparent.
       // You can then combine this transparent color with an advanced
-      // tool for customized deletions. 
+      // tool for customized deletions.
       // Eg: bucket + transparent: Delete a colored area
       //     Stroke + transparent: hollow out the equivalent of a stroke
 
       // The colorpicker can't be set to a transparent state.
       // We set its background to white and insert the
       // string "TRANSPARENT" to mimic this state:
-      colorPicker[0].color.fromString("#fff");
+      colorPicker.spectrum("set", Constants.TRANSPARENT_COLOR);
       colorPicker.val(Constants.TRANSPARENT_COLOR);
     } else {
-      colorPicker[0].color.fromString(color);
+      colorPicker.spectrum("set", color);
     }
   };
 })();

@@ -6,6 +6,7 @@ exports.scripts = [
   // GIF Encoding libraries
   "js/lib/gif/gif.worker.js",
   "js/lib/gif/gif.js",
+  "js/lib/spectrum/spectrum.js",
 
   // Application wide configuration
   "js/Constants.js",
@@ -21,7 +22,6 @@ exports.scripts = [
   "js/utils/Serializer.js",
   "js/utils/Template.js",
   "js/utils/UserSettings.js",
-  "js/lib/jsColor_1_4_0/jscolor.js",
 
   // Application libraries-->
   "js/rendering/DrawingLoop.js",
