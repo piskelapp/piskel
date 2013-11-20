@@ -85,6 +85,7 @@
       toDescriptor('&#65514;', 'Select previous frame'), /* ASCII for up-arrow */
       toDescriptor('&#65516;', 'Select next frame'), /* ASCII for down-arrow */
       toDescriptor('N', 'Create new frame'),
+      toDescriptor('shift + N', 'Duplicate selected frame'),
       toDescriptor('shift + ?', 'Open/Close this popup')
     ];
     for (var i = 0 ; i < miscKeys.length ; i++) {
