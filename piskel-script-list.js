@@ -50,7 +50,6 @@ exports.scripts = [
   "js/rendering/frame/FrameRenderer.js",
   "js/rendering/frame/CachedFrameRenderer.js",
   "js/rendering/CanvasRenderer.js",
-  "js/rendering/FrameRenderer.js",
   "js/rendering/FramesheetRenderer.js",
   "js/rendering/PiskelRenderer.js",
 
