@@ -27,6 +27,9 @@
       this.animationController = new pskl.controller.AnimatedPreviewController(this.piskelController, $('#preview-canvas-container'));
       this.animationController.init();
 
+      this.minimapController = new pskl.controller.MinimapController(this.piskelController, this.animationController, this.drawingController, $('#preview-canvas-container'));
+      this.minimapController.init();
+
       this.previewsController = new pskl.controller.PreviewFilmController(this.piskelController, $('#preview-list'));
       this.previewsController.init();
 
@@ -234,9 +237,9 @@
 
     getFirstFrameAsPng : function () {
       var firstFrame = this.piskelController.getFrameAt(0);
-      var frameRenderer = new pskl.rendering.CanvasRenderer(firstFrame, 1);
-      frameRenderer.drawTransparentAs('rgba(0,0,0,0)');
-      var firstFrameCanvas = frameRenderer.render().canvas;
+      var canvasRenderer = new pskl.rendering.CanvasRenderer(firstFrame, 1);
+      canvasRenderer.drawTransparentAs('rgba(0,0,0,0)');
+      var firstFrameCanvas = canvasRenderer.render().canvas;
       return firstFrameCanvas.toDataURL("image/png");
     },
 

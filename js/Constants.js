@@ -8,8 +8,8 @@ var Constants = {
 
   MODEL_VERSION : 2,
 
-  MAX_HEIGHT : 128,
-  MAX_WIDTH : 128,
+  MAX_HEIGHT : 1024,
+  MAX_WIDTH : 1024,
 
   PREVIEW_FILM_SIZE : 120,
 
@@ -46,7 +46,11 @@ var Constants = {
   IMAGE_SERVICE_GET_URL : 'http://screenletstore.appspot.com/img/',
 
   GRID_STROKE_WIDTH: 1,
+  ZOOMED_OUT_BACKGROUND_COLOR : '#A0A0A0',
 
   LEFT_BUTTON : 'left_button_1',
-  RIGHT_BUTTON : 'right_button_2'
+  RIGHT_BUTTON : 'right_button_2',
+  MOUSEMOVE_THROTTLING : 10,
+
+  ABSTRACT_FUNCTION : function () {throw 'abstract method should be implemented';}
 };

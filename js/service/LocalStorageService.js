@@ -45,9 +45,14 @@
    */
   ns.LocalStorageService.prototype.restoreFromLocalStorage_ = function() {
     var framesheet = JSON.parse(window.localStorage.snapShot);
+<<<<<<< HEAD
     pskl.utils.serialization.Deserializer.deserialize(framesheet, function (piskel) {
       pskl.app.piskelController.setPiskel(piskel);
     });
+=======
+    var piskel = pskl.utils.Serializer.createPiskel(framesheet);
+    pskl.app.piskelController.setPiskel(piskel);
+>>>>>>> master
   };
 
   /**

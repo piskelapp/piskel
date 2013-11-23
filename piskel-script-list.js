@@ -13,7 +13,9 @@ exports.scripts = [
 
   // Libraries
   "js/utils/core.js",
+  "js/utils/UserAgent.js",
   "js/utils/CanvasUtils.js",
+  "js/utils/Math.js",
   "js/utils/FileUtils.js",
   "js/utils/FrameUtils.js",
   "js/utils/LayerUtils.js",
@@ -42,6 +44,11 @@ exports.scripts = [
   "js/selection/ShapeSelection.js",
 
   // Rendering
+  "js/rendering/AbstractRenderer.js",
+  "js/rendering/CompositeRenderer.js",
+  "js/rendering/layer/LayersRenderer.js",
+  "js/rendering/frame/FrameRenderer.js",
+  "js/rendering/frame/CachedFrameRenderer.js",
   "js/rendering/CanvasRenderer.js",
   "js/rendering/FrameRenderer.js",
   "js/rendering/FramesheetRenderer.js",
@@ -53,6 +60,7 @@ exports.scripts = [
   "js/controller/PreviewFilmController.js",
   "js/controller/LayersListController.js",
   "js/controller/AnimatedPreviewController.js",
+  "js/controller/MinimapController.js",
   "js/controller/ToolController.js",
   "js/controller/PaletteController.js",
   "js/controller/NotificationController.js",
