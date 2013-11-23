@@ -147,31 +147,31 @@
     },
 
     /**
-     * Calculate and return the maximal DPI to display a picture in a given container.
+     * Calculate and return the maximal zoom level to display a picture in a given container.
      *
      * @param container jQueryObject Container where the picture should be displayed
      * @param number pictureHeight height in pixels of the picture to display
      * @param number pictureWidth width in pixels of the picture to display
-     * @return number maximal dpi
+     * @return number maximal zoom
      */
-    calculateDPIForContainer : function (container, pictureHeight, pictureWidth) {
-      return this.calculateDPI(container.height(), container.width(), pictureHeight, pictureWidth);
+    calculateZoomForContainer : function (container, pictureHeight, pictureWidth) {
+      return this.calculateZoom(container.height(), container.width(), pictureHeight, pictureWidth);
     },
 
     /**
-     * Calculate and return the maximal DPI to display a picture for a given height and width.
+     * Calculate and return the maximal zoom to display a picture for a given height and width.
      *
      * @param height number Height available to display the picture
      * @param width number Width available to display the picture
      * @param number pictureHeight height in pixels of the picture to display
      * @param number pictureWidth width in pixels of the picture to display
-     * @return number maximal dpi
+     * @return number maximal zoom
      */
-    calculateDPI : function (height, width, pictureHeight, pictureWidth) {
-      var heightBoundDpi = Math.floor(height / pictureHeight),
-        widthBoundDpi = Math.floor(width / pictureWidth);
+    calculateZoom : function (height, width, pictureHeight, pictureWidth) {
+      var heightRatio = Math.floor(height / pictureHeight),
+        widthRatio = Math.floor(width / pictureWidth);
 
-      return Math.min(heightBoundDpi, widthBoundDpi);
+      return Math.min(heightRatio, widthRatio);
     }
   };
 })();

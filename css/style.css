@@ -177,6 +177,10 @@ body {
   font-size: 0;
 }
 
+.preview-container .canvas-container {
+  overflow : hidden;
+}
+
 .preview-container canvas {
   border : 0px Solid transparent;
 }
@@ -192,6 +196,7 @@ body {
 
 .range-fps {
   overflow: hidden;
+  width: 120px;
 }
 
 /**

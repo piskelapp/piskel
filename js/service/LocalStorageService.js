@@ -36,7 +36,7 @@
    * @private
    */
   ns.LocalStorageService.prototype.persistToLocalStorage_ = function() {
-    
+
     console.log('[LocalStorage service]: Snapshot stored');
     window.localStorage.snapShot = this.piskelController.serialize();
   };
@@ -45,9 +45,9 @@
    * @private
    */
   ns.LocalStorageService.prototype.restoreFromLocalStorage_ = function() {
-
-    this.piskelController.deserialize(window.localStorage.snapShot);
-    this.piskelController.setCurrentFrameIndex(0);
+    var framesheet = JSON.parse(window.localStorage.snapShot);
+    var piskel = pskl.utils.Serializer.createPiskel(framesheet);
+    pskl.app.piskelController.setPiskel(piskel);
   };
 
   /**
