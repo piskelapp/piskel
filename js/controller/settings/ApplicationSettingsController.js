@@ -1,6 +1,6 @@
 (function () {
   var ns = $.namespace("pskl.controller.settings");
-  
+
   ns.ApplicationSettingsController = function () {};
 
   /**
@@ -18,21 +18,26 @@
     $('#show-grid').prop('checked', show_grid);
 
     // Handle grid display changes:
-    $('#show-grid').change($.proxy(function(evt) {
-      var checked = $('#show-grid').prop('checked');
-      pskl.UserSettings.set(pskl.UserSettings.SHOW_GRID, checked);
-    }, this));
+    $('#show-grid').change(this.onShowGridClick.bind(this));
 
     // Handle canvas background changes:
-    $('#background-picker-wrapper').click(function(evt) {
-      var target = $(evt.target).closest('.background-picker');
-      if (target.length) {
-        var backgroundClass = target.data('background-class');
-        pskl.UserSettings.set(pskl.UserSettings.CANVAS_BACKGROUND, backgroundClass);
-
-        $('.background-picker').removeClass('selected');
-        target.addClass('selected');
-      }
-    });
+    $('#background-picker-wrapper').click(this.onBackgroundClick.bind(this));
   };
+
+  ns.ApplicationSettingsController.prototype.onShowGridClick = function (evt) {
+    var checked = $('#show-grid').prop('checked');
+    pskl.UserSettings.set(pskl.UserSettings.SHOW_GRID, checked);
+  };
+
+  ns.ApplicationSettingsController.prototype.onBackgroundClick = function (evt) {
+    var target = $(evt.target).closest('.background-picker');
+    if (target.length) {
+      var backgroundClass = target.data('background-class');
+      pskl.UserSettings.set(pskl.UserSettings.CANVAS_BACKGROUND, backgroundClass);
+
+      $('.background-picker').removeClass('selected');
+      target.addClass('selected');
+    }
+  };
+
 })();

@@ -1,6 +1,6 @@
 (function () {
   var ns = $.namespace("pskl.controller");
-  ns.AnimatedPreviewController = function (piskelController, container, dpi) {
+  ns.AnimatedPreviewController = function (piskelController, container) {
     this.piskelController = piskelController;
     this.container = container;
 
@@ -9,12 +9,16 @@
 
     this.setFPS(Constants.DEFAULT.FPS);
 
+    var zoom = this.calculateZoom_();
+    var frame = this.piskelController.getCurrentFrame();
     var renderingOptions = {
-      "dpi": this.calculateDPI_()
+      "zoom": zoom,
+      "height" : frame.getHeight() * zoom,
+      "width" : frame.getWidth() * zoom
     };
-    this.renderer = new pskl.rendering.FrameRenderer(this.container, renderingOptions);
+    this.renderer = new pskl.rendering.frame.FrameRenderer(this.container, renderingOptions);
 
-    $.subscribe(Events.FRAME_SIZE_CHANGED, this.updateDPI_.bind(this));
+    $.subscribe(Events.FRAME_SIZE_CHANGED, this.updateZoom_.bind(this));
   };
 
   ns.AnimatedPreviewController.prototype.init = function () {
@@ -52,20 +56,21 @@
   };
 
   /**
-   * Calculate the preview DPI depending on the framesheet size
+   * Calculate the preview zoom depending on the framesheet size
    */
-  ns.AnimatedPreviewController.prototype.calculateDPI_ = function () {
+  ns.AnimatedPreviewController.prototype.calculateZoom_ = function () {
+    var frame = this.piskelController.getCurrentFrame();
     var previewSize = 200,
-      framePixelHeight = this.piskelController.getCurrentFrame().getHeight(),
-      framePixelWidth = this.piskelController.getCurrentFrame().getWidth();
-    // TODO (julz) : should have a utility to get a Size from framesheet easily (what about empty framesheets though ?)
+      hZoom = previewSize / frame.getHeight(),
+      wZoom = previewSize / frame.getWidth();
 
-    //return pskl.PixelUtils.calculateDPIForContainer($(".preview-container"), framePixelHeight, framePixelWidth);
-    return pskl.PixelUtils.calculateDPI(previewSize, previewSize, framePixelHeight, framePixelWidth);
+    return Math.min(hZoom, wZoom);
   };
 
-  ns.AnimatedPreviewController.prototype.updateDPI_ = function () {
-    this.dpi = this.calculateDPI_();
-    this.renderer.setDPI(this.dpi);
+  ns.AnimatedPreviewController.prototype.updateZoom_ = function () {
+    var frame = this.piskelController.getCurrentFrame();
+    var zoom = this.calculateZoom_();
+    this.renderer.setZoom(zoom);
+    this.renderer.setDisplaySize(frame.getWidth() * zoom, frame.getHeight() * zoom);
   };
 })();
