@@ -96,9 +96,10 @@
 
     finishInitAppEngine_ : function () {
       if (pskl.framesheetData_ && pskl.framesheetData_.content) {
-        var piskel = pskl.utils.Serializer.createPiskel(pskl.framesheetData_.content);
-        pskl.app.piskelController.setPiskel(piskel);
-        pskl.app.animationController.setFPS(pskl.framesheetData_.fps);
+        pskl.utils.serialization.Deserializer.deserialize(pskl.framesheetData_.content, function (piskel) {
+          pskl.app.piskelController.setPiskel(piskel);
+          pskl.app.animationController.setFPS(pskl.framesheetData_.fps);
+        });
       }
     },
 
@@ -159,10 +160,11 @@
       xhr.responseType = 'text';
       xhr.onload = function (e) {
         var res = JSON.parse(this.responseText);
-        var piskel = pskl.utils.Serializer.createPiskel(res.framesheet);
-        pskl.app.piskelController.setPiskel(piskel);
-        pskl.app.animationController.setFPS(res.fps);
-        $.publish(Events.HIDE_NOTIFICATION);
+        pskl.utils.serialization.Deserializer.deserialize(res.framesheet, function (piskel) {
+          pskl.app.piskelController.setPiskel(piskel);
+          pskl.app.animationController.setFPS(res.fps);
+          $.publish(Events.HIDE_NOTIFICATION);
+        });
       };
 
       xhr.onerror = function () {
@@ -242,8 +244,8 @@
     },
 
     getFramesheetAsPng : function () {
-      var renderer = new pskl.rendering.SpritesheetRenderer(this.piskelController);
-      var framesheetCanvas = renderer.render();
+      var renderer = new pskl.rendering.PiskelRenderer(this.piskelController);
+      var framesheetCanvas = renderer.renderAsCanvas();
       return framesheetCanvas.toDataURL("image/png");
     },
 

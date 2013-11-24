@@ -153,10 +153,11 @@
         var image = pskl.utils.ImageResizer.resize(this.importedImage_, w, h, smoothing);
         var frame = pskl.utils.FrameUtils.createFromImage(image);
 
-        var piskel = pskl.utils.Serializer.createPiskel([frame]);
+        var layer = pskl.model.Layer.fromFrames('Layer 1', [frame]);
+        var piskel = pskl.model.Piskel.fromLayers([layer]);
+
         pskl.app.piskelController.setPiskel(piskel);
         pskl.app.animationController.setFPS(Constants.DEFAULT.FPS);
-
         this.reset_();
       }
     }

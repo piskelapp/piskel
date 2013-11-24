@@ -19,24 +19,20 @@
   ns.CanvasRenderer.prototype.render = function  () {
     var canvas = this.createCanvas_();
     var context = canvas.getContext('2d');
-    for(var col = 0, width = this.frame.getWidth(); col < width; col++) {
-      for(var row = 0, height = this.frame.getHeight(); row < height; row++) {
-        var color = this.frame.getPixel(col, row);
-        this.renderPixel_(color, col, row, context);
-      }
-    }
 
-    return context;
+    this.frame.forEachPixel(function (color, x, y) {
+      this.renderPixel_(color, x, y, context);
+    }.bind(this));
+
+    return canvas;
   };
 
-  ns.CanvasRenderer.prototype.renderPixel_ = function (color, col, row, context) {
-
+  ns.CanvasRenderer.prototype.renderPixel_ = function (color, x, y, context) {
     if(color == Constants.TRANSPARENT_COLOR) {
       color = this.transparentColor_;
     }
     context.fillStyle = color;
-
-    context.fillRect(col * this.zoom, row * this.zoom, this.zoom, this.zoom);
+    context.fillRect(x * this.zoom, y * this.zoom, this.zoom, this.zoom);
   };
 
   ns.CanvasRenderer.prototype.createCanvas_ = function () {

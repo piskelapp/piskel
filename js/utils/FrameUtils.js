@@ -107,25 +107,29 @@
 
       context.drawImage(image, 0,0,w,h,0,0,w,h);
       var imgData = context.getImageData(0,0,w,h).data;
+      return pskl.utils.FrameUtils.createFromImageData(imgData, w, h);
+    },
+
+    createFromImageData : function (imageData, width, height) {
       // Draw the zoomed-up pixels to a different canvas context
-      var frame = [];
-      for (var x=0;x<image.width;++x){
-        frame[x] = [];
-        for (var y=0;y<image.height;++y){
+      var grid = [];
+      for (var x = 0 ; x < width ; x++){
+        grid[x] = [];
+        for (var y = 0 ; y < height ; y++){
           // Find the starting index in the one-dimensional image data
-          var i = (y*image.width + x)*4;
-          var r = imgData[i  ];
-          var g = imgData[i+1];
-          var b = imgData[i+2];
-          var a = imgData[i+3];
+          var i = (y * width + x)*4;
+          var r = imageData[i  ];
+          var g = imageData[i+1];
+          var b = imageData[i+2];
+          var a = imageData[i+3];
           if (a < 125) {
-            frame[x][y] = "TRANSPARENT";
+            grid[x][y] = Constants.TRANSPARENT_COLOR;
           } else {
-            frame[x][y] = this.rgbToHex(r,g,b);
+            grid[x][y] = pskl.utils.FrameUtils.rgbToHex(r,g,b);
           }
         }
       }
-      return frame;
+      return pskl.model.Frame.fromPixelGrid(grid);
     },
 
     /**

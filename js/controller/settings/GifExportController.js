@@ -114,8 +114,9 @@
 
     for (var i = 0; i < this.piskelController.getFrameCount(); i++) {
       var frame = this.piskelController.getFrameAt(i);
-      var renderer = new pskl.rendering.CanvasRenderer(frame, zoom);
-      gif.addFrame(renderer.render(), {
+      var canvasRenderer = new pskl.rendering.CanvasRenderer(frame, zoom);
+      var canvas = canvasRenderer.render();
+      gif.addFrame(canvas.getContext('2d'), {
         delay: 1000 / fps
       });
     }

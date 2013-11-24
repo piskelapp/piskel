@@ -6,7 +6,7 @@ var Constants = {
     FPS : 12
   },
 
-  MODEL_VERSION : 1,
+  MODEL_VERSION : 2,
 
   MAX_HEIGHT : 1024,
   MAX_WIDTH : 1024,

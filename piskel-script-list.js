@@ -18,11 +18,15 @@ exports.scripts = [
   "js/utils/Math.js",
   "js/utils/FileUtils.js",
   "js/utils/FrameUtils.js",
+  "js/utils/LayerUtils.js",
   "js/utils/ImageResizer.js",
   "js/utils/PixelUtils.js",
-  "js/utils/Serializer.js",
   "js/utils/Template.js",
   "js/utils/UserSettings.js",
+  "js/utils/serialization/Serializer.js",
+  "js/utils/serialization/Deserializer.js",
+  "js/utils/serialization/backward/Deserializer_v0.js",
+  "js/utils/serialization/backward/Deserializer_v1.js",
   "js/lib/jsColor_1_4_0/jscolor.js",
 
   // Application libraries-->
@@ -46,7 +50,8 @@ exports.scripts = [
   "js/rendering/frame/FrameRenderer.js",
   "js/rendering/frame/CachedFrameRenderer.js",
   "js/rendering/CanvasRenderer.js",
-  "js/rendering/SpritesheetRenderer.js",
+  "js/rendering/FramesheetRenderer.js",
+  "js/rendering/PiskelRenderer.js",
 
   // Controllers
   "js/controller/PiskelController.js",
