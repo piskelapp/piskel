@@ -7,8 +7,9 @@
   ns.HistoryService.prototype.init = function () {
 
     $.subscribe(Events.TOOL_RELEASED, this.saveState.bind(this));
-    $.subscribe(Events.UNDO, this.undo.bind(this));
-    $.subscribe(Events.REDO, this.redo.bind(this));
+
+    pskl.app.shortcutService.addShortcut('ctrl+Z', this.undo.bind(this));
+    pskl.app.shortcutService.addShortcut('ctrl+Y', this.redo.bind(this));
   };
 
   ns.HistoryService.prototype.saveState = function () {

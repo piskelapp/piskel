@@ -10,6 +10,9 @@
   ns.app = {
 
     init : function () {
+      this.shortcutService = new pskl.service.keyboard.ShortcutService();
+      this.shortcutService.init();
+
       var size = this.readSizeFromURL_();
       var piskel = new pskl.model.Piskel(size.width, size.height);
 
@@ -20,8 +23,12 @@
       piskel.addLayer(layer);
 
       this.piskelController = new pskl.controller.PiskelController(piskel);
+      this.piskelController.init();
 
-      this.drawingController = new pskl.controller.DrawingController(this.piskelController, $('#drawing-canvas-container'));
+      this.paletteController = new pskl.controller.PaletteController();
+      this.paletteController.init();
+
+      this.drawingController = new pskl.controller.DrawingController(this.piskelController, this.paletteController, $('#drawing-canvas-container'));
       this.drawingController.init();
 
       this.animationController = new pskl.controller.AnimatedPreviewController(this.piskelController, $('#preview-canvas-container'));
@@ -39,14 +46,14 @@
       this.settingsController = new pskl.controller.settings.SettingsController(this.piskelController);
       this.settingsController.init();
 
+      this.toolController = new pskl.controller.ToolController();
+      this.toolController.init();
+
       this.selectionManager = new pskl.selection.SelectionManager(this.piskelController);
       this.selectionManager.init();
 
       this.historyService = new pskl.service.HistoryService(this.piskelController);
       this.historyService.init();
-
-      this.keyboardEventService = new pskl.service.KeyboardEventService();
-      this.keyboardEventService.init();
 
       this.notificationController = new pskl.controller.NotificationController();
       this.notificationController.init();
@@ -57,11 +64,10 @@
       this.imageUploadService = new pskl.service.ImageUploadService();
       this.imageUploadService.init();
 
-      this.toolController = new pskl.controller.ToolController();
-      this.toolController.init();
 
-      this.paletteController = new pskl.controller.PaletteController();
-      this.paletteController.init();
+      this.cheatsheetService = new pskl.service.keyboard.CheatsheetService();
+      this.cheatsheetService.init();
+
 
       var drawingLoop = new pskl.rendering.DrawingLoop();
       drawingLoop.addCallback(this.render, this);
