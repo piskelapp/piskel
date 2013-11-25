@@ -1,13 +1,20 @@
 (function () {
   var ns = $.namespace("pskl.service");
 
-  ns.LocalStorageService = function (framesheet_) {
+  ns.LocalStorageService = function (piskelController) {
 
-    if(framesheet_ === undefined) {
-        throw "Bad LocalStorageService initialization: <undefined frameSheet>";
+    if(piskelController === undefined) {
+      throw "Bad LocalStorageService initialization: <undefined piskelController>";
     }
-    this.framesheet = framesheet_;
+    this.piskelController = piskelController;
     this.localStorageThrottler_ = null;
+  };
+
+  /**
+   * @public
+   */
+  ns.LocalStorageService.prototype.init = function(piskelController) {
+    $.subscribe(Events.LOCALSTORAGE_REQUEST, $.proxy(this.persistToLocalStorageRequest_, this));
   };
 
   /**
@@ -29,18 +36,18 @@
    * @private
    */
   ns.LocalStorageService.prototype.persistToLocalStorage_ = function() {
-    
     console.log('[LocalStorage service]: Snapshot stored');
-    window.localStorage.snapShot = this.framesheet.serialize();
+    window.localStorage.snapShot = this.piskelController.serialize();
   };
 
   /**
    * @private
    */
   ns.LocalStorageService.prototype.restoreFromLocalStorage_ = function() {
-
-    this.framesheet.deserialize(window.localStorage.snapShot);
-    this.framesheet.setCurrentFrameIndex(0);
+    var framesheet = JSON.parse(window.localStorage.snapShot);
+    pskl.utils.serialization.Deserializer.deserialize(framesheet, function (piskel) {
+      pskl.app.piskelController.setPiskel(piskel);
+    });
   };
 
   /**
@@ -49,13 +56,6 @@
   ns.LocalStorageService.prototype.cleanLocalStorage_ = function() {
     console.log('[LocalStorage service]: Snapshot removed');
     delete window.localStorage.snapShot;
-  };
-
-  /**
-   * @public
-   */
-  ns.LocalStorageService.prototype.init = function(framesheet_) {
-    $.subscribe(Events.LOCALSTORAGE_REQUEST, $.proxy(this.persistToLocalStorageRequest_, this));
   };
 
   /**

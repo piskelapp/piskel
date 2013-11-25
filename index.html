@@ -3,186 +3,60 @@
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-
   <title>Piskel</title>
   <meta name="description" content="">
   <meta name="author" content="Julian Descottes">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" type="text/css" href="css/reset.css">
   <link rel="stylesheet" type="text/css" href="css/style.css">
+  <link rel="stylesheet" type="text/css" href="css/forms.css">
+  <link rel="stylesheet" type="text/css" href="css/settings.css">
   <link rel="stylesheet" type="text/css" href="css/tools.css">
+  <link rel="stylesheet" type="text/css" href="css/cheatsheet.css">
   <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap.css">
   <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap-tooltip-custom.css">
   <link rel="stylesheet" type="text/css" href="css/preview-film-section.css">
+  <link rel="stylesheet" type="text/css" href="css/minimap.css">
 </head>
 <body>
+  <script type="text/javascript" src="js/lib/iframeLoader.js"></script>
   <div class="piskel-name-container">
     <input readonly id="piskel-name" type="text" value=""/>
   </div>
   <div id="main-wrapper" class="main-wrapper">
-    <div class="sticky-section left-sticky-section" id="tool-section">
-      <div class="sticky-section-wrap">
-        <div class="vertical-centerer">
-          <ul id="tools-container" class="tools-wrapper"></ul>
-          <div class="palette-wrapper">
-            <div class="tool-icon tool-color-picker">
-              <input id="color-picker" class="color {hash:true}" type="text" value="" />
-              <input id="secondary-color-picker" class="secondary-color-picker color {hash:true}" type="text" value="" />
-            </div>
-            <div class="tool-icon tool-palette">
-              <div id="palette" class="palette">
-                <span class="tool-icon palette-color transparent-color" data-color="TRANSPARENT" title="Transparent"></span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div id="application-action-section" class="sticky-section right-sticky-section">
-      <div class="sticky-section-wrap">
-        <div class="vertical-centerer">
-          <div id="settings" class="tool-icon gear-icon" title="Preferences" rel="tooltip" data-placement="left"></div>
-          <a class="tool-icon gallery-icon" title="Visit gallery" href="http://juliandescottes.github.io/piskel-website/" rel="tooltip" data-placement="left" target="_blank"></a>
-          <div class="tool-icon save-icon" title="Save to gallery" onclick="pskl.app.storeSheet()" rel="tooltip" data-placement="left" ></div>
-          <div class="tool-icon upload-cloud-icon" title="Upload as an animated GIF" onclick="pskl.app.uploadAsAnimatedGIF()" rel="tooltip" data-placement="left">
-            <span class="label">GIF</span>
-          </div>
-          <div class="tool-icon upload-cloud-icon" title="Upload as a spritesheet PNG" onclick="pskl.app.uploadAsSpritesheetPNG()" rel="tooltip" data-placement="left">
-            <span class="label">PNG</span>
-          </div>
-        </div>
-        <div class="drawer vertical-centerer">
-          <div class="drawer-content">
-            <div class="settings-section">
-              <div class="settings-title">
-                Canvas settings:
-              </div>
-              <div class="settings-item">
-                <label>Background:</label>
-                <div id="background-picker-wrapper" class="background-picker-wrapper">
-                  <div class="background-picker light-picker-background" data-background-class="light-canvas-background"
-                        rel="tooltip" data-placement="bottom" title="light / high contrast">
-                  </div>
-                  <div class="background-picker medium-picker-background" data-background-class="medium-canvas-background"
-                        rel="tooltip" data-placement="bottom" title="medium / high contrast">
-                  </div>
-                  <div class="background-picker lowcont-medium-picker-background" data-background-class="lowcont-medium-canvas-background"
-                        rel="tooltip" data-placement="bottom" title="medium / low contrast">
-                  </div>
-                  <div class="background-picker lowcont-dark-picker-background" data-background-class="lowcont-dark-canvas-background"
-                        rel="tooltip" data-placement="bottom" title="dark / low contrast">
-                  </div>
-                </div>
-              </div>
-              <div class="settings-item">
-                <label for="show-grid">Show grid:</label> <input id="show-grid" type="checkbox"/>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <iframe src="templates/drawing-tools.html" onload="iframeloader.onLoad(event)" data-iframe-loader="display"></iframe>
 
     <div id="column-wrapper" class="column-wrapper">
       <div class='column left-column'>
-        
-        <!-- List of frames: -->
-        <div id="preview-list-wrapper" class="preview-list-wrapper">
-          <div id="preview-list-scroller" class="preview-list-scroller">
-            <ul class="preview-list" id="preview-list"></ul>
-          </div>
-          <div class="top-overflow"></div>
-          <div class="bottom-overflow"></div>
-        </div>
+        <iframe src="templates/frames-list.html" onload="iframeloader.onLoad(event)" data-iframe-loader="display"></iframe>
       </div>
 
       <div class='column main-column'>
-        <!-- Drawing area: -->
         <div id="drawing-canvas-container" class="drawing-canvas-container canvas-container">
           <div class="canvas-background"></div>
         </div>
       </div>
 
       <div class="column right-column">
-        <!-- Animation preview: -->
-        <div class='preview-container'>
-          <div id='preview-canvas-container' class="canvas-container">
-            <div class="canvas-background"></div>
+        <iframe src="templates/preview.html" onload="iframeloader.onLoad(event)" data-iframe-loader="display"></iframe>
+        <iframe src="templates/layers-list.html" onload="iframeloader.onLoad(event)" data-iframe-loader="display"></iframe>
+      </div>
+    </div>
+
+    <div id="application-action-section" data-pskl-controller="settings" class="sticky-section right-sticky-section">
+      <div class="sticky-section-wrap">
+        <iframe src="templates/settings.html" onload="iframeloader.onLoad(event)" data-iframe-loader="display"></iframe>
+        <div class="drawer vertical-centerer">
+          <div class="drawer-content" id="drawer-container">
+            <iframe src="templates/settings/application.html" onload="iframeloader.onLoad(event)" data-iframe-loader="store"></iframe>
+            <iframe src="templates/settings/export-gif.html" onload="iframeloader.onLoad(event)"  data-iframe-loader="store"></iframe>
+            <iframe src="templates/settings/import.html" onload="iframeloader.onLoad(event)"  data-iframe-loader="store"></iframe>
           </div>
-          <div>
-            <span id="display-fps" class="display-fps">12 FPS</span>
-            <input id="preview-fps" class="range-fps" type="range" min="1" max="24" value="12"/>
-          </div>   
         </div>
       </div>
     </div>
   </div>
-  
-  <!-- Core libraries: -->
-  <script src="js/lib/jquery-1.8.0.js"></script>
-  <script src="js/lib/jquery-ui-1.10.3.custom.js"></script>
-  <script src="js/lib/pubsub.js"></script>
-  <script src="js/lib/bootstrap/bootstrap.js"></script> 
-
-  <!-- GIF Encoding libraries -->
-  <script src="js/lib/gif/GIFEncoder.js"></script>
-  <script src="js/lib/gif/b64.js"></script>
-  <script src="js/lib/gif/NeuQuant.js"></script>
-  <script src="js/lib/gif/LZWEncoder.js"></script>
-
-  <!-- Application wide configuration -->
-  <script src="js/Constants.js"></script>
-  <script src="js/Events.js"></script>
-  
-  <!-- Libraries -->
-  <script src="js/utils/core.js"></script>
-  <script src="js/utils/PixelUtils.js"></script>
-  <script src="js/utils/CanvasUtils.js"></script>
-  <script src="js/utils/UserSettings.js"></script>
-  <script src="js/lib/jsColor_1_4_0/jscolor.js"></script>
-
-  <!-- Application libraries-->
-  <script src="js/rendering/DrawingLoop.js"></script>
-  <!-- Models -->
-  <script src="js/model/Frame.js"></script>
-  <script src="js/model/FrameSheet.js"></script>
-  <script src="js/selection/SelectionManager.js"></script>
-  <script src="js/selection/BaseSelection.js"></script>
-  <script src="js/selection/RectangularSelection.js"></script>
-  <script src="js/selection/ShapeSelection.js"></script>
-  <!-- Rendering -->
-  <script src="js/rendering/CanvasRenderer.js"></script>
-  <script src="js/rendering/FrameRenderer.js"></script>
-  <script src="js/rendering/SpritesheetRenderer.js"></script>
-  <!-- Controllers -->
-  <script src="js/controller/DrawingController.js"></script>
-  <script src="js/controller/PreviewFilmController.js"></script>
-  <script src="js/controller/AnimatedPreviewController.js"></script>
-  <script src="js/controller/ToolController.js"></script>
-  <script src="js/controller/PaletteController.js"></script>
-  <script src="js/controller/NotificationController.js"></script>
-  <script src="js/controller/SettingsController.js"></script>
-  <!-- Services -->
-  <script src="js/service/LocalStorageService.js"></script>
-  <script src="js/service/HistoryService.js"></script>
-  <script src="js/service/KeyboardEventService.js"></script>  
-  <!-- Tools-->
-  <script src="js/drawingtools/BaseTool.js"></script>
-  <script src="js/drawingtools/SimplePen.js"></script>
-  <script src="js/drawingtools/VerticalMirrorPen.js"></script>
-  <script src="js/drawingtools/Eraser.js"></script>
-  <script src="js/drawingtools/Stroke.js"></script>
-  <script src="js/drawingtools/PaintBucket.js"></script>
-  <script src="js/drawingtools/Rectangle.js"></script>
-  <script src="js/drawingtools/Circle.js"></script>
-  <script src="js/drawingtools/Move.js"></script>
-  <script src="js/drawingtools/selectiontools/BaseSelect.js"></script>
-  <script src="js/drawingtools/selectiontools/RectangleSelect.js"></script>
-  <script src="js/drawingtools/selectiontools/ShapeSelect.js"></script>
-  <script src="js/drawingtools/ColorPicker.js"></script>
-  
-  <!-- Application controller and initialization -->
-  <script src="js/piskel.js"></script>
+  <iframe src="templates/cheatsheet.html" onload="iframeloader.onLoad(event)" data-iframe-loader="display"></iframe>
+  <script type="text/javascript" src="piskel-boot.js"></script>
 </body>
 </html>

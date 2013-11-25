@@ -2,8 +2,34 @@
   var ns = $.namespace("pskl.controller");
 
   ns.PaletteController = function () {
-    this.paletteRoot = null;
-    this.paletteColors = [];
+    this.primaryColor =  Constants.DEFAULT_PEN_COLOR;
+    this.secondaryColor =  Constants.TRANSPARENT_COLOR;
+  };
+
+  /**
+   * @public
+   */
+  ns.PaletteController.prototype.init = function() {
+    var transparentColorPalette = $(".palette-color[data-color=TRANSPARENT]");
+    transparentColorPalette.mouseup($.proxy(this.onPaletteColorClick_, this));
+
+    $.subscribe(Events.SELECT_PRIMARY_COLOR, this.onColorSelected_.bind(this, {isPrimary:true}));
+    $.subscribe(Events.SELECT_SECONDARY_COLOR, this.onColorSelected_.bind(this, {isPrimary:false}));
+
+    pskl.app.shortcutService.addShortcut('X', this.swapColors.bind(this));
+    pskl.app.shortcutService.addShortcut('D', this.resetColors.bind(this));
+
+    // Initialize colorpickers:
+    var colorPicker = $('#color-picker');
+    colorPicker.val(this.primaryColor);
+    colorPicker.change({isPrimary : true}, $.proxy(this.onPickerChange_, this));
+
+
+    var secondaryColorPicker = $('#secondary-color-picker');
+    secondaryColorPicker.val(this.secondaryColor);
+    secondaryColorPicker.change({isPrimary : false}, $.proxy(this.onPickerChange_, this));
+
+    window.jscolor.install();
   };
 
   /**
@@ -12,29 +38,51 @@
   ns.PaletteController.prototype.onPickerChange_ = function(evt, isPrimary) {
     var inputPicker = $(evt.target);
     if(evt.data.isPrimary) {
-      $.publish(Events.PRIMARY_COLOR_SELECTED, [inputPicker.val()]);
-    }
-    else {
-      $.publish(Events.SECONDARY_COLOR_SELECTED, [inputPicker.val()]);
-    }
-  };
-  
-  /**
-   * @private
-   */
-  ns.PaletteController.prototype.addColorToPalette_ = function (color) {
-    if (this.paletteColors.indexOf(color) == -1 && color != Constants.TRANSPARENT_COLOR) {
-      this.paletteColors.push(color);
+      this.setPrimaryColor(inputPicker.val());
+    } else {
+      this.setSecondaryColor(inputPicker.val());
     }
   };
 
   /**
    * @private
    */
-  ns.PaletteController.prototype.addColorsToPalette_ = function (colors) {
-    for(var color in colors) {
-      this.addColorToPalette_(color);
+  ns.PaletteController.prototype.onColorSelected_ = function(args, evt, color) {
+    var inputPicker = $(evt.target);
+    if(args.isPrimary) {
+      this.setPrimaryColor(color);
+    } else {
+      this.setSecondaryColor(color);
     }
+  };
+
+  ns.PaletteController.prototype.setPrimaryColor = function (color) {
+    this.primaryColor = color;
+    this.updateColorPicker_(color, $('#color-picker'));
+  };
+
+  ns.PaletteController.prototype.setSecondaryColor = function (color) {
+    this.secondaryColor = color;
+    this.updateColorPicker_(color, $('#secondary-color-picker'));
+  };
+
+  ns.PaletteController.prototype.getPrimaryColor = function () {
+    return this.primaryColor;
+  };
+
+  ns.PaletteController.prototype.getSecondaryColor = function () {
+    return this.secondaryColor;
+  };
+
+  ns.PaletteController.prototype.swapColors = function () {
+    var primaryColor = this.getPrimaryColor();
+    this.setPrimaryColor(this.getSecondaryColor());
+    this.setSecondaryColor(primaryColor);
+  };
+
+  ns.PaletteController.prototype.resetColors = function () {
+    this.setPrimaryColor(Constants.DEFAULT_PEN_COLOR);
+    this.setSecondaryColor(Constants.TRANSPARENT_COLOR);
   };
 
   /**
@@ -58,7 +106,7 @@
     if (color == Constants.TRANSPARENT_COLOR) {
       // We can set the current palette color to transparent.
       // You can then combine this transparent color with an advanced
-      // tool for customized deletions. 
+      // tool for customized deletions.
       // Eg: bucket + transparent: Delete a colored area
       //     Stroke + transparent: hollow out the equivalent of a stroke
 
@@ -70,45 +118,6 @@
     } else {
       colorPicker[0].color.fromString(color);
     }
-  };
-
-  /**
-   * @public
-   */
-  ns.PaletteController.prototype.init = function(framesheet) {
-      
-    this.paletteRoot = $("#palette");
-    this.framesheet = framesheet;
-
-    // Initialize palette:
-    this.addColorsToPalette_(this.framesheet.getUsedColors());
-
-    $.subscribe(Events.FRAMESHEET_RESET, $.proxy(function(evt) {
-      this.addColorsToPalette_(this.framesheet.getUsedColors());
-    }, this));
-
-    this.paletteRoot.mouseup($.proxy(this.onPaletteColorClick_, this));
-    
-    $.subscribe(Events.PRIMARY_COLOR_UPDATED, $.proxy(function(evt, color) {
-      this.updateColorPicker_(color, $('#color-picker'));
-      this.addColorToPalette_(color);
-    }, this));
-
-    $.subscribe(Events.SECONDARY_COLOR_UPDATED, $.proxy(function(evt, color) {
-      this.updateColorPicker_(color, $('#secondary-color-picker'));
-      this.addColorToPalette_(color);
-    }, this));
-
-    // Initialize colorpickers:
-    var colorPicker = $('#color-picker');
-    colorPicker.val(Constants.DEFAULT_PEN_COLOR);
-    colorPicker.change({isPrimary : true}, $.proxy(this.onPickerChange_, this));
-
-
-    var secondaryColorPicker = $('#secondary-color-picker');
-    secondaryColorPicker.val(Constants.TRANSPARENT_COLOR);
-    secondaryColorPicker.change({isPrimary : false}, $.proxy(this.onPickerChange_, this));
-
   };
 })();
 

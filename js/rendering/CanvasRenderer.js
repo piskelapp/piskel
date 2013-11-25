@@ -1,36 +1,43 @@
 (function () {
 
-	var ns = $.namespace("pskl.rendering");
-	ns.CanvasRenderer = function (frame, dpi) {
-		this.frame = frame;
-		this.dpi = dpi;
-	};
+  var ns = $.namespace("pskl.rendering");
+  ns.CanvasRenderer = function (frame, zoom) {
+    this.frame = frame;
+    this.zoom = zoom;
+    this.transparentColor_ = 'white';
+  };
 
-	ns.CanvasRenderer.prototype.render = function  (frame, dpi) {
-		var canvas = this.createCanvas_();
-		var context = canvas.getContext('2d');
-		for(var col = 0, width = this.frame.getWidth(); col < width; col++) {
-			for(var row = 0, height = this.frame.getHeight(); row < height; row++) {
-				var color = this.frame.getPixel(col, row);
-				this.renderPixel_(color, col, row, context);
-			}
-		}
+  /**
+   * Decide which color should be used to represent transparent pixels
+   * Default : white
+   * @param  {String} color the color to use either as '#ABCDEF' or 'red' or 'rgb(x,y,z)' or 'rgba(x,y,z,a)'
+   */
+  ns.CanvasRenderer.prototype.drawTransparentAs = function (color) {
+    this.transparentColor_ = color;
+  };
 
-		return context;
-	};
+  ns.CanvasRenderer.prototype.render = function  () {
+    var canvas = this.createCanvas_();
+    var context = canvas.getContext('2d');
 
-	ns.CanvasRenderer.prototype.renderPixel_ = function (color, col, row, context) {
-		if(color == Constants.TRANSPARENT_COLOR) {
-			color = "#FFF";
-		}
+    this.frame.forEachPixel(function (color, x, y) {
+      this.renderPixel_(color, x, y, context);
+    }.bind(this));
 
-		context.fillStyle = color;
-		context.fillRect(col * this.dpi, row * this.dpi, this.dpi, this.dpi);
-	};
+    return canvas;
+  };
 
-	ns.CanvasRenderer.prototype.createCanvas_ = function () {
-		var width = this.frame.getWidth() * this.dpi;
-		var height = this.frame.getHeight() * this.dpi;
-		return pskl.CanvasUtils.createCanvas(width, height);
-	};
+  ns.CanvasRenderer.prototype.renderPixel_ = function (color, x, y, context) {
+    if(color == Constants.TRANSPARENT_COLOR) {
+      color = this.transparentColor_;
+    }
+    context.fillStyle = color;
+    context.fillRect(x * this.zoom, y * this.zoom, this.zoom, this.zoom);
+  };
+
+  ns.CanvasRenderer.prototype.createCanvas_ = function () {
+    var width = this.frame.getWidth() * this.zoom;
+    var height = this.frame.getHeight() * this.zoom;
+    return pskl.CanvasUtils.createCanvas(width, height);
+  };
 })();
