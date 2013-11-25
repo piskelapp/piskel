@@ -14763,6 +14763,9 @@ var jscolor = {
     this.currentFrameIndex = 0;
 
     this.layerIdCounter = 1;
+
+    $.publish(Events.PISKEL_RESET);
+    $.publish(Events.FRAME_SIZE_CHANGED);
   };
 
   ns.PiskelController.prototype.init = function () {
@@ -14770,9 +14773,6 @@ var jscolor = {
     pskl.app.shortcutService.addShortcut('down', this.selectNextFrame.bind(this));
     pskl.app.shortcutService.addShortcut('n', this.addFrameAtCurrentIndex.bind(this));
     pskl.app.shortcutService.addShortcut('shift+n', this.duplicateCurrentFrame.bind(this));
-
-    $.publish(Events.PISKEL_RESET);
-    $.publish(Events.FRAME_SIZE_CHANGED);
   };
 
   ns.PiskelController.prototype.getHeight = function () {
