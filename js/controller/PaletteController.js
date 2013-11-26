@@ -21,10 +21,12 @@
 
     var spectrumCfg = {
       showPalette: true,
+      showButtons: false,
       palette: [
         ['rgba(0,0,0,0)']
       ],
       clickoutFiresChange : true,
+
       beforeShow : function(tinycolor) {
         tinycolor.setAlpha(1);
       }

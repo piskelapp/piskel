@@ -502,7 +502,11 @@
             hideAll();
             visible = true;
 
-            $(doc).bind("click.spectrum", hide);
+            $(doc).bind("mousedown.spectrum", hide);
+
+            // Piskel-specific : change the color as soon as the user does a mouseup
+            $(doc).bind("mouseup.spectrum", updateColor);
+
             $(window).bind("resize.spectrum", resize);
             replacer.addClass("sp-active");
             container.removeClass("sp-hidden");
@@ -518,21 +522,8 @@
             boundElement.trigger('show.spectrum', [ colorOnShow ]);
         }
 
-        function hide(e) {
-
-            // Return on right click
-            if (e && e.type == "click" && e.button == 2) { return; }
-
-            // Return if hiding is unnecessary
-            if (!visible || flat) { return; }
-            visible = false;
-
-            $(doc).unbind("click.spectrum", hide);
-            $(window).unbind("resize.spectrum", resize);
-
-            replacer.removeClass("sp-active");
-            container.addClass("sp-hidden");
-
+        // Piskel-specific (code extracted to method)
+        function updateColor(e) {
             var colorHasChanged = !tinycolor.equals(get(), colorOnShow);
 
             if (colorHasChanged) {
@@ -543,6 +534,31 @@
                     revert();
                 }
             }
+        }
+
+        function hide(e) {
+
+            // Return on right click
+            if (e && e.type == "click" && e.button == 2) { return; }
+
+            // Return if hiding is unnecessary
+            if (!visible || flat) { return; }
+            visible = false;
+
+            $(doc).unbind("click.spectrum", hide);
+
+            // Piskel-specific
+            $(doc).unbind("mouseup.spectrum", updateColor);
+
+            $(window).unbind("resize.spectrum", resize);
+
+            replacer.removeClass("sp-active");
+            container.addClass("sp-hidden");
+
+            updateColor(e);
+
+            // Piskel-specific
+            addColorToSelectionPalette(get());
 
             callbacks.hide(get());
             boundElement.trigger('hide.spectrum', [ get() ]);
@@ -658,16 +674,18 @@
             var s = currentSaturation;
             var v = currentValue;
 
+            console.log(dragHelperHeight, dragHeight);
+
             // Where to show the little circle in that displays your current selected color
             var dragX = s * dragWidth;
-            var dragY = dragHeight - (v * dragHeight);
+            var dragY = (dragHeight) - (v * dragHeight);
             dragX = Math.max(
-                -dragHelperHeight,
-                Math.min(dragWidth - dragHelperHeight, dragX - dragHelperHeight)
+                -dragHelperHeight/2,
+                Math.min(dragWidth - dragHelperHeight/2, dragX - dragHelperHeight/2)
             );
             dragY = Math.max(
-                -dragHelperHeight,
-                Math.min(dragHeight - dragHelperHeight, dragY - dragHelperHeight)
+                -dragHelperHeight/2,
+                Math.min(dragHeight - dragHelperHeight/2, dragY - dragHelperHeight/2)
             );
             dragHelper.css({
                 "top": dragY,
@@ -682,7 +700,7 @@
             // Where to show the bar that displays your current selected hue
             var slideY = (currentHue) * slideHeight;
             slideHelper.css({
-                "top": slideY - slideHelperHeight
+                "top": slideY - (slideHelperHeight/2)
             });
         }
 
@@ -697,7 +715,10 @@
             colorOnShow = color;
 
             // Update the selection palette with the current color
-            addColorToSelectionPalette(color);
+
+            // Piskel-specific : commented-out, palette update is done on hide
+            // addColorToSelectionPalette(color);
+
             if (fireCallback && hasChanged) {
                 callbacks.change(color);
                 boundElement.trigger('change', [ color ]);
@@ -707,10 +728,10 @@
         function reflow() {
             dragWidth = dragger.width();
             dragHeight = dragger.height();
-            dragHelperHeight = dragHelper.height();
+            dragHelperHeight = dragHelper.height() + 4;
             slideWidth = slider.width();
             slideHeight = slider.height();
-            slideHelperHeight = slideHelper.height();
+            slideHelperHeight = slideHelper.height() + 4;
             alphaWidth = alphaSlider.width();
             alphaSlideHelperWidth = alphaSlideHelper.width();
 

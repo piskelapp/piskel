@@ -1,0 +1,67 @@
+/**
+ * Piskel specific CSS for spectrum widgets
+ */
+
+/* Remove the padding on the input container */
+.sp-replacer {
+  padding: 3px;
+  height: 50%;
+  border-width: 0;
+  box-sizing: border-box;
+}
+.sp-replacer:first-of-type {
+  padding-bottom: 0px;
+}
+.sp-replacer:not(:first-of-type) {
+  padding-top: 0px;
+}
+
+/* Hide the triangle */
+.sp-dd {
+  display: none;
+}
+
+/*  */
+.sp-preview {
+  margin-right: 0;
+  border-color: 0;
+  height: 100%;
+  width: 39px;
+  border-width: 0;
+}
+
+.sp-palette .sp-thumb-el {
+  margin : 0 0 5px 0;
+}
+
+.sp-picker-container, .sp-palette-container {
+  padding-top: 5px;
+  padding-right: 5px;
+  padding-left: 5px;
+}
+
+.sp-palette .sp-thumb-el {
+  width: 24px;
+  height: 24px;
+}
+
+.sp-slider {
+  height: 5px;
+  left: -2px;
+  right: -2px;
+  border: 2px solid white;
+  background: rgba(255,255,255,0);
+  opacity: 1;
+  border-radius: 2px;
+  box-shadow: 0 0 1px 1px rgba(0,0,0,0.5), inset 0 0 1px 1px rgba(0,0,0,0.5);
+}
+
+.sp-dragger {
+  border-radius: 8px;
+  height: 12px;
+  width: 12px;
+  border: 2px solid white;
+  background: none;
+  box-sizing:border-box;
+  box-shadow: 0 0 1px 1px rgba(0,0,0,0.5), inset 0 0 1px 1px rgba(0,0,0,0.5);
+}
