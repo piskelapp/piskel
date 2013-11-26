@@ -1,0 +1,77 @@
+#cheatsheet-wrapper {
+  position: absolute;
+  z-index: 10000;
+
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+
+  padding: 50px;
+  box-sizing: border-box;
+
+  color: white;
+}
+
+.cheatsheet-container {
+  width: 100%;
+  height:  100%;
+  box-sizing: border-box;
+  padding: 20px 10%;
+  border-radius: 3px;
+  background: rgba(0,0,0,0.9);
+  overflow: auto;
+}
+
+.cheatsheet-container h3 {
+  font-size:24px;
+  margin-top: 0;
+}
+
+.cheatsheet-section {
+  float: left;
+  width : 50%;
+}
+
+.cheatsheet-shortcut {
+  overflow: hidden;
+  margin: 10px 0;
+}
+
+.cheatsheet-icon.tool-icon {
+  float: left;
+  display: inline-block;
+
+  height: 30px;
+  width: 30px;
+  margin: 0 20px 0 0;
+
+  background-size: 20px 20px;
+  background-position: 5px 5px;
+}
+
+.cheatsheet-description {
+  font-family:Courier;
+  color: white;
+  font-size : 13px;
+  margin-left: 20px;
+  line-height : 30px;
+}
+
+.cheatsheet-key {
+  display : inline-block;
+  height: 30px;
+  line-height: 30px;
+  padding: 0 10px;
+
+  border : 1px solid gold;
+  border-radius: 2px;
+
+  box-sizing: border-box;
+
+  text-align: center;
+  font-family:Courier;
+  font-weight: bold;
+  font-size : 18px;
+  color: gold;
+}

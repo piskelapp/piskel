@@ -10,6 +10,9 @@
   ns.app = {
 
     init : function () {
+      this.shortcutService = new pskl.service.keyboard.ShortcutService();
+      this.shortcutService.init();
+
       var size = this.readSizeFromURL_();
       var piskel = new pskl.model.Piskel(size.width, size.height);
 
@@ -20,8 +23,12 @@
       piskel.addLayer(layer);
 
       this.piskelController = new pskl.controller.PiskelController(piskel);
+      this.piskelController.init();
 
-      this.drawingController = new pskl.controller.DrawingController(this.piskelController, $('#drawing-canvas-container'));
+      this.paletteController = new pskl.controller.PaletteController();
+      this.paletteController.init();
+
+      this.drawingController = new pskl.controller.DrawingController(this.piskelController, this.paletteController, $('#drawing-canvas-container'));
       this.drawingController.init();
 
       this.animationController = new pskl.controller.AnimatedPreviewController(this.piskelController, $('#preview-canvas-container'));
@@ -39,14 +46,14 @@
       this.settingsController = new pskl.controller.settings.SettingsController(this.piskelController);
       this.settingsController.init();
 
+      this.toolController = new pskl.controller.ToolController();
+      this.toolController.init();
+
       this.selectionManager = new pskl.selection.SelectionManager(this.piskelController);
       this.selectionManager.init();
 
       this.historyService = new pskl.service.HistoryService(this.piskelController);
       this.historyService.init();
-
-      this.keyboardEventService = new pskl.service.KeyboardEventService();
-      this.keyboardEventService.init();
 
       this.notificationController = new pskl.controller.NotificationController();
       this.notificationController.init();
@@ -57,11 +64,10 @@
       this.imageUploadService = new pskl.service.ImageUploadService();
       this.imageUploadService.init();
 
-      this.toolController = new pskl.controller.ToolController();
-      this.toolController.init();
 
-      this.paletteController = new pskl.controller.PaletteController();
-      this.paletteController.init();
+      this.cheatsheetService = new pskl.service.keyboard.CheatsheetService();
+      this.cheatsheetService.init();
+
 
       var drawingLoop = new pskl.rendering.DrawingLoop();
       drawingLoop.addCallback(this.render, this);
@@ -96,9 +102,10 @@
 
     finishInitAppEngine_ : function () {
       if (pskl.framesheetData_ && pskl.framesheetData_.content) {
-        var piskel = pskl.utils.Serializer.createPiskel(pskl.framesheetData_.content);
-        pskl.app.piskelController.setPiskel(piskel);
-        pskl.app.animationController.setFPS(pskl.framesheetData_.fps);
+        pskl.utils.serialization.Deserializer.deserialize(pskl.framesheetData_.content, function (piskel) {
+          pskl.app.piskelController.setPiskel(piskel);
+          pskl.app.animationController.setFPS(pskl.framesheetData_.fps);
+        });
       }
     },
 
@@ -159,10 +166,11 @@
       xhr.responseType = 'text';
       xhr.onload = function (e) {
         var res = JSON.parse(this.responseText);
-        var piskel = pskl.utils.Serializer.createPiskel(res.framesheet);
-        pskl.app.piskelController.setPiskel(piskel);
-        pskl.app.animationController.setFPS(res.fps);
-        $.publish(Events.HIDE_NOTIFICATION);
+        pskl.utils.serialization.Deserializer.deserialize(res.framesheet, function (piskel) {
+          pskl.app.piskelController.setPiskel(piskel);
+          pskl.app.animationController.setFPS(res.fps);
+          $.publish(Events.HIDE_NOTIFICATION);
+        });
       };
 
       xhr.onerror = function () {
@@ -242,8 +250,8 @@
     },
 
     getFramesheetAsPng : function () {
-      var renderer = new pskl.rendering.SpritesheetRenderer(this.piskelController);
-      var framesheetCanvas = renderer.render();
+      var renderer = new pskl.rendering.PiskelRenderer(this.piskelController);
+      var framesheetCanvas = renderer.renderAsCanvas();
       return framesheetCanvas.toDataURL("image/png");
     },
 

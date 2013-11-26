@@ -12,7 +12,7 @@
   };
 
   pskl.utils.inherit(ns.ColorPicker, ns.BaseTool);
-  
+
   /**
    * @override
    */
@@ -20,9 +20,9 @@
     if (frame.containsPixel(col, row)) {
       var sampledColor = frame.getPixel(col, row);
       if (context.button == Constants.LEFT_BUTTON) {
-        $.publish(Events.PRIMARY_COLOR_SELECTED, [sampledColor]);
+        $.publish(Events.SELECT_PRIMARY_COLOR, [sampledColor]);
       } else if (context.button == Constants.RIGHT_BUTTON) {
-        $.publish(Events.SECONDARY_COLOR_SELECTED, [sampledColor]);
+        $.publish(Events.SELECT_SECONDARY_COLOR, [sampledColor]);
       }
     }
   };

@@ -13,9 +13,9 @@
     $.subscribe(Events.SELECTION_DISMISSED, $.proxy(this.onSelectionDismissed_, this));
     $.subscribe(Events.SELECTION_MOVE_REQUEST, $.proxy(this.onSelectionMoved_, this));
 
-    $.subscribe(Events.PASTE, $.proxy(this.onPaste_, this));
-    $.subscribe(Events.COPY, $.proxy(this.onCopy_, this));
-    $.subscribe(Events.CUT, $.proxy(this.onCut_, this));
+    pskl.app.shortcutService.addShortcut('ctrl+V', this.paste.bind(this));
+    pskl.app.shortcutService.addShortcut('ctrl+X', this.cut.bind(this));
+    pskl.app.shortcutService.addShortcut('ctrl+C', this.copy.bind(this));
 
     $.subscribe(Events.TOOL_SELECTED, $.proxy(this.onToolSelected_, this));
   };
@@ -46,10 +46,7 @@
     this.cleanSelection_();
   };
 
-  /**
-   * @private
-   */
-  ns.SelectionManager.prototype.onCut_ = function(evt) {
+  ns.SelectionManager.prototype.cut = function() {
     if(this.currentSelection) {
       // Put cut target into the selection:
       this.currentSelection.fillSelectionFromFrame(this.piskelController.getCurrentFrame());
@@ -59,9 +56,8 @@
       for(var i=0, l=pixels.length; i<l; i++) {
         try {
           currentFrame.setPixel(pixels[i].col, pixels[i].row, Constants.TRANSPARENT_COLOR);
-        }
-        catch(e) {
-          // Catchng out of frame's bound pixels without testing
+        } catch(e) {
+          // Catching out of frame's bound pixels without testing
         }
       }
     }
@@ -70,7 +66,7 @@
     }
   };
 
-  ns.SelectionManager.prototype.onPaste_ = function(evt) {
+  ns.SelectionManager.prototype.paste = function() {
     if(this.currentSelection && this.currentSelection.hasPastedContent) {
       var pixels = this.currentSelection.pixels;
       var currentFrame = this.piskelController.getCurrentFrame();
@@ -79,22 +75,17 @@
           currentFrame.setPixel(
             pixels[i].col, pixels[i].row,
             pixels[i].copiedColor);
-        }
-        catch(e) {
-          // Catchng out of frame's bound pixels without testing
+        } catch(e) {
+          // Catching out of frame's bound pixels without testing
         }
       }
     }
   };
 
-  /**
-   * @private
-   */
-  ns.SelectionManager.prototype.onCopy_ = function(evt) {
+  ns.SelectionManager.prototype.copy = function() {
     if(this.currentSelection && this.piskelController.getCurrentFrame()) {
       this.currentSelection.fillSelectionFromFrame(this.piskelController.getCurrentFrame());
-    }
-    else {
+    } else {
       throw "Bad state for CUT callback in SelectionManager";
     }
   };

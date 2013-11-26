@@ -21,6 +21,24 @@
     }
   };
 
+  /**
+   * Create a piskel instance from an existing set of (non empty) layers
+   * Layers should all be synchronized : same number of frames, same dimensions
+   * @param  {Array<pskl.model.Layer>} layers
+   * @return {pskl.model.Piskel}
+   */
+  ns.Piskel.fromLayers = function (layers) {
+    var piskel = null;
+    if (layers.length > 0 && layers[0].length() > 0) {
+      var sampleFrame = layers[0].getFrameAt(0);
+      piskel = new pskl.model.Piskel(sampleFrame.getWidth(), sampleFrame.getHeight());
+      layers.forEach(piskel.addLayer.bind(piskel));
+    } else {
+      throw 'Piskel.fromLayers expects array of non empty pskl.model.Layer as first argument';
+    }
+    return piskel;
+  };
+
   ns.Piskel.prototype.getLayers = function () {
     return this.layers;
   };
