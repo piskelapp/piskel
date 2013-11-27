@@ -524,8 +524,8 @@
 
         function onMousedown (e) {
             var target = $(e.target);
-            var parents = target.closest();
-            var isClickOutsideWidget = !parents.is(container);
+            var parents = target.parents();
+            var isClickOutsideWidget = !parents.is(container) && !target.is(container);
 
             if (isClickOutsideWidget) {
                 hide(e);
@@ -683,8 +683,6 @@
         function updateHelperLocations() {
             var s = currentSaturation;
             var v = currentValue;
-
-            console.log(dragHelperHeight, dragHeight);
 
             // Where to show the little circle in that displays your current selected color
             var dragX = s * dragWidth;
