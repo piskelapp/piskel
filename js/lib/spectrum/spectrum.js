@@ -502,7 +502,7 @@
             hideAll();
             visible = true;
 
-            $(doc).bind("mousedown.spectrum", hide);
+            $(doc).bind("mousedown.spectrum", onMousedown);
 
             // Piskel-specific : change the color as soon as the user does a mouseup
             $(doc).bind("mouseup.spectrum", updateColor);
@@ -520,6 +520,16 @@
             drawInitial();
             callbacks.show(colorOnShow);
             boundElement.trigger('show.spectrum', [ colorOnShow ]);
+        }
+
+        function onMousedown (e) {
+            var target = $(e.target);
+            var parents = target.parents();
+            var isClickOutsideWidget = !parents.is(container) && !target.is(container);
+
+            if (isClickOutsideWidget) {
+                hide(e);
+            }
         }
 
         // Piskel-specific (code extracted to method)
@@ -545,7 +555,7 @@
             if (!visible || flat) { return; }
             visible = false;
 
-            $(doc).unbind("click.spectrum", hide);
+            $(doc).unbind("mousedown.spectrum", onMousedown);
 
             // Piskel-specific
             $(doc).unbind("mouseup.spectrum", updateColor);
