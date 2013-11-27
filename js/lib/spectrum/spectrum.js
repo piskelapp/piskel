@@ -524,8 +524,8 @@
 
         function onMousedown (e) {
             var target = $(e.target);
-            var parents = target.parents();
-            var isClickOutsideWidget = !parents.is(container) && !target.is(container);
+            var parents = target.closest();
+            var isClickOutsideWidget = !parents.is(container);
 
             if (isClickOutsideWidget) {
                 hide(e);

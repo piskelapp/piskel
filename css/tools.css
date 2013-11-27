@@ -149,6 +149,9 @@
   margin-left: 0;
 }
 
+.palette-wrapper {
+  margin-top: 10px;
+}
 
 .palette-color[data-color=TRANSPARENT] {
   position: relative;

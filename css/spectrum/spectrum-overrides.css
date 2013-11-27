@@ -18,18 +18,11 @@
 /* Remove the padding on the input container */
 .sp-replacer {
   padding: 3px;
-  height: 50%;
+  height: 100%;
   border-width: 0;
   box-sizing: border-box;
   background-color: #888;
 }
-.sp-replacer:first-of-type {
-  padding-bottom: 0px;
-}
-.sp-replacer:not(:first-of-type) {
-  padding-top: 0px;
-}
-
 /* Hide the triangle */
 .sp-dd {
   display: none;
