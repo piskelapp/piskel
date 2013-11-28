@@ -824,13 +824,21 @@
         var offset = input.offset();
         offset.top += inputHeight;
 
-        offset.left -=
-            Math.min(offset.left, (offset.left + dpWidth > viewWidth && viewWidth > dpWidth) ?
-            Math.abs(offset.left + dpWidth - viewWidth) : 0);
+        if (Math.min(offset.left, (offset.left + dpWidth > viewWidth && viewWidth > dpWidth))) {
+            offset.left -= Math.abs(offset.left + dpWidth - viewWidth);
+            picker.attr('data-x-position','right');
+        } else {
+            offset.left -= 0;
+            picker.attr('data-x-position','left');
+        }
 
-        offset.top -=
-            Math.min(offset.top, ((offset.top + dpHeight > viewHeight && viewHeight > dpHeight) ?
-            Math.abs(dpHeight + inputHeight - extraY) : extraY));
+        if (Math.min(offset.top, (offset.top + dpHeight > viewHeight && viewHeight > dpHeight))) {
+            offset.top -= Math.abs(dpHeight + inputHeight - extraY);
+            picker.attr('data-y-position','top');
+        } else {
+            offset.top -= extraY;
+            picker.attr('data-y-position','bottom');
+        }
 
         return offset;
     }
