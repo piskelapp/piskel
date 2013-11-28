@@ -10,6 +10,14 @@
   padding: 5px;
 }
 
+.sp-container[data-y-position=bottom] {
+  border-top-left-radius: 0;
+}
+
+.sp-container[data-y-position=top] {
+  border-bottom-left-radius: 0;
+}
+
 /* Color square container */
 .sp-color, .sp-hue {
   border : 1px solid #222;
@@ -21,7 +29,7 @@
   height: 100%;
   border-width: 0;
   box-sizing: border-box;
-  background-color: #888;
+  background-color: #444;
 }
 /* Hide the triangle */
 .sp-dd {
