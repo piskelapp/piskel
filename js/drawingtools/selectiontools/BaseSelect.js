@@ -20,7 +20,7 @@
   /**
    * @override
    */
-  ns.BaseSelect.prototype.applyToolAt = function(col, row, color, frame, overlay) {
+  ns.BaseSelect.prototype.applyToolAt = function(col, row, color, frame, overlay, event) {
     this.startCol = col;
     this.startRow = row;
 
@@ -47,7 +47,7 @@
   /**
    * @override
    */
-  ns.BaseSelect.prototype.moveToolAt = function(col, row, color, frame, overlay) {
+  ns.BaseSelect.prototype.moveToolAt = function(col, row, color, frame, overlay, event) {
     if(this.mode == "select") {
 
       this.onSelect_(col, row, color, frame, overlay);
@@ -61,7 +61,7 @@
   /**
    * @override
    */
-  ns.BaseSelect.prototype.releaseToolAt = function(col, row, color, frame, overlay) {
+  ns.BaseSelect.prototype.releaseToolAt = function(col, row, color, frame, overlay, event) {
     if(this.mode == "select") {
       this.onSelectEnd_(col, row, color, frame, overlay);
     } else if(this.mode == "moveSelection") {
@@ -76,7 +76,7 @@
    * instead of the 'select' one. It indicates that we can move the selection by dragndroping it.
    * @override
    */
-  ns.BaseSelect.prototype.moveUnactiveToolAt = function(col, row, color, frame, overlay) {
+  ns.BaseSelect.prototype.moveUnactiveToolAt = function(col, row, color, frame, overlay, event) {
 
     if(overlay.getPixel(col, row) != Constants.SELECTION_TRANSPARENT_COLOR) {
       // We're hovering the selection, show the move tool:

@@ -19,17 +19,30 @@
     pskl.app.shortcutService.addShortcut('X', this.swapColors.bind(this));
     pskl.app.shortcutService.addShortcut('D', this.resetColors.bind(this));
 
+    var spectrumCfg = {
+      showPalette: true,
+      showButtons: false,
+      palette: [
+        ['rgba(0,0,0,0)']
+      ],
+      clickoutFiresChange : true,
+
+      beforeShow : function(tinycolor) {
+        tinycolor.setAlpha(1);
+      }
+    };
+
     // Initialize colorpickers:
     var colorPicker = $('#color-picker');
-    colorPicker.val(this.primaryColor);
+    colorPicker.spectrum($.extend({color: Constants.DEFAULT_PEN_COLOR}, spectrumCfg));
     colorPicker.change({isPrimary : true}, $.proxy(this.onPickerChange_, this));
-
+    this.setTitleOnPicker_(Constants.DEFAULT_PEN_COLOR, colorPicker);
 
     var secondaryColorPicker = $('#secondary-color-picker');
-    secondaryColorPicker.val(this.secondaryColor);
+    secondaryColorPicker.spectrum($.extend({color: Constants.TRANSPARENT_COLOR}, spectrumCfg));
     secondaryColorPicker.change({isPrimary : false}, $.proxy(this.onPickerChange_, this));
+    this.setTitleOnPicker_(Constants.TRANSPARENT_COLOR, secondaryColorPicker);
 
-    window.jscolor.install();
   };
 
   /**
@@ -113,11 +126,17 @@
       // The colorpicker can't be set to a transparent state.
       // We set its background to white and insert the
       // string "TRANSPARENT" to mimic this state:
-      colorPicker[0].color.fromString("#fff");
+      colorPicker.spectrum("set", Constants.TRANSPARENT_COLOR);
       colorPicker.val(Constants.TRANSPARENT_COLOR);
     } else {
-      colorPicker[0].color.fromString(color);
+      colorPicker.spectrum("set", color);
     }
+    this.setTitleOnPicker_(color, colorPicker);
+  };
+
+  ns.PaletteController.prototype.setTitleOnPicker_ = function (title, colorPicker) {
+    var spectrumInputSelector = '.sp-replacer';
+    colorPicker.next(spectrumInputSelector).attr('title', title);
   };
 })();
 

@@ -11,10 +11,12 @@ var Constants = {
   MAX_HEIGHT : 1024,
   MAX_WIDTH : 1024,
 
+  MINIMUM_ZOOM : 1,
+
   PREVIEW_FILM_SIZE : 120,
 
   DEFAULT_PEN_COLOR : '#000000',
-  TRANSPARENT_COLOR : 'TRANSPARENT',
+  TRANSPARENT_COLOR : 'rgba(0, 0, 0, 0)',
 
   /*
    * Fake semi-transparent color used to highlight transparent
@@ -48,8 +50,9 @@ var Constants = {
   GRID_STROKE_WIDTH: 1,
   ZOOMED_OUT_BACKGROUND_COLOR : '#A0A0A0',
 
-  LEFT_BUTTON : 'left_button_1',
-  RIGHT_BUTTON : 'right_button_2',
+  LEFT_BUTTON : 0,
+  MIDDLE_BUTTON : 1,
+  RIGHT_BUTTON : 2,
   MOUSEMOVE_THROTTLING : 10,
 
   ABSTRACT_FUNCTION : function () {throw 'abstract method should be implemented';}

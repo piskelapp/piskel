@@ -169,6 +169,7 @@
         pskl.utils.serialization.Deserializer.deserialize(res.framesheet, function (piskel) {
           pskl.app.piskelController.setPiskel(piskel);
           pskl.app.animationController.setFPS(res.fps);
+
           $.publish(Events.HIDE_NOTIFICATION);
         });
       };
@@ -245,7 +246,7 @@
       var firstFrame = this.piskelController.getFrameAt(0);
       var canvasRenderer = new pskl.rendering.CanvasRenderer(firstFrame, 1);
       canvasRenderer.drawTransparentAs('rgba(0,0,0,0)');
-      var firstFrameCanvas = canvasRenderer.render().canvas;
+      var firstFrameCanvas = canvasRenderer.render();
       return firstFrameCanvas.toDataURL("image/png");
     },
 

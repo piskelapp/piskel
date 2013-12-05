@@ -31,7 +31,7 @@
       script = "build/piskel-packaged-min.js";
     }
     var loaderInterval = window.setInterval(function () {
-      if (document.querySelectorAll("._ctl").length === 0) {
+      if (document.querySelectorAll("[data-iframe-loader]").length === 0) {
         window.clearInterval(loaderInterval);
         loadScript(script, "pskl.app.init()");
       } else {

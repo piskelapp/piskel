@@ -20,7 +20,7 @@
   /**
    * @override
    */
-  ns.Stroke.prototype.applyToolAt = function(col, row, color, frame, overlay) {
+  ns.Stroke.prototype.applyToolAt = function(col, row, color, frame, overlay, event) {
     this.startCol = col;
     this.startRow = row;
 
@@ -36,7 +36,7 @@
     overlay.setPixel(col, row, color);
   };
 
-  ns.Stroke.prototype.moveToolAt = function(col, row, color, frame, overlay) {
+  ns.Stroke.prototype.moveToolAt = function(col, row, color, frame, overlay, event) {
     overlay.clear();
 
     // When the user moussemove (before releasing), we dynamically compute the
@@ -62,7 +62,7 @@
   /**
    * @override
    */
-  ns.Stroke.prototype.releaseToolAt = function(col, row, color, frame, overlay) {
+  ns.Stroke.prototype.releaseToolAt = function(col, row, color, frame, overlay, event) {
     // If the stroke tool is released outside of the canvas, we cancel the stroke:
     // TODO: Mutualize this check in common method
     if(frame.containsPixel(col, row)) {

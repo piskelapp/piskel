@@ -16,11 +16,11 @@
   };
 
   pskl.utils.inherit(ns.SimplePen, ns.BaseTool);
-  
+
   /**
    * @override
    */
-  ns.SimplePen.prototype.applyToolAt = function(col, row, color, frame, overlay) {
+  ns.SimplePen.prototype.applyToolAt = function(col, row, color, frame, overlay, event) {
     if (frame.containsPixel(col, row)) {
       frame.setPixel(col, row, color);
     }
@@ -28,7 +28,7 @@
     this.previousRow = row;
   };
 
-  ns.SimplePen.prototype.moveToolAt = function(col, row, color, frame, overlay) {
+  ns.SimplePen.prototype.moveToolAt = function(col, row, color, frame, overlay, event) {
     if((Math.abs(col - this.previousCol) > 1) || (Math.abs(row - this.previousRow) > 1)) {
       // The pen movement is too fast for the mousemove frequency, there is a gap between the
       // current point and the previously drawn one.
