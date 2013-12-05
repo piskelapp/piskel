@@ -29,6 +29,7 @@
   height: 100%;
   border-width: 0;
   box-sizing: border-box;
+  -moz-box-sizing:border-box;
   background-color: #444;
 }
 /* Hide the triangle */
@@ -39,7 +40,6 @@
 /*  */
 .sp-preview {
   margin-right: 0;
-  border-color: 0;
   height: 100%;
   width: 39px;
   border-width: 0;
@@ -83,6 +83,7 @@
   border: 2px solid white;
   background: none;
   box-sizing:border-box;
+  -moz-box-sizing:border-box;
   box-shadow: 0 0 1px 1px rgba(0,0,0,0.5), inset 0 0 1px 1px rgba(0,0,0,0.5);
 }
 

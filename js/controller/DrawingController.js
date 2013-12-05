@@ -1,6 +1,6 @@
 (function () {
   var ns = $.namespace("pskl.controller");
-  ns.DrawingController = function (piskelController, paletteController,container) {
+  ns.DrawingController = function (piskelController, paletteController, container) {
     /**
      * @public
      */
@@ -40,7 +40,6 @@
 
     // State of drawing controller:
     this.isClicked = false;
-    this.isRightClicked = false;
     this.previousMousemoveTime = 0;
     this.currentToolBehavior = null;
   };
@@ -52,7 +51,7 @@
       this.currentToolBehavior = toolBehavior;
       this.overlayFrame.clear();
     }, this));
-    
+
     $(window).resize($.proxy(this.startResizeTimer_, this));
 
     $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
@@ -86,7 +85,14 @@
   },
 
   ns.DrawingController.prototype.afterWindowResize_ = function () {
+    var initialWidth = this.compositeRenderer.getDisplaySize().width;
     this.compositeRenderer.setDisplaySize(this.getContainerWidth_(), this.getContainerHeight_());
+    this.centerColumnWrapperHorizontally_();
+    var ratio = this.compositeRenderer.getDisplaySize().width / initialWidth;
+    var newZoom = ratio * this.compositeRenderer.getZoom();
+    this.compositeRenderer.setZoom(newZoom);
+
+    $.publish(Events.ZOOM_CHANGED);
   },
 
   /**
@@ -99,32 +105,37 @@
   },
 
   ns.DrawingController.prototype.onFrameSizeChanged_ = function () {
-    this.compositeRenderer.setZoom(this.calculateZoom_());
     this.compositeRenderer.setDisplaySize(this.getContainerWidth_(), this.getContainerHeight_());
+    this.compositeRenderer.setZoom(this.calculateZoom_());
+    this.compositeRenderer.setOffset(0, 0);
+    $.publish(Events.ZOOM_CHANGED);
   };
 
   /**
    * @private
    */
   ns.DrawingController.prototype.onMousedown_ = function (event) {
-    this.isClicked = true;
-
-    if(event.button == 2) { // right click
-      this.isRightClicked = true;
-    }
-
+    var frame = this.piskelController.getCurrentFrame();
     var coords = this.renderer.getCoordinates(event.clientX, event.clientY);
 
-    this.currentToolBehavior.applyToolAt(
-      coords.x,
-      coords.y,
-      this.getCurrentColor_(),
-      this.piskelController.getCurrentFrame(),
-      this.overlayFrame,
-      this.wrapEvtInfo_(event)
-    );
+    if (event.button === Constants.MIDDLE_BUTTON) {
+      if (frame.containsPixel(coords.x, coords.y)) {
+        $.publish(Events.SELECT_PRIMARY_COLOR, [frame.getPixel(coords.x, coords.y)]);
+      }
+    } else {
+      this.isClicked = true;
 
-    $.publish(Events.LOCALSTORAGE_REQUEST);
+      this.currentToolBehavior.applyToolAt(
+        coords.x,
+        coords.y,
+        this.getCurrentColor_(event),
+        frame,
+        this.overlayFrame,
+        event
+      );
+
+      $.publish(Events.LOCALSTORAGE_REQUEST);
+    }
   };
 
   /**
@@ -133,6 +144,7 @@
   ns.DrawingController.prototype.onMousemove_ = function (event) {
     var currentTime = new Date().getTime();
     // Throttling of the mousemove event:
+
     if ((currentTime - this.previousMousemoveTime) > Constants.MOUSEMOVE_THROTTLING ) {
       var coords = this.renderer.getCoordinates(event.clientX, event.clientY);
 
@@ -141,10 +153,10 @@
         this.currentToolBehavior.moveToolAt(
           coords.x,
           coords.y,
-          this.getCurrentColor_(),
+          this.getCurrentColor_(event),
           this.piskelController.getCurrentFrame(),
           this.overlayFrame,
-          this.wrapEvtInfo_(event)
+          event
         );
 
         // TODO(vincz): Find a way to move that to the model instead of being at the interaction level.
@@ -156,10 +168,10 @@
         this.currentToolBehavior.moveUnactiveToolAt(
           coords.x,
           coords.y,
-          this.getCurrentColor_(),
+          this.getCurrentColor_(event),
           this.piskelController.getCurrentFrame(),
           this.overlayFrame,
-          this.wrapEvtInfo_(event)
+          event
         );
       }
       this.previousMousemoveTime = currentTime;
@@ -170,55 +182,43 @@
     var event = jQueryEvent.originalEvent;
     var delta = event.wheelDeltaY || (-2 * event.deltaY);
     var currentZoom = this.renderer.getZoom();
+
+    var perfectZoom = this.calculateZoom_();
+    var step = perfectZoom / 10;
+
     if (delta > 0) {
-      this.compositeRenderer.setZoom(currentZoom + 1);
+      this.compositeRenderer.setZoom(currentZoom + step);
     } else if (delta < 0) {
-      this.compositeRenderer.setZoom(currentZoom - 1);
+      this.compositeRenderer.setZoom(currentZoom - step);
     }
-    pskl.app.minimapController.onDrawingControllerMove_();
+    $.publish(Events.ZOOM_CHANGED);
   };
 
   /**
    * @private
    */
   ns.DrawingController.prototype.onMouseup_ = function (event) {
-    if(this.isClicked || this.isRightClicked) {
+    if(this.isClicked) {
       // A mouse button was clicked on the drawing canvas before this mouseup event,
       // the user was probably drawing on the canvas.
       // Note: The mousemove movement (and the mouseup) may end up outside
       // of the drawing canvas.
 
       this.isClicked = false;
-      this.isRightClicked = false;
 
       var coords = this.renderer.getCoordinates(event.clientX, event.clientY);
-      //console.log("mousemove: col: " + spriteCoordinate.col + " - row: " + spriteCoordinate.row);
       this.currentToolBehavior.releaseToolAt(
         coords.x,
         coords.y,
-        this.getCurrentColor_(),
+        this.getCurrentColor_(event),
         this.piskelController.getCurrentFrame(),
         this.overlayFrame,
-        this.wrapEvtInfo_(event)
+        event
       );
 
       $.publish(Events.TOOL_RELEASED);
     }
   };
-
-  /**
-   * @private
-   */
-  ns.DrawingController.prototype.wrapEvtInfo_ = function (event) {
-    var evtInfo = {};
-    if (event.button === 0) {
-      evtInfo.button = Constants.LEFT_BUTTON;
-    } else if (event.button == 2) {
-      evtInfo.button = Constants.RIGHT_BUTTON;
-    }
-    return evtInfo;
-  };
-
 
   /**
    * @private
@@ -230,11 +230,13 @@
   /**
    * @private
    */
-  ns.DrawingController.prototype.getCurrentColor_ = function () {
-    if(this.isRightClicked) {
+  ns.DrawingController.prototype.getCurrentColor_ = function (event) {
+    if(event.button == Constants.RIGHT_BUTTON) {
       return this.paletteController.getSecondaryColor();
-    } else {
+    } else if(event.button == Constants.LEFT_BUTTON) {
       return this.paletteController.getPrimaryColor();
+    } else {
+      return Constants.DEFAULT_PEN_COLOR;
     }
   };
 
@@ -279,8 +281,11 @@
   ns.DrawingController.prototype.getAvailableWidth_ = function () {
     var leftSectionWidth = $('.left-column').outerWidth(true),
     rightSectionWidth = $('.right-column').outerWidth(true),
-    availableWidth = $('#main-wrapper').width() - leftSectionWidth - rightSectionWidth;
-    return availableWidth;
+    toolsContainerWidth = $('#tool-section').outerWidth(true),
+    settingsContainerWidth = $('#application-action-section').outerWidth(true),
+    availableWidth = $('#main-wrapper').width() - leftSectionWidth - rightSectionWidth - toolsContainerWidth - settingsContainerWidth;
+
+    return availableWidth-50;
   };
 
   ns.DrawingController.prototype.getContainerHeight_ = function () {
@@ -308,6 +313,6 @@
 
   ns.DrawingController.prototype.setOffset = function (x, y) {
     this.compositeRenderer.setOffset(x, y);
-    pskl.app.minimapController.onDrawingControllerMove_();
+    $.publish(Events.ZOOM_CHANGED);
   };
 })();

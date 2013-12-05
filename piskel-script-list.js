@@ -6,11 +6,13 @@ exports.scripts = [
   // GIF Encoding libraries
   "js/lib/gif/gif.worker.js",
   "js/lib/gif/gif.js",
+  // Spectrum color-picker library
   "js/lib/spectrum/spectrum.js",
 
   // Application wide configuration
   "js/Constants.js",
   "js/Events.js",
+
 
   // Libraries
   "js/utils/core.js",
@@ -93,7 +95,6 @@ exports.scripts = [
   "js/drawingtools/selectiontools/RectangleSelect.js",
   "js/drawingtools/selectiontools/ShapeSelect.js",
   "js/drawingtools/ColorPicker.js",
-
   // Application controller and initialization
   "js/app.js"
 ];

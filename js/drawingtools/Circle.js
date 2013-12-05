@@ -20,7 +20,7 @@
   /**
    * @override
    */
-  ns.Circle.prototype.applyToolAt = function(col, row, color, frame, overlay) {
+  ns.Circle.prototype.applyToolAt = function(col, row, color, frame, overlay, event) {
     this.startCol = col;
     this.startRow = row;
 
@@ -28,7 +28,7 @@
     overlay.setPixel(col, row, color);
   };
 
-  ns.Circle.prototype.moveToolAt = function(col, row, color, frame, overlay) {
+  ns.Circle.prototype.moveToolAt = function(col, row, color, frame, overlay, event) {
     overlay.clear();
     if(color == Constants.TRANSPARENT_COLOR) {
       color = Constants.SELECTION_TRANSPARENT_COLOR;
@@ -41,7 +41,7 @@
   /**
    * @override
    */
-  ns.Circle.prototype.releaseToolAt = function(col, row, color, frame, overlay) {
+  ns.Circle.prototype.releaseToolAt = function(col, row, color, frame, overlay, event) {
     overlay.clear();
     if(frame.containsPixel(col, row)) { // cancel if outside of canvas
       // draw in frame to finalize

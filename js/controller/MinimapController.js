@@ -21,9 +21,11 @@
     $(this.container).mousedown(this.onMinimapMousedown_.bind(this));
     $('body').mousemove(this.onMinimapMousemove_.bind(this));
     $('body').mouseup(this.onMinimapMouseup_.bind(this));
+
+    $.subscribe(Events.ZOOM_CHANGED, $.proxy(this.renderMinimap_, this));
   };
 
-  ns.MinimapController.prototype.onDrawingControllerMove_ = function () {
+  ns.MinimapController.prototype.renderMinimap_ = function () {
     var zoomRatio = this.getDrawingAreaZoomRatio_();
     if (zoomRatio > 1) {
       this.displayCropFrame_(zoomRatio, this.drawingController.getRenderer().getOffset());

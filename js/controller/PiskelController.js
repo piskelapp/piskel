@@ -16,8 +16,8 @@
 
     this.layerIdCounter = 1;
 
-    $.publish(Events.PISKEL_RESET);
     $.publish(Events.FRAME_SIZE_CHANGED);
+    $.publish(Events.PISKEL_RESET);
   };
 
   ns.PiskelController.prototype.init = function () {

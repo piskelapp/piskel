@@ -5,7 +5,7 @@
   ns.PiskelRenderer = function (piskelController) {
     var frames = [];
     for (var i = 0 ; i < piskelController.getFrameCount() ; i++) {
-      frames.push(this.piskelController.getFrameAt(i));
+      frames.push(piskelController.getFrameAt(i));
     }
     ns.FramesheetRenderer.call(this, frames);
   };
