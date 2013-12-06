@@ -5,6 +5,8 @@
    * @constructor
    * @param {Number} width
    * @param {Number} height
+   * @param {String} name
+   * @param {String} description
    */
   ns.Piskel = function (width, height) {
     if (width && height) {
@@ -16,6 +18,8 @@
 
       /** @type {Number} */
       this.height = height;
+
+      this.descriptor = null;
     } else {
       throw 'Missing arguments in Piskel constructor : ' + Array.prototype.join.call(arguments, ",");
     }
@@ -94,6 +98,17 @@
 
   ns.Piskel.prototype.removeLayerAt = function (index) {
     this.layers.splice(index, 1);
+  };
+
+  ns.Piskel.prototype.getDescriptor = function () {
+    return this.descriptor;
+  };
+
+  ns.Piskel.prototype.setDescriptor = function (name, desc) {
+    this.descriptor = {
+      name : name,
+      description : desc
+    };
   };
 
 })();

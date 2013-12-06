@@ -15,6 +15,7 @@
 
       var size = this.readSizeFromURL_();
       var piskel = new pskl.model.Piskel(size.width, size.height);
+      piskel.setDescriptor("New Piskel", "Some text ...");
 
       var layer = new pskl.model.Layer("Layer 1");
       var frame = new pskl.model.Frame(size.width, size.height);

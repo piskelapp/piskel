@@ -13,6 +13,10 @@
     'import' : {
       template : 'templates/settings/import.html',
       controller : ns.ImportController
+    },
+    'save' : {
+      template : 'templates/settings/save.html',
+      controller : ns.SaveController
     }
   };
 

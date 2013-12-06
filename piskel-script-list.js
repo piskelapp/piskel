@@ -69,6 +69,7 @@ exports.scripts = [
   // Settings sub-controllers
   "js/controller/settings/ApplicationSettingsController.js",
   "js/controller/settings/GifExportController.js",
+  "js/controller/settings/SaveController.js",
   "js/controller/settings/ImportController.js",
   // Settings controller
   "js/controller/settings/SettingsController.js",
