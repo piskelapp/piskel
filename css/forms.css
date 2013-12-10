@@ -4,6 +4,9 @@
   border-radius : 2px;
   padding : 3px 10px;
   color : white;
+
+  box-sizing:border-box;
+  -moz-box-sizing:border-box;
 }
 
 .textfield[disabled=disabled] {
