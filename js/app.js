@@ -14,8 +14,9 @@
       this.shortcutService.init();
 
       var size = this.readSizeFromURL_();
-      var piskel = new pskl.model.Piskel(size.width, size.height);
-      piskel.setDescriptor("New Piskel", "Some text ...");
+
+      var descriptor = new pskl.model.piskel.Descriptor('New Piskel', '');
+      var piskel = new pskl.model.Piskel(size.width, size.height, descriptor);
 
       var layer = new pskl.model.Layer("Layer 1");
       var frame = new pskl.model.Frame(size.width, size.height);
@@ -65,7 +66,6 @@
       this.imageUploadService = new pskl.service.ImageUploadService();
       this.imageUploadService.init();
 
-
       this.cheatsheetService = new pskl.service.keyboard.CheatsheetService();
       this.cheatsheetService.init();
 
@@ -74,7 +74,7 @@
       drawingLoop.addCallback(this.render, this);
       drawingLoop.start();
 
-      this.initBootstrapTooltips_();
+      this.initTooltips_();
 
       /**
        * True when piskel is running in static mode (no back end needed).
@@ -110,7 +110,7 @@
       }
     },
 
-    initBootstrapTooltips_ : function () {
+    initTooltips_ : function () {
       $('body').tooltip({
         selector: '[rel=tooltip]'
       });
@@ -123,8 +123,8 @@
     },
 
     readSizeFromURL_ : function () {
-      var sizeParam = this.readUrlParameter_("size"),
-        size;
+      var sizeParam = this.readUrlParameter_("size");
+      var size;
       // parameter expected as size=64x48 => size=widthxheight
       var parts = sizeParam.split("x");
       if (parts && parts.length == 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
@@ -149,13 +149,12 @@
     },
 
     readUrlParameter_ : function (paramName) {
-      var searchString = window.location.search.substring(1),
-        i, val, params = searchString.split("&");
-
-      for (i = 0; i < params.length; i++) {
-        val = params[i].split("=");
-        if (val[0] == paramName) {
-          return window.unescape(val[1]);
+      var searchString = window.location.search.substring(1);
+      var params = searchString.split("&");
+      for (var i = 0; i < params.length; i++) {
+        var param = params[i].split("=");
+        if (param[0] == paramName) {
+          return window.unescape(param[1]);
         }
       }
       return "";

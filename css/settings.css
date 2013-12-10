@@ -51,6 +51,10 @@
   text-shadow: 1px 1px #000;
 }
 
+.settings-section .button {
+  margin: 0;
+}
+
 .settings-title {
   margin-top: 20px;
   margin-bottom: 10px;
@@ -60,6 +64,10 @@
 }
 
 .settings-item {}
+
+.settings-form-section {
+  margin-bottom: 10px;
+}
 
 .background-picker-wrapper {
   overflow: hidden;

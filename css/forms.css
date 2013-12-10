@@ -1,3 +1,7 @@
+.row {
+  display: block;
+}
+
 .textfield {
   background : black;
   border : 1px solid #888;
