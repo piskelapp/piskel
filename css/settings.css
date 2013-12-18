@@ -8,6 +8,7 @@
   -webkit-transition: all 200ms ease-out;
   -moz-transition: all 200ms ease-out;
   -ms-transition: all 200ms ease-out;
+  -o-transition: all 200ms ease-out;
   transition: all 200ms ease-out;
 }
 
@@ -51,6 +52,10 @@
   text-shadow: 1px 1px #000;
 }
 
+.settings-section .button {
+  margin: 0;
+}
+
 .settings-title {
   margin-top: 20px;
   margin-bottom: 10px;
@@ -59,7 +64,9 @@
   padding-bottom: 5px;
 }
 
-.settings-item {}
+.settings-form-section {
+  margin-bottom: 10px;
+}
 
 .background-picker-wrapper {
   overflow: hidden;
@@ -179,7 +186,26 @@
   text-shadow: none;
 }
 
+.save-field {
+  width: 100%;
+}
+
+#save-status {
+  margin-left: 10px;
+}
+.status {
+  height: 1.5rem;
+
+  word-break : break-all;
+  vertical-align: middle;
+  font-weight: normal;
+  text-shadow: none;
+}
+
 [name=smooth-resize-checkbox] {
   margin : 0 8px;
+}
+
+[name*=checkbox] {
   vertical-align: middle;
 }

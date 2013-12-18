@@ -54,26 +54,34 @@
    * @private
    */
   ns.ShortcutService.prototype.onKeyUp_ = function(evt) {
-    // jquery names FTW ...
-    var keycode = evt.which;
-    var charkey = pskl.service.keyboard.KeycodeTranslator.toChar(keycode);
+    if (!this.isInInput_(evt)) {
+      // jquery names FTW ...
+      var keycode = evt.which;
+      var targetTagName = evt.target.nodeName.toUpperCase();
+      var charkey = pskl.service.keyboard.KeycodeTranslator.toChar(keycode);
 
-    var keyShortcuts = this.shortcuts_[charkey];
-    if(keyShortcuts) {
-      var cb;
-      if (this.isCtrlKeyPressed_(evt)) {
-        cb = keyShortcuts.ctrl;
-      } else if (this.isShiftKeyPressed_(evt)) {
-        cb = keyShortcuts.shift;
-      } else {
-        cb = keyShortcuts.normal;
-      }
+      var keyShortcuts = this.shortcuts_[charkey];
+      if(keyShortcuts) {
+        var cb;
+        if (this.isCtrlKeyPressed_(evt)) {
+          cb = keyShortcuts.ctrl;
+        } else if (this.isShiftKeyPressed_(evt)) {
+          cb = keyShortcuts.shift;
+        } else {
+          cb = keyShortcuts.normal;
+        }
 
-      if(cb) {
-        cb(charkey);
-        evt.preventDefault();
+        if(cb) {
+          cb(charkey);
+          evt.preventDefault();
+        }
       }
     }
+  };
+
+  ns.ShortcutService.prototype.isInInput_ = function (evt) {
+    var targetTagName = evt.target.nodeName.toUpperCase();
+    return targetTagName === 'INPUT' || targetTagName === 'TEXTAREA';
   };
 
   ns.ShortcutService.prototype.isCtrlKeyPressed_ = function (evt) {

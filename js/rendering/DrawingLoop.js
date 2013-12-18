@@ -6,6 +6,7 @@
     this.isRunning = false;
     this.previousTime = 0;
     this.callbacks = [];
+    this.i = 0;
   };
 
   ns.DrawingLoop.prototype.addCallback = function (callback, scope, args) {
@@ -33,7 +34,10 @@
   ns.DrawingLoop.prototype.loop_ = function () {
     var currentTime = Date.now();
     var delta = currentTime - this.previousTime;
-    this.executeCallbacks_(delta);
+    this.i++;
+    if(this.i%2 === 0) {
+      this.executeCallbacks_(delta);
+    }
     this.previousTime = currentTime;
     this.requestAnimationFrame.call(window, this.loop_.bind(this));
   };

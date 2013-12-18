@@ -2,15 +2,21 @@
   <div class="settings-title">Save</div>
   <div class="settings-item">
     <form action="" method="POST" name="save-form">
-      <div class="row">
-        <label>Title : </label>
+      <div class="settings-form-section">
+        <label class="row">Title : </label>
+        <input id="save-name" type="text" class="save-field textfield"/>
       </div>
-      <input id="save-title" type="text" class="textfield" style="width :100%;"/>
-      <div class="row">
-        <label>Description :</label>
+      <div class="settings-form-section">
+        <label class="row">Description :</label>
+        <textarea id="save-description" class="save-field textfield" placeholder="Your piskel in a few words"></textarea>
       </div>
-      <textarea id="save-description" class="textfield" style="width :100%;"></textarea>
-      <input type="submit" class="button button-primary gif-upload-button" value="Save" />
+      <div class="settings-form-section">
+        <label class="row">
+          Public : <input type="checkbox" value="1" name="save-public-checkbox"/>
+        </label>
+      </div>
+      <input type="submit" class="button button-primary" id="save-button" value="Save" />
+      <span id="save-status" class="status"></span>
     </form>
   </div>
 </div>

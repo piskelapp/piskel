@@ -37,6 +37,7 @@ exports.scripts = [
   // Models
   "js/model/Frame.js",
   "js/model/Layer.js",
+  "js/model/piskel/Descriptor.js",
   "js/model/Piskel.js",
 
   // Selection
@@ -76,6 +77,8 @@ exports.scripts = [
 
   // Services
   "js/service/LocalStorageService.js",
+  "js/service/GithubStorageService.js",
+  "js/service/AppEngineStorageService.js",
   "js/service/HistoryService.js",
   "js/service/keyboard/ShortcutService.js",
   "js/service/keyboard/KeycodeTranslator.js",

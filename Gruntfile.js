@@ -12,6 +12,7 @@
 
 module.exports = function(grunt) {
   var piskelScripts = require('./piskel-script-list.js').scripts;
+  var piskelStyles = require('./piskel-style-list.js').styles;
   var getGhostConfig = function (delay) {
     return {
       filesSrc : ['tests/integration/casperjs/*_test.js'],
@@ -68,12 +69,16 @@ module.exports = function(grunt) {
       local : getGhostConfig(50)
     },
     concat : {
-      options : {
-        separator : ';'
-      },
-      dist : {
+      js : {
+        options : {
+          separator : ';'
+        },
         src : piskelScripts,
         dest : 'build/piskel-packaged.js'
+      },
+      css : {
+        src : piskelStyles,
+        dest : 'build/piskel-style-packaged.css'
       }
     },
     uglify : {
@@ -171,8 +176,10 @@ module.exports = function(grunt) {
   // Compile JS code (eg verify JSDoc annotation and types, no actual minified code generated).
   grunt.registerTask('compile', ['closureCompiler:compile']);
 
+  grunt.registerTask('merge',  ['concat:js', 'concat:css', 'uglify']);
+
   // Validate & Build
-  grunt.registerTask('default', ['leadingIndent:jsFiles', 'leadingIndent:cssFiles', 'jshint', 'concat', 'compile', 'uglify']);
+  grunt.registerTask('default', ['leadingIndent:jsFiles', 'leadingIndent:cssFiles', 'jshint', 'concat:js', 'concat:css', 'compile', 'uglify']);
 
   // Start webserver
   grunt.registerTask('serve', ['connect:serve']);

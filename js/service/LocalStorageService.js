@@ -45,6 +45,7 @@
    */
   ns.LocalStorageService.prototype.restoreFromLocalStorage_ = function() {
     var framesheet = JSON.parse(window.localStorage.snapShot);
+
     pskl.utils.serialization.Deserializer.deserialize(framesheet, function (piskel) {
       pskl.app.piskelController.setPiskel(piskel);
     });

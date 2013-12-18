@@ -23,7 +23,9 @@
   ns.Deserializer.prototype.deserialize = function () {
     var data = this.data_;
     var piskelData = data.piskel;
-    this.piskel_ = new pskl.model.Piskel(piskelData.width, piskelData.height);
+
+    var descriptor = new pskl.model.piskel.Descriptor('Deserialized piskel', '');
+    this.piskel_ = new pskl.model.Piskel(piskelData.width, piskelData.height, descriptor);
 
     this.layersToLoad_ = piskelData.layers.length;
 
