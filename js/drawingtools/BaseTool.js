@@ -31,6 +31,13 @@
     }
   };
 
+  ns.BaseTool.prototype.hideHighlightedPixel = function(overlay) {
+    overlay.setPixel(this.highlightedPixelCol, this.highlightedPixelRow, Constants.TRANSPARENT_COLOR);
+    this.highlightedPixelRow = null;
+    this.highlightedPixelCol = null;
+  };
+
+
   ns.BaseTool.prototype.releaseToolAt = function(col, row, color, frame, overlay, event) {};
 
   /**

@@ -63,7 +63,8 @@
   ns.DrawingController.prototype.initMouseBehavior = function() {
     var body = $('body');
     this.container.mousedown($.proxy(this.onMousedown_, this));
-    this.container.mousemove($.proxy(this.onMousemove_, this));
+    this.container.mouseenter($.proxy(this.onMouseenter_, this));
+    this.container.mouseleave($.proxy(this.onMouseleave_, this));
 
     if (pskl.utils.UserAgent.isChrome) {
       this.container.on('mousewheel', $.proxy(this.onMousewheel_, this));
@@ -82,7 +83,7 @@
       window.clearInterval(this.resizeTimer);
     }
     this.resizeTimer = window.setTimeout($.proxy(this.afterWindowResize_, this), 200);
-  },
+  };
 
   ns.DrawingController.prototype.afterWindowResize_ = function () {
     var initialWidth = this.compositeRenderer.getDisplaySize().width;
@@ -93,7 +94,7 @@
     this.compositeRenderer.setZoom(newZoom);
 
     $.publish(Events.ZOOM_CHANGED);
-  },
+  };
 
   /**
    * @private
@@ -102,13 +103,28 @@
     if(settingsName == pskl.UserSettings.SHOW_GRID) {
       console.warn('DrawingController:onUserSettingsChange_ not implemented !');
     }
-  },
+  };
 
   ns.DrawingController.prototype.onFrameSizeChanged_ = function () {
     this.compositeRenderer.setDisplaySize(this.getContainerWidth_(), this.getContainerHeight_());
     this.compositeRenderer.setZoom(this.calculateZoom_());
     this.compositeRenderer.setOffset(0, 0);
     $.publish(Events.ZOOM_CHANGED);
+  };
+
+  /**
+   * @private
+   */
+  ns.DrawingController.prototype.onMouseenter_ = function (event) {
+    this.container.bind('mousemove', $.proxy(this.onMousemove_, this));
+  };
+
+  /**
+   * @private
+   */
+  ns.DrawingController.prototype.onMouseleave_ = function (event) {
+    this.container.unbind('mousemove');
+    this.currentToolBehavior.hideHighlightedPixel(this.overlayFrame);
   };
 
   /**
@@ -124,6 +140,7 @@
       }
     } else {
       this.isClicked = true;
+      this.currentToolBehavior.hideHighlightedPixel(this.overlayFrame);
 
       this.currentToolBehavior.applyToolAt(
         coords.x,
