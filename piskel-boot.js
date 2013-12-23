@@ -1,4 +1,16 @@
 (function () {
+
+  window.onPiskelReady = function () {
+    var loadingMask = document.getElementById('loading-mask');
+    loadingMask.style.opacity = 0;
+    window.setTimeout(function () {loadingMask.parentNode.removeChild(loadingMask);}, 600)
+    pskl.app.init();
+    // cleanup
+    delete window.exports;
+    delete window.loadDebugScripts;
+    delete window.done;
+  };
+
   var prefixPath = function (path) {
     if (window.pskl && window.pskl.appEngineToken_) {
       return '../' + path;
@@ -29,11 +41,7 @@
     var scriptIndex = 0;
     window.loadNextScript = function () {
       if (scriptIndex == window.exports.scripts.length) {
-        pskl.app.init();
-        // cleanup
-        delete window.exports;
-        delete window.loadDebugScripts;
-        delete window.done;
+        window.onPiskelReady();
       } else {
         loadScript(window.exports.scripts[scriptIndex], "loadNextScript()");
         scriptIndex ++;
@@ -60,7 +68,7 @@
     var loaderInterval = window.setInterval(function () {
       if (document.querySelectorAll("[data-iframe-loader]").length === 0) {
         window.clearInterval(loaderInterval);
-        loadScript(script, "pskl.app.init()");
+        loadScript(script, "onPiskelReady()");
       } else {
         console.log("waiting for templates to load ....");
       }
