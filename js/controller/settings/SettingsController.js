@@ -6,6 +6,10 @@
       template : 'templates/settings/application.html',
       controller : ns.ApplicationSettingsController
     },
+    'resize' : {
+      template : 'templates/settings/resize.html',
+      controller : ns.ResizeController
+    },
     'gif' : {
       template : 'templates/settings/export-gif.html',
       controller : ns.GifExportController
