@@ -1,9 +1,16 @@
+.row {
+  display: block;
+}
+
 .textfield {
   background : black;
   border : 1px solid #888;
   border-radius : 2px;
   padding : 3px 10px;
   color : white;
+
+  box-sizing:border-box;
+  -moz-box-sizing:border-box;
 }
 
 .textfield[disabled=disabled] {

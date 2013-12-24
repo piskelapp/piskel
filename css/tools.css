@@ -19,8 +19,10 @@
 .tool-icon.selected {
   cursor: default;
   background-color: #444;
-  border: 1px gold solid;
-  margin: 0;
+  border: 3px solid gold;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  background-position: 9px 9px;
 }
 
 .tool-icon:hover {
@@ -64,7 +66,6 @@
 
 .tool-icon.tool-move {
   background-image: url(../img/tools/hand.png);
-  background-position: 12px 12px;
   background-size: 24px 24px;
 }
 
@@ -74,13 +75,16 @@
   background-size: 24px 20px;
 }
 
+.tool-icon.tool-rectangle.selected, .tool-icon.tool-rectangle-select.selected {
+  background-position: 9px 11px;
+}
+
 .tool-icon.tool-shape-select {
   background-image: url(../img/tools/magicwand.png);
 }
 
 .tool-icon.tool-colorpicker {
   background-image: url(../img/tools/eyedropper.png);
-  background-position: 12px 12px;
   background-size: 23px 23px;
 }
 

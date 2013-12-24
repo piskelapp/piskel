@@ -37,7 +37,11 @@
   var storeFrame = function (iframe) {
     var script=document.createElement("script");
     script.setAttribute("type", "text/html");
-    script.setAttribute("id", iframe.getAttribute("src"));
+    if (window.pskl && window.pskl.appEngineToken_) {
+      script.setAttribute("id", iframe.getAttribute("src").replace('../',''));
+    } else {
+      script.setAttribute("id", iframe.getAttribute("src"));
+    }
     script.innerHTML = iframe.contentWindow.document.body.innerHTML;
     iframe.parentNode.removeChild(iframe);
     document.body.appendChild(script);

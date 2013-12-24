@@ -15,6 +15,8 @@
    * @private
    */
   ns.NotificationController.prototype.displayMessage_ = function (evt, messageInfo) {
+    this.removeMessage_();
+
     var message = document.createElement('div');
     message.id = "user-message";
     message.className = "user-message";

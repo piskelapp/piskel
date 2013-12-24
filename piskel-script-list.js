@@ -37,6 +37,7 @@ exports.scripts = [
   // Models
   "js/model/Frame.js",
   "js/model/Layer.js",
+  "js/model/piskel/Descriptor.js",
   "js/model/Piskel.js",
 
   // Selection
@@ -69,12 +70,15 @@ exports.scripts = [
   // Settings sub-controllers
   "js/controller/settings/ApplicationSettingsController.js",
   "js/controller/settings/GifExportController.js",
+  "js/controller/settings/SaveController.js",
   "js/controller/settings/ImportController.js",
   // Settings controller
   "js/controller/settings/SettingsController.js",
 
   // Services
   "js/service/LocalStorageService.js",
+  "js/service/GithubStorageService.js",
+  "js/service/AppEngineStorageService.js",
   "js/service/HistoryService.js",
   "js/service/keyboard/ShortcutService.js",
   "js/service/keyboard/KeycodeTranslator.js",
