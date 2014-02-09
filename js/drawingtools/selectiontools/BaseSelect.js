@@ -70,6 +70,9 @@
     }
   };
 
+  ns.BaseSelect.prototype.hideHighlightedPixel = function () {
+    // not implemented for selection tools
+  };
 
   /**
    * If we mouseover the selection draw inside the overlay frame, show the 'move' cursor

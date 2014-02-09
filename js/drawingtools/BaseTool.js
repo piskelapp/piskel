@@ -32,9 +32,11 @@
   };
 
   ns.BaseTool.prototype.hideHighlightedPixel = function(overlay) {
-    overlay.setPixel(this.highlightedPixelCol, this.highlightedPixelRow, Constants.TRANSPARENT_COLOR);
-    this.highlightedPixelRow = null;
-    this.highlightedPixelCol = null;
+    if (this.highlightedPixelRow !== null && this.highlightedPixelCol !== null) {
+      overlay.setPixel(this.highlightedPixelCol, this.highlightedPixelRow, Constants.TRANSPARENT_COLOR);
+      this.highlightedPixelRow = null;
+      this.highlightedPixelCol = null;
+    }
   };
 
 

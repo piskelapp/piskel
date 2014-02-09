@@ -9,6 +9,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
+  <div 
+    id="loading-mask" 
+    style="
+    position:fixed;
+    top:0;right:0;bottom:0;left:0;
+    background:black;
+    opacity:1;
+    text-align:center;
+    z-index : 20000;
+    transition:opacity 0.5s;
+    color:white;">
+      <span style="top:45%">Loading pixels ...</span>
+  </div>
   <script type="text/javascript" src="js/lib/iframeLoader.js"></script>
   <div class="piskel-name-container">
     <input readonly id="piskel-name" type="text" value=""/>
