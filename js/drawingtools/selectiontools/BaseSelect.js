@@ -92,6 +92,10 @@
     }
   };
 
+  ns.BaseSelect.prototype.hideHighlightedPixel = function() {
+    // there is no highlighted pixel for selection tools, do nothing
+  };
+
   /**
    * For each pixel in the selection draw it in white transparent on the tool overlay
    * @protected
