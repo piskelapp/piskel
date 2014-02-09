@@ -18,6 +18,7 @@ exports.scripts = [
   "js/utils/core.js",
   "js/utils/UserAgent.js",
   "js/utils/CanvasUtils.js",
+  "js/utils/Dom.js",
   "js/utils/Math.js",
   "js/utils/FileUtils.js",
   "js/utils/FrameUtils.js",
