@@ -103,8 +103,6 @@
           "content" : "Loading animation with id : [" + framesheetId + "]"
         }]);
         this.loadFramesheetFromService(framesheetId);
-      } else {
-        this.localStorageService.displayRestoreNotification();
       }
     },
 
@@ -116,6 +114,10 @@
           pskl.app.animationController.setFPS(pskl.appEnginePiskelData_.fps);
         });
       }
+    },
+
+    isLoggedIn : function () {
+      return pskl.appEnginePiskelData_ && pskl.appEnginePiskelData_.isLoggedIn;
     },
 
     initTooltips_ : function () {

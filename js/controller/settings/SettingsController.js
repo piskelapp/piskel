@@ -18,6 +18,10 @@
       template : 'templates/settings/import.html',
       controller : ns.ImportController
     },
+    'localstorage' : {
+      template : 'templates/settings/localstorage.html',
+      controller : ns.LocalStorageController
+    },
     'save' : {
       template : 'templates/settings/save.html',
       controller : ns.SaveController
