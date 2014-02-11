@@ -1,0 +1,18 @@
+<div class="settings-section">
+  <div class="settings-title">
+    Browse Local Piskels
+  </div>
+  <div class="settings-item">
+    <table class="local-piskels-list">
+      <tbody></tbody>
+    </table>
+  </div>
+  <script type="text/template" id="local-storage-item-template">
+    <tr class="local-piskel-item">
+      <td class="local-piskel-name">{{name}}</td>
+      <td class="local-piskel-save-date">{{date}}</td>
+      <td><a class="local-piskel-load-link" data-action="load" data-name="{{name}}" href="javascript:void(0);">load</a></td>
+      <td><a class="local-piskel-delete-link" data-action="delete" data-name="{{name}}" href="javascript:void(0);">x</a></td>
+    </tr>
+  </script>
+</div>

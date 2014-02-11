@@ -36,7 +36,7 @@
     // Set SimplePen as default selected tool:
     this.selectTool_(this.tools[0]);
     // Activate listener on tool panel:
-    $("#tool-section").click($.proxy(this.onToolIconClicked_, this));
+    $("#tool-section").mousedown($.proxy(this.onToolIconClicked_, this));
   };
 
   /**
@@ -47,6 +47,7 @@
     var previousSelectedToolClass = stage.data("selected-tool-class");
     if(previousSelectedToolClass) {
       stage.removeClass(previousSelectedToolClass);
+      stage.removeClass(pskl.drawingtools.Move.TOOL_ID);
     }
     stage.addClass(tool.instance.toolId);
     stage.data("selected-tool-class", tool.instance.toolId);
