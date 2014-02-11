@@ -75,6 +75,9 @@
       this.cheatsheetService = new pskl.service.keyboard.CheatsheetService();
       this.cheatsheetService.init();
 
+      this.savedStatusService = new pskl.service.SavedStatusService(this.piskelController);
+      this.savedStatusService.init();
+
       if (this.isAppEngineVersion) {
         this.storageService = new pskl.service.AppEngineStorageService(this.piskelController);
       } else {

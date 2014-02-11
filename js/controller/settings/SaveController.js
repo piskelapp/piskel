@@ -95,6 +95,7 @@
   ns.SaveController.prototype.onSaveSuccess_ = function () {
     $.publish(Events.CLOSE_SETTINGS_DRAWER);
     $.publish(Events.SHOW_NOTIFICATION, [{"content": "Successfully saved !"}]);
+    $.publish(Events.PISKEL_SAVED);
   };
 
   ns.SaveController.prototype.onSaveError_ = function (status) {
