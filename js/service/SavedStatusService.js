@@ -36,6 +36,7 @@
   ns.SavedStatusService.prototype.updateDirtyStatus = function (status) {
     var piskel = this.piskelController_.piskel;
     if (piskel.isDirty_ !== status) {
+      // Redraw piskel name only if dirty status actually changed
       piskel.isDirty_ = status;
       this.updatePiskelName();
     }
