@@ -136,6 +136,20 @@
   cursor: url(../img/icons/dropper.png) 0 15, pointer;
 }
 
+.tool-color-picker {
+  position:relative;
+}
+
+.tool-color-picker:nth-child(1) {
+  z-index : 100;
+}
+
+.tool-color-picker:nth-child(2) {
+  z-index : 90;
+  margin-top: 20px;
+  margin-left:-20px;
+}
+
 .tool-color-picker input {
   width: 16px;
   height: 16px;
@@ -155,6 +169,7 @@
 
 .palette-wrapper {
   margin-top: 10px;
+  margin-left: 10px;
 }
 
 .palette-color[data-color=TRANSPARENT] {
