@@ -136,6 +136,22 @@
   cursor: url(../img/icons/dropper.png) 0 15, pointer;
 }
 
+.swap-colors-icon {
+  background-image: url(../img/tools/swap-arrow-square-small-grey.png);
+  position: relative;
+  top: 50px;
+  left: 6px;
+  height: 18px;
+  width: 18px;
+  background-size: 18px;
+  opacity : 0.3;
+  cursor : pointer;
+}
+
+.swap-colors-icon:hover {
+  opacity : 1;
+}
+
 .tool-color-picker {
   position:relative;
 }
