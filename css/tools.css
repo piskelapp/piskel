@@ -136,6 +136,36 @@
   cursor: url(../img/icons/dropper.png) 0 15, pointer;
 }
 
+.swap-colors-icon {
+  background-image: url(../img/tools/swap-arrow-square-small-grey.png);
+  position: relative;
+  top: 50px;
+  left: 6px;
+  height: 18px;
+  width: 18px;
+  background-size: 18px;
+  opacity : 0.3;
+  cursor : pointer;
+}
+
+.swap-colors-icon:hover {
+  opacity : 1;
+}
+
+.tool-color-picker {
+  position:relative;
+}
+
+.tool-color-picker:nth-child(1) {
+  z-index : 100;
+}
+
+.tool-color-picker:nth-child(2) {
+  z-index : 90;
+  margin-top: 20px;
+  margin-left:-20px;
+}
+
 .tool-color-picker input {
   width: 16px;
   height: 16px;
@@ -155,6 +185,7 @@
 
 .palette-wrapper {
   margin-top: 10px;
+  margin-left: 10px;
 }
 
 .palette-color[data-color=TRANSPARENT] {

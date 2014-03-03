@@ -25,13 +25,18 @@
 
 /* Remove the padding on the input container */
 .sp-replacer {
-  padding: 3px;
+  padding: 4px;
   height: 100%;
   border-width: 0;
   box-sizing: border-box;
   -moz-box-sizing:border-box;
   background-color: #444;
 }
+
+.sp-replacer:hover {
+  background-color: #888;
+}
+
 /* Hide the triangle */
 .sp-dd {
   display: none;

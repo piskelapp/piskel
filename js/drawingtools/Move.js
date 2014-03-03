@@ -7,13 +7,15 @@
   var ns = $.namespace("pskl.drawingtools");
 
   ns.Move = function() {
-    this.toolId = "tool-move";
+    this.toolId = ns.Move.TOOL_ID;
     this.helpText = "Move tool";
 
     // Stroke's first point coordinates (set in applyToolAt)
     this.startCol = null;
     this.startRow = null;
   };
+
+  ns.Move.TOOL_ID = "tool-move";
 
   pskl.utils.inherit(ns.Move, ns.BaseTool);
 

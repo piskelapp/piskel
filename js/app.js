@@ -75,6 +75,9 @@
       this.cheatsheetService = new pskl.service.keyboard.CheatsheetService();
       this.cheatsheetService.init();
 
+      this.savedStatusService = new pskl.service.SavedStatusService(this.piskelController);
+      this.savedStatusService.init();
+
       if (this.isAppEngineVersion) {
         this.storageService = new pskl.service.AppEngineStorageService(this.piskelController);
       } else {
@@ -103,8 +106,6 @@
           "content" : "Loading animation with id : [" + framesheetId + "]"
         }]);
         this.loadFramesheetFromService(framesheetId);
-      } else {
-        this.localStorageService.displayRestoreNotification();
       }
     },
 
@@ -116,6 +117,10 @@
           pskl.app.animationController.setFPS(pskl.appEnginePiskelData_.fps);
         });
       }
+    },
+
+    isLoggedIn : function () {
+      return pskl.appEnginePiskelData_ && pskl.appEnginePiskelData_.isLoggedIn;
     },
 
     initTooltips_ : function () {

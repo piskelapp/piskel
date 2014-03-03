@@ -15,5 +15,8 @@ npm-debug.log
 # builds
 build
 
+# marked as private
+*.private.*
+
 # Closure compiler generated JS binary.
 closure_compiled_binary.js

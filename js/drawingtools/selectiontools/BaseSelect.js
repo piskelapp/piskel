@@ -7,7 +7,7 @@
   var ns = $.namespace("pskl.drawingtools");
 
   ns.BaseSelect = function() {
-    this.secondaryToolId = "tool-move";
+    this.secondaryToolId = pskl.drawingtools.Move.TOOL_ID;
     this.BodyRoot = $('body');
 
     // Select's first point coordinates (set in applyToolAt)

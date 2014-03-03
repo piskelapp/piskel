@@ -65,7 +65,7 @@ module.exports = function(grunt) {
       }
     },
     ghost : {
-      'default' : getGhostConfig(3000),
+      'default' : getGhostConfig(5000),
       local : getGhostConfig(50)
     },
     concat : {
