@@ -42,6 +42,10 @@
   background-size: 38px 27px;
 }
 
+.tool-icon.tool-vertical-mirror-pen.selected {
+  background-position: -3px 7px;
+}
+
 .tool-icon.tool-paint-bucket {
   background-image: url(../img/tools/paintbucket.png);
 }
@@ -75,7 +79,8 @@
   background-size: 24px 20px;
 }
 
-.tool-icon.tool-rectangle.selected, .tool-icon.tool-rectangle-select.selected {
+.tool-icon.tool-rectangle.selected,
+.tool-icon.tool-rectangle-select.selected {
   background-position: 9px 11px;
 }
 
