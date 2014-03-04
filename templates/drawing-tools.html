@@ -1,6 +1,9 @@
 <div class="sticky-section left-sticky-section" id="tool-section">
   <div class="sticky-section-wrap">
     <div class="vertical-centerer">
+      <script type="text/template" id="drawing-tool-item-template">
+        <li rel="tooltip" data-placement="right" class="{{cssclass}}" data-tool-id="{{toolid}}" title="{{title}}"></li>
+      </script>
       <ul id="tools-container" class="tools-wrapper"></ul>
       <div class="palette-wrapper">
         <div

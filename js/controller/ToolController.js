@@ -1,7 +1,6 @@
 (function () {
   var ns = $.namespace("pskl.controller");
 
-
   ns.ToolController = function () {
     var toDescriptor = function (id, shortcut, instance) {
       return {id:id, shortcut:shortcut, instance:instance};
@@ -119,15 +118,23 @@
    * @private
    */
   ns.ToolController.prototype.getToolMarkup_ = function(tool) {
-    var instance = tool.instance;
+    var toolId = tool.instance.toolId;
 
-    var classList = ['tool-icon', instance.toolId];
+    var classList = ['tool-icon', toolId];
     if (this.currentSelectedTool == tool) {
       classList.push('selected');
     }
 
-    return '<li rel="tooltip" data-placement="right" class="' + classList.join(' ') + '" data-tool-id="' + instance.toolId +
-              '" title="' + instance.helpText + ' (' + tool.shortcut + ')"></li>';
+    var tpl = pskl.utils.Template.get('drawing-tool-item-template');
+    return pskl.utils.Template.replace(tpl, {
+      cssclass : classList.join(' '),
+      toolid : toolId,
+      title : this.getTooltipText_(tool)
+    });
+  };
+
+  ns.ToolController.prototype.getTooltipText_ = function (tool) {
+    return tool.instance.helpText + ' (' + tool.shortcut + ')';
   };
 
   ns.ToolController.prototype.addKeyboardShortcuts_ = function () {
