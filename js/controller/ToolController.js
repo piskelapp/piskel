@@ -127,7 +127,7 @@
     }
 
     return '<li rel="tooltip" data-placement="right" class="' + classList.join(' ') + '" data-tool-id="' + instance.toolId +
-              '" title="' + instance.helpText + '"></li>';
+              '" title="' + instance.helpText + ' (' + tool.shortcut + ')"></li>';
   };
 
   ns.ToolController.prototype.addKeyboardShortcuts_ = function () {
