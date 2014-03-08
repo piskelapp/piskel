@@ -161,7 +161,8 @@
   border: gold 1px solid;
 }
 
-/* Gif Export Setting panel*/
+/* Gif/Png Export Setting panel*/
+/*******************************/
 .gif-upload-button,
 .gif-render-button {
   /*float : right;*/
@@ -173,10 +174,24 @@
   margin:10px 0;
 }
 
-.gif-export-preview {
+.gif-export-preview,
+.png-export-preview {
   margin-top:20px;
   max-width:240px;
   position:relative;
+}
+
+.png-export-preview {
+  margin:10px 0;
+  overflow: hidden;
+}
+
+.png-export-preview img {
+  float: left;
+}
+
+.png-upload-status {
+  margin : 10px 0;
 }
 
 .preview-upload-ongoing:before{

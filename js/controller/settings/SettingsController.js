@@ -14,6 +14,10 @@
       template : 'templates/settings/export-gif.html',
       controller : ns.GifExportController
     },
+    'png' : {
+      template : 'templates/settings/export-png.html',
+      controller : ns.PngExportController
+    },
     'import' : {
       template : 'templates/settings/import.html',
       controller : ns.ImportController

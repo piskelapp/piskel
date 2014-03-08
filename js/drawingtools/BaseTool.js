@@ -33,7 +33,11 @@
 
   ns.BaseTool.prototype.hideHighlightedPixel = function(overlay) {
     if (this.highlightedPixelRow !== null && this.highlightedPixelCol !== null) {
-      overlay.setPixel(this.highlightedPixelCol, this.highlightedPixelRow, Constants.TRANSPARENT_COLOR);
+      try {
+        overlay.setPixel(this.highlightedPixelCol, this.highlightedPixelRow, Constants.TRANSPARENT_COLOR);
+      } catch (e) {
+        console.warn('ns.BaseTool.prototype.hideHighlightedPixel failed');
+      }
       this.highlightedPixelRow = null;
       this.highlightedPixelCol = null;
     }

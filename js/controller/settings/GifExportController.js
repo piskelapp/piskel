@@ -1,6 +1,8 @@
 (function () {
   var ns = $.namespace("pskl.controller.settings");
 
+  var URL_MAX_LENGTH = 60;
+
   ns.GifExportController = function (piskelController) {
     this.piskelController = piskelController;
   };
@@ -25,6 +27,8 @@
 
   ns.GifExportController.prototype.init = function () {
     this.radioTemplate_ = pskl.utils.Template.get("gif-export-radio-template");
+
+    this.uploadStatusContainerEl = document.querySelectorAll(".gif-upload-status")[0];
 
     this.previewContainerEl = document.querySelectorAll(".gif-export-preview")[0];
     this.radioGroupEl = document.querySelectorAll(".gif-export-radio-group")[0];
@@ -52,7 +56,9 @@
 
   ns.GifExportController.prototype.onImageUploadCompleted_ = function (imageUrl) {
     this.updatePreview_(imageUrl);
+    this.updateStatus_(imageUrl);
     this.previewContainerEl.classList.remove("preview-upload-ongoing");
+
   };
 
   ns.GifExportController.prototype.updatePreview_ = function (src) {
@@ -126,5 +132,28 @@
     }.bind(this));
 
     gif.render();
+  };
+
+  // FIXME : HORRIBLE COPY/PASTA
+
+  ns.GifExportController.prototype.updateStatus_ = function (imageUrl, error) {
+    if (imageUrl) {
+      var linkTpl = "<a class='image-link' href='{{link}}' target='_blank'>{{shortLink}}</a>";
+      var linkHtml = pskl.utils.Template.replace(linkTpl, {
+        link : imageUrl,
+        shortLink : this.shorten_(imageUrl, URL_MAX_LENGTH, '...')
+      });
+      this.uploadStatusContainerEl.innerHTML = 'Your image is now available at : ' + linkHtml;
+    } else {
+      // FIXME : Should display error message instead
+    }
+  };
+
+  ns.GifExportController.prototype.shorten_ = function (url, maxLength, suffix) {
+    if (url.length > maxLength) {
+      url = url.substring(0, maxLength);
+      url += suffix;
+    }
+    return url;
   };
 })();

@@ -300,3 +300,7 @@ body {
 .user-message .close:hover {
   color: black;
 }
+
+.image-link {
+  color : gold;
+}
