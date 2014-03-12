@@ -60,6 +60,8 @@
     } else {
       this.closeDrawer();
     }
+    evt.originalEvent.stopPropagation();
+    evt.originalEvent.preventDefault();
   };
 
   ns.SettingsController.prototype.onBodyClick = function (evt) {
