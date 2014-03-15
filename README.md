@@ -15,11 +15,11 @@ Piskel is mainly developped by :
 ## What's the point ?
 
 You can use Piskel to do two things :
-* create retro-style sprites for games
+* **spriting** : create retro-style sprites for games
 
 ![Megaman spritesheet](http://piskel-imgstore-a.appspot.com/img/c8081287-ac58-11e3-bd8c-b3c4036c0eee.png "Megaman spritesheet")
 
-* create crazy/pretty/???? pixelart animations for fun !
+* **pixelart** : create crazy/pretty pixelart animations for fun !
 
 ![Rabbit jumping](http://piskel-imgstore-a.appspot.com/img/947f2dab-ac58-11e3-949a-b3c4036c0eee.gif "Rabit jumping")
 
