@@ -1,70 +1,68 @@
 Piskel
 ======
 
-The goal is to create an easy-to-use/in-the-cloud/web-based 2d animation editor. 
+A simple web-based tool for Spriting and Pixel art.
 
-Try it at : http://juliandescottes.github.com/piskel/
+![Piskel editor screenshot](https://screenletstore.appspot.com/img/8f03e768-ac59-11e3-b2a1-7f5a1b97c420.jpeg "Piskel editor screenshot")
 
-29 May 2013 
------------------------------------
-Trying to wake up after a big 8 months nap. 
+You can try the standalone editor at **http://juliandescottes.github.io/piskel** or see it integrated in **http://piskelapp.com**.
 
-![nap](http://screenletstore.appspot.com/img/68e1690f-c8a3-11e2-a431-13a291e88f09.gif)
+Piskel is mainly developped by :
 
-Also, new features :
-* color picker : ![color picker](http://screenletstore.appspot.com/img/18e24a63-c8a4-11e2-b479-13a291e88f09.png)
-* create an animated GIF from your piskel (uses jsgif, results may vary ...)
+* **[@juliandescottes](https://github.com/juliandescottes)**
+* **[@grosbouddha](https://github.com/grosbouddha)**
 
-16 Sep 2012
-------------------------------------
-Just a quick update to post a new screenshot. @grosbouddha is delivering features so fast, it's hard to keep up !
+## What's the point ?
 
-![Screenshot 4](https://dl.dropbox.com/u/17803671/screen_piskel_4.png "Screenshot 4")
+You can use Piskel to do two things :
+* create retro-style sprites for games
 
-15 Sep 2012
-------------------------------------
-2 weeks already since the last README.md update, and so many changes ! There has been a continuous stream of features added to piskel by @grosboudda, @captainbrosset (thanks guys) and myself.
-I can't list everything here but quickly
-* __Tools__ : in addition to the regular Pen, you can now draw Rectangles, Circles. You can move stuff, copy, paste !
-* __Undo/redo__ : you can now cancel your actions using ctrl-z/ctrl-y 
-* __Drag and drop__ : move frames around in your framesheet, using drag and drop
+![Megaman spritesheet](http://piskel-imgstore-a.appspot.com/img/c8081287-ac58-11e3-bd8c-b3c4036c0eee.png "Megaman spritesheet")
 
-And a screenshot, for the record : 
+* create crazy/pretty/???? pixelart animations for fun !
 
-![Screenshot 3](https://dl.dropbox.com/u/17803671/screen_piskel_3.png "Screenshot 3")
+![Rabbit jumping](http://piskel-imgstore-a.appspot.com/img/947f2dab-ac58-11e3-949a-b3c4036c0eee.gif "Rabit jumping")
 
-30 Aug 2012
-------------------------------------
-Many new features in 2 days :
-* __save animations__, they are persisted in the cloud, and can be retrieved via a __unique URL__
-* __color picker__, no longer limited to black and white 
-* __local storage__, your work is automatically backed up locally
-* __color palette__, listing all the colors already used in the animation
-* __slider__ for choosing the speed of the preview
+Integrated in **[piskelapp.com](http://piskelapp.com)**, you can share everything you work on with others as easily as you share a link.
 
-UI was slightly updated : 
+## Requirements
 
-![Screenshot 2](https://dl.dropbox.com/u/17803671/screen_piskel_2.png "Screenshot 2")
+Piskel supports the following browsers :
+* **Chrome** (latest)
+* **Firefox** (latest)
+* **Internet** Explorer 10+
 
-28 Aug 2012
-------------------------------------
-Thanks to grosbouddha, new features added to Piskel :
-* modify preview speed !
-* remove frames
-* transparent background
+... and a fairly recent computer. 
 
-24 Aug 2012 (aka the thing I did last night)
-------------------------------------
-* create small animations in __black__ (left click) and __white__ (right click)
-* and actually animations are always in __32x32__ zoomed 10 times
-* you can __not even save them__ ! 
-* add new frames for your animation
-* do small __ridiculous__ characters
+We don't plan/want/could be forced into supporting older IEs. For Opera and Safari, we've just never tested them but the gap shouldn't be huge.
 
-Looks like this : 
-![Alt text](https://dl.dropbox.com/u/17803671/screen_piskel.png "Optional title")
+## Built with
 
-**On the left**, the list of frames for the animation. 
-**In the 'middle'**, the editable canvas.
-**On the right**, the LIVE-ANIMATED-PREVIEW (rocket science stuff going on here).
+The Piskel editor is purely build in **JavaScript, HTML and CSS**. It uses Canvas extensively for displaying all them pretty sprites.
+
+We also use the following **libraries** :
+* [spectrum](https://github.com/bgrins/spectrum) : awesome standalone colorpicker 
+* [gifjs](http://jnordberg.github.io/gif.js/) : generate animated GIFs in javascript, using webworkers
+* [jquery](http://jquery.com/) : used sporadically in the application
+* [bootstrap-tooltip](http://getbootstrap.com/javascript/#tooltips) : nice tooltips
+
+As well as some **icons** from the [Noun Project](http://thenounproject.com/) :
+* Folder by Simple Icons from The Noun Project
+* (and probably one or two others)
+
+
+## Contributing ? 
+
+Help is always welcome !
+
+* **Issues** : Found a problem when using the application, want to request a feature, [open an issue](https://github.com/juliandescottes/piskel/issues). 
+* **Participate** : Have a look at the [wiki](https://github.com/juliandescottes/piskel/wiki) to set up the development environment
+
+## Licensing
+
+Probably need to pick one at some point ... Until then it's a "do whatever you want with it" license.
+
+## Mobile/Tablets
+
+There is no support for mobile for now.
 
