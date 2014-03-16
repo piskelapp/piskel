@@ -29,6 +29,7 @@
      * @param  {Canvas2d} source original image to be resized, as a 2d canvas
      * @param  {Number} zoom   ratio between desired dim / source dim
      * @param  {Number} margin gap to be displayed between pixels
+     * @param  {String} color or the margin (will be transparent if not provided)
      * @return {Canvas2d} the resized canvas
      */
     resizeNearestNeighbour : function (source, zoom, margin, marginColor) {
