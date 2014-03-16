@@ -13,20 +13,18 @@
       .find('.background-picker[data-background-class=' + backgroundClass + ']')
       .addClass('selected');
 
-    // Initial state for grid display:
-    var show_grid = pskl.UserSettings.get(pskl.UserSettings.SHOW_GRID);
-    $('#show-grid').prop('checked', show_grid);
-
-    // Handle grid display changes:
-    $('#show-grid').change(this.onShowGridClick.bind(this));
+    // Grid display and size
+    var gridWidth = pskl.UserSettings.get(pskl.UserSettings.GRID_WIDTH);
+    $('#grid-width').val(gridWidth);
+    $('#grid-width').change(this.onGridWidthChange.bind(this));
 
     // Handle canvas background changes:
     $('#background-picker-wrapper').click(this.onBackgroundClick.bind(this));
   };
 
-  ns.ApplicationSettingsController.prototype.onShowGridClick = function (evt) {
-    var checked = $('#show-grid').prop('checked');
-    pskl.UserSettings.set(pskl.UserSettings.SHOW_GRID, checked);
+  ns.ApplicationSettingsController.prototype.onGridWidthChange = function (evt) {
+    var width = $('#grid-width').val();
+    pskl.UserSettings.set(pskl.UserSettings.GRID_WIDTH, parseInt(width, 10));
   };
 
   ns.ApplicationSettingsController.prototype.onBackgroundClick = function (evt) {

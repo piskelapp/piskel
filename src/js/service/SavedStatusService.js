@@ -55,7 +55,7 @@
   ns.SavedStatusService.prototype.onBeforeUnload = function (evt) {
     var piskel = this.piskelController_.piskel;
     if (piskel.isDirty_) {
-      var confirmationMessage = "Your Piskel seem to have unsaved changes";
+      var confirmationMessage = "Your Piskel seems to have unsaved changes";
 
       (evt || window.event).returnValue = confirmationMessage;
       return confirmationMessage;

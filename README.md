@@ -30,18 +30,18 @@ Integrated in **[piskelapp.com](http://piskelapp.com)**, you can share everythin
 Piskel supports the following browsers :
 * **Chrome** (latest)
 * **Firefox** (latest)
-* **Internet** Explorer 10+
+* **Internet Explorer** 10+
 
-... and a fairly recent computer. 
+... and a fairly recent computer.
 
-We don't plan/want/could be forced into supporting older IEs. For Opera and Safari, we've just never tested them but the gap shouldn't be huge.
+We don't plan/want/could be forced into supporting older IEs. For Opera and Safari, we've never tested them but the gap shouldn't be huge.
 
 ## Built with
 
-The Piskel editor is purely build in **JavaScript, HTML and CSS**. It uses Canvas extensively for displaying all them pretty sprites.
+The Piskel editor is purely built in **JavaScript, HTML and CSS**. It uses Canvas extensively for displaying all them pretty sprites.
 
 We also use the following **libraries** :
-* [spectrum](https://github.com/bgrins/spectrum) : awesome standalone colorpicker 
+* [spectrum](https://github.com/bgrins/spectrum) : awesome standalone colorpicker
 * [gifjs](http://jnordberg.github.io/gif.js/) : generate animated GIFs in javascript, using webworkers
 * [jquery](http://jquery.com/) : used sporadically in the application
 * [bootstrap-tooltip](http://getbootstrap.com/javascript/#tooltips) : nice tooltips
@@ -51,11 +51,11 @@ As well as some **icons** from the [Noun Project](http://thenounproject.com/) :
 * (and probably one or two others)
 
 
-## Contributing ? 
+## Contributing ?
 
 Help is always welcome !
 
-* **Issues** : Found a problem when using the application, want to request a feature, [open an issue](https://github.com/juliandescottes/piskel/issues). 
+* **Issues** : Found a problem when using the application, want to request a feature, [open an issue](https://github.com/juliandescottes/piskel/issues).
 * **Participate** : Have a look at the [wiki](https://github.com/juliandescottes/piskel/wiki) to set up the development environment
 
 ## Licensing
