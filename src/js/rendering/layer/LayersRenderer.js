@@ -27,7 +27,7 @@
 
     var serializedRendering = [
       this.getZoom(),
-      this.isGridEnabled(),
+      this.getGridWidth(),
       offset.x,
       offset.y,
       size.width,

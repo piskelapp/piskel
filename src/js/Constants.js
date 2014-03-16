@@ -47,7 +47,6 @@ var Constants = {
   IMAGE_SERVICE_UPLOAD_URL : 'http://piskel-imgstore-a.appspot.com/__/upload',
   IMAGE_SERVICE_GET_URL : 'http://piskel-imgstore-a.appspot.com/img/',
 
-  GRID_STROKE_WIDTH: 1,
   ZOOMED_OUT_BACKGROUND_COLOR : '#A0A0A0',
 
   LEFT_BUTTON : 0,
