@@ -17,7 +17,7 @@
   width: 100%;
   height:  100%;
   box-sizing: border-box;
-  padding: 20px 10%;
+  padding: 20px 3%;
   border-radius: 3px;
   background: rgba(0,0,0,0.9);
   overflow: auto;
@@ -30,7 +30,7 @@
 
 .cheatsheet-section {
   float: left;
-  width : 50%;
+  width : 33%;
 }
 
 .cheatsheet-shortcut {

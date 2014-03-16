@@ -3,7 +3,8 @@
     191 : "?",
     27 : "esc",
     38 : "up",
-    40 : "down"
+    40 : "down",
+    46 : "del"
   };
 
   var ns = $.namespace('pskl.service.keyboard');
