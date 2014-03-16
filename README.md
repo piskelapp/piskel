@@ -38,7 +38,7 @@ We don't plan/want/could be forced into supporting older IEs. For Opera and Safa
 
 ## Built with
 
-The Piskel editor is purely build in **JavaScript, HTML and CSS**. It uses Canvas extensively for displaying all them pretty sprites.
+The Piskel editor is purely built in **JavaScript, HTML and CSS**. It uses Canvas extensively for displaying all them pretty sprites.
 
 We also use the following **libraries** :
 * [spectrum](https://github.com/bgrins/spectrum) : awesome standalone colorpicker
