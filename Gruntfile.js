@@ -10,15 +10,20 @@
  *       If you run this task locally, it may require some env set up first.
  */
 
+var SOURCE_FOLDER = "src";
+
 module.exports = function(grunt) {
-  var piskelScripts = require('./piskel-script-list.js').scripts;
-  var piskelStyles = require('./piskel-style-list.js').styles;
+  var mapToSrcFolder = function (path) {return [SOURCE_FOLDER, path].join('/');};
+
+  var piskelScripts = require('./src/piskel-script-list.js').scripts.map(mapToSrcFolder);
+  var piskelStyles = require('./src/piskel-style-list.js').styles.map(mapToSrcFolder);
+
   var getGhostConfig = function (delay) {
     return {
-      filesSrc : ['tests/integration/casperjs/*_test.js'],
+      filesSrc : ['test/integration/casperjs/*_test.js'],
       options : {
         args : {
-          baseUrl : 'http://localhost:' + '<%= connect.test.options.port %>/',
+          baseUrl : 'http://localhost:' + '<%= connect.test.options.port %>/src/',
           mode : '?debug',
           delay : delay
         },
@@ -45,8 +50,8 @@ module.exports = function(grunt) {
       files: [
         'Gruntfile.js',
         'package.json',
-        'js/**/*.js',
-        '!js/lib/**/*.js' // Exclude lib folder (note the leading !)
+        'src/js/**/*.js',
+        '!src/js/lib/**/*.js' // Exclude lib folder (note the leading !)
       ]
     },
     connect : {
@@ -94,7 +99,7 @@ module.exports = function(grunt) {
     closureCompiler:  {
       options: {
         // [REQUIRED] Path to closure compiler
-        compilerFile: 'closure_compiler_20130823.jar',
+        compilerFile: 'build/closure/closure_compiler_20130823.jar',
 
         // [OPTIONAL] set to true if you want to check if files were modified
         // before starting compilation (can save some time in large sourcebases)
@@ -109,7 +114,7 @@ module.exports = function(grunt) {
            */
           //compilation_level: 'ADVANCED_OPTIMIZATIONS',
           compilation_level: 'SIMPLE_OPTIMIZATIONS',
-          externs: ['piskel-closure-externs.js'],
+          externs: ['build/closure/piskel-closure-externs.js'],
           // Inject some constants in JS code, could we use that for appengine wiring ?
           //define: ["'goog.DEBUG=false'"],
           warning_level: 'verbose',
@@ -133,27 +138,27 @@ module.exports = function(grunt) {
         TEMPcompilerOpts: {
         },
         src: [
-          'js/**/*.js',
-          'piskel-boot.js',
-          'piskel-script-list.js',
-          '!js/lib/bootstrap/**/*.js',
-          '!js/lib/gif/**/*.js',
-          '!js/lib/jquery-1.8.0.js',
-          '!js/lib/jsColor_1_4_0/**/*.js'
+          'src/js/**/*.js',
+          'src/piskel-boot.js',
+          'src/piskel-script-list.js',
+          '!src/js/lib/**/*.js'
         ],
 
         // This generated JS binary is currently not used and even excluded from source control using .gitignore.
-        dest: 'closure_compiled_binary.js'
+        dest: 'build/closure/closure_compiled_binary.js'
       }
     }
   });
 
   grunt.config.set('leadingIndent.indentation', 'spaces');
   grunt.config.set('leadingIndent.jsFiles', {
-    src: ['js/**/*.js','!js/lib/**/*.js']
+    src: [
+      'src/js/**/*.js',
+      '!src/js/lib/**/*.js'
+    ]
   });
   grunt.config.set('leadingIndent.cssFiles', {
-    src: ['css/**/*.css']
+    src: ['src/css/**/*.css']
   });
 
   grunt.loadNpmTasks('grunt-contrib-connect');

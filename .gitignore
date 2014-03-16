@@ -13,10 +13,11 @@ npm-debug.log
 *.stackdump
 
 # builds
-build
+build/*.js
+build/*.css
+
+# Closure compiler generated JS binary.
+build/closure/closure_compiled_binary.js
 
 # marked as private
 *.private.*
-
-# Closure compiler generated JS binary.
-closure_compiled_binary.js
