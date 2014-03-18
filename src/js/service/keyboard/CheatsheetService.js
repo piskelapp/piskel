@@ -13,6 +13,10 @@
     this.initMarkup_();
     pskl.app.shortcutService.addShortcut('shift+?', this.toggleCheatsheet_.bind(this));
     pskl.app.shortcutService.addShortcut('?', this.toggleCheatsheet_.bind(this));
+
+    var link = $('.cheatsheet-link');
+    link.click(this.toggleCheatsheet_.bind(this));
+
     $.subscribe(Events.TOGGLE_HELP, this.toggleCheatsheet_.bind(this));
     $.subscribe(Events.ESCAPE, this.onEscape_.bind(this));
   };
