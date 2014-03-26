@@ -70,6 +70,12 @@
   border-right-width: 0;
 }
 
+.sp-picker-container {
+  padding: 5px;
+  padding-bottom: 300px;
+  margin-bottom: -295px;
+}
+
 .sp-slider {
   height: 5px;
   left: -2px;

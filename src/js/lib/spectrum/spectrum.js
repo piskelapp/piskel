@@ -670,7 +670,7 @@
 
             // Update the text entry input as it changes happen
             if (opts.showInput) {
-                textInput.val(realColor.toString(format));
+                textInput.val(realColor.toString(Constants.PREFERRED_COLOR_FORMAT || format));
             }
 
             if (opts.showPalette) {

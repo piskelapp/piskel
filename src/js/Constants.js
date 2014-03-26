@@ -18,6 +18,9 @@ var Constants = {
   DEFAULT_PEN_COLOR : '#000000',
   TRANSPARENT_COLOR : 'rgba(0, 0, 0, 0)',
 
+  // Used for Spectrum input
+  PREFERRED_COLOR_FORMAT : 'rgb',
+
   /*
    * Fake semi-transparent color used to highlight transparent
    * strokes and rectangles:
