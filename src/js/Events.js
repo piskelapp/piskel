@@ -6,6 +6,8 @@ var Events = {
   SELECT_PRIMARY_COLOR: "SELECT_PRIMARY_COLOR",
   SELECT_SECONDARY_COLOR: "SELECT_SECONDARY_COLOR",
 
+  DIALOG_DISPLAY : 'DIALOG_DISPLAY',
+
   /**
    *  When this event is emitted, a request is sent to the localstorage
    *  Service to save the current framesheet. The storage service

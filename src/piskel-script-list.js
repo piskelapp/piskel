@@ -66,6 +66,7 @@ exports.scripts = [
   "js/controller/MinimapController.js",
   "js/controller/ToolController.js",
   "js/controller/PaletteController.js",
+  "js/controller/PalettesListController.js",
   "js/controller/NotificationController.js",
 
   // Settings sub-controllers
@@ -76,8 +77,15 @@ exports.scripts = [
   "js/controller/settings/LocalStorageController.js",
   "js/controller/settings/SaveController.js",
   "js/controller/settings/ImportController.js",
+
   // Settings controller
   "js/controller/settings/SettingsController.js",
+
+  // Dialogs sub-controllers
+  "js/controller/dialogs/ManagePalettesController.js",
+
+  // Dialogs controller
+  "js/controller/dialogs/DialogsController.js",
 
   // Services
   "js/service/LocalStorageService.js",

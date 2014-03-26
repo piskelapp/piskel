@@ -1,0 +1,9 @@
+.palettes-list-container {
+}
+
+.palettes-title {
+  background-image: url('../img/layers.svg');
+  background-size: 22px;
+  background-repeat: no-repeat;
+  background-position: 97%;
+}
