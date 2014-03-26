@@ -7,7 +7,7 @@
   border-radius: 4px;
   background-color: #2B2B2B;
   border: solid 4px #888;
-  padding: 5px;
+  padding: 5px 5px 0 5px;
 }
 
 .sp-container[data-y-position=bottom] {
@@ -70,6 +70,12 @@
   border-right-width: 0;
 }
 
+.sp-picker-container {
+  padding: 5px;
+  padding-bottom: 300px;
+  margin-bottom: -295px;
+}
+
 .sp-slider {
   height: 5px;
   left: -2px;
@@ -95,4 +101,17 @@
 .sp-palette .sp-thumb-el.sp-thumb-active {
   border-color: gold;
   box-shadow: 0 0 0px 1px gold;
+}
+
+.sp-input {
+  border: 1px solid #666;
+  margin: 0;
+  background: #111;
+  border-radius: 2px;
+  color: #D3D3D3;
+  font-family: Courier!important;
+}
+
+.sp-input.sp-validation-error {
+  background: #330000;
 }
