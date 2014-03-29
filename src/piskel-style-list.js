@@ -8,6 +8,7 @@ exports.styles = [
   "css/tools.css",
   "css/cheatsheet.css",
   "css/dialogs/dialogs.css",
+  "css/dialogs/manage-palettes.css",
   "css/toolbox/toolbox.css",
   "css/toolbox/layers-list.css",
   "css/toolbox/palettes-list.css",

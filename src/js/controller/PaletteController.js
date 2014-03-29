@@ -22,6 +22,7 @@
     var spectrumCfg = {
       showPalette: true,
       showButtons: false,
+      showInput: true,
       palette: [
         ['rgba(0,0,0,0)']
       ],

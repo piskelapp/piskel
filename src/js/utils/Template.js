@@ -21,6 +21,16 @@
       for (var key in dict) {
         if (dict.hasOwnProperty(key)) {
           var value = dict[key];
+
+          // special boolean keys keys key:default
+          // if the value is a boolean, use default as value
+          if (key.indexOf(':') !== -1) {
+            if (value === true) {
+              value = key.split(':')[1];
+            } else if (value === false) {
+              value = '';
+            }
+          }
           template = template.replace(new RegExp('\\{\\{'+key+'\\}\\}', 'g'), value);
         }
       }

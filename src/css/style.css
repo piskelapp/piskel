@@ -11,6 +11,15 @@ body {
   display: none;
 }
 
+.allow-user-select {
+  -webkit-touch-callout: initial;
+  -webkit-user-select: initial;
+  -khtml-user-select: initial;
+  -moz-user-select: initial;
+  -ms-user-select: initial;
+  user-select: initial;
+}
+
 /**
  * Application layout
  */

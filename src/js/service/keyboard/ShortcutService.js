@@ -21,7 +21,8 @@
     this.shortcuts_[key] = this.shortcuts_[key] || {};
 
     if (this.shortcuts_[key][meta]) {
-      throw 'Shortcut ' + meta + ' + ' + key + ' already registered';
+      var keyStr = (meta !== 'normal' ? meta + ' + ' : '') + key;
+      console.error('[ShortcutService] >>> Shortcut [' + keyStr + '] already registered');
     } else {
       this.shortcuts_[key][meta] = callback;
     }

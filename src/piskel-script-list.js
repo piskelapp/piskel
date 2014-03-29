@@ -82,7 +82,7 @@ exports.scripts = [
   "js/controller/settings/SettingsController.js",
 
   // Dialogs sub-controllers
-  "js/controller/dialogs/ManagePalettesController.js",
+  "js/controller/dialogs/PaletteManagerController.js",
 
   // Dialogs controller
   "js/controller/dialogs/DialogsController.js",

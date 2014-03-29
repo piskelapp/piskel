@@ -1,18 +1,19 @@
 #dialog-container-wrapper {
   position: absolute;
-  z-index: 10000;
+  z-index: 20000;
 
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
 
-  padding: 50px;
+  padding: 50px 150px;
 
   box-sizing: border-box;
   -moz-box-sizing : border-box;
 
   color: white;
+  background: rgba(0,0,0,0.5);
   display : none;
 }
 
@@ -23,7 +24,6 @@
   box-sizing: border-box;
   -moz-box-sizing : border-box;
 
-  padding: 20px 3%;
   border-radius: 3px;
   background: rgba(0,0,0,0.9);
   overflow: auto;
