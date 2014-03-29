@@ -52,6 +52,11 @@
   margin: 5px;
 }
 
+.palette-manager-palette-button,
+.palette-manager-actions-button {
+  line-height: 20px;
+}
+
 .palette-manager-list li {
   padding-left:10px;
   font-size: 1.4em;
@@ -71,7 +76,6 @@
   color : gold;
   font-weight: bold;
 }
-
 
 .palette-manager-list li:nth-child(1) {
   border-top: 1px solid #666;
@@ -114,7 +118,7 @@
   display: inline-block;
   background-size: 20px;
   background-repeat: no-repeat;
-  background-position-y: 50%;
+  background-position: 50%;
 }
 
 .palette-manager-details-head-actions {
