@@ -18,7 +18,8 @@
     this.dialogWrapper_ = document.getElementById('dialog-container-wrapper');
     $.subscribe(Events.DIALOG_DISPLAY, this.onDialogDisplayEvent_.bind(this));
     $.subscribe(Events.DIALOG_HIDE, this.onDialogHideEvent_.bind(this));
-    pskl.app.shortcutService.addShortcut('M', this.onDialogDisplayEvent_.bind(this, null, 'manage-palettes'));
+
+    pskl.app.shortcutService.addShortcut('alt+P', this.onDialogDisplayEvent_.bind(this, null, 'manage-palettes'));
   };
 
   ns.DialogsController.prototype.onDialogDisplayEvent_ = function (evt, dialogId) {

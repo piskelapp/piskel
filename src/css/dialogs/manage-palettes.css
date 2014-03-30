@@ -68,12 +68,15 @@
 }
 
 .palette-manager-list li {
-  padding-left:10px;
-  font-size: 1.4em;
   height: 48px;
   line-height: 48px;
+  padding-left:10px;
+
+  font-size: 1.4em;
+
   box-sizing: border-box;
   -moz-box-sizing: border-box;
+
   border-bottom: 1px solid #666;
   cursor:pointer;
 }
@@ -157,6 +160,12 @@
   display: inline-block;
   position: relative;
   margin: 20px 0 20px 20px;
+  box-shadow: 0 0 0px 0px gold;
+  transition: box-shadow 0.3s;
+}
+
+.palette-manager-color-card:hover {
+  box-shadow: 0 0 4px 1px gold;
 }
 
 .palette-manager-delete-card {
@@ -206,7 +215,7 @@
 }
 
 .palette-manager-color-details {
-  color : #888;
+  color : #666;
   background: #eee;
   height: 60px;
   padding-left: 5px;
@@ -214,4 +223,5 @@
 
 .palette-manager-color-details li{
   line-height: 20px;
+  font-weight: bold;
 }

@@ -20,6 +20,7 @@
     this.paletteBody = document.querySelector('.palette-manager-details-body');
     this.paletteHead = document.querySelector('.palette-manager-details-head');
     this.createButton = document.querySelector('.palette-manager-actions-button[data-action="create"]');
+    this.saveAllButton = document.querySelector('.palette-manager-actions-button[data-action="save-all"]');
     this.closeButton = document.querySelector('.palette-manager-close');
 
     this.colorCardTemplate = pskl.utils.Template.get('palette-color-card-template');
@@ -32,6 +33,7 @@
     this.paletteBody.addEventListener('click', this.delegatedPaletteBodyClick.bind(this));
     this.paletteHead.addEventListener('click', this.delegatedPaletteHeadClick.bind(this));
     this.createButton.addEventListener('click', this.createPalette.bind(this));
+    this.saveAllButton.addEventListener('click', this.saveAll.bind(this));
     this.closeButton.addEventListener('click', this.closeDialog.bind(this));
 
     // Init markup
@@ -137,12 +139,23 @@
   ns.PaletteManagerController.prototype.initPaletteDetailsEvents = function () {
     // New Card click event
     var newCard = this.paletteBody.querySelector('.' + NEW_COLOR_CLASS);
-    newCard.addEventListener('click', this.addColorInSelectedPalette.bind(this, '#FFFFFF'));
+    newCard.addEventListener('click', this.onNewCardClick.bind(this));
 
     if (this.palettes.length < 2) {
       var deleteButton = this.paletteHead.querySelector('.palette-manager-palette-button[data-action="delete"]');
       deleteButton.setAttribute("disabled", "disabled");
     }
+  };
+
+  ns.PaletteManagerController.prototype.onNewCardClick = function () {
+    var color;
+    var palette = this.getSelectedPalette();
+    if (palette && palette.colors.length > 0) {
+      color = palette.colors[palette.colors.length-1];
+    } else {
+      color = '#FFFFFF';
+    }
+    this.addColorInSelectedPalette(color);
   };
 
   ns.PaletteManagerController.prototype.delegatedPaletteBodyClick = function (event) {
@@ -216,12 +229,12 @@
   };
 
   ns.PaletteManagerController.prototype.renameSelectedPalette = function () {
-    var selectedPalette = this.getSelectedPalette();
-    var name = window.prompt('Please enter a new name for palette "' + selectedPalette.name + '"');
+    var palette = this.getSelectedPalette();
+    var name = window.prompt('Please enter a new name for palette "' + palette.name + '"', palette.name);
     if (name) {
-      selectedPalette.name = name;
+      palette.name = name;
       this.createPaletteListMarkup();
-      this.selectPalette(selectedPalette.id);
+      this.selectPalette(palette.id);
     }
   };
 
@@ -302,6 +315,15 @@
     }
   };
 
+  ns.PaletteManagerController.prototype.saveAll = function () {
+    this.palettes.forEach(function (palette) {
+      this.savePalette(palette.id);
+    }.bind(this));
+
+    this.createPaletteListMarkup();
+    this.selectPalette(this.getSelectedPalette().id);
+  };
+
   ns.PaletteManagerController.prototype.savePalette = function (paletteId) {
     var palette = this.getPaletteById(paletteId, this.palettes);
     var originalPalette = this.getPaletteById(paletteId, this.originalPalettes);
@@ -313,6 +335,10 @@
     }
 
     this.persistToLocalStorage();
+  };
+
+  ns.PaletteManagerController.prototype.savePaletteAndRedraw = function (paletteId) {
+    this.savePalette(paletteId);
 
     this.createPaletteListMarkup();
     this.selectPalette(this.getSelectedPalette().id);
