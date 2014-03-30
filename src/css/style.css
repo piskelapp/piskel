@@ -206,7 +206,7 @@ body {
   border-bottom: 0;
   font-weight: bold;
   font-size: 13px;
-  z-index: 10000;
+  z-index: 30000;
   max-width: 300px;
 }
 
