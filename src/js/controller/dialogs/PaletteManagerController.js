@@ -45,6 +45,10 @@
     }
   };
 
+  ns.PaletteManagerController.prototype.destroy = function () {
+    this.destroySpectrumPickers();
+  };
+
   ns.PaletteManagerController.prototype.closeDialog = function () {
     $.publish(Events.DIALOG_HIDE);
   };
@@ -78,6 +82,9 @@
   };
 
   ns.PaletteManagerController.prototype.refreshPaletteDetails = function () {
+    // Destroy and disconnect events
+    this.destroySpectrumPickers();
+
     this.createPaletteHeadMarkup();
     this.createPaletteBodyMarkup();
     this.initPaletteDetailsEvents();
@@ -182,9 +189,13 @@
     }
   };
 
+  ns.PaletteManagerController.prototype.getSpectrumSelector_ = function () {
+    return ':not(.' + NEW_COLOR_CLASS + ')>.palette-manager-color-square';
+  };
+
   ns.PaletteManagerController.prototype.initPaletteCardsSpectrum = function () {
     var oSelf = this;
-    var colorSquares = $(':not(.' + NEW_COLOR_CLASS + ')>.palette-manager-color-square');
+    var colorSquares = $(this.getSpectrumSelector_());
     colorSquares.spectrum({
       clickoutFiresChange : true,
       showInput: true,
@@ -202,6 +213,13 @@
         colorSquares.spectrum("set", color);
       }
     });
+  };
+
+  ns.PaletteManagerController.prototype.destroySpectrumPickers = function () {
+    var sp = $(this.getSpectrumSelector_());
+    if (sp) {
+      sp.spectrum("destroy");
+    }
   };
 
   ns.PaletteManagerController.prototype.updateColorInSelectedPalette = function (colorId, color) {
