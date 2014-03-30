@@ -1,6 +1,12 @@
 .palettes-list-container {
 }
 
+.palettes-list-select {
+  float:right;
+  max-width:90px;
+  margin-top: 3px;
+}
+
 .palettes-title {
   background-size: 22px;
   background-repeat: no-repeat;

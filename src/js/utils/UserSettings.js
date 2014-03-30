@@ -4,10 +4,12 @@
   ns.UserSettings = {
     GRID_WIDTH : 'GRID_WIDTH',
     CANVAS_BACKGROUND : 'CANVAS_BACKGROUND',
+    SELECTED_PALETTE : 'SELECTED_PALETTE',
 
     KEY_TO_DEFAULT_VALUE_MAP_ : {
       'GRID_WIDTH' : 0,
-      'CANVAS_BACKGROUND' : 'medium-canvas-background'
+      'CANVAS_BACKGROUND' : 'lowcont-dark-canvas-background',
+      'SELECTED_PALETTE' : Constants.NO_PALETTE_ID
     },
 
     /**

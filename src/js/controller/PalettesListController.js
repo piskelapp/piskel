@@ -1,8 +1,6 @@
 (function () {
   var ns = $.namespace('pskl.controller');
 
-  var NO_PALETTE_ID = '__no-palette';
-
   ns.PalettesListController = function () {
 
   };
@@ -10,8 +8,8 @@
   ns.PalettesListController.prototype.init = function () {
     this.paletteColorTemplate_ = pskl.utils.Template.get('palette-color-template');
     this.colorListContainer_ = document.querySelector('.palettes-list-colors');
-    this.colorPaletteSelect_ = document.querySelector('.palette-picker');
-    this.paletteListOptGroup_ = document.querySelector('.palette-picker-group');
+    this.colorPaletteSelect_ = document.querySelector('.palettes-list-select');
+    this.paletteListOptGroup_ = document.querySelector('.palettes-list-select-group');
 
     this.colorPaletteSelect_.addEventListener('change', this.onPaletteSelected_.bind(this));
     this.colorListContainer_.addEventListener('mouseup', this.onColorContainerMouseup.bind(this));
@@ -22,12 +20,13 @@
     $.subscribe(Events.SECONDARY_COLOR_SELECTED, this.onColorUpdated.bind(this, 'secondary'));
 
     this.fillPaletteList();
+    this.selectPaletteFromUserSettings();
     this.fillColorListContainer();
   };
 
   ns.PalettesListController.prototype.fillPaletteList = function () {
     var palettes = [{
-      id : NO_PALETTE_ID,
+      id : Constants.NO_PALETTE_ID,
       name : 'No palette'
     }];
     palettes = palettes.concat(this.retrievePalettes());
@@ -58,16 +57,27 @@
     return palette;
   };
 
+  ns.PalettesListController.prototype.selectPalette = function (paletteId) {
+    this.colorPaletteSelect_.value = paletteId;
+  };
+
+  ns.PalettesListController.prototype.selectPaletteFromUserSettings = function () {
+    this.selectPalette(pskl.UserSettings.get(pskl.UserSettings.SELECTED_PALETTE));
+  };
+
   ns.PalettesListController.prototype.onPaletteSelected_ = function (evt) {
     var paletteId = this.colorPaletteSelect_.value;
     if (paletteId === '__manage-palettes') {
-      console.log('DISPLAY DIALOG');
       $.publish(Events.DIALOG_DISPLAY, 'manage-palettes');
-      this.colorPaletteSelect_.value = NO_PALETTE_ID;
+      this.selectPaletteFromUserSettings();
+    } else {
+      pskl.UserSettings.set(pskl.UserSettings.SELECTED_PALETTE, paletteId);
     }
-    
+
     this.fillColorListContainer();
   };
+
+
 
   ns.PalettesListController.prototype.onColorContainerContextMenu = function (event) {
     event.preventDefault();
@@ -109,6 +119,8 @@
 
   ns.PalettesListController.prototype.onPaletteListUpdated = function () {
     this.fillPaletteList();
+    this.selectPaletteFromUserSettings();
+    this.fillColorListContainer();
   };
 
   ns.PalettesListController.prototype.getPaletteById = function (paletteId, palettes) {

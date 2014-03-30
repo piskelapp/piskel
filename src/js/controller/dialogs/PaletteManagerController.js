@@ -173,7 +173,7 @@
     } else if (target.classList.contains('palette-manager-palette-button')) {
       var action = target.dataset.action;
       if (action === 'save') {
-        this.savePalette(this.getSelectedPalette().id);
+        this.savePaletteAndRedraw(this.getSelectedPalette().id);
       } else if (action === 'revert') {
         this.revertChanges();
       } else if (action === 'delete') {
