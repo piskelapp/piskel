@@ -60,7 +60,7 @@
     $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
     $.subscribe(Events.FRAME_SIZE_CHANGED, $.proxy(this.onFrameSizeChanged_, this));
 
-    this.centerColumnWrapperHorizontally_();
+    window.setTimeout(this.afterWindowResize_.bind(this), 100);
   };
 
   ns.DrawingController.prototype.initMouseBehavior = function() {
@@ -318,7 +318,8 @@
     settingsContainerWidth = $('#application-action-section').outerWidth(true),
     availableWidth = $('#main-wrapper').width() - leftSectionWidth - rightSectionWidth - toolsContainerWidth - settingsContainerWidth;
 
-    return availableWidth-50;
+    var comfortMargin = 10;
+    return availableWidth - comfortMargin;
   };
 
   ns.DrawingController.prototype.getContainerHeight_ = function () {
