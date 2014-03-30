@@ -16150,6 +16150,9 @@ if (typeof Function.prototype.bind !== "function") {
     this.isClicked = false;
     this.previousMousemoveTime = 0;
     this.currentToolBehavior = null;
+
+    // State of clicked button (need to be stateful here, see comment in getCurrentColor_)
+    this.currentMouseButton_ = Constants.LEFT_BUTTON;
   };
 
   ns.DrawingController.prototype.init = function () {
@@ -16248,12 +16251,13 @@ if (typeof Function.prototype.bind !== "function") {
       }
     } else {
       this.isClicked = true;
+      this.setCurrentButton(event);
       this.currentToolBehavior.hideHighlightedPixel(this.overlayFrame);
 
       this.currentToolBehavior.applyToolAt(
         coords.x,
         coords.y,
-        this.getCurrentColor_(event),
+        this.getCurrentColor_(),
         frame,
         this.overlayFrame,
         event
@@ -16274,7 +16278,8 @@ if (typeof Function.prototype.bind !== "function") {
       var coords = this.renderer.getCoordinates(event.clientX, event.clientY);
 
       if (this.isClicked) {
-
+        // Warning : do not call setCurrentButton here
+        // mousemove do not have the correct mouse button information on all browsers
         this.currentToolBehavior.moveToolAt(
           coords.x,
           coords.y,
@@ -16330,12 +16335,13 @@ if (typeof Function.prototype.bind !== "function") {
       // of the drawing canvas.
 
       this.isClicked = false;
+      this.setCurrentButton(event);
 
       var coords = this.renderer.getCoordinates(event.clientX, event.clientY);
       this.currentToolBehavior.releaseToolAt(
         coords.x,
         coords.y,
-        this.getCurrentColor_(event),
+        this.getCurrentColor_(),
         this.piskelController.getCurrentFrame(),
         this.overlayFrame,
         event
@@ -16352,13 +16358,23 @@ if (typeof Function.prototype.bind !== "function") {
     return this.renderer.getCoordinates(event.clientX, event.clientY);
   };
 
+  ns.DrawingController.prototype.setCurrentButton = function (event) {
+    this.currentMouseButton_ = event.button;
+  };
+
   /**
    * @private
    */
-  ns.DrawingController.prototype.getCurrentColor_ = function (event) {
-    if(event.button == Constants.RIGHT_BUTTON) {
+  ns.DrawingController.prototype.getCurrentColor_ = function () {
+    // WARNING : Do not rely on the current event to get the current color!
+    // It might seem like a good idea, and works perfectly fine on Chrome
+    // Sadly Firefox and IE found clever, for some reason, to set event.button to 0
+    // on a mouse move event
+    // This always matches a LEFT mouse button which is __really__ not helpful
+
+    if(this.currentMouseButton_ == Constants.RIGHT_BUTTON) {
       return this.paletteController.getSecondaryColor();
-    } else if(event.button == Constants.LEFT_BUTTON) {
+    } else if(this.currentMouseButton_ == Constants.LEFT_BUTTON) {
       return this.paletteController.getPrimaryColor();
     } else {
       return Constants.DEFAULT_PEN_COLOR;
@@ -17264,7 +17280,14 @@ if (typeof Function.prototype.bind !== "function") {
 
   ns.PalettesListController.prototype.onColorUpdated = function (type, event, color) {
     console.log('[PalettesListController] >>> ', arguments);
+
     var colorContainer = this.colorListContainer_.querySelector('.palettes-list-color[data-color="'+color+'"]');
+
+    // Color is not in the currently selected palette
+    if (!colorContainer) {
+      return;
+    }
+
     if (type === 'primary') {
       this.removeClass_('primary', '.palettes-list-color');
       colorContainer.classList.add('primary');
