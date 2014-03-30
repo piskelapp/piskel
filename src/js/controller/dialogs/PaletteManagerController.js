@@ -41,7 +41,7 @@
     if (this.palettes.length > 0) {
       this.selectPalette(this.palettes[0].id);
     } else {
-      console.error('[PaletteManagerController] >>> Implement fallback screen when no palette can be retrieved');
+      this.createPalette('New palette');
     }
   };
 
@@ -53,8 +53,10 @@
     $.publish(Events.DIALOG_HIDE);
   };
 
-  ns.PaletteManagerController.prototype.createPalette = function () {
-    var name = window.prompt('Please enter a name for your palette', 'New palette');
+  ns.PaletteManagerController.prototype.createPalette = function (name) {
+    if (!name) {
+      name = window.prompt('Please enter a name for your palette', 'New palette');
+    }
     if (name) {
       var palette = this.createPaletteObject(name);
       this.palettes.push(palette);
@@ -371,7 +373,7 @@
 
   ns.PaletteManagerController.prototype.retrieveUserPalettes = function () {
     var palettesString = window.localStorage.getItem('piskel.palettes');
-    return JSON.parse(palettesString) || [this.createPaletteObject('New palette')];
+    return JSON.parse(palettesString) || [];
   };
 
 })();
