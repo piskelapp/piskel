@@ -78,24 +78,6 @@ body {
   bottom: 0;
 }
 
-.piskel-name-container {
-  overflow:hidden;
-  position:fixed;
-  top:10px;
-  left:10px;
-  color:white;
-  font-family:Tahoma;
-  z-index: 10000;
-}
-
-.piskel-name-container #piskel-name {
-  border :none;
-  color : lightgrey;
-  background: transparent;
-  font-size:16pt;
-
-}
-
 .column {
   display: inline-block;
 }
@@ -260,7 +242,7 @@ body {
   border-bottom: 0;
   font-weight: bold;
   font-size: 13px;
-  z-index: 10000;
+  z-index: 30000;
   max-width: 300px;
 }
 
@@ -2326,7 +2308,7 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
 .minimap-crop-frame {
   position:absolute;
   border:1px solid rgba(255,255,255,0.5);
-  z-index:9999;
+  z-index:100;
   box-sizing : border-box;
   -moz-box-sizing : border-box;
   cursor : pointer;
