@@ -60,6 +60,7 @@
     $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
     $.subscribe(Events.FRAME_SIZE_CHANGED, $.proxy(this.onFrameSizeChanged_, this));
 
+    // this.afterWindowResize_.bind(this);
     window.setTimeout(this.afterWindowResize_.bind(this), 100);
   };
 

@@ -14,6 +14,20 @@
 
   pskl.utils.inherit(pskl.rendering.frame.CachedFrameRenderer, pskl.rendering.frame.FrameRenderer);
 
+  /**
+   * Only call display size if provided values are different from current values.
+   * FrameRenderer:setDisplaySize destroys the underlying canvas
+   * If the canvas is destroyed, a rendering is mandatory.
+   * (Alternatively we could find a way to force the rendering of the CachedFrameRenderer from the outside)
+   * @param {Number} width
+   * @param {Number} height
+   */
+  ns.CachedFrameRenderer.prototype.setDisplaySize = function (width, height) {
+    if (this.displayWidth !== width || this.displayHeight !== height) {
+      pskl.rendering.frame.FrameRenderer.prototype.setDisplaySize.call(this, width, height);
+    }
+  };
+
   ns.CachedFrameRenderer.prototype.render = function (frame) {
     var offset = this.getOffset();
     var size = this.getDisplaySize();
