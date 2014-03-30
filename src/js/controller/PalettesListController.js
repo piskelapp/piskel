@@ -98,7 +98,14 @@
 
   ns.PalettesListController.prototype.onColorUpdated = function (type, event, color) {
     console.log('[PalettesListController] >>> ', arguments);
+
     var colorContainer = this.colorListContainer_.querySelector('.palettes-list-color[data-color="'+color+'"]');
+
+    // Color is not in the currently selected palette
+    if (!colorContainer) {
+      return;
+    }
+
     if (type === 'primary') {
       this.removeClass_('primary', '.palettes-list-color');
       colorContainer.classList.add('primary');
