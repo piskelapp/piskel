@@ -23,6 +23,16 @@
   -moz-box-sizing: border-box;
 }
 
+.palette-manager-close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  line-height: 45px;
+  margin-right: 10px;
+  font-size: 1.3em;
+  cursor: pointer;
+}
+
 .palette-manager-drawer {
   width: 200px;
   position: absolute;

@@ -1,5 +1,6 @@
 (function () {
   var ns = $.namespace("pskl.controller");
+
   ns.AnimatedPreviewController = function (piskelController, container) {
     this.piskelController = piskelController;
     this.container = container;
@@ -26,6 +27,7 @@
     // consistent behavior across all other browsers that support the input type range
     // see https://bugzilla.mozilla.org/show_bug.cgi?id=853670
     $("#preview-fps")[0].addEventListener('change', this.onFPSSliderChange.bind(this));
+    document.querySelector(".right-column").style.width = Constants.ANIMATED_PREVIEW_WIDTH + 'px';
   };
 
   ns.AnimatedPreviewController.prototype.onFPSSliderChange = function (evt) {

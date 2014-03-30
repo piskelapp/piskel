@@ -36,7 +36,7 @@
   };
 
   ns.DialogsController.prototype.onDialogHideEvent_ = function () {
-    this.hideDialogWrapper_();
+    this.hideDialog();
   };
 
   ns.DialogsController.prototype.showDialogWrapper_ = function () {

@@ -20,6 +20,7 @@
     this.paletteBody = document.querySelector('.palette-manager-details-body');
     this.paletteHead = document.querySelector('.palette-manager-details-head');
     this.createButton = document.querySelector('.palette-manager-actions-button[data-action="create"]');
+    this.closeButton = document.querySelector('.palette-manager-close');
 
     this.colorCardTemplate = pskl.utils.Template.get('palette-color-card-template');
     this.newColorTemplate = pskl.utils.Template.get('palette-new-color-template');
@@ -31,6 +32,7 @@
     this.paletteBody.addEventListener('click', this.delegatedPaletteBodyClick.bind(this));
     this.paletteHead.addEventListener('click', this.delegatedPaletteHeadClick.bind(this));
     this.createButton.addEventListener('click', this.createPalette.bind(this));
+    this.closeButton.addEventListener('click', this.closeDialog.bind(this));
 
     // Init markup
     this.createPaletteListMarkup();
@@ -39,6 +41,10 @@
     } else {
       console.error('[PaletteManagerController] >>> Implement fallback screen when no palette can be retrieved');
     }
+  };
+
+  ns.PaletteManagerController.prototype.closeDialog = function () {
+    $.publish(Events.DIALOG_HIDE);
   };
 
   ns.PaletteManagerController.prototype.createPalette = function () {
@@ -316,6 +322,7 @@
   ns.PaletteManagerController.prototype.persistToLocalStorage = function () {
     window.localStorage.setItem('piskel.palettes', JSON.stringify(this.originalPalettes));
     this.originalPalettes = this.retrieveUserPalettes();
+    $.publish(Events.PALETTE_LIST_UPDATED);
   };
 
   ns.PaletteManagerController.prototype.retrieveUserPalettes = function () {
