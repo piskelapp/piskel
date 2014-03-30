@@ -1018,18 +1018,33 @@ body {
   left: 0;
 
   padding: 50px 150px;
+  overflow: hidden;
 
   box-sizing: border-box;
   -moz-box-sizing : border-box;
 
+  background-color: rgba(0,0,0,0.8);
+  opacity: 0;
+  pointer-events: none;
+
+  transition: opacity 0.5s;
+
+
   color: white;
-  background: rgba(0,0,0,0.5);
-  display : none;
+}
+
+#dialog-container-wrapper.show {
+  opacity: 1;
+  pointer-events: auto;
+  transition: opacity 0.5s;
 }
 
 #dialog-container {
   width: 100%;
   height:  100%;
+
+  margin-top: -1500px;
+  transition:margin-top 0.5s;
 
   box-sizing: border-box;
   -moz-box-sizing : border-box;
@@ -1038,6 +1053,12 @@ body {
   background: rgba(0,0,0,0.9);
   overflow: auto;
 }
+
+.show #dialog-container {
+  margin-top: 0;
+}
+
+
 .palette-manager-wrapper {
   height: 100%;
   position: relative;
@@ -1342,6 +1363,12 @@ body {
 .palettes-list-container {
 }
 
+.palettes-list-select {
+  float:right;
+  max-width:90px;
+  margin-top: 3px;
+}
+
 .palettes-title {
   background-size: 22px;
   background-repeat: no-repeat;
@@ -1350,6 +1377,7 @@ body {
 
 .palettes-list-colors {
   overflow:hidden;
+  padding-top: 5px;
 }
 
 .palettes-list-color {

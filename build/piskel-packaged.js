@@ -13774,6 +13774,8 @@ var Constants = {
   DEFAULT_PEN_COLOR : '#000000',
   TRANSPARENT_COLOR : 'rgba(0, 0, 0, 0)',
 
+  NO_PALETTE_ID : '__no-palette',
+
   // Used for Spectrum input
   PREFERRED_COLOR_FORMAT : 'rgb',
 
@@ -13903,7 +13905,7 @@ if (typeof Function.prototype.bind !== "function") {
     if (r > 255 || g > 255 || b > 255) {
       throw "Invalid color component";
     }
-    
+
     return ((r << 16) | (g << 8) | b).toString(16);
   };
 
@@ -14519,10 +14521,12 @@ if (typeof Function.prototype.bind !== "function") {
   ns.UserSettings = {
     GRID_WIDTH : 'GRID_WIDTH',
     CANVAS_BACKGROUND : 'CANVAS_BACKGROUND',
+    SELECTED_PALETTE : 'SELECTED_PALETTE',
 
     KEY_TO_DEFAULT_VALUE_MAP_ : {
       'GRID_WIDTH' : 0,
-      'CANVAS_BACKGROUND' : 'medium-canvas-background'
+      'CANVAS_BACKGROUND' : 'lowcont-dark-canvas-background',
+      'SELECTED_PALETTE' : Constants.NO_PALETTE_ID
     },
 
     /**
@@ -17163,8 +17167,6 @@ if (typeof Function.prototype.bind !== "function") {
 ;(function () {
   var ns = $.namespace('pskl.controller');
 
-  var NO_PALETTE_ID = '__no-palette';
-
   ns.PalettesListController = function () {
 
   };
@@ -17172,8 +17174,8 @@ if (typeof Function.prototype.bind !== "function") {
   ns.PalettesListController.prototype.init = function () {
     this.paletteColorTemplate_ = pskl.utils.Template.get('palette-color-template');
     this.colorListContainer_ = document.querySelector('.palettes-list-colors');
-    this.colorPaletteSelect_ = document.querySelector('.palette-picker');
-    this.paletteListOptGroup_ = document.querySelector('.palette-picker-group');
+    this.colorPaletteSelect_ = document.querySelector('.palettes-list-select');
+    this.paletteListOptGroup_ = document.querySelector('.palettes-list-select-group');
 
     this.colorPaletteSelect_.addEventListener('change', this.onPaletteSelected_.bind(this));
     this.colorListContainer_.addEventListener('mouseup', this.onColorContainerMouseup.bind(this));
@@ -17184,12 +17186,13 @@ if (typeof Function.prototype.bind !== "function") {
     $.subscribe(Events.SECONDARY_COLOR_SELECTED, this.onColorUpdated.bind(this, 'secondary'));
 
     this.fillPaletteList();
+    this.selectPaletteFromUserSettings();
     this.fillColorListContainer();
   };
 
   ns.PalettesListController.prototype.fillPaletteList = function () {
     var palettes = [{
-      id : NO_PALETTE_ID,
+      id : Constants.NO_PALETTE_ID,
       name : 'No palette'
     }];
     palettes = palettes.concat(this.retrievePalettes());
@@ -17220,16 +17223,27 @@ if (typeof Function.prototype.bind !== "function") {
     return palette;
   };
 
+  ns.PalettesListController.prototype.selectPalette = function (paletteId) {
+    this.colorPaletteSelect_.value = paletteId;
+  };
+
+  ns.PalettesListController.prototype.selectPaletteFromUserSettings = function () {
+    this.selectPalette(pskl.UserSettings.get(pskl.UserSettings.SELECTED_PALETTE));
+  };
+
   ns.PalettesListController.prototype.onPaletteSelected_ = function (evt) {
     var paletteId = this.colorPaletteSelect_.value;
     if (paletteId === '__manage-palettes') {
-      console.log('DISPLAY DIALOG');
       $.publish(Events.DIALOG_DISPLAY, 'manage-palettes');
-      this.colorPaletteSelect_.value = NO_PALETTE_ID;
+      this.selectPaletteFromUserSettings();
+    } else {
+      pskl.UserSettings.set(pskl.UserSettings.SELECTED_PALETTE, paletteId);
     }
-    
+
     this.fillColorListContainer();
   };
+
+
 
   ns.PalettesListController.prototype.onColorContainerContextMenu = function (event) {
     event.preventDefault();
@@ -17271,6 +17285,8 @@ if (typeof Function.prototype.bind !== "function") {
 
   ns.PalettesListController.prototype.onPaletteListUpdated = function () {
     this.fillPaletteList();
+    this.selectPaletteFromUserSettings();
+    this.fillColorListContainer();
   };
 
   ns.PalettesListController.prototype.getPaletteById = function (paletteId, palettes) {
@@ -18147,6 +18163,10 @@ if (typeof Function.prototype.bind !== "function") {
     }
   };
 
+  ns.PaletteManagerController.prototype.destroy = function () {
+    this.destroySpectrumPickers();
+  };
+
   ns.PaletteManagerController.prototype.closeDialog = function () {
     $.publish(Events.DIALOG_HIDE);
   };
@@ -18180,6 +18200,9 @@ if (typeof Function.prototype.bind !== "function") {
   };
 
   ns.PaletteManagerController.prototype.refreshPaletteDetails = function () {
+    // Destroy and disconnect events
+    this.destroySpectrumPickers();
+
     this.createPaletteHeadMarkup();
     this.createPaletteBodyMarkup();
     this.initPaletteDetailsEvents();
@@ -18275,7 +18298,7 @@ if (typeof Function.prototype.bind !== "function") {
     } else if (target.classList.contains('palette-manager-palette-button')) {
       var action = target.dataset.action;
       if (action === 'save') {
-        this.savePalette(this.getSelectedPalette().id);
+        this.savePaletteAndRedraw(this.getSelectedPalette().id);
       } else if (action === 'revert') {
         this.revertChanges();
       } else if (action === 'delete') {
@@ -18284,9 +18307,13 @@ if (typeof Function.prototype.bind !== "function") {
     }
   };
 
+  ns.PaletteManagerController.prototype.getSpectrumSelector_ = function () {
+    return ':not(.' + NEW_COLOR_CLASS + ')>.palette-manager-color-square';
+  };
+
   ns.PaletteManagerController.prototype.initPaletteCardsSpectrum = function () {
     var oSelf = this;
-    var colorSquares = $(':not(.' + NEW_COLOR_CLASS + ')>.palette-manager-color-square');
+    var colorSquares = $(this.getSpectrumSelector_());
     colorSquares.spectrum({
       clickoutFiresChange : true,
       showInput: true,
@@ -18304,6 +18331,13 @@ if (typeof Function.prototype.bind !== "function") {
         colorSquares.spectrum("set", color);
       }
     });
+  };
+
+  ns.PaletteManagerController.prototype.destroySpectrumPickers = function () {
+    var sp = $(this.getSpectrumSelector_());
+    if (sp) {
+      sp.spectrum("destroy");
+    }
   };
 
   ns.PaletteManagerController.prototype.updateColorInSelectedPalette = function (colorId, color) {
@@ -18487,9 +18521,14 @@ if (typeof Function.prototype.bind !== "function") {
       var config = dialogs[dialogId];
       if (config) {
         this.dialogContainer_.innerHTML = pskl.utils.Template.get(config.template);
-        (new config.controller(this.piskelController)).init();
+        var controller = new config.controller(this.piskelController);
+        controller.init();
+
         this.showDialogWrapper_();
-        this.currentDialog_ = dialogId;
+        this.currentDialog_ = {
+          id : dialogId,
+          controller : controller
+        };
       } else {
         console.error('Could not find dialog configuration for dialogId : ' + dialogId);
       }
@@ -18502,17 +18541,22 @@ if (typeof Function.prototype.bind !== "function") {
 
   ns.DialogsController.prototype.showDialogWrapper_ = function () {
     pskl.app.shortcutService.addShortcut('ESC', this.hideDialog.bind(this));
-    this.dialogWrapper_.style.display = 'block';
+    this.dialogWrapper_.classList.add('show');
   };
 
   ns.DialogsController.prototype.hideDialog = function () {
+    var currentDialog = this.currentDialog_;
+    if (currentDialog) {
+      currentDialog.controller.destroy();
+    }
+
     this.hideDialogWrapper_();
     this.currentDialog_ = null;
   };
 
   ns.DialogsController.prototype.hideDialogWrapper_ = function () {
     pskl.app.shortcutService.removeShortcut('ESC');
-    this.dialogWrapper_.style.display = 'none';
+    this.dialogWrapper_.classList.remove('show');
   };
 
   ns.DialogsController.prototype.isDisplayed = function () {

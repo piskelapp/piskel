@@ -1,9 +1,8 @@
 <div class="toolbox-container palettes-list-container">
   <h3 class="toolbox-title palettes-title" style="overflow:hidden">
     <span style="line-height:24px ">Palettes</span>
-    <select class="palette-picker" style="float:right; max-width:90px;">
-      <optgroup class="palette-picker-group" label="Available palettes">
-        <option value="__no-palette">No palette</option>
+    <select class="palettes-list-select">
+      <optgroup class="palettes-list-select-group" label="Available palettes">
       </optgroup>
       <optgroup label="Admin">
         <option value="__manage-palettes">Create and Manage palettes</option>
@@ -18,8 +17,4 @@
   <div class="palettes-list-color" data-color="{{color}}" title="{{color}}">
     <div data-color="{{color}}" style="background:{{color}}"></div>
   </div>
-</script>
-
-<script type="text/template" id="no-palette-selected-template">
-  <div class="palette-not-selected">No palette selected</div>
 </script>
