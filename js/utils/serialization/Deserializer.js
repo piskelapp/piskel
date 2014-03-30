@@ -20,10 +20,13 @@
     deserializer.deserialize();
   };
 
-  ns.Deserializer.prototype.deserialize = function () {
+  ns.Deserializer.prototype.deserialize = function (name) {
     var data = this.data_;
     var piskelData = data.piskel;
-    this.piskel_ = new pskl.model.Piskel(piskelData.width, piskelData.height);
+    name = name || 'Deserialized piskel';
+
+    var descriptor = new pskl.model.piskel.Descriptor(name, '');
+    this.piskel_ = new pskl.model.Piskel(piskelData.width, piskelData.height, descriptor);
 
     this.layersToLoad_ = piskelData.layers.length;
 

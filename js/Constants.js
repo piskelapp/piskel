@@ -11,10 +11,16 @@ var Constants = {
   MAX_HEIGHT : 1024,
   MAX_WIDTH : 1024,
 
+  MINIMUM_ZOOM : 1,
+
   PREVIEW_FILM_SIZE : 120,
+  ANIMATED_PREVIEW_WIDTH : 200,
 
   DEFAULT_PEN_COLOR : '#000000',
-  TRANSPARENT_COLOR : 'TRANSPARENT',
+  TRANSPARENT_COLOR : 'rgba(0, 0, 0, 0)',
+
+  // Used for Spectrum input
+  PREFERRED_COLOR_FORMAT : 'rgb',
 
   /*
    * Fake semi-transparent color used to highlight transparent
@@ -42,14 +48,14 @@ var Constants = {
       SAVE : 'save'
     }
   },
-  IMAGE_SERVICE_UPLOAD_URL : 'http://screenletstore.appspot.com/__/upload',
-  IMAGE_SERVICE_GET_URL : 'http://screenletstore.appspot.com/img/',
+  IMAGE_SERVICE_UPLOAD_URL : 'http://piskel-imgstore-a.appspot.com/__/upload',
+  IMAGE_SERVICE_GET_URL : 'http://piskel-imgstore-a.appspot.com/img/',
 
-  GRID_STROKE_WIDTH: 1,
   ZOOMED_OUT_BACKGROUND_COLOR : '#A0A0A0',
 
-  LEFT_BUTTON : 'left_button_1',
-  RIGHT_BUTTON : 'right_button_2',
+  LEFT_BUTTON : 0,
+  MIDDLE_BUTTON : 1,
+  RIGHT_BUTTON : 2,
   MOUSEMOVE_THROTTLING : 10,
 
   ABSTRACT_FUNCTION : function () {throw 'abstract method should be implemented';}

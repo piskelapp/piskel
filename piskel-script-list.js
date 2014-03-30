@@ -6,15 +6,19 @@ exports.scripts = [
   // GIF Encoding libraries
   "js/lib/gif/gif.worker.js",
   "js/lib/gif/gif.js",
+  // Spectrum color-picker library
+  "js/lib/spectrum/spectrum.js",
 
   // Application wide configuration
   "js/Constants.js",
   "js/Events.js",
 
+
   // Libraries
   "js/utils/core.js",
   "js/utils/UserAgent.js",
   "js/utils/CanvasUtils.js",
+  "js/utils/Dom.js",
   "js/utils/Math.js",
   "js/utils/FileUtils.js",
   "js/utils/FrameUtils.js",
@@ -27,7 +31,6 @@ exports.scripts = [
   "js/utils/serialization/Deserializer.js",
   "js/utils/serialization/backward/Deserializer_v0.js",
   "js/utils/serialization/backward/Deserializer_v1.js",
-  "js/lib/jsColor_1_4_0/jscolor.js",
 
   // Application libraries-->
   "js/rendering/DrawingLoop.js",
@@ -35,6 +38,7 @@ exports.scripts = [
   // Models
   "js/model/Frame.js",
   "js/model/Layer.js",
+  "js/model/piskel/Descriptor.js",
   "js/model/Piskel.js",
 
   // Selection
@@ -62,18 +66,33 @@ exports.scripts = [
   "js/controller/MinimapController.js",
   "js/controller/ToolController.js",
   "js/controller/PaletteController.js",
+  "js/controller/PalettesListController.js",
   "js/controller/NotificationController.js",
 
   // Settings sub-controllers
   "js/controller/settings/ApplicationSettingsController.js",
+  "js/controller/settings/ResizeController.js",
   "js/controller/settings/GifExportController.js",
+  "js/controller/settings/PngExportController.js",
+  "js/controller/settings/LocalStorageController.js",
+  "js/controller/settings/SaveController.js",
   "js/controller/settings/ImportController.js",
+
   // Settings controller
   "js/controller/settings/SettingsController.js",
 
+  // Dialogs sub-controllers
+  "js/controller/dialogs/PaletteManagerController.js",
+
+  // Dialogs controller
+  "js/controller/dialogs/DialogsController.js",
+
   // Services
   "js/service/LocalStorageService.js",
+  "js/service/GithubStorageService.js",
+  "js/service/AppEngineStorageService.js",
   "js/service/HistoryService.js",
+  "js/service/SavedStatusService.js",
   "js/service/keyboard/ShortcutService.js",
   "js/service/keyboard/KeycodeTranslator.js",
   "js/service/keyboard/CheatsheetService.js",
@@ -93,7 +112,6 @@ exports.scripts = [
   "js/drawingtools/selectiontools/RectangleSelect.js",
   "js/drawingtools/selectiontools/ShapeSelect.js",
   "js/drawingtools/ColorPicker.js",
-
   // Application controller and initialization
   "js/app.js"
 ];

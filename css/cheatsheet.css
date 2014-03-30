@@ -1,3 +1,28 @@
+.cheatsheet-link {
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+
+  padding: 1px 0 0 45px;
+  color : gold;
+  font-weight: bold;
+  font-size : 1.25em;
+  line-height: 20px;
+
+  cursor : pointer;
+
+  background-image:url('../img/keyboard.png');
+  background-size:35px 20px;
+  background-repeat:no-repeat;
+  opacity: 0.5;
+  z-index: 11000;
+  transition : opacity 0.3s;
+}
+
+.cheatsheet-link:hover {
+  opacity: 1;
+}
+
 #cheatsheet-wrapper {
   position: absolute;
   z-index: 10000;
@@ -8,7 +33,9 @@
   left: 0;
 
   padding: 50px;
+
   box-sizing: border-box;
+  -moz-box-sizing : border-box;
 
   color: white;
 }
@@ -16,8 +43,11 @@
 .cheatsheet-container {
   width: 100%;
   height:  100%;
+
   box-sizing: border-box;
-  padding: 20px 10%;
+  -moz-box-sizing : border-box;
+
+  padding: 20px 3%;
   border-radius: 3px;
   background: rgba(0,0,0,0.9);
   overflow: auto;
@@ -30,7 +60,7 @@
 
 .cheatsheet-section {
   float: left;
-  width : 50%;
+  width : 33%;
 }
 
 .cheatsheet-shortcut {
@@ -68,6 +98,7 @@
   border-radius: 2px;
 
   box-sizing: border-box;
+  -moz-box-sizing : border-box;
 
   text-align: center;
   font-family:Courier;

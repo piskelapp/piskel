@@ -11788,9 +11788,1972 @@ $.widget("ui.sortable", $.ui.mouse, {
 		console.error("Could not create worker", e.message);
 	}
 })();
-;(function(c){function a(b,d){if({}.hasOwnProperty.call(a.cache,b))return a.cache[b];var e=a.resolve(b);if(!e)throw new Error('Failed to resolve module '+b);var c={id:b,require:a,filename:b,exports:{},loaded:!1,parent:d,children:[]};d&&d.children.push(c);var f=b.slice(0,b.lastIndexOf('/')+1);return a.cache[b]=c.exports,e.call(c.exports,c,c.exports,f,b),c.loaded=!0,a.cache[b]=c.exports}a.modules={},a.cache={},a.resolve=function(b){return{}.hasOwnProperty.call(a.modules,b)?a.modules[b]:void 0},a.define=function(b,c){a.modules[b]=c};var b=function(a){return a='/',{title:'browser',version:'v0.10.5',browser:!0,env:{},argv:[],nextTick:c.setImmediate||function(a){setTimeout(a,0)},cwd:function(){return a},chdir:function(b){a=b}}}();a.define('/gif.coffee',function(b,k,j,i){function c(a,b){return{}.hasOwnProperty.call(a,b)}function g(d,b){for(var a=0,c=b.length;a<c;++a)if(a in b&&b[a]===d)return!0;return!1}function h(a,b){function e(){this.constructor=a}for(var d in b)c(b,d)&&(a[d]=b[d]);return e.prototype=b.prototype,a.prototype=new e,a.__super__=b.prototype,a}var e,d,f;d=a('events',b).EventEmitter,e=a('/browser.coffee',b),f=function(f,b,d){function a(d){var a,c;this.running=!1,this.options={},this.frames=[],this.freeWorkers=[],this.activeWorkers=[],this.setOptions(d);for(a in b)c=b[a],null!=this.options[a]?this.options[a]:this.options[a]=c}return h(a,f),b={workerScript:window.GifWorkerURL,workers:2,repeat:0,background:'#fff',quality:10,width:null,height:null},d={delay:500,copy:!1},a.prototype.setOption=function(a,b){return this.options[a]=b,null!=this._canvas&&(a==='width'||a==='height')?this._canvas[a]=b:void 0},a.prototype.setOptions=function(a){return function(d){var b,e;for(b in a){if(!c(a,b))continue;e=a[b],d.push(this.setOption(b,e))}return d}.call(this,[])},a.prototype.addFrame=function(a,c){var b,e;null==c&&(c={}),b={};for(e in d)b[e]=c[e]||d[e];if(null!=this.options.width||this.setOption('width',a.width),null!=this.options.height||this.setOption('height',a.height),'undefined'!==typeof ImageData&&null!=ImageData&&a instanceof ImageData)b.data=a.data;else if('undefined'!==typeof CanvasRenderingContext2D&&null!=CanvasRenderingContext2D&&a instanceof CanvasRenderingContext2D||'undefined'!==typeof WebGLRenderingContext&&null!=WebGLRenderingContext&&a instanceof WebGLRenderingContext)c.copy?b.data=this.getContextData(a):b.context=a;else if(null!=a.childNodes)c.copy?b.data=this.getImageData(a):b.image=a;else throw new Error('Invalid image');return this.frames.push(b)},a.prototype.render=function(){var d,a;if(this.running)throw new Error('Already running');if(!(null!=this.options.width&&null!=this.options.height))throw new Error('Width and height must be set prior to rendering');this.running=!0,this.nextFrame=0,this.finishedFrames=0,this.imageParts=function(b){var d;for(var a=0,c=function(){var b,b;b=[];for(var a=0;0<=this.frames.length?a<this.frames.length:a>this.frames.length;0<=this.frames.length?++a:--a)b.push(a);return b}.apply(this,arguments).length;a<c;++a)d=function(){var b,b;b=[];for(var a=0;0<=this.frames.length?a<this.frames.length:a>this.frames.length;0<=this.frames.length?++a:--a)b.push(a);return b}.apply(this,arguments)[a],b.push(null);return b}.call(this,[]),a=this.spawnWorkers();for(var b=0,c=function(){var c,c;c=[];for(var b=0;0<=a?b<a:b>a;0<=a?++b:--b)c.push(b);return c}.apply(this,arguments).length;b<c;++b)d=function(){var c,c;c=[];for(var b=0;0<=a?b<a:b>a;0<=a?++b:--b)c.push(b);return c}.apply(this,arguments)[b],this.renderNextFrame();return this.emit('start'),this.emit('progress',0)},a.prototype.abort=function(){var a;while(!0){if(a=this.activeWorkers.shift(),!(null!=a))break;console.log('killing active worker'),a.terminate()}return this.running=!1,this.emit('abort')},a.prototype.spawnWorkers=function(){var a,b;return a=Math.min(this.options.workers,this.frames.length),function(){var c;c=[];for(var b=this.freeWorkers.length;this.freeWorkers.length<=a?b<a:b>a;this.freeWorkers.length<=a?++b:--b)c.push(b);return c}.apply(this,arguments).forEach((b=this,function(d){var a,c;return console.log('spawning worker '+d),c=new Worker(b.options.workerScript),a=b,c.onmessage=function(b){return a.activeWorkers.splice(a.activeWorkers.indexOf(c),1),a.freeWorkers.push(c),a.frameFinished(b.data)},b.freeWorkers.push(c)})),a},a.prototype.frameFinished=function(a){return console.log('frame '+a.index+' finished - '+this.activeWorkers.length+' active'),this.finishedFrames++,this.emit('progress',this.finishedFrames/this.frames.length),this.imageParts[a.index]=a,g(null,this.imageParts)?this.renderNextFrame():this.finishRendering()},a.prototype.finishRendering=function(){var e,a,k,m,b,d,h;b=0;for(var f=0,j=this.imageParts.length;f<j;++f)a=this.imageParts[f],b+=(a.data.length-1)*a.pageSize+a.cursor;b+=a.pageSize-a.cursor,console.log('rendering finished - filesize '+Math.round(b/1e3)+'kb'),e=new Uint8Array(b),d=0;for(var g=0,l=this.imageParts.length;g<l;++g){a=this.imageParts[g];for(var c=0,i=a.data.length;c<i;++c)h=a.data[c],k=c,e.set(h,d),k===a.data.length-1?d+=a.cursor:d+=a.pageSize}return m=new Blob([e],{type:'image/gif'}),this.emit('finished',m,e)},a.prototype.renderNextFrame=function(){var c,a,b;if(this.freeWorkers.length===0)throw new Error('No free workers');return this.nextFrame>=this.frames.length?void 0:(c=this.frames[this.nextFrame++],b=this.freeWorkers.shift(),a=this.getTask(c),console.log('starting frame '+(a.index+1)+' of '+this.frames.length),this.activeWorkers.push(b),b.postMessage(a))},a.prototype.getContextData=function(a){return a.getImageData(0,0,this.options.width,this.options.height).data},a.prototype.getImageData=function(b){var a;return null!=this._canvas||(this._canvas=document.createElement('canvas'),this._canvas.width=this.options.width,this._canvas.height=this.options.height),a=this._canvas.getContext('2d'),a.setFill=this.options.background,a.fillRect(0,0,this.options.width,this.options.height),a.drawImage(b,0,0),this.getContextData(a)},a.prototype.getTask=function(a){var c,b;if(c=this.frames.indexOf(a),b={index:c,last:c===this.frames.length-1,delay:a.delay,width:this.options.width,height:this.options.height,quality:this.options.quality,repeat:this.options.repeat,canTransfer:e.name==='chrome'},null!=a.data)b.data=a.data;else if(null!=a.context)b.data=this.getContextData(a.context);else if(null!=a.image)b.data=this.getImageData(a.image);else throw new Error('Invalid frame');return b},a}(d),b.exports=f}),a.define('/browser.coffee',function(f,g,h,i){var a,d,e,c,b;c=navigator.userAgent.toLowerCase(),e=navigator.platform.toLowerCase(),b=c.match(/(opera|ie|firefox|chrome|version)[\s\/:]([\w\d\.]+)?.*?(safari|version[\s\/:]([\w\d\.]+)|$)/)||[null,'unknown',0],d=b[1]==='ie'&&document.documentMode,a={name:b[1]==='version'?b[3]:b[1],version:d||parseFloat(b[1]==='opera'&&b[4]?b[4]:b[2]),platform:{name:c.match(/ip(?:ad|od|hone)/)?'ios':(c.match(/(?:webos|android)/)||e.match(/mac|win|linux/)||['other'])[0]}},a[a.name]=!0,a[a.name+parseInt(a.version,10)]=!0,a.platform[a.platform.name]=!0,f.exports=a}),a.define('events',function(f,e,g,h){b.EventEmitter||(b.EventEmitter=function(){});var a=e.EventEmitter=b.EventEmitter,c=typeof Array.isArray==='function'?Array.isArray:function(a){return Object.prototype.toString.call(a)==='[object Array]'},d=10;a.prototype.setMaxListeners=function(a){this._events||(this._events={}),this._events.maxListeners=a},a.prototype.emit=function(f){if(f==='error'&&(!(this._events&&this._events.error)||c(this._events.error)&&!this._events.error.length))throw arguments[1]instanceof Error?arguments[1]:new Error("Uncaught, unspecified 'error' event.");if(!this._events)return!1;var a=this._events[f];if(!a)return!1;if(!(typeof a=='function'))if(c(a)){var b=Array.prototype.slice.call(arguments,1),e=a.slice();for(var d=0,g=e.length;d<g;d++)e[d].apply(this,b);return!0}else return!1;switch(arguments.length){case 1:a.call(this);break;case 2:a.call(this,arguments[1]);break;case 3:a.call(this,arguments[1],arguments[2]);break;default:var b=Array.prototype.slice.call(arguments,1);a.apply(this,b)}return!0},a.prototype.addListener=function(a,b){if('function'!==typeof b)throw new Error('addListener only takes instances of Function');if(this._events||(this._events={}),this.emit('newListener',a,b),!this._events[a])this._events[a]=b;else if(c(this._events[a])){if(!this._events[a].warned){var e;this._events.maxListeners!==undefined?e=this._events.maxListeners:e=d,e&&e>0&&this._events[a].length>e&&(this._events[a].warned=!0,console.error('(node) warning: possible EventEmitter memory leak detected. %d listeners added. Use emitter.setMaxListeners() to increase limit.',this._events[a].length),console.trace())}this._events[a].push(b)}else this._events[a]=[this._events[a],b];return this},a.prototype.on=a.prototype.addListener,a.prototype.once=function(b,c){var a=this;return a.on(b,function d(){a.removeListener(b,d),c.apply(this,arguments)}),this},a.prototype.removeListener=function(a,d){if('function'!==typeof d)throw new Error('removeListener only takes instances of Function');if(!(this._events&&this._events[a]))return this;var b=this._events[a];if(c(b)){var e=b.indexOf(d);if(e<0)return this;b.splice(e,1),b.length==0&&delete this._events[a]}else this._events[a]===d&&delete this._events[a];return this},a.prototype.removeAllListeners=function(a){return a&&this._events&&this._events[a]&&(this._events[a]=null),this},a.prototype.listeners=function(a){return this._events||(this._events={}),this._events[a]||(this._events[a]=[]),c(this._events[a])||(this._events[a]=[this._events[a]]),this._events[a]}}),c.GIF=a('/gif.coffee')}.call(this,this))
-//# sourceMappingURL=gif.js.map
-// gif.js 0.1.4 - https://github.com/jnordberg/gif.js;// TODO(grosbouddha): put under pskl namespace.
+;(function(c){function a(b,d){if({}.hasOwnProperty.call(a.cache,b))return a.cache[b];var e=a.resolve(b);if(!e)throw new Error('Failed to resolve module '+b);var c={id:b,require:a,filename:b,exports:{},loaded:!1,parent:d,children:[]};d&&d.children.push(c);var f=b.slice(0,b.lastIndexOf('/')+1);return a.cache[b]=c.exports,e.call(c.exports,c,c.exports,f,b),c.loaded=!0,a.cache[b]=c.exports}a.modules={},a.cache={},a.resolve=function(b){return{}.hasOwnProperty.call(a.modules,b)?a.modules[b]:void 0},a.define=function(b,c){a.modules[b]=c};var b=function(a){return a='/',{title:'browser',version:'v0.10.5',browser:!0,env:{},argv:[],nextTick:c.setImmediate||function(a){setTimeout(a,0)},cwd:function(){return a},chdir:function(b){a=b}}}();a.define('/gif.coffee',function(b,k,j,i){function c(a,b){return{}.hasOwnProperty.call(a,b)}function g(d,b){for(var a=0,c=b.length;a<c;++a)if(a in b&&b[a]===d)return!0;return!1}function h(a,b){function e(){this.constructor=a}for(var d in b)c(b,d)&&(a[d]=b[d]);return e.prototype=b.prototype,a.prototype=new e,a.__super__=b.prototype,a}var e,d,f;d=a('events',b).EventEmitter,e=a('/browser.coffee',b),f=function(f,b,d){function a(d){var a,c;this.running=!1,this.options={},this.frames=[],this.freeWorkers=[],this.activeWorkers=[],this.setOptions(d);for(a in b)c=b[a],null!=this.options[a]?this.options[a]:this.options[a]=c}return h(a,f),b={workerScript:window.GifWorkerURL,workers:2,repeat:0,background:'#fff',quality:10,width:null,height:null},d={delay:500,copy:!1},a.prototype.setOption=function(a,b){return this.options[a]=b,null!=this._canvas&&(a==='width'||a==='height')?this._canvas[a]=b:void 0},a.prototype.setOptions=function(a){return function(d){var b,e;for(b in a){if(!c(a,b))continue;e=a[b],d.push(this.setOption(b,e))}return d}.call(this,[])},a.prototype.addFrame=function(a,c){var b,e;null==c&&(c={}),b={};for(e in d)b[e]=c[e]||d[e];if(null!=this.options.width||this.setOption('width',a.width),null!=this.options.height||this.setOption('height',a.height),'undefined'!==typeof ImageData&&null!=ImageData&&a instanceof ImageData)b.data=a.data;else if('undefined'!==typeof CanvasRenderingContext2D&&null!=CanvasRenderingContext2D&&a instanceof CanvasRenderingContext2D||'undefined'!==typeof WebGLRenderingContext&&null!=WebGLRenderingContext&&a instanceof WebGLRenderingContext)c.copy?b.data=this.getContextData(a):b.context=a;else if(null!=a.childNodes)c.copy?b.data=this.getImageData(a):b.image=a;else throw new Error('Invalid image');return this.frames.push(b)},a.prototype.render=function(){var d,a;if(this.running)throw new Error('Already running');if(!(null!=this.options.width&&null!=this.options.height))throw new Error('Width and height must be set prior to rendering');this.running=!0,this.nextFrame=0,this.finishedFrames=0,this.imageParts=function(b){var d;for(var a=0,c=function(){var b,b;b=[];for(var a=0;0<=this.frames.length?a<this.frames.length:a>this.frames.length;0<=this.frames.length?++a:--a)b.push(a);return b}.apply(this,arguments).length;a<c;++a)d=function(){var b,b;b=[];for(var a=0;0<=this.frames.length?a<this.frames.length:a>this.frames.length;0<=this.frames.length?++a:--a)b.push(a);return b}.apply(this,arguments)[a],b.push(null);return b}.call(this,[]),a=this.spawnWorkers();for(var b=0,c=function(){var c,c;c=[];for(var b=0;0<=a?b<a:b>a;0<=a?++b:--b)c.push(b);return c}.apply(this,arguments).length;b<c;++b)d=function(){var c,c;c=[];for(var b=0;0<=a?b<a:b>a;0<=a?++b:--b)c.push(b);return c}.apply(this,arguments)[b],this.renderNextFrame();return this.emit('start'),this.emit('progress',0)},a.prototype.abort=function(){var a;while(!0){if(a=this.activeWorkers.shift(),!(null!=a))break;console.log('killing active worker'),a.terminate()}return this.running=!1,this.emit('abort')},a.prototype.spawnWorkers=function(){var a,b;return a=Math.min(this.options.workers,this.frames.length),function(){var c;c=[];for(var b=this.freeWorkers.length;this.freeWorkers.length<=a?b<a:b>a;this.freeWorkers.length<=a?++b:--b)c.push(b);return c}.apply(this,arguments).forEach((b=this,function(d){var a,c;return console.log('spawning worker '+d),c=new Worker(b.options.workerScript),a=b,c.onmessage=function(b){return a.activeWorkers.splice(a.activeWorkers.indexOf(c),1),a.freeWorkers.push(c),a.frameFinished(b.data)},b.freeWorkers.push(c)})),a},a.prototype.frameFinished=function(a){return console.log('frame '+a.index+' finished - '+this.activeWorkers.length+' active'),this.finishedFrames++,this.emit('progress',this.finishedFrames/this.frames.length),this.imageParts[a.index]=a,g(null,this.imageParts)?this.renderNextFrame():this.finishRendering()},a.prototype.finishRendering=function(){var e,a,k,m,b,d,h;b=0;for(var f=0,j=this.imageParts.length;f<j;++f)a=this.imageParts[f],b+=(a.data.length-1)*a.pageSize+a.cursor;b+=a.pageSize-a.cursor,console.log('rendering finished - filesize '+Math.round(b/1e3)+'kb'),e=new Uint8Array(b),d=0;for(var g=0,l=this.imageParts.length;g<l;++g){a=this.imageParts[g];for(var c=0,i=a.data.length;c<i;++c)h=a.data[c],k=c,e.set(h,d),k===a.data.length-1?d+=a.cursor:d+=a.pageSize}return m=new Blob([e],{type:'image/gif'}),this.emit('finished',m,e)},a.prototype.renderNextFrame=function(){var c,a,b;if(this.freeWorkers.length===0)throw new Error('No free workers');return this.nextFrame>=this.frames.length?void 0:(c=this.frames[this.nextFrame++],b=this.freeWorkers.shift(),a=this.getTask(c),console.log('starting frame '+(a.index+1)+' of '+this.frames.length),this.activeWorkers.push(b),b.postMessage(a))},a.prototype.getContextData=function(a){return a.getImageData(0,0,this.options.width,this.options.height).data},a.prototype.getImageData=function(b){var a;return null!=this._canvas||(this._canvas=document.createElement('canvas'),this._canvas.width=this.options.width,this._canvas.height=this.options.height),a=this._canvas.getContext('2d'),a.setFill=this.options.background,a.fillRect(0,0,this.options.width,this.options.height),a.drawImage(b,0,0),this.getContextData(a)},a.prototype.getTask=function(a){var c,b;if(c=this.frames.indexOf(a),b={index:c,last:c===this.frames.length-1,delay:a.delay,width:this.options.width,height:this.options.height,quality:this.options.quality,repeat:this.options.repeat,canTransfer:e.name==='chrome'},null!=a.data)b.data=a.data;else if(null!=a.context)b.data=this.getContextData(a.context);else if(null!=a.image)b.data=this.getImageData(a.image);else throw new Error('Invalid frame');return b},a}(d),b.exports=f}),a.define('/browser.coffee',function(f,g,h,i){var a,d,e,c,b;c=navigator.userAgent.toLowerCase(),e=navigator.platform.toLowerCase(),b=c.match(/(opera|ie|firefox|chrome|version)[\s\/:]([\w\d\.]+)?.*?(safari|version[\s\/:]([\w\d\.]+)|$)/)||[null,'unknown',0],d=b[1]==='ie'&&document.documentMode,a={name:b[1]==='version'?b[3]:b[1],version:d||parseFloat(b[1]==='opera'&&b[4]?b[4]:b[2]),platform:{name:c.match(/ip(?:ad|od|hone)/)?'ios':(c.match(/(?:webos|android)/)||e.match(/mac|win|linux/)||['other'])[0]}},a[a.name]=!0,a[a.name+parseInt(a.version,10)]=!0,a.platform[a.platform.name]=!0,f.exports=a}),a.define('events',function(f,e,g,h){b.EventEmitter||(b.EventEmitter=function(){});var a=e.EventEmitter=b.EventEmitter,c=typeof Array.isArray==='function'?Array.isArray:function(a){return Object.prototype.toString.call(a)==='[object Array]'},d=10;a.prototype.setMaxListeners=function(a){this._events||(this._events={}),this._events.maxListeners=a},a.prototype.emit=function(f){if(f==='error'&&(!(this._events&&this._events.error)||c(this._events.error)&&!this._events.error.length))throw arguments[1]instanceof Error?arguments[1]:new Error("Uncaught, unspecified 'error' event.");if(!this._events)return!1;var a=this._events[f];if(!a)return!1;if(!(typeof a=='function'))if(c(a)){var b=Array.prototype.slice.call(arguments,1),e=a.slice();for(var d=0,g=e.length;d<g;d++)e[d].apply(this,b);return!0}else return!1;switch(arguments.length){case 1:a.call(this);break;case 2:a.call(this,arguments[1]);break;case 3:a.call(this,arguments[1],arguments[2]);break;default:var b=Array.prototype.slice.call(arguments,1);a.apply(this,b)}return!0},a.prototype.addListener=function(a,b){if('function'!==typeof b)throw new Error('addListener only takes instances of Function');if(this._events||(this._events={}),this.emit('newListener',a,b),!this._events[a])this._events[a]=b;else if(c(this._events[a])){if(!this._events[a].warned){var e;this._events.maxListeners!==undefined?e=this._events.maxListeners:e=d,e&&e>0&&this._events[a].length>e&&(this._events[a].warned=!0,console.error('(node) warning: possible EventEmitter memory leak detected. %d listeners added. Use emitter.setMaxListeners() to increase limit.',this._events[a].length),console.trace())}this._events[a].push(b)}else this._events[a]=[this._events[a],b];return this},a.prototype.on=a.prototype.addListener,a.prototype.once=function(b,c){var a=this;return a.on(b,function d(){a.removeListener(b,d),c.apply(this,arguments)}),this},a.prototype.removeListener=function(a,d){if('function'!==typeof d)throw new Error('removeListener only takes instances of Function');if(!(this._events&&this._events[a]))return this;var b=this._events[a];if(c(b)){var e=b.indexOf(d);if(e<0)return this;b.splice(e,1),b.length==0&&delete this._events[a]}else this._events[a]===d&&delete this._events[a];return this},a.prototype.removeAllListeners=function(a){return a&&this._events&&this._events[a]&&(this._events[a]=null),this},a.prototype.listeners=function(a){return this._events||(this._events={}),this._events[a]||(this._events[a]=[]),c(this._events[a])||(this._events[a]=[this._events[a]]),this._events[a]}}),c.GIF=a('/gif.coffee')}.call(this,this));
+;// Spectrum Colorpicker v1.1.2
+// https://github.com/bgrins/spectrum
+// Author: Brian Grinstead
+// License: MIT
+
+(function (window, $, undefined) {
+    var defaultOpts = {
+
+        // Callbacks
+        beforeShow: noop,
+        move: noop,
+        change: noop,
+        show: noop,
+        hide: noop,
+
+        // Options
+        color: false,
+        flat: false,
+        showInput: false,
+        showButtons: true,
+        clickoutFiresChange: false,
+        showInitial: false,
+        showPalette: false,
+        showPaletteOnly: false,
+        showSelectionPalette: true,
+        localStorageKey: false,
+        appendTo: "body",
+        maxSelectionSize: 7,
+        cancelText: "cancel",
+        chooseText: "choose",
+        preferredFormat: false,
+        className: "",
+        showAlpha: false,
+        theme: "sp-light",
+        palette: ['fff', '000'],
+        selectionPalette: [],
+        disabled: false
+    },
+    spectrums = [],
+    IE = !!/msie/i.exec( window.navigator.userAgent ),
+    rgbaSupport = (function() {
+        function contains( str, substr ) {
+            return !!~('' + str).indexOf(substr);
+        }
+
+        var elem = document.createElement('div');
+        var style = elem.style;
+        style.cssText = 'background-color:rgba(0,0,0,.5)';
+        return contains(style.backgroundColor, 'rgba') || contains(style.backgroundColor, 'hsla');
+    })(),
+    replaceInput = [
+        "<div class='sp-replacer'>",
+            "<div class='sp-preview'><div class='sp-preview-inner'></div></div>",
+            "<div class='sp-dd'>&#9660;</div>",
+        "</div>"
+    ].join(''),
+    markup = (function () {
+
+        // IE does not support gradients with multiple stops, so we need to simulate
+        //  that for the rainbow slider with 8 divs that each have a single gradient
+        var gradientFix = "";
+        if (IE) {
+            for (var i = 1; i <= 6; i++) {
+                gradientFix += "<div class='sp-" + i + "'></div>";
+            }
+        }
+
+        return [
+            "<div class='sp-container sp-hidden'>",
+                "<div class='sp-palette-container'>",
+                    "<div class='sp-palette sp-thumb sp-cf'></div>",
+                "</div>",
+                "<div class='sp-picker-container'>",
+                    "<div class='sp-top sp-cf'>",
+                        "<div class='sp-fill'></div>",
+                        "<div class='sp-top-inner'>",
+                            "<div class='sp-color'>",
+                                "<div class='sp-sat'>",
+                                    "<div class='sp-val'>",
+                                        "<div class='sp-dragger'></div>",
+                                    "</div>",
+                                "</div>",
+                            "</div>",
+                            "<div class='sp-hue'>",
+                                "<div class='sp-slider'></div>",
+                                gradientFix,
+                            "</div>",
+                        "</div>",
+                        "<div class='sp-alpha'><div class='sp-alpha-inner'><div class='sp-alpha-handle'></div></div></div>",
+                    "</div>",
+                    "<div class='sp-input-container sp-cf'>",
+                        "<input class='sp-input' type='text' spellcheck='false'  />",
+                    "</div>",
+                    "<div class='sp-initial sp-thumb sp-cf'></div>",
+                    "<div class='sp-button-container sp-cf'>",
+                        "<a class='sp-cancel' href='#'></a>",
+                        "<button class='sp-choose'></button>",
+                    "</div>",
+                "</div>",
+            "</div>"
+        ].join("");
+    })();
+
+    function paletteTemplate (p, color, className) {
+        var html = [];
+        for (var i = 0; i < p.length; i++) {
+            var tiny = tinycolor(p[i]);
+            var c = tiny.toHsl().l < 0.5 ? "sp-thumb-el sp-thumb-dark" : "sp-thumb-el sp-thumb-light";
+            c += (tinycolor.equals(color, p[i])) ? " sp-thumb-active" : "";
+
+            var swatchStyle = rgbaSupport ? ("background-color:" + tiny.toRgbString()) : "filter:" + tiny.toFilter();
+            html.push('<span title="' + tiny.toRgbString() + '" data-color="' + tiny.toRgbString() + '" class="' + c + '"><span class="sp-thumb-inner" style="' + swatchStyle + ';" /></span>');
+        }
+        return "<div class='sp-cf " + className + "'>" + html.join('') + "</div>";
+    }
+
+    function hideAll() {
+        for (var i = 0; i < spectrums.length; i++) {
+            if (spectrums[i]) {
+                spectrums[i].hide();
+            }
+        }
+    }
+
+    function instanceOptions(o, callbackContext) {
+        var opts = $.extend({}, defaultOpts, o);
+        opts.callbacks = {
+            'move': bind(opts.move, callbackContext),
+            'change': bind(opts.change, callbackContext),
+            'show': bind(opts.show, callbackContext),
+            'hide': bind(opts.hide, callbackContext),
+            'beforeShow': bind(opts.beforeShow, callbackContext)
+        };
+
+        return opts;
+    }
+
+    function spectrum(element, o) {
+
+        var opts = instanceOptions(o, element),
+            flat = opts.flat,
+            showSelectionPalette = opts.showSelectionPalette,
+            localStorageKey = opts.localStorageKey,
+            theme = opts.theme,
+            callbacks = opts.callbacks,
+            resize = throttle(reflow, 10),
+            visible = false,
+            dragWidth = 0,
+            dragHeight = 0,
+            dragHelperHeight = 0,
+            slideHeight = 0,
+            slideWidth = 0,
+            alphaWidth = 0,
+            alphaSlideHelperWidth = 0,
+            slideHelperHeight = 0,
+            currentHue = 0,
+            currentSaturation = 0,
+            currentValue = 0,
+            currentAlpha = 1,
+            palette = opts.palette.slice(0),
+            paletteArray = $.isArray(palette[0]) ? palette : [palette],
+            selectionPalette = opts.selectionPalette.slice(0),
+            maxSelectionSize = opts.maxSelectionSize,
+            draggingClass = "sp-dragging",
+            shiftMovementDirection = null;
+
+        var doc = element.ownerDocument,
+            body = doc.body,
+            boundElement = $(element),
+            disabled = false,
+            container = $(markup, doc).addClass(theme),
+            dragger = container.find(".sp-color"),
+            dragHelper = container.find(".sp-dragger"),
+            slider = container.find(".sp-hue"),
+            slideHelper = container.find(".sp-slider"),
+            alphaSliderInner = container.find(".sp-alpha-inner"),
+            alphaSlider = container.find(".sp-alpha"),
+            alphaSlideHelper = container.find(".sp-alpha-handle"),
+            textInput = container.find(".sp-input"),
+            paletteContainer = container.find(".sp-palette"),
+            initialColorContainer = container.find(".sp-initial"),
+            cancelButton = container.find(".sp-cancel"),
+            chooseButton = container.find(".sp-choose"),
+            isInput = boundElement.is("input"),
+            shouldReplace = isInput && !flat,
+            replacer = (shouldReplace) ? $(replaceInput).addClass(theme).addClass(opts.className) : $([]),
+            offsetElement = (shouldReplace) ? replacer : boundElement,
+            previewElement = replacer.find(".sp-preview-inner"),
+            initialColor = opts.color || (isInput && boundElement.val()),
+            colorOnShow = false,
+            preferredFormat = opts.preferredFormat,
+            currentPreferredFormat = preferredFormat,
+            clickoutFiresChange = !opts.showButtons || opts.clickoutFiresChange;
+
+
+        function applyOptions() {
+
+            if (opts.showPaletteOnly) {
+                opts.showPalette = true;
+            }
+
+            container.toggleClass("sp-flat", flat);
+            container.toggleClass("sp-input-disabled", !opts.showInput);
+            container.toggleClass("sp-alpha-enabled", opts.showAlpha);
+            container.toggleClass("sp-buttons-disabled", !opts.showButtons);
+            container.toggleClass("sp-palette-disabled", !opts.showPalette);
+            container.toggleClass("sp-palette-only", opts.showPaletteOnly);
+            container.toggleClass("sp-initial-disabled", !opts.showInitial);
+            container.addClass(opts.className);
+
+            reflow();
+        }
+
+        function initialize() {
+
+            if (IE) {
+                container.find("*:not(input)").attr("unselectable", "on");
+            }
+
+            applyOptions();
+
+            if (shouldReplace) {
+                boundElement.after(replacer).hide();
+            }
+
+            if (flat) {
+                boundElement.after(container).hide();
+            }
+            else {
+
+                var appendTo = opts.appendTo === "parent" ? boundElement.parent() : $(opts.appendTo);
+                if (appendTo.length !== 1) {
+                    appendTo = $("body");
+                }
+
+                appendTo.append(container);
+            }
+
+            if (localStorageKey && window.localStorage) {
+
+                // Migrate old palettes over to new format.  May want to remove this eventually.
+                try {
+                    var oldPalette = window.localStorage[localStorageKey].split(",#");
+                    if (oldPalette.length > 1) {
+                        delete window.localStorage[localStorageKey];
+                        $.each(oldPalette, function(i, c) {
+                             addColorToSelectionPalette(c);
+                        });
+                    }
+                }
+                catch(e) { }
+
+                try {
+                    selectionPalette = window.localStorage[localStorageKey].split(";");
+                }
+                catch (e) { }
+            }
+
+            offsetElement.bind("click.spectrum touchstart.spectrum", function (e) {
+                if (!disabled) {
+                    toggle();
+                }
+
+                e.stopPropagation();
+
+                if (!$(e.target).is("input")) {
+                    e.preventDefault();
+                }
+            });
+
+            if(boundElement.is(":disabled") || (opts.disabled === true)) {
+                disable();
+            }
+
+            // Prevent clicks from bubbling up to document.  This would cause it to be hidden.
+            container.click(stopPropagation);
+
+            // Handle user typed input
+            textInput.change(setFromTextInput);
+            textInput.bind("paste", function () {
+                setTimeout(setFromTextInput, 1);
+            });
+            textInput.keydown(function (e) { if (e.keyCode == 13) { setFromTextInput(); } });
+
+            cancelButton.text(opts.cancelText);
+            cancelButton.bind("click.spectrum", function (e) {
+                e.stopPropagation();
+                e.preventDefault();
+                hide("cancel");
+            });
+
+            chooseButton.text(opts.chooseText);
+            chooseButton.bind("click.spectrum", function (e) {
+                e.stopPropagation();
+                e.preventDefault();
+
+                if (isValid()) {
+                    updateOriginalInput(true);
+                    hide();
+                }
+            });
+
+            draggable(alphaSlider, function (dragX, dragY, e) {
+                currentAlpha = (dragX / alphaWidth);
+                if (e.shiftKey) {
+                    currentAlpha = Math.round(currentAlpha * 10) / 10;
+                }
+
+                move();
+            });
+
+            draggable(slider, function (dragX, dragY) {
+                currentHue = parseFloat(dragY / slideHeight);
+                move();
+            }, dragStart, dragStop);
+
+            draggable(dragger, function (dragX, dragY, e) {
+
+                // shift+drag should snap the movement to either the x or y axis.
+                if (!e.shiftKey) {
+                    shiftMovementDirection = null;
+                }
+                else if (!shiftMovementDirection) {
+                    var oldDragX = currentSaturation * dragWidth;
+                    var oldDragY = dragHeight - (currentValue * dragHeight);
+                    var furtherFromX = Math.abs(dragX - oldDragX) > Math.abs(dragY - oldDragY);
+
+                    shiftMovementDirection = furtherFromX ? "x" : "y";
+                }
+
+                var setSaturation = !shiftMovementDirection || shiftMovementDirection === "x";
+                var setValue = !shiftMovementDirection || shiftMovementDirection === "y";
+
+                if (setSaturation) {
+                    currentSaturation = parseFloat(dragX / dragWidth);
+                }
+                if (setValue) {
+                    currentValue = parseFloat((dragHeight - dragY) / dragHeight);
+                }
+
+                move();
+
+            }, dragStart, dragStop);
+
+            if (!!initialColor) {
+                set(initialColor);
+
+                // In case color was black - update the preview UI and set the format
+                // since the set function will not run (default color is black).
+                updateUI();
+                currentPreferredFormat = preferredFormat || tinycolor(initialColor).format;
+
+                addColorToSelectionPalette(initialColor);
+            }
+            else {
+                updateUI();
+            }
+
+            if (flat) {
+                show();
+            }
+
+            function palletElementClick(e) {
+                if (e.data && e.data.ignore) {
+                    set($(this).data("color"));
+                    move();
+                }
+                else {
+                    set($(this).data("color"));
+                    updateOriginalInput(true);
+                    move();
+                    hide();
+                }
+
+                return false;
+            }
+
+            var paletteEvent = IE ? "mousedown.spectrum" : "click.spectrum touchstart.spectrum";
+            paletteContainer.delegate(".sp-thumb-el", paletteEvent, palletElementClick);
+            initialColorContainer.delegate(".sp-thumb-el:nth-child(1)", paletteEvent, { ignore: true }, palletElementClick);
+        }
+
+        function addColorToSelectionPalette(color) {
+            if (showSelectionPalette) {
+                var colorRgb = tinycolor(color).toRgbString();
+                if ($.inArray(colorRgb, selectionPalette) === -1) {
+                    selectionPalette.push(colorRgb);
+                    while(selectionPalette.length > maxSelectionSize) {
+                        selectionPalette.shift();
+                    }
+                }
+
+                if (localStorageKey && window.localStorage) {
+                    try {
+                        window.localStorage[localStorageKey] = selectionPalette.join(";");
+                    }
+                    catch(e) { }
+                }
+            }
+        }
+
+        function getUniqueSelectionPalette() {
+            var unique = [];
+            var p = selectionPalette;
+            var paletteLookup = {};
+            var rgb;
+
+            if (opts.showPalette) {
+
+                for (var i = 0; i < paletteArray.length; i++) {
+                    for (var j = 0; j < paletteArray[i].length; j++) {
+                        rgb = tinycolor(paletteArray[i][j]).toRgbString();
+                        paletteLookup[rgb] = true;
+                    }
+                }
+
+                for (i = 0; i < p.length; i++) {
+                    rgb = tinycolor(p[i]).toRgbString();
+
+                    if (!paletteLookup.hasOwnProperty(rgb)) {
+                        unique.push(p[i]);
+                        paletteLookup[rgb] = true;
+                    }
+                }
+            }
+
+            return unique.reverse().slice(0, opts.maxSelectionSize);
+        }
+
+        function drawPalette() {
+
+            var currentColor = get();
+
+            var html = $.map(paletteArray, function (palette, i) {
+                return paletteTemplate(palette, currentColor, "sp-palette-row sp-palette-row-" + i);
+            });
+
+            if (selectionPalette) {
+                html.push(paletteTemplate(getUniqueSelectionPalette(), currentColor, "sp-palette-row sp-palette-row-selection"));
+            }
+
+            paletteContainer.html(html.join(""));
+        }
+
+        function drawInitial() {
+            if (opts.showInitial) {
+                var initial = colorOnShow;
+                var current = get();
+                initialColorContainer.html(paletteTemplate([initial, current], current, "sp-palette-row-initial"));
+            }
+        }
+
+        function dragStart() {
+            if (dragHeight <= 0 || dragWidth <= 0 || slideHeight <= 0) {
+                reflow();
+            }
+            container.addClass(draggingClass);
+            shiftMovementDirection = null;
+        }
+
+        function dragStop() {
+            container.removeClass(draggingClass);
+        }
+
+        function setFromTextInput() {
+            var tiny = tinycolor(textInput.val());
+            if (tiny.ok) {
+                set(tiny);
+            }
+            else {
+                textInput.addClass("sp-validation-error");
+            }
+        }
+
+        function toggle() {
+            if (visible) {
+                hide();
+            }
+            else {
+                show();
+            }
+        }
+
+        function show() {
+            var event = $.Event('beforeShow.spectrum');
+
+            if (visible) {
+                reflow();
+                return;
+            }
+
+            colorOnShow = get();
+            boundElement.trigger(event, [ colorOnShow ]);
+
+            if (callbacks.beforeShow(colorOnShow) === false || event.isDefaultPrevented()) {
+                return;
+            }
+
+            // if color has changed
+            set(colorOnShow);
+
+            hideAll();
+            visible = true;
+
+            $(doc).bind("mousedown.spectrum", onMousedown);
+
+            // Piskel-specific : change the color as soon as the user does a mouseup
+            $(doc).bind("mouseup.spectrum", updateColor);
+
+            $(window).bind("resize.spectrum", resize);
+            replacer.addClass("sp-active");
+            container.removeClass("sp-hidden");
+
+            if (opts.showPalette) {
+                drawPalette();
+            }
+            reflow();
+            updateUI();
+
+            drawInitial();
+            callbacks.show(colorOnShow);
+            boundElement.trigger('show.spectrum', [ colorOnShow ]);
+        }
+
+        function onMousedown (e) {
+            var target = $(e.target);
+            var parents = target.parents();
+            var isClickOutsideWidget = !parents.is(container) && !target.is(container);
+
+            if (isClickOutsideWidget) {
+                hide(e);
+            }
+        }
+
+        // Piskel-specific (code extracted to method)
+        function updateColor(e) {
+            var colorHasChanged = !tinycolor.equals(get(), colorOnShow);
+
+            if (colorHasChanged) {
+                if (clickoutFiresChange && e !== "cancel") {
+                    updateOriginalInput(true);
+                }
+                else {
+                    revert();
+                }
+            }
+        }
+
+        function hide(e) {
+
+            // Return on right click
+            if (e && e.type == "click" && e.button == 2) { return; }
+
+            // Return if hiding is unnecessary
+            if (!visible || flat) { return; }
+            visible = false;
+
+            $(doc).unbind("mousedown.spectrum", onMousedown);
+
+            // Piskel-specific
+            $(doc).unbind("mouseup.spectrum", updateColor);
+
+            $(window).unbind("resize.spectrum", resize);
+
+            replacer.removeClass("sp-active");
+            container.addClass("sp-hidden");
+
+            updateColor(e);
+
+            // Piskel-specific
+            addColorToSelectionPalette(get());
+
+            callbacks.hide(get());
+            boundElement.trigger('hide.spectrum', [ get() ]);
+        }
+
+        function revert() {
+            set(colorOnShow, true);
+        }
+
+        function set(color, ignoreFormatChange) {
+            if (tinycolor.equals(color, get())) {
+                return;
+            }
+
+            var newColor = tinycolor(color);
+            var newHsv = newColor.toHsv();
+
+            currentHue = (newHsv.h % 360) / 360;
+            currentSaturation = newHsv.s;
+            currentValue = newHsv.v;
+            currentAlpha = newHsv.a;
+
+            updateUI();
+
+            if (newColor.ok && !ignoreFormatChange) {
+                currentPreferredFormat = preferredFormat || newColor.format;
+            }
+        }
+
+        function get(opts) {
+            opts = opts || { };
+            return tinycolor.fromRatio({
+                h: currentHue,
+                s: currentSaturation,
+                v: currentValue,
+                a: Math.round(currentAlpha * 100) / 100
+            }, { format: opts.format || currentPreferredFormat });
+        }
+
+        function isValid() {
+            return !textInput.hasClass("sp-validation-error");
+        }
+
+        function move() {
+            updateUI();
+
+            callbacks.move(get());
+            boundElement.trigger('move.spectrum', [ get() ]);
+        }
+
+        function updateUI() {
+
+            textInput.removeClass("sp-validation-error");
+
+            updateHelperLocations();
+
+            // Update dragger background color (gradients take care of saturation and value).
+            var flatColor = tinycolor.fromRatio({ h: currentHue, s: 1, v: 1 });
+            dragger.css("background-color", flatColor.toHexString());
+
+            // Get a format that alpha will be included in (hex and names ignore alpha)
+            var format = currentPreferredFormat;
+            if (currentAlpha < 1) {
+                if (format === "hex" || format === "hex3" || format === "hex6" || format === "name") {
+                    format = "rgb";
+                }
+            }
+
+            var realColor = get({ format: format }),
+                realHex = realColor.toHexString(),
+                realRgb = realColor.toRgbString();
+
+            // Update the replaced elements background color (with actual selected color)
+            if (rgbaSupport || realColor.alpha === 1) {
+                previewElement.css("background-color", realRgb);
+            }
+            else {
+                previewElement.css("background-color", "transparent");
+                previewElement.css("filter", realColor.toFilter());
+            }
+
+            if (opts.showAlpha) {
+                var rgb = realColor.toRgb();
+                rgb.a = 0;
+                var realAlpha = tinycolor(rgb).toRgbString();
+                var gradient = "linear-gradient(left, " + realAlpha + ", " + realHex + ")";
+
+                if (IE) {
+                    alphaSliderInner.css("filter", tinycolor(realAlpha).toFilter({ gradientType: 1 }, realHex));
+                }
+                else {
+                    alphaSliderInner.css("background", "-webkit-" + gradient);
+                    alphaSliderInner.css("background", "-moz-" + gradient);
+                    alphaSliderInner.css("background", "-ms-" + gradient);
+                    alphaSliderInner.css("background", gradient);
+                }
+            }
+
+
+            // Update the text entry input as it changes happen
+            if (opts.showInput) {
+                textInput.val(realColor.toString(Constants.PREFERRED_COLOR_FORMAT || format));
+            }
+
+            if (opts.showPalette) {
+                drawPalette();
+            }
+
+            drawInitial();
+        }
+
+        function updateHelperLocations() {
+            var s = currentSaturation;
+            var v = currentValue;
+
+            // Where to show the little circle in that displays your current selected color
+            var dragX = s * dragWidth;
+            var dragY = (dragHeight) - (v * dragHeight);
+            dragX = Math.max(
+                -dragHelperHeight/2,
+                Math.min(dragWidth - dragHelperHeight/2, dragX - dragHelperHeight/2)
+            );
+            dragY = Math.max(
+                -dragHelperHeight/2,
+                Math.min(dragHeight - dragHelperHeight/2, dragY - dragHelperHeight/2)
+            );
+            dragHelper.css({
+                "top": dragY,
+                "left": dragX
+            });
+
+            var alphaX = currentAlpha * alphaWidth;
+            alphaSlideHelper.css({
+                "left": alphaX - (alphaSlideHelperWidth / 2)
+            });
+
+            // Where to show the bar that displays your current selected hue
+            var slideY = (currentHue) * slideHeight;
+            slideHelper.css({
+                "top": slideY - (slideHelperHeight/2)
+            });
+        }
+
+        function updateOriginalInput(fireCallback) {
+            var color = get();
+
+            if (isInput) {
+                boundElement.val(color.toString(currentPreferredFormat));
+            }
+
+            var hasChanged = !tinycolor.equals(color, colorOnShow);
+            colorOnShow = color;
+
+            // Update the selection palette with the current color
+
+            // Piskel-specific : commented-out, palette update is done on hide
+            // addColorToSelectionPalette(color);
+
+            if (fireCallback && hasChanged) {
+                callbacks.change(color);
+                boundElement.trigger('change', [ color ]);
+            }
+        }
+
+        function reflow() {
+            dragWidth = dragger.width();
+            dragHeight = dragger.height();
+            dragHelperHeight = dragHelper.height() + 4;
+            slideWidth = slider.width();
+            slideHeight = slider.height();
+            slideHelperHeight = slideHelper.height() + 4;
+            alphaWidth = alphaSlider.width();
+            alphaSlideHelperWidth = alphaSlideHelper.width();
+
+            if (!flat) {
+                container.css("position", "absolute");
+                container.offset(getOffset(container, offsetElement));
+            }
+
+            updateHelperLocations();
+        }
+
+        function destroy() {
+            boundElement.show();
+            offsetElement.unbind("click.spectrum touchstart.spectrum");
+            container.remove();
+            replacer.remove();
+            spectrums[spect.id] = null;
+        }
+
+        function option(optionName, optionValue) {
+            if (optionName === undefined) {
+                return $.extend({}, opts);
+            }
+            if (optionValue === undefined) {
+                return opts[optionName];
+            }
+
+            opts[optionName] = optionValue;
+            applyOptions();
+        }
+
+        function enable() {
+            disabled = false;
+            boundElement.attr("disabled", false);
+            offsetElement.removeClass("sp-disabled");
+        }
+
+        function disable() {
+            hide();
+            disabled = true;
+            boundElement.attr("disabled", true);
+            offsetElement.addClass("sp-disabled");
+        }
+
+        initialize();
+
+        var spect = {
+            show: show,
+            hide: hide,
+            toggle: toggle,
+            reflow: reflow,
+            option: option,
+            enable: enable,
+            disable: disable,
+            set: function (c) {
+                set(c);
+                updateOriginalInput();
+            },
+            get: get,
+            destroy: destroy,
+            container: container
+        };
+
+        spect.id = spectrums.push(spect) - 1;
+
+        return spect;
+    }
+
+    /**
+    * checkOffset - get the offset below/above and left/right element depending on screen position
+    * Thanks https://github.com/jquery/jquery-ui/blob/master/ui/jquery.ui.datepicker.js
+    */
+    function getOffset(picker, input) {
+        var extraY = 0;
+        var dpWidth = picker.outerWidth();
+        var dpHeight = picker.outerHeight();
+        var inputHeight = input.outerHeight();
+        var doc = picker[0].ownerDocument;
+        var docElem = doc.documentElement;
+        var viewWidth = docElem.clientWidth + $(doc).scrollLeft();
+        var viewHeight = docElem.clientHeight + $(doc).scrollTop();
+        var offset = input.offset();
+        offset.top += inputHeight;
+
+        if (Math.min(offset.left, (offset.left + dpWidth > viewWidth && viewWidth > dpWidth))) {
+            offset.left -= Math.abs(offset.left + dpWidth - viewWidth);
+            picker.attr('data-x-position','right');
+        } else {
+            offset.left -= 0;
+            picker.attr('data-x-position','left');
+        }
+
+        if (Math.min(offset.top, (offset.top + dpHeight > viewHeight && viewHeight > dpHeight))) {
+            offset.top -= Math.abs(dpHeight + inputHeight - extraY);
+            picker.attr('data-y-position','top');
+        } else {
+            offset.top -= extraY;
+            picker.attr('data-y-position','bottom');
+        }
+
+        return offset;
+    }
+
+    /**
+    * noop - do nothing
+    */
+    function noop() {
+
+    }
+
+    /**
+    * stopPropagation - makes the code only doing this a little easier to read in line
+    */
+    function stopPropagation(e) {
+        e.stopPropagation();
+    }
+
+    /**
+    * Create a function bound to a given object
+    * Thanks to underscore.js
+    */
+    function bind(func, obj) {
+        var slice = Array.prototype.slice;
+        var args = slice.call(arguments, 2);
+        return function () {
+            return func.apply(obj, args.concat(slice.call(arguments)));
+        };
+    }
+
+    /**
+    * Lightweight drag helper.  Handles containment within the element, so that
+    * when dragging, the x is within [0,element.width] and y is within [0,element.height]
+    */
+    function draggable(element, onmove, onstart, onstop) {
+        onmove = onmove || function () { };
+        onstart = onstart || function () { };
+        onstop = onstop || function () { };
+        var doc = element.ownerDocument || document;
+        var dragging = false;
+        var offset = {};
+        var maxHeight = 0;
+        var maxWidth = 0;
+        var hasTouch = ('ontouchstart' in window);
+
+        var duringDragEvents = {};
+        duringDragEvents["selectstart"] = prevent;
+        duringDragEvents["dragstart"] = prevent;
+        duringDragEvents["touchmove mousemove"] = move;
+        duringDragEvents["touchend mouseup"] = stop;
+
+        function prevent(e) {
+            if (e.stopPropagation) {
+                e.stopPropagation();
+            }
+            if (e.preventDefault) {
+                e.preventDefault();
+            }
+            e.returnValue = false;
+        }
+
+        function move(e) {
+            if (dragging) {
+                // Mouseup happened outside of window
+                if (IE && document.documentMode < 9 && !e.button) {
+                    return stop();
+                }
+
+                var touches = e.originalEvent.touches;
+                var pageX = touches ? touches[0].pageX : e.pageX;
+                var pageY = touches ? touches[0].pageY : e.pageY;
+
+                var dragX = Math.max(0, Math.min(pageX - offset.left, maxWidth));
+                var dragY = Math.max(0, Math.min(pageY - offset.top, maxHeight));
+
+                if (hasTouch) {
+                    // Stop scrolling in iOS
+                    prevent(e);
+                }
+
+                onmove.apply(element, [dragX, dragY, e]);
+            }
+        }
+        function start(e) {
+            var rightclick = (e.which) ? (e.which == 3) : (e.button == 2);
+            var touches = e.originalEvent.touches;
+
+            if (!rightclick && !dragging) {
+                if (onstart.apply(element, arguments) !== false) {
+                    dragging = true;
+                    maxHeight = $(element).height();
+                    maxWidth = $(element).width();
+                    offset = $(element).offset();
+
+                    $(doc).bind(duringDragEvents);
+                    $(doc.body).addClass("sp-dragging");
+
+                    if (!hasTouch) {
+                        move(e);
+                    }
+
+                    prevent(e);
+                }
+            }
+        }
+        function stop() {
+            if (dragging) {
+                $(doc).unbind(duringDragEvents);
+                $(doc.body).removeClass("sp-dragging");
+                onstop.apply(element, arguments);
+            }
+            dragging = false;
+        }
+
+        $(element).bind("touchstart mousedown", start);
+    }
+
+    function throttle(func, wait, debounce) {
+        var timeout;
+        return function () {
+            var context = this, args = arguments;
+            var throttler = function () {
+                timeout = null;
+                func.apply(context, args);
+            };
+            if (debounce) clearTimeout(timeout);
+            if (debounce || !timeout) timeout = setTimeout(throttler, wait);
+        };
+    }
+
+
+    function log(){/* jshint -W021 */if(window.console){if(Function.prototype.bind)log=Function.prototype.bind.call(console.log,console);else log=function(){Function.prototype.apply.call(console.log,console,arguments);};log.apply(this,arguments);}}
+
+    /**
+    * Define a jQuery plugin
+    */
+    var dataID = "spectrum.id";
+    $.fn.spectrum = function (opts, extra) {
+
+        if (typeof opts == "string") {
+
+            var returnValue = this;
+            var args = Array.prototype.slice.call( arguments, 1 );
+
+            this.each(function () {
+                var spect = spectrums[$(this).data(dataID)];
+                if (spect) {
+
+                    var method = spect[opts];
+                    if (!method) {
+                        throw new Error( "Spectrum: no such method: '" + opts + "'" );
+                    }
+
+                    if (opts == "get") {
+                        returnValue = spect.get();
+                    }
+                    else if (opts == "container") {
+                        returnValue = spect.container;
+                    }
+                    else if (opts == "option") {
+                        returnValue = spect.option.apply(spect, args);
+                    }
+                    else if (opts == "destroy") {
+                        spect.destroy();
+                        $(this).removeData(dataID);
+                    }
+                    else {
+                        method.apply(spect, args);
+                    }
+                }
+            });
+
+            return returnValue;
+        }
+
+        // Initializing a new instance of spectrum
+        return this.spectrum("destroy").each(function () {
+            var spect = spectrum(this, opts);
+            $(this).data(dataID, spect.id);
+        });
+    };
+
+    $.fn.spectrum.load = true;
+    $.fn.spectrum.loadOpts = {};
+    $.fn.spectrum.draggable = draggable;
+    $.fn.spectrum.defaults = defaultOpts;
+
+    $.spectrum = { };
+    $.spectrum.localization = { };
+    $.spectrum.palettes = { };
+
+    $.fn.spectrum.processNativeColorInputs = function () {
+        var colorInput = $("<input type='color' value='!' />")[0];
+        var supportsColor = colorInput.type === "color" && colorInput.value != "!";
+
+        if (!supportsColor) {
+            $("input[type=color]").spectrum({
+                preferredFormat: "hex6"
+            });
+        }
+    };
+
+    // TinyColor v0.9.16
+    // https://github.com/bgrins/TinyColor
+    // 2013-08-10, Brian Grinstead, MIT License
+
+    (function() {
+
+    var trimLeft = /^[\s,#]+/,
+        trimRight = /\s+$/,
+        tinyCounter = 0,
+        math = Math,
+        mathRound = math.round,
+        mathMin = math.min,
+        mathMax = math.max,
+        mathRandom = math.random;
+
+    function tinycolor (color, opts) {
+
+        color = (color) ? color : '';
+        opts = opts || { };
+
+        // If input is already a tinycolor, return itself
+        if (typeof color == "object" && color.hasOwnProperty("_tc_id")) {
+           return color;
+        }
+
+        var rgb = inputToRGB(color);
+        var r = rgb.r,
+            g = rgb.g,
+            b = rgb.b,
+            a = rgb.a,
+            roundA = mathRound(100*a) / 100,
+            format = opts.format || rgb.format;
+
+        // Don't let the range of [0,255] come back in [0,1].
+        // Potentially lose a little bit of precision here, but will fix issues where
+        // .5 gets interpreted as half of the total, instead of half of 1
+        // If it was supposed to be 128, this was already taken care of by `inputToRgb`
+        if (r < 1) { r = mathRound(r); }
+        if (g < 1) { g = mathRound(g); }
+        if (b < 1) { b = mathRound(b); }
+
+        return {
+            ok: rgb.ok,
+            format: format,
+            _tc_id: tinyCounter++,
+            alpha: a,
+            getAlpha: function() {
+                return a;
+            },
+            setAlpha: function(value) {
+                a = boundAlpha(value);
+                roundA = mathRound(100*a) / 100;
+            },
+            toHsv: function() {
+                var hsv = rgbToHsv(r, g, b);
+                return { h: hsv.h * 360, s: hsv.s, v: hsv.v, a: a };
+            },
+            toHsvString: function() {
+                var hsv = rgbToHsv(r, g, b);
+                var h = mathRound(hsv.h * 360), s = mathRound(hsv.s * 100), v = mathRound(hsv.v * 100);
+                return (a == 1) ?
+                  "hsv("  + h + ", " + s + "%, " + v + "%)" :
+                  "hsva(" + h + ", " + s + "%, " + v + "%, "+ roundA + ")";
+            },
+            toHsl: function() {
+                var hsl = rgbToHsl(r, g, b);
+                return { h: hsl.h * 360, s: hsl.s, l: hsl.l, a: a };
+            },
+            toHslString: function() {
+                var hsl = rgbToHsl(r, g, b);
+                var h = mathRound(hsl.h * 360), s = mathRound(hsl.s * 100), l = mathRound(hsl.l * 100);
+                return (a == 1) ?
+                  "hsl("  + h + ", " + s + "%, " + l + "%)" :
+                  "hsla(" + h + ", " + s + "%, " + l + "%, "+ roundA + ")";
+            },
+            toHex: function(allow3Char) {
+                return rgbToHex(r, g, b, allow3Char);
+            },
+            toHexString: function(allow3Char) {
+                return '#' + rgbToHex(r, g, b, allow3Char);
+            },
+            toRgb: function() {
+                return { r: mathRound(r), g: mathRound(g), b: mathRound(b), a: a };
+            },
+            toRgbString: function() {
+                return (a == 1) ?
+                  "rgb("  + mathRound(r) + ", " + mathRound(g) + ", " + mathRound(b) + ")" :
+                  "rgba(" + mathRound(r) + ", " + mathRound(g) + ", " + mathRound(b) + ", " + roundA + ")";
+            },
+            toPercentageRgb: function() {
+                return { r: mathRound(bound01(r, 255) * 100) + "%", g: mathRound(bound01(g, 255) * 100) + "%", b: mathRound(bound01(b, 255) * 100) + "%", a: a };
+            },
+            toPercentageRgbString: function() {
+                return (a == 1) ?
+                  "rgb("  + mathRound(bound01(r, 255) * 100) + "%, " + mathRound(bound01(g, 255) * 100) + "%, " + mathRound(bound01(b, 255) * 100) + "%)" :
+                  "rgba(" + mathRound(bound01(r, 255) * 100) + "%, " + mathRound(bound01(g, 255) * 100) + "%, " + mathRound(bound01(b, 255) * 100) + "%, " + roundA + ")";
+            },
+            toName: function() {
+                if (a === 0) {
+                    return "transparent";
+                }
+
+                return hexNames[rgbToHex(r, g, b, true)] || false;
+            },
+            toFilter: function(secondColor) {
+                var hex = rgbToHex(r, g, b);
+                var secondHex = hex;
+                var alphaHex = Math.round(parseFloat(a) * 255).toString(16);
+                var secondAlphaHex = alphaHex;
+                var gradientType = opts && opts.gradientType ? "GradientType = 1, " : "";
+
+                if (secondColor) {
+                    var s = tinycolor(secondColor);
+                    secondHex = s.toHex();
+                    secondAlphaHex = Math.round(parseFloat(s.alpha) * 255).toString(16);
+                }
+
+                return "progid:DXImageTransform.Microsoft.gradient("+gradientType+"startColorstr=#" + pad2(alphaHex) + hex + ",endColorstr=#" + pad2(secondAlphaHex) + secondHex + ")";
+            },
+            toString: function(format) {
+                var formatSet = !!format;
+                format = format || this.format;
+
+                var formattedString = false;
+                var hasAlphaAndFormatNotSet = !formatSet && a < 1 && a > 0;
+                var formatWithAlpha = hasAlphaAndFormatNotSet && (format === "hex" || format === "hex6" || format === "hex3" || format === "name");
+
+                if (format === "rgb") {
+                    formattedString = this.toRgbString();
+                }
+                if (format === "prgb") {
+                    formattedString = this.toPercentageRgbString();
+                }
+                if (format === "hex" || format === "hex6") {
+                    formattedString = this.toHexString();
+                }
+                if (format === "hex3") {
+                    formattedString = this.toHexString(true);
+                }
+                if (format === "name") {
+                    formattedString = this.toName();
+                }
+                if (format === "hsl") {
+                    formattedString = this.toHslString();
+                }
+                if (format === "hsv") {
+                    formattedString = this.toHsvString();
+                }
+
+                if (formatWithAlpha) {
+                    return this.toRgbString();
+                }
+
+                return formattedString || this.toHexString();
+            }
+        };
+    }
+
+    // If input is an object, force 1 into "1.0" to handle ratios properly
+    // String input requires "1.0" as input, so 1 will be treated as 1
+    tinycolor.fromRatio = function(color, opts) {
+        if (typeof color == "object") {
+            var newColor = {};
+            for (var i in color) {
+                if (color.hasOwnProperty(i)) {
+                    if (i === "a") {
+                        newColor[i] = color[i];
+                    }
+                    else {
+                        newColor[i] = convertToPercentage(color[i]);
+                    }
+                }
+            }
+            color = newColor;
+        }
+
+        return tinycolor(color, opts);
+    };
+
+    // Given a string or object, convert that input to RGB
+    // Possible string inputs:
+    //
+    //     "red"
+    //     "#f00" or "f00"
+    //     "#ff0000" or "ff0000"
+    //     "rgb 255 0 0" or "rgb (255, 0, 0)"
+    //     "rgb 1.0 0 0" or "rgb (1, 0, 0)"
+    //     "rgba (255, 0, 0, 1)" or "rgba 255, 0, 0, 1"
+    //     "rgba (1.0, 0, 0, 1)" or "rgba 1.0, 0, 0, 1"
+    //     "hsl(0, 100%, 50%)" or "hsl 0 100% 50%"
+    //     "hsla(0, 100%, 50%, 1)" or "hsla 0 100% 50%, 1"
+    //     "hsv(0, 100%, 100%)" or "hsv 0 100% 100%"
+    //
+    function inputToRGB(color) {
+
+        var rgb = { r: 0, g: 0, b: 0 };
+        var a = 1;
+        var ok = false;
+        var format = false;
+
+        if (typeof color == "string") {
+            color = stringInputToObject(color);
+        }
+
+        if (typeof color == "object") {
+            if (color.hasOwnProperty("r") && color.hasOwnProperty("g") && color.hasOwnProperty("b")) {
+                rgb = rgbToRgb(color.r, color.g, color.b);
+                ok = true;
+                format = String(color.r).substr(-1) === "%" ? "prgb" : "rgb";
+            }
+            else if (color.hasOwnProperty("h") && color.hasOwnProperty("s") && color.hasOwnProperty("v")) {
+                color.s = convertToPercentage(color.s);
+                color.v = convertToPercentage(color.v);
+                rgb = hsvToRgb(color.h, color.s, color.v);
+                ok = true;
+                format = "hsv";
+            }
+            else if (color.hasOwnProperty("h") && color.hasOwnProperty("s") && color.hasOwnProperty("l")) {
+                color.s = convertToPercentage(color.s);
+                color.l = convertToPercentage(color.l);
+                rgb = hslToRgb(color.h, color.s, color.l);
+                ok = true;
+                format = "hsl";
+            }
+
+            if (color.hasOwnProperty("a")) {
+                a = color.a;
+            }
+        }
+
+        a = boundAlpha(a);
+
+        return {
+            ok: ok,
+            format: color.format || format,
+            r: mathMin(255, mathMax(rgb.r, 0)),
+            g: mathMin(255, mathMax(rgb.g, 0)),
+            b: mathMin(255, mathMax(rgb.b, 0)),
+            a: a
+        };
+    }
+
+
+    // Conversion Functions
+    // --------------------
+
+    // `rgbToHsl`, `rgbToHsv`, `hslToRgb`, `hsvToRgb` modified from:
+    // <http://mjijackson.com/2008/02/rgb-to-hsl-and-rgb-to-hsv-color-model-conversion-algorithms-in-javascript>
+
+    // `rgbToRgb`
+    // Handle bounds / percentage checking to conform to CSS color spec
+    // <http://www.w3.org/TR/css3-color/>
+    // *Assumes:* r, g, b in [0, 255] or [0, 1]
+    // *Returns:* { r, g, b } in [0, 255]
+    function rgbToRgb(r, g, b){
+        return {
+            r: bound01(r, 255) * 255,
+            g: bound01(g, 255) * 255,
+            b: bound01(b, 255) * 255
+        };
+    }
+
+    // `rgbToHsl`
+    // Converts an RGB color value to HSL.
+    // *Assumes:* r, g, and b are contained in [0, 255] or [0, 1]
+    // *Returns:* { h, s, l } in [0,1]
+    function rgbToHsl(r, g, b) {
+
+        r = bound01(r, 255);
+        g = bound01(g, 255);
+        b = bound01(b, 255);
+
+        var max = mathMax(r, g, b), min = mathMin(r, g, b);
+        var h, s, l = (max + min) / 2;
+
+        if(max == min) {
+            h = s = 0; // achromatic
+        }
+        else {
+            var d = max - min;
+            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+            switch(max) {
+                case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                case g: h = (b - r) / d + 2; break;
+                case b: h = (r - g) / d + 4; break;
+            }
+
+            h /= 6;
+        }
+
+        return { h: h, s: s, l: l };
+    }
+
+    // `hslToRgb`
+    // Converts an HSL color value to RGB.
+    // *Assumes:* h is contained in [0, 1] or [0, 360] and s and l are contained [0, 1] or [0, 100]
+    // *Returns:* { r, g, b } in the set [0, 255]
+    function hslToRgb(h, s, l) {
+        var r, g, b;
+
+        h = bound01(h, 360);
+        s = bound01(s, 100);
+        l = bound01(l, 100);
+
+        function hue2rgb(p, q, t) {
+            if(t < 0) t += 1;
+            if(t > 1) t -= 1;
+            if(t < 1/6) return p + (q - p) * 6 * t;
+            if(t < 1/2) return q;
+            if(t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+            return p;
+        }
+
+        if(s === 0) {
+            r = g = b = l; // achromatic
+        }
+        else {
+            var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+            var p = 2 * l - q;
+            r = hue2rgb(p, q, h + 1/3);
+            g = hue2rgb(p, q, h);
+            b = hue2rgb(p, q, h - 1/3);
+        }
+
+        return { r: r * 255, g: g * 255, b: b * 255 };
+    }
+
+    // `rgbToHsv`
+    // Converts an RGB color value to HSV
+    // *Assumes:* r, g, and b are contained in the set [0, 255] or [0, 1]
+    // *Returns:* { h, s, v } in [0,1]
+    function rgbToHsv(r, g, b) {
+
+        r = bound01(r, 255);
+        g = bound01(g, 255);
+        b = bound01(b, 255);
+
+        var max = mathMax(r, g, b), min = mathMin(r, g, b);
+        var h, s, v = max;
+
+        var d = max - min;
+        s = max === 0 ? 0 : d / max;
+
+        if(max == min) {
+            h = 0; // achromatic
+        }
+        else {
+            switch(max) {
+                case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                case g: h = (b - r) / d + 2; break;
+                case b: h = (r - g) / d + 4; break;
+            }
+            h /= 6;
+        }
+        return { h: h, s: s, v: v };
+    }
+
+    // `hsvToRgb`
+    // Converts an HSV color value to RGB.
+    // *Assumes:* h is contained in [0, 1] or [0, 360] and s and v are contained in [0, 1] or [0, 100]
+    // *Returns:* { r, g, b } in the set [0, 255]
+     function hsvToRgb(h, s, v) {
+
+        h = bound01(h, 360) * 6;
+        s = bound01(s, 100);
+        v = bound01(v, 100);
+
+        var i = math.floor(h),
+            f = h - i,
+            p = v * (1 - s),
+            q = v * (1 - f * s),
+            t = v * (1 - (1 - f) * s),
+            mod = i % 6,
+            r = [v, q, p, p, t, v][mod],
+            g = [t, v, v, q, p, p][mod],
+            b = [p, p, t, v, v, q][mod];
+
+        return { r: r * 255, g: g * 255, b: b * 255 };
+    }
+
+    // `rgbToHex`
+    // Converts an RGB color to hex
+    // Assumes r, g, and b are contained in the set [0, 255]
+    // Returns a 3 or 6 character hex
+    function rgbToHex(r, g, b, allow3Char) {
+
+        var hex = [
+            pad2(mathRound(r).toString(16)),
+            pad2(mathRound(g).toString(16)),
+            pad2(mathRound(b).toString(16))
+        ];
+
+        // Return a 3 character hex if possible
+        if (allow3Char && hex[0].charAt(0) == hex[0].charAt(1) && hex[1].charAt(0) == hex[1].charAt(1) && hex[2].charAt(0) == hex[2].charAt(1)) {
+            return hex[0].charAt(0) + hex[1].charAt(0) + hex[2].charAt(0);
+        }
+
+        return hex.join("");
+    }
+
+    // `equals`
+    // Can be called with any tinycolor input
+    tinycolor.equals = function (color1, color2) {
+        if (!color1 || !color2) { return false; }
+        return tinycolor(color1).toRgbString() == tinycolor(color2).toRgbString();
+    };
+    tinycolor.random = function() {
+        return tinycolor.fromRatio({
+            r: mathRandom(),
+            g: mathRandom(),
+            b: mathRandom()
+        });
+    };
+
+
+    // Modification Functions
+    // ----------------------
+    // Thanks to less.js for some of the basics here
+    // <https://github.com/cloudhead/less.js/blob/master/lib/less/functions.js>
+
+    tinycolor.desaturate = function (color, amount) {
+        amount = (amount === 0) ? 0 : (amount || 10);
+        var hsl = tinycolor(color).toHsl();
+        hsl.s -= amount / 100;
+        hsl.s = clamp01(hsl.s);
+        return tinycolor(hsl);
+    };
+    tinycolor.saturate = function (color, amount) {
+        amount = (amount === 0) ? 0 : (amount || 10);
+        var hsl = tinycolor(color).toHsl();
+        hsl.s += amount / 100;
+        hsl.s = clamp01(hsl.s);
+        return tinycolor(hsl);
+    };
+    tinycolor.greyscale = function(color) {
+        return tinycolor.desaturate(color, 100);
+    };
+    tinycolor.lighten = function(color, amount) {
+        amount = (amount === 0) ? 0 : (amount || 10);
+        var hsl = tinycolor(color).toHsl();
+        hsl.l += amount / 100;
+        hsl.l = clamp01(hsl.l);
+        return tinycolor(hsl);
+    };
+    tinycolor.darken = function (color, amount) {
+        amount = (amount === 0) ? 0 : (amount || 10);
+        var hsl = tinycolor(color).toHsl();
+        hsl.l -= amount / 100;
+        hsl.l = clamp01(hsl.l);
+        return tinycolor(hsl);
+    };
+    tinycolor.complement = function(color) {
+        var hsl = tinycolor(color).toHsl();
+        hsl.h = (hsl.h + 180) % 360;
+        return tinycolor(hsl);
+    };
+
+
+    // Combination Functions
+    // ---------------------
+    // Thanks to jQuery xColor for some of the ideas behind these
+    // <https://github.com/infusion/jQuery-xcolor/blob/master/jquery.xcolor.js>
+
+    tinycolor.triad = function(color) {
+        var hsl = tinycolor(color).toHsl();
+        var h = hsl.h;
+        return [
+            tinycolor(color),
+            tinycolor({ h: (h + 120) % 360, s: hsl.s, l: hsl.l }),
+            tinycolor({ h: (h + 240) % 360, s: hsl.s, l: hsl.l })
+        ];
+    };
+    tinycolor.tetrad = function(color) {
+        var hsl = tinycolor(color).toHsl();
+        var h = hsl.h;
+        return [
+            tinycolor(color),
+            tinycolor({ h: (h + 90) % 360, s: hsl.s, l: hsl.l }),
+            tinycolor({ h: (h + 180) % 360, s: hsl.s, l: hsl.l }),
+            tinycolor({ h: (h + 270) % 360, s: hsl.s, l: hsl.l })
+        ];
+    };
+    tinycolor.splitcomplement = function(color) {
+        var hsl = tinycolor(color).toHsl();
+        var h = hsl.h;
+        return [
+            tinycolor(color),
+            tinycolor({ h: (h + 72) % 360, s: hsl.s, l: hsl.l}),
+            tinycolor({ h: (h + 216) % 360, s: hsl.s, l: hsl.l})
+        ];
+    };
+    tinycolor.analogous = function(color, results, slices) {
+        results = results || 6;
+        slices = slices || 30;
+
+        var hsl = tinycolor(color).toHsl();
+        var part = 360 / slices;
+        var ret = [tinycolor(color)];
+
+        for (hsl.h = ((hsl.h - (part * results >> 1)) + 720) % 360; --results; ) {
+            hsl.h = (hsl.h + part) % 360;
+            ret.push(tinycolor(hsl));
+        }
+        return ret;
+    };
+    tinycolor.monochromatic = function(color, results) {
+        results = results || 6;
+        var hsv = tinycolor(color).toHsv();
+        var h = hsv.h, s = hsv.s, v = hsv.v;
+        var ret = [];
+        var modification = 1 / results;
+
+        while (results--) {
+            ret.push(tinycolor({ h: h, s: s, v: v}));
+            v = (v + modification) % 1;
+        }
+
+        return ret;
+    };
+
+
+    // Readability Functions
+    // ---------------------
+    // <http://www.w3.org/TR/AERT#color-contrast>
+
+    // `readability`
+    // Analyze the 2 colors and returns an object with the following properties:
+    //    `brightness`: difference in brightness between the two colors
+    //    `color`: difference in color/hue between the two colors
+    tinycolor.readability = function(color1, color2) {
+        var a = tinycolor(color1).toRgb();
+        var b = tinycolor(color2).toRgb();
+        var brightnessA = (a.r * 299 + a.g * 587 + a.b * 114) / 1000;
+        var brightnessB = (b.r * 299 + b.g * 587 + b.b * 114) / 1000;
+        var colorDiff = (
+            Math.max(a.r, b.r) - Math.min(a.r, b.r) +
+            Math.max(a.g, b.g) - Math.min(a.g, b.g) +
+            Math.max(a.b, b.b) - Math.min(a.b, b.b)
+        );
+
+        return {
+            brightness: Math.abs(brightnessA - brightnessB),
+            color: colorDiff
+        };
+    };
+
+    // `readable`
+    // http://www.w3.org/TR/AERT#color-contrast
+    // Ensure that foreground and background color combinations provide sufficient contrast.
+    // *Example*
+    //    tinycolor.readable("#000", "#111") => false
+    tinycolor.readable = function(color1, color2) {
+        var readability = tinycolor.readability(color1, color2);
+        return readability.brightness > 125 && readability.color > 500;
+    };
+
+    // `mostReadable`
+    // Given a base color and a list of possible foreground or background
+    // colors for that base, returns the most readable color.
+    // *Example*
+    //    tinycolor.mostReadable("#123", ["#fff", "#000"]) => "#000"
+    tinycolor.mostReadable = function(baseColor, colorList) {
+        var bestColor = null;
+        var bestScore = 0;
+        var bestIsReadable = false;
+        for (var i=0; i < colorList.length; i++) {
+
+            // We normalize both around the "acceptable" breaking point,
+            // but rank brightness constrast higher than hue.
+
+            var readability = tinycolor.readability(baseColor, colorList[i]);
+            var readable = readability.brightness > 125 && readability.color > 500;
+            var score = 3 * (readability.brightness / 125) + (readability.color / 500);
+
+            if ((readable && ! bestIsReadable) ||
+                (readable && bestIsReadable && score > bestScore) ||
+                ((! readable) && (! bestIsReadable) && score > bestScore)) {
+                bestIsReadable = readable;
+                bestScore = score;
+                bestColor = tinycolor(colorList[i]);
+            }
+        }
+        return bestColor;
+    };
+
+
+    // Big List of Colors
+    // ------------------
+    // <http://www.w3.org/TR/css3-color/#svg-color>
+    var names = tinycolor.names = {
+        aliceblue: "f0f8ff",
+        antiquewhite: "faebd7",
+        aqua: "0ff",
+        aquamarine: "7fffd4",
+        azure: "f0ffff",
+        beige: "f5f5dc",
+        bisque: "ffe4c4",
+        black: "000",
+        blanchedalmond: "ffebcd",
+        blue: "00f",
+        blueviolet: "8a2be2",
+        brown: "a52a2a",
+        burlywood: "deb887",
+        burntsienna: "ea7e5d",
+        cadetblue: "5f9ea0",
+        chartreuse: "7fff00",
+        chocolate: "d2691e",
+        coral: "ff7f50",
+        cornflowerblue: "6495ed",
+        cornsilk: "fff8dc",
+        crimson: "dc143c",
+        cyan: "0ff",
+        darkblue: "00008b",
+        darkcyan: "008b8b",
+        darkgoldenrod: "b8860b",
+        darkgray: "a9a9a9",
+        darkgreen: "006400",
+        darkgrey: "a9a9a9",
+        darkkhaki: "bdb76b",
+        darkmagenta: "8b008b",
+        darkolivegreen: "556b2f",
+        darkorange: "ff8c00",
+        darkorchid: "9932cc",
+        darkred: "8b0000",
+        darksalmon: "e9967a",
+        darkseagreen: "8fbc8f",
+        darkslateblue: "483d8b",
+        darkslategray: "2f4f4f",
+        darkslategrey: "2f4f4f",
+        darkturquoise: "00ced1",
+        darkviolet: "9400d3",
+        deeppink: "ff1493",
+        deepskyblue: "00bfff",
+        dimgray: "696969",
+        dimgrey: "696969",
+        dodgerblue: "1e90ff",
+        firebrick: "b22222",
+        floralwhite: "fffaf0",
+        forestgreen: "228b22",
+        fuchsia: "f0f",
+        gainsboro: "dcdcdc",
+        ghostwhite: "f8f8ff",
+        gold: "ffd700",
+        goldenrod: "daa520",
+        gray: "808080",
+        green: "008000",
+        greenyellow: "adff2f",
+        grey: "808080",
+        honeydew: "f0fff0",
+        hotpink: "ff69b4",
+        indianred: "cd5c5c",
+        indigo: "4b0082",
+        ivory: "fffff0",
+        khaki: "f0e68c",
+        lavender: "e6e6fa",
+        lavenderblush: "fff0f5",
+        lawngreen: "7cfc00",
+        lemonchiffon: "fffacd",
+        lightblue: "add8e6",
+        lightcoral: "f08080",
+        lightcyan: "e0ffff",
+        lightgoldenrodyellow: "fafad2",
+        lightgray: "d3d3d3",
+        lightgreen: "90ee90",
+        lightgrey: "d3d3d3",
+        lightpink: "ffb6c1",
+        lightsalmon: "ffa07a",
+        lightseagreen: "20b2aa",
+        lightskyblue: "87cefa",
+        lightslategray: "789",
+        lightslategrey: "789",
+        lightsteelblue: "b0c4de",
+        lightyellow: "ffffe0",
+        lime: "0f0",
+        limegreen: "32cd32",
+        linen: "faf0e6",
+        magenta: "f0f",
+        maroon: "800000",
+        mediumaquamarine: "66cdaa",
+        mediumblue: "0000cd",
+        mediumorchid: "ba55d3",
+        mediumpurple: "9370db",
+        mediumseagreen: "3cb371",
+        mediumslateblue: "7b68ee",
+        mediumspringgreen: "00fa9a",
+        mediumturquoise: "48d1cc",
+        mediumvioletred: "c71585",
+        midnightblue: "191970",
+        mintcream: "f5fffa",
+        mistyrose: "ffe4e1",
+        moccasin: "ffe4b5",
+        navajowhite: "ffdead",
+        navy: "000080",
+        oldlace: "fdf5e6",
+        olive: "808000",
+        olivedrab: "6b8e23",
+        orange: "ffa500",
+        orangered: "ff4500",
+        orchid: "da70d6",
+        palegoldenrod: "eee8aa",
+        palegreen: "98fb98",
+        paleturquoise: "afeeee",
+        palevioletred: "db7093",
+        papayawhip: "ffefd5",
+        peachpuff: "ffdab9",
+        peru: "cd853f",
+        pink: "ffc0cb",
+        plum: "dda0dd",
+        powderblue: "b0e0e6",
+        purple: "800080",
+        red: "f00",
+        rosybrown: "bc8f8f",
+        royalblue: "4169e1",
+        saddlebrown: "8b4513",
+        salmon: "fa8072",
+        sandybrown: "f4a460",
+        seagreen: "2e8b57",
+        seashell: "fff5ee",
+        sienna: "a0522d",
+        silver: "c0c0c0",
+        skyblue: "87ceeb",
+        slateblue: "6a5acd",
+        slategray: "708090",
+        slategrey: "708090",
+        snow: "fffafa",
+        springgreen: "00ff7f",
+        steelblue: "4682b4",
+        tan: "d2b48c",
+        teal: "008080",
+        thistle: "d8bfd8",
+        tomato: "ff6347",
+        turquoise: "40e0d0",
+        violet: "ee82ee",
+        wheat: "f5deb3",
+        white: "fff",
+        whitesmoke: "f5f5f5",
+        yellow: "ff0",
+        yellowgreen: "9acd32"
+    };
+
+    // Make it easy to access colors via `hexNames[hex]`
+    var hexNames = tinycolor.hexNames = flip(names);
+
+
+    // Utilities
+    // ---------
+
+    // `{ 'name1': 'val1' }` becomes `{ 'val1': 'name1' }`
+    function flip(o) {
+        var flipped = { };
+        for (var i in o) {
+            if (o.hasOwnProperty(i)) {
+                flipped[o[i]] = i;
+            }
+        }
+        return flipped;
+    }
+
+    // Return a valid alpha value [0,1] with all invalid values being set to 1
+    function boundAlpha(a) {
+        a = parseFloat(a);
+
+        if (isNaN(a) || a < 0 || a > 1) {
+            a = 1;
+        }
+
+        return a;
+    }
+
+    // Take input from [0, n] and return it as [0, 1]
+    function bound01(n, max) {
+        if (isOnePointZero(n)) { n = "100%"; }
+
+        var processPercent = isPercentage(n);
+        n = mathMin(max, mathMax(0, parseFloat(n)));
+
+        // Automatically convert percentage into number
+        if (processPercent) {
+            n = parseInt(n * max, 10) / 100;
+        }
+
+        // Handle floating point rounding errors
+        if ((math.abs(n - max) < 0.000001)) {
+            return 1;
+        }
+
+        // Convert into [0, 1] range if it isn't already
+        return (n % max) / parseFloat(max);
+    }
+
+    // Force a number between 0 and 1
+    function clamp01(val) {
+        return mathMin(1, mathMax(0, val));
+    }
+
+    // Parse an integer into hex
+    function parseHex(val) {
+        return parseInt(val, 16);
+    }
+
+    // Need to handle 1.0 as 100%, since once it is a number, there is no difference between it and 1
+    // <http://stackoverflow.com/questions/7422072/javascript-how-to-detect-number-as-a-decimal-including-1-0>
+    function isOnePointZero(n) {
+        return typeof n == "string" && n.indexOf('.') != -1 && parseFloat(n) === 1;
+    }
+
+    // Check to see if string passed in is a percentage
+    function isPercentage(n) {
+        return typeof n === "string" && n.indexOf('%') != -1;
+    }
+
+    // Force a hex value to have 2 characters
+    function pad2(c) {
+        return c.length == 1 ? '0' + c : '' + c;
+    }
+
+    // Replace a decimal with it's percentage value
+    function convertToPercentage(n) {
+        if (n <= 1) {
+            n = (n * 100) + "%";
+        }
+
+        return n;
+    }
+
+    var matchers = (function() {
+
+        // <http://www.w3.org/TR/css3-values/#integers>
+        var CSS_INTEGER = "[-\\+]?\\d+%?";
+
+        // <http://www.w3.org/TR/css3-values/#number-value>
+        var CSS_NUMBER = "[-\\+]?\\d*\\.\\d+%?";
+
+        // Allow positive/negative integer/number.  Don't capture the either/or, just the entire outcome.
+        var CSS_UNIT = "(?:" + CSS_NUMBER + ")|(?:" + CSS_INTEGER + ")";
+
+        // Actual matching.
+        // Parentheses and commas are optional, but not required.
+        // Whitespace can take the place of commas or opening paren
+        var PERMISSIVE_MATCH3 = "[\\s|\\(]+(" + CSS_UNIT + ")[,|\\s]+(" + CSS_UNIT + ")[,|\\s]+(" + CSS_UNIT + ")\\s*\\)?";
+        var PERMISSIVE_MATCH4 = "[\\s|\\(]+(" + CSS_UNIT + ")[,|\\s]+(" + CSS_UNIT + ")[,|\\s]+(" + CSS_UNIT + ")[,|\\s]+(" + CSS_UNIT + ")\\s*\\)?";
+
+        return {
+            rgb: new RegExp("rgb" + PERMISSIVE_MATCH3),
+            rgba: new RegExp("rgba" + PERMISSIVE_MATCH4),
+            hsl: new RegExp("hsl" + PERMISSIVE_MATCH3),
+            hsla: new RegExp("hsla" + PERMISSIVE_MATCH4),
+            hsv: new RegExp("hsv" + PERMISSIVE_MATCH3),
+            hex3: /^([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})$/,
+            hex6: /^([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$/
+        };
+    })();
+
+    // `stringInputToObject`
+    // Permissive string parsing.  Take in a number of formats, and output an object
+    // based on detected format.  Returns `{ r, g, b }` or `{ h, s, l }` or `{ h, s, v}`
+    function stringInputToObject(color) {
+
+        color = color.replace(trimLeft,'').replace(trimRight, '').toLowerCase();
+        var named = false;
+        if (names[color]) {
+            color = names[color];
+            named = true;
+        }
+        else if (color == 'transparent') {
+            return { r: 0, g: 0, b: 0, a: 0, format: "name" };
+        }
+
+        // Try to match string input using regular expressions.
+        // Keep most of the number bounding out of this function - don't worry about [0,1] or [0,100] or [0,360]
+        // Just return an object and let the conversion functions handle that.
+        // This way the result will be the same whether the tinycolor is initialized with string or object.
+        var match;
+        if ((match = matchers.rgb.exec(color))) {
+            return { r: match[1], g: match[2], b: match[3] };
+        }
+        if ((match = matchers.rgba.exec(color))) {
+            return { r: match[1], g: match[2], b: match[3], a: match[4] };
+        }
+        if ((match = matchers.hsl.exec(color))) {
+            return { h: match[1], s: match[2], l: match[3] };
+        }
+        if ((match = matchers.hsla.exec(color))) {
+            return { h: match[1], s: match[2], l: match[3], a: match[4] };
+        }
+        if ((match = matchers.hsv.exec(color))) {
+            return { h: match[1], s: match[2], v: match[3] };
+        }
+        if ((match = matchers.hex6.exec(color))) {
+            return {
+                r: parseHex(match[1]),
+                g: parseHex(match[2]),
+                b: parseHex(match[3]),
+                format: named ? "name" : "hex"
+            };
+        }
+        if ((match = matchers.hex3.exec(color))) {
+            return {
+                r: parseHex(match[1] + '' + match[1]),
+                g: parseHex(match[2] + '' + match[2]),
+                b: parseHex(match[3] + '' + match[3]),
+                format: named ? "name" : "hex"
+            };
+        }
+
+        return false;
+    }
+
+    // Expose tinycolor to window, does not need to run in non-browser context.
+    window.tinycolor = tinycolor;
+
+    })();
+    var tinycolor = window.tinycolor;
+
+    $(function () {
+        if ($.fn.spectrum.load) {
+            $.fn.spectrum.processNativeColorInputs();
+        }
+    });
+
+})(window, jQuery);
+;// TODO(grosbouddha): put under pskl namespace.
 var Constants = {
   DEFAULT : {
     HEIGHT : 32,
@@ -11803,10 +13766,16 @@ var Constants = {
   MAX_HEIGHT : 1024,
   MAX_WIDTH : 1024,
 
+  MINIMUM_ZOOM : 1,
+
   PREVIEW_FILM_SIZE : 120,
+  ANIMATED_PREVIEW_WIDTH : 200,
 
   DEFAULT_PEN_COLOR : '#000000',
-  TRANSPARENT_COLOR : 'TRANSPARENT',
+  TRANSPARENT_COLOR : 'rgba(0, 0, 0, 0)',
+
+  // Used for Spectrum input
+  PREFERRED_COLOR_FORMAT : 'rgb',
 
   /*
    * Fake semi-transparent color used to highlight transparent
@@ -11834,14 +13803,14 @@ var Constants = {
       SAVE : 'save'
     }
   },
-  IMAGE_SERVICE_UPLOAD_URL : 'http://screenletstore.appspot.com/__/upload',
-  IMAGE_SERVICE_GET_URL : 'http://screenletstore.appspot.com/img/',
+  IMAGE_SERVICE_UPLOAD_URL : 'http://piskel-imgstore-a.appspot.com/__/upload',
+  IMAGE_SERVICE_GET_URL : 'http://piskel-imgstore-a.appspot.com/img/',
 
-  GRID_STROKE_WIDTH: 1,
   ZOOMED_OUT_BACKGROUND_COLOR : '#A0A0A0',
 
-  LEFT_BUTTON : 'left_button_1',
-  RIGHT_BUTTON : 'right_button_2',
+  LEFT_BUTTON : 0,
+  MIDDLE_BUTTON : 1,
+  RIGHT_BUTTON : 2,
   MOUSEMOVE_THROTTLING : 10,
 
   ABSTRACT_FUNCTION : function () {throw 'abstract method should be implemented';}
@@ -11852,6 +13821,13 @@ var Events = {
   TOOL_RELEASED : "TOOL_RELEASED",
   SELECT_PRIMARY_COLOR: "SELECT_PRIMARY_COLOR",
   SELECT_SECONDARY_COLOR: "SELECT_SECONDARY_COLOR",
+  PRIMARY_COLOR_SELECTED : 'PRIMARY_COLOR_SELECTED',
+  SECONDARY_COLOR_SELECTED : 'SECONDARY_COLOR_SELECTED',
+
+  DIALOG_DISPLAY : 'DIALOG_DISPLAY',
+  DIALOG_HIDE : 'DIALOG_HIDE',
+
+  PALETTE_LIST_UPDATED : 'PALETTE_LIST_UPDATED',
 
   /**
    *  When this event is emitted, a request is sent to the localstorage
@@ -11876,6 +13852,8 @@ var Events = {
    */
   PISKEL_RESET: "PISKEL_RESET",
 
+  PISKEL_SAVED: "PISKEL_SAVED",
+
   FRAME_SIZE_CHANGED : "FRAME_SIZE_CHANGED",
 
   SELECTION_CREATED: "SELECTION_CREATED",
@@ -11885,8 +13863,7 @@ var Events = {
   SHOW_NOTIFICATION: "SHOW_NOTIFICATION",
   HIDE_NOTIFICATION: "HIDE_NOTIFICATION",
 
-  // Events triggered by keyboard
-  SELECT_TOOL : "SELECT_TOOL"
+  ZOOM_CHANGED : "ZOOM_CHANGED"
 };;jQuery.namespace = function() {
   var a=arguments, o=null, i, j, d;
   for (i=0; i<a.length; i=i+1) {
@@ -12003,6 +13980,34 @@ if (typeof Function.prototype.bind !== "function") {
     getImageDataFromCanvas : function (canvas) {
       var sourceContext = canvas.getContext('2d');
       return sourceContext.getImageData(0, 0, canvas.width, canvas.height).data;
+    }
+  };
+})();;(function () {
+  var ns = $.namespace('pskl.utils');
+
+  ns.Dom = {
+    /**
+     * Check if a given HTML element is nested inside another
+     * @param  {HTMLElement}  node  Element to test
+     * @param  {HTMLElement}  parent Potential Ancestor for node
+     * @param  {Boolean}      excludeParent set to true if the parent should be excluded from potential matches
+     * @return {Boolean}      true if parent was found amongst the parentNode chain of node
+     */
+    isParent : function (node, parent, excludeParent) {
+      if (node && parent) {
+
+        if (excludeParent) {
+          node = node.parentNode;
+        }
+
+        while (node) {
+          if (node === parent) {
+            return true;
+          }
+          node = node.parentNode;
+        }
+      }
+      return false;
     }
   };
 })();;(function () {
@@ -12242,9 +14247,10 @@ if (typeof Function.prototype.bind !== "function") {
      * @param  {Canvas2d} source original image to be resized, as a 2d canvas
      * @param  {Number} zoom   ratio between desired dim / source dim
      * @param  {Number} margin gap to be displayed between pixels
+     * @param  {String} color or the margin (will be transparent if not provided)
      * @return {Canvas2d} the resized canvas
      */
-    resizeNearestNeighbour : function (source, zoom, margin) {
+    resizeNearestNeighbour : function (source, zoom, margin, marginColor) {
       margin = margin || 0;
       var canvas = pskl.CanvasUtils.createCanvas(zoom*source.width, zoom*source.height);
       var context = canvas.getContext('2d');
@@ -12277,6 +14283,12 @@ if (typeof Function.prototype.bind !== "function") {
 
           context.fillStyle = "rgba(" + r + "," + g + "," + b + "," + (a / 255) + ")";
           context.fillRect(xOffset, yOffset, xRange-margin, yRange-margin);
+
+          if (margin && marginColor) {
+            context.fillStyle = marginColor;
+            context.fillRect(xOffset + xRange - margin, yOffset, margin, yRange);
+            context.fillRect(xOffset, yOffset + yRange - margin, xRange, margin);
+          }
 
           yOffset += yRange;
         }
@@ -12485,6 +14497,16 @@ if (typeof Function.prototype.bind !== "function") {
       for (var key in dict) {
         if (dict.hasOwnProperty(key)) {
           var value = dict[key];
+
+          // special boolean keys keys key:default
+          // if the value is a boolean, use default as value
+          if (key.indexOf(':') !== -1) {
+            if (value === true) {
+              value = key.split(':')[1];
+            } else if (value === false) {
+              value = '';
+            }
+          }
           template = template.replace(new RegExp('\\{\\{'+key+'\\}\\}', 'g'), value);
         }
       }
@@ -12495,12 +14517,11 @@ if (typeof Function.prototype.bind !== "function") {
   var ns = $.namespace("pskl");
 
   ns.UserSettings = {
-
-    SHOW_GRID : 'SHOW_GRID',
+    GRID_WIDTH : 'GRID_WIDTH',
     CANVAS_BACKGROUND : 'CANVAS_BACKGROUND',
 
     KEY_TO_DEFAULT_VALUE_MAP_ : {
-      'SHOW_GRID' : false,
+      'GRID_WIDTH' : 0,
       'CANVAS_BACKGROUND' : 'medium-canvas-background'
     },
 
@@ -12619,10 +14640,13 @@ if (typeof Function.prototype.bind !== "function") {
     deserializer.deserialize();
   };
 
-  ns.Deserializer.prototype.deserialize = function () {
+  ns.Deserializer.prototype.deserialize = function (name) {
     var data = this.data_;
     var piskelData = data.piskel;
-    this.piskel_ = new pskl.model.Piskel(piskelData.width, piskelData.height);
+    name = name || 'Deserialized piskel';
+
+    var descriptor = new pskl.model.piskel.Descriptor(name, '');
+    this.piskel_ = new pskl.model.Piskel(piskelData.width, piskelData.height, descriptor);
 
     this.layersToLoad_ = piskelData.layers.length;
 
@@ -12677,9 +14701,10 @@ if (typeof Function.prototype.bind !== "function") {
     var frames = pixelGrids.map(function (grid) {
       return pskl.model.Frame.fromPixelGrid(grid);
     });
+    var descriptor = new pskl.model.piskel.Descriptor('Deserialized piskel', '');
     var layer = pskl.model.Layer.fromFrames('Layer 1', frames);
 
-    this.callback_(pskl.model.Piskel.fromLayers([layer]));
+    this.callback_(pskl.model.Piskel.fromLayers([layer], descriptor));
   };
 })();;(function () {
   var ns = $.namespace('pskl.utils.serialization.backward');
@@ -12691,7 +14716,8 @@ if (typeof Function.prototype.bind !== "function") {
 
   ns.Deserializer_v1.prototype.deserialize = function () {
     var piskelData = this.data_.piskel;
-    var piskel = new pskl.model.Piskel(piskelData.width, piskelData.height);
+    var descriptor = new pskl.model.piskel.Descriptor('Deserialized piskel', '');
+    var piskel = new pskl.model.Piskel(piskelData.width, piskelData.height, descriptor);
 
     piskelData.layers.forEach(function (serializedLayer) {
       var layer = this.deserializeLayer(serializedLayer);
@@ -12716,934 +14742,7 @@ if (typeof Function.prototype.bind !== "function") {
     var framePixelGrid = JSON.parse(frameString);
     return pskl.model.Frame.fromPixelGrid(framePixelGrid);
   };
-})();;/**
- * jscolor, JavaScript Color Picker
- *
- * @version 1.4.0
- * @license GNU Lesser General Public License, http://www.gnu.org/copyleft/lesser.html
- * @author  Jan Odvarko, http://odvarko.cz
- * @created 2008-06-15
- * @updated 2012-07-06
- * @link    http://jscolor.com
- */
-
-
-var jscolor = {
-
-
-	dir : '', // location of jscolor directory (leave empty to autodetect)
-	bindClass : 'color', // class name
-	binding : true, // automatic binding via <input class="...">
-	preloading : true, // use image preloading?
-
-
-	install : function() {
-		if (document.readyState === "complete") { 
-			jscolor.init(); 
-		} else {
-			jscolor.addEvent(window, 'load', jscolor.init);
-		}
-	},
-
-
-	init : function() {
-		if(jscolor.binding) {
-			jscolor.bind();
-		}
-		if(jscolor.preloading) {
-			jscolor.preload();
-		}
-	},
-
-
-	getDir : function() {
-		return "/" + window.location.pathname.split("/")[1] + "/js/lib/jsColor_1_4_0/";
-	},
-
-
-	bind : function() {
-		var matchClass = new RegExp('(^|\\s)('+jscolor.bindClass+')\\s*(\\{[^}]*\\})?', 'i');
-		var e = document.getElementsByTagName('input');
-		for(var i=0; i<e.length; i+=1) {
-			var m;
-			if(!e[i].color && e[i].className && (m = e[i].className.match(matchClass))) {
-				var prop = {};
-				if(m[3]) {
-					try {
-						prop = (new Function ('return (' + m[3] + ')'))();
-					} catch(eInvalidProp) {}
-				}
-				e[i].color = new jscolor.color(e[i], prop);
-			}
-		}
-	},
-
-
-	preload : function() {
-		for(var fn in jscolor.imgRequire) {
-			if(jscolor.imgRequire.hasOwnProperty(fn)) {
-				jscolor.loadImage(fn);
-			}
-		}
-	},
-
-
-	images : {
-		pad : [ 181, 101 ],
-		sld : [ 16, 101 ],
-		cross : [ 15, 15 ],
-		arrow : [ 7, 11 ]
-	},
-
-
-	imgRequire : {},
-	imgLoaded : {},
-
-
-	requireImage : function(filename) {
-		jscolor.imgRequire[filename] = true;
-	},
-
-
-	loadImage : function(filename) {
-		if(!jscolor.imgLoaded[filename]) {
-			jscolor.imgLoaded[filename] = new Image();
-			jscolor.imgLoaded[filename].src = jscolor.getDir()+filename;
-		}
-	},
-
-
-	fetchElement : function(mixed) {
-		return typeof mixed === 'string' ? document.getElementById(mixed) : mixed;
-	},
-
-
-	addEvent : function(el, evnt, func) {
-		if(el.addEventListener) {
-			el.addEventListener(evnt, func, false);
-		} else if(el.attachEvent) {
-			el.attachEvent('on'+evnt, func);
-		}
-	},
-
-
-	fireEvent : function(el, evnt) {
-		if(!el) {
-			return;
-		}
-		if(document.createEvent) {
-			var ev = document.createEvent('HTMLEvents');
-			ev.initEvent(evnt, true, true);
-			el.dispatchEvent(ev);
-		} else if(document.createEventObject) {
-			var ev = document.createEventObject();
-			el.fireEvent('on'+evnt, ev);
-		} else if(el['on'+evnt]) { // alternatively use the traditional event model (IE5)
-			el['on'+evnt]();
-		}
-	},
-
-
-	getElementPos : function(e) {
-		var e1=e, e2=e;
-		var x=0, y=0;
-		if(e1.offsetParent) {
-			do {
-				x += e1.offsetLeft;
-				y += e1.offsetTop;
-			} while(e1 = e1.offsetParent);
-		}
-		while((e2 = e2.parentNode) && e2.nodeName.toUpperCase() !== 'BODY') {
-			x -= e2.scrollLeft;
-			y -= e2.scrollTop;
-		}
-		return [x, y];
-	},
-
-
-	getElementSize : function(e) {
-		return [e.offsetWidth, e.offsetHeight];
-	},
-
-
-	getRelMousePos : function(e) {
-		var x = 0, y = 0;
-		if (!e) { e = window.event; }
-		if (typeof e.offsetX === 'number') {
-			x = e.offsetX;
-			y = e.offsetY;
-		} else if (typeof e.layerX === 'number') {
-			x = e.layerX;
-			y = e.layerY;
-		}
-		return { x: x, y: y };
-	},
-
-
-	getViewPos : function() {
-		if(typeof window.pageYOffset === 'number') {
-			return [window.pageXOffset, window.pageYOffset];
-		} else if(document.body && (document.body.scrollLeft || document.body.scrollTop)) {
-			return [document.body.scrollLeft, document.body.scrollTop];
-		} else if(document.documentElement && (document.documentElement.scrollLeft || document.documentElement.scrollTop)) {
-			return [document.documentElement.scrollLeft, document.documentElement.scrollTop];
-		} else {
-			return [0, 0];
-		}
-	},
-
-
-	getViewSize : function() {
-		if(typeof window.innerWidth === 'number') {
-			return [window.innerWidth, window.innerHeight];
-		} else if(document.body && (document.body.clientWidth || document.body.clientHeight)) {
-			return [document.body.clientWidth, document.body.clientHeight];
-		} else if(document.documentElement && (document.documentElement.clientWidth || document.documentElement.clientHeight)) {
-			return [document.documentElement.clientWidth, document.documentElement.clientHeight];
-		} else {
-			return [0, 0];
-		}
-	},
-
-
-	URI : function(uri) { // See RFC3986
-
-		this.scheme = null;
-		this.authority = null;
-		this.path = '';
-		this.query = null;
-		this.fragment = null;
-
-		this.parse = function(uri) {
-			var m = uri.match(/^(([A-Za-z][0-9A-Za-z+.-]*)(:))?((\/\/)([^\/?#]*))?([^?#]*)((\?)([^#]*))?((#)(.*))?/);
-			this.scheme = m[3] ? m[2] : null;
-			this.authority = m[5] ? m[6] : null;
-			this.path = m[7];
-			this.query = m[9] ? m[10] : null;
-			this.fragment = m[12] ? m[13] : null;
-			return this;
-		};
-
-		this.toString = function() {
-			var result = '';
-			if(this.scheme !== null) { result = result + this.scheme + ':'; }
-			if(this.authority !== null) { result = result + '//' + this.authority; }
-			if(this.path !== null) { result = result + this.path; }
-			if(this.query !== null) { result = result + '?' + this.query; }
-			if(this.fragment !== null) { result = result + '#' + this.fragment; }
-			return result;
-		};
-
-		this.toAbsolute = function(base) {
-			var base = new jscolor.URI(base);
-			var r = this;
-			var t = new jscolor.URI;
-
-			if(base.scheme === null) { return false; }
-
-			if(r.scheme !== null && r.scheme.toLowerCase() === base.scheme.toLowerCase()) {
-				r.scheme = null;
-			}
-
-			if(r.scheme !== null) {
-				t.scheme = r.scheme;
-				t.authority = r.authority;
-				t.path = removeDotSegments(r.path);
-				t.query = r.query;
-			} else {
-				if(r.authority !== null) {
-					t.authority = r.authority;
-					t.path = removeDotSegments(r.path);
-					t.query = r.query;
-				} else {
-					if(r.path === '') {
-						t.path = base.path;
-						if(r.query !== null) {
-							t.query = r.query;
-						} else {
-							t.query = base.query;
-						}
-					} else {
-						if(r.path.substr(0,1) === '/') {
-							t.path = removeDotSegments(r.path);
-						} else {
-							if(base.authority !== null && base.path === '') {
-								t.path = '/'+r.path;
-							} else {
-								t.path = base.path.replace(/[^\/]+$/,'')+r.path;
-							}
-							t.path = removeDotSegments(t.path);
-						}
-						t.query = r.query;
-					}
-					t.authority = base.authority;
-				}
-				t.scheme = base.scheme;
-			}
-			t.fragment = r.fragment;
-
-			return t;
-		};
-
-		function removeDotSegments(path) {
-			var out = '';
-			while(path) {
-				if(path.substr(0,3)==='../' || path.substr(0,2)==='./') {
-					path = path.replace(/^\.+/,'').substr(1);
-				} else if(path.substr(0,3)==='/./' || path==='/.') {
-					path = '/'+path.substr(3);
-				} else if(path.substr(0,4)==='/../' || path==='/..') {
-					path = '/'+path.substr(4);
-					out = out.replace(/\/?[^\/]*$/, '');
-				} else if(path==='.' || path==='..') {
-					path = '';
-				} else {
-					var rm = path.match(/^\/?[^\/]*/)[0];
-					path = path.substr(rm.length);
-					out = out + rm;
-				}
-			}
-			return out;
-		}
-
-		if(uri) {
-			this.parse(uri);
-		}
-
-	},
-
-
-	/*
-	 * Usage example:
-	 * var myColor = new jscolor.color(myInputElement)
-	 */
-
-	color : function(target, prop) {
-
-
-		this.required = true; // refuse empty values?
-		this.adjust = true; // adjust value to uniform notation?
-		this.hash = false; // prefix color with # symbol?
-		this.caps = true; // uppercase?
-		this.slider = true; // show the value/saturation slider?
-		this.valueElement = target; // value holder
-		this.styleElement = target; // where to reflect current color
-		this.onImmediateChange = null; // onchange callback (can be either string or function)
-		this.hsv = [0, 0, 1]; // read-only  0-6, 0-1, 0-1
-		this.rgb = [1, 1, 1]; // read-only  0-1, 0-1, 0-1
-		this.minH = 0; // read-only  0-6
-		this.maxH = 6; // read-only  0-6
-		this.minS = 0; // read-only  0-1
-		this.maxS = 1; // read-only  0-1
-		this.minV = 0; // read-only  0-1
-		this.maxV = 1; // read-only  0-1
-
-		this.pickerOnfocus = true; // display picker on focus?
-		this.pickerMode = 'HSV'; // HSV | HVS
-		this.pickerPosition = 'bottom'; // left | right | top | bottom
-		this.pickerSmartPosition = true; // automatically adjust picker position when necessary
-		this.pickerButtonHeight = 20; // px
-		this.pickerClosable = false;
-		this.pickerCloseText = 'Close';
-		this.pickerButtonColor = 'ButtonText'; // px
-		this.pickerFace = 10; // px
-		this.pickerFaceColor = 'ThreeDFace'; // CSS color
-		this.pickerBorder = 1; // px
-		this.pickerBorderColor = 'ThreeDHighlight ThreeDShadow ThreeDShadow ThreeDHighlight'; // CSS color
-		this.pickerInset = 1; // px
-		this.pickerInsetColor = 'ThreeDShadow ThreeDHighlight ThreeDHighlight ThreeDShadow'; // CSS color
-		this.pickerZIndex = 10000;
-
-
-		for(var p in prop) {
-			if(prop.hasOwnProperty(p)) {
-				this[p] = prop[p];
-			}
-		}
-
-
-		this.hidePicker = function() {
-			if(isPickerOwner()) {
-				removePicker();
-			}
-		};
-
-
-		this.showPicker = function() {
-			if(!isPickerOwner()) {
-				var tp = jscolor.getElementPos(target); // target pos
-				var ts = jscolor.getElementSize(target); // target size
-				var vp = jscolor.getViewPos(); // view pos
-				var vs = jscolor.getViewSize(); // view size
-				var ps = getPickerDims(this); // picker size
-				var a, b, c;
-				switch(this.pickerPosition.toLowerCase()) {
-					case 'left': a=1; b=0; c=-1; break;
-					case 'right':a=1; b=0; c=1; break;
-					case 'top':  a=0; b=1; c=-1; break;
-					default:     a=0; b=1; c=1; break;
-				}
-				var l = (ts[b]+ps[b])/2;
-
-				// picker pos
-				if (!this.pickerSmartPosition) {
-					var pp = [
-						tp[a],
-						tp[b]+ts[b]-l+l*c
-					];
-				} else {
-					var pp = [
-						-vp[a]+tp[a]+ps[a] > vs[a] ?
-							(-vp[a]+tp[a]+ts[a]/2 > vs[a]/2 && tp[a]+ts[a]-ps[a] >= 0 ? tp[a]+ts[a]-ps[a] : tp[a]) :
-							tp[a],
-						-vp[b]+tp[b]+ts[b]+ps[b]-l+l*c > vs[b] ?
-							(-vp[b]+tp[b]+ts[b]/2 > vs[b]/2 && tp[b]+ts[b]-l-l*c >= 0 ? tp[b]+ts[b]-l-l*c : tp[b]+ts[b]-l+l*c) :
-							(tp[b]+ts[b]-l+l*c >= 0 ? tp[b]+ts[b]-l+l*c : tp[b]+ts[b]-l-l*c)
-					];
-				}
-				drawPicker(pp[a], pp[b]);
-			}
-		};
-
-
-		this.importColor = function() {
-			if(!valueElement) {
-				this.exportColor();
-			} else {
-				if(!this.adjust) {
-					if(!this.fromString(valueElement.value, leaveValue)) {
-						styleElement.style.backgroundImage = styleElement.jscStyle.backgroundImage;
-						styleElement.style.backgroundColor = styleElement.jscStyle.backgroundColor;
-						styleElement.style.color = styleElement.jscStyle.color;
-						this.exportColor(leaveValue | leaveStyle);
-					}
-				} else if(!this.required && /^\s*$/.test(valueElement.value)) {
-					valueElement.value = '';
-					styleElement.style.backgroundImage = styleElement.jscStyle.backgroundImage;
-					styleElement.style.backgroundColor = styleElement.jscStyle.backgroundColor;
-					styleElement.style.color = styleElement.jscStyle.color;
-					this.exportColor(leaveValue | leaveStyle);
-
-				} else if(this.fromString(valueElement.value)) {
-					// OK
-				} else {
-					this.exportColor();
-				}
-			}
-		};
-
-
-		this.exportColor = function(flags) {
-			if(!(flags & leaveValue) && valueElement) {
-				var value = this.toString();
-				if(this.caps) { value = value.toUpperCase(); }
-				if(this.hash) { value = '#'+value; }
-				valueElement.value = value;
-			}
-			if(!(flags & leaveStyle) && styleElement) {
-				styleElement.style.backgroundImage = "none";
-				styleElement.style.backgroundColor =
-					'#'+this.toString();
-				styleElement.style.color =
-					0.213 * this.rgb[0] +
-					0.715 * this.rgb[1] +
-					0.072 * this.rgb[2]
-					< 0.5 ? '#FFF' : '#000';
-			}
-			if(!(flags & leavePad) && isPickerOwner()) {
-				redrawPad();
-			}
-			if(!(flags & leaveSld) && isPickerOwner()) {
-				redrawSld();
-			}
-		};
-
-
-		this.fromHSV = function(h, s, v, flags) { // null = don't change
-			if(h !== null) { h = Math.max(0.0, this.minH, Math.min(6.0, this.maxH, h)); }
-			if(s !== null) { s = Math.max(0.0, this.minS, Math.min(1.0, this.maxS, s)); }
-			if(v !== null) { v = Math.max(0.0, this.minV, Math.min(1.0, this.maxV, v)); }
-
-			this.rgb = HSV_RGB(
-				h===null ? this.hsv[0] : (this.hsv[0]=h),
-				s===null ? this.hsv[1] : (this.hsv[1]=s),
-				v===null ? this.hsv[2] : (this.hsv[2]=v)
-			);
-
-			this.exportColor(flags);
-		};
-
-
-		this.fromRGB = function(r, g, b, flags) { // null = don't change
-			if(r !== null) { r = Math.max(0.0, Math.min(1.0, r)); }
-			if(g !== null) { g = Math.max(0.0, Math.min(1.0, g)); }
-			if(b !== null) { b = Math.max(0.0, Math.min(1.0, b)); }
-
-			var hsv = RGB_HSV(
-				r===null ? this.rgb[0] : r,
-				g===null ? this.rgb[1] : g,
-				b===null ? this.rgb[2] : b
-			);
-			if(hsv[0] !== null) {
-				this.hsv[0] = Math.max(0.0, this.minH, Math.min(6.0, this.maxH, hsv[0]));
-			}
-			if(hsv[2] !== 0) {
-				this.hsv[1] = hsv[1]===null ? null : Math.max(0.0, this.minS, Math.min(1.0, this.maxS, hsv[1]));
-			}
-			this.hsv[2] = hsv[2]===null ? null : Math.max(0.0, this.minV, Math.min(1.0, this.maxV, hsv[2]));
-
-			// update RGB according to final HSV, as some values might be trimmed
-			var rgb = HSV_RGB(this.hsv[0], this.hsv[1], this.hsv[2]);
-			this.rgb[0] = rgb[0];
-			this.rgb[1] = rgb[1];
-			this.rgb[2] = rgb[2];
-
-			this.exportColor(flags);
-		};
-
-
-		this.fromString = function(hex, flags) {
-			var m = hex.match(/^\W*([0-9A-F]{3}([0-9A-F]{3})?)\W*$/i);
-			if(!m) {
-				return false;
-			} else {
-				if(m[1].length === 6) { // 6-char notation
-					this.fromRGB(
-						parseInt(m[1].substr(0,2),16) / 255,
-						parseInt(m[1].substr(2,2),16) / 255,
-						parseInt(m[1].substr(4,2),16) / 255,
-						flags
-					);
-				} else { // 3-char notation
-					this.fromRGB(
-						parseInt(m[1].charAt(0)+m[1].charAt(0),16) / 255,
-						parseInt(m[1].charAt(1)+m[1].charAt(1),16) / 255,
-						parseInt(m[1].charAt(2)+m[1].charAt(2),16) / 255,
-						flags
-					);
-				}
-				return true;
-			}
-		};
-
-
-		this.toString = function() {
-			return (
-				(0x100 | Math.round(255*this.rgb[0])).toString(16).substr(1) +
-				(0x100 | Math.round(255*this.rgb[1])).toString(16).substr(1) +
-				(0x100 | Math.round(255*this.rgb[2])).toString(16).substr(1)
-			);
-		};
-
-
-		function RGB_HSV(r, g, b) {
-			var n = Math.min(Math.min(r,g),b);
-			var v = Math.max(Math.max(r,g),b);
-			var m = v - n;
-			if(m === 0) { return [ null, 0, v ]; }
-			var h = r===n ? 3+(b-g)/m : (g===n ? 5+(r-b)/m : 1+(g-r)/m);
-			return [ h===6?0:h, m/v, v ];
-		}
-
-
-		function HSV_RGB(h, s, v) {
-			if(h === null) { return [ v, v, v ]; }
-			var i = Math.floor(h);
-			var f = i%2 ? h-i : 1-(h-i);
-			var m = v * (1 - s);
-			var n = v * (1 - s*f);
-			switch(i) {
-				case 6:
-				case 0: return [v,n,m];
-				case 1: return [n,v,m];
-				case 2: return [m,v,n];
-				case 3: return [m,n,v];
-				case 4: return [n,m,v];
-				case 5: return [v,m,n];
-			}
-		}
-
-
-		function removePicker() {
-			delete jscolor.picker.owner;
-			document.getElementsByTagName('body')[0].removeChild(jscolor.picker.boxB);
-		}
-
-
-		function drawPicker(x, y) {
-			if(!jscolor.picker) {
-				jscolor.picker = {
-					box : document.createElement('div'),
-					boxB : document.createElement('div'),
-					pad : document.createElement('div'),
-					padB : document.createElement('div'),
-					padM : document.createElement('div'),
-					sld : document.createElement('div'),
-					sldB : document.createElement('div'),
-					sldM : document.createElement('div'),
-					btn : document.createElement('div'),
-					btnS : document.createElement('span'),
-					btnT : document.createTextNode(THIS.pickerCloseText)
-				};
-				for(var i=0,segSize=4; i<jscolor.images.sld[1]; i+=segSize) {
-					var seg = document.createElement('div');
-					seg.style.height = segSize+'px';
-					seg.style.fontSize = '1px';
-					seg.style.lineHeight = '0';
-					jscolor.picker.sld.appendChild(seg);
-				}
-				jscolor.picker.sldB.appendChild(jscolor.picker.sld);
-				jscolor.picker.box.appendChild(jscolor.picker.sldB);
-				jscolor.picker.box.appendChild(jscolor.picker.sldM);
-				jscolor.picker.padB.appendChild(jscolor.picker.pad);
-				jscolor.picker.box.appendChild(jscolor.picker.padB);
-				jscolor.picker.box.appendChild(jscolor.picker.padM);
-				jscolor.picker.btnS.appendChild(jscolor.picker.btnT);
-				jscolor.picker.btn.appendChild(jscolor.picker.btnS);
-				jscolor.picker.box.appendChild(jscolor.picker.btn);
-				jscolor.picker.boxB.appendChild(jscolor.picker.box);
-			}
-
-			var p = jscolor.picker;
-
-			// controls interaction
-			p.box.onmouseup =
-			p.box.onmouseout = function() { target.focus(); };
-			p.box.onmousedown = function() { abortBlur=true; };
-			p.box.onmousemove = function(e) {
-				if (holdPad || holdSld) {
-					holdPad && setPad(e);
-					holdSld && setSld(e);
-					if (document.selection) {
-						document.selection.empty();
-					} else if (window.getSelection) {
-						window.getSelection().removeAllRanges();
-					}
-					dispatchImmediateChange();
-				}
-			};
-			p.padM.onmouseup =
-			p.padM.onmouseout = function() { if(holdPad) { holdPad=false; jscolor.fireEvent(valueElement,'change'); } };
-			p.padM.onmousedown = function(e) {
-				// if the slider is at the bottom, move it up
-				switch(modeID) {
-					case 0: if (THIS.hsv[2] === 0) { THIS.fromHSV(null, null, 1.0); }; break;
-					case 1: if (THIS.hsv[1] === 0) { THIS.fromHSV(null, 1.0, null); }; break;
-				}
-				holdPad=true;
-				setPad(e);
-				dispatchImmediateChange();
-			};
-			p.sldM.onmouseup =
-			p.sldM.onmouseout = function() { if(holdSld) { holdSld=false; jscolor.fireEvent(valueElement,'change'); } };
-			p.sldM.onmousedown = function(e) {
-				holdSld=true;
-				setSld(e);
-				dispatchImmediateChange();
-			};
-
-			// picker
-			var dims = getPickerDims(THIS);
-			p.box.style.width = dims[0] + 'px';
-			p.box.style.height = dims[1] + 'px';
-
-			// picker border
-			p.boxB.style.position = 'absolute';
-			p.boxB.style.clear = 'both';
-			p.boxB.style.left = x+'px';
-			p.boxB.style.top = y+'px';
-			p.boxB.style.zIndex = THIS.pickerZIndex;
-			p.boxB.style.border = THIS.pickerBorder+'px solid';
-			p.boxB.style.borderColor = THIS.pickerBorderColor;
-			p.boxB.style.background = THIS.pickerFaceColor;
-
-			// pad image
-			p.pad.style.width = jscolor.images.pad[0]+'px';
-			p.pad.style.height = jscolor.images.pad[1]+'px';
-
-			// pad border
-			p.padB.style.position = 'absolute';
-			p.padB.style.left = THIS.pickerFace+'px';
-			p.padB.style.top = THIS.pickerFace+'px';
-			p.padB.style.border = THIS.pickerInset+'px solid';
-			p.padB.style.borderColor = THIS.pickerInsetColor;
-
-			// pad mouse area
-			p.padM.style.position = 'absolute';
-			p.padM.style.left = '0';
-			p.padM.style.top = '0';
-			p.padM.style.width = THIS.pickerFace + 2*THIS.pickerInset + jscolor.images.pad[0] + jscolor.images.arrow[0] + 'px';
-			p.padM.style.height = p.box.style.height;
-			p.padM.style.cursor = 'crosshair';
-
-			// slider image
-			p.sld.style.overflow = 'hidden';
-			p.sld.style.width = jscolor.images.sld[0]+'px';
-			p.sld.style.height = jscolor.images.sld[1]+'px';
-
-			// slider border
-			p.sldB.style.display = THIS.slider ? 'block' : 'none';
-			p.sldB.style.position = 'absolute';
-			p.sldB.style.right = THIS.pickerFace+'px';
-			p.sldB.style.top = THIS.pickerFace+'px';
-			p.sldB.style.border = THIS.pickerInset+'px solid';
-			p.sldB.style.borderColor = THIS.pickerInsetColor;
-
-			// slider mouse area
-			p.sldM.style.display = THIS.slider ? 'block' : 'none';
-			p.sldM.style.position = 'absolute';
-			p.sldM.style.right = '0';
-			p.sldM.style.top = '0';
-			p.sldM.style.width = jscolor.images.sld[0] + jscolor.images.arrow[0] + THIS.pickerFace + 2*THIS.pickerInset + 'px';
-			p.sldM.style.height = p.box.style.height;
-			try {
-				p.sldM.style.cursor = 'pointer';
-			} catch(eOldIE) {
-				p.sldM.style.cursor = 'hand';
-			}
-
-			// "close" button
-			function setBtnBorder() {
-				var insetColors = THIS.pickerInsetColor.split(/\s+/);
-				var pickerOutsetColor = insetColors.length < 2 ? insetColors[0] : insetColors[1] + ' ' + insetColors[0] + ' ' + insetColors[0] + ' ' + insetColors[1];
-				p.btn.style.borderColor = pickerOutsetColor;
-			}
-			p.btn.style.display = THIS.pickerClosable ? 'block' : 'none';
-			p.btn.style.position = 'absolute';
-			p.btn.style.left = THIS.pickerFace + 'px';
-			p.btn.style.bottom = THIS.pickerFace + 'px';
-			p.btn.style.padding = '0 15px';
-			p.btn.style.height = '18px';
-			p.btn.style.border = THIS.pickerInset + 'px solid';
-			setBtnBorder();
-			p.btn.style.color = THIS.pickerButtonColor;
-			p.btn.style.font = '12px sans-serif';
-			p.btn.style.textAlign = 'center';
-			try {
-				p.btn.style.cursor = 'pointer';
-			} catch(eOldIE) {
-				p.btn.style.cursor = 'hand';
-			}
-			p.btn.onmousedown = function () {
-				THIS.hidePicker();
-			};
-			p.btnS.style.lineHeight = p.btn.style.height;
-
-			// load images in optimal order
-			switch(modeID) {
-				case 0: var padImg = 'hs.png'; break;
-				case 1: var padImg = 'hv.png'; break;
-			}
-			p.padM.style.backgroundImage = "url('"+jscolor.getDir()+"cross.gif')";
-			p.padM.style.backgroundRepeat = "no-repeat";
-			p.sldM.style.backgroundImage = "url('"+jscolor.getDir()+"arrow.gif')";
-			p.sldM.style.backgroundRepeat = "no-repeat";
-			p.pad.style.backgroundImage = "url('"+jscolor.getDir()+padImg+"')";
-			p.pad.style.backgroundRepeat = "no-repeat";
-			p.pad.style.backgroundPosition = "0 0";
-
-			// place pointers
-			redrawPad();
-			redrawSld();
-
-			jscolor.picker.owner = THIS;
-			document.getElementsByTagName('body')[0].appendChild(p.boxB);
-		}
-
-
-		function getPickerDims(o) {
-			var dims = [
-				2*o.pickerInset + 2*o.pickerFace + jscolor.images.pad[0] +
-					(o.slider ? 2*o.pickerInset + 2*jscolor.images.arrow[0] + jscolor.images.sld[0] : 0),
-				o.pickerClosable ?
-					4*o.pickerInset + 3*o.pickerFace + jscolor.images.pad[1] + o.pickerButtonHeight :
-					2*o.pickerInset + 2*o.pickerFace + jscolor.images.pad[1]
-			];
-			return dims;
-		}
-
-
-		function redrawPad() {
-			// redraw the pad pointer
-			switch(modeID) {
-				case 0: var yComponent = 1; break;
-				case 1: var yComponent = 2; break;
-			}
-			var x = Math.round((THIS.hsv[0]/6) * (jscolor.images.pad[0]-1));
-			var y = Math.round((1-THIS.hsv[yComponent]) * (jscolor.images.pad[1]-1));
-			jscolor.picker.padM.style.backgroundPosition =
-				(THIS.pickerFace+THIS.pickerInset+x - Math.floor(jscolor.images.cross[0]/2)) + 'px ' +
-				(THIS.pickerFace+THIS.pickerInset+y - Math.floor(jscolor.images.cross[1]/2)) + 'px';
-
-			// redraw the slider image
-			var seg = jscolor.picker.sld.childNodes;
-
-			switch(modeID) {
-				case 0:
-					var rgb = HSV_RGB(THIS.hsv[0], THIS.hsv[1], 1);
-					for(var i=0; i<seg.length; i+=1) {
-						seg[i].style.backgroundColor = 'rgb('+
-							(rgb[0]*(1-i/seg.length)*100)+'%,'+
-							(rgb[1]*(1-i/seg.length)*100)+'%,'+
-							(rgb[2]*(1-i/seg.length)*100)+'%)';
-					}
-					break;
-				case 1:
-					var rgb, s, c = [ THIS.hsv[2], 0, 0 ];
-					var i = Math.floor(THIS.hsv[0]);
-					var f = i%2 ? THIS.hsv[0]-i : 1-(THIS.hsv[0]-i);
-					switch(i) {
-						case 6:
-						case 0: rgb=[0,1,2]; break;
-						case 1: rgb=[1,0,2]; break;
-						case 2: rgb=[2,0,1]; break;
-						case 3: rgb=[2,1,0]; break;
-						case 4: rgb=[1,2,0]; break;
-						case 5: rgb=[0,2,1]; break;
-					}
-					for(var i=0; i<seg.length; i+=1) {
-						s = 1 - 1/(seg.length-1)*i;
-						c[1] = c[0] * (1 - s*f);
-						c[2] = c[0] * (1 - s);
-						seg[i].style.backgroundColor = 'rgb('+
-							(c[rgb[0]]*100)+'%,'+
-							(c[rgb[1]]*100)+'%,'+
-							(c[rgb[2]]*100)+'%)';
-					}
-					break;
-			}
-		}
-
-
-		function redrawSld() {
-			// redraw the slider pointer
-			switch(modeID) {
-				case 0: var yComponent = 2; break;
-				case 1: var yComponent = 1; break;
-			}
-			var y = Math.round((1-THIS.hsv[yComponent]) * (jscolor.images.sld[1]-1));
-			jscolor.picker.sldM.style.backgroundPosition =
-				'0 ' + (THIS.pickerFace+THIS.pickerInset+y - Math.floor(jscolor.images.arrow[1]/2)) + 'px';
-		}
-
-
-		function isPickerOwner() {
-			return jscolor.picker && jscolor.picker.owner === THIS;
-		}
-
-
-		function blurTarget() {
-			if(valueElement === target) {
-				THIS.importColor();
-			}
-			if(THIS.pickerOnfocus) {
-				THIS.hidePicker();
-			}
-		}
-
-
-		function blurValue() {
-			if(valueElement !== target) {
-				THIS.importColor();
-			}
-		}
-
-
-		function setPad(e) {
-			var mpos = jscolor.getRelMousePos(e);
-			var x = mpos.x - THIS.pickerFace - THIS.pickerInset;
-			var y = mpos.y - THIS.pickerFace - THIS.pickerInset;
-			switch(modeID) {
-				case 0: THIS.fromHSV(x*(6/(jscolor.images.pad[0]-1)), 1 - y/(jscolor.images.pad[1]-1), null, leaveSld); break;
-				case 1: THIS.fromHSV(x*(6/(jscolor.images.pad[0]-1)), null, 1 - y/(jscolor.images.pad[1]-1), leaveSld); break;
-			}
-		}
-
-
-		function setSld(e) {
-			var mpos = jscolor.getRelMousePos(e);
-			var y = mpos.y - THIS.pickerFace - THIS.pickerInset;
-			switch(modeID) {
-				case 0: THIS.fromHSV(null, null, 1 - y/(jscolor.images.sld[1]-1), leavePad); break;
-				case 1: THIS.fromHSV(null, 1 - y/(jscolor.images.sld[1]-1), null, leavePad); break;
-			}
-		}
-
-
-		function dispatchImmediateChange() {
-			if (THIS.onImmediateChange) {
-				var callback;
-				if (typeof THIS.onImmediateChange === 'string') {
-					callback = new Function (THIS.onImmediateChange);
-				} else {
-					callback = THIS.onImmediateChange;
-				}
-				callback.call(THIS);
-			}
-		}
-
-
-		var THIS = this;
-		var modeID = this.pickerMode.toLowerCase()==='hvs' ? 1 : 0;
-		var abortBlur = false;
-		var
-			valueElement = jscolor.fetchElement(this.valueElement),
-			styleElement = jscolor.fetchElement(this.styleElement);
-		var
-			holdPad = false,
-			holdSld = false;
-		var
-			leaveValue = 1<<0,
-			leaveStyle = 1<<1,
-			leavePad = 1<<2,
-			leaveSld = 1<<3;
-
-		// target
-		jscolor.addEvent(target, 'focus', function() {
-			if(THIS.pickerOnfocus) { THIS.showPicker(); }
-		});
-		jscolor.addEvent(target, 'blur', function() {
-			if(!abortBlur) {
-				window.setTimeout(function(){ abortBlur || blurTarget(); abortBlur=false; }, 0);
-			} else {
-				abortBlur = false;
-			}
-		});
-
-		// valueElement
-		if(valueElement) {
-			var updateField = function() {
-				THIS.fromString(valueElement.value, leaveValue);
-				dispatchImmediateChange();
-			};
-			jscolor.addEvent(valueElement, 'keyup', updateField);
-			jscolor.addEvent(valueElement, 'input', updateField);
-			jscolor.addEvent(valueElement, 'blur', blurValue);
-			valueElement.setAttribute('autocomplete', 'off');
-		}
-
-		// styleElement
-		if(styleElement) {
-			styleElement.jscStyle = {
-				backgroundImage : styleElement.style.backgroundImage,
-				backgroundColor : styleElement.style.backgroundColor,
-				color : styleElement.style.color
-			};
-		}
-
-		// require images
-		switch(modeID) {
-			case 0: jscolor.requireImage('hs.png'); break;
-			case 1: jscolor.requireImage('hv.png'); break;
-		}
-		jscolor.requireImage('cross.gif');
-		jscolor.requireImage('arrow.gif');
-
-		this.importColor();
-	}
-
-};
-;(function () {
+})();;(function () {
   var ns = $.namespace("pskl.rendering");
 
   ns.DrawingLoop = function () {
@@ -13936,15 +15035,25 @@ var jscolor = {
     return this.frames.length;
   };
 })();;(function () {
+  var ns = $.namespace('pskl.model.piskel');
+
+  ns.Descriptor = function (name, description, isPublic) {
+    this.name = name;
+    this.description = description;
+    this.isPublic = isPublic;
+  };
+})();;(function () {
   var ns = $.namespace('pskl.model');
 
   /**
    * @constructor
    * @param {Number} width
    * @param {Number} height
+   * @param {String} name
+   * @param {String} description
    */
-  ns.Piskel = function (width, height) {
-    if (width && height) {
+  ns.Piskel = function (width, height, descriptor) {
+    if (width && height && descriptor) {
       /** @type {Array} */
       this.layers = [];
 
@@ -13953,6 +15062,8 @@ var jscolor = {
 
       /** @type {Number} */
       this.height = height;
+
+      this.descriptor = descriptor;
     } else {
       throw 'Missing arguments in Piskel constructor : ' + Array.prototype.join.call(arguments, ",");
     }
@@ -13964,11 +15075,11 @@ var jscolor = {
    * @param  {Array<pskl.model.Layer>} layers
    * @return {pskl.model.Piskel}
    */
-  ns.Piskel.fromLayers = function (layers) {
+  ns.Piskel.fromLayers = function (layers, descriptor) {
     var piskel = null;
     if (layers.length > 0 && layers[0].length() > 0) {
       var sampleFrame = layers[0].getFrameAt(0);
-      piskel = new pskl.model.Piskel(sampleFrame.getWidth(), sampleFrame.getHeight());
+      piskel = new pskl.model.Piskel(sampleFrame.getWidth(), sampleFrame.getHeight(), descriptor);
       layers.forEach(piskel.addLayer.bind(piskel));
     } else {
       throw 'Piskel.fromLayers expects array of non empty pskl.model.Layer as first argument';
@@ -14033,6 +15144,15 @@ var jscolor = {
     this.layers.splice(index, 1);
   };
 
+  ns.Piskel.prototype.getDescriptor = function () {
+    return this.descriptor;
+  };
+
+  ns.Piskel.prototype.setDescriptor = function (descriptor) {
+    this.descriptor = descriptor;
+    var appEngineEditorHeader = $('.piskel-name').html(this.descriptor.name);
+  };
+
 })();;(function () {
   var ns = $.namespace("pskl.selection");
 
@@ -14051,6 +15171,7 @@ var jscolor = {
     pskl.app.shortcutService.addShortcut('ctrl+V', this.paste.bind(this));
     pskl.app.shortcutService.addShortcut('ctrl+X', this.cut.bind(this));
     pskl.app.shortcutService.addShortcut('ctrl+C', this.copy.bind(this));
+    pskl.app.shortcutService.addShortcut('del', this.erase.bind(this));
 
     $.subscribe(Events.TOOL_SELECTED, $.proxy(this.onToolSelected_, this));
   };
@@ -14081,20 +15202,23 @@ var jscolor = {
     this.cleanSelection_();
   };
 
+  ns.SelectionManager.prototype.erase = function () {
+    var pixels = this.currentSelection.pixels;
+    var currentFrame = this.piskelController.getCurrentFrame();
+    for(var i=0, l=pixels.length; i<l; i++) {
+      try {
+        currentFrame.setPixel(pixels[i].col, pixels[i].row, Constants.TRANSPARENT_COLOR);
+      } catch(e) {
+        // Catching out of frame's bound pixels without testing
+      }
+    }
+  };
+
   ns.SelectionManager.prototype.cut = function() {
     if(this.currentSelection) {
       // Put cut target into the selection:
       this.currentSelection.fillSelectionFromFrame(this.piskelController.getCurrentFrame());
-
-      var pixels = this.currentSelection.pixels;
-      var currentFrame = this.piskelController.getCurrentFrame();
-      for(var i=0, l=pixels.length; i<l; i++) {
-        try {
-          currentFrame.setPixel(pixels[i].col, pixels[i].row, Constants.TRANSPARENT_COLOR);
-        } catch(e) {
-          // Catching out of frame's bound pixels without testing
-        }
-      }
+      this.erase();
     }
     else {
       throw "Bad state for CUT callback in SelectionManager";
@@ -14206,8 +15330,8 @@ var jscolor = {
 
   ns.AbstractRenderer.prototype.getCoordinates = Constants.ABSTRACT_FUNCTION;
 
-  ns.AbstractRenderer.prototype.setGridEnabled = Constants.ABSTRACT_FUNCTION;
-  ns.AbstractRenderer.prototype.isGridEnabled =  Constants.ABSTRACT_FUNCTION;
+  ns.AbstractRenderer.prototype.setGridWidth = Constants.ABSTRACT_FUNCTION;
+  ns.AbstractRenderer.prototype.getGridWidth =  Constants.ABSTRACT_FUNCTION;
 
   ns.AbstractRenderer.prototype.setZoom = Constants.ABSTRACT_FUNCTION;
   ns.AbstractRenderer.prototype.getZoom = Constants.ABSTRACT_FUNCTION;
@@ -14275,14 +15399,14 @@ var jscolor = {
   };
 
 
-  ns.CompositeRenderer.prototype.setGridEnabled = function (b) {
+  ns.CompositeRenderer.prototype.setGridWidth = function (b) {
     this.renderers.forEach(function (renderer) {
-      renderer.setGridEnabled(b);
+      renderer.setGridWidth(b);
     });
   };
 
-  ns.CompositeRenderer.prototype.isGridEnabled = function () {
-    return this.getSampleRenderer_().isGridEnabled();
+  ns.CompositeRenderer.prototype.getGridWidth = function () {
+    return this.getSampleRenderer_().getGridWidth();
   };
 
   ns.CompositeRenderer.prototype.getSampleRenderer_ = function () {
@@ -14321,7 +15445,7 @@ var jscolor = {
 
     var serializedRendering = [
       this.getZoom(),
-      this.isGridEnabled(),
+      this.getGridWidth(),
       offset.x,
       offset.y,
       size.width,
@@ -14398,7 +15522,6 @@ var jscolor = {
       y : 0
     };
 
-    this.isGridEnabled_ = false;
     this.supportGridRendering = renderingOptions.supportGridRendering;
 
     this.classes = classes || [];
@@ -14417,7 +15540,7 @@ var jscolor = {
     this.displayCanvas = null;
     this.setDisplaySize(renderingOptions.width, renderingOptions.height);
 
-    this.setGridEnabled(pskl.UserSettings.get(pskl.UserSettings.SHOW_GRID));
+    this.setGridWidth(pskl.UserSettings.get(pskl.UserSettings.GRID_WIDTH));
 
     this.updateBackgroundClass_(pskl.UserSettings.get(pskl.UserSettings.CANVAS_BACKGROUND));
     $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
@@ -14438,17 +15561,18 @@ var jscolor = {
   };
 
   ns.FrameRenderer.prototype.setZoom = function (zoom) {
-    // back up center coordinates
-    var centerX = this.offset.x + (this.displayWidth/(2*this.zoom));
-    var centerY = this.offset.y + (this.displayHeight/(2*this.zoom));
+    if (zoom > Constants.MINIMUM_ZOOM) {
+      // back up center coordinates
+      var centerX = this.offset.x + (this.displayWidth/(2*this.zoom));
+      var centerY = this.offset.y + (this.displayHeight/(2*this.zoom));
 
-    this.zoom = Math.max(1, zoom);
-
-    // recenter
-    this.setOffset(
-      centerX - (this.displayWidth/(2*this.zoom)),
-      centerY - (this.displayHeight/(2*this.zoom))
-    );
+      this.zoom = zoom;
+      // recenter
+      this.setOffset(
+        centerX - (this.displayWidth/(2*this.zoom)),
+        centerY - (this.displayHeight/(2*this.zoom))
+      );
+    }
   };
 
   ns.FrameRenderer.prototype.getZoom = function () {
@@ -14497,12 +15621,16 @@ var jscolor = {
     this.offset.y = y;
   };
 
-  ns.FrameRenderer.prototype.setGridEnabled = function (flag) {
-    this.isGridEnabled_ = flag && this.supportGridRendering;
+  ns.FrameRenderer.prototype.setGridWidth = function (value) {
+    this.gridWidth_ = value;
   };
 
-  ns.FrameRenderer.prototype.isGridEnabled = function () {
-    return this.isGridEnabled_;
+  ns.FrameRenderer.prototype.getGridWidth = function () {
+    if (this.supportGridRendering) {
+      return this.gridWidth_;
+    } else {
+      return 0;
+    }
   };
 
   ns.FrameRenderer.prototype.updateMargins_ = function () {
@@ -14525,10 +15653,10 @@ var jscolor = {
   };
 
   ns.FrameRenderer.prototype.onUserSettingsChange_ = function (evt, settingName, settingValue) {
-    if(settingName == pskl.UserSettings.SHOW_GRID) {
-      this.setGridEnabled(settingValue);
-    } else if (settingName == pskl.UserSettings.CANVAS_BACKGROUND) {
+    if (settingName == pskl.UserSettings.CANVAS_BACKGROUND) {
       this.updateBackgroundClass_(settingValue);
+    } else if (settingName == pskl.UserSettings.GRID_WIDTH) {
+      this.setGridWidth(settingValue);
     }
   };
 
@@ -14607,8 +15735,10 @@ var jscolor = {
     context.clearRect(0, 0, this.canvas.width*this.zoom, this.canvas.height*this.zoom);
 
     var isIE10 = pskl.utils.UserAgent.isIE && pskl.utils.UserAgent.version === 10;
-    if (this.isGridEnabled() || isIE10) {
-      var gridWidth = this.isGridEnabled() ? Constants.GRID_STROKE_WIDTH : 0;
+
+    var gridWidth = this.getGridWidth();
+    var isGridEnabled = gridWidth > 0;
+    if (isGridEnabled || isIE10) {
       var scaled = pskl.utils.ImageResizer.resizeNearestNeighbour(this.canvas, this.zoom, gridWidth);
       context.drawImage(scaled, 0, 0);
     } else {
@@ -14638,7 +15768,7 @@ var jscolor = {
     var size = this.getDisplaySize();
     var serializedFrame = [
       this.getZoom(),
-      this.isGridEnabled(),
+      this.getGridWidth(),
       offset.x, offset.y,
       size.width, size.height,
       frame.serialize()
@@ -14740,7 +15870,7 @@ var jscolor = {
   ns.PiskelRenderer = function (piskelController) {
     var frames = [];
     for (var i = 0 ; i < piskelController.getFrameCount() ; i++) {
-      frames.push(this.piskelController.getFrameAt(i));
+      frames.push(piskelController.getFrameAt(i));
     }
     ns.FramesheetRenderer.call(this, frames);
   };
@@ -14764,8 +15894,8 @@ var jscolor = {
 
     this.layerIdCounter = 1;
 
-    $.publish(Events.PISKEL_RESET);
     $.publish(Events.FRAME_SIZE_CHANGED);
+    $.publish(Events.PISKEL_RESET);
   };
 
   ns.PiskelController.prototype.init = function () {
@@ -14846,7 +15976,7 @@ var jscolor = {
       l.removeFrameAt(index);
     });
     // Current frame index is impacted if the removed frame was before the current frame
-    if (this.currentFrameIndex >= index) {
+    if (this.currentFrameIndex >= index && this.currentFrameIndex > 0) {
       this.setCurrentFrameIndex(this.currentFrameIndex - 1);
     }
 
@@ -14974,7 +16104,7 @@ var jscolor = {
   };
 })();;(function () {
   var ns = $.namespace("pskl.controller");
-  ns.DrawingController = function (piskelController, paletteController,container) {
+  ns.DrawingController = function (piskelController, paletteController, container) {
     /**
      * @public
      */
@@ -15014,7 +16144,6 @@ var jscolor = {
 
     // State of drawing controller:
     this.isClicked = false;
-    this.isRightClicked = false;
     this.previousMousemoveTime = 0;
     this.currentToolBehavior = null;
   };
@@ -15026,7 +16155,7 @@ var jscolor = {
       this.currentToolBehavior = toolBehavior;
       this.overlayFrame.clear();
     }, this));
-    
+
     $(window).resize($.proxy(this.startResizeTimer_, this));
 
     $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
@@ -15038,7 +16167,8 @@ var jscolor = {
   ns.DrawingController.prototype.initMouseBehavior = function() {
     var body = $('body');
     this.container.mousedown($.proxy(this.onMousedown_, this));
-    this.container.mousemove($.proxy(this.onMousemove_, this));
+    this.container.mouseenter($.proxy(this.onMouseenter_, this));
+    this.container.mouseleave($.proxy(this.onMouseleave_, this));
 
     if (pskl.utils.UserAgent.isChrome) {
       this.container.on('mousewheel', $.proxy(this.onMousewheel_, this));
@@ -15057,11 +16187,18 @@ var jscolor = {
       window.clearInterval(this.resizeTimer);
     }
     this.resizeTimer = window.setTimeout($.proxy(this.afterWindowResize_, this), 200);
-  },
+  };
 
   ns.DrawingController.prototype.afterWindowResize_ = function () {
+    var initialWidth = this.compositeRenderer.getDisplaySize().width;
     this.compositeRenderer.setDisplaySize(this.getContainerWidth_(), this.getContainerHeight_());
-  },
+    this.centerColumnWrapperHorizontally_();
+    var ratio = this.compositeRenderer.getDisplaySize().width / initialWidth;
+    var newZoom = ratio * this.compositeRenderer.getZoom();
+    this.compositeRenderer.setZoom(newZoom);
+
+    $.publish(Events.ZOOM_CHANGED);
+  };
 
   /**
    * @private
@@ -15070,35 +16207,56 @@ var jscolor = {
     if(settingsName == pskl.UserSettings.SHOW_GRID) {
       console.warn('DrawingController:onUserSettingsChange_ not implemented !');
     }
-  },
+  };
 
   ns.DrawingController.prototype.onFrameSizeChanged_ = function () {
-    this.compositeRenderer.setZoom(this.calculateZoom_());
     this.compositeRenderer.setDisplaySize(this.getContainerWidth_(), this.getContainerHeight_());
+    this.compositeRenderer.setZoom(this.calculateZoom_());
+    this.compositeRenderer.setOffset(0, 0);
+    $.publish(Events.ZOOM_CHANGED);
+  };
+
+  /**
+   * @private
+   */
+  ns.DrawingController.prototype.onMouseenter_ = function (event) {
+    this.container.bind('mousemove', $.proxy(this.onMousemove_, this));
+  };
+
+  /**
+   * @private
+   */
+  ns.DrawingController.prototype.onMouseleave_ = function (event) {
+    this.container.unbind('mousemove');
+    this.currentToolBehavior.hideHighlightedPixel(this.overlayFrame);
   };
 
   /**
    * @private
    */
   ns.DrawingController.prototype.onMousedown_ = function (event) {
-    this.isClicked = true;
-
-    if(event.button == 2) { // right click
-      this.isRightClicked = true;
-    }
-
+    var frame = this.piskelController.getCurrentFrame();
     var coords = this.renderer.getCoordinates(event.clientX, event.clientY);
 
-    this.currentToolBehavior.applyToolAt(
-      coords.x,
-      coords.y,
-      this.getCurrentColor_(),
-      this.piskelController.getCurrentFrame(),
-      this.overlayFrame,
-      this.wrapEvtInfo_(event)
-    );
+    if (event.button === Constants.MIDDLE_BUTTON) {
+      if (frame.containsPixel(coords.x, coords.y)) {
+        $.publish(Events.SELECT_PRIMARY_COLOR, [frame.getPixel(coords.x, coords.y)]);
+      }
+    } else {
+      this.isClicked = true;
+      this.currentToolBehavior.hideHighlightedPixel(this.overlayFrame);
 
-    $.publish(Events.LOCALSTORAGE_REQUEST);
+      this.currentToolBehavior.applyToolAt(
+        coords.x,
+        coords.y,
+        this.getCurrentColor_(event),
+        frame,
+        this.overlayFrame,
+        event
+      );
+
+      $.publish(Events.LOCALSTORAGE_REQUEST);
+    }
   };
 
   /**
@@ -15107,6 +16265,7 @@ var jscolor = {
   ns.DrawingController.prototype.onMousemove_ = function (event) {
     var currentTime = new Date().getTime();
     // Throttling of the mousemove event:
+
     if ((currentTime - this.previousMousemoveTime) > Constants.MOUSEMOVE_THROTTLING ) {
       var coords = this.renderer.getCoordinates(event.clientX, event.clientY);
 
@@ -15115,10 +16274,10 @@ var jscolor = {
         this.currentToolBehavior.moveToolAt(
           coords.x,
           coords.y,
-          this.getCurrentColor_(),
+          this.getCurrentColor_(event),
           this.piskelController.getCurrentFrame(),
           this.overlayFrame,
-          this.wrapEvtInfo_(event)
+          event
         );
 
         // TODO(vincz): Find a way to move that to the model instead of being at the interaction level.
@@ -15130,10 +16289,10 @@ var jscolor = {
         this.currentToolBehavior.moveUnactiveToolAt(
           coords.x,
           coords.y,
-          this.getCurrentColor_(),
+          this.getCurrentColor_(event),
           this.piskelController.getCurrentFrame(),
           this.overlayFrame,
-          this.wrapEvtInfo_(event)
+          event
         );
       }
       this.previousMousemoveTime = currentTime;
@@ -15144,55 +16303,43 @@ var jscolor = {
     var event = jQueryEvent.originalEvent;
     var delta = event.wheelDeltaY || (-2 * event.deltaY);
     var currentZoom = this.renderer.getZoom();
+
+    var perfectZoom = this.calculateZoom_();
+    var step = perfectZoom / 10;
+
     if (delta > 0) {
-      this.compositeRenderer.setZoom(currentZoom + 1);
+      this.compositeRenderer.setZoom(currentZoom + step);
     } else if (delta < 0) {
-      this.compositeRenderer.setZoom(currentZoom - 1);
+      this.compositeRenderer.setZoom(currentZoom - step);
     }
-    pskl.app.minimapController.onDrawingControllerMove_();
+    $.publish(Events.ZOOM_CHANGED);
   };
 
   /**
    * @private
    */
   ns.DrawingController.prototype.onMouseup_ = function (event) {
-    if(this.isClicked || this.isRightClicked) {
+    if(this.isClicked) {
       // A mouse button was clicked on the drawing canvas before this mouseup event,
       // the user was probably drawing on the canvas.
       // Note: The mousemove movement (and the mouseup) may end up outside
       // of the drawing canvas.
 
       this.isClicked = false;
-      this.isRightClicked = false;
 
       var coords = this.renderer.getCoordinates(event.clientX, event.clientY);
-      //console.log("mousemove: col: " + spriteCoordinate.col + " - row: " + spriteCoordinate.row);
       this.currentToolBehavior.releaseToolAt(
         coords.x,
         coords.y,
-        this.getCurrentColor_(),
+        this.getCurrentColor_(event),
         this.piskelController.getCurrentFrame(),
         this.overlayFrame,
-        this.wrapEvtInfo_(event)
+        event
       );
 
       $.publish(Events.TOOL_RELEASED);
     }
   };
-
-  /**
-   * @private
-   */
-  ns.DrawingController.prototype.wrapEvtInfo_ = function (event) {
-    var evtInfo = {};
-    if (event.button === 0) {
-      evtInfo.button = Constants.LEFT_BUTTON;
-    } else if (event.button == 2) {
-      evtInfo.button = Constants.RIGHT_BUTTON;
-    }
-    return evtInfo;
-  };
-
 
   /**
    * @private
@@ -15204,11 +16351,13 @@ var jscolor = {
   /**
    * @private
    */
-  ns.DrawingController.prototype.getCurrentColor_ = function () {
-    if(this.isRightClicked) {
+  ns.DrawingController.prototype.getCurrentColor_ = function (event) {
+    if(event.button == Constants.RIGHT_BUTTON) {
       return this.paletteController.getSecondaryColor();
-    } else {
+    } else if(event.button == Constants.LEFT_BUTTON) {
       return this.paletteController.getPrimaryColor();
+    } else {
+      return Constants.DEFAULT_PEN_COLOR;
     }
   };
 
@@ -15253,8 +16402,11 @@ var jscolor = {
   ns.DrawingController.prototype.getAvailableWidth_ = function () {
     var leftSectionWidth = $('.left-column').outerWidth(true),
     rightSectionWidth = $('.right-column').outerWidth(true),
-    availableWidth = $('#main-wrapper').width() - leftSectionWidth - rightSectionWidth;
-    return availableWidth;
+    toolsContainerWidth = $('#tool-section').outerWidth(true),
+    settingsContainerWidth = $('#application-action-section').outerWidth(true),
+    availableWidth = $('#main-wrapper').width() - leftSectionWidth - rightSectionWidth - toolsContainerWidth - settingsContainerWidth;
+
+    return availableWidth-50;
   };
 
   ns.DrawingController.prototype.getContainerHeight_ = function () {
@@ -15282,7 +16434,7 @@ var jscolor = {
 
   ns.DrawingController.prototype.setOffset = function (x, y) {
     this.compositeRenderer.setOffset(x, y);
-    pskl.app.minimapController.onDrawingControllerMove_();
+    $.publish(Events.ZOOM_CHANGED);
   };
 })();;(function () {
   var ns = $.namespace("pskl.controller");
@@ -15466,7 +16618,7 @@ var jscolor = {
     }
     var tileCount = document.createElement("div");
     tileCount.className = "tile-overlay tile-count";
-    tileCount.innerHTML = tileNumber;
+    tileCount.innerHTML = tileNumber + 1;
     previewTileRoot.appendChild(tileCount);
 
 
@@ -15567,6 +16719,7 @@ var jscolor = {
   };
 })();;(function () {
   var ns = $.namespace("pskl.controller");
+
   ns.AnimatedPreviewController = function (piskelController, container) {
     this.piskelController = piskelController;
     this.container = container;
@@ -15585,7 +16738,7 @@ var jscolor = {
     };
     this.renderer = new pskl.rendering.frame.FrameRenderer(this.container, renderingOptions);
 
-    $.subscribe(Events.FRAME_SIZE_CHANGED, this.updateZoom_.bind(this));
+    $.subscribe(Events.FRAME_SIZE_CHANGED, this.onFrameSizeChange_.bind(this));
   };
 
   ns.AnimatedPreviewController.prototype.init = function () {
@@ -15593,6 +16746,7 @@ var jscolor = {
     // consistent behavior across all other browsers that support the input type range
     // see https://bugzilla.mozilla.org/show_bug.cgi?id=853670
     $("#preview-fps")[0].addEventListener('change', this.onFPSSliderChange.bind(this));
+    document.querySelector(".right-column").style.width = Constants.ANIMATED_PREVIEW_WIDTH + 'px';
   };
 
   ns.AnimatedPreviewController.prototype.onFPSSliderChange = function (evt) {
@@ -15634,11 +16788,12 @@ var jscolor = {
     return Math.min(hZoom, wZoom);
   };
 
-  ns.AnimatedPreviewController.prototype.updateZoom_ = function () {
+  ns.AnimatedPreviewController.prototype.onFrameSizeChange_ = function () {
     var frame = this.piskelController.getCurrentFrame();
     var zoom = this.calculateZoom_();
-    this.renderer.setZoom(zoom);
     this.renderer.setDisplaySize(frame.getWidth() * zoom, frame.getHeight() * zoom);
+    this.renderer.setZoom(zoom);
+    this.renderer.setOffset(0, 0);
   };
 })();;(function () {
   var ns = $.namespace('pskl.controller');
@@ -15663,9 +16818,11 @@ var jscolor = {
     $(this.container).mousedown(this.onMinimapMousedown_.bind(this));
     $('body').mousemove(this.onMinimapMousemove_.bind(this));
     $('body').mouseup(this.onMinimapMouseup_.bind(this));
+
+    $.subscribe(Events.ZOOM_CHANGED, $.proxy(this.renderMinimap_, this));
   };
 
-  ns.MinimapController.prototype.onDrawingControllerMove_ = function () {
+  ns.MinimapController.prototype.renderMinimap_ = function () {
     var zoomRatio = this.getDrawingAreaZoomRatio_();
     if (zoomRatio > 1) {
       this.displayCropFrame_(zoomRatio, this.drawingController.getRenderer().getOffset());
@@ -15730,7 +16887,6 @@ var jscolor = {
 })();;(function () {
   var ns = $.namespace("pskl.controller");
 
-
   ns.ToolController = function () {
     var toDescriptor = function (id, shortcut, instance) {
       return {id:id, shortcut:shortcut, instance:instance};
@@ -15765,7 +16921,7 @@ var jscolor = {
     // Set SimplePen as default selected tool:
     this.selectTool_(this.tools[0]);
     // Activate listener on tool panel:
-    $("#tool-section").click($.proxy(this.onToolIconClicked_, this));
+    $("#tool-section").mousedown($.proxy(this.onToolIconClicked_, this));
   };
 
   /**
@@ -15776,6 +16932,7 @@ var jscolor = {
     var previousSelectedToolClass = stage.data("selected-tool-class");
     if(previousSelectedToolClass) {
       stage.removeClass(previousSelectedToolClass);
+      stage.removeClass(pskl.drawingtools.Move.TOOL_ID);
     }
     stage.addClass(tool.instance.toolId);
     stage.data("selected-tool-class", tool.instance.toolId);
@@ -15847,15 +17004,23 @@ var jscolor = {
    * @private
    */
   ns.ToolController.prototype.getToolMarkup_ = function(tool) {
-    var instance = tool.instance;
+    var toolId = tool.instance.toolId;
 
-    var classList = ['tool-icon', instance.toolId];
+    var classList = ['tool-icon', toolId];
     if (this.currentSelectedTool == tool) {
       classList.push('selected');
     }
 
-    return '<li rel="tooltip" data-placement="right" class="' + classList.join(' ') + '" data-tool-id="' + instance.toolId +
-              '" title="' + instance.helpText + '"></li>';
+    var tpl = pskl.utils.Template.get('drawing-tool-item-template');
+    return pskl.utils.Template.replace(tpl, {
+      cssclass : classList.join(' '),
+      toolid : toolId,
+      title : this.getTooltipText_(tool)
+    });
+  };
+
+  ns.ToolController.prototype.getTooltipText_ = function (tool) {
+    return tool.instance.helpText + ' (' + tool.shortcut + ')';
   };
 
   ns.ToolController.prototype.addKeyboardShortcuts_ = function () {
@@ -15875,26 +17040,39 @@ var jscolor = {
    * @public
    */
   ns.PaletteController.prototype.init = function() {
-    var transparentColorPalette = $(".palette-color[data-color=TRANSPARENT]");
-    transparentColorPalette.mouseup($.proxy(this.onPaletteColorClick_, this));
-
     $.subscribe(Events.SELECT_PRIMARY_COLOR, this.onColorSelected_.bind(this, {isPrimary:true}));
     $.subscribe(Events.SELECT_SECONDARY_COLOR, this.onColorSelected_.bind(this, {isPrimary:false}));
 
     pskl.app.shortcutService.addShortcut('X', this.swapColors.bind(this));
     pskl.app.shortcutService.addShortcut('D', this.resetColors.bind(this));
 
+    var spectrumCfg = {
+      showPalette: true,
+      showButtons: false,
+      showInput: true,
+      palette: [
+        ['rgba(0,0,0,0)']
+      ],
+      clickoutFiresChange : true,
+
+      beforeShow : function(tinycolor) {
+        tinycolor.setAlpha(1);
+      }
+    };
+
     // Initialize colorpickers:
     var colorPicker = $('#color-picker');
-    colorPicker.val(this.primaryColor);
+    colorPicker.spectrum($.extend({color: Constants.DEFAULT_PEN_COLOR}, spectrumCfg));
     colorPicker.change({isPrimary : true}, $.proxy(this.onPickerChange_, this));
-
+    this.setTitleOnPicker_(Constants.DEFAULT_PEN_COLOR, colorPicker);
 
     var secondaryColorPicker = $('#secondary-color-picker');
-    secondaryColorPicker.val(this.secondaryColor);
+    secondaryColorPicker.spectrum($.extend({color: Constants.TRANSPARENT_COLOR}, spectrumCfg));
     secondaryColorPicker.change({isPrimary : false}, $.proxy(this.onPickerChange_, this));
+    this.setTitleOnPicker_(Constants.TRANSPARENT_COLOR, secondaryColorPicker);
 
-    window.jscolor.install();
+    var swapColorsIcon = $('.swap-colors-icon');
+    swapColorsIcon.click(this.swapColors.bind(this));
   };
 
   /**
@@ -15924,11 +17102,13 @@ var jscolor = {
   ns.PaletteController.prototype.setPrimaryColor = function (color) {
     this.primaryColor = color;
     this.updateColorPicker_(color, $('#color-picker'));
+    $.publish(Events.PRIMARY_COLOR_SELECTED, [color]);
   };
 
   ns.PaletteController.prototype.setSecondaryColor = function (color) {
     this.secondaryColor = color;
     this.updateColorPicker_(color, $('#secondary-color-picker'));
+    $.publish(Events.SECONDARY_COLOR_SELECTED, [color]);
   };
 
   ns.PaletteController.prototype.getPrimaryColor = function () {
@@ -15953,20 +17133,6 @@ var jscolor = {
   /**
    * @private
    */
-  ns.PaletteController.prototype.onPaletteColorClick_ = function (event) {
-    var selectedColor = $(event.target).data("color");
-    var isLeftClick = (event.which == 1);
-    var isRightClick = (event.which == 3);
-    if (isLeftClick) {
-      $.publish(Events.PRIMARY_COLOR_SELECTED, [selectedColor]);
-    } else if (isRightClick) {
-      $.publish(Events.SECONDARY_COLOR_SELECTED, [selectedColor]);
-    }
-  };
-
-  /**
-   * @private
-   */
   ns.PaletteController.prototype.updateColorPicker_ = function (color, colorPicker) {
     if (color == Constants.TRANSPARENT_COLOR) {
       // We can set the current palette color to transparent.
@@ -15978,17 +17144,152 @@ var jscolor = {
       // The colorpicker can't be set to a transparent state.
       // We set its background to white and insert the
       // string "TRANSPARENT" to mimic this state:
-      colorPicker[0].color.fromString("#fff");
+      colorPicker.spectrum("set", Constants.TRANSPARENT_COLOR);
       colorPicker.val(Constants.TRANSPARENT_COLOR);
     } else {
-      colorPicker[0].color.fromString(color);
+      colorPicker.spectrum("set", color);
     }
+    this.setTitleOnPicker_(color, colorPicker);
+  };
+
+  ns.PaletteController.prototype.setTitleOnPicker_ = function (title, colorPicker) {
+    var spectrumInputSelector = '.sp-replacer';
+    colorPicker.next(spectrumInputSelector).attr('title', title);
   };
 })();
 
 
 
 ;(function () {
+  var ns = $.namespace('pskl.controller');
+
+  var NO_PALETTE_ID = '__no-palette';
+
+  ns.PalettesListController = function () {
+
+  };
+
+  ns.PalettesListController.prototype.init = function () {
+    this.paletteColorTemplate_ = pskl.utils.Template.get('palette-color-template');
+    this.colorListContainer_ = document.querySelector('.palettes-list-colors');
+    this.colorPaletteSelect_ = document.querySelector('.palette-picker');
+    this.paletteListOptGroup_ = document.querySelector('.palette-picker-group');
+
+    this.colorPaletteSelect_.addEventListener('change', this.onPaletteSelected_.bind(this));
+    this.colorListContainer_.addEventListener('mouseup', this.onColorContainerMouseup.bind(this));
+    this.colorListContainer_.addEventListener('contextmenu', this.onColorContainerContextMenu.bind(this));
+
+    $.subscribe(Events.PALETTE_LIST_UPDATED, this.onPaletteListUpdated.bind(this));
+    $.subscribe(Events.PRIMARY_COLOR_SELECTED, this.onColorUpdated.bind(this, 'primary'));
+    $.subscribe(Events.SECONDARY_COLOR_SELECTED, this.onColorUpdated.bind(this, 'secondary'));
+
+    this.fillPaletteList();
+    this.fillColorListContainer();
+  };
+
+  ns.PalettesListController.prototype.fillPaletteList = function () {
+    var palettes = [{
+      id : NO_PALETTE_ID,
+      name : 'No palette'
+    }];
+    palettes = palettes.concat(this.retrievePalettes());
+
+    var html = palettes.map(function (palette) {
+      return pskl.utils.Template.replace('<option value="{{id}}">{{name}}</option>', palette);
+    }).join('');
+    this.paletteListOptGroup_.innerHTML = html;
+  };
+
+  ns.PalettesListController.prototype.fillColorListContainer = function () {
+    var html = '';
+
+    var palette = this.getSelectedPalette();
+    if (palette) {
+      html = palette.colors.map(function (color) {
+        return pskl.utils.Template.replace(this.paletteColorTemplate_, {color : color});
+      }.bind(this)).join('');
+    }
+
+    this.colorListContainer_.innerHTML = html;
+  };
+
+  ns.PalettesListController.prototype.getSelectedPalette = function (evt) {
+    var paletteId = this.colorPaletteSelect_.value;
+    var palettes = this.retrievePalettes();
+    var palette = this.getPaletteById(paletteId, palettes);
+    return palette;
+  };
+
+  ns.PalettesListController.prototype.onPaletteSelected_ = function (evt) {
+    var paletteId = this.colorPaletteSelect_.value;
+    if (paletteId === '__manage-palettes') {
+      console.log('DISPLAY DIALOG');
+      $.publish(Events.DIALOG_DISPLAY, 'manage-palettes');
+      this.colorPaletteSelect_.value = NO_PALETTE_ID;
+    }
+    
+    this.fillColorListContainer();
+  };
+
+  ns.PalettesListController.prototype.onColorContainerContextMenu = function (event) {
+    event.preventDefault();
+  };
+
+  ns.PalettesListController.prototype.onColorContainerMouseup = function (event) {
+    var target = event.target;
+    var color = target.dataset.color;
+
+    if (color) {
+      if (event.button == Constants.LEFT_BUTTON) {
+        $.publish(Events.SELECT_PRIMARY_COLOR, [color]);
+      } else if (event.button == Constants.RIGHT_BUTTON) {
+        $.publish(Events.SELECT_SECONDARY_COLOR, [color]);
+      }
+    }
+  };
+
+  ns.PalettesListController.prototype.onColorUpdated = function (type, event, color) {
+    console.log('[PalettesListController] >>> ', arguments);
+    var colorContainer = this.colorListContainer_.querySelector('.palettes-list-color[data-color="'+color+'"]');
+    if (type === 'primary') {
+      this.removeClass_('primary', '.palettes-list-color');
+      colorContainer.classList.add('primary');
+      colorContainer.classList.remove('secondary');
+    } else if (type === 'secondary') {
+      this.removeClass_('secondary', '.palettes-list-color');
+      colorContainer.classList.add('secondary');
+      colorContainer.classList.remove('primary');
+    }
+  };
+
+  ns.PalettesListController.prototype.removeClass_ = function (cssClass, selector) {
+    var element = document.querySelector(selector + '.' + cssClass);
+    if (element) {
+      element.classList.remove(cssClass);
+    }
+  };
+
+  ns.PalettesListController.prototype.onPaletteListUpdated = function () {
+    this.fillPaletteList();
+  };
+
+  ns.PalettesListController.prototype.getPaletteById = function (paletteId, palettes) {
+    var match = null;
+
+    palettes.forEach(function (palette) {
+      if (palette.id === paletteId) {
+        match = palette;
+      }
+    });
+
+    return match;
+  };
+
+  ns.PalettesListController.prototype.retrievePalettes =  function () {
+    var palettesString = window.localStorage.getItem('piskel.palettes');
+    return JSON.parse(palettesString) || [];
+  };
+})();;(function () {
   var ns = $.namespace("pskl.controller");
 
   ns.NotificationController = function () {};
@@ -16005,6 +17306,8 @@ var jscolor = {
    * @private
    */
   ns.NotificationController.prototype.displayMessage_ = function (evt, messageInfo) {
+    this.removeMessage_();
+
     var message = document.createElement('div');
     message.id = "user-message";
     message.className = "user-message";
@@ -16042,20 +17345,18 @@ var jscolor = {
       .find('.background-picker[data-background-class=' + backgroundClass + ']')
       .addClass('selected');
 
-    // Initial state for grid display:
-    var show_grid = pskl.UserSettings.get(pskl.UserSettings.SHOW_GRID);
-    $('#show-grid').prop('checked', show_grid);
-
-    // Handle grid display changes:
-    $('#show-grid').change(this.onShowGridClick.bind(this));
+    // Grid display and size
+    var gridWidth = pskl.UserSettings.get(pskl.UserSettings.GRID_WIDTH);
+    $('#grid-width').val(gridWidth);
+    $('#grid-width').change(this.onGridWidthChange.bind(this));
 
     // Handle canvas background changes:
     $('#background-picker-wrapper').click(this.onBackgroundClick.bind(this));
   };
 
-  ns.ApplicationSettingsController.prototype.onShowGridClick = function (evt) {
-    var checked = $('#show-grid').prop('checked');
-    pskl.UserSettings.set(pskl.UserSettings.SHOW_GRID, checked);
+  ns.ApplicationSettingsController.prototype.onGridWidthChange = function (evt) {
+    var width = $('#grid-width').val();
+    pskl.UserSettings.set(pskl.UserSettings.GRID_WIDTH, parseInt(width, 10));
   };
 
   ns.ApplicationSettingsController.prototype.onBackgroundClick = function (evt) {
@@ -16070,7 +17371,66 @@ var jscolor = {
   };
 
 })();;(function () {
+  var ns = $.namespace('pskl.controller.settings');
+
+  ns.ResizeController = function (piskelController) {
+    this.piskelController = piskelController;
+  };
+
+  ns.ResizeController.prototype.init = function () {
+    this.resizeWidth = $('[name=resize-width]');
+    this.resizeHeight = $('[name=resize-height]');
+
+    this.resizeWidth.val(this.piskelController.getWidth());
+    this.resizeHeight.val(this.piskelController.getHeight());
+
+    this.cancelButton = $('.resize-cancel-button');
+    this.cancelButton.click(this.onCancelButtonClicked_.bind(this));
+
+    this.resizeForm = $("[name=resize-form]");
+    this.resizeForm.submit(this.onResizeFormSubmit_.bind(this));
+  };
+
+  ns.ResizeController.prototype.onResizeFormSubmit_ = function (evt) {
+    evt.originalEvent.preventDefault();
+
+    var width = parseInt(this.resizeWidth.val(), 10);
+    var height = parseInt(this.resizeHeight.val(), 10);
+
+    var layers = [];
+    var fromLayers = this.piskelController.getLayers();
+    for (var i = 0 ; i < fromLayers.length ; i++) {
+      var frames = [];
+      var fromFrames = fromLayers[i].getFrames();
+      for (var j = 0 ; j < fromFrames.length ; j++) {
+        var frame = new pskl.model.Frame(width, height);
+        this.copyFromFrameToFrame(fromFrames[j], frame);
+        frames.push(frame);
+      }
+      var layer = pskl.model.Layer.fromFrames(fromLayers[i].getName(), frames);
+      layers.push(layer);
+    }
+
+    var piskel = pskl.model.Piskel.fromLayers(layers, this.piskelController.piskel.getDescriptor());
+    pskl.app.piskelController.setPiskel(piskel);
+    $.publish(Events.CLOSE_SETTINGS_DRAWER);
+  };
+
+  ns.ResizeController.prototype.copyFromFrameToFrame = function (from, to) {
+    from.forEachPixel(function (color, x, y) {
+      if (x < to.getWidth() && y < to.getHeight()) {
+        to.setPixel(x, y, color);
+      }
+    });
+  };
+
+  ns.ResizeController.prototype.onCancelButtonClicked_ = function (evt) {
+    $.publish(Events.CLOSE_SETTINGS_DRAWER);
+  };
+})();;(function () {
   var ns = $.namespace("pskl.controller.settings");
+
+  var URL_MAX_LENGTH = 60;
 
   ns.GifExportController = function (piskelController) {
     this.piskelController = piskelController;
@@ -16096,6 +17456,8 @@ var jscolor = {
 
   ns.GifExportController.prototype.init = function () {
     this.radioTemplate_ = pskl.utils.Template.get("gif-export-radio-template");
+
+    this.uploadStatusContainerEl = document.querySelectorAll(".gif-upload-status")[0];
 
     this.previewContainerEl = document.querySelectorAll(".gif-export-preview")[0];
     this.radioGroupEl = document.querySelectorAll(".gif-export-radio-group")[0];
@@ -16123,7 +17485,9 @@ var jscolor = {
 
   ns.GifExportController.prototype.onImageUploadCompleted_ = function (imageUrl) {
     this.updatePreview_(imageUrl);
+    this.updateStatus_(imageUrl);
     this.previewContainerEl.classList.remove("preview-upload-ongoing");
+
   };
 
   ns.GifExportController.prototype.updatePreview_ = function (src) {
@@ -16197,6 +17561,274 @@ var jscolor = {
     }.bind(this));
 
     gif.render();
+  };
+
+  // FIXME : HORRIBLE COPY/PASTA
+
+  ns.GifExportController.prototype.updateStatus_ = function (imageUrl, error) {
+    if (imageUrl) {
+      var linkTpl = "<a class='image-link' href='{{link}}' target='_blank'>{{shortLink}}</a>";
+      var linkHtml = pskl.utils.Template.replace(linkTpl, {
+        link : imageUrl,
+        shortLink : this.shorten_(imageUrl, URL_MAX_LENGTH, '...')
+      });
+      this.uploadStatusContainerEl.innerHTML = 'Your image is now available at : ' + linkHtml;
+    } else {
+      // FIXME : Should display error message instead
+    }
+  };
+
+  ns.GifExportController.prototype.shorten_ = function (url, maxLength, suffix) {
+    if (url.length > maxLength) {
+      url = url.substring(0, maxLength);
+      url += suffix;
+    }
+    return url;
+  };
+})();;(function () {
+  var ns = $.namespace("pskl.controller.settings");
+
+  var URL_MAX_LENGTH = 60;
+
+  ns.PngExportController = function (piskelController) {
+    this.piskelController = piskelController;
+  };
+
+  ns.PngExportController.prototype.init = function () {
+    this.previewContainerEl = document.querySelectorAll(".png-export-preview")[0];
+    this.uploadStatusContainerEl = document.querySelectorAll(".png-upload-status")[0];
+
+    this.uploadForm = $("[name=png-export-upload-form]");
+    this.uploadForm.submit(this.onUploadFormSubmit_.bind(this));
+
+    this.updatePreview_(this.getFramesheetAsBase64Png());
+  };
+
+  ns.PngExportController.prototype.onUploadFormSubmit_ = function (evt) {
+    evt.originalEvent.preventDefault();
+
+    this.previewContainerEl.classList.add("preview-upload-ongoing");
+    pskl.app.imageUploadService.upload(this.getFramesheetAsBase64Png(), this.onImageUploadCompleted_.bind(this));
+  };
+
+  ns.PngExportController.prototype.getFramesheetAsBase64Png = function () {
+    var renderer = new pskl.rendering.PiskelRenderer(this.piskelController);
+    var framesheetCanvas = renderer.renderAsCanvas();
+    return framesheetCanvas.toDataURL("image/png");
+  };
+
+  ns.PngExportController.prototype.onImageUploadCompleted_ = function (imageUrl) {
+    this.updatePreview_(imageUrl);
+    this.updateStatus_(imageUrl);
+    this.previewContainerEl.classList.remove("preview-upload-ongoing");
+  };
+
+  ns.PngExportController.prototype.updateStatus_ = function (imageUrl, error) {
+    if (imageUrl) {
+      var linkTpl = "<a class='image-link' href='{{link}}' target='_blank'>{{shortLink}}</a>";
+      var linkHtml = pskl.utils.Template.replace(linkTpl, {
+        link : imageUrl,
+        shortLink : this.shorten_(imageUrl, URL_MAX_LENGTH, '...')
+      });
+      this.uploadStatusContainerEl.innerHTML = 'Your image is now available at : ' + linkHtml;
+    } else {
+      // FIXME : Should display error message instead
+    }
+  };
+
+  ns.PngExportController.prototype.updatePreview_ = function (src) {
+    this.previewContainerEl.innerHTML = "<img class='light-picker-background' style='max-width:240px;' src='"+src+"'/>";
+  };
+
+  ns.PngExportController.prototype.shorten_ = function (url, maxLength, suffix) {
+    if (url.length > maxLength) {
+      url = url.substring(0, maxLength);
+      url += suffix;
+    }
+    return url;
+  };
+})();;(function () {
+  var ns = $.namespace("pskl.controller.settings");
+
+  ns.LocalStorageController = function () {};
+
+  /**
+   * @public
+   */
+  ns.LocalStorageController.prototype.init = function() {
+    this.localStorageItemTemplate_ = pskl.utils.Template.get("local-storage-item-template");
+    this.service_ = pskl.app.localStorageService;
+    this.piskelsList = $('.local-piskels-list');
+
+    this.fillLocalPiskelsList_();
+
+    this.piskelsList.click(this.onPiskelsListClick_.bind(this));
+  };
+
+  ns.LocalStorageController.prototype.onPiskelsListClick_ = function (evt) {
+    var action = evt.target.getAttribute('data-action');
+    var name = evt.target.getAttribute('data-name');
+    if (action === 'load') {
+      if (window.confirm('This will erase your current piskel. Continue ?')) {
+        this.service_.load(name);
+        $.publish(Events.CLOSE_SETTINGS_DRAWER);
+      }
+    } else if (action === 'delete') {
+      if (window.confirm('This will permanently DELETE this piskel from your computer. Continue ?')) {
+        this.service_.remove(name);
+        $.publish(Events.CLOSE_SETTINGS_DRAWER);
+      }
+    }
+  };
+
+  ns.LocalStorageController.prototype.fillLocalPiskelsList_ = function () {
+    var html = "";
+    var keys = this.service_.getKeys();
+
+    var pad = function (num) {
+      if (num < 10) {
+        return "0" + num;
+      } else {
+        return "" + num;
+      }
+    };
+
+
+    keys.sort(function (k1, k2) {
+      if (k1.date < k2.date) {return 1;}
+      if (k1.date > k2.date) {return -1;}
+      return 0;
+    });
+
+    keys.forEach((function (key) {
+      var date = new Date(key.date);
+      var formattedDate = pskl.utils.Template.replace("{{Y}}/{{M}}/{{D}} {{H}}:{{m}}", {
+        Y : date.getFullYear(),
+        M : pad(date.getMonth() + 1),
+        D : pad(date.getDate()),
+        H : pad(date.getHours()),
+        m : pad(date.getMinutes())
+      });
+      html += pskl.utils.Template.replace(this.localStorageItemTemplate_, {name : key.name, date : formattedDate});
+    }).bind(this));
+
+    var tableBody_ = this.piskelsList.get(0).tBodies[0];
+    tableBody_.innerHTML = html;
+  };
+
+})();;(function () {
+  var ns = $.namespace('pskl.controller.settings');
+
+  ns.SaveController = function (piskelController) {
+    this.piskelController = piskelController;
+  };
+
+  /**
+   * @public
+   */
+  ns.SaveController.prototype.init = function () {
+    this.saveForm = $('form[name=save-form]');
+    this.nameInput =  $('#save-name');
+    this.descriptionInput = $('#save-description');
+    this.isPublicCheckbox = $('input[name=save-public-checkbox]');
+    this.saveCloudButton = $('#save-cloud-button');
+    this.saveLocalButton = $('#save-local-button');
+
+    // Only available in app-engine mode ...
+    this.piskelName = $('.piskel-name').get(0);
+
+    this.status = $('#save-status');
+
+    var descriptor = this.piskelController.piskel.getDescriptor();
+    this.nameInput.val(descriptor.name);
+    this.descriptionInput.val(descriptor.description);
+
+    this.isPublicCheckbox.prop('checked', descriptor.isPublic);
+
+    if (!pskl.app.isLoggedIn()) {
+      this.saveCloudButton.attr('disabled', 'disabled');
+      this.status.html('You are not logged in. Only Local Save is available.');
+    } else {
+      this.saveForm.submit(this.onSaveFormSubmit_.bind(this));
+    }
+
+    this.saveLocalButton.click(this.onSaveLocalClick_.bind(this));
+  };
+
+  ns.SaveController.prototype.onSaveFormSubmit_ = function (evt) {
+    evt.preventDefault();
+    evt.stopPropagation();
+
+    var name = this.getName();
+    var description = this.getDescription();
+    var isPublic = !!this.isPublicCheckbox.prop('checked');
+
+    var descriptor = new pskl.model.piskel.Descriptor(name, description, isPublic);
+    this.piskelController.piskel.setDescriptor(descriptor);
+
+    this.beforeSaving_();
+    pskl.app.store({
+      success : this.onSaveSuccess_.bind(this),
+      error : this.onSaveError_.bind(this),
+      after : this.afterSaving_.bind(this)
+    });
+  };
+
+  ns.SaveController.prototype.onSaveLocalClick_ = function (evt) {
+    var localStorageService = pskl.app.localStorageService;
+    var isOk = true;
+    var name = this.getName();
+    var description = this.getDescription();
+    if (localStorageService.getPiskel(name)) {
+      isOk = window.confirm('There is already a piskel saved as ' + name + '. Override ?');
+    }
+
+    if (isOk) {
+      this.beforeSaving_();
+      localStorageService.save(name, description, pskl.app.piskelController.serialize());
+      window.setTimeout(function () {
+        this.onSaveSuccess_();
+        this.afterSaving_();
+      }.bind(this), 1000);
+    }
+  };
+
+  ns.SaveController.prototype.getName = function () {
+    return this.nameInput.val();
+  };
+
+  ns.SaveController.prototype.getDescription = function () {
+    return this.descriptionInput.val();
+  };
+
+  ns.SaveController.prototype.beforeSaving_ = function () {
+    this.saveCloudButton.attr('disabled', true);
+    this.status.html('Saving ...');
+
+    if (this.piskelName) {
+      this.piskelName.classList.add('piskel-name-saving');
+    }
+  };
+
+  ns.SaveController.prototype.onSaveSuccess_ = function () {
+    $.publish(Events.CLOSE_SETTINGS_DRAWER);
+    $.publish(Events.SHOW_NOTIFICATION, [{"content": "Successfully saved !"}]);
+    $.publish(Events.PISKEL_SAVED);
+  };
+
+  ns.SaveController.prototype.onSaveError_ = function (status) {
+    $.publish(Events.SHOW_NOTIFICATION, [{"content": "Saving failed ("+status+")"}]);
+  };
+
+  ns.SaveController.prototype.afterSaving_ = function () {
+    this.saveCloudButton.attr('disabled', false);
+    this.status.html('');
+
+    if (this.piskelName) {
+      this.piskelName.classList.remove('piskel-name-saving');
+    }
+
+    window.setTimeout($.publish.bind($, Events.HIDE_NOTIFICATION), 2000);
   };
 })();;(function () {
   var ns = $.namespace('pskl.controller.settings');
@@ -16354,7 +17986,9 @@ var jscolor = {
         var frame = pskl.utils.FrameUtils.createFromImage(image);
 
         var layer = pskl.model.Layer.fromFrames('Layer 1', [frame]);
-        var piskel = pskl.model.Piskel.fromLayers([layer]);
+
+        var descriptor = new pskl.model.piskel.Descriptor('Imported piskel', '');
+        var piskel = pskl.model.Piskel.fromLayers([layer], descriptor);
 
         pskl.app.piskelController.setPiskel(piskel);
         pskl.app.animationController.setFPS(Constants.DEFAULT.FPS);
@@ -16368,20 +18002,36 @@ var jscolor = {
   };
 
 })();;(function () {
-  var ns = $.namespace("pskl.controller.settings");
+  var ns = $.namespace('pskl.controller.settings');
 
   var settings = {
     'user' : {
       template : 'templates/settings/application.html',
       controller : ns.ApplicationSettingsController
     },
+    'resize' : {
+      template : 'templates/settings/resize.html',
+      controller : ns.ResizeController
+    },
     'gif' : {
       template : 'templates/settings/export-gif.html',
       controller : ns.GifExportController
     },
+    'png' : {
+      template : 'templates/settings/export-png.html',
+      controller : ns.PngExportController
+    },
     'import' : {
       template : 'templates/settings/import.html',
       controller : ns.ImportController
+    },
+    'localstorage' : {
+      template : 'templates/settings/localstorage.html',
+      controller : ns.LocalStorageController
+    },
+    'save' : {
+      template : 'templates/settings/save.html',
+      controller : ns.SaveController
     }
   };
 
@@ -16390,9 +18040,9 @@ var jscolor = {
 
   ns.SettingsController = function (piskelController) {
     this.piskelController = piskelController;
-    this.drawerContainer = document.getElementById("drawer-container");
+    this.drawerContainer = document.getElementById('drawer-container');
     this.settingsContainer = $('[data-pskl-controller=settings]');
-    this.expanded = false;
+    this.isExpanded = false;
     this.currentSetting = null;
   };
 
@@ -16400,25 +18050,33 @@ var jscolor = {
    * @public
    */
   ns.SettingsController.prototype.init = function() {
-    // Expand drawer when clicking 'Settings' tab.
-    $('[data-setting]').click(function(evt) {
-      var el = evt.originalEvent.currentTarget;
-      var setting = el.getAttribute("data-setting");
-      if (this.currentSetting != setting) {
-        this.loadSetting(setting);
-      } else {
-        this.closeDrawer();
-      }
-    }.bind(this));
-
-    $('body').click(function (evt) {
-      var isInSettingsContainer = $.contains(this.settingsContainer.get(0), evt.target);
-      if (this.expanded && !isInSettingsContainer) {
-        this.closeDrawer();
-      }
-    }.bind(this));
-
+    $('[data-setting]').click(this.onSettingIconClick.bind(this));
+    $('body').click(this.onBodyClick.bind(this));
     $.subscribe(Events.CLOSE_SETTINGS_DRAWER, this.closeDrawer.bind(this));
+  };
+
+  ns.SettingsController.prototype.onSettingIconClick = function (evt) {
+    var el = evt.originalEvent.currentTarget;
+    var setting = el.getAttribute('data-setting');
+    if (this.currentSetting != setting) {
+      this.loadSetting(setting);
+    } else {
+      this.closeDrawer();
+    }
+    evt.originalEvent.stopPropagation();
+    evt.originalEvent.preventDefault();
+  };
+
+  ns.SettingsController.prototype.onBodyClick = function (evt) {
+    var target = evt.target;
+
+    var isInDrawerContainer = pskl.utils.Dom.isParent(target, this.drawerContainer);
+    var isInSettingsIcon = target.getAttribute('data-setting');
+    var isInSettingsContainer = isInDrawerContainer || isInSettingsIcon;
+
+    if (this.isExpanded && !isInSettingsContainer) {
+      this.closeDrawer();
+    }
   };
 
   ns.SettingsController.prototype.loadSetting = function (setting) {
@@ -16430,7 +18088,7 @@ var jscolor = {
     $('.' + SEL_SETTING_CLS).removeClass(SEL_SETTING_CLS);
     $('[data-setting='+setting+']').addClass(SEL_SETTING_CLS);
 
-    this.expanded = true;
+    this.isExpanded = true;
     this.currentSetting = setting;
   };
 
@@ -16438,8 +18096,427 @@ var jscolor = {
     this.settingsContainer.removeClass(EXP_DRAWER_CLS);
     $('.' + SEL_SETTING_CLS).removeClass(SEL_SETTING_CLS);
 
-    this.expanded = false;
+    this.isExpanded = false;
     this.currentSetting = null;
+  };
+
+})();;(function () {
+  var ns = $.namespace('pskl.controller.dialogs');
+
+  var tinycolor = window.tinycolor;
+
+  var SELECTED_CLASSNAME = 'selected';
+  var NEW_COLOR_CLASS = 'palette-manager-new-color';
+  var CLOSE_ICON_CLASS = 'palette-manager-delete-card';
+  var EDIT_NAME_CLASS = 'palette-manager-details-head-edit-icon';
+
+  ns.PaletteManagerController = function (piskelController) {
+    this.piskelController = piskelController;
+    this.palettes = this.retrieveUserPalettes();
+    this.originalPalettes = this.retrieveUserPalettes();
+    this.selectedPaletteId = null;
+  };
+
+  ns.PaletteManagerController.prototype.init = function () {
+    this.palettesList = document.querySelector('.palette-manager-list');
+    this.paletteBody = document.querySelector('.palette-manager-details-body');
+    this.paletteHead = document.querySelector('.palette-manager-details-head');
+    this.createButton = document.querySelector('.palette-manager-actions-button[data-action="create"]');
+    this.saveAllButton = document.querySelector('.palette-manager-actions-button[data-action="save-all"]');
+    this.closeButton = document.querySelector('.palette-manager-close');
+
+    this.colorCardTemplate = pskl.utils.Template.get('palette-color-card-template');
+    this.newColorTemplate = pskl.utils.Template.get('palette-new-color-template');
+    this.paletteHeadTemplate = pskl.utils.Template.get('palette-details-head-template');
+
+    // Events
+    this.palettesList.addEventListener('click', this.onPaletteListClick.bind(this));
+    // Delegated event listener for events repeated on all cards
+    this.paletteBody.addEventListener('click', this.delegatedPaletteBodyClick.bind(this));
+    this.paletteHead.addEventListener('click', this.delegatedPaletteHeadClick.bind(this));
+    this.createButton.addEventListener('click', this.createPalette.bind(this));
+    this.saveAllButton.addEventListener('click', this.saveAll.bind(this));
+    this.closeButton.addEventListener('click', this.closeDialog.bind(this));
+
+    // Init markup
+    this.createPaletteListMarkup();
+    if (this.palettes.length > 0) {
+      this.selectPalette(this.palettes[0].id);
+    } else {
+      console.error('[PaletteManagerController] >>> Implement fallback screen when no palette can be retrieved');
+    }
+  };
+
+  ns.PaletteManagerController.prototype.closeDialog = function () {
+    $.publish(Events.DIALOG_HIDE);
+  };
+
+  ns.PaletteManagerController.prototype.createPalette = function () {
+    var name = window.prompt('Please enter a name for your palette', 'New palette');
+    if (name) {
+      var palette = this.createPaletteObject(name);
+      this.palettes.push(palette);
+      this.createPaletteListMarkup();
+      this.selectPalette(palette.id);
+    }
+  };
+
+  ns.PaletteManagerController.prototype.createPaletteObject = function (name) {
+    return {
+      id : 'palette-' + Date.now() + '-' + Math.floor(Math.random()*1000),
+      name : name,
+      colors : []
+    };
+  };
+
+  ns.PaletteManagerController.prototype.selectPalette = function (paletteId) {
+    this.deselectCurrentPalette();
+    var paletteListItem = this.palettesList.querySelector('[data-palette-id='+paletteId+']');
+    if (paletteListItem) {
+      this.selectedPaletteId = paletteId;
+      paletteListItem.classList.add(SELECTED_CLASSNAME);
+      this.refreshPaletteDetails();
+    }
+  };
+
+  ns.PaletteManagerController.prototype.refreshPaletteDetails = function () {
+    this.createPaletteHeadMarkup();
+    this.createPaletteBodyMarkup();
+    this.initPaletteDetailsEvents();
+    this.initPaletteCardsSpectrum();
+  };
+
+  ns.PaletteManagerController.prototype.createPaletteListMarkup = function () {
+    var html = this.palettes.map(function (palette) {
+      var paletteCopy = {
+        id : palette.id,
+        name : this.isPaletteModified(palette) ? palette.name + " *" : palette.name
+      };
+      return pskl.utils.Template.replace('<li data-palette-id="{{id}}">{{name}}</li>', paletteCopy);
+    }.bind(this)).join('');
+    this.palettesList.innerHTML = html;
+  };
+
+  /**
+   * Fill the palette body container with color cards for the selected palette
+   */
+  ns.PaletteManagerController.prototype.createPaletteHeadMarkup = function () {
+    var palette = this.getSelectedPalette();
+    var dict = {
+      'name' : palette.name,
+      'save:disabled' : !this.isPaletteModified(palette),
+      'revert:disabled' : !this.isPaletteModified(palette),
+      'delete:disabled' : this.palettes.length < 2
+    };
+    var html = pskl.utils.Template.replace(this.paletteHeadTemplate, dict);
+
+    this.paletteHead.innerHTML = html;
+  };
+
+  ns.PaletteManagerController.prototype.isPaletteModified = function (palette) {
+    var isModified = false;
+    var originalPalette = this.getPaletteById(palette.id, this.originalPalettes);
+    if (originalPalette) {
+      var differentName = originalPalette.name !== palette.name;
+      var differentColors = palette.colors.join('') !== originalPalette.colors.join('');
+      isModified = differentName || differentColors;
+    } else {
+      isModified = true;
+    }
+    return isModified;
+  };
+
+  /**
+   * Fill the palette body container with color cards for the selected palette
+   */
+  ns.PaletteManagerController.prototype.createPaletteBodyMarkup = function () {
+    var palette = this.getSelectedPalette();
+
+    var html = this.getColorCardsMarkup(palette.colors);
+    html += pskl.utils.Template.replace(this.newColorTemplate, {classname : NEW_COLOR_CLASS});
+
+    this.paletteBody.innerHTML = html;
+  };
+
+  ns.PaletteManagerController.prototype.initPaletteDetailsEvents = function () {
+    // New Card click event
+    var newCard = this.paletteBody.querySelector('.' + NEW_COLOR_CLASS);
+    newCard.addEventListener('click', this.onNewCardClick.bind(this));
+
+    if (this.palettes.length < 2) {
+      var deleteButton = this.paletteHead.querySelector('.palette-manager-palette-button[data-action="delete"]');
+      deleteButton.setAttribute("disabled", "disabled");
+    }
+  };
+
+  ns.PaletteManagerController.prototype.onNewCardClick = function () {
+    var color;
+    var palette = this.getSelectedPalette();
+    if (palette && palette.colors.length > 0) {
+      color = palette.colors[palette.colors.length-1];
+    } else {
+      color = '#FFFFFF';
+    }
+    this.addColorInSelectedPalette(color);
+  };
+
+  ns.PaletteManagerController.prototype.delegatedPaletteBodyClick = function (event) {
+    var target = event.target;
+    if (target.classList.contains(CLOSE_ICON_CLASS)) {
+      var colorId = parseInt(target.parentNode.dataset.colorId, 10);
+      this.removeColorInSelectedPalette(colorId);
+    }
+  };
+
+  ns.PaletteManagerController.prototype.delegatedPaletteHeadClick = function (event) {
+    var target = event.target;
+    if (target.classList.contains(EDIT_NAME_CLASS)) {
+      this.renameSelectedPalette();
+    } else if (target.classList.contains('palette-manager-palette-button')) {
+      var action = target.dataset.action;
+      if (action === 'save') {
+        this.savePalette(this.getSelectedPalette().id);
+      } else if (action === 'revert') {
+        this.revertChanges();
+      } else if (action === 'delete') {
+        this.deleteSelectedPalette();
+      }
+    }
+  };
+
+  ns.PaletteManagerController.prototype.initPaletteCardsSpectrum = function () {
+    var oSelf = this;
+    var colorSquares = $(':not(.' + NEW_COLOR_CLASS + ')>.palette-manager-color-square');
+    colorSquares.spectrum({
+      clickoutFiresChange : true,
+      showInput: true,
+      showButtons: false,
+      change : function (color) {
+        var target = this;
+        var colorId = parseInt(target.parentNode.dataset.colorId, 10);
+        oSelf.updateColorInSelectedPalette(colorId, color);
+      },
+      beforeShow : function() {
+        var target = this;
+        var colorId = parseInt(target.parentNode.dataset.colorId, 10);
+        var palette = oSelf.getSelectedPalette();
+        var color = palette.colors[colorId];
+        colorSquares.spectrum("set", color);
+      }
+    });
+  };
+
+  ns.PaletteManagerController.prototype.updateColorInSelectedPalette = function (colorId, color) {
+    var palette = this.getSelectedPalette();
+    palette.colors.splice(colorId, 1, '#' + (color.toHex().toUpperCase()));
+
+    this.createPaletteListMarkup();
+    this.selectPalette(this.selectedPaletteId);
+  };
+
+  ns.PaletteManagerController.prototype.addColorInSelectedPalette = function (color) {
+    var selectedPalette = this.getSelectedPalette();
+    selectedPalette.colors.push(color);
+
+    this.createPaletteListMarkup();
+    this.selectPalette(this.selectedPaletteId);
+  };
+
+  ns.PaletteManagerController.prototype.removeColorInSelectedPalette = function (colorId) {
+    var palette = this.getSelectedPalette();
+    palette.colors.splice(colorId, 1);
+
+    this.createPaletteListMarkup();
+    this.selectPalette(this.selectedPaletteId);
+  };
+
+  ns.PaletteManagerController.prototype.renameSelectedPalette = function () {
+    var palette = this.getSelectedPalette();
+    var name = window.prompt('Please enter a new name for palette "' + palette.name + '"', palette.name);
+    if (name) {
+      palette.name = name;
+      this.createPaletteListMarkup();
+      this.selectPalette(palette.id);
+    }
+  };
+
+  ns.PaletteManagerController.prototype.getSelectedPalette = function () {
+    return this.getPaletteById(this.selectedPaletteId, this.palettes);
+  };
+
+  ns.PaletteManagerController.prototype.getColorCardsMarkup = function (colors) {
+    var html = colors.map(function (color, index) {
+      var dict = {
+        colorId : index,
+        hex : color,
+        rgb : tinycolor(color).toRgbString(),
+        hsl :  tinycolor(color).toHslString()
+      };
+      return pskl.utils.Template.replace(this.colorCardTemplate, dict);
+    }.bind(this)).join('');
+    return html;
+  };
+
+  ns.PaletteManagerController.prototype.getPaletteById = function (paletteId, palettes) {
+    var match = null;
+
+    palettes.forEach(function (palette) {
+      if (palette.id === paletteId) {
+        match = palette;
+      }
+    });
+
+    return match;
+  };
+
+  ns.PaletteManagerController.prototype.removePaletteById = function (paletteId, palettes) {
+    var palette = this.getPaletteById(paletteId, palettes);
+    if (palette) {
+      var index = palettes.indexOf(palette);
+      palettes.splice(index, 1);
+    }
+  };
+
+  ns.PaletteManagerController.prototype.deselectCurrentPalette = function () {
+    var selectedItem = this.palettesList.querySelector('.' + SELECTED_CLASSNAME);
+    if (selectedItem) {
+      this.selectedPaletteId = null;
+      selectedItem.classList.remove(SELECTED_CLASSNAME);
+    }
+  };
+
+  ns.PaletteManagerController.prototype.revertChanges = function () {
+    var palette = this.getSelectedPalette();
+    var originalPalette = this.getPaletteById(palette.id, this.originalPalettes);
+    palette.name = originalPalette.name;
+    palette.colors = originalPalette.colors.slice(0);
+
+    this.createPaletteListMarkup();
+    this.selectPalette(palette.id);
+  };
+
+  ns.PaletteManagerController.prototype.deleteSelectedPalette = function () {
+    var palette = this.getSelectedPalette();
+    if (this.palettes.length > 1) {
+      if (window.confirm('Are you sure you want to delete "' + palette.name + '" ?')) {
+        this.removePaletteById(palette.id, this.palettes);
+        this.removePaletteById(palette.id, this.originalPalettes);
+
+        this.persistToLocalStorage();
+
+        this.createPaletteListMarkup();
+        this.selectPalette(this.palettes[0].id);
+      }
+    }
+  };
+
+  ns.PaletteManagerController.prototype.onPaletteListClick = function (event) {
+    var target = event.target;
+    if (target.dataset.paletteId) {
+      this.selectPalette(target.dataset.paletteId);
+    }
+  };
+
+  ns.PaletteManagerController.prototype.saveAll = function () {
+    this.palettes.forEach(function (palette) {
+      this.savePalette(palette.id);
+    }.bind(this));
+
+    this.createPaletteListMarkup();
+    this.selectPalette(this.getSelectedPalette().id);
+  };
+
+  ns.PaletteManagerController.prototype.savePalette = function (paletteId) {
+    var palette = this.getPaletteById(paletteId, this.palettes);
+    var originalPalette = this.getPaletteById(paletteId, this.originalPalettes);
+    if (originalPalette) {
+      originalPalette.name = palette.name;
+      originalPalette.colors = palette.colors;
+    } else {
+      this.originalPalettes.push(palette);
+    }
+
+    this.persistToLocalStorage();
+  };
+
+  ns.PaletteManagerController.prototype.savePaletteAndRedraw = function (paletteId) {
+    this.savePalette(paletteId);
+
+    this.createPaletteListMarkup();
+    this.selectPalette(this.getSelectedPalette().id);
+  };
+
+
+  ns.PaletteManagerController.prototype.persistToLocalStorage = function () {
+    window.localStorage.setItem('piskel.palettes', JSON.stringify(this.originalPalettes));
+    this.originalPalettes = this.retrieveUserPalettes();
+    $.publish(Events.PALETTE_LIST_UPDATED);
+  };
+
+  ns.PaletteManagerController.prototype.retrieveUserPalettes = function () {
+    var palettesString = window.localStorage.getItem('piskel.palettes');
+    return JSON.parse(palettesString) || [this.createPaletteObject('New palette')];
+  };
+
+})();;(function () {
+  var ns = $.namespace('pskl.controller.dialogs');
+
+  var dialogs = {
+    'manage-palettes' : {
+      template : 'templates/dialogs/manage-palettes.html',
+      controller : ns.PaletteManagerController
+    }
+  };
+
+  ns.DialogsController = function (piskelController) {
+    this.piskelController = piskelController;
+    this.currentDialog_ = null;
+  };
+
+  ns.DialogsController.prototype.init = function () {
+    this.dialogContainer_ = document.getElementById('dialog-container');
+    this.dialogWrapper_ = document.getElementById('dialog-container-wrapper');
+    $.subscribe(Events.DIALOG_DISPLAY, this.onDialogDisplayEvent_.bind(this));
+    $.subscribe(Events.DIALOG_HIDE, this.onDialogHideEvent_.bind(this));
+
+    pskl.app.shortcutService.addShortcut('alt+P', this.onDialogDisplayEvent_.bind(this, null, 'manage-palettes'));
+  };
+
+  ns.DialogsController.prototype.onDialogDisplayEvent_ = function (evt, dialogId) {
+    if (!this.isDisplayed()) {
+      var config = dialogs[dialogId];
+      if (config) {
+        this.dialogContainer_.innerHTML = pskl.utils.Template.get(config.template);
+        (new config.controller(this.piskelController)).init();
+        this.showDialogWrapper_();
+        this.currentDialog_ = dialogId;
+      } else {
+        console.error('Could not find dialog configuration for dialogId : ' + dialogId);
+      }
+    }
+  };
+
+  ns.DialogsController.prototype.onDialogHideEvent_ = function () {
+    this.hideDialog();
+  };
+
+  ns.DialogsController.prototype.showDialogWrapper_ = function () {
+    pskl.app.shortcutService.addShortcut('ESC', this.hideDialog.bind(this));
+    this.dialogWrapper_.style.display = 'block';
+  };
+
+  ns.DialogsController.prototype.hideDialog = function () {
+    this.hideDialogWrapper_();
+    this.currentDialog_ = null;
+  };
+
+  ns.DialogsController.prototype.hideDialogWrapper_ = function () {
+    pskl.app.shortcutService.removeShortcut('ESC');
+    this.dialogWrapper_.style.display = 'none';
+  };
+
+  ns.DialogsController.prototype.isDisplayed = function () {
+    return this.currentDialog_ !== null;
   };
 
 })();;(function () {
@@ -16451,93 +18528,165 @@ var jscolor = {
       throw "Bad LocalStorageService initialization: <undefined piskelController>";
     }
     this.piskelController = piskelController;
-    this.localStorageThrottler_ = null;
   };
 
-  /**
-   * @public
-   */
-  ns.LocalStorageService.prototype.init = function(piskelController) {
-    $.subscribe(Events.LOCALSTORAGE_REQUEST, $.proxy(this.persistToLocalStorageRequest_, this));
+  ns.LocalStorageService.prototype.init = function() {};
+
+// localStorage.setItem('piskel_bkp', pskl.app.piskelController.serialize())
+
+  ns.LocalStorageService.prototype.save = function(name, description, piskel) {
+    this.removeFromKeys_(name);
+    this.addToKeys_(name, description, Date.now());
+    window.localStorage.setItem('piskel.' + name, piskel);
   };
 
-  /**
-   * @private
-   */
-  ns.LocalStorageService.prototype.persistToLocalStorageRequest_ = function () {
-    // Persist to localStorage when drawing. We throttle localStorage accesses
-    // for high frequency drawing (eg mousemove).
-    if(this.localStorageThrottler_ !== null) {
-      window.clearTimeout(this.localStorageThrottler_);
-    }
-    this.localStorageThrottler_ = window.setTimeout($.proxy(function() {
-      this.persistToLocalStorage_();
-      this.localStorageThrottler_ = null;
-    }, this), 1000);
-  };
+  ns.LocalStorageService.prototype.load = function(name) {
+    var piskelString = this.getPiskel(name);
+    var key = this.getKey_(name);
 
-  /**
-   * @private
-   */
-  ns.LocalStorageService.prototype.persistToLocalStorage_ = function() {
-    console.log('[LocalStorage service]: Snapshot stored');
-    window.localStorage.snapShot = this.piskelController.serialize();
-  };
-
-  /**
-   * @private
-   */
-  ns.LocalStorageService.prototype.restoreFromLocalStorage_ = function() {
-    var framesheet = JSON.parse(window.localStorage.snapShot);
-    pskl.utils.serialization.Deserializer.deserialize(framesheet, function (piskel) {
+    pskl.utils.serialization.Deserializer.deserialize(JSON.parse(piskelString), function (piskel) {
+      piskel.setDescriptor(new pskl.model.piskel.Descriptor(name, key.description, true));
       pskl.app.piskelController.setPiskel(piskel);
     });
   };
 
-  /**
-   * @private
-   */
-  ns.LocalStorageService.prototype.cleanLocalStorage_ = function() {
-    console.log('[LocalStorage service]: Snapshot removed');
-    delete window.localStorage.snapShot;
+  ns.LocalStorageService.prototype.remove = function(name) {
+    this.removeFromKeys_(name);
+    window.localStorage.removeItem('piskel.' + name);
   };
 
-  /**
-   * @public
-   */
-  ns.LocalStorageService.prototype.displayRestoreNotification = function() {
-    if(window.localStorage && window.localStorage.snapShot) {
-      var reloadLink = "<a href='#' class='localstorage-restore onclick='pskl.app.restoreFromLocalStorage()'>reload</a>";
-      var discardLink = "<a href='#' class='localstorage-discard' onclick='pskl.app.cleanLocalStorage()'>discard</a>";
-      var content = "Non saved version found. " + reloadLink + " or " + discardLink;
+  ns.LocalStorageService.prototype.saveKeys_ = function(keys) {
+    window.localStorage.setItem('piskel.keys', JSON.stringify(keys));
+  };
 
-      $.publish(Events.SHOW_NOTIFICATION, [{
-        "content": content,
-        "behavior": $.proxy(function(rootNode) {
-          rootNode = $(rootNode);
-          rootNode.click($.proxy(function(evt) {
-            var target = $(evt.target);
-            if(target.hasClass("localstorage-restore")) {
-              this.restoreFromLocalStorage_();
-            }
-            else if (target.hasClass("localstorage-discard")) {
-              this.cleanLocalStorage_();
-            }
-            $.publish(Events.HIDE_NOTIFICATION);
-          }, this));
-        }, this)
-      }]);
+  ns.LocalStorageService.prototype.removeFromKeys_ = function(name) {
+    var keys = this.getKeys();
+    var otherKeys = keys.filter(function (key) {
+      return key.name !== name;
+    });
+
+    this.saveKeys_(otherKeys);
+  };
+
+  ns.LocalStorageService.prototype.getKey_ = function(name) {
+    var matches = this.getKeys().filter(function (key) {
+      return key.name === name;
+    });
+    if (matches.length > 0) {
+      return matches[0];
+    } else {
+      return null;
     }
+  };
+
+  ns.LocalStorageService.prototype.addToKeys_ = function(name, description, date) {
+    var keys = this.getKeys();
+    keys.push({
+      name : name,
+      description : description,
+      date : date
+    });
+    this.saveKeys_(keys);
+  };
+
+  ns.LocalStorageService.prototype.getPiskel = function(name) {
+    return window.localStorage.getItem('piskel.' + name);
+  };
+
+  ns.LocalStorageService.prototype.getKeys = function(name) {
+    var keysString = window.localStorage.getItem('piskel.keys');
+    return JSON.parse(keysString) || [];
+  };
+
+})();;(function () {
+  var ns = $.namespace('pskl.service');
+
+  ns.GithubStorageService = function (piskelController) {
+    this.piskelController = piskelController;
+  };
+
+  ns.GithubStorageService.prototype.init = function () {};
+
+  ns.GithubStorageService.prototype.store = function (callbacks) {
+    var xhr = new XMLHttpRequest();
+    var formData = new FormData();
+    formData.append('framesheet_content', this.piskelController.serialize());
+    formData.append('fps_speed', this.piskelController.getFPS());
+
+    xhr.open('POST', Constants.STATIC.URL.SAVE, true);
+
+    xhr.onload = function(e) {
+      if (this.status == 200) {
+        var baseUrl = window.location.href.replace(window.location.search, "");
+        window.location.href = baseUrl + "?frameId=" + this.responseText;
+      } else {
+        this.onerror(e);
+      }
+    };
+    xhr.onerror = function(e) {
+      $.publish(Events.SHOW_NOTIFICATION, [{"content": "Saving failed ("+this.status+")"}]);
+    };
+    xhr.send(formData);
+  };
+})();;(function () {
+  var ns = $.namespace('pskl.service');
+
+  ns.AppEngineStorageService = function (piskelController) {
+    this.piskelController = piskelController;
+  };
+
+  ns.AppEngineStorageService.prototype.init = function () {};
+
+  ns.AppEngineStorageService.prototype.store = function (callbacks) {
+    var formData = this.prepareFormData_();
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', Constants.APPENGINE.URL.SAVE, true);
+
+    xhr.onload = function(e) {
+      if (this.status == 200) {
+        callbacks.success();
+        callbacks.after();
+      } else {
+        this.onerror(e);
+      }
+    };
+    xhr.onerror = function(e) {
+      callbacks.error(this.status);
+      callbacks.after();
+    };
+    xhr.send(formData);
+  };
+
+  ns.AppEngineStorageService.prototype.prepareFormData_ = function () {
+    var piskel = this.piskelController.piskel;
+    var descriptor = piskel.getDescriptor();
+
+    var formData = new FormData();
+    formData.append('framesheet', this.piskelController.serialize());
+    formData.append('fps', this.piskelController.getFPS());
+    formData.append('name', descriptor.name);
+    formData.append('description', descriptor.description);
+    if (descriptor.isPublic) {
+      formData.append('public', true);
+    }
+    formData.append('frames', this.piskelController.getFrameCount());
+    formData.append('first_frame_as_png', pskl.app.getFirstFrameAsPng());
+    formData.append('framesheet_as_png', pskl.app.getFramesheetAsPng());
+
+    return formData;
   };
 })();;(function () {
   var ns = $.namespace("pskl.service");
   ns.HistoryService = function (piskelController) {
     this.piskelController = piskelController;
+    this.saveState__b = this.saveState.bind(this);
   };
 
   ns.HistoryService.prototype.init = function () {
 
-    $.subscribe(Events.TOOL_RELEASED, this.saveState.bind(this));
+    $.subscribe(Events.PISKEL_RESET, this.saveState__b);
+    $.subscribe(Events.TOOL_RELEASED, this.saveState__b);
 
     pskl.app.shortcutService.addShortcut('ctrl+Z', this.undo.bind(this));
     pskl.app.shortcutService.addShortcut('ctrl+Y', this.redo.bind(this));
@@ -16549,14 +18698,81 @@ var jscolor = {
 
   ns.HistoryService.prototype.undo = function () {
     this.piskelController.getCurrentFrame().loadPreviousState();
+    $.unsubscribe(Events.PISKEL_RESET, this.saveState__b);
     $.publish(Events.PISKEL_RESET);
+    $.subscribe(Events.PISKEL_RESET, this.saveState__b);
   };
 
   ns.HistoryService.prototype.redo = function () {
     this.piskelController.getCurrentFrame().loadNextState();
+    $.unsubscribe(Events.PISKEL_RESET, this.saveState__b);
     $.publish(Events.PISKEL_RESET);
+    $.subscribe(Events.PISKEL_RESET, this.saveState__b);
   };
 
+})();;(function () {
+  var ns = $.namespace('pskl.service');
+
+  ns.SavedStatusService = function (piskelController) {
+    this.piskelController_ = piskelController;
+  };
+
+  ns.SavedStatusService.prototype.init = function () {
+    $.subscribe(Events.TOOL_RELEASED, this.onToolReleased.bind(this));
+    $.subscribe(Events.PISKEL_RESET, this.onPiskelReset.bind(this));
+
+    $.subscribe(Events.PISKEL_SAVED, this.onPiskelSaved.bind(this));
+
+    window.addEventListener("beforeunload", this.onBeforeUnload.bind(this));
+  };
+
+  ns.SavedStatusService.prototype.onPiskelReset = function () {
+    var piskel = this.piskelController_.piskel;
+    // A first PISKEL_RESET is triggered during the load of a new Piskel, it should be ignored
+    // putting a firstResetDone flag as a nasty workaround for this
+    if (piskel.firstResetDone_) {
+      this.updateDirtyStatus(true);
+    } else {
+      piskel.firstResetDone_ = true;
+    }
+  };
+
+  ns.SavedStatusService.prototype.onToolReleased = function () {
+    this.updateDirtyStatus(true);
+  };
+
+  ns.SavedStatusService.prototype.onPiskelSaved = function () {
+    this.updateDirtyStatus(false);
+  };
+
+  ns.SavedStatusService.prototype.updateDirtyStatus = function (status) {
+    var piskel = this.piskelController_.piskel;
+    if (piskel.isDirty_ !== status) {
+      // Redraw piskel name only if dirty status actually changed
+      piskel.isDirty_ = status;
+      this.updatePiskelName();
+    }
+  };
+
+  ns.SavedStatusService.prototype.updatePiskelName = function () {
+    var piskel = this.piskelController_.piskel;
+    var name = piskel.getDescriptor().name;
+    if (piskel.isDirty_) {
+      $('.piskel-name').html(name + ' *');
+    } else {
+      $('.piskel-name').html(name);
+    }
+  };
+
+  ns.SavedStatusService.prototype.onBeforeUnload = function (evt) {
+    var piskel = this.piskelController_.piskel;
+    if (piskel.isDirty_) {
+      var confirmationMessage = "Your Piskel seems to have unsaved changes";
+
+      (evt || window.event).returnValue = confirmationMessage;
+      return confirmationMessage;
+    }
+  };
 })();;(function () {
   var ns = $.namespace('pskl.service.keyboard');
 
@@ -16580,7 +18796,8 @@ var jscolor = {
     this.shortcuts_[key] = this.shortcuts_[key] || {};
 
     if (this.shortcuts_[key][meta]) {
-      throw 'Shortcut ' + meta + ' + ' + key + ' already registered';
+      var keyStr = (meta !== 'normal' ? meta + ' + ' : '') + key;
+      console.error('[ShortcutService] >>> Shortcut [' + keyStr + '] already registered');
     } else {
       this.shortcuts_[key][meta] = callback;
     }
@@ -16605,6 +18822,9 @@ var jscolor = {
     } else if (key.indexOf('shift+') === 0) {
       meta = 'shift';
       key = key.replace('shift+', '');
+    } else if (key.indexOf('alt+') === 0) {
+      meta = 'alt';
+      key = key.replace('alt+', '');
     }
     return {meta : meta, key : key};
   };
@@ -16613,26 +18833,36 @@ var jscolor = {
    * @private
    */
   ns.ShortcutService.prototype.onKeyUp_ = function(evt) {
-    // jquery names FTW ...
-    var keycode = evt.which;
-    var charkey = pskl.service.keyboard.KeycodeTranslator.toChar(keycode);
+    if (!this.isInInput_(evt)) {
+      // jquery names FTW ...
+      var keycode = evt.which;
+      var targetTagName = evt.target.nodeName.toUpperCase();
+      var charkey = pskl.service.keyboard.KeycodeTranslator.toChar(keycode);
 
-    var keyShortcuts = this.shortcuts_[charkey];
-    if(keyShortcuts) {
-      var cb;
-      if (this.isCtrlKeyPressed_(evt)) {
-        cb = keyShortcuts.ctrl;
-      } else if (this.isShiftKeyPressed_(evt)) {
-        cb = keyShortcuts.shift;
-      } else {
-        cb = keyShortcuts.normal;
-      }
+      var keyShortcuts = this.shortcuts_[charkey];
+      if(keyShortcuts) {
+        var cb;
+        if (this.isCtrlKeyPressed_(evt)) {
+          cb = keyShortcuts.ctrl;
+        } else if (this.isShiftKeyPressed_(evt)) {
+          cb = keyShortcuts.shift;
+        } else if (this.isAltKeyPressed_(evt)) {
+          cb = keyShortcuts.alt;
+        } else {
+          cb = keyShortcuts.normal;
+        }
 
-      if(cb) {
-        cb(charkey);
-        evt.preventDefault();
+        if(cb) {
+          cb(charkey);
+          evt.preventDefault();
+        }
       }
     }
+  };
+
+  ns.ShortcutService.prototype.isInInput_ = function (evt) {
+    var targetTagName = evt.target.nodeName.toUpperCase();
+    return targetTagName === 'INPUT' || targetTagName === 'TEXTAREA';
   };
 
   ns.ShortcutService.prototype.isCtrlKeyPressed_ = function (evt) {
@@ -16643,6 +18873,10 @@ var jscolor = {
     return evt.shiftKey;
   };
 
+  ns.ShortcutService.prototype.isAltKeyPressed_ = function (evt) {
+    return evt.altKey;
+  };
+
   ns.ShortcutService.prototype.isMac_ = function () {
     return navigator.appVersion.indexOf("Mac") != -1;
   };
@@ -16651,7 +18885,8 @@ var jscolor = {
     191 : "?",
     27 : "esc",
     38 : "up",
-    40 : "down"
+    40 : "down",
+    46 : "del"
   };
 
   var ns = $.namespace('pskl.service.keyboard');
@@ -16684,6 +18919,10 @@ var jscolor = {
     this.initMarkup_();
     pskl.app.shortcutService.addShortcut('shift+?', this.toggleCheatsheet_.bind(this));
     pskl.app.shortcutService.addShortcut('?', this.toggleCheatsheet_.bind(this));
+
+    var link = $('.cheatsheet-link');
+    link.click(this.toggleCheatsheet_.bind(this));
+
     $.subscribe(Events.TOGGLE_HELP, this.toggleCheatsheet_.bind(this));
     $.subscribe(Events.ESCAPE, this.onEscape_.bind(this));
   };
@@ -16718,58 +18957,71 @@ var jscolor = {
   ns.CheatsheetService.prototype.initMarkup_ = function () {
     this.initMarkupForTools_();
     this.initMarkupForMisc_();
+    this.initMarkupForSelection_();
+  };
+
+  ns.CheatsheetService.prototype.toDescriptor_ = function (shortcut, description, icon) {
+    return {
+      'shortcut' : shortcut,
+      'description' : description,
+      'icon' : icon
+    };
+  };
+
+  ns.CheatsheetService.prototype.getDomFromDescriptor_ = function (descriptor) {
+    var shortcutTemplate = pskl.utils.Template.get('cheatsheet-shortcut-template');
+    var markup = pskl.utils.Template.replace(shortcutTemplate, {
+      shortcutIcon : descriptor.icon,
+      shortcutDescription : descriptor.description,
+      shortcutKey : descriptor.shortcut
+    });
+
+    return pskl.utils.Template.createFromHTML(markup);
+  };
+
+  ns.CheatsheetService.prototype.initMarkupAbstract_ = function (descriptors, containerSelector) {
+    var container = $(containerSelector, this.cheatsheetEl_).get(0);
+    for (var i = 0 ; i < descriptors.length ; i++) {
+      var descriptor = descriptors[i];
+      var shortcutEl = this.getDomFromDescriptor_(descriptor);
+      container.appendChild(shortcutEl);
+    }
   };
 
   ns.CheatsheetService.prototype.initMarkupForTools_ = function () {
-    var shortcutTemplate = pskl.utils.Template.get('cheatsheet-shortcut-template');
+    var descriptors = pskl.app.toolController.tools.map(function (tool) {
+      return this.toDescriptor_(tool.shortcut, tool.instance.helpText, 'tool-icon ' + tool.instance.toolId);
+    }.bind(this));
 
-    var toolShortcutsContainer = $('.cheatsheet-tool-shortcuts', this.cheatsheetEl_).get(0);
-    var tools = pskl.app.toolController.tools;
-    for (var i = 0 ; i < tools.length ; i++) {
-      var tool = tools[i];
-      var shortcutEl = pskl.utils.Template.createFromHTML(
-        pskl.utils.Template.replace(shortcutTemplate, {
-          shortcutIcon : 'tool-icon ' + tool.instance.toolId,
-          shortcutDescription : tool.instance.helpText,
-          shortcutKey : tool.shortcut
-        })
-      );
-      toolShortcutsContainer.appendChild(shortcutEl);
-    }
+    this.initMarkupAbstract_(descriptors, '.cheatsheet-tool-shortcuts');
   };
 
   ns.CheatsheetService.prototype.initMarkupForMisc_ = function () {
-    var shortcutTemplate = pskl.utils.Template.get('cheatsheet-shortcut-template');
-
-    var miscShortcutsContainer = $('.cheatsheet-misc-shortcuts', this.cheatsheetEl_).get(0);
-    var toDescriptor = function (shortcut, description) {
-      return {shortcut:shortcut, description:description};
-    };
-    var miscKeys = [
-      toDescriptor('X', 'Swap primary/secondary colors'),
-      toDescriptor('D', 'Reset default colors'),
-      toDescriptor('ctrl + X', 'Cut selection'),
-      toDescriptor('ctrl + C', 'Copy selection'),
-      toDescriptor('ctrl + V', 'Paste selection'),
-      toDescriptor('ctrl + Z', 'Undo'),
-      toDescriptor('ctrl + Y', 'Redo'),
-      toDescriptor('&#65514;', 'Select previous frame'), /* ASCII for up-arrow */
-      toDescriptor('&#65516;', 'Select next frame'), /* ASCII for down-arrow */
-      toDescriptor('N', 'Create new frame'),
-      toDescriptor('shift + N', 'Duplicate selected frame'),
-      toDescriptor('shift + ?', 'Open/Close this popup')
+    var descriptors = [
+      this.toDescriptor_('X', 'Swap primary/secondary colors'),
+      this.toDescriptor_('D', 'Reset default colors'),
+      this.toDescriptor_('ctrl + Z', 'Undo'),
+      this.toDescriptor_('ctrl + Y', 'Redo'),
+      this.toDescriptor_('&#65514;', 'Select previous frame'), /* ASCII for up-arrow */
+      this.toDescriptor_('&#65516;', 'Select next frame'), /* ASCII for down-arrow */
+      this.toDescriptor_('N', 'Create new frame'),
+      this.toDescriptor_('shift + N', 'Duplicate selected frame'),
+      this.toDescriptor_('shift + ?', 'Open/Close this popup'),
+      this.toDescriptor_('alt + P', 'Open the Palette Manager')
     ];
-    for (var i = 0 ; i < miscKeys.length ; i++) {
-      var key = miscKeys[i];
-      var shortcutEl = pskl.utils.Template.createFromHTML(
-        pskl.utils.Template.replace(shortcutTemplate, {
-          shortcutIcon : '',
-          shortcutDescription : key.description,
-          shortcutKey : key.shortcut
-        })
-      );
-      miscShortcutsContainer.appendChild(shortcutEl);
-    }
+
+    this.initMarkupAbstract_(descriptors, '.cheatsheet-misc-shortcuts');
+  };
+
+  ns.CheatsheetService.prototype.initMarkupForSelection_ = function () {
+    var descriptors = [
+      this.toDescriptor_('ctrl + X', 'Cut selection'),
+      this.toDescriptor_('ctrl + C', 'Copy selection'),
+      this.toDescriptor_('ctrl + V', 'Paste selection'),
+      this.toDescriptor_('del', 'Delete selection')
+    ];
+
+    this.initMarkupAbstract_(descriptors, '.cheatsheet-selection-shortcuts');
   };
 
 })();
@@ -16811,11 +19063,11 @@ var jscolor = {
 
   ns.BaseTool = function() {};
 
-  ns.BaseTool.prototype.applyToolAt = function(col, row, color, frame, overlay) {};
+  ns.BaseTool.prototype.applyToolAt = function(col, row, color, frame, overlay, event) {};
 
-  ns.BaseTool.prototype.moveToolAt = function(col, row, color, frame, overlay) {};
+  ns.BaseTool.prototype.moveToolAt = function(col, row, color, frame, overlay, event) {};
 
-  ns.BaseTool.prototype.moveUnactiveToolAt = function(col, row, color, frame, overlay) {
+  ns.BaseTool.prototype.moveUnactiveToolAt = function(col, row, color, frame, overlay, event) {
     if (overlay.containsPixel(col, row)) {
       if (!isNaN(this.highlightedPixelCol) &&
         !isNaN(this.highlightedPixelRow) &&
@@ -16834,7 +19086,20 @@ var jscolor = {
     }
   };
 
-  ns.BaseTool.prototype.releaseToolAt = function(col, row, color, frame, overlay) {};
+  ns.BaseTool.prototype.hideHighlightedPixel = function(overlay) {
+    if (this.highlightedPixelRow !== null && this.highlightedPixelCol !== null) {
+      try {
+        overlay.setPixel(this.highlightedPixelCol, this.highlightedPixelRow, Constants.TRANSPARENT_COLOR);
+      } catch (e) {
+        console.warn('ns.BaseTool.prototype.hideHighlightedPixel failed');
+      }
+      this.highlightedPixelRow = null;
+      this.highlightedPixelCol = null;
+    }
+  };
+
+
+  ns.BaseTool.prototype.releaseToolAt = function(col, row, color, frame, overlay, event) {};
 
   /**
    * Bresenham line algorihtm: Get an array of pixels from
@@ -16894,11 +19159,11 @@ var jscolor = {
   };
 
   pskl.utils.inherit(ns.SimplePen, ns.BaseTool);
-  
+
   /**
    * @override
    */
-  ns.SimplePen.prototype.applyToolAt = function(col, row, color, frame, overlay) {
+  ns.SimplePen.prototype.applyToolAt = function(col, row, color, frame, overlay, event) {
     if (frame.containsPixel(col, row)) {
       frame.setPixel(col, row, color);
     }
@@ -16906,7 +19171,7 @@ var jscolor = {
     this.previousRow = row;
   };
 
-  ns.SimplePen.prototype.moveToolAt = function(col, row, color, frame, overlay) {
+  ns.SimplePen.prototype.moveToolAt = function(col, row, color, frame, overlay, event) {
     if((Math.abs(col - this.previousCol) > 1) || (Math.abs(row - this.previousRow) > 1)) {
       // The pen movement is too fast for the mousemove frequency, there is a gap between the
       // current point and the previously drawn one.
@@ -16953,7 +19218,7 @@ var jscolor = {
   /**
    * @override
    */
-  ns.VerticalMirrorPen.prototype.applyToolAt = function(col, row, color, frame, overlay) {
+  ns.VerticalMirrorPen.prototype.applyToolAt = function(col, row, color, frame, overlay, event) {
     this.superclass.applyToolAt.call(this, col, row, color, frame, overlay);
 
     var mirroredCol = this.getSymmetricCol_(col, frame);
@@ -16990,8 +19255,8 @@ var jscolor = {
   /**
    * @override
    */
-  ns.Eraser.prototype.applyToolAt = function(col, row, color, frame, overlay) {
-    this.superclass.applyToolAt.call(this, col, row, Constants.TRANSPARENT_COLOR, frame, overlay);
+  ns.Eraser.prototype.applyToolAt = function(col, row, color, frame, overlay, event) {
+    this.superclass.applyToolAt.call(this, col, row, Constants.TRANSPARENT_COLOR, frame, overlay, event);
   };
 })();;/**
  * @provide pskl.drawingtools.Stroke
@@ -17015,7 +19280,7 @@ var jscolor = {
   /**
    * @override
    */
-  ns.Stroke.prototype.applyToolAt = function(col, row, color, frame, overlay) {
+  ns.Stroke.prototype.applyToolAt = function(col, row, color, frame, overlay, event) {
     this.startCol = col;
     this.startRow = row;
 
@@ -17031,7 +19296,7 @@ var jscolor = {
     overlay.setPixel(col, row, color);
   };
 
-  ns.Stroke.prototype.moveToolAt = function(col, row, color, frame, overlay) {
+  ns.Stroke.prototype.moveToolAt = function(col, row, color, frame, overlay, event) {
     overlay.clear();
 
     // When the user moussemove (before releasing), we dynamically compute the
@@ -17057,7 +19322,7 @@ var jscolor = {
   /**
    * @override
    */
-  ns.Stroke.prototype.releaseToolAt = function(col, row, color, frame, overlay) {
+  ns.Stroke.prototype.releaseToolAt = function(col, row, color, frame, overlay, event) {
     // If the stroke tool is released outside of the canvas, we cancel the stroke:
     // TODO: Mutualize this check in common method
     if(frame.containsPixel(col, row)) {
@@ -17091,7 +19356,7 @@ var jscolor = {
   /**
    * @override
    */
-  ns.PaintBucket.prototype.applyToolAt = function(col, row, color, frame, overlay) {
+  ns.PaintBucket.prototype.applyToolAt = function(col, row, color, frame, overlay, event) {
 
     pskl.PixelUtils.paintSimilarConnectedPixelsFromFrame(frame, col, row, color);
   };
@@ -17131,7 +19396,7 @@ var jscolor = {
   /**
    * @override
    */
-  ns.Rectangle.prototype.applyToolAt = function(col, row, color, frame, overlay) {
+  ns.Rectangle.prototype.applyToolAt = function(col, row, color, frame, overlay, event) {
     this.startCol = col;
     this.startRow = row;
 
@@ -17139,7 +19404,7 @@ var jscolor = {
     overlay.setPixel(col, row, color);
   };
 
-  ns.Rectangle.prototype.moveToolAt = function(col, row, color, frame, overlay) {
+  ns.Rectangle.prototype.moveToolAt = function(col, row, color, frame, overlay, event) {
     overlay.clear();
     if(color == Constants.TRANSPARENT_COLOR) {
       color = Constants.SELECTION_TRANSPARENT_COLOR;
@@ -17152,7 +19417,7 @@ var jscolor = {
   /**
    * @override
    */
-  ns.Rectangle.prototype.releaseToolAt = function(col, row, color, frame, overlay) {
+  ns.Rectangle.prototype.releaseToolAt = function(col, row, color, frame, overlay, event) {
     overlay.clear();
     if(frame.containsPixel(col, row)) { // cancel if outside of canvas
       // draw in frame to finalize
@@ -17190,7 +19455,7 @@ var jscolor = {
   /**
    * @override
    */
-  ns.Circle.prototype.applyToolAt = function(col, row, color, frame, overlay) {
+  ns.Circle.prototype.applyToolAt = function(col, row, color, frame, overlay, event) {
     this.startCol = col;
     this.startRow = row;
 
@@ -17198,7 +19463,7 @@ var jscolor = {
     overlay.setPixel(col, row, color);
   };
 
-  ns.Circle.prototype.moveToolAt = function(col, row, color, frame, overlay) {
+  ns.Circle.prototype.moveToolAt = function(col, row, color, frame, overlay, event) {
     overlay.clear();
     if(color == Constants.TRANSPARENT_COLOR) {
       color = Constants.SELECTION_TRANSPARENT_COLOR;
@@ -17211,7 +19476,7 @@ var jscolor = {
   /**
    * @override
    */
-  ns.Circle.prototype.releaseToolAt = function(col, row, color, frame, overlay) {
+  ns.Circle.prototype.releaseToolAt = function(col, row, color, frame, overlay, event) {
     overlay.clear();
     if(frame.containsPixel(col, row)) { // cancel if outside of canvas
       // draw in frame to finalize
@@ -17262,7 +19527,7 @@ var jscolor = {
   var ns = $.namespace("pskl.drawingtools");
 
   ns.Move = function() {
-    this.toolId = "tool-move";
+    this.toolId = ns.Move.TOOL_ID;
     this.helpText = "Move tool";
 
     // Stroke's first point coordinates (set in applyToolAt)
@@ -17270,18 +19535,20 @@ var jscolor = {
     this.startRow = null;
   };
 
+  ns.Move.TOOL_ID = "tool-move";
+
   pskl.utils.inherit(ns.Move, ns.BaseTool);
 
   /**
    * @override
    */
-  ns.Move.prototype.applyToolAt = function(col, row, color, frame, overlay) {
+  ns.Move.prototype.applyToolAt = function(col, row, color, frame, overlay, event) {
     this.startCol = col;
     this.startRow = row;
     this.frameClone = frame.clone();
   };
 
-  ns.Move.prototype.moveToolAt = function(col, row, color, frame, overlay) {
+  ns.Move.prototype.moveToolAt = function(col, row, color, frame, overlay, event) {
     var colDiff = col - this.startCol, rowDiff = row - this.startRow;
     this.shiftFrame(colDiff, rowDiff, frame, this.frameClone);
   };
@@ -17303,7 +19570,7 @@ var jscolor = {
   /**
    * @override
    */
-  ns.Move.prototype.releaseToolAt = function(col, row, color, frame, overlay) {
+  ns.Move.prototype.releaseToolAt = function(col, row, color, frame, overlay, event) {
     this.moveToolAt(col, row, color, frame, overlay);
   };
 })();
@@ -17316,7 +19583,7 @@ var jscolor = {
   var ns = $.namespace("pskl.drawingtools");
 
   ns.BaseSelect = function() {
-    this.secondaryToolId = "tool-move";
+    this.secondaryToolId = pskl.drawingtools.Move.TOOL_ID;
     this.BodyRoot = $('body');
 
     // Select's first point coordinates (set in applyToolAt)
@@ -17329,7 +19596,7 @@ var jscolor = {
   /**
    * @override
    */
-  ns.BaseSelect.prototype.applyToolAt = function(col, row, color, frame, overlay) {
+  ns.BaseSelect.prototype.applyToolAt = function(col, row, color, frame, overlay, event) {
     this.startCol = col;
     this.startRow = row;
 
@@ -17356,7 +19623,7 @@ var jscolor = {
   /**
    * @override
    */
-  ns.BaseSelect.prototype.moveToolAt = function(col, row, color, frame, overlay) {
+  ns.BaseSelect.prototype.moveToolAt = function(col, row, color, frame, overlay, event) {
     if(this.mode == "select") {
 
       this.onSelect_(col, row, color, frame, overlay);
@@ -17370,7 +19637,7 @@ var jscolor = {
   /**
    * @override
    */
-  ns.BaseSelect.prototype.releaseToolAt = function(col, row, color, frame, overlay) {
+  ns.BaseSelect.prototype.releaseToolAt = function(col, row, color, frame, overlay, event) {
     if(this.mode == "select") {
       this.onSelectEnd_(col, row, color, frame, overlay);
     } else if(this.mode == "moveSelection") {
@@ -17379,13 +19646,16 @@ var jscolor = {
     }
   };
 
+  ns.BaseSelect.prototype.hideHighlightedPixel = function () {
+    // not implemented for selection tools
+  };
 
   /**
    * If we mouseover the selection draw inside the overlay frame, show the 'move' cursor
    * instead of the 'select' one. It indicates that we can move the selection by dragndroping it.
    * @override
    */
-  ns.BaseSelect.prototype.moveUnactiveToolAt = function(col, row, color, frame, overlay) {
+  ns.BaseSelect.prototype.moveUnactiveToolAt = function(col, row, color, frame, overlay, event) {
 
     if(overlay.getPixel(col, row) != Constants.SELECTION_TRANSPARENT_COLOR) {
       // We're hovering the selection, show the move tool:
@@ -17396,6 +19666,10 @@ var jscolor = {
       this.BodyRoot.addClass(this.secondaryToolId);
       this.BodyRoot.removeClass(this.toolId);
     }
+  };
+
+  ns.BaseSelect.prototype.hideHighlightedPixel = function() {
+    // there is no highlighted pixel for selection tools, do nothing
   };
 
   /**
@@ -17570,15 +19844,16 @@ var jscolor = {
 
   pskl.utils.inherit(ns.ColorPicker, ns.BaseTool);
 
+
   /**
    * @override
    */
-  ns.ColorPicker.prototype.applyToolAt = function(col, row, color, frame, overlay, context) {
+  ns.ColorPicker.prototype.applyToolAt = function(col, row, color, frame, overlay, event) {
     if (frame.containsPixel(col, row)) {
       var sampledColor = frame.getPixel(col, row);
-      if (context.button == Constants.LEFT_BUTTON) {
+      if (event.button == Constants.LEFT_BUTTON) {
         $.publish(Events.SELECT_PRIMARY_COLOR, [sampledColor]);
-      } else if (context.button == Constants.RIGHT_BUTTON) {
+      } else if (event.button == Constants.RIGHT_BUTTON) {
         $.publish(Events.SELECT_SECONDARY_COLOR, [sampledColor]);
       }
     }
@@ -17596,11 +19871,19 @@ var jscolor = {
   ns.app = {
 
     init : function () {
+      /**
+       * True when piskel is running in static mode (no back end needed).
+       * When started from APP Engine, appEngineToken_ (Boolean) should be set on window.pskl
+       */
+      this.isAppEngineVersion = !!pskl.appEngineToken_;
+
       this.shortcutService = new pskl.service.keyboard.ShortcutService();
       this.shortcutService.init();
 
       var size = this.readSizeFromURL_();
-      var piskel = new pskl.model.Piskel(size.width, size.height);
+
+      var descriptor = new pskl.model.piskel.Descriptor('New Piskel', '');
+      var piskel = new pskl.model.Piskel(size.width, size.height, descriptor);
 
       var layer = new pskl.model.Layer("Layer 1");
       var frame = new pskl.model.Frame(size.width, size.height);
@@ -17613,6 +19896,9 @@ var jscolor = {
 
       this.paletteController = new pskl.controller.PaletteController();
       this.paletteController.init();
+
+      this.palettesListController = new pskl.controller.PalettesListController();
+      this.palettesListController.init();
 
       this.drawingController = new pskl.controller.DrawingController(this.piskelController, this.paletteController, $('#drawing-canvas-container'));
       this.drawingController.init();
@@ -17632,6 +19918,9 @@ var jscolor = {
       this.settingsController = new pskl.controller.settings.SettingsController(this.piskelController);
       this.settingsController.init();
 
+      this.dialogsController = new pskl.controller.dialogs.DialogsController(this.piskelController);
+      this.dialogsController.init();
+
       this.toolController = new pskl.controller.ToolController();
       this.toolController.init();
 
@@ -17650,52 +19939,58 @@ var jscolor = {
       this.imageUploadService = new pskl.service.ImageUploadService();
       this.imageUploadService.init();
 
-
       this.cheatsheetService = new pskl.service.keyboard.CheatsheetService();
       this.cheatsheetService.init();
+
+      this.savedStatusService = new pskl.service.SavedStatusService(this.piskelController);
+      this.savedStatusService.init();
+
+      if (this.isAppEngineVersion) {
+        this.storageService = new pskl.service.AppEngineStorageService(this.piskelController);
+      } else {
+        this.storageService = new pskl.service.GithubStorageService(this.piskelController);
+      }
+      this.storageService.init();
 
 
       var drawingLoop = new pskl.rendering.DrawingLoop();
       drawingLoop.addCallback(this.render, this);
       drawingLoop.start();
 
-      this.initBootstrapTooltips_();
+      this.initTooltips_();
 
-      /**
-       * True when piskel is running in static mode (no back end needed).
-       * When started from APP Engine, appEngineToken_ (Boolean) should be set on window.pskl
-       */
-      this.isStaticVersion = !pskl.appEngineToken_;
-
-      if (this.isStaticVersion) {
-        this.finishInitStatic_();
-      } else {
+      if (this.isAppEngineVersion) {
         this.finishInitAppEngine_();
+      } else {
+        this.finishInitGithub_();
       }
     },
 
-    finishInitStatic_ : function () {
+    finishInitGithub_ : function () {
       var framesheetId = this.readFramesheetIdFromURL_();
       if (framesheetId) {
         $.publish(Events.SHOW_NOTIFICATION, [{
           "content" : "Loading animation with id : [" + framesheetId + "]"
         }]);
         this.loadFramesheetFromService(framesheetId);
-      } else {
-        this.localStorageService.displayRestoreNotification();
       }
     },
 
     finishInitAppEngine_ : function () {
-      if (pskl.framesheetData_ && pskl.framesheetData_.content) {
-        pskl.utils.serialization.Deserializer.deserialize(pskl.framesheetData_.content, function (piskel) {
+      if (pskl.appEnginePiskelData_ && pskl.appEnginePiskelData_.piskel) {
+        pskl.utils.serialization.Deserializer.deserialize(pskl.appEnginePiskelData_.piskel, function (piskel) {
+          piskel.setDescriptor(pskl.appEnginePiskelData_.descriptor);
           pskl.app.piskelController.setPiskel(piskel);
-          pskl.app.animationController.setFPS(pskl.framesheetData_.fps);
+          pskl.app.animationController.setFPS(pskl.appEnginePiskelData_.fps);
         });
       }
     },
 
-    initBootstrapTooltips_ : function () {
+    isLoggedIn : function () {
+      return pskl.appEnginePiskelData_ && pskl.appEnginePiskelData_.isLoggedIn;
+    },
+
+    initTooltips_ : function () {
       $('body').tooltip({
         selector: '[rel=tooltip]'
       });
@@ -17708,8 +20003,8 @@ var jscolor = {
     },
 
     readSizeFromURL_ : function () {
-      var sizeParam = this.readUrlParameter_("size"),
-        size;
+      var sizeParam = this.readUrlParameter_("size");
+      var size;
       // parameter expected as size=64x48 => size=widthxheight
       var parts = sizeParam.split("x");
       if (parts && parts.length == 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
@@ -17734,13 +20029,12 @@ var jscolor = {
     },
 
     readUrlParameter_ : function (paramName) {
-      var searchString = window.location.search.substring(1),
-        i, val, params = searchString.split("&");
-
-      for (i = 0; i < params.length; i++) {
-        val = params[i].split("=");
-        if (val[0] == paramName) {
-          return window.unescape(val[1]);
+      var searchString = window.location.search.substring(1);
+      var params = searchString.split("&");
+      for (var i = 0; i < params.length; i++) {
+        var param = params[i].split("=");
+        if (param[0] == paramName) {
+          return window.unescape(param[1]);
         }
       }
       return "";
@@ -17755,6 +20049,7 @@ var jscolor = {
         pskl.utils.serialization.Deserializer.deserialize(res.framesheet, function (piskel) {
           pskl.app.piskelController.setPiskel(piskel);
           pskl.app.animationController.setFPS(res.fps);
+
           $.publish(Events.HIDE_NOTIFICATION);
         });
       };
@@ -17766,72 +20061,15 @@ var jscolor = {
       xhr.send();
     },
 
-    storeSheet : function (event) {
-      if (this.isStaticVersion) {
-        this.storeSheetStatic_();
-      } else {
-        this.storeSheetAppEngine_();
-      }
-
-      if(event) {
-        event.stopPropagation();
-        event.preventDefault();
-      }
-      return false;
-    },
-
-    storeSheetStatic_ : function () {
-      var xhr = new XMLHttpRequest();
-      var formData = new FormData();
-      formData.append('framesheet_content', this.piskelController.serialize());
-      formData.append('fps_speed', $('#preview-fps').val());
-
-      xhr.open('POST', Constants.STATIC.URL.SAVE, true);
-
-      xhr.onload = function(e) {
-        if (this.status == 200) {
-          var baseUrl = window.location.href.replace(window.location.search, "");
-          window.location.href = baseUrl + "?frameId=" + this.responseText;
-        } else {
-          this.onerror(e);
-        }
-      };
-      xhr.onerror = function(e) {
-        $.publish(Events.SHOW_NOTIFICATION, [{"content": "Saving failed ("+this.status+")"}]);
-      };
-      xhr.send(formData);
-    },
-
-    storeSheetAppEngine_ : function () {
-      var xhr = new XMLHttpRequest();
-      var formData = new FormData();
-      formData.append('framesheet_content', this.piskelController.serialize());
-      formData.append('fps_speed', $('#preview-fps').val());
-      formData.append('name', $('#piskel-name').val());
-      formData.append('frames', this.piskelController.getFrameCount());
-      formData.append('preview', this.getFirstFrameAsPng());
-      formData.append('framesheet', this.getFramesheetAsPng());
-
-      xhr.open('POST', Constants.APPENGINE.URL.SAVE, true);
-
-      xhr.onload = function(e) {
-        if (this.status == 200) {
-          $.publish(Events.SHOW_NOTIFICATION, [{"content": "Successfully saved !"}]);
-        } else {
-          this.onerror(e);
-        }
-      };
-      xhr.onerror = function(e) {
-        $.publish(Events.SHOW_NOTIFICATION, [{"content": "Saving failed ("+this.status+")"}]);
-      };
-      xhr.send(formData);
+    store : function (callbacks) {
+      this.storageService.store(callbacks);
     },
 
     getFirstFrameAsPng : function () {
       var firstFrame = this.piskelController.getFrameAt(0);
       var canvasRenderer = new pskl.rendering.CanvasRenderer(firstFrame, 1);
       canvasRenderer.drawTransparentAs('rgba(0,0,0,0)');
-      var firstFrameCanvas = canvasRenderer.render().canvas;
+      var firstFrameCanvas = canvasRenderer.render();
       return firstFrameCanvas.toDataURL("image/png");
     },
 

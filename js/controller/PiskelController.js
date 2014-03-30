@@ -16,8 +16,8 @@
 
     this.layerIdCounter = 1;
 
-    $.publish(Events.PISKEL_RESET);
     $.publish(Events.FRAME_SIZE_CHANGED);
+    $.publish(Events.PISKEL_RESET);
   };
 
   ns.PiskelController.prototype.init = function () {
@@ -98,7 +98,7 @@
       l.removeFrameAt(index);
     });
     // Current frame index is impacted if the removed frame was before the current frame
-    if (this.currentFrameIndex >= index) {
+    if (this.currentFrameIndex >= index && this.currentFrameIndex > 0) {
       this.setCurrentFrameIndex(this.currentFrameIndex - 1);
     }
 

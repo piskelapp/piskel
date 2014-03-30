@@ -1,5 +1,6 @@
 (function () {
   var ns = $.namespace("pskl.controller");
+
   ns.AnimatedPreviewController = function (piskelController, container) {
     this.piskelController = piskelController;
     this.container = container;
@@ -18,7 +19,7 @@
     };
     this.renderer = new pskl.rendering.frame.FrameRenderer(this.container, renderingOptions);
 
-    $.subscribe(Events.FRAME_SIZE_CHANGED, this.updateZoom_.bind(this));
+    $.subscribe(Events.FRAME_SIZE_CHANGED, this.onFrameSizeChange_.bind(this));
   };
 
   ns.AnimatedPreviewController.prototype.init = function () {
@@ -26,6 +27,7 @@
     // consistent behavior across all other browsers that support the input type range
     // see https://bugzilla.mozilla.org/show_bug.cgi?id=853670
     $("#preview-fps")[0].addEventListener('change', this.onFPSSliderChange.bind(this));
+    document.querySelector(".right-column").style.width = Constants.ANIMATED_PREVIEW_WIDTH + 'px';
   };
 
   ns.AnimatedPreviewController.prototype.onFPSSliderChange = function (evt) {
@@ -67,10 +69,11 @@
     return Math.min(hZoom, wZoom);
   };
 
-  ns.AnimatedPreviewController.prototype.updateZoom_ = function () {
+  ns.AnimatedPreviewController.prototype.onFrameSizeChange_ = function () {
     var frame = this.piskelController.getCurrentFrame();
     var zoom = this.calculateZoom_();
-    this.renderer.setZoom(zoom);
     this.renderer.setDisplaySize(frame.getWidth() * zoom, frame.getHeight() * zoom);
+    this.renderer.setZoom(zoom);
+    this.renderer.setOffset(0, 0);
   };
 })();

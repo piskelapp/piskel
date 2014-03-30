@@ -13,6 +13,10 @@
     this.initMarkup_();
     pskl.app.shortcutService.addShortcut('shift+?', this.toggleCheatsheet_.bind(this));
     pskl.app.shortcutService.addShortcut('?', this.toggleCheatsheet_.bind(this));
+
+    var link = $('.cheatsheet-link');
+    link.click(this.toggleCheatsheet_.bind(this));
+
     $.subscribe(Events.TOGGLE_HELP, this.toggleCheatsheet_.bind(this));
     $.subscribe(Events.ESCAPE, this.onEscape_.bind(this));
   };
@@ -47,58 +51,71 @@
   ns.CheatsheetService.prototype.initMarkup_ = function () {
     this.initMarkupForTools_();
     this.initMarkupForMisc_();
+    this.initMarkupForSelection_();
+  };
+
+  ns.CheatsheetService.prototype.toDescriptor_ = function (shortcut, description, icon) {
+    return {
+      'shortcut' : shortcut,
+      'description' : description,
+      'icon' : icon
+    };
+  };
+
+  ns.CheatsheetService.prototype.getDomFromDescriptor_ = function (descriptor) {
+    var shortcutTemplate = pskl.utils.Template.get('cheatsheet-shortcut-template');
+    var markup = pskl.utils.Template.replace(shortcutTemplate, {
+      shortcutIcon : descriptor.icon,
+      shortcutDescription : descriptor.description,
+      shortcutKey : descriptor.shortcut
+    });
+
+    return pskl.utils.Template.createFromHTML(markup);
+  };
+
+  ns.CheatsheetService.prototype.initMarkupAbstract_ = function (descriptors, containerSelector) {
+    var container = $(containerSelector, this.cheatsheetEl_).get(0);
+    for (var i = 0 ; i < descriptors.length ; i++) {
+      var descriptor = descriptors[i];
+      var shortcutEl = this.getDomFromDescriptor_(descriptor);
+      container.appendChild(shortcutEl);
+    }
   };
 
   ns.CheatsheetService.prototype.initMarkupForTools_ = function () {
-    var shortcutTemplate = pskl.utils.Template.get('cheatsheet-shortcut-template');
+    var descriptors = pskl.app.toolController.tools.map(function (tool) {
+      return this.toDescriptor_(tool.shortcut, tool.instance.helpText, 'tool-icon ' + tool.instance.toolId);
+    }.bind(this));
 
-    var toolShortcutsContainer = $('.cheatsheet-tool-shortcuts', this.cheatsheetEl_).get(0);
-    var tools = pskl.app.toolController.tools;
-    for (var i = 0 ; i < tools.length ; i++) {
-      var tool = tools[i];
-      var shortcutEl = pskl.utils.Template.createFromHTML(
-        pskl.utils.Template.replace(shortcutTemplate, {
-          shortcutIcon : 'tool-icon ' + tool.instance.toolId,
-          shortcutDescription : tool.instance.helpText,
-          shortcutKey : tool.shortcut
-        })
-      );
-      toolShortcutsContainer.appendChild(shortcutEl);
-    }
+    this.initMarkupAbstract_(descriptors, '.cheatsheet-tool-shortcuts');
   };
 
   ns.CheatsheetService.prototype.initMarkupForMisc_ = function () {
-    var shortcutTemplate = pskl.utils.Template.get('cheatsheet-shortcut-template');
-
-    var miscShortcutsContainer = $('.cheatsheet-misc-shortcuts', this.cheatsheetEl_).get(0);
-    var toDescriptor = function (shortcut, description) {
-      return {shortcut:shortcut, description:description};
-    };
-    var miscKeys = [
-      toDescriptor('X', 'Swap primary/secondary colors'),
-      toDescriptor('D', 'Reset default colors'),
-      toDescriptor('ctrl + X', 'Cut selection'),
-      toDescriptor('ctrl + C', 'Copy selection'),
-      toDescriptor('ctrl + V', 'Paste selection'),
-      toDescriptor('ctrl + Z', 'Undo'),
-      toDescriptor('ctrl + Y', 'Redo'),
-      toDescriptor('&#65514;', 'Select previous frame'), /* ASCII for up-arrow */
-      toDescriptor('&#65516;', 'Select next frame'), /* ASCII for down-arrow */
-      toDescriptor('N', 'Create new frame'),
-      toDescriptor('shift + N', 'Duplicate selected frame'),
-      toDescriptor('shift + ?', 'Open/Close this popup')
+    var descriptors = [
+      this.toDescriptor_('X', 'Swap primary/secondary colors'),
+      this.toDescriptor_('D', 'Reset default colors'),
+      this.toDescriptor_('ctrl + Z', 'Undo'),
+      this.toDescriptor_('ctrl + Y', 'Redo'),
+      this.toDescriptor_('&#65514;', 'Select previous frame'), /* ASCII for up-arrow */
+      this.toDescriptor_('&#65516;', 'Select next frame'), /* ASCII for down-arrow */
+      this.toDescriptor_('N', 'Create new frame'),
+      this.toDescriptor_('shift + N', 'Duplicate selected frame'),
+      this.toDescriptor_('shift + ?', 'Open/Close this popup'),
+      this.toDescriptor_('alt + P', 'Open the Palette Manager')
     ];
-    for (var i = 0 ; i < miscKeys.length ; i++) {
-      var key = miscKeys[i];
-      var shortcutEl = pskl.utils.Template.createFromHTML(
-        pskl.utils.Template.replace(shortcutTemplate, {
-          shortcutIcon : '',
-          shortcutDescription : key.description,
-          shortcutKey : key.shortcut
-        })
-      );
-      miscShortcutsContainer.appendChild(shortcutEl);
-    }
+
+    this.initMarkupAbstract_(descriptors, '.cheatsheet-misc-shortcuts');
+  };
+
+  ns.CheatsheetService.prototype.initMarkupForSelection_ = function () {
+    var descriptors = [
+      this.toDescriptor_('ctrl + X', 'Cut selection'),
+      this.toDescriptor_('ctrl + C', 'Copy selection'),
+      this.toDescriptor_('ctrl + V', 'Paste selection'),
+      this.toDescriptor_('del', 'Delete selection')
+    ];
+
+    this.initMarkupAbstract_(descriptors, '.cheatsheet-selection-shortcuts');
   };
 
 })();

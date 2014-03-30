@@ -16,7 +16,7 @@
   /**
    * @override
    */
-  ns.PaintBucket.prototype.applyToolAt = function(col, row, color, frame, overlay) {
+  ns.PaintBucket.prototype.applyToolAt = function(col, row, color, frame, overlay, event) {
 
     pskl.PixelUtils.paintSimilarConnectedPixelsFromFrame(frame, col, row, color);
   };

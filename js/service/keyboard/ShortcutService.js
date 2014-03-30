@@ -21,7 +21,8 @@
     this.shortcuts_[key] = this.shortcuts_[key] || {};
 
     if (this.shortcuts_[key][meta]) {
-      throw 'Shortcut ' + meta + ' + ' + key + ' already registered';
+      var keyStr = (meta !== 'normal' ? meta + ' + ' : '') + key;
+      console.error('[ShortcutService] >>> Shortcut [' + keyStr + '] already registered');
     } else {
       this.shortcuts_[key][meta] = callback;
     }
@@ -46,6 +47,9 @@
     } else if (key.indexOf('shift+') === 0) {
       meta = 'shift';
       key = key.replace('shift+', '');
+    } else if (key.indexOf('alt+') === 0) {
+      meta = 'alt';
+      key = key.replace('alt+', '');
     }
     return {meta : meta, key : key};
   };
@@ -54,26 +58,36 @@
    * @private
    */
   ns.ShortcutService.prototype.onKeyUp_ = function(evt) {
-    // jquery names FTW ...
-    var keycode = evt.which;
-    var charkey = pskl.service.keyboard.KeycodeTranslator.toChar(keycode);
+    if (!this.isInInput_(evt)) {
+      // jquery names FTW ...
+      var keycode = evt.which;
+      var targetTagName = evt.target.nodeName.toUpperCase();
+      var charkey = pskl.service.keyboard.KeycodeTranslator.toChar(keycode);
 
-    var keyShortcuts = this.shortcuts_[charkey];
-    if(keyShortcuts) {
-      var cb;
-      if (this.isCtrlKeyPressed_(evt)) {
-        cb = keyShortcuts.ctrl;
-      } else if (this.isShiftKeyPressed_(evt)) {
-        cb = keyShortcuts.shift;
-      } else {
-        cb = keyShortcuts.normal;
-      }
+      var keyShortcuts = this.shortcuts_[charkey];
+      if(keyShortcuts) {
+        var cb;
+        if (this.isCtrlKeyPressed_(evt)) {
+          cb = keyShortcuts.ctrl;
+        } else if (this.isShiftKeyPressed_(evt)) {
+          cb = keyShortcuts.shift;
+        } else if (this.isAltKeyPressed_(evt)) {
+          cb = keyShortcuts.alt;
+        } else {
+          cb = keyShortcuts.normal;
+        }
 
-      if(cb) {
-        cb(charkey);
-        evt.preventDefault();
+        if(cb) {
+          cb(charkey);
+          evt.preventDefault();
+        }
       }
     }
+  };
+
+  ns.ShortcutService.prototype.isInInput_ = function (evt) {
+    var targetTagName = evt.target.nodeName.toUpperCase();
+    return targetTagName === 'INPUT' || targetTagName === 'TEXTAREA';
   };
 
   ns.ShortcutService.prototype.isCtrlKeyPressed_ = function (evt) {
@@ -82,6 +96,10 @@
 
   ns.ShortcutService.prototype.isShiftKeyPressed_ = function (evt) {
     return evt.shiftKey;
+  };
+
+  ns.ShortcutService.prototype.isAltKeyPressed_ = function (evt) {
+    return evt.altKey;
   };
 
   ns.ShortcutService.prototype.isMac_ = function () {

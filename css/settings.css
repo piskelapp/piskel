@@ -8,6 +8,7 @@
   -webkit-transition: all 200ms ease-out;
   -moz-transition: all 200ms ease-out;
   -ms-transition: all 200ms ease-out;
+  -o-transition: all 200ms ease-out;
   transition: all 200ms ease-out;
 }
 
@@ -20,6 +21,66 @@
   margin-right: 0;
 }
 
+/*
+ * Settings icons
+ */
+
+.tool-icon.gallery-icon {
+  background-image: url(../img/gallery.png);
+  background-position: 3px 3px;
+  background-size: 39px 39px;
+}
+
+.tool-icon.resize-icon {
+  background-image: url(../img/resize-icon.png);
+  background-position: 10px 10px;
+  background-size: 26px 26px;
+}
+
+.tool-icon.save-icon {
+  background-image: url(../img/save.png);
+  background-position: 6px 6px;
+  background-size: 36px 36px;
+}
+
+.tool-icon.gear-icon {
+  background-image: url(../img/gear.png);
+  background-position: 6px 7px;
+  background-size: 32px 32px;
+}
+
+.tool-icon.upload-cloud-icon {
+  background-image: url(../img/cloud_export.png);
+  background-position: 4px 0px;
+  background-size: 36px 36px;
+  position: relative;
+}
+
+.tool-icon.local-storage-icon {
+  background-image: url(../img/local-storage-icon.png);
+  background-position: 10px 12px;
+  background-size: 30px;
+  position: relative;
+}
+
+.tool-icon.import-icon {
+  background-image: url(../img/import-icon.png);
+  background-position: 10px 5px;
+  background-size: 26px;
+  position: relative;
+}
+
+.upload-cloud-icon .label {
+  position: absolute;
+  left: 0;
+  bottom: 4px;
+  right: 0;
+  font-size: 11px;
+  text-transform: uppercase;
+  color: #fff;
+  text-align: center;
+}
+
 .drawer-content {
   overflow: hidden;
   background-color: #444;
@@ -28,6 +89,7 @@
   width: 280px;
   border-top-left-radius: 4px;
   border-bottom-left-radius: 4px;
+  box-shadow: 0 0 5px 0 black;
 }
 
 .right-sticky-section.expanded .tool-icon {
@@ -39,6 +101,7 @@
   background-color: #444;
   margin-right: 0;
   padding-right: 2px;
+  border-left : 3px solid gold;
 }
 
 .settings-section {
@@ -49,6 +112,10 @@
   text-shadow: 1px 1px #000;
 }
 
+.settings-section .button {
+  margin: 0;
+}
+
 .settings-title {
   margin-top: 20px;
   margin-bottom: 10px;
@@ -57,7 +124,9 @@
   padding-bottom: 5px;
 }
 
-.settings-item {}
+.settings-form-section {
+  margin-bottom: 10px;
+}
 
 .background-picker-wrapper {
   overflow: hidden;
@@ -92,7 +161,8 @@
   border: gold 1px solid;
 }
 
-/* Gif Export Setting panel*/
+/* Gif/Png Export Setting panel*/
+/*******************************/
 .gif-upload-button,
 .gif-render-button {
   /*float : right;*/
@@ -104,10 +174,24 @@
   margin:10px 0;
 }
 
-.gif-export-preview {
+.gif-export-preview,
+.png-export-preview {
   margin-top:20px;
   max-width:240px;
   position:relative;
+}
+
+.png-export-preview {
+  margin:10px 0;
+  overflow: hidden;
+}
+
+.png-export-preview img {
+  float: left;
+}
+
+.png-upload-status {
+  margin : 10px 0;
 }
 
 .preview-upload-ongoing:before{
@@ -125,7 +209,8 @@
 }
 
 /* Import panel */
-.import-section {
+.import-section,
+.resize-section {
   margin: 15px 0;
 }
 
@@ -149,13 +234,15 @@
   border-radius: 3px;
 }
 
-.import-resize-field {
-  width: 30px;
+.import-size-field,
+.resize-size-field {
+  width: 50px;
   margin-right: 8px;
   text-align: right;
 }
 
-.import-resize-field:nth-of-type(2) {
+.import-size-field:nth-of-type(2),
+.resize-size-field:nth-of-type(2) {
   margin-left: 5px;
 }
 
@@ -177,7 +264,53 @@
   text-shadow: none;
 }
 
+.save-field {
+  width: 100%;
+}
+
+#save-status {
+  margin-top: 10px;
+}
+.status {
+  height: 1.5rem;
+  vertical-align: middle;
+  font-weight: normal;
+  text-shadow: none;
+}
+
 [name=smooth-resize-checkbox] {
   margin : 0 8px;
+}
+
+[name*=checkbox] {
   vertical-align: middle;
+}
+
+.local-piskels-list {
+  width: 100%;
+}
+
+.local-piskel-item {
+  height: 3em;
+}
+
+.local-piskel-name {
+  width: 40%;
+}
+
+.local-piskel-save-date {
+  font-weight : normal;
+}
+
+.local-piskels-list a {
+  text-decoration: none;
+}
+.local-piskels-list a:hover {
+  text-decoration: underline;
+}
+.local-piskel-load-link {
+  color : gold;
+}
+.local-piskel-delete-link {
+  color : red;
 }

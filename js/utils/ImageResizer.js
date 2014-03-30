@@ -29,9 +29,10 @@
      * @param  {Canvas2d} source original image to be resized, as a 2d canvas
      * @param  {Number} zoom   ratio between desired dim / source dim
      * @param  {Number} margin gap to be displayed between pixels
+     * @param  {String} color or the margin (will be transparent if not provided)
      * @return {Canvas2d} the resized canvas
      */
-    resizeNearestNeighbour : function (source, zoom, margin) {
+    resizeNearestNeighbour : function (source, zoom, margin, marginColor) {
       margin = margin || 0;
       var canvas = pskl.CanvasUtils.createCanvas(zoom*source.width, zoom*source.height);
       var context = canvas.getContext('2d');
@@ -64,6 +65,12 @@
 
           context.fillStyle = "rgba(" + r + "," + g + "," + b + "," + (a / 255) + ")";
           context.fillRect(xOffset, yOffset, xRange-margin, yRange-margin);
+
+          if (margin && marginColor) {
+            context.fillStyle = marginColor;
+            context.fillRect(xOffset + xRange - margin, yOffset, margin, yRange);
+            context.fillRect(xOffset, yOffset + yRange - margin, xRange, margin);
+          }
 
           yOffset += yRange;
         }

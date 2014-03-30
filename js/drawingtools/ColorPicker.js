@@ -13,15 +13,16 @@
 
   pskl.utils.inherit(ns.ColorPicker, ns.BaseTool);
 
+
   /**
    * @override
    */
-  ns.ColorPicker.prototype.applyToolAt = function(col, row, color, frame, overlay, context) {
+  ns.ColorPicker.prototype.applyToolAt = function(col, row, color, frame, overlay, event) {
     if (frame.containsPixel(col, row)) {
       var sampledColor = frame.getPixel(col, row);
-      if (context.button == Constants.LEFT_BUTTON) {
+      if (event.button == Constants.LEFT_BUTTON) {
         $.publish(Events.SELECT_PRIMARY_COLOR, [sampledColor]);
-      } else if (context.button == Constants.RIGHT_BUTTON) {
+      } else if (event.button == Constants.RIGHT_BUTTON) {
         $.publish(Events.SELECT_SECONDARY_COLOR, [sampledColor]);
       }
     }

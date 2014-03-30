@@ -16,6 +16,7 @@
     pskl.app.shortcutService.addShortcut('ctrl+V', this.paste.bind(this));
     pskl.app.shortcutService.addShortcut('ctrl+X', this.cut.bind(this));
     pskl.app.shortcutService.addShortcut('ctrl+C', this.copy.bind(this));
+    pskl.app.shortcutService.addShortcut('del', this.erase.bind(this));
 
     $.subscribe(Events.TOOL_SELECTED, $.proxy(this.onToolSelected_, this));
   };
@@ -46,20 +47,23 @@
     this.cleanSelection_();
   };
 
+  ns.SelectionManager.prototype.erase = function () {
+    var pixels = this.currentSelection.pixels;
+    var currentFrame = this.piskelController.getCurrentFrame();
+    for(var i=0, l=pixels.length; i<l; i++) {
+      try {
+        currentFrame.setPixel(pixels[i].col, pixels[i].row, Constants.TRANSPARENT_COLOR);
+      } catch(e) {
+        // Catching out of frame's bound pixels without testing
+      }
+    }
+  };
+
   ns.SelectionManager.prototype.cut = function() {
     if(this.currentSelection) {
       // Put cut target into the selection:
       this.currentSelection.fillSelectionFromFrame(this.piskelController.getCurrentFrame());
-
-      var pixels = this.currentSelection.pixels;
-      var currentFrame = this.piskelController.getCurrentFrame();
-      for(var i=0, l=pixels.length; i<l; i++) {
-        try {
-          currentFrame.setPixel(pixels[i].col, pixels[i].row, Constants.TRANSPARENT_COLOR);
-        } catch(e) {
-          // Catching out of frame's bound pixels without testing
-        }
-      }
+      this.erase();
     }
     else {
       throw "Bad state for CUT callback in SelectionManager";

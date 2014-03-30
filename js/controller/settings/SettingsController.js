@@ -1,18 +1,34 @@
 (function () {
-  var ns = $.namespace("pskl.controller.settings");
+  var ns = $.namespace('pskl.controller.settings');
 
   var settings = {
     'user' : {
       template : 'templates/settings/application.html',
       controller : ns.ApplicationSettingsController
     },
+    'resize' : {
+      template : 'templates/settings/resize.html',
+      controller : ns.ResizeController
+    },
     'gif' : {
       template : 'templates/settings/export-gif.html',
       controller : ns.GifExportController
     },
+    'png' : {
+      template : 'templates/settings/export-png.html',
+      controller : ns.PngExportController
+    },
     'import' : {
       template : 'templates/settings/import.html',
       controller : ns.ImportController
+    },
+    'localstorage' : {
+      template : 'templates/settings/localstorage.html',
+      controller : ns.LocalStorageController
+    },
+    'save' : {
+      template : 'templates/settings/save.html',
+      controller : ns.SaveController
     }
   };
 
@@ -21,9 +37,9 @@
 
   ns.SettingsController = function (piskelController) {
     this.piskelController = piskelController;
-    this.drawerContainer = document.getElementById("drawer-container");
+    this.drawerContainer = document.getElementById('drawer-container');
     this.settingsContainer = $('[data-pskl-controller=settings]');
-    this.expanded = false;
+    this.isExpanded = false;
     this.currentSetting = null;
   };
 
@@ -31,25 +47,33 @@
    * @public
    */
   ns.SettingsController.prototype.init = function() {
-    // Expand drawer when clicking 'Settings' tab.
-    $('[data-setting]').click(function(evt) {
-      var el = evt.originalEvent.currentTarget;
-      var setting = el.getAttribute("data-setting");
-      if (this.currentSetting != setting) {
-        this.loadSetting(setting);
-      } else {
-        this.closeDrawer();
-      }
-    }.bind(this));
-
-    $('body').click(function (evt) {
-      var isInSettingsContainer = $.contains(this.settingsContainer.get(0), evt.target);
-      if (this.expanded && !isInSettingsContainer) {
-        this.closeDrawer();
-      }
-    }.bind(this));
-
+    $('[data-setting]').click(this.onSettingIconClick.bind(this));
+    $('body').click(this.onBodyClick.bind(this));
     $.subscribe(Events.CLOSE_SETTINGS_DRAWER, this.closeDrawer.bind(this));
+  };
+
+  ns.SettingsController.prototype.onSettingIconClick = function (evt) {
+    var el = evt.originalEvent.currentTarget;
+    var setting = el.getAttribute('data-setting');
+    if (this.currentSetting != setting) {
+      this.loadSetting(setting);
+    } else {
+      this.closeDrawer();
+    }
+    evt.originalEvent.stopPropagation();
+    evt.originalEvent.preventDefault();
+  };
+
+  ns.SettingsController.prototype.onBodyClick = function (evt) {
+    var target = evt.target;
+
+    var isInDrawerContainer = pskl.utils.Dom.isParent(target, this.drawerContainer);
+    var isInSettingsIcon = target.getAttribute('data-setting');
+    var isInSettingsContainer = isInDrawerContainer || isInSettingsIcon;
+
+    if (this.isExpanded && !isInSettingsContainer) {
+      this.closeDrawer();
+    }
   };
 
   ns.SettingsController.prototype.loadSetting = function (setting) {
@@ -61,7 +85,7 @@
     $('.' + SEL_SETTING_CLS).removeClass(SEL_SETTING_CLS);
     $('[data-setting='+setting+']').addClass(SEL_SETTING_CLS);
 
-    this.expanded = true;
+    this.isExpanded = true;
     this.currentSetting = setting;
   };
 
@@ -69,7 +93,7 @@
     this.settingsContainer.removeClass(EXP_DRAWER_CLS);
     $('.' + SEL_SETTING_CLS).removeClass(SEL_SETTING_CLS);
 
-    this.expanded = false;
+    this.isExpanded = false;
     this.currentSetting = null;
   };
 

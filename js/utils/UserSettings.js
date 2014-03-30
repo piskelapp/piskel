@@ -2,12 +2,11 @@
   var ns = $.namespace("pskl");
 
   ns.UserSettings = {
-
-    SHOW_GRID : 'SHOW_GRID',
+    GRID_WIDTH : 'GRID_WIDTH',
     CANVAS_BACKGROUND : 'CANVAS_BACKGROUND',
 
     KEY_TO_DEFAULT_VALUE_MAP_ : {
-      'SHOW_GRID' : false,
+      'GRID_WIDTH' : 0,
       'CANVAS_BACKGROUND' : 'medium-canvas-background'
     },
 

@@ -1,7 +1,6 @@
 (function () {
   var ns = $.namespace("pskl.controller");
 
-
   ns.ToolController = function () {
     var toDescriptor = function (id, shortcut, instance) {
       return {id:id, shortcut:shortcut, instance:instance};
@@ -36,7 +35,7 @@
     // Set SimplePen as default selected tool:
     this.selectTool_(this.tools[0]);
     // Activate listener on tool panel:
-    $("#tool-section").click($.proxy(this.onToolIconClicked_, this));
+    $("#tool-section").mousedown($.proxy(this.onToolIconClicked_, this));
   };
 
   /**
@@ -47,6 +46,7 @@
     var previousSelectedToolClass = stage.data("selected-tool-class");
     if(previousSelectedToolClass) {
       stage.removeClass(previousSelectedToolClass);
+      stage.removeClass(pskl.drawingtools.Move.TOOL_ID);
     }
     stage.addClass(tool.instance.toolId);
     stage.data("selected-tool-class", tool.instance.toolId);
@@ -118,15 +118,23 @@
    * @private
    */
   ns.ToolController.prototype.getToolMarkup_ = function(tool) {
-    var instance = tool.instance;
+    var toolId = tool.instance.toolId;
 
-    var classList = ['tool-icon', instance.toolId];
+    var classList = ['tool-icon', toolId];
     if (this.currentSelectedTool == tool) {
       classList.push('selected');
     }
 
-    return '<li rel="tooltip" data-placement="right" class="' + classList.join(' ') + '" data-tool-id="' + instance.toolId +
-              '" title="' + instance.helpText + '"></li>';
+    var tpl = pskl.utils.Template.get('drawing-tool-item-template');
+    return pskl.utils.Template.replace(tpl, {
+      cssclass : classList.join(' '),
+      toolid : toolId,
+      title : this.getTooltipText_(tool)
+    });
+  };
+
+  ns.ToolController.prototype.getTooltipText_ = function (tool) {
+    return tool.instance.helpText + ' (' + tool.shortcut + ')';
   };
 
   ns.ToolController.prototype.addKeyboardShortcuts_ = function () {

@@ -180,7 +180,7 @@
     }
     var tileCount = document.createElement("div");
     tileCount.className = "tile-overlay tile-count";
-    tileCount.innerHTML = tileNumber;
+    tileCount.innerHTML = tileNumber + 1;
     previewTileRoot.appendChild(tileCount);
 
 

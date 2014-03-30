@@ -154,7 +154,9 @@
         var frame = pskl.utils.FrameUtils.createFromImage(image);
 
         var layer = pskl.model.Layer.fromFrames('Layer 1', [frame]);
-        var piskel = pskl.model.Piskel.fromLayers([layer]);
+
+        var descriptor = new pskl.model.piskel.Descriptor('Imported piskel', '');
+        var piskel = pskl.model.Piskel.fromLayers([layer], descriptor);
 
         pskl.app.piskelController.setPiskel(piskel);
         pskl.app.animationController.setFPS(Constants.DEFAULT.FPS);

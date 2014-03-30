@@ -8,11 +8,11 @@
 
   ns.BaseTool = function() {};
 
-  ns.BaseTool.prototype.applyToolAt = function(col, row, color, frame, overlay) {};
+  ns.BaseTool.prototype.applyToolAt = function(col, row, color, frame, overlay, event) {};
 
-  ns.BaseTool.prototype.moveToolAt = function(col, row, color, frame, overlay) {};
+  ns.BaseTool.prototype.moveToolAt = function(col, row, color, frame, overlay, event) {};
 
-  ns.BaseTool.prototype.moveUnactiveToolAt = function(col, row, color, frame, overlay) {
+  ns.BaseTool.prototype.moveUnactiveToolAt = function(col, row, color, frame, overlay, event) {
     if (overlay.containsPixel(col, row)) {
       if (!isNaN(this.highlightedPixelCol) &&
         !isNaN(this.highlightedPixelRow) &&
@@ -31,7 +31,20 @@
     }
   };
 
-  ns.BaseTool.prototype.releaseToolAt = function(col, row, color, frame, overlay) {};
+  ns.BaseTool.prototype.hideHighlightedPixel = function(overlay) {
+    if (this.highlightedPixelRow !== null && this.highlightedPixelCol !== null) {
+      try {
+        overlay.setPixel(this.highlightedPixelCol, this.highlightedPixelRow, Constants.TRANSPARENT_COLOR);
+      } catch (e) {
+        console.warn('ns.BaseTool.prototype.hideHighlightedPixel failed');
+      }
+      this.highlightedPixelRow = null;
+      this.highlightedPixelCol = null;
+    }
+  };
+
+
+  ns.BaseTool.prototype.releaseToolAt = function(col, row, color, frame, overlay, event) {};
 
   /**
    * Bresenham line algorihtm: Get an array of pixels from

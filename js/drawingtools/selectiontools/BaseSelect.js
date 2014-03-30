@@ -7,7 +7,7 @@
   var ns = $.namespace("pskl.drawingtools");
 
   ns.BaseSelect = function() {
-    this.secondaryToolId = "tool-move";
+    this.secondaryToolId = pskl.drawingtools.Move.TOOL_ID;
     this.BodyRoot = $('body');
 
     // Select's first point coordinates (set in applyToolAt)
@@ -20,7 +20,7 @@
   /**
    * @override
    */
-  ns.BaseSelect.prototype.applyToolAt = function(col, row, color, frame, overlay) {
+  ns.BaseSelect.prototype.applyToolAt = function(col, row, color, frame, overlay, event) {
     this.startCol = col;
     this.startRow = row;
 
@@ -47,7 +47,7 @@
   /**
    * @override
    */
-  ns.BaseSelect.prototype.moveToolAt = function(col, row, color, frame, overlay) {
+  ns.BaseSelect.prototype.moveToolAt = function(col, row, color, frame, overlay, event) {
     if(this.mode == "select") {
 
       this.onSelect_(col, row, color, frame, overlay);
@@ -61,7 +61,7 @@
   /**
    * @override
    */
-  ns.BaseSelect.prototype.releaseToolAt = function(col, row, color, frame, overlay) {
+  ns.BaseSelect.prototype.releaseToolAt = function(col, row, color, frame, overlay, event) {
     if(this.mode == "select") {
       this.onSelectEnd_(col, row, color, frame, overlay);
     } else if(this.mode == "moveSelection") {
@@ -70,13 +70,16 @@
     }
   };
 
+  ns.BaseSelect.prototype.hideHighlightedPixel = function () {
+    // not implemented for selection tools
+  };
 
   /**
    * If we mouseover the selection draw inside the overlay frame, show the 'move' cursor
    * instead of the 'select' one. It indicates that we can move the selection by dragndroping it.
    * @override
    */
-  ns.BaseSelect.prototype.moveUnactiveToolAt = function(col, row, color, frame, overlay) {
+  ns.BaseSelect.prototype.moveUnactiveToolAt = function(col, row, color, frame, overlay, event) {
 
     if(overlay.getPixel(col, row) != Constants.SELECTION_TRANSPARENT_COLOR) {
       // We're hovering the selection, show the move tool:
@@ -87,6 +90,10 @@
       this.BodyRoot.addClass(this.secondaryToolId);
       this.BodyRoot.removeClass(this.toolId);
     }
+  };
+
+  ns.BaseSelect.prototype.hideHighlightedPixel = function() {
+    // there is no highlighted pixel for selection tools, do nothing
   };
 
   /**

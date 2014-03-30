@@ -37,7 +37,6 @@
       y : 0
     };
 
-    this.isGridEnabled_ = false;
     this.supportGridRendering = renderingOptions.supportGridRendering;
 
     this.classes = classes || [];
@@ -56,7 +55,7 @@
     this.displayCanvas = null;
     this.setDisplaySize(renderingOptions.width, renderingOptions.height);
 
-    this.setGridEnabled(pskl.UserSettings.get(pskl.UserSettings.SHOW_GRID));
+    this.setGridWidth(pskl.UserSettings.get(pskl.UserSettings.GRID_WIDTH));
 
     this.updateBackgroundClass_(pskl.UserSettings.get(pskl.UserSettings.CANVAS_BACKGROUND));
     $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
@@ -77,17 +76,18 @@
   };
 
   ns.FrameRenderer.prototype.setZoom = function (zoom) {
-    // back up center coordinates
-    var centerX = this.offset.x + (this.displayWidth/(2*this.zoom));
-    var centerY = this.offset.y + (this.displayHeight/(2*this.zoom));
+    if (zoom > Constants.MINIMUM_ZOOM) {
+      // back up center coordinates
+      var centerX = this.offset.x + (this.displayWidth/(2*this.zoom));
+      var centerY = this.offset.y + (this.displayHeight/(2*this.zoom));
 
-    this.zoom = Math.max(1, zoom);
-
-    // recenter
-    this.setOffset(
-      centerX - (this.displayWidth/(2*this.zoom)),
-      centerY - (this.displayHeight/(2*this.zoom))
-    );
+      this.zoom = zoom;
+      // recenter
+      this.setOffset(
+        centerX - (this.displayWidth/(2*this.zoom)),
+        centerY - (this.displayHeight/(2*this.zoom))
+      );
+    }
   };
 
   ns.FrameRenderer.prototype.getZoom = function () {
@@ -136,12 +136,16 @@
     this.offset.y = y;
   };
 
-  ns.FrameRenderer.prototype.setGridEnabled = function (flag) {
-    this.isGridEnabled_ = flag && this.supportGridRendering;
+  ns.FrameRenderer.prototype.setGridWidth = function (value) {
+    this.gridWidth_ = value;
   };
 
-  ns.FrameRenderer.prototype.isGridEnabled = function () {
-    return this.isGridEnabled_;
+  ns.FrameRenderer.prototype.getGridWidth = function () {
+    if (this.supportGridRendering) {
+      return this.gridWidth_;
+    } else {
+      return 0;
+    }
   };
 
   ns.FrameRenderer.prototype.updateMargins_ = function () {
@@ -164,10 +168,10 @@
   };
 
   ns.FrameRenderer.prototype.onUserSettingsChange_ = function (evt, settingName, settingValue) {
-    if(settingName == pskl.UserSettings.SHOW_GRID) {
-      this.setGridEnabled(settingValue);
-    } else if (settingName == pskl.UserSettings.CANVAS_BACKGROUND) {
+    if (settingName == pskl.UserSettings.CANVAS_BACKGROUND) {
       this.updateBackgroundClass_(settingValue);
+    } else if (settingName == pskl.UserSettings.GRID_WIDTH) {
+      this.setGridWidth(settingValue);
     }
   };
 
@@ -246,8 +250,10 @@
     context.clearRect(0, 0, this.canvas.width*this.zoom, this.canvas.height*this.zoom);
 
     var isIE10 = pskl.utils.UserAgent.isIE && pskl.utils.UserAgent.version === 10;
-    if (this.isGridEnabled() || isIE10) {
-      var gridWidth = this.isGridEnabled() ? Constants.GRID_STROKE_WIDTH : 0;
+
+    var gridWidth = this.getGridWidth();
+    var isGridEnabled = gridWidth > 0;
+    if (isGridEnabled || isIE10) {
       var scaled = pskl.utils.ImageResizer.resizeNearestNeighbour(this.canvas, this.zoom, gridWidth);
       context.drawImage(scaled, 0, 0);
     } else {

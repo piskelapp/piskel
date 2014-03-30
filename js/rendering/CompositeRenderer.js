@@ -55,14 +55,14 @@
   };
 
 
-  ns.CompositeRenderer.prototype.setGridEnabled = function (b) {
+  ns.CompositeRenderer.prototype.setGridWidth = function (b) {
     this.renderers.forEach(function (renderer) {
-      renderer.setGridEnabled(b);
+      renderer.setGridWidth(b);
     });
   };
 
-  ns.CompositeRenderer.prototype.isGridEnabled = function () {
-    return this.getSampleRenderer_().isGridEnabled();
+  ns.CompositeRenderer.prototype.getGridWidth = function () {
+    return this.getSampleRenderer_().getGridWidth();
   };
 
   ns.CompositeRenderer.prototype.getSampleRenderer_ = function () {

@@ -7,7 +7,7 @@
   var ns = $.namespace("pskl.drawingtools");
 
   ns.Move = function() {
-    this.toolId = "tool-move";
+    this.toolId = ns.Move.TOOL_ID;
     this.helpText = "Move tool";
 
     // Stroke's first point coordinates (set in applyToolAt)
@@ -15,18 +15,20 @@
     this.startRow = null;
   };
 
+  ns.Move.TOOL_ID = "tool-move";
+
   pskl.utils.inherit(ns.Move, ns.BaseTool);
 
   /**
    * @override
    */
-  ns.Move.prototype.applyToolAt = function(col, row, color, frame, overlay) {
+  ns.Move.prototype.applyToolAt = function(col, row, color, frame, overlay, event) {
     this.startCol = col;
     this.startRow = row;
     this.frameClone = frame.clone();
   };
 
-  ns.Move.prototype.moveToolAt = function(col, row, color, frame, overlay) {
+  ns.Move.prototype.moveToolAt = function(col, row, color, frame, overlay, event) {
     var colDiff = col - this.startCol, rowDiff = row - this.startRow;
     this.shiftFrame(colDiff, rowDiff, frame, this.frameClone);
   };
@@ -48,7 +50,7 @@
   /**
    * @override
    */
-  ns.Move.prototype.releaseToolAt = function(col, row, color, frame, overlay) {
+  ns.Move.prototype.releaseToolAt = function(col, row, color, frame, overlay, event) {
     this.moveToolAt(col, row, color, frame, overlay);
   };
 })();

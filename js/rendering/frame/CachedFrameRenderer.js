@@ -19,7 +19,7 @@
     var size = this.getDisplaySize();
     var serializedFrame = [
       this.getZoom(),
-      this.isGridEnabled(),
+      this.getGridWidth(),
       offset.x, offset.y,
       size.width, size.height,
       frame.serialize()

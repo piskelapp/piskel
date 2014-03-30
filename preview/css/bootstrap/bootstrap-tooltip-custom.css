@@ -1,8 +1,0 @@
-.tooltip.in {
-  opacity: 0.95;
-  filter: alpha(opacity=95);
-}
-
-.tooltip {
-  line-height: 20px;
-}
