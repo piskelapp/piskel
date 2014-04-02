@@ -35,7 +35,7 @@
     // Delegated event listener for events repeated on all cards
     this.paletteBody.addEventListener('click', this.delegatedPaletteBodyClick.bind(this));
     this.paletteHead.addEventListener('click', this.delegatedPaletteHeadClick.bind(this));
-    this.createButton.addEventListener('click', this.createPalette.bind(this));
+    this.createButton.addEventListener('click', this.onCreateClick_.bind(this));
     this.saveAllButton.addEventListener('click', this.saveAll.bind(this));
     this.closeButton.addEventListener('click', this.closeDialog.bind(this));
 
@@ -54,6 +54,10 @@
 
   ns.PaletteManagerController.prototype.closeDialog = function () {
     $.publish(Events.DIALOG_HIDE);
+  };
+
+  ns.PaletteManagerController.prototype.onCreateClick_ = function (evt) {
+    this.createPalette();
   };
 
   ns.PaletteManagerController.prototype.createPalette = function (name) {
