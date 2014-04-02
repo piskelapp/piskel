@@ -100,6 +100,7 @@ exports.scripts = [
 
   // Tools
   "js/drawingtools/BaseTool.js",
+  "js/drawingtools/ShapeTool.js",
   "js/drawingtools/SimplePen.js",
   "js/drawingtools/VerticalMirrorPen.js",
   "js/drawingtools/Eraser.js",

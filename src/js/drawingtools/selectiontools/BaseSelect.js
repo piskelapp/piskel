@@ -80,15 +80,16 @@
    * @override
    */
   ns.BaseSelect.prototype.moveUnactiveToolAt = function(col, row, color, frame, overlay, event) {
-
-    if(overlay.getPixel(col, row) != Constants.SELECTION_TRANSPARENT_COLOR) {
-      // We're hovering the selection, show the move tool:
-      this.BodyRoot.addClass(this.toolId);
-      this.BodyRoot.removeClass(this.secondaryToolId);
-    } else {
-      // We're not hovering the selection, show create selection tool:
-      this.BodyRoot.addClass(this.secondaryToolId);
-      this.BodyRoot.removeClass(this.toolId);
+    if (overlay.containsPixel(col, row)) {
+      if(overlay.getPixel(col, row) != Constants.SELECTION_TRANSPARENT_COLOR) {
+        // We're hovering the selection, show the move tool:
+        this.BodyRoot.addClass(this.toolId);
+        this.BodyRoot.removeClass(this.secondaryToolId);
+      } else {
+        // We're not hovering the selection, show create selection tool:
+        this.BodyRoot.addClass(this.secondaryToolId);
+        this.BodyRoot.removeClass(this.toolId);
+      }
     }
   };
 

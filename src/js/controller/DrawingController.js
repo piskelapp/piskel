@@ -120,7 +120,7 @@
    * @private
    */
   ns.DrawingController.prototype.onMouseenter_ = function (event) {
-    this.container.bind('mousemove', $.proxy(this.onMousemove_, this));
+    $('body').bind('mousemove', $.proxy(this.onMousemove_, this));
   };
 
   /**

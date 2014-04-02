@@ -7,49 +7,15 @@
   var ns = $.namespace("pskl.drawingtools");
 
   ns.Circle = function() {
+    ns.ShapeTool.call(this);
+
     this.toolId = "tool-circle";
     this.helpText = "Circle tool";
-
-    // Circle's first point coordinates (set in applyToolAt)
-    this.startCol = null;
-    this.startRow = null;
   };
 
-  pskl.utils.inherit(ns.Circle, ns.BaseTool);
+  pskl.utils.inherit(ns.Circle, ns.ShapeTool);
 
-  /**
-   * @override
-   */
-  ns.Circle.prototype.applyToolAt = function(col, row, color, frame, overlay, event) {
-    this.startCol = col;
-    this.startRow = row;
-
-    // Drawing the first point of the rectangle in the fake overlay canvas:
-    overlay.setPixel(col, row, color);
-  };
-
-  ns.Circle.prototype.moveToolAt = function(col, row, color, frame, overlay, event) {
-    overlay.clear();
-    if(color == Constants.TRANSPARENT_COLOR) {
-      color = Constants.SELECTION_TRANSPARENT_COLOR;
-    }
-
-    // draw in overlay
-    this.drawCircle_(col, row, color, overlay);
-  };
-
-  /**
-   * @override
-   */
-  ns.Circle.prototype.releaseToolAt = function(col, row, color, frame, overlay, event) {
-    overlay.clear();
-    if(frame.containsPixel(col, row)) { // cancel if outside of canvas
-      // draw in frame to finalize
-      this.drawCircle_(col, row, color, frame);
-    }
-  };
-
-  ns.Circle.prototype.drawCircle_ = function (col, row, color, targetFrame) {
+  ns.Circle.prototype.draw_ = function (col, row, color, targetFrame) {
     var circlePoints = this.getCirclePixels_(this.startCol, this.startRow, col, row);
     for(var i = 0; i< circlePoints.length; i++) {
       // Change model:

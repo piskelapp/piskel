@@ -83,11 +83,17 @@
   };
 
   ns.Frame.prototype.setPixel = function (col, row, color) {
-    this.pixels[col][row] = color;
+    if (this.containsPixel(col, row)) {
+      this.pixels[col][row] = color;
+    }
   };
 
   ns.Frame.prototype.getPixel = function (col, row) {
-    return this.pixels[col][row];
+    if (this.containsPixel(col, row)) {
+      return this.pixels[col][row];
+    } else {
+      return null;
+    }
   };
 
   ns.Frame.prototype.forEachPixel = function (callback) {
@@ -107,7 +113,7 @@
   };
 
   ns.Frame.prototype.containsPixel = function (col, row) {
-    return col >= 0 && row >= 0 && col < this.pixels.length && row < this.pixels[0].length;
+    return col >= 0 && row >= 0 && col < this.width && row < this.height;
   };
 
   ns.Frame.prototype.saveState = function () {

@@ -40,7 +40,7 @@
   -moz-box-sizing : border-box;
 
   border-radius: 3px;
-  background: rgba(0,0,0,0.9);
+  background: rgba(0,0,0,1);
   overflow: auto;
 }
 
