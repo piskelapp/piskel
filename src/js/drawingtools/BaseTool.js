@@ -28,6 +28,8 @@
 
       this.highlightedPixelCol = col;
       this.highlightedPixelRow = row;
+    } else {
+      this.hideHighlightedPixel(overlay);
     }
   };
 

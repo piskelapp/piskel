@@ -67,8 +67,6 @@
   ns.DrawingController.prototype.initMouseBehavior = function() {
     var body = $('body');
     this.container.mousedown($.proxy(this.onMousedown_, this));
-    this.container.mouseenter($.proxy(this.onMouseenter_, this));
-    this.container.mouseleave($.proxy(this.onMouseleave_, this));
 
     if (pskl.utils.UserAgent.isChrome) {
       this.container.on('mousewheel', $.proxy(this.onMousewheel_, this));
@@ -76,7 +74,8 @@
       this.container.on('wheel', $.proxy(this.onMousewheel_, this));
     }
 
-    body.mouseup($.proxy(this.onMouseup_, this));
+    window.addEventListener('mouseup', this.onMouseup_.bind(this));
+    window.addEventListener('mousemove', this.onMousemove_.bind(this));
 
     // Deactivate right click:
     body.contextmenu(this.onCanvasContextMenu_);
@@ -114,21 +113,6 @@
     this.compositeRenderer.setZoom(this.calculateZoom_());
     this.compositeRenderer.setOffset(0, 0);
     $.publish(Events.ZOOM_CHANGED);
-  };
-
-  /**
-   * @private
-   */
-  ns.DrawingController.prototype.onMouseenter_ = function (event) {
-    $('body').bind('mousemove', $.proxy(this.onMousemove_, this));
-  };
-
-  /**
-   * @private
-   */
-  ns.DrawingController.prototype.onMouseleave_ = function (event) {
-    this.container.unbind('mousemove');
-    this.currentToolBehavior.hideHighlightedPixel(this.overlayFrame);
   };
 
   /**
