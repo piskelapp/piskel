@@ -64,8 +64,8 @@
   color: #333;
 }
 
-.button[disabled=disabled],
-.button[disabled=disabled]:hover {
+.button[disabled],
+.button[disabled]:hover {
   cursor:default;
   background-color: #aaa;
   color: #777;

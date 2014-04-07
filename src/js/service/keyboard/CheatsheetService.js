@@ -100,7 +100,8 @@
       this.toDescriptor_('&#65516;', 'Select next frame'), /* ASCII for down-arrow */
       this.toDescriptor_('N', 'Create new frame'),
       this.toDescriptor_('shift + N', 'Duplicate selected frame'),
-      this.toDescriptor_('shift + ?', 'Open/Close this popup')
+      this.toDescriptor_('shift + ?', 'Open/Close this popup'),
+      this.toDescriptor_('alt + P', 'Open the Palette Manager')
     ];
 
     this.initMarkupAbstract_(descriptors, '.cheatsheet-misc-shortcuts');

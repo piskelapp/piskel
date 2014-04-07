@@ -36,6 +36,9 @@
       this.paletteController = new pskl.controller.PaletteController();
       this.paletteController.init();
 
+      this.palettesListController = new pskl.controller.PalettesListController();
+      this.palettesListController.init();
+
       this.drawingController = new pskl.controller.DrawingController(this.piskelController, this.paletteController, $('#drawing-canvas-container'));
       this.drawingController.init();
 
@@ -53,6 +56,9 @@
 
       this.settingsController = new pskl.controller.settings.SettingsController(this.piskelController);
       this.settingsController.init();
+
+      this.dialogsController = new pskl.controller.dialogs.DialogsController(this.piskelController);
+      this.dialogsController.init();
 
       this.toolController = new pskl.controller.ToolController();
       this.toolController.init();

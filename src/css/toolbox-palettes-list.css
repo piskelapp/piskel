@@ -1,0 +1,60 @@
+.palettes-list-container {
+}
+
+.palettes-list-select {
+  float:right;
+  max-width:90px;
+  margin-top: 3px;
+}
+
+.palettes-title {
+  background-size: 22px;
+  background-repeat: no-repeat;
+  background-position: 97%;
+}
+
+.palettes-list-colors {
+  overflow:hidden;
+}
+
+.palettes-list-color {
+  cursor : pointer;
+  float: left;
+  margin : 0 0 5px 5px;
+  width : 32px;
+  height : 32px;
+  position: relative;
+}
+
+.palettes-list-color:nth-child(-n+5) {
+  margin-top: 5px;
+}
+
+.palettes-list-color div{
+  width : 32px;
+  height : 32px;
+}
+
+.palettes-list-color.primary:before,
+.palettes-list-color.secondary:before {
+  content: "";
+  position: absolute;
+  bottom: 1px;
+  display: inline-block;
+  border: 7px solid gold;
+  border-top-color: transparent;
+
+  width: 0px;
+  height: 0px;
+}
+
+.palettes-list-color.primary:before {
+  left: 1px;
+  border-right-color: transparent;
+}
+
+
+.palettes-list-color.secondary:before {
+  right: 1px;
+  border-left-color: transparent;
+}

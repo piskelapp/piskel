@@ -42,6 +42,9 @@
     this.isClicked = false;
     this.previousMousemoveTime = 0;
     this.currentToolBehavior = null;
+
+    // State of clicked button (need to be stateful here, see comment in getCurrentColor_)
+    this.currentMouseButton_ = Constants.LEFT_BUTTON;
   };
 
   ns.DrawingController.prototype.init = function () {
@@ -57,14 +60,13 @@
     $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
     $.subscribe(Events.FRAME_SIZE_CHANGED, $.proxy(this.onFrameSizeChanged_, this));
 
-    this.centerColumnWrapperHorizontally_();
+    // this.afterWindowResize_.bind(this);
+    window.setTimeout(this.afterWindowResize_.bind(this), 100);
   };
 
   ns.DrawingController.prototype.initMouseBehavior = function() {
     var body = $('body');
     this.container.mousedown($.proxy(this.onMousedown_, this));
-    this.container.mouseenter($.proxy(this.onMouseenter_, this));
-    this.container.mouseleave($.proxy(this.onMouseleave_, this));
 
     if (pskl.utils.UserAgent.isChrome) {
       this.container.on('mousewheel', $.proxy(this.onMousewheel_, this));
@@ -72,7 +74,8 @@
       this.container.on('wheel', $.proxy(this.onMousewheel_, this));
     }
 
-    body.mouseup($.proxy(this.onMouseup_, this));
+    window.addEventListener('mouseup', this.onMouseup_.bind(this));
+    window.addEventListener('mousemove', this.onMousemove_.bind(this));
 
     // Deactivate right click:
     body.contextmenu(this.onCanvasContextMenu_);
@@ -115,21 +118,6 @@
   /**
    * @private
    */
-  ns.DrawingController.prototype.onMouseenter_ = function (event) {
-    this.container.bind('mousemove', $.proxy(this.onMousemove_, this));
-  };
-
-  /**
-   * @private
-   */
-  ns.DrawingController.prototype.onMouseleave_ = function (event) {
-    this.container.unbind('mousemove');
-    this.currentToolBehavior.hideHighlightedPixel(this.overlayFrame);
-  };
-
-  /**
-   * @private
-   */
   ns.DrawingController.prototype.onMousedown_ = function (event) {
     var frame = this.piskelController.getCurrentFrame();
     var coords = this.renderer.getCoordinates(event.clientX, event.clientY);
@@ -140,12 +128,13 @@
       }
     } else {
       this.isClicked = true;
+      this.setCurrentButton(event);
       this.currentToolBehavior.hideHighlightedPixel(this.overlayFrame);
 
       this.currentToolBehavior.applyToolAt(
         coords.x,
         coords.y,
-        this.getCurrentColor_(event),
+        this.getCurrentColor_(),
         frame,
         this.overlayFrame,
         event
@@ -166,7 +155,8 @@
       var coords = this.renderer.getCoordinates(event.clientX, event.clientY);
 
       if (this.isClicked) {
-
+        // Warning : do not call setCurrentButton here
+        // mousemove do not have the correct mouse button information on all browsers
         this.currentToolBehavior.moveToolAt(
           coords.x,
           coords.y,
@@ -222,12 +212,13 @@
       // of the drawing canvas.
 
       this.isClicked = false;
+      this.setCurrentButton(event);
 
       var coords = this.renderer.getCoordinates(event.clientX, event.clientY);
       this.currentToolBehavior.releaseToolAt(
         coords.x,
         coords.y,
-        this.getCurrentColor_(event),
+        this.getCurrentColor_(),
         this.piskelController.getCurrentFrame(),
         this.overlayFrame,
         event
@@ -244,13 +235,23 @@
     return this.renderer.getCoordinates(event.clientX, event.clientY);
   };
 
+  ns.DrawingController.prototype.setCurrentButton = function (event) {
+    this.currentMouseButton_ = event.button;
+  };
+
   /**
    * @private
    */
-  ns.DrawingController.prototype.getCurrentColor_ = function (event) {
-    if(event.button == Constants.RIGHT_BUTTON) {
+  ns.DrawingController.prototype.getCurrentColor_ = function () {
+    // WARNING : Do not rely on the current event to get the current color!
+    // It might seem like a good idea, and works perfectly fine on Chrome
+    // Sadly Firefox and IE found clever, for some reason, to set event.button to 0
+    // on a mouse move event
+    // This always matches a LEFT mouse button which is __really__ not helpful
+
+    if(this.currentMouseButton_ == Constants.RIGHT_BUTTON) {
       return this.paletteController.getSecondaryColor();
-    } else if(event.button == Constants.LEFT_BUTTON) {
+    } else if(this.currentMouseButton_ == Constants.LEFT_BUTTON) {
       return this.paletteController.getPrimaryColor();
     } else {
       return Constants.DEFAULT_PEN_COLOR;
@@ -302,7 +303,8 @@
     settingsContainerWidth = $('#application-action-section').outerWidth(true),
     availableWidth = $('#main-wrapper').width() - leftSectionWidth - rightSectionWidth - toolsContainerWidth - settingsContainerWidth;
 
-    return availableWidth-50;
+    var comfortMargin = 10;
+    return availableWidth - comfortMargin;
   };
 
   ns.DrawingController.prototype.getContainerHeight_ = function () {

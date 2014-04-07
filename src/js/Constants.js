@@ -14,9 +14,12 @@ var Constants = {
   MINIMUM_ZOOM : 1,
 
   PREVIEW_FILM_SIZE : 120,
+  ANIMATED_PREVIEW_WIDTH : 200,
 
   DEFAULT_PEN_COLOR : '#000000',
   TRANSPARENT_COLOR : 'rgba(0, 0, 0, 0)',
+
+  NO_PALETTE_ID : '__no-palette',
 
   // Used for Spectrum input
   PREFERRED_COLOR_FORMAT : 'rgb',

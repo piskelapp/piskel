@@ -13,6 +13,7 @@
 
   pskl.utils.inherit(ns.ColorPicker, ns.BaseTool);
 
+
   /**
    * @override
    */

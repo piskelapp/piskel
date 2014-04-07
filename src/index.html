@@ -20,12 +20,9 @@
     z-index : 20000;
     transition:opacity 0.5s;
     color:white;">
-      <span style="top:45%">Loading pixels ...</span>
+      <span style="top:45%">Loading Piskel ...</span>
   </div>
   <script type="text/javascript" src="js/lib/iframeLoader.js"></script>
-  <div class="piskel-name-container">
-    <input readonly id="piskel-name" type="text" value=""/>
-  </div>
   <div id="main-wrapper" class="main-wrapper">
     <iframe src="templates/drawing-tools.html" onload="iframeloader.onLoad(event)" data-iframe-loader="display"></iframe>
 
@@ -43,6 +40,7 @@
       <div class="column right-column">
         <iframe src="templates/preview.html" onload="iframeloader.onLoad(event)" data-iframe-loader="display"></iframe>
         <iframe src="templates/layers-list.html" onload="iframeloader.onLoad(event)" data-iframe-loader="display"></iframe>
+        <iframe src="templates/palettes-list.html" onload="iframeloader.onLoad(event)" data-iframe-loader="display"></iframe>
       </div>
     </div>
 
@@ -63,6 +61,13 @@
       </div>
     </div>
   </div>
+
+  <div id="dialog-container-wrapper">
+    <div id="dialog-container">
+      <iframe src="templates/dialogs/manage-palettes.html" onload="iframeloader.onLoad(event)"  data-iframe-loader="store"></iframe>
+    </div>
+  </div>
+
   <iframe src="templates/cheatsheet.html" onload="iframeloader.onLoad(event)" data-iframe-loader="display"></iframe>
   <script type="text/javascript" src="piskel-boot.js"></script>
 </body>

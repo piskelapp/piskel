@@ -8,6 +8,7 @@
   background-color: #2B2B2B;
   border: solid 4px #888;
   padding: 5px 5px 0 5px;
+  box-shadow : 0 0 5px 0 black;
 }
 
 .sp-container[data-y-position=bottom] {

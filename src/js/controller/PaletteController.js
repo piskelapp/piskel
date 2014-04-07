@@ -10,9 +10,6 @@
    * @public
    */
   ns.PaletteController.prototype.init = function() {
-    var transparentColorPalette = $(".palette-color[data-color=TRANSPARENT]");
-    transparentColorPalette.mouseup($.proxy(this.onPaletteColorClick_, this));
-
     $.subscribe(Events.SELECT_PRIMARY_COLOR, this.onColorSelected_.bind(this, {isPrimary:true}));
     $.subscribe(Events.SELECT_SECONDARY_COLOR, this.onColorSelected_.bind(this, {isPrimary:false}));
 
@@ -75,11 +72,13 @@
   ns.PaletteController.prototype.setPrimaryColor = function (color) {
     this.primaryColor = color;
     this.updateColorPicker_(color, $('#color-picker'));
+    $.publish(Events.PRIMARY_COLOR_SELECTED, [color]);
   };
 
   ns.PaletteController.prototype.setSecondaryColor = function (color) {
     this.secondaryColor = color;
     this.updateColorPicker_(color, $('#secondary-color-picker'));
+    $.publish(Events.SECONDARY_COLOR_SELECTED, [color]);
   };
 
   ns.PaletteController.prototype.getPrimaryColor = function () {
@@ -99,20 +98,6 @@
   ns.PaletteController.prototype.resetColors = function () {
     this.setPrimaryColor(Constants.DEFAULT_PEN_COLOR);
     this.setSecondaryColor(Constants.TRANSPARENT_COLOR);
-  };
-
-  /**
-   * @private
-   */
-  ns.PaletteController.prototype.onPaletteColorClick_ = function (event) {
-    var selectedColor = $(event.target).data("color");
-    var isLeftClick = (event.which == 1);
-    var isRightClick = (event.which == 3);
-    if (isLeftClick) {
-      $.publish(Events.PRIMARY_COLOR_SELECTED, [selectedColor]);
-    } else if (isRightClick) {
-      $.publish(Events.SECONDARY_COLOR_SELECTED, [selectedColor]);
-    }
   };
 
   /**
