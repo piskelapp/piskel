@@ -37,14 +37,14 @@
   ns.LayersListController.prototype.onClick_ = function (evt) {
     var el = evt.target || evt.srcElement;
     var index;
-    if (el.nodeName == 'BUTTON') {
+    if (el.classList.contains('button')) {
       this.onButtonClick_(el);
     } else if (el.classList.contains('layer-item')) {
       index = el.dataset.layerIndex;
-      this.piskelController.setCurrentLayerIndex(index);
+      this.piskelController.setCurrentLayerIndex(parseInt(index, 10));
     } else if (el.classList.contains('edit-icon')) {
       index = el.parentNode.dataset.layerIndex;
-      var layer = this.piskelController.getLayerByIndex(index);
+      var layer = this.piskelController.getLayerByIndex(parseInt(index, 10));
       this.renameLayer_(layer);
     }
   };
