@@ -6,6 +6,7 @@ exports.styles = [
   "css/forms.css",
   "css/settings.css",
   "css/tools.css",
+  "css/icons.css",
   "css/cheatsheet.css",
   "css/dialogs.css",
   "css/dialogs-manage-palettes.css",

@@ -27,6 +27,10 @@
     return this.name;
   };
 
+  ns.Layer.prototype.setName = function (name) {
+    this.name = name;
+  };
+
   ns.Layer.prototype.getFrames = function () {
     return this.frames;
   };

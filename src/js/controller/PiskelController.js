@@ -161,10 +161,12 @@
     }
   };
 
-  ns.PiskelController.prototype.selectLayerByName = function (name) {
-    if (this.hasLayerForName_(name)) {
-      var layer = this.piskel.getLayersByName(name)[0];
-      this.selectLayer(layer);
+  ns.PiskelController.prototype.getLayerByIndex = function (index) {
+    var layers = this.getLayers();
+    if (layers[index]) {
+      return layers[index];
+    } else {
+      return null;
     }
   };
 
