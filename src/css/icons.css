@@ -1,0 +1,10 @@
+.action-icon {
+  cursor: pointer;
+  height: 100%;
+  background-repeat: no-repeat;
+  background-position: 50%;
+}
+
+.action-icon.edit-icon {
+  background-image: url('../img/tools/pen.png');
+}

@@ -6,7 +6,7 @@
   var SELECTED_CLASSNAME = 'selected';
   var NEW_COLOR_CLASS = 'palette-manager-new-color';
   var CLOSE_ICON_CLASS = 'palette-manager-delete-card';
-  var EDIT_NAME_CLASS = 'palette-manager-details-head-edit-icon';
+  var EDIT_NAME_CLASS = 'edit-icon';
 
   ns.PaletteManagerController = function (piskelController) {
     this.piskelController = piskelController;

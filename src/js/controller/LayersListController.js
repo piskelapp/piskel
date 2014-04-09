@@ -23,24 +23,37 @@
     layers.forEach(this.addLayerItem.bind(this));
   };
 
-  ns.LayersListController.prototype.addLayerItem = function (layer) {
+  ns.LayersListController.prototype.addLayerItem = function (layer, index) {
+    var isSelected = this.piskelController.getCurrentLayer() === layer;
     var layerItemHtml = pskl.utils.Template.replace(this.layerItemTemplate_, {
-      layername : layer.getName()
+      'layername' : layer.getName(),
+      'layerindex' : index,
+      'isselected:current-layer-item' : isSelected
     });
     var layerItem = pskl.utils.Template.createFromHTML(layerItemHtml);
-    if (this.piskelController.getCurrentLayer() === layer) {
-      layerItem.classList.add('current-layer-item');
-    }
     this.layersListEl.insertBefore(layerItem, this.layersListEl.firstChild);
   };
 
   ns.LayersListController.prototype.onClick_ = function (evt) {
     var el = evt.target || evt.srcElement;
+    var index;
     if (el.nodeName == 'BUTTON') {
       this.onButtonClick_(el);
-    } else if (el.nodeName == 'LI') {
-      var layerName = el.getAttribute('data-layer-name');
-      this.piskelController.selectLayerByName(layerName);
+    } else if (el.classList.contains('layer-item')) {
+      index = el.dataset.layerIndex;
+      this.piskelController.setCurrentLayerIndex(index);
+    } else if (el.classList.contains('edit-icon')) {
+      index = el.parentNode.dataset.layerIndex;
+      var layer = this.piskelController.getLayerByIndex(index);
+      this.renameLayer_(layer);
+    }
+  };
+
+  ns.LayersListController.prototype.renameLayer_ = function (layer) {
+    var newName = window.prompt("Please enter the layer name", layer.getName());
+    if (newName) {
+      layer.setName(newName);
+      this.renderLayerList_();
     }
   };
 
