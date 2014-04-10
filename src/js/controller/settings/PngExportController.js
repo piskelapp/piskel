@@ -11,17 +11,52 @@
     this.previewContainerEl = document.querySelectorAll(".png-export-preview")[0];
     this.uploadStatusContainerEl = document.querySelectorAll(".png-upload-status")[0];
 
-    this.uploadForm = $("[name=png-export-upload-form]");
-    this.uploadForm.submit(this.onUploadFormSubmit_.bind(this));
+    document.querySelector(".png-upload-button").addEventListener('click', this.onPngUploadButtonClick_.bind(this));
+    document.querySelector(".png-download-button").addEventListener('click', this.onPngDownloadButtonClick_.bind(this));
+
+    document.querySelector(".zip-generate-button").addEventListener('click', this.onZipButtonClick_.bind(this));
 
     this.updatePreview_(this.getFramesheetAsBase64Png());
   };
 
-  ns.PngExportController.prototype.onUploadFormSubmit_ = function (evt) {
-    evt.originalEvent.preventDefault();
+  ns.PngExportController.prototype.onPngDownloadButtonClick_ = function (evt) {
+    var fileName = this.getPiskelName_() + '.png';
+    var renderer = new pskl.rendering.PiskelRenderer(this.piskelController);
+    var canvas = renderer.renderAsCanvas();
+    canvas.toBlob(function(blob) {
+      pskl.utils.FileUtils.downloadAsFile(fileName, blob);
+    });
+  };
 
+  ns.PngExportController.prototype.onPngUploadButtonClick_ = function (evt) {
     this.previewContainerEl.classList.add("preview-upload-ongoing");
     pskl.app.imageUploadService.upload(this.getFramesheetAsBase64Png(), this.onImageUploadCompleted_.bind(this));
+  };
+
+  ns.PngExportController.prototype.onZipButtonClick_ = function () {
+    var zip = new window.JSZip();
+
+    for (var i = 0; i < this.piskelController.getFrameCount(); i++) {
+      var frame = this.piskelController.getFrameAt(i);
+      var canvas = this.getFrameAsCanvas_(frame);
+      var filename = "sprite_" + (i+1) + ".png";
+      zip.file(filename, pskl.CanvasUtils.getBase64FromCanvas(canvas) + '\n', {base64: true});
+    }
+
+    var fileName = this.getPiskelName_() + '.zip';
+
+    var fileContent = zip.generate({type:"blob"});
+    pskl.utils.FileUtils.downloadAsFile(fileName, fileContent);
+  };
+
+  ns.PngExportController.prototype.getFrameAsCanvas_ = function (frame) {
+    var canvasRenderer = new pskl.rendering.CanvasRenderer(frame, 1);
+    canvasRenderer.drawTransparentAs(Constants.TRANSPARENT_COLOR);
+    return canvasRenderer.render();
+  };
+
+  ns.PngExportController.prototype.getPiskelName_ = function () {
+    return this.piskelController.piskel.getDescriptor().name;
   };
 
   ns.PngExportController.prototype.getFramesheetAsBase64Png = function () {

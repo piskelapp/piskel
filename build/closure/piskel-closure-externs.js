@@ -6,9 +6,10 @@
 
 // Piskel externs.
 var exports;
+var pskl_exports;
 var $;
 var console;
-var pskl; 
+var pskl;
 
 // Piskel libs externs.
 var define;

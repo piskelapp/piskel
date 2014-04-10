@@ -1,6 +1,6 @@
 // This list is used both by the grunt build and index.html (in debug mode)
 
-exports.styles = [
+(typeof exports != "undefined" ? exports : pskl_exports).styles = [
   "css/reset.css",
   "css/style.css",
   "css/forms.css",

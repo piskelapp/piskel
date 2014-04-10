@@ -1,11 +1,17 @@
 // This list is used both by the grunt build and index.html (in debug mode)
 
-exports.scripts = [
+(typeof exports != "undefined" ? exports : pskl_exports).scripts = [
   // Core libraries
   "js/lib/jquery-1.8.0.js","js/lib/jquery-ui-1.10.3.custom.js","js/lib/pubsub.js","js/lib/bootstrap/bootstrap.js",
+
   // GIF Encoding libraries
   "js/lib/gif/gif.worker.js",
   "js/lib/gif/gif.js",
+
+  // JSZip https://github.com/Stuk/jszip
+  "js/lib/jszip/jszip.min.js",
+  "js/lib/canvastoblob/canvasToBlob.js",
+
   // Spectrum color-picker library
   "js/lib/spectrum/spectrum.js",
 

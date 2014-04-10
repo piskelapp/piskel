@@ -44,6 +44,12 @@
     getImageDataFromCanvas : function (canvas) {
       var sourceContext = canvas.getContext('2d');
       return sourceContext.getImageData(0, 0, canvas.width, canvas.height).data;
+    },
+
+    getBase64FromCanvas : function (canvas, format) {
+      format = format || "png";
+      var data = canvas.toDataURL("image/" + format);
+      return data.substr(data.indexOf(',')+1);
     }
   };
 })();
