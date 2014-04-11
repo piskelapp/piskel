@@ -29,6 +29,7 @@
   };
 
   ns.Move.prototype.moveToolAt = function(col, row, color, frame, overlay, event) {
+    $.publish(Events.CURSOR_MOVED, [col, row]);
     var colDiff = col - this.startCol, rowDiff = row - this.startRow;
     this.shiftFrame(colDiff, rowDiff, frame, this.frameClone);
   };

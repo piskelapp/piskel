@@ -10,9 +10,13 @@
 
   ns.BaseTool.prototype.applyToolAt = function(col, row, color, frame, overlay, event) {};
 
-  ns.BaseTool.prototype.moveToolAt = function(col, row, color, frame, overlay, event) {};
+  ns.BaseTool.prototype.moveToolAt = function(col, row, color, frame, overlay, event) {
+    $.publish(Events.CURSOR_MOVED, [col, row]);
+  };
 
   ns.BaseTool.prototype.moveUnactiveToolAt = function(col, row, color, frame, overlay, event) {
+    $.publish(Events.CURSOR_MOVED, [col, row]);
+
     if (overlay.containsPixel(col, row)) {
       if (!isNaN(this.highlightedPixelCol) &&
         !isNaN(this.highlightedPixelRow) &&

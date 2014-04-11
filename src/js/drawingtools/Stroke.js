@@ -37,6 +37,8 @@
   };
 
   ns.Stroke.prototype.moveToolAt = function(col, row, color, frame, overlay, event) {
+    $.publish(Events.CURSOR_MOVED, [col, row]);
+
     overlay.clear();
 
     // When the user moussemove (before releasing), we dynamically compute the

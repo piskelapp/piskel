@@ -153,6 +153,7 @@
 
     if ((currentTime - this.previousMousemoveTime) > Constants.MOUSEMOVE_THROTTLING ) {
       var coords = this.renderer.getCoordinates(event.clientX, event.clientY);
+      var currentFrame = this.piskelController.getCurrentFrame();
 
       if (this.isClicked) {
         // Warning : do not call setCurrentButton here
@@ -161,7 +162,7 @@
           coords.x,
           coords.y,
           this.getCurrentColor_(event),
-          this.piskelController.getCurrentFrame(),
+          currentFrame,
           this.overlayFrame,
           event
         );
@@ -176,7 +177,7 @@
           coords.x,
           coords.y,
           this.getCurrentColor_(event),
-          this.piskelController.getCurrentFrame(),
+          currentFrame,
           this.overlayFrame,
           event
         );

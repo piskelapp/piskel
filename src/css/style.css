@@ -227,3 +227,33 @@ body {
 .image-link {
   color : gold;
 }
+
+.pull-top,
+.pull-right,
+.pull-bottom,
+.pull-left {
+  position:absolute;
+}
+
+.pull-top {
+  top:0;
+}
+
+.pull-right {
+  right:0;
+}
+
+.pull-bottom {
+  bottom:0;
+}
+
+.pull-left {
+  left:0;
+}
+
+.cursor-coordinates {
+  color:#888;
+  font-size:12px;
+  font-weight:bold;
+  font-family:Courier;
+}

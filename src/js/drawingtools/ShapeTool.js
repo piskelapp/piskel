@@ -16,6 +16,7 @@
    * @override
    */
   ns.ShapeTool.prototype.applyToolAt = function(col, row, color, frame, overlay, event) {
+    $.publish(Events.DRAG_START, [col, row]);
     this.startCol = col;
     this.startRow = row;
 
@@ -24,12 +25,14 @@
   };
 
   ns.ShapeTool.prototype.moveToolAt = function(col, row, color, frame, overlay, event) {
+    var coords = this.getCoordinates_(col, row, event);
+    $.publish(Events.CURSOR_MOVED, [coords.col, coords.row]);
+
     overlay.clear();
     if(color == Constants.TRANSPARENT_COLOR) {
       color = Constants.SELECTION_TRANSPARENT_COLOR;
     }
 
-    var coords = this.getCoordinates_(col, row, event);
     // draw in overlay
     this.draw_(coords.col, coords.row, color, overlay);
   };
@@ -46,6 +49,7 @@
     }
     var coords = this.getCoordinates_(col, row, event);
     this.draw_(coords.col, coords.row, color, frame);
+    $.publish(Events.DRAG_END, [col, row]);
   };
 
   /**

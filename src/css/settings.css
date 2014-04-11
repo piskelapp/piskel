@@ -124,6 +124,11 @@
   padding-bottom: 5px;
 }
 
+.settings-description {
+  margin : 0 0 10px 0;
+  display : inline-block;
+}
+
 .settings-form-section {
   margin-bottom: 10px;
 }

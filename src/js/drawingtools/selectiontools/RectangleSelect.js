@@ -9,17 +9,18 @@
   ns.RectangleSelect = function() {
     this.toolId = "tool-rectangle-select";
     this.helpText = "Rectangle selection tool";
-    
+
     ns.BaseSelect.call(this);
   };
 
   pskl.utils.inherit(ns.RectangleSelect, ns.BaseSelect);
-  
+
 
   /**
    * @override
    */
   ns.RectangleSelect.prototype.onSelectStart_ = function (col, row, color, frame, overlay) {
+    $.publish(Events.DRAG_START, [col, row]);
     // Drawing the first point of the rectangle in the fake overlay canvas:
     overlay.setPixel(col, row, color);
   };
@@ -47,6 +48,7 @@
    */
   ns.RectangleSelect.prototype.onSelectEnd_ = function (col, row, color, frame, overlay) {
     this.onSelect_(col, row, color, frame, overlay);
+    $.publish(Events.DRAG_END, [col, row]);
   };
 
 })();

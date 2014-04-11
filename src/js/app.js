@@ -39,6 +39,9 @@
       this.palettesListController = new pskl.controller.PalettesListController();
       this.palettesListController.init();
 
+      this.cursorCoordinatesController = new pskl.controller.CursorCoordinatesController(this.piskelController);
+      this.cursorCoordinatesController.init();
+
       this.drawingController = new pskl.controller.DrawingController(this.piskelController, this.paletteController, $('#drawing-canvas-container'));
       this.drawingController.init();
 

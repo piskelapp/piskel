@@ -65,6 +65,7 @@
 
   // Controllers
   "js/controller/PiskelController.js",
+  "js/controller/CursorCoordinatesController.js",
   "js/controller/DrawingController.js",
   "js/controller/PreviewFilmController.js",
   "js/controller/LayersListController.js",
