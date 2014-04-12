@@ -19,6 +19,13 @@
       return canvas;
     },
 
+    createFromImageData : function (imageData) {
+      var canvas = pskl.CanvasUtils.createCanvas(imageData.width, imageData.height);
+      var context = canvas.getContext('2d');
+      context.putImageData(imageData, 0, 0);
+      return canvas;
+    },
+
     /**
      * By default, all scaling operations on a Canvas 2D Context are performed using antialiasing.
      * Resizing a 32x32 image to 320x320 will lead to a blurry output.

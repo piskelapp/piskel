@@ -112,6 +112,11 @@
   ns.ImportController.prototype.onImageLoaded_ = function (evt) {
     var w = this.importedImage_.width,
         h = this.importedImage_.height;
+
+    // FIXME : We remove the onload callback here because JsGif will insert
+    // the image again and we want to avoid retriggering the image onload
+    this.importedImage_.onload = function () {};
+
     var filePath = this.hiddenFileInput.val();
     var fileName = this.extractFileNameFromPath_(filePath);
     this.fileInputStatus.html(fileName);
@@ -144,25 +149,51 @@
   };
 
   ns.ImportController.prototype.importImageToPiskel_ = function () {
-    if (this.importedImage_) {
+    var image = this.importedImage_;
+    if (image) {
       if (window.confirm('You are about to create a new Piskel, unsaved changes will be lost.')) {
-        var w = this.resizeWidth.val(),
-          h = this.resizeHeight.val(),
-          smoothing = !!this.smoothResize.prop('checked');
+        var gifLoader = new window.SuperGif({
+          gif : image
+        });
 
-        var image = pskl.utils.ImageResizer.resize(this.importedImage_, w, h, smoothing);
-        var frame = pskl.utils.FrameUtils.createFromImage(image);
+        gifLoader.load({
+          success : function(){
+            var images = gifLoader.getFrames().map(function (frame) {
+              return pskl.CanvasUtils.createFromImageData(frame.data);
+            });
+            this.createPiskelFromImages_(images);
+          }.bind(this),
+          error : function () {
+            this.createPiskelFromImages_([image]);
+          }.bind(this)
+        });
 
-        var layer = pskl.model.Layer.fromFrames('Layer 1', [frame]);
-
-        var descriptor = new pskl.model.piskel.Descriptor('Imported piskel', '');
-        var piskel = pskl.model.Piskel.fromLayers([layer], descriptor);
-
-        pskl.app.piskelController.setPiskel(piskel);
-        pskl.app.animationController.setFPS(Constants.DEFAULT.FPS);
-        this.reset_();
       }
     }
+  };
+
+  ns.ImportController.prototype.createFramesFromImages_ = function (images) {
+    var w = this.resizeWidth.val();
+    var h = this.resizeHeight.val();
+    var smoothing = !!this.smoothResize.prop('checked');
+
+    var frames = images.map(function (image) {
+      var resizedImage = pskl.utils.ImageResizer.resize(image, w, h, smoothing);
+      return pskl.utils.FrameUtils.createFromImage(resizedImage);
+    });
+    return frames;
+  };
+
+  ns.ImportController.prototype.createPiskelFromImages_ = function (images) {
+    var frames = this.createFramesFromImages_(images);
+    var layer = pskl.model.Layer.fromFrames('Layer 1', frames);
+    var descriptor = new pskl.model.piskel.Descriptor('Imported piskel', '');
+    var piskel = pskl.model.Piskel.fromLayers([layer], descriptor);
+
+    pskl.app.piskelController.setPiskel(piskel);
+    pskl.app.animationController.setFPS(Constants.DEFAULT.FPS);
+
+    this.reset_();
   };
 
   ns.ImportController.prototype.isImage_ = function (file) {

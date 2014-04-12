@@ -7,6 +7,7 @@
   // GIF Encoding libraries
   "js/lib/gif/gif.worker.js",
   "js/lib/gif/gif.js",
+  "js/lib/gif/libgif.js",
 
   // JSZip https://github.com/Stuk/jszip
   "js/lib/jszip/jszip.min.js",
