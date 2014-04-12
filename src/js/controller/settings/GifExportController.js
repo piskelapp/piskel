@@ -136,7 +136,7 @@
 
     gif.on('finished', function(blob) {
       this.hideProgressStatus_();
-      // this.blobToBase64_(blob, cb);
+      this.blobToBase64_(blob, cb);
     }.bind(this));
 
     gif.render();
