@@ -71,9 +71,10 @@
       return;
     }
     var action = target.dataset.tileAction;
-    var index = target.dataset.tileNumber;
+    var index = parseInt(target.dataset.tileNumber, 10);
 
     if (action === ACTION.CLONE) {
+      this.piskelController.duplicateFrameAt(index);
       this.piskelController.setCurrentFrameIndex(index + 1);
       this.updateScrollerOverflows();
     } else if (action === ACTION.DELETE) {
@@ -148,17 +149,16 @@
     var currentFrame = this.piskelController.getCurrentLayer().getFrameAt(tileNumber);
 
     var previewTileRoot = document.createElement("li");
-    var classname = "preview-tile";
     previewTileRoot.setAttribute("data-tile-number", tileNumber);
     previewTileRoot.setAttribute('data-tile-action', ACTION.SELECT);
-
+    previewTileRoot.classList.add("preview-tile");
     if (this.piskelController.getCurrentFrame() == currentFrame) {
-      classname += " selected";
+      previewTileRoot.classList.add("selected");
     }
-    previewTileRoot.className = classname;
 
     var canvasContainer = document.createElement("div");
-    canvasContainer.className = "canvas-container";
+    canvasContainer.classList.add("canvas-container", pskl.UserSettings.get(pskl.UserSettings.CANVAS_BACKGROUND));
+
 
     var canvasBackground = document.createElement("div");
     canvasBackground.className = "canvas-background";
@@ -173,16 +173,11 @@
     cloneFrameButton.className = "tile-overlay duplicate-frame-action";
     previewTileRoot.appendChild(cloneFrameButton);
 
-    // TODO(vincz): Eventually optimize this part by not recreating a FrameRenderer. Note that the real optim
-    // is to make this update function (#createPreviewTile) less aggressive.
-    var renderingOptions = {
-      "zoom" : this.zoom,
-      "height" : this.piskelController.getCurrentFrame().getHeight() * this.zoom,
-      "width" : this.piskelController.getCurrentFrame().getWidth() * this.zoom
-    };
-    var currentFrameRenderer = new pskl.rendering.frame.FrameRenderer($(canvasContainer), renderingOptions, ["tile-view"]);
-    currentFrameRenderer.render(currentFrame);
-
+    var canvasRenderer = new pskl.rendering.CanvasRenderer(currentFrame, this.zoom);
+    canvasRenderer.drawTransparentAs(Constants.TRANSPARENT_COLOR);
+    var canvas = canvasRenderer.render();
+    canvas.classList.add('tile-view', 'canvas');
+    canvasContainer.appendChild(canvas);
     previewTileRoot.appendChild(canvasContainer);
 
     if(tileNumber > 0 || this.piskelController.getFrameCount() > 1) {
