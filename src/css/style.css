@@ -60,6 +60,8 @@ body {
 .right-column {
   vertical-align: top;
   margin-left: 10px;
+  height: 100%;
+  position: relative;
 }
 
 .drawing-canvas-container {
