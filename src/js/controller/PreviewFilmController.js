@@ -24,7 +24,6 @@
 
     $.subscribe(Events.PISKEL_RESET, this.refreshZoom_.bind(this));
 
-
     $('#preview-list-scroller').scroll(this.updateScrollerOverflows.bind(this));
     this.container.get(0).addEventListener('click', this.onContainerClick_.bind(this));
     this.updateScrollerOverflows();
