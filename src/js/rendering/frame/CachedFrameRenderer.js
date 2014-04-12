@@ -24,7 +24,7 @@
    */
   ns.CachedFrameRenderer.prototype.setDisplaySize = function (width, height) {
     if (this.displayWidth !== width || this.displayHeight !== height) {
-      pskl.rendering.frame.FrameRenderer.prototype.setDisplaySize.call(this, width, height);
+      this.superclass.setDisplaySize.call(this, width, height);
     }
   };
 

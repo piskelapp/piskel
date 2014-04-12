@@ -58,6 +58,20 @@
     }
   };
 
+
+  /**
+   * See @pskl.rendering.frame.CachedFrameRenderer
+   * Same issue : FrameRenderer setDisplaySize destroys the canvas
+   * @param {Number} width
+   * @param {Number} height
+   */
+  ns.LayersRenderer.prototype.setDisplaySize = function (width, height) {
+    var size = this.getDisplaySize();
+    if (size.width !== width || size.height !== height) {
+      this.superclass.setDisplaySize.call(this, width, height);
+    }
+  };
+
   ns.LayersRenderer.prototype.getFrameForLayersAt_ = function (frameIndex, layers) {
     var frames = layers.map(function (l) {
       return l.getFrameAt(frameIndex);
