@@ -21,9 +21,9 @@
   margin-right: 0;
 }
 
-/*
- * Settings icons
- */
+/********************************************************** *j* j** j*j j j j** *****************/
+/* Settings icons                                            I  I   I I I\I  \                  */
+/********************************************************** *** *** *** * * '** *****************/
 
 .tool-icon.gallery-icon {
   background-image: url(../img/gallery.png);
@@ -104,6 +104,10 @@
   border-left : 3px solid gold;
 }
 
+/************************************************************************************************/
+/* Common settings classes                                                                      */
+/************************************************************************************************/
+
 .settings-section {
   margin: 10px 20px;
   font-size: 12px;
@@ -132,6 +136,10 @@
 .settings-form-section {
   margin-bottom: 10px;
 }
+
+/************************************************************************************************/
+/* Application settings                                                                         */
+/************************************************************************************************/
 
 .background-picker-wrapper {
   overflow: hidden;
@@ -166,17 +174,29 @@
   border: gold 1px solid;
 }
 
-/* Gif/Png Export Setting panel*/
-/*******************************/
+/************************************************************************************************/
+/* Gif/Png Export panel                                                                         */
+/************************************************************************************************/
+
 .gif-upload-button,
 .gif-render-button {
-  /*float : right;*/
   margin-top : 10px;
   margin-right : 10px;
 }
 
 .gif-export-radio-group {
   margin:10px 0;
+}
+
+.gif-export-progress-status {
+  margin-left: 5px;
+}
+
+.gif-export-progress-bar {
+  margin-top:5px;
+  height:3px;
+  width: 0;
+  background:gold;
 }
 
 .gif-export-preview,
@@ -213,7 +233,10 @@
   color: white;
 }
 
-/* Import panel */
+/************************************************************************************************/
+/* Import panel                                                                                 */
+/************************************************************************************************/
+
 .import-section,
 .resize-section {
   margin: 15px 0;
@@ -290,6 +313,11 @@
 [name*=checkbox] {
   vertical-align: middle;
 }
+
+
+/************************************************************************************************/
+/* Browse local piskels panel                                                                   */
+/************************************************************************************************/
 
 .local-piskels-list {
   width: 100%;

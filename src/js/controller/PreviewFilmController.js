@@ -1,5 +1,13 @@
 (function () {
   var ns = $.namespace("pskl.controller");
+
+  var ACTION = {
+    SELECT : 'select',
+    CLONE : 'clone',
+    DELETE : 'delete',
+    NEW_FRAME : 'newframe'
+  };
+
   ns.PreviewFilmController = function (piskelController, container) {
 
     this.piskelController = piskelController;
@@ -15,12 +23,7 @@
     $.subscribe(Events.PISKEL_RESET, this.refreshZoom_.bind(this));
 
     $('#preview-list-scroller').scroll(this.updateScrollerOverflows.bind(this));
-    this.updateScrollerOverflows();
-  };
-
-  ns.PreviewFilmController.prototype.addFrame = function () {
-    this.piskelController.addFrame();
-    this.piskelController.setCurrentFrameIndex(this.piskelController.getFrameCount() - 1);
+    this.container.get(0).addEventListener('click', this.onContainerClick_.bind(this));
     this.updateScrollerOverflows();
   };
 
@@ -62,6 +65,29 @@
     wrapper.toggleClass('bottom-overflow-visible', overflowBottom);
   };
 
+  ns.PreviewFilmController.prototype.onContainerClick_ = function (event) {
+    var target = pskl.utils.Dom.getParentWithData(event.target, 'tileAction');
+    if (!target) {
+      return;
+    }
+    var action = target.dataset.tileAction;
+    var index = target.dataset.tileNumber;
+
+    if (action === ACTION.CLONE) {
+      this.piskelController.setCurrentFrameIndex(index + 1);
+      this.updateScrollerOverflows();
+    } else if (action === ACTION.DELETE) {
+      this.piskelController.removeFrameAt(index);
+      this.updateScrollerOverflows();
+    } else if (action === ACTION.SELECT) {
+      this.piskelController.setCurrentFrameIndex(index);
+    } else if (action === ACTION.NEW_FRAME) {
+      this.piskelController.addFrame();
+      this.piskelController.setCurrentFrameIndex(this.piskelController.getFrameCount() - 1);
+      this.updateScrollerOverflows();
+    }
+  };
+
   ns.PreviewFilmController.prototype.createPreviews_ = function () {
 
     this.container.html("");
@@ -77,10 +103,9 @@
     var newFrameButton = document.createElement("div");
     newFrameButton.id = "add-frame-action";
     newFrameButton.className = "add-frame-action";
+    newFrameButton.setAttribute('data-tile-action', ACTION.NEW_FRAME);
     newFrameButton.innerHTML = "<p class='label'>Add new frame</p>";
     this.container.append(newFrameButton);
-
-    $(newFrameButton).click(this.addFrame.bind(this));
 
     var needDragndropBehavior = (frameCount > 1);
     if(needDragndropBehavior) {
@@ -112,9 +137,6 @@
 
     this.piskelController.moveFrame(originFrameId, targetInsertionId);
     this.piskelController.setCurrentFrameIndex(targetInsertionId);
-
-    // TODO(grosbouddha): move localstorage request to the model layer?
-    $.publish(Events.LOCALSTORAGE_REQUEST);
   };
 
 
@@ -128,6 +150,7 @@
     var previewTileRoot = document.createElement("li");
     var classname = "preview-tile";
     previewTileRoot.setAttribute("data-tile-number", tileNumber);
+    previewTileRoot.setAttribute('data-tile-action', ACTION.SELECT);
 
     if (this.piskelController.getCurrentFrame() == currentFrame) {
       classname += " selected";
@@ -141,15 +164,14 @@
     canvasBackground.className = "canvas-background";
     canvasContainer.appendChild(canvasBackground);
 
-    previewTileRoot.addEventListener('click', this.onPreviewClick_.bind(this, tileNumber));
-
     var cloneFrameButton = document.createElement("button");
     cloneFrameButton.setAttribute('rel', 'tooltip');
     cloneFrameButton.setAttribute('data-placement', 'right');
+    cloneFrameButton.setAttribute('data-tile-number', tileNumber);
+    cloneFrameButton.setAttribute('data-tile-action', ACTION.CLONE);
     cloneFrameButton.setAttribute('title', 'Duplicate this frame');
     cloneFrameButton.className = "tile-overlay duplicate-frame-action";
     previewTileRoot.appendChild(cloneFrameButton);
-    cloneFrameButton.addEventListener('click', this.onAddButtonClick_.bind(this, tileNumber));
 
     // TODO(vincz): Eventually optimize this part by not recreating a FrameRenderer. Note that the real optim
     // is to make this update function (#createPreviewTile) less aggressive.
@@ -169,8 +191,9 @@
       deleteButton.setAttribute('rel', 'tooltip');
       deleteButton.setAttribute('data-placement', 'right');
       deleteButton.setAttribute('title', 'Delete this frame');
+      deleteButton.setAttribute('data-tile-number', tileNumber);
+      deleteButton.setAttribute('data-tile-action', ACTION.DELETE);
       deleteButton.className = "tile-overlay delete-frame-action";
-      deleteButton.addEventListener('click', this.onDeleteButtonClick_.bind(this, tileNumber));
       previewTileRoot.appendChild(deleteButton);
 
       // Add 'dragndrop handle'.
@@ -183,28 +206,7 @@
     tileCount.innerHTML = tileNumber + 1;
     previewTileRoot.appendChild(tileCount);
 
-
     return previewTileRoot;
-  };
-
-  ns.PreviewFilmController.prototype.onPreviewClick_ = function (index, evt) {
-    // has not class tile-action:
-    if(!evt.target.classList.contains('tile-overlay')) {
-      this.piskelController.setCurrentFrameIndex(index);
-    }
-  };
-
-  ns.PreviewFilmController.prototype.onDeleteButtonClick_ = function (index, evt) {
-    this.piskelController.removeFrameAt(index);
-    $.publish(Events.LOCALSTORAGE_REQUEST); // Should come from model
-    this.updateScrollerOverflows();
-  };
-
-  ns.PreviewFilmController.prototype.onAddButtonClick_ = function (index, evt) {
-    this.piskelController.duplicateFrameAt(index);
-    $.publish(Events.LOCALSTORAGE_REQUEST);  // Should come from model
-    this.piskelController.setCurrentFrameIndex(index + 1);
-    this.updateScrollerOverflows();
   };
 
   /**

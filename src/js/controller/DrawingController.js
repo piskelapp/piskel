@@ -139,8 +139,6 @@
         this.overlayFrame,
         event
       );
-
-      $.publish(Events.LOCALSTORAGE_REQUEST);
     }
   };
 
@@ -166,11 +164,6 @@
           this.overlayFrame,
           event
         );
-
-        // TODO(vincz): Find a way to move that to the model instead of being at the interaction level.
-        // Eg when drawing, it may make sense to have it here. However for a non drawing tool,
-        // you don't need to draw anything when mousemoving and you request useless localStorage.
-        $.publish(Events.LOCALSTORAGE_REQUEST);
       } else {
 
         this.currentToolBehavior.moveUnactiveToolAt(

@@ -24,6 +24,16 @@
         }
       }
       return false;
+    },
+
+    getParentWithData : function (node, data) {
+      while (node) {
+        if (node.dataset && typeof node.dataset[data] !== 'undefined') {
+          return node;
+        }
+        node = node.parentNode;
+      }
+      return null;
     }
   };
 })();

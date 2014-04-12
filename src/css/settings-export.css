@@ -1,0 +1,47 @@
+
+/* Gif/Png Export Setting panel*/
+/*******************************/
+.gif-upload-button,
+.gif-render-button {
+  /*float : right;*/
+  margin-top : 10px;
+  margin-right : 10px;
+}
+
+.gif-export-radio-group {
+  margin:10px 0;
+}
+
+.gif-export-preview,
+.png-export-preview {
+  margin-top:20px;
+  max-width:240px;
+  position:relative;
+}
+
+.png-export-preview {
+  margin:10px 0;
+  overflow: hidden;
+}
+
+.png-export-preview img {
+  float: left;
+}
+
+.png-upload-status {
+  margin : 10px 0;
+}
+
+.preview-upload-ongoing:before{
+  content: "Upload ongoing ...";
+  position: absolute;
+  display: block;
+  height: 100%;
+  width: 100%;
+  text-align: center;
+  padding-top: 45%;
+  box-sizing:border-box;
+  -moz-box-sizing:border-box;
+  background: rgba(0,0,0,0.5);
+  color: white;
+}

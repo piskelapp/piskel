@@ -18,13 +18,6 @@ var Events = {
   PALETTE_LIST_UPDATED : 'PALETTE_LIST_UPDATED',
 
   /**
-   *  When this event is emitted, a request is sent to the localstorage
-   *  Service to save the current framesheet. The storage service
-   *  may not immediately store data (internal throttling of requests).
-   */
-  LOCALSTORAGE_REQUEST: "LOCALSTORAGE_REQUEST",
-
-  /**
    * Fired each time a user setting change.
    * The payload will be:
    *   1st argument: Name of the settings

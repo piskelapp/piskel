@@ -28,13 +28,16 @@
   ns.GifExportController.prototype.init = function () {
     this.radioTemplate_ = pskl.utils.Template.get("gif-export-radio-template");
 
-    this.uploadStatusContainerEl = document.querySelectorAll(".gif-upload-status")[0];
+    this.uploadStatusContainerEl = document.querySelector(".gif-upload-status");
 
-    this.previewContainerEl = document.querySelectorAll(".gif-export-preview")[0];
-    this.radioGroupEl = document.querySelectorAll(".gif-export-radio-group")[0];
+    this.previewContainerEl = document.querySelector(".gif-export-preview");
+    this.radioGroupEl = document.querySelector(".gif-export-radio-group");
 
     this.uploadForm = $("[name=gif-export-upload-form]");
     this.uploadForm.submit(this.onUploadFormSubmit_.bind(this));
+
+    this.exportProgressStatusEl = document.querySelector('.gif-export-progress-status');
+    this.exportProgressBarEl = document.querySelector('.gif-export-progress-bar');
 
     this.createRadioElements_();
   };
@@ -127,11 +130,27 @@
       });
     }
 
+    gif.on('progress', function(percentage) {
+      this.updateProgressStatus_((percentage*100).toFixed(2));
+    }.bind(this));
+
     gif.on('finished', function(blob) {
-      this.blobToBase64_(blob, cb);
+      this.hideProgressStatus_();
+      // this.blobToBase64_(blob, cb);
     }.bind(this));
 
     gif.render();
+  };
+
+  ns.GifExportController.prototype.updateProgressStatus_ = function (percentage) {
+    this.exportProgressStatusEl.innerHTML = percentage + '%';
+    this.exportProgressBarEl.style.width = percentage + "%";
+
+  };
+
+  ns.GifExportController.prototype.hideProgressStatus_ = function () {
+    this.exportProgressStatusEl.innerHTML = '';
+    this.exportProgressBarEl.style.width = "0";
   };
 
   // FIXME : HORRIBLE COPY/PASTA
