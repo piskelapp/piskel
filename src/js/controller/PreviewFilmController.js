@@ -20,7 +20,10 @@
   ns.PreviewFilmController.prototype.init = function() {
     $.subscribe(Events.TOOL_RELEASED, this.flagForRedraw_.bind(this));
     $.subscribe(Events.PISKEL_RESET, this.flagForRedraw_.bind(this));
+    $.subscribe(Events.USER_SETTINGS_CHANGED, this.flagForRedraw_.bind(this));
+
     $.subscribe(Events.PISKEL_RESET, this.refreshZoom_.bind(this));
+
 
     $('#preview-list-scroller').scroll(this.updateScrollerOverflows.bind(this));
     this.container.get(0).addEventListener('click', this.onContainerClick_.bind(this));
