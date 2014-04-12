@@ -74,14 +74,16 @@
    * @return {Object} {row : Number, col : Number}
    */
   ns.ShapeTool.prototype.getScaledCoordinates_ = function(col, row) {
-    var sign;
-    if (Math.abs(this.startCol - col) > Math.abs(this.startRow - row)) {
-      sign = row > this.startRow ? 1 : -1;
-      row = this.startRow + (sign * Math.abs(this.startCol - col));
-    } else {
-      sign = col > this.startCol ? 1 : -1;
-      col = this.startCol + (sign * Math.abs(this.startRow - row));
-    }
+    var dX = this.startCol - col;
+    var absX = Math.abs(dX);
+
+    var dY = this.startRow - row;
+    var absY = Math.abs(dY);
+
+    var delta = Math.min(absX, absY);
+    row = this.startRow - ((dY/absY)*delta);
+    col = this.startCol - ((dX/absX)*delta);
+
     return {
       col : col,
       row : row
