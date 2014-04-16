@@ -31,35 +31,47 @@
     this.layersToLoad_ = piskelData.layers.length;
 
     piskelData.layers.forEach(function (serializedLayer) {
-      var layer = this.deserializeLayer(serializedLayer);
-      this.piskel_.addLayer(layer);
+      this.deserializeLayer(serializedLayer);
     }.bind(this));
   };
 
   ns.Deserializer.prototype.deserializeLayer = function (layerString) {
-    var layerData = JSON.parse(layerString);
+    var layerData = typeof layerString === "string" ? JSON.parse(layerString) : layerString;
     var layer = new pskl.model.Layer(layerData.name);
 
-    // 1 - create an image to load the base64PNG representing the layer
-    var base64PNG = layerData.base64PNG;
-    var image = new Image();
+    var isCompressedLayer = !!layerData.base64PNG;
 
-    // 2 - attach the onload callback that will be triggered asynchronously
-    image.onload = function () {
-      // 5 - extract the frames from the loaded image
-      var frames = pskl.utils.LayerUtils.createFromImage(image, layerData.frameCount);
+    if (isCompressedLayer) {
+      // 1 - create an image to load the base64PNG representing the layer
+      var base64PNG = layerData.base64PNG;
+      var image = new Image();
 
-      // 6 - add each image to the layer
-      frames.forEach(layer.addFrame.bind(layer));
+      // 2 - attach the onload callback that will be triggered asynchronously
+      image.onload = function () {
+        // 5 - extract the frames from the loaded image
+        var frames = pskl.utils.LayerUtils.createFromImage(image, layerData.frameCount);
+        // 6 - add each image to the layer
+        this.addFramesToLayer(frames, layer);
+      }.bind(this);
 
-      this.onLayerLoaded_();
-    }.bind(this);
-
-    // 3 - set the source of the image
-    image.src = base64PNG;
+      // 3 - set the source of the image
+      image.src = base64PNG;
+    } else {
+      var frames = layerData.grids.map(function (grid) {
+        return pskl.model.Frame.fromPixelGrid(grid);
+      });
+      this.addFramesToLayer(frames, layer);
+    }
 
     // 4 - return a pointer to the new layer instance
     return layer;
+  };
+
+  ns.Deserializer.prototype.addFramesToLayer = function (frames, layer) {
+    frames.forEach(layer.addFrame.bind(layer));
+
+    this.piskel_.addLayer(layer);
+    this.onLayerLoaded_();
   };
 
   ns.Deserializer.prototype.onLayerLoaded_ = function () {

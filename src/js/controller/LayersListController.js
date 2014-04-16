@@ -44,15 +44,15 @@
       this.piskelController.setCurrentLayerIndex(parseInt(index, 10));
     } else if (el.classList.contains('edit-icon')) {
       index = el.parentNode.dataset.layerIndex;
-      var layer = this.piskelController.getLayerByIndex(parseInt(index, 10));
-      this.renameLayer_(layer);
+      this.renameLayerAt_(index);
     }
   };
 
-  ns.LayersListController.prototype.renameLayer_ = function (layer) {
-    var newName = window.prompt("Please enter the layer name", layer.getName());
-    if (newName) {
-      layer.setName(newName);
+  ns.LayersListController.prototype.renameLayerAt_ = function (index) {
+    var layer = this.piskelController.getLayerAt(index);
+    var name = window.prompt("Please enter the layer name", layer.getName());
+    if (name) {
+      this.piskelController.renameLayerAt(index, name);
       this.renderLayerList_();
     }
   };

@@ -1,11 +1,12 @@
 (function () {
   var ns = $.namespace("pskl.model");
-
+  var __idCounter = 0;
   ns.Frame = function (width, height) {
     if (width && height) {
       this.width = width;
       this.height = height;
-
+      this.id = __idCounter++;
+      this.version = 0;
       this.pixels = ns.Frame.createEmptyPixelGrid_(width, height);
       this.previousStates = [this.getPixels()];
       this.stateIndex = 0;
@@ -59,6 +60,7 @@
    */
   ns.Frame.prototype.setPixels = function (pixels) {
     this.pixels = this.clonePixels_(pixels);
+    this.version++;
   };
 
   ns.Frame.prototype.clear = function () {
@@ -78,13 +80,14 @@
     return clonedPixels;
   };
 
-  ns.Frame.prototype.serialize = function () {
-    return JSON.stringify(this.pixels);
+  ns.Frame.prototype.getHash = function () {
+    return [this.id, this.version].join('-');
   };
 
   ns.Frame.prototype.setPixel = function (col, row, color) {
     if (this.containsPixel(col, row)) {
       this.pixels[col][row] = color;
+      this.version++;
     }
   };
 

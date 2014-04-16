@@ -13,6 +13,7 @@
     this.previousCol = null;
     this.previousRow = null;
 
+    this.pixels = [];
   };
 
   pskl.utils.inherit(ns.SimplePen, ns.BaseTool);
@@ -21,18 +22,19 @@
    * @override
    */
   ns.SimplePen.prototype.applyToolAt = function(col, row, color, frame, overlay, event) {
-    if (frame.containsPixel(col, row)) {
-      frame.setPixel(col, row, color);
-    }
+    frame.setPixel(col, row, color);
     this.previousCol = col;
     this.previousRow = row;
+    this.pixels.push({
+      col : col,
+      row : row
+    });
   };
 
   /**
    * @override
    */
   ns.SimplePen.prototype.moveToolAt = function(col, row, color, frame, overlay, event) {
-    $.publish(Events.CURSOR_MOVED, [col, row]);
     if((Math.abs(col - this.previousCol) > 1) || (Math.abs(row - this.previousRow) > 1)) {
       // The pen movement is too fast for the mousemove frequency, there is a gap between the
       // current point and the previously drawn one.
@@ -49,5 +51,25 @@
 
     this.previousCol = col;
     this.previousRow = row;
+  };
+
+
+  ns.SimplePen.prototype.releaseToolAt = function(col, row, color, frame, overlay, event) {
+    $.publish(Events.PISKEL_SAVE_STATE, {
+      type : 'TOOL',
+      tool : this,
+      replay : {
+        pixels : this.pixels.slice(0),
+        color : color
+      }
+    });
+    this.pixels = [];
+  };
+
+  ns.SimplePen.prototype.replay = function (frame, replayData) {
+    var pixels = replayData.pixels;
+    pixels.forEach(function (pixel) {
+      frame.setPixel(pixel.col, pixel.row, replayData.color);
+    });
   };
 })();

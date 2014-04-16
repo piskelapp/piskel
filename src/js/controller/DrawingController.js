@@ -175,6 +175,7 @@
           event
         );
       }
+      $.publish(Events.CURSOR_MOVED, [coords.x, coords.y]);
       this.previousMousemoveTime = currentTime;
     }
   };

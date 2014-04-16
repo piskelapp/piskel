@@ -48,7 +48,6 @@
    * @override
    */
   ns.BaseSelect.prototype.moveToolAt = function(col, row, color, frame, overlay, event) {
-    $.publish(Events.CURSOR_MOVED, [col, row]);
     if(this.mode == "select") {
       this.onSelect_(col, row, color, frame, overlay);
     }
@@ -75,7 +74,6 @@
    * @override
    */
   ns.BaseSelect.prototype.moveUnactiveToolAt = function(col, row, color, frame, overlay, event) {
-    $.publish(Events.CURSOR_MOVED, [col, row]);
     if (overlay.containsPixel(col, row)) {
       if(overlay.getPixel(col, row) != Constants.SELECTION_TRANSPARENT_COLOR) {
         // We're hovering the selection, show the move tool:

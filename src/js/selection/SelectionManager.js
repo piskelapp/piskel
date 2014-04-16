@@ -51,12 +51,17 @@
     var pixels = this.currentSelection.pixels;
     var currentFrame = this.piskelController.getCurrentFrame();
     for(var i=0, l=pixels.length; i<l; i++) {
-      try {
-        currentFrame.setPixel(pixels[i].col, pixels[i].row, Constants.TRANSPARENT_COLOR);
-      } catch(e) {
-        // Catching out of frame's bound pixels without testing
-      }
+      currentFrame.setPixel(pixels[i].col, pixels[i].row, Constants.TRANSPARENT_COLOR);
     }
+
+    $.publish(Events.PISKEL_SAVE_STATE, {
+      type : 'TOOL',
+      tool : this,
+      replay : {
+        type : 'erase',
+        pixels : JSON.parse(JSON.stringify(pixels.slice(0)))
+      }
+    });
   };
 
   ns.SelectionManager.prototype.cut = function() {
@@ -74,16 +79,28 @@
     if(this.currentSelection && this.currentSelection.hasPastedContent) {
       var pixels = this.currentSelection.pixels;
       var currentFrame = this.piskelController.getCurrentFrame();
-      for(var i=0, l=pixels.length; i<l; i++) {
-        try {
-          currentFrame.setPixel(
-            pixels[i].col, pixels[i].row,
-            pixels[i].copiedColor);
-        } catch(e) {
-          // Catching out of frame's bound pixels without testing
+
+      $.publish(Events.PISKEL_SAVE_STATE, {
+        type : 'TOOL',
+        tool : this,
+        replay : {
+          type : 'paste',
+          pixels : JSON.parse(JSON.stringify(pixels.slice(0)))
         }
-      }
+      });
+
+      pixels.forEach(function (pixel) {
+        currentFrame.setPixel(pixel.col,pixel.row,pixel.color);
+      });
     }
+  };
+
+  ns.SelectionManager.prototype.replay = function (frame, replayData) {
+    var pixels = replayData.pixels;
+    pixels.forEach(function (pixel) {
+      var color = replayData.type === 'paste' ? pixel.color : Constants.TRANSPARENT_COLOR;
+      frame.setPixel(pixel.col, pixel.row, color);
+    });
   };
 
   ns.SelectionManager.prototype.copy = function() {

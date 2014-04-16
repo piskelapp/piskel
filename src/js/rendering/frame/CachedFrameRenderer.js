@@ -36,7 +36,7 @@
       this.getGridWidth(),
       offset.x, offset.y,
       size.width, size.height,
-      frame.serialize()
+      frame.getHash()
     ].join('-');
     if (this.serializedFrame != serializedFrame) {
       this.serializedFrame = serializedFrame;
