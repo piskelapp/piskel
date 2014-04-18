@@ -1,7 +1,7 @@
 (function () {
   var ns = $.namespace('pskl.service');
 
-  var SNAPSHOT_PERIOD = 5000;
+  var SNAPSHOT_PERIOD = 5;
 
   ns.HistoryService = function (piskelController) {
     this.piskelController = piskelController;
@@ -86,14 +86,21 @@
   ns.HistoryService.prototype.onPiskelLoadedCallback = function (index, snapshotIndex, piskel) {
     for (var i = snapshotIndex + 1 ; i <= index ; i++) {
       var state = this.stateQueue[i];
-      this.piskelController.setCurrentFrameIndex(state.frameIndex);
-      this.piskelController.setCurrentLayerIndex(state.layerIndex);
+      this.setupState(state);
       this.replayState(state);
     }
+
+    var lastState = this.stateQueue[index];
+    this.setupState(lastState);
 
     this.piskelController.voice();
     $.subscribe(Events.PISKEL_SAVE_STATE, this.saveState__b);
     $.publish(Events.PISKEL_RESET);
+  };
+
+  ns.HistoryService.prototype.setupState = function (state) {
+    this.piskelController.setCurrentFrameIndex(state.frameIndex);
+    this.piskelController.setCurrentLayerIndex(state.layerIndex);
   };
 
   ns.HistoryService.prototype.loadPiskel = function (piskel, callback) {
