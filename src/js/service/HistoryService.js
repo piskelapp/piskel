@@ -56,8 +56,6 @@
   };
 
   ns.HistoryService.prototype.loadState = function (index) {
-    $.unsubscribe(Events.PISKEL_SAVE_STATE, this.saveState__b);
-
     // get nearest snaphot index
     var snapshotIndex = -1;
     for (var i = index ; i >= 0 ; i--) {
@@ -92,7 +90,6 @@
     var lastState = this.stateQueue[index];
     this.setupState(lastState);
 
-    $.subscribe(Events.PISKEL_SAVE_STATE, this.saveState__b);
     $.publish(Events.PISKEL_RESET);
   };
 
@@ -105,9 +102,9 @@
     var descriptor = this.piskelController.piskel.getDescriptor();
     pskl.utils.serialization.Deserializer.deserialize(piskel, function (piskel) {
       piskel.setDescriptor(descriptor);
-      pskl.app.piskelController.setPiskel(piskel);
+      this.piskelController.setPiskel(piskel);
       callback(piskel);
-    });
+    }.bind(this));
   };
 
   ns.HistoryService.prototype.replayState = function (state) {
