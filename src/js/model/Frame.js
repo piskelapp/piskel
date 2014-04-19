@@ -60,7 +60,6 @@
    */
   ns.Frame.prototype.setPixels = function (pixels) {
     this.pixels = this.clonePixels_(pixels);
-        this.s = null;
     this.version++;
   };
 
@@ -82,8 +81,6 @@
   };
 
   ns.Frame.prototype.getHash = function () {
-    if (!this.s) this.s = JSON.stringify(this.pixels);
-    return this.s;
     return [this.id, this.version].join('-');
   };
 
@@ -91,7 +88,6 @@
     if (this.containsPixel(col, row)) {
       var p = this.pixels[col][row];
       if (p !== color) {
-        this.s = null;
         this.pixels[col][row] = color;
         this.version++;
       }
