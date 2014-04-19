@@ -60,6 +60,7 @@
    */
   ns.Frame.prototype.setPixels = function (pixels) {
     this.pixels = this.clonePixels_(pixels);
+        this.s = null;
     this.version++;
   };
 
@@ -81,13 +82,19 @@
   };
 
   ns.Frame.prototype.getHash = function () {
+    if (!this.s) this.s = JSON.stringify(this.pixels);
+    return this.s;
     return [this.id, this.version].join('-');
   };
 
   ns.Frame.prototype.setPixel = function (col, row, color) {
     if (this.containsPixel(col, row)) {
-      this.pixels[col][row] = color;
-      this.version++;
+      var p = this.pixels[col][row];
+      if (p !== color) {
+        this.s = null;
+        this.pixels[col][row] = color;
+        this.version++;
+      }
     }
   };
 

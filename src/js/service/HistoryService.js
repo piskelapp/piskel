@@ -1,7 +1,7 @@
 (function () {
   var ns = $.namespace('pskl.service');
 
-  var SNAPSHOT_PERIOD = 5;
+  var SNAPSHOT_PERIOD = 50;
 
   ns.HistoryService = function (piskelController) {
     this.piskelController = piskelController;
@@ -57,7 +57,6 @@
 
   ns.HistoryService.prototype.loadState = function (index) {
     $.unsubscribe(Events.PISKEL_SAVE_STATE, this.saveState__b);
-    this.piskelController.silence();
 
     // get nearest snaphot index
     var snapshotIndex = -1;
@@ -93,7 +92,6 @@
     var lastState = this.stateQueue[index];
     this.setupState(lastState);
 
-    this.piskelController.voice();
     $.subscribe(Events.PISKEL_SAVE_STATE, this.saveState__b);
     $.publish(Events.PISKEL_RESET);
   };

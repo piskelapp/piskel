@@ -30,7 +30,10 @@
 
       piskel.addLayer(layer);
 
-      this.piskelController = new pskl.controller.PiskelController(piskel);
+      this.corePiskelController = new pskl.controller.piskel.PiskelController(piskel);
+      this.corePiskelController.init();
+
+      this.piskelController = new pskl.controller.piskel.PublicPiskelController(this.corePiskelController);
       this.piskelController.init();
 
       this.paletteController = new pskl.controller.PaletteController();
@@ -69,7 +72,7 @@
       this.selectionManager = new pskl.selection.SelectionManager(this.piskelController);
       this.selectionManager.init();
 
-      this.historyService = new pskl.service.HistoryService(this.piskelController);
+      this.historyService = new pskl.service.HistoryService(this.corePiskelController);
       this.historyService.init();
 
       this.notificationController = new pskl.controller.NotificationController();

@@ -39,6 +39,7 @@
       frame.getHash()
     ].join('-');
     if (this.serializedFrame != serializedFrame) {
+      // console.log('rendering')
       this.serializedFrame = serializedFrame;
       this.superclass.render.call(this, frame);
     }

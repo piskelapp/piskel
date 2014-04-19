@@ -56,7 +56,7 @@
   };
 
   ns.PngExportController.prototype.getPiskelName_ = function () {
-    return this.piskelController.piskel.getDescriptor().name;
+    return this.piskelController.getPiskel().getDescriptor().name;
   };
 
   ns.PngExportController.prototype.getFramesheetAsBase64Png = function () {

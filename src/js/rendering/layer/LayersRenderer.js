@@ -22,8 +22,8 @@
     var offset = this.getOffset();
     var size = this.getDisplaySize();
     var layers = this.piskelController.getLayers();
-    var currentFrameIndex = this.piskelController.currentFrameIndex;
-    var currentLayerIndex = this.piskelController.currentLayerIndex;
+    var currentFrameIndex = this.piskelController.getCurrentFrameIndex();
+    var currentLayerIndex = this.piskelController.getCurrentLayerIndex();
 
     var serializedRendering = [
       this.getZoom(),

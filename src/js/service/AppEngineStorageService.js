@@ -29,7 +29,7 @@
   };
 
   ns.AppEngineStorageService.prototype.prepareFormData_ = function () {
-    var piskel = this.piskelController.piskel;
+    var piskel = this.piskelController.getPiskel();
     var descriptor = piskel.getDescriptor();
 
     var formData = new FormData();

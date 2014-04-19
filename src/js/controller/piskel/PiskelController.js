@@ -1,10 +1,9 @@
 (function () {
-  var ns = $.namespace('pskl.controller');
+  var ns = $.namespace('pskl.controller.piskel');
 
   ns.PiskelController = function (piskel) {
     if (piskel) {
       this.setPiskel(piskel);
-      this.silenced = false;
     } else {
       throw 'A piskel instance is mandatory for instanciating PiskelController';
     }
@@ -16,21 +15,9 @@
     this.currentFrameIndex = 0;
 
     this.layerIdCounter = 1;
-
-    if (!this.silenced) {
-      $.publish(Events.FRAME_SIZE_CHANGED);
-      $.publish(Events.PISKEL_RESET);
-      $.publish(Events.PISKEL_SAVE_STATE, {
-        type : 'FULL'
-      });
-    }
   };
 
   ns.PiskelController.prototype.init = function () {
-    pskl.app.shortcutService.addShortcut('up', this.selectPreviousFrame.bind(this));
-    pskl.app.shortcutService.addShortcut('down', this.selectNextFrame.bind(this));
-    pskl.app.shortcutService.addShortcut('n', this.addFrameAtCurrentIndex.bind(this));
-    pskl.app.shortcutService.addShortcut('shift+n', this.duplicateCurrentFrame.bind(this));
   };
 
   ns.PiskelController.prototype.getHeight = function () {
@@ -92,15 +79,6 @@
     this.getLayers().forEach(function (l) {
       l.addFrameAt(this.createEmptyFrame_(), index);
     }.bind(this));
-
-    if (!this.silenced) {
-      $.publish(Events.PISKEL_SAVE_STATE, {
-        type : 'ADD_FRAME',
-        index : index
-      });
-
-      $.publish(Events.PISKEL_RESET);
-    }
   };
 
   ns.PiskelController.prototype.createEmptyFrame_ = function () {
@@ -116,14 +94,6 @@
     if (this.currentFrameIndex >= index && this.currentFrameIndex > 0) {
       this.setCurrentFrameIndex(this.currentFrameIndex - 1);
     }
-
-    if (!this.silenced) {
-      $.publish(Events.PISKEL_SAVE_STATE, {
-        type : 'DELETE_FRAME',
-        index : index
-      });
-      $.publish(Events.PISKEL_RESET);
-    }
   };
 
   ns.PiskelController.prototype.duplicateCurrentFrame = function () {
@@ -134,31 +104,12 @@
     this.getLayers().forEach(function (l) {
       l.duplicateFrameAt(index);
     });
-
-    if (!this.silenced) {
-      $.publish(Events.PISKEL_SAVE_STATE, {
-        type : 'DUPLICATE_FRAME',
-        index : index
-      });
-
-      $.publish(Events.PISKEL_RESET);
-    }
   };
 
   ns.PiskelController.prototype.moveFrame = function (fromIndex, toIndex) {
     this.getLayers().forEach(function (l) {
       l.moveFrame(fromIndex, toIndex);
     });
-
-    if (!this.silenced) {
-      $.publish(Events.PISKEL_SAVE_STATE, {
-        type : 'MOVE_FRAME',
-        from : fromIndex,
-        to : toIndex
-      });
-
-      $.publish(Events.PISKEL_RESET);
-    }
   };
 
   ns.PiskelController.prototype.getFrameCount = function () {
@@ -168,9 +119,6 @@
 
   ns.PiskelController.prototype.setCurrentFrameIndex = function (index) {
     this.currentFrameIndex = index;
-    if (!this.silenced) {
-      $.publish(Events.PISKEL_RESET);
-    }
   };
 
   ns.PiskelController.prototype.selectNextFrame = function () {
@@ -189,9 +137,6 @@
 
   ns.PiskelController.prototype.setCurrentLayerIndex = function (index) {
     this.currentLayerIndex = index;
-    if (!this.silenced) {
-      $.publish(Events.PISKEL_RESET);
-    }
   };
 
   ns.PiskelController.prototype.selectLayer = function (layer) {
@@ -205,13 +150,6 @@
     var layer = this.getLayerByIndex(index);
     if (layer) {
       layer.setName(name);
-      if (!this.silenced) {
-        $.publish(Events.PISKEL_SAVE_STATE, {
-          type : 'RENAME_LAYER',
-          index : index,
-          name : name
-        });
-      }
     }
   };
 
@@ -245,12 +183,6 @@
       this.piskel.addLayer(layer);
       this.setCurrentLayerIndex(this.piskel.getLayers().length - 1);
 
-      if (!this.silenced) {
-        $.publish(Events.PISKEL_SAVE_STATE, {
-          type : 'CREATE_LAYER',
-          name : name
-        });
-      }
     } else {
       throw 'Layer name should be unique';
     }
@@ -264,22 +196,12 @@
     var layer = this.getCurrentLayer();
     this.piskel.moveLayerUp(layer);
     this.selectLayer(layer);
-    if (!this.silenced) {
-      $.publish(Events.PISKEL_SAVE_STATE, {
-        type : 'LAYER_UP'
-      });
-    }
   };
 
   ns.PiskelController.prototype.moveLayerDown = function () {
     var layer = this.getCurrentLayer();
     this.piskel.moveLayerDown(layer);
     this.selectLayer(layer);
-    if (!this.silenced) {
-      $.publish(Events.PISKEL_SAVE_STATE, {
-        type : 'LAYER_DOWN'
-      });
-    }
   };
 
   ns.PiskelController.prototype.removeCurrentLayer = function () {
@@ -287,28 +209,10 @@
       var layer = this.getCurrentLayer();
       this.piskel.removeLayer(layer);
       this.setCurrentLayerIndex(0);
-
-      if (!this.silenced) {
-        $.publish(Events.PISKEL_SAVE_STATE, {
-          type : 'REMOVE_LAYER'
-        });
-      }
     }
   };
 
   ns.PiskelController.prototype.serialize = function (compressed) {
     return pskl.utils.Serializer.serializePiskel(this.piskel, compressed);
-  };
-
-  ns.PiskelController.prototype.load = function (data) {
-    this.deserialize(JSON.stringify(data));
-  };
-
-  ns.PiskelController.prototype.silence = function () {
-    this.silenced = true;
-  };
-
-  ns.PiskelController.prototype.voice = function () {
-    this.silenced = false;
   };
 })();

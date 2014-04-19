@@ -65,7 +65,8 @@
   "js/rendering/PiskelRenderer.js",
 
   // Controllers
-  "js/controller/PiskelController.js",
+  "js/controller/piskel/PiskelController.js",
+  "js/controller/piskel/PublicPiskelController.js",
   "js/controller/CursorCoordinatesController.js",
   "js/controller/DrawingController.js",
   "js/controller/PreviewFilmController.js",
