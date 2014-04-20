@@ -55,13 +55,9 @@
 
 
   ns.SimplePen.prototype.releaseToolAt = function(col, row, color, frame, overlay, event) {
-    $.publish(Events.PISKEL_SAVE_STATE, {
-      type : 'TOOL',
-      tool : this,
-      replay : {
-        pixels : this.pixels.slice(0),
-        color : color
-      }
+    this.raiseSaveStateEvent({
+      pixels : this.pixels.slice(0),
+      color : color
     });
     this.pixels = [];
   };

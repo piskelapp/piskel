@@ -56,6 +56,19 @@
     return layer.getFrameAt(this.currentFrameIndex);
   };
 
+
+  ns.PiskelController.prototype.getCurrentLayerIndex = function () {
+    return this.currentLayerIndex;
+  };
+
+  ns.PiskelController.prototype.getCurrentFrameIndex = function () {
+    return this.currentFrameIndex;
+  };
+
+  ns.PiskelController.prototype.getPiskel = function () {
+    return this.piskel;
+  };
+
   ns.PiskelController.prototype.getFrameAt = function (index) {
     var frames = this.getLayers().map(function (l) {
       return l.getFrameAt(index);

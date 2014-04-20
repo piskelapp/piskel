@@ -2,6 +2,7 @@
   var ns = $.namespace('pskl.service');
 
   var SNAPSHOT_PERIOD = 50;
+  var LOAD_STATE_INTERVAL = 50;
 
   ns.HistoryService = function (piskelController) {
     this.piskelController = piskelController;
@@ -9,7 +10,7 @@
     this.currentIndex = -1;
     this.saveState__b = this.saveState.bind(this);
 
-    this.lastEvent = -1;
+    this.lastLoadState = -1;
   };
 
   ns.HistoryService.prototype.init = function () {
@@ -38,46 +39,44 @@
   };
 
   ns.HistoryService.prototype.undo = function () {
-    var now = Date.now();
-    if ((Date.now() - this.lastEvent) > 50 && this.currentIndex > 0) {
-      this.currentIndex = this.currentIndex - 1;
-      this.loadState(this.currentIndex);
-      this.lastEvent = Date.now();
-    }
+    this.loadState(this.currentIndex - 1);
   };
 
   ns.HistoryService.prototype.redo = function () {
-    var now = Date.now();
-    if ((Date.now() - this.lastEvent) > 50 && this.currentIndex < this.stateQueue.length - 1) {
-      this.currentIndex = this.currentIndex + 1;
-      this.loadState(this.currentIndex);
-      this.lastEvent = Date.now();
-    }
+    this.loadState(this.currentIndex + 1);
   };
 
   ns.HistoryService.prototype.loadState = function (index) {
-    // get nearest snaphot index
-    var snapshotIndex = -1;
-    for (var i = index ; i >= 0 ; i--) {
-      if (this.stateQueue[i].piskel) {
-        snapshotIndex = i;
-        break;
+    if (this.isLoadStateAllowed_(index)) {
+      this.lastLoadState = Date.now();
+
+      var snapshotIndex = this.getPreviousSnapshotIndex_(index);
+      if (snapshotIndex < 0) {
+        throw 'Could not find previous SNAPSHOT saved in history stateQueue';
       }
+
+      var serializedPiskel = this.stateQueue[snapshotIndex].piskel;
+
+      if (typeof serializedPiskel === "string") {
+        this.stateQueue[snapshotIndex].piskel = JSON.parse(serializedPiskel);
+        serializedPiskel = this.stateQueue[snapshotIndex].piskel;
+      }
+
+      this.loadPiskel(serializedPiskel, this.onPiskelLoadedCallback.bind(this, index, snapshotIndex));
     }
+  };
 
-    if (snapshotIndex === -1) {
-      throw 'Could not find previous SNAPSHOT saved in history stateQueue';
+  ns.HistoryService.prototype.isLoadStateAllowed_ = function (index) {
+    var timeOk = (Date.now() - this.lastLoadState) > LOAD_STATE_INTERVAL;
+    var indexInRange = index >= 0 && index < this.stateQueue.length;
+    return timeOk && indexInRange;
+  };
+
+  ns.HistoryService.prototype.getPreviousSnapshotIndex_ = function (index) {
+    while (this.stateQueue[index] && !this.stateQueue[index].piskel) {
+      index = index - 1;
     }
-
-    var serializedPiskel = this.stateQueue[snapshotIndex].piskel;
-    var targetState = this.stateQueue[index];
-
-    if (typeof serializedPiskel === "string") {
-      this.stateQueue[snapshotIndex].piskel = JSON.parse(serializedPiskel);
-      serializedPiskel = this.stateQueue[snapshotIndex].piskel;
-    }
-
-    this.loadPiskel(serializedPiskel, this.onPiskelLoadedCallback.bind(this, index, snapshotIndex));
+    return index;
   };
 
   ns.HistoryService.prototype.onPiskelLoadedCallback = function (index, snapshotIndex, piskel) {
@@ -89,7 +88,7 @@
 
     var lastState = this.stateQueue[index];
     this.setupState(lastState);
-
+    this.currentIndex = index;
     $.publish(Events.PISKEL_RESET);
   };
 
@@ -108,33 +107,11 @@
   };
 
   ns.HistoryService.prototype.replayState = function (state) {
-    var type = state.action.type;
-    if (type === 'DELETE_FRAME') {
-      this.piskelController.removeFrameAt(state.action.index);
-    } else if (type === 'ADD_FRAME') {
-      this.piskelController.addFrameAt(state.action.index);
-    } else if (type === 'DUPLICATE_FRAME') {
-      this.piskelController.duplicateFrameAt(state.action.index);
-    } else if (type === 'CREATE_LAYER') {
-      this.piskelController.createLayer(state.action.name);
-    } else if (type === 'REMOVE_LAYER') {
-      this.piskelController.removeCurrentLayer();
-    } else if (type === 'LAYER_UP') {
-      this.piskelController.moveLayerUp();
-    } else if (type === 'LAYER_DOWN') {
-      this.piskelController.moveLayerUp();
-    } else if (type === 'RENAME_LAYER') {
-      this.piskelController.renameLayerAt(state.action.index, state.action.name);
-    } else if (type === 'MOVE_FRAME') {
-      this.piskelController.moveFrame(state.action.from, state.action.to);
-    } else if (type === 'CREATE_LAYER') {
-      this.piskelController.createLayer();
-    } else if (type === 'TOOL') {
-      var action = state.action;
-      var layer = this.piskelController.getLayerAt(state.layerIndex);
-      var frame = layer.getFrameAt(state.frameIndex);
-      action.tool.replay(frame, action.replay);
-    }
+    var action = state.action;
+    var type = action.type;
+    var layer = this.piskelController.getLayerAt(state.layerIndex);
+    var frame = layer.getFrameAt(state.frameIndex);
+    action.scope.replay(frame, action.replay);
   };
 
 })();

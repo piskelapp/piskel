@@ -73,13 +73,9 @@
     // For now, we are done with the stroke tool and don't need an overlay anymore:
     overlay.clear();
 
-    $.publish(Events.PISKEL_SAVE_STATE, {
-      type : 'TOOL',
-      tool : this,
-      replay : {
-        pixels : strokePoints,
-        color : color
-      }
+    this.raiseSaveStateEvent({
+      pixels : strokePoints,
+      color : color
     });
   };
 

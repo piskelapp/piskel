@@ -53,13 +53,9 @@
   ns.Move.prototype.releaseToolAt = function(col, row, color, frame, overlay, event) {
     this.moveToolAt(col, row, color, frame, overlay);
 
-    $.publish(Events.PISKEL_SAVE_STATE, {
-      type : 'TOOL',
-      tool : this,
-      replay : {
-        colDiff : col - this.startCol,
-        rowDiff : row - this.startRow
-      }
+    this.raiseSaveStateEvent({
+      colDiff : col - this.startCol,
+      rowDiff : row - this.startRow
     });
   };
 

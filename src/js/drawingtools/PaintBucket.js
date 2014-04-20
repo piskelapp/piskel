@@ -19,14 +19,10 @@
   ns.PaintBucket.prototype.applyToolAt = function(col, row, color, frame, overlay, event) {
     pskl.PixelUtils.paintSimilarConnectedPixelsFromFrame(frame, col, row, color);
 
-    $.publish(Events.PISKEL_SAVE_STATE, {
-      type : 'TOOL',
-      tool : this,
-      replay : {
-        col : col,
-        row : row,
-        color : color
-      }
+    this.raiseSaveStateEvent({
+      col : col,
+      row : row,
+      color : color
     });
   };
 

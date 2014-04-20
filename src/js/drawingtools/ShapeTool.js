@@ -51,17 +51,12 @@
     this.draw_(coords.col, coords.row, color, frame);
 
     $.publish(Events.DRAG_END, [col, row]);
-
-    $.publish(Events.PISKEL_SAVE_STATE, {
-      type : 'TOOL',
-      tool : this,
-      replay : {
-        col : col,
-        row : row,
-        startCol : this.startCol,
-        startRow : this.startRow,
-        color : color
-      }
+    this.raiseSaveStateEvent({
+      col : col,
+      row : row,
+      startCol : this.startCol,
+      startRow : this.startRow,
+      color : color
     });
   };
 

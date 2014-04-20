@@ -50,12 +50,12 @@
     }
   };
 
-  ns.BaseTool.prototype.raiseSaveStateEvent = function (args) {
-    var toolInfo = {
-      toolId : this.toolId,
-      args : args
-    };
-    $.publish(Events.PISKEL_SAVE_STATE, toolInfo);
+  ns.BaseTool.prototype.raiseSaveStateEvent = function (replayData) {
+    $.publish(Events.PISKEL_SAVE_STATE, {
+      type : 'REPLAY',
+      scope : this,
+      replay : replayData
+    });
   };
 
 

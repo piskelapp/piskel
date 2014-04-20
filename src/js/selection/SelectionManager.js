@@ -1,6 +1,11 @@
 (function () {
   var ns = $.namespace("pskl.selection");
 
+  var SELECTION_REPLAY = {
+    PASTE : 'REPLAY_PASTE',
+    ERASE : 'REPLAY_ERASE'
+  };
+
   ns.SelectionManager = function (piskelController) {
 
     this.piskelController = piskelController;
@@ -55,10 +60,10 @@
     }
 
     $.publish(Events.PISKEL_SAVE_STATE, {
-      type : 'TOOL',
-      tool : this,
+      type : 'REPLAY',
+      scope : this,
       replay : {
-        type : 'erase',
+        type : SELECTION_REPLAY.ERASE,
         pixels : JSON.parse(JSON.stringify(pixels.slice(0)))
       }
     });
@@ -81,10 +86,10 @@
       var currentFrame = this.piskelController.getCurrentFrame();
 
       $.publish(Events.PISKEL_SAVE_STATE, {
-        type : 'TOOL',
-        tool : this,
+        type : 'REPLAY',
+        scope : this,
         replay : {
-          type : 'paste',
+          type : SELECTION_REPLAY.PASTE,
           pixels : JSON.parse(JSON.stringify(pixels.slice(0)))
         }
       });
@@ -98,7 +103,7 @@
   ns.SelectionManager.prototype.replay = function (frame, replayData) {
     var pixels = replayData.pixels;
     pixels.forEach(function (pixel) {
-      var color = replayData.type === 'paste' ? pixel.color : Constants.TRANSPARENT_COLOR;
+      var color = replayData.type === SELECTION_REPLAY.PASTE ? pixel.color : Constants.TRANSPARENT_COLOR;
       frame.setPixel(pixel.col, pixel.row, color);
     });
   };
