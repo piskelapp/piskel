@@ -52,7 +52,7 @@
 
   ns.BaseTool.prototype.raiseSaveStateEvent = function (replayData) {
     $.publish(Events.PISKEL_SAVE_STATE, {
-      type : 'REPLAY',
+      type : pskl.service.HistoryService.REPLAY,
       scope : this,
       replay : replayData
     });

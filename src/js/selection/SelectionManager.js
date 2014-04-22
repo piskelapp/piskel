@@ -60,7 +60,7 @@
     }
 
     $.publish(Events.PISKEL_SAVE_STATE, {
-      type : 'REPLAY',
+      type : pskl.service.HistoryService.REPLAY,
       scope : this,
       replay : {
         type : SELECTION_REPLAY.ERASE,
@@ -86,7 +86,7 @@
       var currentFrame = this.piskelController.getCurrentFrame();
 
       $.publish(Events.PISKEL_SAVE_STATE, {
-        type : 'REPLAY',
+        type : pskl.service.HistoryService.REPLAY,
         scope : this,
         replay : {
           type : SELECTION_REPLAY.PASTE,

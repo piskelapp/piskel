@@ -19,12 +19,12 @@
     $.publish(Events.FRAME_SIZE_CHANGED);
     $.publish(Events.PISKEL_RESET);
     $.publish(Events.PISKEL_SAVE_STATE, {
-      type : 'FULL'
+      type : pskl.service.HistoryService.SNAPSHOT
     });
   };
 
   ns.PublicPiskelController.prototype.addFrame = function () {
-    this.addFrameAt(this.piskelController.getFrameCount());
+    this.addFrameAt(this.getFrameCount());
   };
 
   ns.PublicPiskelController.prototype.addFrameAtCurrentIndex = function () {
@@ -32,14 +32,14 @@
   };
 
   ns.PublicPiskelController.prototype.addFrameAt = function (index) {
-    this.piskelController.addFrameAt(index);
     this.raiseSaveStateEvent_(this.piskelController.addFrameAt, [index]);
+    this.piskelController.addFrameAt(index);
     $.publish(Events.PISKEL_RESET);
   };
 
   ns.PublicPiskelController.prototype.removeFrameAt = function (index) {
-    this.piskelController.removeFrameAt(index);
     this.raiseSaveStateEvent_(this.piskelController.removeFrameAt, [index]);
+    this.piskelController.removeFrameAt(index);
     $.publish(Events.PISKEL_RESET);
   };
 
@@ -49,7 +49,7 @@
 
   ns.PublicPiskelController.prototype.raiseSaveStateEvent_ = function (fn, args) {
     $.publish(Events.PISKEL_SAVE_STATE, {
-      type : 'REPLAY',
+      type : pskl.service.HistoryService.REPLAY,
       scope : this,
       replay : {
         fn : fn,
@@ -63,14 +63,14 @@
   };
 
   ns.PublicPiskelController.prototype.duplicateFrameAt = function (index) {
-    this.piskelController.duplicateFrameAt(index);
     this.raiseSaveStateEvent_(this.piskelController.duplicateFrameAt, [index]);
+    this.piskelController.duplicateFrameAt(index);
     $.publish(Events.PISKEL_RESET);
   };
 
   ns.PublicPiskelController.prototype.moveFrame = function (fromIndex, toIndex) {
-    this.piskelController.moveFrame(fromIndex, toIndex);
     this.raiseSaveStateEvent_(this.piskelController.moveFrame, [fromIndex, toIndex]);
+    this.piskelController.moveFrame(fromIndex, toIndex);
     $.publish(Events.PISKEL_RESET);
   };
 
@@ -100,31 +100,31 @@
   };
 
   ns.PublicPiskelController.prototype.renameLayerAt = function (index, name) {
-    this.piskelController.renameLayerAt(index, name);
     this.raiseSaveStateEvent_(this.piskelController.renameLayerAt, [index, name]);
+    this.piskelController.renameLayerAt(index, name);
   };
 
   ns.PublicPiskelController.prototype.createLayer = function (name) {
-    this.piskelController.createLayer(name);
     this.raiseSaveStateEvent_(this.piskelController.createLayer, [name]);
+    this.piskelController.createLayer(name);
     $.publish(Events.PISKEL_RESET);
   };
 
   ns.PublicPiskelController.prototype.moveLayerUp = function () {
-    this.piskelController.moveLayerUp();
     this.raiseSaveStateEvent_(this.piskelController.moveLayerUp, []);
+    this.piskelController.moveLayerUp();
     $.publish(Events.PISKEL_RESET);
   };
 
   ns.PublicPiskelController.prototype.moveLayerDown = function () {
-    this.piskelController.moveLayerDown();
     this.raiseSaveStateEvent_(this.piskelController.moveLayerDown, []);
+    this.piskelController.moveLayerDown();
     $.publish(Events.PISKEL_RESET);
   };
 
   ns.PublicPiskelController.prototype.removeCurrentLayer = function () {
-    this.piskelController.removeCurrentLayer();
     this.raiseSaveStateEvent_(this.piskelController.removeCurrentLayer, []);
+    this.piskelController.removeCurrentLayer();
     $.publish(Events.PISKEL_RESET);
   };
 

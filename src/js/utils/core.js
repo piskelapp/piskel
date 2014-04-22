@@ -49,7 +49,7 @@ if (typeof Function.prototype.bind !== "function") {
 
   ns.wrap = function (wrapper, wrappedObject) {
     for (var prop in wrappedObject) {
-      if (typeof wrappedObject[prop] === 'function') {
+      if (typeof wrappedObject[prop] === 'function' && typeof wrapper[prop] === 'undefined') {
         wrapper[prop] = wrappedObject[prop].bind(wrappedObject);
       }
     }

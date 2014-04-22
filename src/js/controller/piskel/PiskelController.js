@@ -225,7 +225,7 @@
     }
   };
 
-  ns.PiskelController.prototype.serialize = function (compressed) {
-    return pskl.utils.Serializer.serializePiskel(this.piskel, compressed);
+  ns.PiskelController.prototype.serialize = function (expanded) {
+    return pskl.utils.Serializer.serializePiskel(this.piskel, expanded);
   };
 })();

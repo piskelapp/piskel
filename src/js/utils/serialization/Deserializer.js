@@ -29,39 +29,42 @@
     this.piskel_ = new pskl.model.Piskel(piskelData.width, piskelData.height, descriptor);
 
     this.layersToLoad_ = piskelData.layers.length;
-
-    piskelData.layers.forEach(function (serializedLayer) {
-      this.deserializeLayer(serializedLayer);
-    }.bind(this));
+    if (piskelData.expanded) {
+      piskelData.layers.forEach(this.loadExpandedLayer.bind(this));
+    } else {
+      piskelData.layers.forEach(this.deserializeLayer.bind(this));
+    }
   };
 
   ns.Deserializer.prototype.deserializeLayer = function (layerString) {
-    var layerData = typeof layerString === "string" ? JSON.parse(layerString) : layerString;
+    var layerData = JSON.parse(layerString);
     var layer = new pskl.model.Layer(layerData.name);
 
-    var isCompressedLayer = !!layerData.base64PNG;
+    // 1 - create an image to load the base64PNG representing the layer
+    var base64PNG = layerData.base64PNG;
+    var image = new Image();
 
-    if (isCompressedLayer) {
-      // 1 - create an image to load the base64PNG representing the layer
-      var base64PNG = layerData.base64PNG;
-      var image = new Image();
-
-      // 2 - attach the onload callback that will be triggered asynchronously
-      image.onload = function () {
-        // 5 - extract the frames from the loaded image
-        var frames = pskl.utils.LayerUtils.createFromImage(image, layerData.frameCount);
-        // 6 - add each image to the layer
-        this.addFramesToLayer(frames, layer);
-      }.bind(this);
-
-      // 3 - set the source of the image
-      image.src = base64PNG;
-    } else {
-      var frames = layerData.grids.map(function (grid) {
-        return pskl.model.Frame.fromPixelGrid(grid);
-      });
+    // 2 - attach the onload callback that will be triggered asynchronously
+    image.onload = function () {
+      // 5 - extract the frames from the loaded image
+      var frames = pskl.utils.LayerUtils.createFromImage(image, layerData.frameCount);
+      // 6 - add each image to the layer
       this.addFramesToLayer(frames, layer);
-    }
+    }.bind(this);
+
+    // 3 - set the source of the image
+    image.src = base64PNG;
+
+    // 4 - return a pointer to the new layer instance
+    return layer;
+  };
+
+  ns.Deserializer.prototype.loadExpandedLayer = function (layerData) {
+    var layer = new pskl.model.Layer(layerData.name);
+    var frames = layerData.grids.map(function (grid) {
+      return pskl.model.Frame.fromPixelGrid(grid);
+    });
+    this.addFramesToLayer(frames, layer);
 
     // 4 - return a pointer to the new layer instance
     return layer;

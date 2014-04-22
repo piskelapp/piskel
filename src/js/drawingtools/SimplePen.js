@@ -42,7 +42,7 @@
       var interpolatedPixels = this.getLinePixels_(col, this.previousCol, row, this.previousRow);
       for(var i=0, l=interpolatedPixels.length; i<l; i++) {
         var coords = interpolatedPixels[i];
-        this.applyToolAt(coords.col, coords.row, color, frame, overlay);
+        this.applyToolAt(coords.col, coords.row, color, frame, overlay, event);
       }
     }
     else {
