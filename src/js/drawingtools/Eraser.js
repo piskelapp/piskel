@@ -8,6 +8,7 @@
   var ns = $.namespace("pskl.drawingtools");
 
   ns.Eraser = function() {
+    this.superclass.constructor.call(this);
     this.toolId = "tool-eraser";
     this.helpText = "Eraser tool";
   };

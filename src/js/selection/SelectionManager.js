@@ -22,6 +22,7 @@
     pskl.app.shortcutService.addShortcut('ctrl+X', this.cut.bind(this));
     pskl.app.shortcutService.addShortcut('ctrl+C', this.copy.bind(this));
     pskl.app.shortcutService.addShortcut('del', this.erase.bind(this));
+    pskl.app.shortcutService.addShortcut('back', this.onBackPressed_.bind(this));
 
     $.subscribe(Events.TOOL_SELECTED, $.proxy(this.onToolSelected_, this));
   };
@@ -32,6 +33,7 @@
   ns.SelectionManager.prototype.cleanSelection_ = function() {
     if(this.currentSelection) {
       this.currentSelection.reset();
+      this.currentSelection = null;
     }
   };
 
@@ -50,6 +52,14 @@
    */
   ns.SelectionManager.prototype.onSelectionDismissed_ = function(evt) {
     this.cleanSelection_();
+  };
+
+  ns.SelectionManager.prototype.onBackPressed_ = function(evt) {
+    if (this.currentSelection) {
+      this.erase();
+    } else {
+      return true; // bubble
+    }
   };
 
   ns.SelectionManager.prototype.erase = function () {

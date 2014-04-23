@@ -1,6 +1,7 @@
 (function () {
   var specialKeys = {
     191 : "?",
+    8 : "back",
     27 : "esc",
     38 : "up",
     40 : "down",

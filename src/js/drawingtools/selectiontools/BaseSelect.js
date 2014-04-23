@@ -13,6 +13,8 @@
     // Select's first point coordinates (set in applyToolAt)
     this.startCol = null;
     this.startRow = null;
+
+    this.selection = null;
   };
 
   pskl.utils.inherit(ns.BaseSelect, ns.BaseTool);
@@ -50,8 +52,7 @@
   ns.BaseSelect.prototype.moveToolAt = function(col, row, color, frame, overlay, event) {
     if(this.mode == "select") {
       this.onSelect_(col, row, color, frame, overlay);
-    }
-    else if(this.mode == "moveSelection") {
+    } else if(this.mode == "moveSelection") {
       this.onSelectionDrag_(col, row, color, frame, overlay);
     }
   };
@@ -95,28 +96,10 @@
    * For each pixel in the selection draw it in white transparent on the tool overlay
    * @protected
    */
-  ns.BaseSelect.prototype.drawSelectionOnOverlay_ = function (selection, overlay) {
-    var pixels = selection.pixels;
+  ns.BaseSelect.prototype.drawSelectionOnOverlay_ = function (overlay) {
+    var pixels = this.selection.pixels;
     for(var i=0, l=pixels.length; i<l; i++) {
       overlay.setPixel(pixels[i].col, pixels[i].row, Constants.SELECTION_TRANSPARENT_COLOR);
-    }
-  };
-
-  /**
-   * Move the overlay frame filled with semi-transparent pixels that represent the selection.
-   * @private
-   */
-  ns.BaseSelect.prototype.shiftOverlayFrame_ = function (colDiff, rowDiff, overlayFrame, reference) {
-    var color;
-    for (var col = 0 ; col < overlayFrame.getWidth() ; col++) {
-      for (var row = 0 ; row < overlayFrame.getHeight() ; row++) {
-        if (reference.containsPixel(col - colDiff, row - rowDiff)) {
-          color = reference.getPixel(col - colDiff, row - rowDiff);
-        } else {
-          color = Constants.TRANSPARENT_COLOR;
-        }
-        overlayFrame.setPixel(col, row, color);
-      }
     }
   };
 
@@ -133,9 +116,6 @@
   // The list of callbacks that define the drag'n drop behavior of the selection.
   /** @private */
   ns.BaseSelect.prototype.onSelectionDragStart_ = function (col, row, color, frame, overlay) {
-    // Since we will move the overlayFrame in which  the current selection is rendered,
-    // we clone it to have a reference for the later shifting process.
-    this.overlayFrameReference = overlay.clone();
   };
 
   /** @private */
@@ -145,11 +125,10 @@
 
     var colDiff = col - this.startCol, rowDiff = row - this.startRow;
 
-    // Shifting selection on overlay frame:
-    this.shiftOverlayFrame_(colDiff, rowDiff, overlay, this.overlayFrameReference);
+    this.selection.move(deltaCol, deltaRow);
 
-    // Update selection model:
-    $.publish(Events.SELECTION_MOVE_REQUEST, [deltaCol, deltaRow]);
+    overlay.clear();
+    this.drawSelectionOnOverlay_(overlay);
 
     this.lastCol = col;
     this.lastRow = row;

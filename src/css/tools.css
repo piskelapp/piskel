@@ -130,7 +130,7 @@
 }
 
 .tool-rectangle-select .drawing-canvas-container:hover {
-  cursor: url(../img/icons/select.png) 15 15, pointer;
+  cursor: crosshair;
 }
 
 .tool-shape-select .drawing-canvas-container:hover {
