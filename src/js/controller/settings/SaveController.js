@@ -21,7 +21,7 @@
 
     this.status = $('#save-status');
 
-    var descriptor = this.piskelController.piskel.getDescriptor();
+    var descriptor = this.piskelController.getPiskel().getDescriptor();
     this.nameInput.val(descriptor.name);
     this.descriptionInput.val(descriptor.description);
 
@@ -46,7 +46,7 @@
     var isPublic = !!this.isPublicCheckbox.prop('checked');
 
     var descriptor = new pskl.model.piskel.Descriptor(name, description, isPublic);
-    this.piskelController.piskel.setDescriptor(descriptor);
+    this.piskelController.getPiskel().setDescriptor(descriptor);
 
     this.beforeSaving_();
     pskl.app.store({

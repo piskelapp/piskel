@@ -29,7 +29,6 @@
   };
 
   ns.Move.prototype.moveToolAt = function(col, row, color, frame, overlay, event) {
-    $.publish(Events.CURSOR_MOVED, [col, row]);
     var colDiff = col - this.startCol, rowDiff = row - this.startRow;
     this.shiftFrame(colDiff, rowDiff, frame, this.frameClone);
   };
@@ -53,5 +52,14 @@
    */
   ns.Move.prototype.releaseToolAt = function(col, row, color, frame, overlay, event) {
     this.moveToolAt(col, row, color, frame, overlay);
+
+    this.raiseSaveStateEvent({
+      colDiff : col - this.startCol,
+      rowDiff : row - this.startRow
+    });
+  };
+
+  ns.Move.prototype.replay = function(frame, replayData) {
+    this.shiftFrame(replayData.colDiff, replayData.rowDiff, frame, frame.clone());
   };
 })();

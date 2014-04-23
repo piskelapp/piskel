@@ -157,8 +157,8 @@
         // Warning : do not call setCurrentButton here
         // mousemove do not have the correct mouse button information on all browsers
         this.currentToolBehavior.moveToolAt(
-          coords.x,
-          coords.y,
+          coords.x | 0,
+          coords.y | 0,
           this.getCurrentColor_(event),
           currentFrame,
           this.overlayFrame,
@@ -175,6 +175,7 @@
           event
         );
       }
+      $.publish(Events.CURSOR_MOVED, [coords.x, coords.y]);
       this.previousMousemoveTime = currentTime;
     }
   };

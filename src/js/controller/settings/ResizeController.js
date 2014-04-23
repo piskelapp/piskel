@@ -39,7 +39,7 @@
       layers.push(layer);
     }
 
-    var piskel = pskl.model.Piskel.fromLayers(layers, this.piskelController.piskel.getDescriptor());
+    var piskel = pskl.model.Piskel.fromLayers(layers, this.piskelController.getPiskel().getDescriptor());
     pskl.app.piskelController.setPiskel(piskel);
     $.publish(Events.CLOSE_SETTINGS_DRAWER);
   };

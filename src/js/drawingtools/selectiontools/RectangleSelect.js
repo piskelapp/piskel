@@ -11,6 +11,7 @@
     this.helpText = "Rectangle selection tool";
 
     ns.BaseSelect.call(this);
+    this.hasSelection = false;
   };
 
   pskl.utils.inherit(ns.RectangleSelect, ns.BaseSelect);
@@ -20,9 +21,16 @@
    * @override
    */
   ns.RectangleSelect.prototype.onSelectStart_ = function (col, row, color, frame, overlay) {
-    $.publish(Events.DRAG_START, [col, row]);
-    // Drawing the first point of the rectangle in the fake overlay canvas:
-    overlay.setPixel(col, row, color);
+    if (this.hasSelection) {
+      this.hasSelection = false;
+      overlay.clear();
+      $.publish(Events.SELECTION_DISMISSED);
+    } else {
+      this.hasSelection = true;
+      $.publish(Events.DRAG_START, [col, row]);
+      // Drawing the first point of the rectangle in the fake overlay canvas:
+      overlay.setPixel(col, row, color);
+    }
   };
 
   /**
@@ -32,23 +40,20 @@
    * @override
    */
   ns.RectangleSelect.prototype.onSelect_ = function (col, row, color, frame, overlay) {
-    overlay.clear();
-    if(this.startCol == col &&this.startRow == row) {
-      $.publish(Events.SELECTION_DISMISSED);
-    } else {
-      var selection = new pskl.selection.RectangularSelection(
+    if (this.hasSelection) {
+      overlay.clear();
+      this.selection = new pskl.selection.RectangularSelection(
         this.startCol, this.startRow, col, row);
-      $.publish(Events.SELECTION_CREATED, [selection]);
-      this.drawSelectionOnOverlay_(selection, overlay);
+      $.publish(Events.SELECTION_CREATED, [this.selection]);
+      this.drawSelectionOnOverlay_(overlay);
     }
   };
 
-  /**
-   * @override
-   */
   ns.RectangleSelect.prototype.onSelectEnd_ = function (col, row, color, frame, overlay) {
-    this.onSelect_(col, row, color, frame, overlay);
-    $.publish(Events.DRAG_END, [col, row]);
+    if (this.hasSelection) {
+      this.onSelect_(col, row, color, frame, overlay);
+      $.publish(Events.DRAG_END, [col, row]);
+    }
   };
 
 })();

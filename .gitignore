@@ -16,6 +16,9 @@ npm-debug.log
 build/*.js
 build/*.css
 
+# diffs
+diff.txt
+
 # Closure compiler generated JS binary.
 build/closure/closure_compiled_binary.js
 

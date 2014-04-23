@@ -2,7 +2,7 @@
   var ns = $.namespace('pskl.service');
 
   ns.SavedStatusService = function (piskelController) {
-    this.piskelController_ = piskelController;
+    this.piskelController = piskelController;
   };
 
   ns.SavedStatusService.prototype.init = function () {
@@ -15,7 +15,7 @@
   };
 
   ns.SavedStatusService.prototype.onPiskelReset = function () {
-    var piskel = this.piskelController_.piskel;
+    var piskel = this.piskelController.getPiskel();
     // A first PISKEL_RESET is triggered during the load of a new Piskel, it should be ignored
     // putting a firstResetDone flag as a nasty workaround for this
     if (piskel.firstResetDone_) {
@@ -34,7 +34,7 @@
   };
 
   ns.SavedStatusService.prototype.updateDirtyStatus = function (status) {
-    var piskel = this.piskelController_.piskel;
+    var piskel = this.piskelController.getPiskel();
     if (piskel.isDirty_ !== status) {
       // Redraw piskel name only if dirty status actually changed
       piskel.isDirty_ = status;
@@ -43,7 +43,7 @@
   };
 
   ns.SavedStatusService.prototype.updatePiskelName = function () {
-    var piskel = this.piskelController_.piskel;
+    var piskel = this.piskelController.getPiskel();
     var name = piskel.getDescriptor().name;
     if (piskel.isDirty_) {
       $('.piskel-name').html(name + ' *');
@@ -53,7 +53,7 @@
   };
 
   ns.SavedStatusService.prototype.onBeforeUnload = function (evt) {
-    var piskel = this.piskelController_.piskel;
+    var piskel = this.piskelController.getPiskel();
     if (piskel.isDirty_) {
       var confirmationMessage = "Your Piskel seems to have unsaved changes";
 

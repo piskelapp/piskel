@@ -32,6 +32,7 @@ var Events = {
    * Number of frames, content of frames, color used for the palette may have changed.
    */
   PISKEL_RESET: "PISKEL_RESET",
+  PISKEL_SAVE_STATE: "PISKEL_SAVE_STATE",
 
   PISKEL_SAVED: "PISKEL_SAVED",
 

@@ -49,7 +49,24 @@
     }
     var coords = this.getCoordinates_(col, row, event);
     this.draw_(coords.col, coords.row, color, frame);
+
     $.publish(Events.DRAG_END, [col, row]);
+    this.raiseSaveStateEvent({
+      col : col,
+      row : row,
+      startCol : this.startCol,
+      startRow : this.startRow,
+      color : color
+    });
+  };
+
+  /**
+   * @override
+   */
+  ns.ShapeTool.prototype.replay = function(frame, replayData) {
+    this.startCol = replayData.startCol;
+    this.startRow = replayData.startRow;
+    this.draw_(replayData.col, replayData.row, replayData.color, frame);
   };
 
   /**

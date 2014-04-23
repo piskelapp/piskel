@@ -47,5 +47,13 @@ if (typeof Function.prototype.bind !== "function") {
     extendedObject.prototype.superclass = inheritFrom.prototype;
   };
 
+  ns.wrap = function (wrapper, wrappedObject) {
+    for (var prop in wrappedObject) {
+      if (typeof wrappedObject[prop] === 'function' && typeof wrapper[prop] === 'undefined') {
+        wrapper[prop] = wrappedObject[prop].bind(wrappedObject);
+      }
+    }
+  };
+
 })();
 

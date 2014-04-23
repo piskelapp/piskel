@@ -12,6 +12,13 @@
     $(document.body).keydown($.proxy(this.onKeyUp_, this));
   };
 
+  /**
+   * Add a keyboard shortcut
+   * @param {String}   rawKey   (case insensitive) key can be a meta (optional) + [a-z0-9] or
+   *                            a special key (check list of supported keys in KeycodeTranslator)
+   *                            eg. 'ctrl+A', 'del'
+   * @param {Function} callback should return true to let the original event perform its default action
+   */
   ns.ShortcutService.prototype.addShortcut = function (rawKey, callback) {
     var parsedKey = this.parseKey_(rawKey.toLowerCase());
 
@@ -78,8 +85,10 @@
         }
 
         if(cb) {
-          cb(charkey);
-          evt.preventDefault();
+          var bubble = cb(charkey);
+          if (bubble !== true) {
+            evt.preventDefault();
+          }
         }
       }
     }

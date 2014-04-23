@@ -6,16 +6,17 @@
 (function() {
   var ns = $.namespace("pskl.drawingtools");
 
-  ns.BaseTool = function() {};
+  ns.BaseTool = function() {
+    this.toolId = "tool-base";
+  };
 
   ns.BaseTool.prototype.applyToolAt = function(col, row, color, frame, overlay, event) {};
 
-  ns.BaseTool.prototype.moveToolAt = function(col, row, color, frame, overlay, event) {
-    $.publish(Events.CURSOR_MOVED, [col, row]);
-  };
+  ns.BaseTool.prototype.moveToolAt = function(col, row, color, frame, overlay, event) {};
+
+  ns.BaseTool.prototype.replay = Constants.ABSTRACT_FUNCTION;
 
   ns.BaseTool.prototype.moveUnactiveToolAt = function(col, row, color, frame, overlay, event) {
-    $.publish(Events.CURSOR_MOVED, [col, row]);
 
     if (overlay.containsPixel(col, row)) {
       if (!isNaN(this.highlightedPixelCol) &&
@@ -47,6 +48,14 @@
       this.highlightedPixelRow = null;
       this.highlightedPixelCol = null;
     }
+  };
+
+  ns.BaseTool.prototype.raiseSaveStateEvent = function (replayData) {
+    $.publish(Events.PISKEL_SAVE_STATE, {
+      type : pskl.service.HistoryService.REPLAY,
+      scope : this,
+      replay : replayData
+    });
   };
 
 

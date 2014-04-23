@@ -23,12 +23,9 @@
   };
 
   ns.BaseSelection.prototype.fillSelectionFromFrame = function (targetFrame) {
-    var pixelWithCopiedColor;
-    for(var i=0, l=this.pixels.length; i<l; i++) {
-      pixelWithCopiedColor = this.pixels[i];
-      pixelWithCopiedColor.copiedColor =
-        targetFrame.getPixel(pixelWithCopiedColor.col, pixelWithCopiedColor.row);
-    }
+    this.pixels.forEach(function (pixel) {
+      pixel.color = targetFrame.getPixel(pixel.col, pixel.row);
+    });
     this.hasPastedContent = true;
   };
 })();

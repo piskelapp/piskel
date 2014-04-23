@@ -37,8 +37,6 @@
   };
 
   ns.Stroke.prototype.moveToolAt = function(col, row, color, frame, overlay, event) {
-    $.publish(Events.CURSOR_MOVED, [col, row]);
-
     overlay.clear();
 
     // When the user moussemove (before releasing), we dynamically compute the
@@ -65,18 +63,25 @@
    * @override
    */
   ns.Stroke.prototype.releaseToolAt = function(col, row, color, frame, overlay, event) {
-    // If the stroke tool is released outside of the canvas, we cancel the stroke:
-    // TODO: Mutualize this check in common method
-    if(frame.containsPixel(col, row)) {
-      // The user released the tool to draw a line. We will compute the pixel coordinate, impact
-      // the model and draw them in the drawing canvas (not the fake overlay anymore)
-      var strokePoints = this.getLinePixels_(this.startCol, col, this.startRow, row);
-      for(var i = 0; i< strokePoints.length; i++) {
-        // Change model:
-        frame.setPixel(strokePoints[i].col, strokePoints[i].row, color);
-      }
+    // The user released the tool to draw a line. We will compute the pixel coordinate, impact
+    // the model and draw them in the drawing canvas (not the fake overlay anymore)
+    var strokePoints = this.getLinePixels_(this.startCol, col, this.startRow, row);
+    for(var i = 0; i< strokePoints.length; i++) {
+      // Change model:
+      frame.setPixel(strokePoints[i].col, strokePoints[i].row, color);
     }
     // For now, we are done with the stroke tool and don't need an overlay anymore:
     overlay.clear();
+
+    this.raiseSaveStateEvent({
+      pixels : strokePoints,
+      color : color
+    });
+  };
+
+  ns.Stroke.prototype.replay = function(frame, replayData) {
+    replayData.pixels.forEach(function (pixel) {
+      frame.setPixel(pixel.col, pixel.row, replayData.color);
+    });
   };
 })();
