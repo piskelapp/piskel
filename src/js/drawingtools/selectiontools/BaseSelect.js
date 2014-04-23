@@ -76,16 +76,22 @@
    */
   ns.BaseSelect.prototype.moveUnactiveToolAt = function(col, row, color, frame, overlay, event) {
     if (overlay.containsPixel(col, row)) {
-      if(overlay.getPixel(col, row) != Constants.SELECTION_TRANSPARENT_COLOR) {
+      if(this.isInSelection(col, row)) {
         // We're hovering the selection, show the move tool:
-        this.BodyRoot.addClass(this.toolId);
-        this.BodyRoot.removeClass(this.secondaryToolId);
-      } else {
-        // We're not hovering the selection, show create selection tool:
         this.BodyRoot.addClass(this.secondaryToolId);
         this.BodyRoot.removeClass(this.toolId);
+      } else {
+        // We're not hovering the selection, show create selection tool:
+        this.BodyRoot.addClass(this.toolId);
+        this.BodyRoot.removeClass(this.secondaryToolId);
       }
     }
+  };
+
+  ns.BaseSelect.prototype.isInSelection = function (col, row) {
+    return this.selection && this.selection.pixels.some(function (pixel) {
+      return pixel.col === col && pixel.row === row;
+    });
   };
 
   ns.BaseSelect.prototype.hideHighlightedPixel = function() {
@@ -99,10 +105,20 @@
   ns.BaseSelect.prototype.drawSelectionOnOverlay_ = function (overlay) {
     var pixels = this.selection.pixels;
     for(var i=0, l=pixels.length; i<l; i++) {
-      overlay.setPixel(pixels[i].col, pixels[i].row, Constants.SELECTION_TRANSPARENT_COLOR);
+      var pixel = pixels[i];
+      var hasColor = pixel.color && pixel.color !== Constants.TRANSPARENT_COLOR ;
+      var color = hasColor ? this.getTransparentVariant(pixel.color) : Constants.SELECTION_TRANSPARENT_COLOR;
+
+      overlay.setPixel(pixels[i].col, pixels[i].row, color);
     }
   };
 
+  ns.BaseSelect.prototype.getTransparentVariant = function (colorStr) {
+    var color = window.tinycolor(colorStr);
+    color = window.tinycolor.lighten(color, 10);
+    color.setAlpha(0.5);
+    return color.toRgbString();
+  };
 
   // The list of callbacks to implement by specialized tools to implement the selection creation behavior.
   /** @protected */

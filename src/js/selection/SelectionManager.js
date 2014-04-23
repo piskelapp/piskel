@@ -19,6 +19,7 @@
     $.subscribe(Events.SELECTION_MOVE_REQUEST, $.proxy(this.onSelectionMoved_, this));
 
     pskl.app.shortcutService.addShortcut('ctrl+V', this.paste.bind(this));
+    pskl.app.shortcutService.addShortcut('shift+V', this.pasteOpaqueOnly.bind(this));
     pskl.app.shortcutService.addShortcut('ctrl+X', this.cut.bind(this));
     pskl.app.shortcutService.addShortcut('ctrl+C', this.copy.bind(this));
     pskl.app.shortcutService.addShortcut('del', this.erase.bind(this));
@@ -93,21 +94,35 @@
   ns.SelectionManager.prototype.paste = function() {
     if(this.currentSelection && this.currentSelection.hasPastedContent) {
       var pixels = this.currentSelection.pixels;
-      var currentFrame = this.piskelController.getCurrentFrame();
-
-      $.publish(Events.PISKEL_SAVE_STATE, {
-        type : pskl.service.HistoryService.REPLAY,
-        scope : this,
-        replay : {
-          type : SELECTION_REPLAY.PASTE,
-          pixels : JSON.parse(JSON.stringify(pixels.slice(0)))
-        }
-      });
-
-      pixels.forEach(function (pixel) {
-        currentFrame.setPixel(pixel.col,pixel.row,pixel.color);
-      });
+      this.pastePixels(pixels);
     }
+  };
+
+  ns.SelectionManager.prototype.pasteOpaqueOnly = function() {
+    if(this.currentSelection && this.currentSelection.hasPastedContent) {
+      var pixels = this.currentSelection.pixels;
+      var opaquePixels = pixels.filter(function (p) {
+        return p.color !== Constants.TRANSPARENT_COLOR;
+      });
+      this.pastePixels(opaquePixels);
+    }
+  };
+
+  ns.SelectionManager.prototype.pastePixels = function(pixels) {
+    var currentFrame = this.piskelController.getCurrentFrame();
+
+    $.publish(Events.PISKEL_SAVE_STATE, {
+      type : pskl.service.HistoryService.REPLAY,
+      scope : this,
+      replay : {
+        type : SELECTION_REPLAY.PASTE,
+        pixels : JSON.parse(JSON.stringify(pixels.slice(0)))
+      }
+    });
+
+    pixels.forEach(function (pixel) {
+      currentFrame.setPixel(pixel.col,pixel.row,pixel.color);
+    });
   };
 
   ns.SelectionManager.prototype.replay = function (frame, replayData) {
