@@ -19,7 +19,7 @@
     $.subscribe(Events.SELECTION_MOVE_REQUEST, $.proxy(this.onSelectionMoved_, this));
 
     pskl.app.shortcutService.addShortcut('ctrl+V', this.paste.bind(this));
-    pskl.app.shortcutService.addShortcut('shift+V', this.pasteOpaqueOnly.bind(this));
+    pskl.app.shortcutService.addShortcut('ctrl+shift+V', this.pasteOpaqueOnly.bind(this));
     pskl.app.shortcutService.addShortcut('ctrl+X', this.cut.bind(this));
     pskl.app.shortcutService.addShortcut('ctrl+C', this.copy.bind(this));
     pskl.app.shortcutService.addShortcut('del', this.erase.bind(this));

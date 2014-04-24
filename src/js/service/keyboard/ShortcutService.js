@@ -47,20 +47,31 @@
   };
 
   ns.ShortcutService.prototype.parseKey_ = function (key) {
-    var meta = 'normal';
-    if (key.indexOf('ctrl+') === 0) {
-      meta = 'ctrl';
-      key = key.replace('ctrl+', '');
-    } else if (key.indexOf('shift+') === 0) {
-      meta = 'shift';
-      key = key.replace('shift+', '');
-    } else if (key.indexOf('alt+') === 0) {
-      meta = 'alt';
-      key = key.replace('alt+', '');
-    }
+    var meta = this.getMetaKey_({
+      alt : key.indexOf('alt+') != -1,
+      shift : key.indexOf('shift+') != -1,
+      ctrl : key.indexOf('ctrl+') != -1
+    });
+
+    var parts = key.split('+');
+    key = parts[parts.length-1];
     return {meta : meta, key : key};
   };
 
+  ns.ShortcutService.prototype.getMetaKey_ = function (meta) {
+    var keyBuffer = [];
+    ['alt', 'ctrl', 'shift'].forEach(function (metaKey) {
+      if (meta[metaKey]) {
+        keyBuffer.push(metaKey);
+      }
+    });
+
+    if (keyBuffer.length > 0) {
+      return keyBuffer.join('+');
+    } else {
+      return 'normal';
+    }
+  };
   /**
    * @private
    */
@@ -73,16 +84,12 @@
 
       var keyShortcuts = this.shortcuts_[charkey];
       if(keyShortcuts) {
-        var cb;
-        if (this.isCtrlKeyPressed_(evt)) {
-          cb = keyShortcuts.ctrl;
-        } else if (this.isShiftKeyPressed_(evt)) {
-          cb = keyShortcuts.shift;
-        } else if (this.isAltKeyPressed_(evt)) {
-          cb = keyShortcuts.alt;
-        } else {
-          cb = keyShortcuts.normal;
-        }
+        var meta = this.getMetaKey_({
+          alt : this.isAltKeyPressed_(evt),
+          shift : this.isShiftKeyPressed_(evt),
+          ctrl : this.isCtrlKeyPressed_(evt)
+        });
+        var cb = keyShortcuts[meta];
 
         if(cb) {
           var bubble = cb(charkey);
