@@ -146,8 +146,18 @@ module.exports = function(grunt) {
 
         // This generated JS binary is currently not used and even excluded from source control using .gitignore.
         dest: 'build/closure/closure_compiled_binary.js'
-      }
-    }
+      },
+    },
+    nodewebkit: {
+		options: {
+			build_dir: './build', // Where the build version of my node-webkit app is saved
+			mac: true, 
+			win: true, 
+			linux32: true, 
+			linux64: true
+		},
+		src: ['./**/*']
+	  },
   });
 
   grunt.config.set('leadingIndent.indentation', 'spaces');
@@ -168,7 +178,8 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-closure-tools');
   grunt.loadNpmTasks('grunt-ghost');
   grunt.loadNpmTasks('grunt-leading-indent');
-
+  grunt.loadNpmTasks('grunt-node-webkit-builder');
+  
   // Validate
   grunt.registerTask('lint', ['leadingIndent:jsFiles', 'leadingIndent:cssFiles', 'jshint']);
 
@@ -188,4 +199,7 @@ module.exports = function(grunt) {
 
   // Start webserver
   grunt.registerTask('serve', ['connect:serve']);
+  
+  // Build stand alone app with nodewebkit
+  grunt.registerTask('nw', ['nodewebkit']);
 };
