@@ -34,15 +34,13 @@
     // mode to create a selection.
     // If the initial click is on a previous selection, we go in "moveSelection"
     // mode to allow to move the selection by drag'n dropping it.
-    if(overlay.getPixel(col, row) != Constants.SELECTION_TRANSPARENT_COLOR) {
-
-      this.mode = "select";
-      this.onSelectStart_(col, row, color, frame, overlay);
-    }
-    else {
-
+    if(this.isInSelection(col, row)) {
       this.mode = "moveSelection";
       this.onSelectionDragStart_(col, row, color, frame, overlay);
+    }
+    else {
+      this.mode = "select";
+      this.onSelectStart_(col, row, color, frame, overlay);
     }
   };
 
