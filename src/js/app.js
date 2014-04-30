@@ -54,8 +54,8 @@
       this.minimapController = new pskl.controller.MinimapController(this.piskelController, this.animationController, this.drawingController, $('#preview-canvas-container'));
       this.minimapController.init();
 
-      this.previewsController = new pskl.controller.PreviewFilmController(this.piskelController, $('#preview-list'));
-      this.previewsController.init();
+      this.previewFilmController = new pskl.controller.PreviewFilmController(this.piskelController, $('#preview-list'));
+      this.previewFilmController.init();
 
       this.layersListController = new pskl.controller.LayersListController(this.piskelController);
       this.layersListController.init();
@@ -144,7 +144,7 @@
     render : function (delta) {
       this.drawingController.render(delta);
       this.animationController.render(delta);
-      this.previewsController.render(delta);
+      this.previewFilmController.render(delta);
     },
 
     readSizeFromURL_ : function () {
