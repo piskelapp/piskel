@@ -157,7 +157,15 @@ module.exports = function(grunt) {
 			linux64: true
 		},
 		src: ['./**/*']
-	  },
+	},
+	copy: {
+	  desktop: {
+		files: [
+		  {expand: true, cwd: "build/", src: ['*'], dest: 'desktop/build/', filter: 'isFile'},
+		  {expand: true, cwd: "src/", src: ['**'], dest: 'desktop/'},
+		]
+	  }
+	}
   });
 
   grunt.config.set('leadingIndent.indentation', 'spaces');
@@ -179,7 +187,8 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-ghost');
   grunt.loadNpmTasks('grunt-leading-indent');
   grunt.loadNpmTasks('grunt-node-webkit-builder');
-  
+  grunt.loadNpmTasks('grunt-contrib-copy');
+
   // Validate
   grunt.registerTask('lint', ['leadingIndent:jsFiles', 'leadingIndent:cssFiles', 'jshint']);
 
@@ -201,5 +210,6 @@ module.exports = function(grunt) {
   grunt.registerTask('serve', ['connect:serve']);
   
   // Build stand alone app with nodewebkit
-  grunt.registerTask('nw', ['nodewebkit']);
+  grunt.registerTask('desktop', ['compile', 'merge', 'copy:desktop', 'nodewebkit']);
+  
 };
