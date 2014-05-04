@@ -78,8 +78,9 @@
         throw 'Could not find previous SNAPSHOT saved in history stateQueue';
       }
 
-      var piskelSnapshot = this.getSnapshotFromState_(snapshotIndex);
-      this.loadPiskel(piskelSnapshot, this.onPiskelLoadedCallback.bind(this, index, snapshotIndex));
+      var serializedPiskel = this.getSnapshotFromState_(snapshotIndex);
+      var onPiskelLoadedCb = this.onPiskelLoaded_.bind(this, index, snapshotIndex);
+      pskl.utils.serialization.Deserializer.deserialize(serializedPiskel, onPiskelLoadedCb);
     }
   };
 
@@ -98,16 +99,11 @@
     return piskelSnapshot;
   };
 
-  ns.HistoryService.prototype.loadPiskel = function (piskel, callback) {
-    var descriptor = this.piskelController.piskel.getDescriptor();
-    pskl.utils.serialization.Deserializer.deserialize(piskel, function (deserializedPiskel) {
-      deserializedPiskel.setDescriptor(descriptor);
-      this.piskelController.setPiskel(deserializedPiskel);
-      callback(deserializedPiskel);
-    }.bind(this));
-  };
+  ns.HistoryService.prototype.onPiskelLoaded_ = function (index, snapshotIndex, piskel) {
+    var originalSize = this.getPiskelSize_();
+    piskel.setDescriptor(this.piskelController.piskel.getDescriptor());
+    this.piskelController.setPiskel(piskel);
 
-  ns.HistoryService.prototype.onPiskelLoadedCallback = function (index, snapshotIndex, piskel) {
     for (var i = snapshotIndex + 1 ; i <= index ; i++) {
       var state = this.stateQueue[i];
       this.setupState(state);
@@ -118,6 +114,13 @@
     this.setupState(lastState);
     this.currentIndex = index;
     $.publish(Events.PISKEL_RESET);
+    if (originalSize !== this.getPiskelSize_()) {
+      $.publish(Events.FRAME_SIZE_CHANGED);
+    }
+  };
+
+  ns.HistoryService.prototype.getPiskelSize_ = function () {
+    return this.piskelController.getWidth() + 'x' + this.piskelController.getHeight();
   };
 
   ns.HistoryService.prototype.setupState = function (state) {
