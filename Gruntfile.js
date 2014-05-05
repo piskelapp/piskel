@@ -67,17 +67,27 @@ module.exports = function(grunt) {
       }
     },
     express: {
-      server: {
+      regular: {
         options: {
           port: 9001,
           hostname : 'localhost',
           bases: ['dest']
         }
+      },
+      debug: {
+        options: {
+          port: 9901,
+          hostname : 'localhost',
+          bases: ['src']
+        }
       }
     },
     open : {
-      server : {
+      regular : {
         path : 'http://localhost:9001/'
+      },
+      debug : {
+        path : 'http://localhost:9901/?debug'
       }
     },
 
@@ -223,5 +233,8 @@ module.exports = function(grunt) {
   grunt.registerTask('default', ['clean:before', 'lint', 'compile', 'merge']);
 
   // Start webserver and watch for changes
-  grunt.registerTask('server', ['express', 'open', 'watch']);
+  grunt.registerTask('server', ['express:regular', 'open:regular', 'watch']);
+
+  // Start webserver and watch for changes
+  grunt.registerTask('server:debug', ['express:debug', 'open:debug', 'watch']);
 };
