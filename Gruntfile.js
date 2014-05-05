@@ -232,9 +232,12 @@ module.exports = function(grunt) {
   // Validate & Build
   grunt.registerTask('default', ['clean:before', 'lint', 'compile', 'merge']);
 
-  // Start webserver and watch for changes
-  grunt.registerTask('server', ['express:regular', 'open:regular', 'watch']);
+  // Start webserver
+  grunt.registerTask('server', ['merge', 'express:regular', 'open:regular', 'express-keepalive']);
 
   // Start webserver and watch for changes
-  grunt.registerTask('server:debug', ['express:debug', 'open:debug', 'watch']);
+  grunt.registerTask('server:watch', ['server', 'watch']);
+
+  // Start webserver on src folder, in debug mode
+  grunt.registerTask('server:debug', ['express:debug', 'open:debug', 'express-keepalive']);
 };
