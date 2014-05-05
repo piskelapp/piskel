@@ -36,6 +36,10 @@ module.exports = function(grunt) {
   };
 
   grunt.initConfig({
+    clean: {
+      before: ['dest'],
+      after: ['build/closure/closure_compiled_binary.js']
+    },
     jshint: {
       options: {
         indent:2,
@@ -79,11 +83,11 @@ module.exports = function(grunt) {
           separator : ';'
         },
         src : piskelScripts,
-        dest : 'build/piskel-packaged.js'
+        dest : 'dest/js/piskel-packaged.js'
       },
       css : {
         src : piskelStyles,
-        dest : 'build/piskel-style-packaged.css'
+        dest : 'dest/css/piskel-style-packaged.css'
       }
     },
     uglify : {
@@ -92,8 +96,18 @@ module.exports = function(grunt) {
       },
       my_target : {
         files : {
-          'build/piskel-packaged-min.js' : ['build/piskel-packaged.js']
+          'dest/js/piskel-packaged-min.js' : ['dest/js/piskel-packaged.js']
         }
+      }
+    },
+    copy: {
+      main: {
+        files: [
+          {src: ['src/piskel-boot.js'], dest: 'dest/piskel-boot.js'},
+          {src: ['src/js/lib/iframeLoader.js'], dest: 'dest/js/lib/iframeLoader.js'},
+          {expand: true, src: ['img/**'], cwd: 'src/', dest: 'dest/', filter: 'isFile'},
+          {expand: true, src: ['**/*.html'], cwd: 'src/', dest: 'dest/', filter: 'isFile'}
+        ]
       }
     },
     closureCompiler:  {
@@ -161,7 +175,9 @@ module.exports = function(grunt) {
     src: ['src/css/**/*.css']
   });
 
+  grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-connect');
+  grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-uglify');
@@ -173,18 +189,18 @@ module.exports = function(grunt) {
   grunt.registerTask('lint', ['leadingIndent:jsFiles', 'leadingIndent:cssFiles', 'jshint']);
 
   // Validate & Test
-  grunt.registerTask('test', ['leadingIndent:jsFiles', 'leadingIndent:cssFiles', 'jshint', 'compile', 'connect:test', 'ghost:default']);
+  grunt.registerTask('test', ['lint', 'compile', 'connect:test', 'ghost:default']);
 
   // Validate & Test (faster version) will NOT work on travis !!
-  grunt.registerTask('precommit', ['leadingIndent:jsFiles', 'leadingIndent:cssFiles', 'jshint', 'compile', 'connect:test', 'ghost:local']);
+  grunt.registerTask('precommit', ['lint', 'compile', 'connect:test', 'ghost:local']);
 
   // Compile JS code (eg verify JSDoc annotation and types, no actual minified code generated).
-  grunt.registerTask('compile', ['closureCompiler:compile']);
+  grunt.registerTask('compile', ['closureCompiler:compile', 'clean:after']);
 
-  grunt.registerTask('merge',  ['concat:js', 'concat:css', 'uglify']);
+  grunt.registerTask('merge',  ['concat:js', 'concat:css', 'uglify', 'copy']);
 
   // Validate & Build
-  grunt.registerTask('default', ['leadingIndent:jsFiles', 'leadingIndent:cssFiles', 'jshint', 'concat:js', 'concat:css', 'compile', 'uglify']);
+  grunt.registerTask('default', ['clean:before', 'lint', 'compile', 'merge']);
 
   // Start webserver
   grunt.registerTask('serve', ['connect:serve']);

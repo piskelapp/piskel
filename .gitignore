@@ -12,15 +12,12 @@ npm-debug.log
 # git stackdumps
 *.stackdump
 
-# builds
-build/*.js
-build/*.css
 
 # diffs
 diff.txt
 
-# Closure compiler generated JS binary.
-build/closure/closure_compiled_binary.js
+# build destination
+dest
 
 # marked as private
 *.private.*
