@@ -64,12 +64,29 @@ module.exports = function(grunt) {
           base : '.',
           port : 4321
         }
-      },
-      serve : {
-        options : {
-          base : '.',
-          port : 1234,
-          keepalive : true
+      }
+    },
+    express: {
+      server: {
+        options: {
+          port: 9001,
+          hostname : 'localhost',
+          bases: ['dest']
+        }
+      }
+    },
+    open : {
+      server : {
+        path : 'http://localhost:9001/'
+      }
+    },
+
+    watch: {
+      scripts: {
+        files: ['src/**/*.*'],
+        tasks: ['merge'],
+        options: {
+          spawn: false
         }
       }
     },
@@ -175,14 +192,17 @@ module.exports = function(grunt) {
     src: ['src/css/**/*.css']
   });
 
+  grunt.loadNpmTasks('grunt-closure-tools');
   grunt.loadNpmTasks('grunt-contrib-clean');
+  grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-jshint');
-  grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-uglify');
-  grunt.loadNpmTasks('grunt-closure-tools');
+  grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-express');
   grunt.loadNpmTasks('grunt-ghost');
+  grunt.loadNpmTasks('grunt-open');
   grunt.loadNpmTasks('grunt-leading-indent');
 
   // Validate
@@ -202,6 +222,6 @@ module.exports = function(grunt) {
   // Validate & Build
   grunt.registerTask('default', ['clean:before', 'lint', 'compile', 'merge']);
 
-  // Start webserver
-  grunt.registerTask('serve', ['connect:serve']);
+  // Start webserver and watch for changes
+  grunt.registerTask('server', ['express', 'open', 'watch']);
 };
