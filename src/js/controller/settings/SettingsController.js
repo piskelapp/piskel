@@ -95,6 +95,8 @@
 
     this.isExpanded = false;
     this.currentSetting = null;
+
+    document.activeElement.blur();
   };
 
 })();
