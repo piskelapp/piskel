@@ -22,6 +22,12 @@
       });
     },
 
+    resize : function (frame, targetWidth, targetHeight, smoothing) {
+      var image = pskl.utils.FrameUtils.toImage(frame);
+      var resizedImage = pskl.utils.ImageResizer.resize(image, targetWidth, targetHeight, smoothing);
+      return pskl.utils.FrameUtils.createFromImage(resizedImage);
+    },
+
     /**
      * Alpha compositing using porter duff algorithm :
      * http://en.wikipedia.org/wiki/Alpha_compositing
@@ -151,6 +157,12 @@
     componentToHex : function (c) {
       var hex = c.toString(16);
       return hex.length == 1 ? "0" + hex : hex;
+    },
+
+    toImage : function (frame) {
+      var canvasRenderer = new pskl.rendering.CanvasRenderer(frame, 1);
+      canvasRenderer.drawTransparentAs(Constants.TRANSPARENT_COLOR);
+      return canvasRenderer.render();
     }
   };
 })();

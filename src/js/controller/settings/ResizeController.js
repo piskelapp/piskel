@@ -17,6 +17,8 @@
 
     this.resizeForm = $("[name=resize-form]");
     this.resizeForm.submit(this.onResizeFormSubmit_.bind(this));
+
+    this.resizeContentCheckbox = $(".resize-content-checkbox");
   };
 
   ns.ResizeController.prototype.onResizeFormSubmit_ = function (evt) {
@@ -25,31 +27,41 @@
     var width = parseInt(this.resizeWidth.val(), 10);
     var height = parseInt(this.resizeHeight.val(), 10);
 
-    var layers = [];
-    var fromLayers = this.piskelController.getLayers();
-    for (var i = 0 ; i < fromLayers.length ; i++) {
-      var frames = [];
-      var fromFrames = fromLayers[i].getFrames();
-      for (var j = 0 ; j < fromFrames.length ; j++) {
-        var frame = new pskl.model.Frame(width, height);
-        this.copyFromFrameToFrame(fromFrames[j], frame);
-        frames.push(frame);
-      }
-      var layer = pskl.model.Layer.fromFrames(fromLayers[i].getName(), frames);
-      layers.push(layer);
-    }
 
-    var piskel = pskl.model.Piskel.fromLayers(layers, this.piskelController.getPiskel().getDescriptor());
+    var resizeContentEnabled = this.isResizeContentEnabled_();
+    var resizedLayers = this.piskelController.getLayers().map(this.resizeLayer_.bind(this));
+
+    var piskel = pskl.model.Piskel.fromLayers(resizedLayers, this.piskelController.getPiskel().getDescriptor());
     pskl.app.piskelController.setPiskel(piskel);
     $.publish(Events.CLOSE_SETTINGS_DRAWER);
   };
 
-  ns.ResizeController.prototype.copyFromFrameToFrame = function (from, to) {
-    from.forEachPixel(function (color, x, y) {
-      if (x < to.getWidth() && y < to.getHeight()) {
-        to.setPixel(x, y, color);
-      }
-    });
+  ns.ResizeController.prototype.resizeLayer_ = function (layer) {
+    var resizedFrames = layer.getFrames().map(this.resizeFrame_.bind(this));
+    return pskl.model.Layer.fromFrames(layer.getName(), resizedFrames);
+  };
+
+  ns.ResizeController.prototype.resizeFrame_ = function (frame) {
+    var width = parseInt(this.resizeWidth.val(), 10);
+    var height = parseInt(this.resizeHeight.val(), 10);
+    
+    var resizedFrame;
+    if (this.isResizeContentEnabled_()) {
+      resizedFrame = pskl.utils.FrameUtils.resize(frame, width, height, false);
+    } else {
+      resizedFrame = new pskl.model.Frame(width, height);
+      frame.forEachPixel(function (color, x, y) {
+        if (x < resizedFrame.getWidth() && y < resizedFrame.getHeight()) {
+          resizedFrame.setPixel(x, y, color);
+        }
+      });
+    }
+    
+    return resizedFrame;
+  };
+
+  ns.ResizeController.prototype.isResizeContentEnabled_ = function () {
+    return !!this.resizeContentCheckbox.prop('checked');
   };
 
   ns.ResizeController.prototype.onCancelButtonClicked_ = function (evt) {

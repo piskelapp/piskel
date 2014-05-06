@@ -59,11 +59,11 @@
   } else {
     var script;
     if (window.location.href.indexOf("pack") != -1) {
-      script = "build/piskel-packaged.js";
+      script = "js/piskel-packaged.js";
     } else {
-      script = "build/piskel-packaged-min.js";
+      script = "js/piskel-packaged-min.js";
     }
-    loadStyle('build/piskel-style-packaged.css');
+    loadStyle('css/piskel-style-packaged.css');
 
     var loaderInterval = window.setInterval(function () {
       if (document.querySelectorAll("[data-iframe-loader]").length === 0) {
