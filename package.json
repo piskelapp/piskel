@@ -27,7 +27,8 @@
     "grunt-open": "0.2.3",
     "grunt-leading-indent": "0.1.0",
     "grunt-closure-tools": "~0.8.3",
-    "grunt-node-webkit-builder": "~0.1.21"
+    "grunt-node-webkit-builder": "0.1.19",
+    "nodewebkit": "0.8.4"
   },
   "window": {
     "toolbar": false
