@@ -191,7 +191,7 @@ module.exports = function(grunt) {
     },
     nodewebkit: {
       options: {
-        build_dir: './dest', // Where the build version of my node-webkit app is saved
+        build_dir: './build', // destination folder of releases.
         mac: true,
         win: true,
         linux32: true,
