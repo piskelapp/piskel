@@ -9,7 +9,7 @@
     KEY_TO_DEFAULT_VALUE_MAP_ : {
       'GRID_WIDTH' : 0,
       'CANVAS_BACKGROUND' : 'lowcont-dark-canvas-background',
-      'SELECTED_PALETTE' : Constants.NO_PALETTE_ID
+      'SELECTED_PALETTE' : Constants.CURRENT_PALETTE_ID
     },
 
     /**

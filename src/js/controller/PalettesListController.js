@@ -1,8 +1,9 @@
 (function () {
   var ns = $.namespace('pskl.controller');
 
-  ns.PalettesListController = function () {
-
+  ns.PalettesListController = function (paletteController, usedColorService) {
+    this.usedColorService = usedColorService;
+    this.paletteController = paletteController;
   };
 
   ns.PalettesListController.prototype.init = function () {
@@ -16,6 +17,7 @@
     this.colorListContainer_.addEventListener('contextmenu', this.onColorContainerContextMenu.bind(this));
 
     $.subscribe(Events.PALETTE_LIST_UPDATED, this.onPaletteListUpdated.bind(this));
+    $.subscribe(Events.CURRENT_COLORS_UPDATED, this.fillColorListContainer.bind(this));
     $.subscribe(Events.PRIMARY_COLOR_SELECTED, this.onColorUpdated.bind(this, 'primary'));
     $.subscribe(Events.SECONDARY_COLOR_SELECTED, this.onColorUpdated.bind(this, 'secondary'));
 
@@ -39,15 +41,29 @@
 
   ns.PalettesListController.prototype.fillColorListContainer = function () {
     var html = '';
-
+    var colors = [];
     var palette = this.getSelectedPalette();
     if (palette) {
-      html = palette.colors.map(function (color) {
-        return pskl.utils.Template.replace(this.paletteColorTemplate_, {color : color});
-      }.bind(this)).join('');
+      colors = palette.colors;
+    } else if (this.colorPaletteSelect_.value === Constants.CURRENT_PALETTE_ID) {
+      colors = this.usedColorService.currentColors;
     }
 
+    html = colors.map(function (color) {
+      return pskl.utils.Template.replace(this.paletteColorTemplate_, {color : color});
+    }.bind(this)).join('');
+
     this.colorListContainer_.innerHTML = html;
+
+    this.onColorUpdated('primary', null, this.paletteController.getPrimaryColor());
+    this.onColorUpdated('secondary', null, this.paletteController.getSecondaryColor());
+
+    var hasScrollbar = colors.length > 20;
+    if (hasScrollbar && !pskl.utils.UserAgent.isChrome) {
+      this.colorListContainer_.classList.add('palettes-list-has-scrollbar');
+    } else {
+      this.colorListContainer_.classList.remove('palettes-list-has-scrollbar');
+    }
   };
 
   ns.PalettesListController.prototype.getSelectedPalette = function (evt) {
@@ -67,7 +83,7 @@
 
   ns.PalettesListController.prototype.onPaletteSelected_ = function (evt) {
     var paletteId = this.colorPaletteSelect_.value;
-    if (paletteId === '__manage-palettes') {
+    if (paletteId === Constants.PALETTE_MANAGE_ID) {
       $.publish(Events.DIALOG_DISPLAY, 'manage-palettes');
       this.selectPaletteFromUserSettings();
     } else {
@@ -112,6 +128,8 @@
       this.removeClass_('secondary', '.palettes-list-color');
       colorContainer.classList.add('secondary');
       colorContainer.classList.remove('primary');
+    } else {
+      throw 'No type provided for color update. Expecting "primary" or "secondary"';
     }
   };
 

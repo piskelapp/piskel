@@ -14,7 +14,8 @@
 }
 
 .palettes-list-colors {
-  overflow:hidden;
+  overflow: auto;
+  max-height: 160px;
 }
 
 .palettes-list-color {
@@ -33,6 +34,11 @@
 .palettes-list-color div{
   width : 32px;
   height : 32px;
+}
+
+.palettes-list-has-scrollbar .palettes-list-color,
+.palettes-list-has-scrollbar .palettes-list-color div{
+  width: 29px
 }
 
 .palettes-list-color.primary:before,
