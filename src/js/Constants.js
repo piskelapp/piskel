@@ -60,5 +60,6 @@ var Constants = {
   RIGHT_BUTTON : 2,
   MOUSEMOVE_THROTTLING : 10,
 
-  ABSTRACT_FUNCTION : function () {throw 'abstract method should be implemented';}
+  ABSTRACT_FUNCTION : function () {throw 'abstract method should be implemented';},
+  EMPTY_FUNCTION : function () {}
 };

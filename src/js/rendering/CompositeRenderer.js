@@ -12,6 +12,13 @@
     return this;
   };
 
+
+  ns.CompositeRenderer.prototype.render = function (frame) {
+    this.renderers.forEach(function (renderer) {
+      renderer.render(frame);
+    });
+  };
+
   ns.CompositeRenderer.prototype.clear = function () {
     this.renderers.forEach(function (renderer) {
       renderer.clear();

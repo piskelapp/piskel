@@ -4,6 +4,7 @@
   ns.AbstractRenderer = function () {};
 
   ns.AbstractRenderer.prototype.clear = Constants.ABSTRACT_FUNCTION;
+  ns.AbstractRenderer.prototype.render = Constants.ABSTRACT_FUNCTION;
 
   ns.AbstractRenderer.prototype.getCoordinates = Constants.ABSTRACT_FUNCTION;
 

@@ -70,6 +70,18 @@
     }
   };
 
+  ns.FrameRenderer.prototype.hide = function () {
+    if (this.displayCanvas) {
+      this.displayCanvas.style.display = 'none';
+    }
+  };
+
+  ns.FrameRenderer.prototype.show = function () {
+    if (this.displayCanvas) {
+      this.displayCanvas.style.display = 'block';
+    }
+  };
+
   ns.FrameRenderer.prototype.clear = function () {
     pskl.CanvasUtils.clear(this.canvas);
     pskl.CanvasUtils.clear(this.displayCanvas);

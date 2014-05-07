@@ -14,12 +14,29 @@
     var frame = this.piskelController.getCurrentFrame();
     var renderingOptions = {
       "zoom": zoom,
-      "height" : frame.getHeight() * zoom,
-      "width" : frame.getWidth() * zoom
+      "height" : 200,
+      "width" : 200
     };
-    this.renderer = new pskl.rendering.frame.FrameRenderer(this.container, renderingOptions);
+
+    this.tiledRenderer = new pskl.rendering.frame.TiledFrameRenderer(this.container);
+    this.frameRenderer = new pskl.rendering.frame.FrameRenderer(this.container, renderingOptions);
+    this.renderer = new pskl.rendering.CompositeRenderer();
+    this.renderer.add(this.tiledRenderer);
+    this.renderer.add(this.frameRenderer);
 
     $.subscribe(Events.FRAME_SIZE_CHANGED, this.onFrameSizeChange_.bind(this));
+    $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
+    this.onUserSettingsChange_();
+  };
+
+  ns.AnimatedPreviewController.prototype.onUserSettingsChange_ = function () {
+    if(pskl.UserSettings.get(pskl.UserSettings.TILED_PREVIEW)) {
+      this.frameRenderer.hide();
+      this.tiledRenderer.show();
+    } else {
+      this.tiledRenderer.hide();
+      this.frameRenderer.show();
+    }
   };
 
   ns.AnimatedPreviewController.prototype.init = function () {
@@ -53,7 +70,8 @@
         this.currentIndex = 0;
         this.elapsedTime = 0;
       }
-      this.renderer.render(this.piskelController.getFrameAt(this.currentIndex));
+      var frame = this.piskelController.getFrameAt(this.currentIndex);
+      this.renderer.render(frame);
     }
   };
 

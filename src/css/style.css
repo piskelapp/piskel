@@ -178,6 +178,16 @@ body {
   border : 0px Solid transparent;
 }
 
+#preview-canvas-container {
+  height :200px;
+}
+
+.tiled-frame-renderer {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+}
+
 .display-fps {
   float: left;
   color: #aaa;
@@ -190,6 +200,8 @@ body {
 .range-fps {
   overflow: hidden;
   width: 120px;
+  height : 24px;
+  margin : 0;
 }
 
 /**
