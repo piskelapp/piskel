@@ -18,8 +18,8 @@
 
     $.subscribe(Events.PALETTE_LIST_UPDATED, this.onPaletteListUpdated.bind(this));
     $.subscribe(Events.CURRENT_COLORS_UPDATED, this.fillColorListContainer.bind(this));
-    $.subscribe(Events.PRIMARY_COLOR_SELECTED, this.onColorUpdated.bind(this, 'primary'));
-    $.subscribe(Events.SECONDARY_COLOR_SELECTED, this.onColorUpdated.bind(this, 'secondary'));
+    $.subscribe(Events.PRIMARY_COLOR_SELECTED, this.highlightSelectedColors.bind(this));
+    $.subscribe(Events.SECONDARY_COLOR_SELECTED, this.highlightSelectedColors.bind(this));
 
     this.fillPaletteList();
     this.selectPaletteFromUserSettings();
@@ -40,23 +40,14 @@
   };
 
   ns.PalettesListController.prototype.fillColorListContainer = function () {
-    var html = '';
-    var colors = [];
-    var palette = this.getSelectedPalette();
-    if (palette) {
-      colors = palette.colors;
-    } else if (this.colorPaletteSelect_.value === Constants.CURRENT_PALETTE_ID) {
-      colors = this.usedColorService.currentColors;
-    }
+    var colors = this.getSelectedPaletteColors_();
 
-    html = colors.map(function (color) {
+    var html = colors.map(function (color) {
       return pskl.utils.Template.replace(this.paletteColorTemplate_, {color : color});
     }.bind(this)).join('');
-
     this.colorListContainer_.innerHTML = html;
 
-    this.onColorUpdated('primary', null, this.paletteController.getPrimaryColor());
-    this.onColorUpdated('secondary', null, this.paletteController.getSecondaryColor());
+    this.highlightSelectedColors();
 
     var hasScrollbar = colors.length > 20;
     if (hasScrollbar && !pskl.utils.UserAgent.isChrome) {
@@ -66,11 +57,18 @@
     }
   };
 
-  ns.PalettesListController.prototype.getSelectedPalette = function (evt) {
+  ns.PalettesListController.prototype.getSelectedPaletteColors_ = function () {
+    var colors = [];
     var paletteId = this.colorPaletteSelect_.value;
-    var palettes = this.retrievePalettes();
-    var palette = this.getPaletteById(paletteId, palettes);
-    return palette;
+    if (paletteId === Constants.CURRENT_COLORS_PALETTE_ID) {
+      colors = this.usedColorService.currentColors;
+    } else {
+      var palette = this.getPaletteById(paletteId, this.retrievePalettes());
+      if (palette) {
+        colors = palette.colors;
+      }
+    }
+    return colors;
   };
 
   ns.PalettesListController.prototype.selectPalette = function (paletteId) {
@@ -112,24 +110,22 @@
     }
   };
 
-  ns.PalettesListController.prototype.onColorUpdated = function (type, event, color) {
-    var colorContainer = this.colorListContainer_.querySelector('.palettes-list-color[data-color="'+color+'"]');
+  ns.PalettesListController.prototype.highlightSelectedColors = function (event) {
+    this.removeClass_('primary', '.palettes-list-color');
+    this.removeClass_('secondary', '.palettes-list-color');
 
-    // Color is not in the currently selected palette
-    if (!colorContainer) {
-      return;
+    var secondaryColor = this.paletteController.getSecondaryColor();
+    var colorContainer = this.colorListContainer_.querySelector('.palettes-list-color[data-color="'+secondaryColor+'"]');
+    if (colorContainer) {
+      colorContainer.classList.remove('primary');
+      colorContainer.classList.add('secondary');
     }
 
-    if (type === 'primary') {
-      this.removeClass_('primary', '.palettes-list-color');
-      colorContainer.classList.add('primary');
+    var primaryColor = this.paletteController.getPrimaryColor();
+    colorContainer = this.colorListContainer_.querySelector('.palettes-list-color[data-color="'+primaryColor+'"]');
+    if (colorContainer) {
       colorContainer.classList.remove('secondary');
-    } else if (type === 'secondary') {
-      this.removeClass_('secondary', '.palettes-list-color');
-      colorContainer.classList.add('secondary');
-      colorContainer.classList.remove('primary');
-    } else {
-      throw 'No type provided for color update. Expecting "primary" or "secondary"';
+      colorContainer.classList.add('primary');
     }
   };
 

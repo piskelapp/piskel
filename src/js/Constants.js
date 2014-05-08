@@ -20,7 +20,7 @@ var Constants = {
   TRANSPARENT_COLOR : 'rgba(0, 0, 0, 0)',
 
   NO_PALETTE_ID : '__no-palette',
-  CURRENT_PALETTE_ID : '__current-colors',
+  CURRENT_COLORS_PALETTE_ID : '__current-colors',
   MANAGE_PALETTE_ID : '__manage-palettes',
 
   // Used for Spectrum input
