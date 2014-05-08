@@ -106,7 +106,7 @@
   "js/service/keyboard/KeycodeTranslator.js",
   "js/service/keyboard/CheatsheetService.js",
   "js/service/ImageUploadService.js",
-  "js/service/UsedColorsService.js",
+  "js/service/CurrentColorsService.js",
 
   // Tools
   "js/drawingtools/BaseTool.js",

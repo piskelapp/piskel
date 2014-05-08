@@ -1,18 +1,22 @@
 (function () {
   var ns = $.namespace('pskl.service');
 
-  ns.UsedColorsService = function (piskelController) {
+  ns.CurrentColorsService = function (piskelController) {
     this.piskelController = piskelController;
     this.currentColors = [];
     this.framesColorsCache_ = {};
   };
 
-  ns.UsedColorsService.prototype.init = function () {
+  ns.CurrentColorsService.prototype.init = function () {
     $.subscribe(Events.PISKEL_RESET, this.onPiskelUpdated_.bind(this));
     $.subscribe(Events.TOOL_RELEASED, this.onPiskelUpdated_.bind(this));
   };
 
-  ns.UsedColorsService.prototype.onPiskelUpdated_ = function (evt) {
+  ns.CurrentColorsService.prototype.getCurrentColors = function () {
+    return this.currentColors;
+  };
+
+  ns.CurrentColorsService.prototype.onPiskelUpdated_ = function (evt) {
     var layers = this.piskelController.getLayers();
     var frames = layers.map(function (l) {return l.getFrames();}).reduce(function (p, n) {return p.concat(n);});
     var colors = {};
@@ -40,6 +44,8 @@
         return 0;
       }
     });
+
+    // TODO : only fire if there was a change
     $.publish(Events.CURRENT_COLORS_UPDATED, colors);
   };
 })();

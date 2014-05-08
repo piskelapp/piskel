@@ -64,7 +64,7 @@
     var colors = [];
     var paletteId = this.colorPaletteSelect_.value;
     if (paletteId === Constants.CURRENT_COLORS_PALETTE_ID) {
-      colors = this.usedColorService.currentColors;
+      colors = this.usedColorService.getCurrentColors();
     } else {
       var palette = this.getPaletteById(paletteId, this.retrievePalettes());
       if (palette) {

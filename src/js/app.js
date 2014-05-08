@@ -39,10 +39,10 @@
       this.paletteController = new pskl.controller.PaletteController();
       this.paletteController.init();
 
-      this.usedColorsService = new pskl.service.UsedColorsService(this.piskelController);
-      this.usedColorsService.init();
+      this.currentColorsService = new pskl.service.CurrentColorsService(this.piskelController);
+      this.currentColorsService.init();
 
-      this.palettesListController = new pskl.controller.PalettesListController(this.paletteController, this.usedColorsService);
+      this.palettesListController = new pskl.controller.PalettesListController(this.paletteController, this.currentColorsService);
       this.palettesListController.init();
 
       this.cursorCoordinatesController = new pskl.controller.CursorCoordinatesController(this.piskelController);
