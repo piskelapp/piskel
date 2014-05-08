@@ -57,7 +57,6 @@
 
     this.setGridWidth(pskl.UserSettings.get(pskl.UserSettings.GRID_WIDTH));
 
-    this.updateBackgroundClass_(pskl.UserSettings.get(pskl.UserSettings.CANVAS_BACKGROUND));
     $.subscribe(Events.USER_SETTINGS_CHANGED, this.onUserSettingsChange_.bind(this));
   };
 
@@ -162,20 +161,9 @@
   };
 
   ns.FrameRenderer.prototype.onUserSettingsChange_ = function (evt, settingName, settingValue) {
-    if (settingName == pskl.UserSettings.CANVAS_BACKGROUND) {
-      this.updateBackgroundClass_(settingValue);
-    } else if (settingName == pskl.UserSettings.GRID_WIDTH) {
+    if (settingName == pskl.UserSettings.GRID_WIDTH) {
       this.setGridWidth(settingValue);
     }
-  };
-
-  ns.FrameRenderer.prototype.updateBackgroundClass_ = function (newClass) {
-    var currentClass = this.container.data('current-background-class');
-    if (currentClass) {
-      this.container.removeClass(currentClass);
-    }
-    this.container.addClass(newClass);
-    this.container.data('current-background-class', newClass);
   };
 
   ns.FrameRenderer.prototype.renderPixel_ = function (color, x, y, context) {

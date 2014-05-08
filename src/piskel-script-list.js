@@ -78,6 +78,7 @@
   "js/controller/PaletteController.js",
   "js/controller/PalettesListController.js",
   "js/controller/NotificationController.js",
+  "js/controller/CanvasBackgroundController.js",
 
   // Settings sub-controllers
   "js/controller/settings/ApplicationSettingsController.js",

@@ -78,6 +78,9 @@
       this.notificationController = new pskl.controller.NotificationController();
       this.notificationController.init();
 
+      this.canvasBackgroundController = new pskl.controller.CanvasBackgroundController();
+      this.canvasBackgroundController.init();
+
       this.localStorageService = new pskl.service.LocalStorageService(this.piskelController);
       this.localStorageService.init();
 
@@ -89,6 +92,7 @@
 
       this.savedStatusService = new pskl.service.SavedStatusService(this.piskelController);
       this.savedStatusService.init();
+
 
       if (this.isAppEngineVersion) {
         this.storageService = new pskl.service.AppEngineStorageService(this.piskelController);
