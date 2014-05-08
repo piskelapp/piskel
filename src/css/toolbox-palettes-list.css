@@ -41,8 +41,8 @@
   width: 29px
 }
 
-.palettes-list-color.primary:before,
-.palettes-list-color.secondary:before {
+.palettes-list-primary-color:before,
+.palettes-list-secondary-color:before {
   content: "";
   position: absolute;
   bottom: 1px;
@@ -54,13 +54,13 @@
   height: 0px;
 }
 
-.palettes-list-color.primary:before {
+.palettes-list-primary-color:before {
   left: 1px;
   border-right-color: transparent;
 }
 
 
-.palettes-list-color.secondary:before {
+.palettes-list-secondary-color:before {
   right: 1px;
   border-left-color: transparent;
 }

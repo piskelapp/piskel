@@ -1,6 +1,9 @@
 (function () {
   var ns = $.namespace('pskl.controller');
 
+  var PRIMARY_COLOR_CLASSNAME = 'palettes-list-primary-color';
+  var SECONDARY_COLOR_CLASSNAME = 'palettes-list-secondary-color';
+
   ns.PalettesListController = function (paletteController, usedColorService) {
     this.usedColorService = usedColorService;
     this.paletteController = paletteController;
@@ -110,27 +113,30 @@
     }
   };
 
-  ns.PalettesListController.prototype.highlightSelectedColors = function (event) {
-    this.removeClass_('primary', '.palettes-list-color');
-    this.removeClass_('secondary', '.palettes-list-color');
+  ns.PalettesListController.prototype.highlightSelectedColors = function () {
+    this.removeClass_(PRIMARY_COLOR_CLASSNAME);
+    this.removeClass_(SECONDARY_COLOR_CLASSNAME);
 
-    var secondaryColor = this.paletteController.getSecondaryColor();
-    var colorContainer = this.colorListContainer_.querySelector('.palettes-list-color[data-color="'+secondaryColor+'"]');
+
+    var colorContainer = this.getColorContainer_(this.paletteController.getSecondaryColor());
     if (colorContainer) {
-      colorContainer.classList.remove('primary');
-      colorContainer.classList.add('secondary');
+      colorContainer.classList.remove(PRIMARY_COLOR_CLASSNAME);
+      colorContainer.classList.add(SECONDARY_COLOR_CLASSNAME);
     }
 
-    var primaryColor = this.paletteController.getPrimaryColor();
-    colorContainer = this.colorListContainer_.querySelector('.palettes-list-color[data-color="'+primaryColor+'"]');
+    colorContainer = this.getColorContainer_(this.paletteController.getPrimaryColor());
     if (colorContainer) {
-      colorContainer.classList.remove('secondary');
-      colorContainer.classList.add('primary');
+      colorContainer.classList.remove(SECONDARY_COLOR_CLASSNAME);
+      colorContainer.classList.add(PRIMARY_COLOR_CLASSNAME);
     }
   };
 
-  ns.PalettesListController.prototype.removeClass_ = function (cssClass, selector) {
-    var element = document.querySelector(selector + '.' + cssClass);
+  ns.PalettesListController.prototype.getColorContainer_ = function (color) {
+    return this.colorListContainer_.querySelector('.palettes-list-color[data-color="'+color+'"]');
+  };
+
+  ns.PalettesListController.prototype.removeClass_ = function (cssClass) {
+    var element = document.querySelector('.' + cssClass);
     if (element) {
       element.classList.remove(cssClass);
     }
