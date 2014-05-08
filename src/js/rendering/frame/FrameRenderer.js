@@ -58,7 +58,7 @@
     this.setGridWidth(pskl.UserSettings.get(pskl.UserSettings.GRID_WIDTH));
 
     this.updateBackgroundClass_(pskl.UserSettings.get(pskl.UserSettings.CANVAS_BACKGROUND));
-    $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
+    $.subscribe(Events.USER_SETTINGS_CHANGED, this.onUserSettingsChange_.bind(this));
   };
 
   pskl.utils.inherit(pskl.rendering.frame.FrameRenderer, pskl.rendering.AbstractRenderer);
@@ -67,18 +67,6 @@
     if (frame) {
       this.clear();
       this.renderFrame_(frame);
-    }
-  };
-
-  ns.FrameRenderer.prototype.hide = function () {
-    if (this.displayCanvas) {
-      this.displayCanvas.style.display = 'none';
-    }
-  };
-
-  ns.FrameRenderer.prototype.show = function () {
-    if (this.displayCanvas) {
-      this.displayCanvas.style.display = 'block';
     }
   };
 
@@ -130,10 +118,6 @@
     };
   };
 
-  ns.FrameRenderer.prototype.moveOffset = function (x, y) {
-    this.setOffset(this.offset.x + x, this.offset.y + y);
-  };
-
   ns.FrameRenderer.prototype.setOffset = function (x, y) {
     // TODO : provide frame size information to the FrameRenderer constructor
     // here I first need to verify I have a 'canvas' which I can use to infer the frame information
@@ -160,11 +144,11 @@
     }
   };
 
-  ns.FrameRenderer.prototype.updateMargins_ = function () {
-    var deltaX = this.displayWidth - (this.zoom * this.canvas.width);
+  ns.FrameRenderer.prototype.updateMargins_ = function (frame) {
+    var deltaX = this.displayWidth - (this.zoom * frame.getWidth());
     this.margin.x = Math.max(0, deltaX) / 2;
 
-    var deltaY = this.displayHeight - (this.zoom * this.canvas.height);
+    var deltaY = this.displayHeight - (this.zoom * frame.getHeight());
     this.margin.y = Math.max(0, deltaY) / 2;
   };
 
@@ -173,9 +157,7 @@
     var width = this.displayWidth;
 
     this.displayCanvas = pskl.CanvasUtils.createCanvas(width, height, this.classes);
-    if (true || this.zoom > 2) {
-      pskl.CanvasUtils.disableImageSmoothing(this.displayCanvas);
-    }
+    pskl.CanvasUtils.disableImageSmoothing(this.displayCanvas);
     this.container.append(this.displayCanvas);
   };
 
@@ -244,22 +226,22 @@
       }
     }
 
-    this.updateMargins_();
+    this.updateMargins_(frame);
 
-    context = this.displayCanvas.getContext('2d');
-    context.save();
+    var displayContext = this.displayCanvas.getContext('2d');
+    displayContext.save();
 
     if (this.canvas.width*this.zoom < this.displayCanvas.width) {
-      context.fillStyle = Constants.ZOOMED_OUT_BACKGROUND_COLOR;
-      context.fillRect(0,0,this.displayCanvas.width, this.displayCanvas.height);
+      displayContext.fillStyle = Constants.ZOOMED_OUT_BACKGROUND_COLOR;
+      displayContext.fillRect(0,0,this.displayCanvas.width, this.displayCanvas.height);
     }
 
-    context.translate(
+    displayContext.translate(
       this.margin.x-this.offset.x*this.zoom,
       this.margin.y-this.offset.y*this.zoom
     );
 
-    context.clearRect(0, 0, this.canvas.width*this.zoom, this.canvas.height*this.zoom);
+    displayContext.clearRect(0, 0, this.canvas.width*this.zoom, this.canvas.height*this.zoom);
 
     var isIE10 = pskl.utils.UserAgent.isIE && pskl.utils.UserAgent.version === 10;
 
@@ -267,11 +249,11 @@
     var isGridEnabled = gridWidth > 0;
     if (isGridEnabled || isIE10) {
       var scaled = pskl.utils.ImageResizer.resizeNearestNeighbour(this.canvas, this.zoom, gridWidth);
-      context.drawImage(scaled, 0, 0);
+      displayContext.drawImage(scaled, 0, 0);
     } else {
-      context.scale(this.zoom, this.zoom);
-      context.drawImage(this.canvas, 0, 0);
+      displayContext.scale(this.zoom, this.zoom);
+      displayContext.drawImage(this.canvas, 0, 0);
     }
-    context.restore();
+    displayContext.restore();
   };
 })();

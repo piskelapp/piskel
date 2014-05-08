@@ -156,22 +156,6 @@
      */
     calculateZoomForContainer : function (container, pictureHeight, pictureWidth) {
       return this.calculateZoom(container.height(), container.width(), pictureHeight, pictureWidth);
-    },
-
-    /**
-     * Calculate and return the maximal zoom to display a picture for a given height and width.
-     *
-     * @param height number Height available to display the picture
-     * @param width number Width available to display the picture
-     * @param number pictureHeight height in pixels of the picture to display
-     * @param number pictureWidth width in pixels of the picture to display
-     * @return number maximal zoom
-     */
-    calculateZoom : function (height, width, pictureHeight, pictureWidth) {
-      var heightRatio = Math.floor(height / pictureHeight),
-        widthRatio = Math.floor(width / pictureWidth);
-
-      return Math.min(heightRatio, widthRatio);
     }
   };
 })();

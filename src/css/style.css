@@ -178,14 +178,22 @@ body {
   border : 0px Solid transparent;
 }
 
-#preview-canvas-container {
-  height :200px;
+#animated-preview-container {
+  background: #333;
+  border-radius : 0 0 2px 2px;
+  overflow : hidden;
 }
 
-.tiled-frame-renderer {
+#animated-preview-canvas-container {
+  height :200px;
+  width : 200px;
+}
+
+.tiled-frame-container {
   height: 100%;
   width: 100%;
-  position: absolute;
+  position: relative;
+  background-repeat : repeat;
 }
 
 .display-fps {

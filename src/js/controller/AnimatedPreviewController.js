@@ -1,6 +1,9 @@
 (function () {
   var ns = $.namespace("pskl.controller");
 
+  // Preview is a square of PREVIEW_SIZE x PREVIEW_SIZE
+  var PREVIEW_SIZE = 200;
+
   ns.AnimatedPreviewController = function (piskelController, container) {
     this.piskelController = piskelController;
     this.container = container;
@@ -10,33 +13,38 @@
 
     this.setFPS(Constants.DEFAULT.FPS);
 
-    var zoom = this.calculateZoom_();
     var frame = this.piskelController.getCurrentFrame();
-    var renderingOptions = {
-      "zoom": zoom,
-      "height" : 200,
-      "width" : 200
-    };
 
-    this.tiledRenderer = new pskl.rendering.frame.TiledFrameRenderer(this.container);
-    this.frameRenderer = new pskl.rendering.frame.FrameRenderer(this.container, renderingOptions);
-    this.renderer = new pskl.rendering.CompositeRenderer();
-    this.renderer.add(this.tiledRenderer);
-    this.renderer.add(this.frameRenderer);
-
+    this.renderer = new pskl.rendering.frame.TiledFrameRenderer(this.container);
+    this.updateZoom_();
     $.subscribe(Events.FRAME_SIZE_CHANGED, this.onFrameSizeChange_.bind(this));
     $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
-    this.onUserSettingsChange_();
   };
 
   ns.AnimatedPreviewController.prototype.onUserSettingsChange_ = function () {
-    if(pskl.UserSettings.get(pskl.UserSettings.TILED_PREVIEW)) {
-      this.frameRenderer.hide();
-      this.tiledRenderer.show();
-    } else {
-      this.tiledRenderer.hide();
-      this.frameRenderer.show();
-    }
+    this.updateZoom_();
+    this.updateContainerDimensions_();
+  };
+
+  ns.AnimatedPreviewController.prototype.updateZoom_ = function () {
+    var isTiled = pskl.UserSettings.get(pskl.UserSettings.TILED_PREVIEW);
+    var zoom = isTiled ? 1 : this.calculateZoom_();
+    this.renderer.setZoom(zoom);
+  };
+
+  ns.AnimatedPreviewController.prototype.getZoom = function () {
+    return this.calculateZoom_();
+  };
+
+  ns.AnimatedPreviewController.prototype.getCoordinates = function(x, y) {
+    var containerOffset = this.container.offset();
+    x = x - containerOffset.left;
+    y = y - containerOffset.top;
+    var zoom = this.getZoom();
+    return {
+      x : Math.floor(x / zoom),
+      y : Math.floor(y / zoom)
+    };
   };
 
   ns.AnimatedPreviewController.prototype.init = function () {
@@ -88,10 +96,30 @@
   };
 
   ns.AnimatedPreviewController.prototype.onFrameSizeChange_ = function () {
-    var frame = this.piskelController.getCurrentFrame();
-    var zoom = this.calculateZoom_();
-    this.renderer.setDisplaySize(frame.getWidth() * zoom, frame.getHeight() * zoom);
-    this.renderer.setZoom(zoom);
-    this.renderer.setOffset(0, 0);
+    this.updateZoom_();
+    this.updateContainerDimensions_();
+  };
+
+  ns.AnimatedPreviewController.prototype.updateContainerDimensions_ = function () {
+    var containerEl = this.container.get(0);
+    var isTiled = pskl.UserSettings.get(pskl.UserSettings.TILED_PREVIEW);
+    var height, width;
+
+    if (isTiled) {
+      height = PREVIEW_SIZE;
+      width = PREVIEW_SIZE;
+    } else {
+      var zoom = this.getZoom();
+      var frame = this.piskelController.getCurrentFrame();
+      height = frame.getHeight() * zoom;
+      width = frame.getWidth() * zoom;
+    }
+
+    containerEl.style.height = height + "px";
+    containerEl.style.width = width + "px";
+    containerEl.style.marginTop = ((PREVIEW_SIZE - height) / 2) + "px";
+    containerEl.style.marginBottom = ((PREVIEW_SIZE - height) / 2) + "px";
+    containerEl.style.marginLeft = ((PREVIEW_SIZE - width) / 2) + "px";
+    containerEl.style.marginRight = ((PREVIEW_SIZE - width) / 2) + "px";
   };
 })();

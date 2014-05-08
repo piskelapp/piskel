@@ -109,6 +109,7 @@
 
   ns.DrawingController.prototype.onFrameSizeChanged_ = function () {
     this.compositeRenderer.setDisplaySize(this.getContainerWidth_(), this.getContainerHeight_());
+    this.centerColumnWrapperHorizontally_();
     this.compositeRenderer.setZoom(this.calculateZoom_());
     this.compositeRenderer.setOffset(0, 0);
     $.publish(Events.ZOOM_CHANGED);

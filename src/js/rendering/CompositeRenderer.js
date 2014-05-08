@@ -12,13 +12,6 @@
     return this;
   };
 
-
-  ns.CompositeRenderer.prototype.render = function (frame) {
-    this.renderers.forEach(function (renderer) {
-      renderer.render(frame);
-    });
-  };
-
   ns.CompositeRenderer.prototype.clear = function () {
     this.renderers.forEach(function (renderer) {
       renderer.clear();
@@ -43,12 +36,6 @@
 
   ns.CompositeRenderer.prototype.getDisplaySize = function () {
     return this.getSampleRenderer_().getDisplaySize();
-  };
-
-  ns.CompositeRenderer.prototype.moveOffset = function (x, y) {
-    this.renderers.forEach(function (renderer) {
-      renderer.moveOffset(x, y);
-    });
   };
 
   ns.CompositeRenderer.prototype.setOffset = function (x, y) {
