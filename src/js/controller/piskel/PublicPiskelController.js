@@ -44,7 +44,7 @@
   };
 
   ns.PublicPiskelController.prototype.duplicateCurrentFrame = function () {
-    this.piskelController.duplicateFrameAt(this.getCurrentFrameIndex());
+    this.duplicateFrameAt(this.getCurrentFrameIndex());
   };
 
   ns.PublicPiskelController.prototype.raiseSaveStateEvent_ = function (fn, args) {
