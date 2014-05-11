@@ -4,6 +4,12 @@
   var PRIMARY_COLOR_CLASSNAME = 'palettes-list-primary-color';
   var SECONDARY_COLOR_CLASSNAME = 'palettes-list-secondary-color';
 
+  var HAS_SCROLL_CLASSNAME = 'palettes-list-has-scrollbar';
+  // well ... I know that if there are more than 20 colors, a scrollbar will be displayed
+  // It's linked to the max-height: 160px; defined in toolbox-palette-list.css !
+  // I apologize to my future self for this one.
+  var NO_SCROLL_MAX_COLORS = 20;
+
   ns.PalettesListController = function (paletteController, usedColorService) {
     this.usedColorService = usedColorService;
     this.paletteController = paletteController;
@@ -52,11 +58,11 @@
 
     this.highlightSelectedColors();
 
-    var hasScrollbar = colors.length > 20;
+    var hasScrollbar = colors.length > NO_SCROLL_MAX_COLORS;
     if (hasScrollbar && !pskl.utils.UserAgent.isChrome) {
-      this.colorListContainer_.classList.add('palettes-list-has-scrollbar');
+      this.colorListContainer_.classList.add(HAS_SCROLL_CLASSNAME);
     } else {
-      this.colorListContainer_.classList.remove('palettes-list-has-scrollbar');
+      this.colorListContainer_.classList.remove(HAS_SCROLL_CLASSNAME);
     }
   };
 
@@ -84,7 +90,7 @@
 
   ns.PalettesListController.prototype.onPaletteSelected_ = function (evt) {
     var paletteId = this.colorPaletteSelect_.value;
-    if (paletteId === Constants.PALETTE_MANAGE_ID) {
+    if (paletteId === Constants.MANAGE_PALETTE_ID) {
       $.publish(Events.DIALOG_DISPLAY, 'manage-palettes');
       this.selectPaletteFromUserSettings();
     } else {
@@ -116,7 +122,6 @@
   ns.PalettesListController.prototype.highlightSelectedColors = function () {
     this.removeClass_(PRIMARY_COLOR_CLASSNAME);
     this.removeClass_(SECONDARY_COLOR_CLASSNAME);
-
 
     var colorContainer = this.getColorContainer_(this.paletteController.getSecondaryColor());
     if (colorContainer) {
