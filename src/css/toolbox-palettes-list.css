@@ -1,6 +1,3 @@
-.palettes-list-container {
-}
-
 .palettes-list-select {
   float:right;
   max-width:90px;
@@ -14,7 +11,8 @@
 }
 
 .palettes-list-colors {
-  overflow:hidden;
+  overflow: auto;
+  max-height: 160px;
 }
 
 .palettes-list-color {
@@ -35,8 +33,13 @@
   height : 32px;
 }
 
-.palettes-list-color.primary:before,
-.palettes-list-color.secondary:before {
+.palettes-list-has-scrollbar .palettes-list-color,
+.palettes-list-has-scrollbar .palettes-list-color div{
+  width: 29px
+}
+
+.palettes-list-primary-color:before,
+.palettes-list-secondary-color:before {
   content: "";
   position: absolute;
   bottom: 1px;
@@ -48,13 +51,13 @@
   height: 0px;
 }
 
-.palettes-list-color.primary:before {
+.palettes-list-primary-color:before {
   left: 1px;
   border-right-color: transparent;
 }
 
 
-.palettes-list-color.secondary:before {
+.palettes-list-secondary-color:before {
   right: 1px;
   border-left-color: transparent;
 }
