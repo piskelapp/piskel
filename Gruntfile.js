@@ -191,13 +191,13 @@ module.exports = function(grunt) {
     },
     nodewebkit: {
       options: {
-        build_dir: './build', // destination folder of releases.
+        build_dir: './dest/desktop/', // destination folder of releases.
         mac: true,
         win: true,
         linux32: true,
         linux64: true
       },
-      src: ['./**/*']
+      src: ['./dest/**/*', "./package.json", "!./dest/desktop/"]
     }
   });
 
