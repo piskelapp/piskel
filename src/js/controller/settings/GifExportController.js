@@ -115,12 +115,14 @@
   };
 
   ns.GifExportController.prototype.renderAsImageDataAnimatedGIF = function(zoom, fps, cb) {
-    var preserveColors = pskl.app.currentColorsService.getCurrentColors().length < MAX_GIF_COLORS;
+    var colorCount = pskl.app.currentColorsService.getCurrentColors().length;
+    var preserveColors = colorCount < MAX_GIF_COLORS;
     var gif = new window.GIF({
       workers: 2,
       quality: 1,
       width: this.piskelController.getWidth()*zoom,
-      height: this.piskelController.getHeight()*zoom
+      height: this.piskelController.getHeight()*zoom,
+      preserveColors : preserveColors
     });
 
     for (var i = 0; i < this.piskelController.getFrameCount(); i++) {
