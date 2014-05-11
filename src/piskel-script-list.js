@@ -59,6 +59,7 @@
   "js/rendering/CompositeRenderer.js",
   "js/rendering/layer/LayersRenderer.js",
   "js/rendering/frame/FrameRenderer.js",
+  "js/rendering/frame/TiledFrameRenderer.js",
   "js/rendering/frame/CachedFrameRenderer.js",
   "js/rendering/CanvasRenderer.js",
   "js/rendering/FramesheetRenderer.js",
@@ -77,6 +78,7 @@
   "js/controller/PaletteController.js",
   "js/controller/PalettesListController.js",
   "js/controller/NotificationController.js",
+  "js/controller/CanvasBackgroundController.js",
 
   // Settings sub-controllers
   "js/controller/settings/ApplicationSettingsController.js",

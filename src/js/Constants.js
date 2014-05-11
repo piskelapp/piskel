@@ -13,7 +13,7 @@ var Constants = {
 
   MINIMUM_ZOOM : 1,
 
-  PREVIEW_FILM_SIZE : 120,
+  PREVIEW_FILM_SIZE : 96,
   ANIMATED_PREVIEW_WIDTH : 200,
 
   DEFAULT_PEN_COLOR : '#000000',
@@ -62,5 +62,6 @@ var Constants = {
   RIGHT_BUTTON : 2,
   MOUSEMOVE_THROTTLING : 10,
 
-  ABSTRACT_FUNCTION : function () {throw 'abstract method should be implemented';}
+  ABSTRACT_FUNCTION : function () {throw 'abstract method should be implemented';},
+  EMPTY_FUNCTION : function () {}
 };

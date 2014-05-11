@@ -16,7 +16,7 @@
   position: absolute;
   left: 0;
   right: 12px;
-  
+
   -webkit-transition: all 500ms ease-out;
   -moz-transition: all 500ms ease-out;
   -ms-transition: all 500ms ease-out;
@@ -84,6 +84,8 @@
   border: #444 3px solid;
   border-radius: 3px;
   margin: 5px 0;
+  width: 96px;
+  height: 96px;
 }
 
 .preview-tile:first-child {

@@ -36,8 +36,8 @@
 
   ns.MinimapController.prototype.displayCropFrame_ = function (ratio, offset) {
     this.cropFrame.style.display = 'block';
-    this.cropFrame.style.top = (offset.y * this.animationController.renderer.getZoom()) +  'px';
-    this.cropFrame.style.left = (offset.x * this.animationController.renderer.getZoom()) +  'px';
+    this.cropFrame.style.top = (offset.y * this.animationController.getZoom()) +  'px';
+    this.cropFrame.style.left = (offset.x * this.animationController.getZoom()) +  'px';
     var zoomRatio = this.getDrawingAreaZoomRatio_();
     this.cropFrame.style.width = (this.container.width() / zoomRatio) +  'px';
     this.cropFrame.style.height = (this.container.height() / zoomRatio) +  'px';
@@ -66,7 +66,7 @@
   };
 
   ns.MinimapController.prototype.getCoordinatesCenteredAround_ = function (x, y) {
-    var frameCoords = this.animationController.renderer.getCoordinates(x, y);
+    var frameCoords = this.animationController.getCoordinates(x, y);
     var zoomRatio = this.getDrawingAreaZoomRatio_();
     var frameWidth = this.piskelController.getCurrentFrame().getWidth();
     var frameHeight = this.piskelController.getCurrentFrame().getHeight();
