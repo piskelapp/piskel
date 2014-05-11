@@ -159,9 +159,11 @@
       return hex.length == 1 ? "0" + hex : hex;
     },
 
-    toImage : function (frame) {
-      var canvasRenderer = new pskl.rendering.CanvasRenderer(frame, 1);
-      canvasRenderer.drawTransparentAs(Constants.TRANSPARENT_COLOR);
+    toImage : function (frame, zoom, bgColor) {
+      zoom = zoom || 1;
+      bgColor = bgColor || Constants.TRANSPARENT_COLOR;
+      var canvasRenderer = new pskl.rendering.CanvasRenderer(frame, zoom);
+      canvasRenderer.drawTransparentAs(bgColor);
       return canvasRenderer.render();
     }
   };

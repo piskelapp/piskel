@@ -212,12 +212,8 @@
   ns.PreviewFilmController.prototype.calculateZoom_ = function () {
     var curFrame = this.piskelController.getCurrentFrame(),
       frameHeight = curFrame.getHeight(),
-      frameWidth = curFrame.getWidth(),
-      maxFrameDim = Math.max(frameWidth, frameHeight);
+      frameWidth = curFrame.getWidth();
 
-    var previewHeight = Constants.PREVIEW_FILM_SIZE * frameHeight / maxFrameDim;
-    var previewWidth = Constants.PREVIEW_FILM_SIZE * frameWidth / maxFrameDim;
-
-    return pskl.PixelUtils.calculateZoom(previewHeight, previewWidth, frameHeight, frameWidth) || 1;
+    return Math.min(Constants.PREVIEW_FILM_SIZE/frameHeight, Constants.PREVIEW_FILM_SIZE/frameWidth);
   };
 })();

@@ -38,12 +38,6 @@
     return this.getSampleRenderer_().getDisplaySize();
   };
 
-  ns.CompositeRenderer.prototype.moveOffset = function (x, y) {
-    this.renderers.forEach(function (renderer) {
-      renderer.moveOffset(x, y);
-    });
-  };
-
   ns.CompositeRenderer.prototype.setOffset = function (x, y) {
     this.renderers.forEach(function (renderer) {
       renderer.setOffset(x, y);

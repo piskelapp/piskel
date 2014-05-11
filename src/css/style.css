@@ -178,6 +178,24 @@ body {
   border : 0px Solid transparent;
 }
 
+#animated-preview-container {
+  background: #333;
+  border-radius : 0 0 2px 2px;
+  overflow : hidden;
+}
+
+#animated-preview-canvas-container {
+  height :200px;
+  width : 200px;
+}
+
+.tiled-frame-container {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  background-repeat : repeat;
+}
+
 .display-fps {
   float: left;
   color: #aaa;
@@ -190,6 +208,8 @@ body {
 .range-fps {
   overflow: hidden;
   width: 120px;
+  height : 24px;
+  margin : 0;
 }
 
 /**
