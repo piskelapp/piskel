@@ -1,6 +1,7 @@
 {
   "author": "Julian Descottes, Vincent Renaudin",
   "name": "piskel",
+  "main": "./dest/index.html",
   "description": "Web based 2d animations editor",
   "version": "0.0.1",
   "homepage": "http://github.com/juliandescottes/piskel",
@@ -9,7 +10,8 @@
     "url": "http://github.com/juliandescottes/piskel.git"
   },
   "scripts": {
-    "test": "grunt test"
+    "test": "grunt test",
+    "start": "nodewebkit"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
@@ -24,6 +26,11 @@
     "grunt-ghost": "1.0.12",
     "grunt-open": "0.2.3",
     "grunt-leading-indent": "0.1.0",
-    "grunt-closure-tools": "~0.8.3"
+    "grunt-closure-tools": "~0.8.3",
+    "grunt-node-webkit-builder": "0.1.19",
+    "nodewebkit": "0.8.4"
+  },
+  "window": {
+    "toolbar": false
   }
 }
