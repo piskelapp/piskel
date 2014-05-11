@@ -1,8 +1,18 @@
 (function () {
   var ns = $.namespace('pskl.controller');
 
-  ns.PalettesListController = function () {
+  var PRIMARY_COLOR_CLASSNAME = 'palettes-list-primary-color';
+  var SECONDARY_COLOR_CLASSNAME = 'palettes-list-secondary-color';
 
+  var HAS_SCROLL_CLASSNAME = 'palettes-list-has-scrollbar';
+  // well ... I know that if there are more than 20 colors, a scrollbar will be displayed
+  // It's linked to the max-height: 160px; defined in toolbox-palette-list.css !
+  // I apologize to my future self for this one.
+  var NO_SCROLL_MAX_COLORS = 20;
+
+  ns.PalettesListController = function (paletteController, usedColorService) {
+    this.usedColorService = usedColorService;
+    this.paletteController = paletteController;
   };
 
   ns.PalettesListController.prototype.init = function () {
@@ -16,8 +26,9 @@
     this.colorListContainer_.addEventListener('contextmenu', this.onColorContainerContextMenu.bind(this));
 
     $.subscribe(Events.PALETTE_LIST_UPDATED, this.onPaletteListUpdated.bind(this));
-    $.subscribe(Events.PRIMARY_COLOR_SELECTED, this.onColorUpdated.bind(this, 'primary'));
-    $.subscribe(Events.SECONDARY_COLOR_SELECTED, this.onColorUpdated.bind(this, 'secondary'));
+    $.subscribe(Events.CURRENT_COLORS_UPDATED, this.fillColorListContainer.bind(this));
+    $.subscribe(Events.PRIMARY_COLOR_SELECTED, this.highlightSelectedColors.bind(this));
+    $.subscribe(Events.SECONDARY_COLOR_SELECTED, this.highlightSelectedColors.bind(this));
 
     this.fillPaletteList();
     this.selectPaletteFromUserSettings();
@@ -38,23 +49,35 @@
   };
 
   ns.PalettesListController.prototype.fillColorListContainer = function () {
-    var html = '';
+    var colors = this.getSelectedPaletteColors_();
 
-    var palette = this.getSelectedPalette();
-    if (palette) {
-      html = palette.colors.map(function (color) {
-        return pskl.utils.Template.replace(this.paletteColorTemplate_, {color : color});
-      }.bind(this)).join('');
-    }
-
+    var html = colors.map(function (color) {
+      return pskl.utils.Template.replace(this.paletteColorTemplate_, {color : color});
+    }.bind(this)).join('');
     this.colorListContainer_.innerHTML = html;
+
+    this.highlightSelectedColors();
+
+    var hasScrollbar = colors.length > NO_SCROLL_MAX_COLORS;
+    if (hasScrollbar && !pskl.utils.UserAgent.isChrome) {
+      this.colorListContainer_.classList.add(HAS_SCROLL_CLASSNAME);
+    } else {
+      this.colorListContainer_.classList.remove(HAS_SCROLL_CLASSNAME);
+    }
   };
 
-  ns.PalettesListController.prototype.getSelectedPalette = function (evt) {
+  ns.PalettesListController.prototype.getSelectedPaletteColors_ = function () {
+    var colors = [];
     var paletteId = this.colorPaletteSelect_.value;
-    var palettes = this.retrievePalettes();
-    var palette = this.getPaletteById(paletteId, palettes);
-    return palette;
+    if (paletteId === Constants.CURRENT_COLORS_PALETTE_ID) {
+      colors = this.usedColorService.getCurrentColors();
+    } else {
+      var palette = this.getPaletteById(paletteId, this.retrievePalettes());
+      if (palette) {
+        colors = palette.colors;
+      }
+    }
+    return colors;
   };
 
   ns.PalettesListController.prototype.selectPalette = function (paletteId) {
@@ -67,7 +90,7 @@
 
   ns.PalettesListController.prototype.onPaletteSelected_ = function (evt) {
     var paletteId = this.colorPaletteSelect_.value;
-    if (paletteId === '__manage-palettes') {
+    if (paletteId === Constants.MANAGE_PALETTE_ID) {
       $.publish(Events.DIALOG_DISPLAY, 'manage-palettes');
       this.selectPaletteFromUserSettings();
     } else {
@@ -96,27 +119,29 @@
     }
   };
 
-  ns.PalettesListController.prototype.onColorUpdated = function (type, event, color) {
-    var colorContainer = this.colorListContainer_.querySelector('.palettes-list-color[data-color="'+color+'"]');
+  ns.PalettesListController.prototype.highlightSelectedColors = function () {
+    this.removeClass_(PRIMARY_COLOR_CLASSNAME);
+    this.removeClass_(SECONDARY_COLOR_CLASSNAME);
 
-    // Color is not in the currently selected palette
-    if (!colorContainer) {
-      return;
+    var colorContainer = this.getColorContainer_(this.paletteController.getSecondaryColor());
+    if (colorContainer) {
+      colorContainer.classList.remove(PRIMARY_COLOR_CLASSNAME);
+      colorContainer.classList.add(SECONDARY_COLOR_CLASSNAME);
     }
 
-    if (type === 'primary') {
-      this.removeClass_('primary', '.palettes-list-color');
-      colorContainer.classList.add('primary');
-      colorContainer.classList.remove('secondary');
-    } else if (type === 'secondary') {
-      this.removeClass_('secondary', '.palettes-list-color');
-      colorContainer.classList.add('secondary');
-      colorContainer.classList.remove('primary');
+    colorContainer = this.getColorContainer_(this.paletteController.getPrimaryColor());
+    if (colorContainer) {
+      colorContainer.classList.remove(SECONDARY_COLOR_CLASSNAME);
+      colorContainer.classList.add(PRIMARY_COLOR_CLASSNAME);
     }
   };
 
-  ns.PalettesListController.prototype.removeClass_ = function (cssClass, selector) {
-    var element = document.querySelector(selector + '.' + cssClass);
+  ns.PalettesListController.prototype.getColorContainer_ = function (color) {
+    return this.colorListContainer_.querySelector('.palettes-list-color[data-color="'+color+'"]');
+  };
+
+  ns.PalettesListController.prototype.removeClass_ = function (cssClass) {
+    var element = document.querySelector('.' + cssClass);
     if (element) {
       element.classList.remove(cssClass);
     }
