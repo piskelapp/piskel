@@ -92,6 +92,8 @@
 
   ns.CheatsheetService.prototype.initMarkupForMisc_ = function () {
     var descriptors = [
+      this.toDescriptor_('0', 'Reset zoom level'),
+      this.toDescriptor_('+/-', 'Zoom in/Zoom out'),
       this.toDescriptor_('X', 'Swap primary/secondary colors'),
       this.toDescriptor_('D', 'Reset default colors'),
       this.toDescriptor_('ctrl + Z', 'Undo'),

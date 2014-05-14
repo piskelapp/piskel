@@ -1,5 +1,9 @@
 (function () {
+
   var ns = $.namespace("pskl.controller");
+
+  var MAC_TOUCHPAD_SKIP = 8;
+
   ns.DrawingController = function (piskelController, paletteController, container) {
     /**
      * @public
@@ -43,6 +47,8 @@
     this.previousMousemoveTime = 0;
     this.currentToolBehavior = null;
 
+    this.skipMouseWheelCounter_ = 0;
+
     // State of clicked button (need to be stateful here, see comment in getCurrentColor_)
     this.currentMouseButton_ = Constants.LEFT_BUTTON;
   };
@@ -59,6 +65,10 @@
 
     $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
     $.subscribe(Events.FRAME_SIZE_CHANGED, $.proxy(this.onFrameSizeChanged_, this));
+
+    pskl.app.shortcutService.addShortcut('0', this.resetZoom_.bind(this));
+    pskl.app.shortcutService.addShortcut('+', this.increaseZoom_.bind(this));
+    pskl.app.shortcutService.addShortcut('-', this.decreaseZoom_.bind(this));
 
     window.setTimeout(this.afterWindowResize_.bind(this), 100);
   };
@@ -179,20 +189,43 @@
     }
   };
 
+  ns.DrawingController.prototype.resetZoom_ = function () {
+    this.setZoom_(this.calculateZoom_());
+  };
+
+  ns.DrawingController.prototype.increaseZoom_ = function () {
+    this.setZoom_(this.renderer.getZoom() + this.getZoomStep_());
+  };
+
+  ns.DrawingController.prototype.decreaseZoom_ = function () {
+    this.setZoom_(this.renderer.getZoom() - this.getZoomStep_());
+  };
+
+  ns.DrawingController.prototype.getZoomStep_ = function () {
+    return this.calculateZoom_() / 10;
+  };
+  
+  ns.DrawingController.prototype.setZoom_ = function (zoom) {
+    this.compositeRenderer.setZoom(zoom);
+    $.publish(Events.ZOOM_CHANGED);
+  };
+
   ns.DrawingController.prototype.onMousewheel_ = function (jQueryEvent) {
     var event = jQueryEvent.originalEvent;
     var delta = event.wheelDeltaY || (-2 * event.deltaY);
-    var currentZoom = this.renderer.getZoom();
 
-    var perfectZoom = this.calculateZoom_();
-    var step = perfectZoom / 10;
+    var isMacTouchpad = typeof event.webkitDirectionInvertedFromDevice === 'boolean';
+    if (isMacTouchpad) {
+      if ((++this.skipMouseWheelCounter_%MAC_TOUCHPAD_SKIP)) {
+        return;
+      }
+    }
 
     if (delta > 0) {
-      this.compositeRenderer.setZoom(currentZoom + step);
+      this.increaseZoom_();
     } else if (delta < 0) {
-      this.compositeRenderer.setZoom(currentZoom - step);
+      this.decreaseZoom_();
     }
-    $.publish(Events.ZOOM_CHANGED);
   };
 
   /**

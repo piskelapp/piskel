@@ -53,7 +53,7 @@
       ctrl : key.indexOf('ctrl+') != -1
     });
 
-    var parts = key.split('+');
+    var parts = key.split(/\+(?!$)/);
     key = parts[parts.length-1];
     return {meta : meta, key : key};
   };

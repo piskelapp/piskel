@@ -5,7 +5,9 @@
     27 : "esc",
     38 : "up",
     40 : "down",
-    46 : "del"
+    46 : "del",
+    189 : "-",
+    187 : "+"
   };
 
   var ns = $.namespace('pskl.service.keyboard');
