@@ -21004,9 +21004,6 @@ if (typeof Function.prototype.bind !== "function") {
 
     var step = isSinglePass ? this.step * 2 : this.step;
     var pixelColor = frame.getPixel(col, row);
-    if (pixelColor === Constants.TRANSPARENT_COLOR) {
-      pixelColor = isDarken ? 'white' : 'black';
-    }
     if (isDarken) {
       color = window.tinycolor.darken(pixelColor, step);
     } else {
