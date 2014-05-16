@@ -6,7 +6,7 @@
     window.setTimeout(function () {loadingMask.parentNode.removeChild(loadingMask);}, 600)
     pskl.app.init();
     // cleanup
-    delete window.exports;
+    delete window.pskl_exports;
     delete window.loadDebugScripts;
     delete window.done;
   };
@@ -37,20 +37,20 @@
   };
 
   if (window.location.href.indexOf("debug") != -1) {
-    window.exports = {};
+    window.pskl_exports = {};
     var scriptIndex = 0;
     window.loadNextScript = function () {
-      if (scriptIndex == window.exports.scripts.length) {
+      if (scriptIndex == window.pskl_exports.scripts.length) {
         window.onPiskelReady();
       } else {
-        loadScript(window.exports.scripts[scriptIndex], "loadNextScript()");
+        loadScript(window.pskl_exports.scripts[scriptIndex], "loadNextScript()");
         scriptIndex ++;
       }
     };
     loadScript("piskel-script-list.js", "loadNextScript()");
 
     window.loadStyles = function () {
-      var styles = window.exports.styles;
+      var styles = window.pskl_exports.styles;
       for (var i = 0 ; i < styles.length ; i++) {
         loadStyle(styles[i]);
       }
@@ -59,11 +59,11 @@
   } else {
     var script;
     if (window.location.href.indexOf("pack") != -1) {
-      script = "build/piskel-packaged.js";
+      script = "js/piskel-packaged.js";
     } else {
-      script = "build/piskel-packaged-min.js";
+      script = "js/piskel-packaged-min.js";
     }
-    loadStyle('build/piskel-style-packaged.css');
+    loadStyle('css/piskel-style-packaged.css');
 
     var loaderInterval = window.setInterval(function () {
       if (document.querySelectorAll("[data-iframe-loader]").length === 0) {

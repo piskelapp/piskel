@@ -11778,7 +11778,7 @@ $.widget("ui.sortable", $.ui.mouse, {
 }(window.jQuery);
 ;(function () {
 	var worker = function () {
-		(function(b){function a(b,d){if({}.hasOwnProperty.call(a.cache,b))return a.cache[b];var e=a.resolve(b);if(!e)throw new Error('Failed to resolve module '+b);var c={id:b,require:a,filename:b,exports:{},loaded:!1,parent:d,children:[]};d&&d.children.push(c);var f=b.slice(0,b.lastIndexOf('/')+1);return a.cache[b]=c.exports,e.call(c.exports,c,c.exports,f,b),c.loaded=!0,a.cache[b]=c.exports}a.modules={},a.cache={},a.resolve=function(b){return{}.hasOwnProperty.call(a.modules,b)?a.modules[b]:void 0},a.define=function(b,c){a.modules[b]=c},a.define('/gif.worker.coffee',function(d,e,f,g){var b,c;b=a('/GIFEncoder.js',d),c=function(a){var c,d,e;return c=new b(a.width,a.height),a.index===0?c.writeHeader():c.firstFrame=!1,c.setRepeat(a.repeat),c.setDelay(a.delay),c.setQuality(a.quality),c.addFrame(a.data),a.last&&c.finish(),d=c.stream(),a.data=d.pages,a.cursor=d.cursor,a.pageSize=d.constructor.pageSize,a.canTransfer?(e=function(c){var d;for(var b=0,e=a.data.length;b<e;++b)d=a.data[b],c.push(d.buffer);return c}.call(this,[]),self.postMessage(a,e)):self.postMessage(a)},self.onmessage=function(a){return c(a.data)}}),a.define('/GIFEncoder.js',function(e,h,i,j){function c(){this.page=-1,this.pages=[],this.newPage()}function b(a,b){this.width=~~a,this.height=~~b,this.transparent=null,this.transIndex=0,this.repeat=-1,this.delay=0,this.image=null,this.pixels=null,this.indexedPixels=null,this.colorDepth=null,this.colorTab=null,this.usedEntry=new Array,this.palSize=7,this.dispose=-1,this.firstFrame=!0,this.sample=10,this.out=new c}var f=a('/TypedNeuQuant.js',e),g=a('/LZWEncoder.js',e);c.pageSize=4096,c.charMap={};for(var d=0;d<256;d++)c.charMap[d]=String.fromCharCode(d);c.prototype.newPage=function(){this.pages[++this.page]=new Uint8Array(c.pageSize),this.cursor=0},c.prototype.getData=function(){var d='';for(var a=0;a<this.pages.length;a++)for(var b=0;b<c.pageSize;b++)d+=c.charMap[this.pages[a][b]];return d},c.prototype.writeByte=function(a){this.cursor>=c.pageSize&&this.newPage(),this.pages[this.page][this.cursor++]=a},c.prototype.writeUTFBytes=function(b){for(var c=b.length,a=0;a<c;a++)this.writeByte(b.charCodeAt(a))},c.prototype.writeBytes=function(b,d,e){for(var c=e||b.length,a=d||0;a<c;a++)this.writeByte(b[a])},b.prototype.setDelay=function(a){this.delay=Math.round(a/10)},b.prototype.setFrameRate=function(a){this.delay=Math.round(100/a)},b.prototype.setDispose=function(a){a>=0&&(this.dispose=a)},b.prototype.setRepeat=function(a){this.repeat=a},b.prototype.setTransparent=function(a){this.transparent=a},b.prototype.addFrame=function(a){this.image=a,this.getImagePixels(),this.analyzePixels(),this.firstFrame&&(this.writeLSD(),this.writePalette(),this.repeat>=0&&this.writeNetscapeExt()),this.writeGraphicCtrlExt(),this.writeImageDesc(),this.firstFrame||this.writePalette(),this.writePixels(),this.firstFrame=!1},b.prototype.finish=function(){this.out.writeByte(59)},b.prototype.setQuality=function(a){a<1&&(a=1),this.sample=a},b.prototype.writeHeader=function(){this.out.writeUTFBytes('GIF89a')},b.prototype.analyzePixels=function(){var g=this.pixels.length,d=g/3;this.indexedPixels=new Uint8Array(d);var a=new f(this.pixels,this.sample);a.buildColormap(),this.colorTab=a.getColormap();var b=0;for(var c=0;c<d;c++){var e=a.lookupRGB(this.pixels[b++]&255,this.pixels[b++]&255,this.pixels[b++]&255);this.usedEntry[e]=!0,this.indexedPixels[c]=e}this.pixels=null,this.colorDepth=8,this.palSize=7,this.transparent!==null&&(this.transIndex=this.findClosest(this.transparent))},b.prototype.findClosest=function(e){if(this.colorTab===null)return-1;var k=(e&16711680)>>16,l=(e&65280)>>8,m=e&255,c=0,d=16777216,j=this.colorTab.length;for(var a=0;a<j;){var f=k-(this.colorTab[a++]&255),g=l-(this.colorTab[a++]&255),h=m-(this.colorTab[a]&255),i=f*f+g*g+h*h,b=a/3;this.usedEntry[b]&&i<d&&(d=i,c=b),a++}return c},b.prototype.getImagePixels=function(){var a=this.width,g=this.height;this.pixels=new Uint8Array(a*g*3);var b=this.image,c=0;for(var d=0;d<g;d++)for(var e=0;e<a;e++){var f=d*a*4+e*4;this.pixels[c++]=b[f],this.pixels[c++]=b[f+1],this.pixels[c++]=b[f+2]}},b.prototype.writeGraphicCtrlExt=function(){this.out.writeByte(33),this.out.writeByte(249),this.out.writeByte(4);var b,a;this.transparent===null?(b=0,a=0):(b=1,a=2),this.dispose>=0&&(a=dispose&7),a<<=2,this.out.writeByte(0|a|0|b),this.writeShort(this.delay),this.out.writeByte(this.transIndex),this.out.writeByte(0)},b.prototype.writeImageDesc=function(){this.out.writeByte(44),this.writeShort(0),this.writeShort(0),this.writeShort(this.width),this.writeShort(this.height),this.firstFrame?this.out.writeByte(0):this.out.writeByte(128|this.palSize)},b.prototype.writeLSD=function(){this.writeShort(this.width),this.writeShort(this.height),this.out.writeByte(240|this.palSize),this.out.writeByte(0),this.out.writeByte(0)},b.prototype.writeNetscapeExt=function(){this.out.writeByte(33),this.out.writeByte(255),this.out.writeByte(11),this.out.writeUTFBytes('NETSCAPE2.0'),this.out.writeByte(3),this.out.writeByte(1),this.writeShort(this.repeat),this.out.writeByte(0)},b.prototype.writePalette=function(){this.out.writeBytes(this.colorTab);var b=768-this.colorTab.length;for(var a=0;a<b;a++)this.out.writeByte(0)},b.prototype.writeShort=function(a){this.out.writeByte(a&255),this.out.writeByte(a>>8&255)},b.prototype.writePixels=function(){var a=new g(this.width,this.height,this.indexedPixels,this.colorDepth);a.encode(this.out)},b.prototype.stream=function(){return this.out},e.exports=b}),a.define('/LZWEncoder.js',function(e,g,h,i){function f(y,D,C,B){function w(a,b){r[f++]=a,f>=254&&t(b)}function x(b){u(a),k=i+2,j=!0,l(i,b)}function u(b){for(var a=0;a<b;++a)h[a]=-1}function A(z,r){var g,t,d,e,y,w,s;for(q=z,j=!1,n_bits=q,m=p(n_bits),i=1<<z-1,o=i+1,k=i+2,f=0,e=v(),s=0,g=a;g<65536;g*=2)++s;s=8-s,w=a,u(w),l(i,r);a:while((t=v())!=c){if(g=(t<<b)+e,d=t<<s^e,h[d]===g){e=n[d];continue}if(h[d]>=0){y=w-d,d===0&&(y=1);do if((d-=y)<0&&(d+=w),h[d]===g){e=n[d];continue a}while(h[d]>=0)}l(e,r),e=t,k<1<<b?(n[d]=k++,h[d]=g):x(r)}l(e,r),l(o,r)}function z(a){a.writeByte(s),remaining=y*D,curPixel=0,A(s+1,a),a.writeByte(0)}function t(a){f>0&&(a.writeByte(f),a.writeBytes(r,0,f),f=0)}function p(a){return(1<<a)-1}function v(){if(remaining===0)return c;--remaining;var a=C[curPixel++];return a&255}function l(a,c){g&=d[e],e>0?g|=a<<e:g=a,e+=n_bits;while(e>=8)w(g&255,c),g>>=8,e-=8;if((k>m||j)&&(j?(m=p(n_bits=q),j=!1):(++n_bits,n_bits==b?m=1<<b:m=p(n_bits))),a==o){while(e>0)w(g&255,c),g>>=8,e-=8;t(c)}}var s=Math.max(2,B),r=new Uint8Array(256),h=new Int32Array(a),n=new Int32Array(a),g,e=0,f,k=0,m,j=!1,q,i,o;this.encode=z}var c=-1,b=12,a=5003,d=[0,1,3,7,15,31,63,127,255,511,1023,2047,4095,8191,16383,32767,65535];e.exports=f}),a.define('/TypedNeuQuant.js',function(A,F,E,D){function C(A,B){function I(){o=[],q=new Int32Array(256),t=new Int32Array(a),y=new Int32Array(a),z=new Int32Array(a>>3);var c,d;for(c=0;c<a;c++)d=(c<<b+8)/a,o[c]=new Float64Array([d,d,d,0]),y[c]=e/a,t[c]=0}function J(){for(var c=0;c<a;c++)o[c][0]>>=b,o[c][1]>>=b,o[c][2]>>=b,o[c][3]=c}function K(b,a,c,e,f){o[a][0]-=b*(o[a][0]-c)/d,o[a][1]-=b*(o[a][1]-e)/d,o[a][2]-=b*(o[a][2]-f)/d}function L(j,e,n,l,k){var h=Math.abs(e-j),i=Math.min(e+j,a),g=e+1,f=e-1,m=1,b,d;while(g<i||f>h)d=z[m++],g<i&&(b=o[g++],b[0]-=d*(b[0]-n)/c,b[1]-=d*(b[1]-l)/c,b[2]-=d*(b[2]-k)/c),f>h&&(b=o[f--],b[0]-=d*(b[0]-n)/c,b[1]-=d*(b[1]-l)/c,b[2]-=d*(b[2]-k)/c)}function C(p,s,q){var h=2147483647,k=h,d=-1,m=d,c,j,e,n,l;for(c=0;c<a;c++)j=o[c],e=Math.abs(j[0]-p)+Math.abs(j[1]-s)+Math.abs(j[2]-q),e<h&&(h=e,d=c),n=e-(t[c]>>i-b),n<k&&(k=n,m=c),l=y[c]>>g,y[c]-=l,t[c]+=l<<f;return y[d]+=x,t[d]-=r,m}function D(){var d,b,e,c,h,g,f=0,i=0;for(d=0;d<a;d++){for(e=o[d],h=d,g=e[1],b=d+1;b<a;b++)c=o[b],c[1]<g&&(h=b,g=c[1]);if(c=o[h],d!=h&&(b=c[0],c[0]=e[0],e[0]=b,b=c[1],c[1]=e[1],e[1]=b,b=c[2],c[2]=e[2],e[2]=b,b=c[3],c[3]=e[3],e[3]=b),g!=f){for(q[f]=i+d>>1,b=f+1;b<g;b++)q[b]=d;f=g,i=d}}for(q[f]=i+n>>1,b=f+1;b<256;b++)q[b]=n}function E(j,i,k){var b,d,c,e=1e3,h=-1,f=q[i],g=f-1;while(f<a||g>=0)f<a&&(d=o[f],c=d[1]-i,c>=e?f=a:(f++,c<0&&(c=-c),b=d[0]-j,b<0&&(b=-b),c+=b,c<e&&(b=d[2]-k,b<0&&(b=-b),c+=b,c<e&&(e=c,h=d[3])))),g>=0&&(d=o[g],c=i-d[1],c>=e?g=-1:(g--,c<0&&(c=-c),b=d[0]-j,b<0&&(b=-b),c+=b,c<e&&(b=d[2]-k,b<0&&(b=-b),c+=b,c<e&&(e=c,h=d[3]))));return h}function F(){var c,f=A.length,D=30+(B-1)/3,y=f/(3*B),q=~~(y/w),n=d,o=u,a=o>>h;for(a<=1&&(a=0),c=0;c<a;c++)z[c]=n*((a*a-c*c)*m/(a*a));var i;f<s?(B=1,i=3):f%l!==0?i=3*l:f%k!==0?i=3*k:f%p!==0?i=3*p:i=3*j;var r,t,x,e,g=0;c=0;while(c<y)if(r=(A[g]&255)<<b,t=(A[g+1]&255)<<b,x=(A[g+2]&255)<<b,e=C(r,t,x),K(n,e,r,t,x),a!==0&&L(a,e,r,t,x),g+=i,g>=f&&(g-=f),c++,q===0&&(q=1),c%q===0)for(n-=n/D,o-=o/v,a=o>>h,a<=1&&(a=0),e=0;e<a;e++)z[e]=n*((a*a-e*e)*m/(a*a))}function G(){I(),F(),J(),D()}function H(){var b=[],g=[];for(var c=0;c<a;c++)g[o[c][3]]=c;var d=0;for(var e=0;e<a;e++){var f=g[e];b[d++]=o[f][0],b[d++]=o[f][1],b[d++]=o[f][2]}return b}var o,q,t,y,z;this.buildColormap=G,this.getColormap=H,this.lookupRGB=E}var w=100,a=256,n=a-1,b=4,i=16,e=1<<i,f=10,B=1<<f,g=10,x=e>>g,r=e<<f-g,z=a>>3,h=6,t=1<<h,u=z*t,v=30,o=10,d=1<<o,q=8,m=1<<q,y=o+q,c=1<<y,l=499,k=491,p=487,j=503,s=3*j;A.exports=C}),a('/gif.worker.coffee')}.call(this,this))
+		(function(b){function a(b,d){if({}.hasOwnProperty.call(a.cache,b))return a.cache[b];var e=a.resolve(b);if(!e)throw new Error('Failed to resolve module '+b);var c={id:b,require:a,filename:b,exports:{},loaded:!1,parent:d,children:[]};d&&d.children.push(c);var f=b.slice(0,b.lastIndexOf('/')+1);return a.cache[b]=c.exports,e.call(c.exports,c,c.exports,f,b),c.loaded=!0,a.cache[b]=c.exports}a.modules={},a.cache={},a.resolve=function(b){return{}.hasOwnProperty.call(a.modules,b)?a.modules[b]:void 0},a.define=function(b,c){a.modules[b]=c},a.define('/gif.worker.coffee',function(d,e,f,g){var b,c;b=a('/GIFEncoder.js',d),c=function(a){var c,e,d,f;return c=new b(a.width,a.height),a.index===0?c.writeHeader():c.firstFrame=!1,c.setTransparent(a.transparent),c.setRepeat(a.repeat),c.setDelay(a.delay),c.setQuality(a.quality),c.setPreserveColors(a.preserveColors),c.addFrame(a.data),a.last&&c.finish(),d=c.stream(),a.data=d.pages,a.cursor=d.cursor,a.pageSize=d.constructor.pageSize,a.canTransfer?(f=function(c){for(var b=0,d=a.data.length;b<d;++b)e=a.data[b],c.push(e.buffer);return c}.call(this,[]),self.postMessage(a,f)):self.postMessage(a)},self.onmessage=function(a){return c(a.data)}}),a.define('/GIFEncoder.js',function(e,k,i,j){function c(){this.page=-1,this.pages=[],this.newPage()}function b(a,b){this.width=~~a,this.height=~~b,this.transparent=null,this.transIndex=0,this.repeat=-1,this.delay=0,this.image=null,this.pixels=null,this.indexedPixels=null,this.colorDepth=null,this.colorTab=null,this.usedEntry=new Array,this.palSize=7,this.dispose=-1,this.firstFrame=!0,this.sample=10,this.preserveColors=!1,this.out=new c}var f=a('/TypedNeuQuant.js',e),g=a('/SimpleQuant.js',e),h=a('/LZWEncoder.js',e);c.pageSize=4096,c.charMap={};for(var d=0;d<256;d++)c.charMap[d]=String.fromCharCode(d);c.prototype.newPage=function(){this.pages[++this.page]=new Uint8Array(c.pageSize),this.cursor=0},c.prototype.getData=function(){var d='';for(var a=0;a<this.pages.length;a++)for(var b=0;b<c.pageSize;b++)d+=c.charMap[this.pages[a][b]];return d},c.prototype.writeByte=function(a){this.cursor>=c.pageSize&&this.newPage(),this.pages[this.page][this.cursor++]=a},c.prototype.writeUTFBytes=function(b){for(var c=b.length,a=0;a<c;a++)this.writeByte(b.charCodeAt(a))},c.prototype.writeBytes=function(b,d,e){for(var c=e||b.length,a=d||0;a<c;a++)this.writeByte(b[a])},b.prototype.setDelay=function(a){this.delay=Math.round(a/10)},b.prototype.setFrameRate=function(a){this.delay=Math.round(100/a)},b.prototype.setDispose=function(a){a>=0&&(this.dispose=a)},b.prototype.setRepeat=function(a){this.repeat=a},b.prototype.setTransparent=function(a){this.transparent=a},b.prototype.addFrame=function(a){this.image=a,this.getImagePixels(),this.analyzePixels(),this.firstFrame&&(this.writeLSD(),this.writePalette(),this.repeat>=0&&this.writeNetscapeExt()),this.writeGraphicCtrlExt(),this.writeImageDesc(),this.firstFrame||this.writePalette(),this.writePixels(),this.firstFrame=!1},b.prototype.finish=function(){this.out.writeByte(59)},b.prototype.setQuality=function(a){a<1&&(a=1),this.sample=a},b.prototype.setPreserveColors=function(a){this.preserveColors=a},b.prototype.writeHeader=function(){this.out.writeUTFBytes('GIF89a')},b.prototype.analyzePixels=function(){var h=this.pixels.length,d=h/3;this.indexedPixels=new Uint8Array(d);var a;this.preserveColors?a=new g(this.pixels,this.sample):a=new f(this.pixels,this.sample),a.buildColormap(),this.colorTab=a.getColormap();var b=0;for(var c=0;c<d;c++){var e=a.lookupRGB(this.pixels[b++]&255,this.pixels[b++]&255,this.pixels[b++]&255);this.usedEntry[e]=!0,this.indexedPixels[c]=e}this.pixels=null,this.colorDepth=8,this.palSize=7,this.transparent!==null&&(this.transIndex=this.findClosest(this.transparent))},b.prototype.findClosest=function(e){if(this.colorTab===null)return-1;var k=(e&16711680)>>16,l=(e&65280)>>8,m=e&255,c=0,d=16777216,j=this.colorTab.length;for(var a=0;a<j;){var f=k-(this.colorTab[a++]&255),g=l-(this.colorTab[a++]&255),h=m-(this.colorTab[a]&255),i=f*f+g*g+h*h,b=parseInt(a/3);this.usedEntry[b]&&i<d&&(d=i,c=b),a++}return c},b.prototype.getImagePixels=function(){var a=this.width,g=this.height;this.pixels=new Uint8Array(a*g*3);var b=this.image,c=0;for(var d=0;d<g;d++)for(var e=0;e<a;e++){var f=d*a*4+e*4;this.pixels[c++]=b[f],this.pixels[c++]=b[f+1],this.pixels[c++]=b[f+2]}},b.prototype.writeGraphicCtrlExt=function(){this.out.writeByte(33),this.out.writeByte(249),this.out.writeByte(4);var b,a;this.transparent===null?(b=0,a=0):(b=1,a=2),this.dispose>=0&&(a=dispose&7),a<<=2,this.out.writeByte(0|a|0|b),this.writeShort(this.delay),this.out.writeByte(this.transIndex),this.out.writeByte(0)},b.prototype.writeImageDesc=function(){this.out.writeByte(44),this.writeShort(0),this.writeShort(0),this.writeShort(this.width),this.writeShort(this.height),this.firstFrame?this.out.writeByte(0):this.out.writeByte(128|this.palSize)},b.prototype.writeLSD=function(){this.writeShort(this.width),this.writeShort(this.height),this.out.writeByte(240|this.palSize),this.out.writeByte(0),this.out.writeByte(0)},b.prototype.writeNetscapeExt=function(){this.out.writeByte(33),this.out.writeByte(255),this.out.writeByte(11),this.out.writeUTFBytes('NETSCAPE2.0'),this.out.writeByte(3),this.out.writeByte(1),this.writeShort(this.repeat),this.out.writeByte(0)},b.prototype.writePalette=function(){this.out.writeBytes(this.colorTab);var b=768-this.colorTab.length;for(var a=0;a<b;a++)this.out.writeByte(0)},b.prototype.writeShort=function(a){this.out.writeByte(a&255),this.out.writeByte(a>>8&255)},b.prototype.writePixels=function(){var a=new h(this.width,this.height,this.indexedPixels,this.colorDepth);a.encode(this.out)},b.prototype.stream=function(){return this.out},e.exports=b}),a.define('/LZWEncoder.js',function(e,g,h,i){function f(y,D,C,B){function w(a,b){r[f++]=a,f>=254&&t(b)}function x(b){u(a),k=i+2,j=!0,l(i,b)}function u(b){for(var a=0;a<b;++a)h[a]=-1}function A(z,r){var g,t,d,e,y,w,s;for(q=z,j=!1,n_bits=q,m=p(n_bits),i=1<<z-1,o=i+1,k=i+2,f=0,e=v(),s=0,g=a;g<65536;g*=2)++s;s=8-s,w=a,u(w),l(i,r);a:while((t=v())!=c){if(g=(t<<b)+e,d=t<<s^e,h[d]===g){e=n[d];continue}if(h[d]>=0){y=w-d,d===0&&(y=1);do if((d-=y)<0&&(d+=w),h[d]===g){e=n[d];continue a}while(h[d]>=0)}l(e,r),e=t,k<1<<b?(n[d]=k++,h[d]=g):x(r)}l(e,r),l(o,r)}function z(a){a.writeByte(s),remaining=y*D,curPixel=0,A(s+1,a),a.writeByte(0)}function t(a){f>0&&(a.writeByte(f),a.writeBytes(r,0,f),f=0)}function p(a){return(1<<a)-1}function v(){if(remaining===0)return c;--remaining;var a=C[curPixel++];return a&255}function l(a,c){g&=d[e],e>0?g|=a<<e:g=a,e+=n_bits;while(e>=8)w(g&255,c),g>>=8,e-=8;if((k>m||j)&&(j?(m=p(n_bits=q),j=!1):(++n_bits,n_bits==b?m=1<<b:m=p(n_bits))),a==o){while(e>0)w(g&255,c),g>>=8,e-=8;t(c)}}var s=Math.max(2,B),r=new Uint8Array(256),h=new Int32Array(a),n=new Int32Array(a),g,e=0,f,k=0,m,j=!1,q,i,o;this.encode=z}var c=-1,b=12,a=5003,d=[0,1,3,7,15,31,63,127,255,511,1023,2047,4095,8191,16383,32767,65535];e.exports=f}),a.define('/SimpleQuant.js',function(b,d,e,f){function a(a,b,c){return[a,b,c].join('.')}function c(b){this.pixels=b,this.palette=[],this.paletteIndex={},this.getColormap=function(){return this.palette},this.buildColormap=function(){var h=this.pixels.length/3,b=0;for(var c=0;c<h;c++){var d=this.pixels[b++],e=this.pixels[b++],f=this.pixels[b++],g=a(d,e,f);this.paletteIndex[g]||(this.palette.push(d),this.palette.push(e),this.palette.push(f),this.paletteIndex[g]=this.palette.length/3-1)}},this.lookupRGB=function(b,c,d){return this.paletteIndex[a(b,c,d)]}}b.exports=c}),a.define('/TypedNeuQuant.js',function(A,F,E,D){function C(A,B){function I(){o=[],q=new Int32Array(256),t=new Int32Array(a),y=new Int32Array(a),z=new Int32Array(a>>3);var c,d;for(c=0;c<a;c++)d=(c<<b+8)/a,o[c]=new Float64Array([d,d,d,0]),y[c]=e/a,t[c]=0}function J(){for(var c=0;c<a;c++)o[c][0]>>=b,o[c][1]>>=b,o[c][2]>>=b,o[c][3]=c}function K(b,a,c,e,f){o[a][0]-=b*(o[a][0]-c)/d,o[a][1]-=b*(o[a][1]-e)/d,o[a][2]-=b*(o[a][2]-f)/d}function L(j,e,n,l,k){var h=Math.abs(e-j),i=Math.min(e+j,a),g=e+1,f=e-1,m=1,b,d;while(g<i||f>h)d=z[m++],g<i&&(b=o[g++],b[0]-=d*(b[0]-n)/c,b[1]-=d*(b[1]-l)/c,b[2]-=d*(b[2]-k)/c),f>h&&(b=o[f--],b[0]-=d*(b[0]-n)/c,b[1]-=d*(b[1]-l)/c,b[2]-=d*(b[2]-k)/c)}function C(p,s,q){var h=2147483647,k=h,d=-1,m=d,c,j,e,n,l;for(c=0;c<a;c++)j=o[c],e=Math.abs(j[0]-p)+Math.abs(j[1]-s)+Math.abs(j[2]-q),e<h&&(h=e,d=c),n=e-(t[c]>>i-b),n<k&&(k=n,m=c),l=y[c]>>g,y[c]-=l,t[c]+=l<<f;return y[d]+=x,t[d]-=r,m}function D(){var d,b,e,c,h,g,f=0,i=0;for(d=0;d<a;d++){for(e=o[d],h=d,g=e[1],b=d+1;b<a;b++)c=o[b],c[1]<g&&(h=b,g=c[1]);if(c=o[h],d!=h&&(b=c[0],c[0]=e[0],e[0]=b,b=c[1],c[1]=e[1],e[1]=b,b=c[2],c[2]=e[2],e[2]=b,b=c[3],c[3]=e[3],e[3]=b),g!=f){for(q[f]=i+d>>1,b=f+1;b<g;b++)q[b]=d;f=g,i=d}}for(q[f]=i+n>>1,b=f+1;b<256;b++)q[b]=n}function E(j,i,k){var b,d,c,e=1e3,h=-1,f=q[i],g=f-1;while(f<a||g>=0)f<a&&(d=o[f],c=d[1]-i,c>=e?f=a:(f++,c<0&&(c=-c),b=d[0]-j,b<0&&(b=-b),c+=b,c<e&&(b=d[2]-k,b<0&&(b=-b),c+=b,c<e&&(e=c,h=d[3])))),g>=0&&(d=o[g],c=i-d[1],c>=e?g=-1:(g--,c<0&&(c=-c),b=d[0]-j,b<0&&(b=-b),c+=b,c<e&&(b=d[2]-k,b<0&&(b=-b),c+=b,c<e&&(e=c,h=d[3]))));return h}function F(){var c,f=A.length,D=30+(B-1)/3,y=f/(3*B),q=~~(y/w),n=d,o=u,a=o>>h;for(a<=1&&(a=0),c=0;c<a;c++)z[c]=n*((a*a-c*c)*m/(a*a));var i;f<s?(B=1,i=3):f%l!==0?i=3*l:f%k!==0?i=3*k:f%p!==0?i=3*p:i=3*j;var r,t,x,e,g=0;c=0;while(c<y)if(r=(A[g]&255)<<b,t=(A[g+1]&255)<<b,x=(A[g+2]&255)<<b,e=C(r,t,x),K(n,e,r,t,x),a!==0&&L(a,e,r,t,x),g+=i,g>=f&&(g-=f),c++,q===0&&(q=1),c%q===0)for(n-=n/D,o-=o/v,a=o>>h,a<=1&&(a=0),e=0;e<a;e++)z[e]=n*((a*a-e*e)*m/(a*a))}function G(){I(),F(),J(),D()}function H(){var b=[],g=[];for(var c=0;c<a;c++)g[o[c][3]]=c;var d=0;for(var e=0;e<a;e++){var f=g[e];b[d++]=o[f][0],b[d++]=o[f][1],b[d++]=o[f][2]}return b}var o,q,t,y,z;this.buildColormap=G,this.getColormap=H,this.lookupRGB=E}var w=100,a=256,n=a-1,b=4,i=16,e=1<<i,f=10,B=1<<f,g=10,x=e>>g,r=e<<f-g,z=a>>3,h=6,t=1<<h,u=z*t,v=30,o=10,d=1<<o,q=8,m=1<<q,y=o+q,c=1<<y,l=499,k=491,p=487,j=503,s=3*j;A.exports=C}),a('/gif.worker.coffee')}.call(this,this))
 	};
 	try {
 		var typedArray = [(worker+"").replace(/function \(\)\s?\{/,"").replace(/\}[^}]*$/, "")];
@@ -11788,8 +11788,793 @@ $.widget("ui.sortable", $.ui.mouse, {
 		console.error("Could not create worker", e.message);
 	}
 })();
-;(function(c){function a(b,d){if({}.hasOwnProperty.call(a.cache,b))return a.cache[b];var e=a.resolve(b);if(!e)throw new Error('Failed to resolve module '+b);var c={id:b,require:a,filename:b,exports:{},loaded:!1,parent:d,children:[]};d&&d.children.push(c);var f=b.slice(0,b.lastIndexOf('/')+1);return a.cache[b]=c.exports,e.call(c.exports,c,c.exports,f,b),c.loaded=!0,a.cache[b]=c.exports}a.modules={},a.cache={},a.resolve=function(b){return{}.hasOwnProperty.call(a.modules,b)?a.modules[b]:void 0},a.define=function(b,c){a.modules[b]=c};var b=function(a){return a='/',{title:'browser',version:'v0.10.5',browser:!0,env:{},argv:[],nextTick:c.setImmediate||function(a){setTimeout(a,0)},cwd:function(){return a},chdir:function(b){a=b}}}();a.define('/gif.coffee',function(b,k,j,i){function c(a,b){return{}.hasOwnProperty.call(a,b)}function g(d,b){for(var a=0,c=b.length;a<c;++a)if(a in b&&b[a]===d)return!0;return!1}function h(a,b){function e(){this.constructor=a}for(var d in b)c(b,d)&&(a[d]=b[d]);return e.prototype=b.prototype,a.prototype=new e,a.__super__=b.prototype,a}var e,d,f;d=a('events',b).EventEmitter,e=a('/browser.coffee',b),f=function(f,b,d){function a(d){var a,c;this.running=!1,this.options={},this.frames=[],this.freeWorkers=[],this.activeWorkers=[],this.setOptions(d);for(a in b)c=b[a],null!=this.options[a]?this.options[a]:this.options[a]=c}return h(a,f),b={workerScript:window.GifWorkerURL,workers:2,repeat:0,background:'#fff',quality:10,width:null,height:null},d={delay:500,copy:!1},a.prototype.setOption=function(a,b){return this.options[a]=b,null!=this._canvas&&(a==='width'||a==='height')?this._canvas[a]=b:void 0},a.prototype.setOptions=function(a){return function(d){var b,e;for(b in a){if(!c(a,b))continue;e=a[b],d.push(this.setOption(b,e))}return d}.call(this,[])},a.prototype.addFrame=function(a,c){var b,e;null==c&&(c={}),b={};for(e in d)b[e]=c[e]||d[e];if(null!=this.options.width||this.setOption('width',a.width),null!=this.options.height||this.setOption('height',a.height),'undefined'!==typeof ImageData&&null!=ImageData&&a instanceof ImageData)b.data=a.data;else if('undefined'!==typeof CanvasRenderingContext2D&&null!=CanvasRenderingContext2D&&a instanceof CanvasRenderingContext2D||'undefined'!==typeof WebGLRenderingContext&&null!=WebGLRenderingContext&&a instanceof WebGLRenderingContext)c.copy?b.data=this.getContextData(a):b.context=a;else if(null!=a.childNodes)c.copy?b.data=this.getImageData(a):b.image=a;else throw new Error('Invalid image');return this.frames.push(b)},a.prototype.render=function(){var d,a;if(this.running)throw new Error('Already running');if(!(null!=this.options.width&&null!=this.options.height))throw new Error('Width and height must be set prior to rendering');this.running=!0,this.nextFrame=0,this.finishedFrames=0,this.imageParts=function(b){var d;for(var a=0,c=function(){var b,b;b=[];for(var a=0;0<=this.frames.length?a<this.frames.length:a>this.frames.length;0<=this.frames.length?++a:--a)b.push(a);return b}.apply(this,arguments).length;a<c;++a)d=function(){var b,b;b=[];for(var a=0;0<=this.frames.length?a<this.frames.length:a>this.frames.length;0<=this.frames.length?++a:--a)b.push(a);return b}.apply(this,arguments)[a],b.push(null);return b}.call(this,[]),a=this.spawnWorkers();for(var b=0,c=function(){var c,c;c=[];for(var b=0;0<=a?b<a:b>a;0<=a?++b:--b)c.push(b);return c}.apply(this,arguments).length;b<c;++b)d=function(){var c,c;c=[];for(var b=0;0<=a?b<a:b>a;0<=a?++b:--b)c.push(b);return c}.apply(this,arguments)[b],this.renderNextFrame();return this.emit('start'),this.emit('progress',0)},a.prototype.abort=function(){var a;while(!0){if(a=this.activeWorkers.shift(),!(null!=a))break;console.log('killing active worker'),a.terminate()}return this.running=!1,this.emit('abort')},a.prototype.spawnWorkers=function(){var a,b;return a=Math.min(this.options.workers,this.frames.length),function(){var c;c=[];for(var b=this.freeWorkers.length;this.freeWorkers.length<=a?b<a:b>a;this.freeWorkers.length<=a?++b:--b)c.push(b);return c}.apply(this,arguments).forEach((b=this,function(d){var a,c;return console.log('spawning worker '+d),c=new Worker(b.options.workerScript),a=b,c.onmessage=function(b){return a.activeWorkers.splice(a.activeWorkers.indexOf(c),1),a.freeWorkers.push(c),a.frameFinished(b.data)},b.freeWorkers.push(c)})),a},a.prototype.frameFinished=function(a){return console.log('frame '+a.index+' finished - '+this.activeWorkers.length+' active'),this.finishedFrames++,this.emit('progress',this.finishedFrames/this.frames.length),this.imageParts[a.index]=a,g(null,this.imageParts)?this.renderNextFrame():this.finishRendering()},a.prototype.finishRendering=function(){var e,a,k,m,b,d,h;b=0;for(var f=0,j=this.imageParts.length;f<j;++f)a=this.imageParts[f],b+=(a.data.length-1)*a.pageSize+a.cursor;b+=a.pageSize-a.cursor,console.log('rendering finished - filesize '+Math.round(b/1e3)+'kb'),e=new Uint8Array(b),d=0;for(var g=0,l=this.imageParts.length;g<l;++g){a=this.imageParts[g];for(var c=0,i=a.data.length;c<i;++c)h=a.data[c],k=c,e.set(h,d),k===a.data.length-1?d+=a.cursor:d+=a.pageSize}return m=new Blob([e],{type:'image/gif'}),this.emit('finished',m,e)},a.prototype.renderNextFrame=function(){var c,a,b;if(this.freeWorkers.length===0)throw new Error('No free workers');return this.nextFrame>=this.frames.length?void 0:(c=this.frames[this.nextFrame++],b=this.freeWorkers.shift(),a=this.getTask(c),console.log('starting frame '+(a.index+1)+' of '+this.frames.length),this.activeWorkers.push(b),b.postMessage(a))},a.prototype.getContextData=function(a){return a.getImageData(0,0,this.options.width,this.options.height).data},a.prototype.getImageData=function(b){var a;return null!=this._canvas||(this._canvas=document.createElement('canvas'),this._canvas.width=this.options.width,this._canvas.height=this.options.height),a=this._canvas.getContext('2d'),a.setFill=this.options.background,a.fillRect(0,0,this.options.width,this.options.height),a.drawImage(b,0,0),this.getContextData(a)},a.prototype.getTask=function(a){var c,b;if(c=this.frames.indexOf(a),b={index:c,last:c===this.frames.length-1,delay:a.delay,width:this.options.width,height:this.options.height,quality:this.options.quality,repeat:this.options.repeat,canTransfer:e.name==='chrome'},null!=a.data)b.data=a.data;else if(null!=a.context)b.data=this.getContextData(a.context);else if(null!=a.image)b.data=this.getImageData(a.image);else throw new Error('Invalid frame');return b},a}(d),b.exports=f}),a.define('/browser.coffee',function(f,g,h,i){var a,d,e,c,b;c=navigator.userAgent.toLowerCase(),e=navigator.platform.toLowerCase(),b=c.match(/(opera|ie|firefox|chrome|version)[\s\/:]([\w\d\.]+)?.*?(safari|version[\s\/:]([\w\d\.]+)|$)/)||[null,'unknown',0],d=b[1]==='ie'&&document.documentMode,a={name:b[1]==='version'?b[3]:b[1],version:d||parseFloat(b[1]==='opera'&&b[4]?b[4]:b[2]),platform:{name:c.match(/ip(?:ad|od|hone)/)?'ios':(c.match(/(?:webos|android)/)||e.match(/mac|win|linux/)||['other'])[0]}},a[a.name]=!0,a[a.name+parseInt(a.version,10)]=!0,a.platform[a.platform.name]=!0,f.exports=a}),a.define('events',function(f,e,g,h){b.EventEmitter||(b.EventEmitter=function(){});var a=e.EventEmitter=b.EventEmitter,c=typeof Array.isArray==='function'?Array.isArray:function(a){return Object.prototype.toString.call(a)==='[object Array]'},d=10;a.prototype.setMaxListeners=function(a){this._events||(this._events={}),this._events.maxListeners=a},a.prototype.emit=function(f){if(f==='error'&&(!(this._events&&this._events.error)||c(this._events.error)&&!this._events.error.length))throw arguments[1]instanceof Error?arguments[1]:new Error("Uncaught, unspecified 'error' event.");if(!this._events)return!1;var a=this._events[f];if(!a)return!1;if(!(typeof a=='function'))if(c(a)){var b=Array.prototype.slice.call(arguments,1),e=a.slice();for(var d=0,g=e.length;d<g;d++)e[d].apply(this,b);return!0}else return!1;switch(arguments.length){case 1:a.call(this);break;case 2:a.call(this,arguments[1]);break;case 3:a.call(this,arguments[1],arguments[2]);break;default:var b=Array.prototype.slice.call(arguments,1);a.apply(this,b)}return!0},a.prototype.addListener=function(a,b){if('function'!==typeof b)throw new Error('addListener only takes instances of Function');if(this._events||(this._events={}),this.emit('newListener',a,b),!this._events[a])this._events[a]=b;else if(c(this._events[a])){if(!this._events[a].warned){var e;this._events.maxListeners!==undefined?e=this._events.maxListeners:e=d,e&&e>0&&this._events[a].length>e&&(this._events[a].warned=!0,console.error('(node) warning: possible EventEmitter memory leak detected. %d listeners added. Use emitter.setMaxListeners() to increase limit.',this._events[a].length),console.trace())}this._events[a].push(b)}else this._events[a]=[this._events[a],b];return this},a.prototype.on=a.prototype.addListener,a.prototype.once=function(b,c){var a=this;return a.on(b,function d(){a.removeListener(b,d),c.apply(this,arguments)}),this},a.prototype.removeListener=function(a,d){if('function'!==typeof d)throw new Error('removeListener only takes instances of Function');if(!(this._events&&this._events[a]))return this;var b=this._events[a];if(c(b)){var e=b.indexOf(d);if(e<0)return this;b.splice(e,1),b.length==0&&delete this._events[a]}else this._events[a]===d&&delete this._events[a];return this},a.prototype.removeAllListeners=function(a){return a&&this._events&&this._events[a]&&(this._events[a]=null),this},a.prototype.listeners=function(a){return this._events||(this._events={}),this._events[a]||(this._events[a]=[]),c(this._events[a])||(this._events[a]=[this._events[a]]),this._events[a]}}),c.GIF=a('/gif.coffee')}.call(this,this));
-;// Spectrum Colorpicker v1.1.2
+;(function(c){function a(b,d){if({}.hasOwnProperty.call(a.cache,b))return a.cache[b];var e=a.resolve(b);if(!e)throw new Error('Failed to resolve module '+b);var c={id:b,require:a,filename:b,exports:{},loaded:!1,parent:d,children:[]};d&&d.children.push(c);var f=b.slice(0,b.lastIndexOf('/')+1);return a.cache[b]=c.exports,e.call(c.exports,c,c.exports,f,b),c.loaded=!0,a.cache[b]=c.exports}a.modules={},a.cache={},a.resolve=function(b){return{}.hasOwnProperty.call(a.modules,b)?a.modules[b]:void 0},a.define=function(b,c){a.modules[b]=c};var b=function(a){return a='/',{title:'browser',version:'v0.8.19',browser:!0,env:{},argv:[],nextTick:c.setImmediate||function(a){setTimeout(a,0)},cwd:function(){return a},chdir:function(b){a=b}}}();a.define('/gif.coffee',function(d,m,l,k){function g(a,b){return{}.hasOwnProperty.call(a,b)}function j(d,b){for(var a=0,c=b.length;a<c;++a)if(a in b&&b[a]===d)return!0;return!1}function i(a,b){function d(){this.constructor=a}for(var c in b)g(b,c)&&(a[c]=b[c]);return d.prototype=b.prototype,a.prototype=new d,a.__super__=b.prototype,a}var h,c,f,b,e;f=a('events',d).EventEmitter,h=a('/browser.coffee',d),e=function(d){function a(d){var a,b;this.running=!1,this.options={},this.frames=[],this.freeWorkers=[],this.activeWorkers=[],this.setOptions(d);for(a in c)b=c[a],null!=this.options[a]?this.options[a]:this.options[a]=b}return i(a,d),c={workerScript:window.GifWorkerURL,workers:2,repeat:0,background:'#fff',quality:10,width:null,height:null,transparent:null,preserveColors:!1},b={delay:500,copy:!1},a.prototype.setOption=function(a,b){return this.options[a]=b,null!=this._canvas&&(a==='width'||a==='height')?this._canvas[a]=b:void 0},a.prototype.setOptions=function(b){var a,c;return function(d){for(a in b){if(!g(b,a))continue;c=b[a],d.push(this.setOption(a,c))}return d}.call(this,[])},a.prototype.addFrame=function(a,d){var c,e;null==d&&(d={}),c={},c.transparent=this.options.transparent;for(e in b)c[e]=d[e]||b[e];if(null!=this.options.width||this.setOption('width',a.width),null!=this.options.height||this.setOption('height',a.height),'undefined'!==typeof ImageData&&null!=ImageData&&a instanceof ImageData)c.data=a.data;else if('undefined'!==typeof CanvasRenderingContext2D&&null!=CanvasRenderingContext2D&&a instanceof CanvasRenderingContext2D||'undefined'!==typeof WebGLRenderingContext&&null!=WebGLRenderingContext&&a instanceof WebGLRenderingContext)d.copy?c.data=this.getContextData(a):c.context=a;else if(null!=a.childNodes)d.copy?c.data=this.getImageData(a):c.image=a;else throw new Error('Invalid image');return this.frames.push(c)},a.prototype.render=function(){var d,a;if(this.running)throw new Error('Already running');if(!(null!=this.options.width&&null!=this.options.height))throw new Error('Width and height must be set prior to rendering');this.running=!0,this.nextFrame=0,this.finishedFrames=0,this.imageParts=function(c){for(var b=function(){var b;b=[];for(var a=0;0<=this.frames.length?a<this.frames.length:a>this.frames.length;0<=this.frames.length?++a:--a)b.push(a);return b}.apply(this,arguments),a=0,e=b.length;a<e;++a)d=b[a],c.push(null);return c}.call(this,[]),a=this.spawnWorkers();for(var c=function(){var c;c=[];for(var b=0;0<=a?b<a:b>a;0<=a?++b:--b)c.push(b);return c}.apply(this,arguments),b=0,e=c.length;b<e;++b)d=c[b],this.renderNextFrame();return this.emit('start'),this.emit('progress',0)},a.prototype.abort=function(){var a;while(!0){if(a=this.activeWorkers.shift(),!(null!=a))break;console.log('killing active worker'),a.terminate()}return this.running=!1,this.emit('abort')},a.prototype.spawnWorkers=function(){var a;return a=Math.min(this.options.workers,this.frames.length),function(){var c;c=[];for(var b=this.freeWorkers.length;this.freeWorkers.length<=a?b<a:b>a;this.freeWorkers.length<=a?++b:--b)c.push(b);return c}.apply(this,arguments).forEach(function(a){return function(c){var b;return console.log('spawning worker '+c),b=new Worker(a.options.workerScript),b.onmessage=function(a){return function(c){return a.activeWorkers.splice(a.activeWorkers.indexOf(b),1),a.freeWorkers.push(b),a.frameFinished(c.data)}}(a),a.freeWorkers.push(b)}}(this)),a},a.prototype.frameFinished=function(a){return console.log('frame '+a.index+' finished - '+this.activeWorkers.length+' active'),this.finishedFrames++,this.emit('progress',this.finishedFrames/this.frames.length),this.imageParts[a.index]=a,j(null,this.imageParts)?this.renderNextFrame():this.finishRendering()},a.prototype.finishRendering=function(){var e,a,k,m,b,d,h;b=0;for(var f=0,j=this.imageParts.length;f<j;++f)a=this.imageParts[f],b+=(a.data.length-1)*a.pageSize+a.cursor;b+=a.pageSize-a.cursor,console.log('rendering finished - filesize '+Math.round(b/1e3)+'kb'),e=new Uint8Array(b),d=0;for(var g=0,l=this.imageParts.length;g<l;++g){a=this.imageParts[g];for(var c=0,i=a.data.length;c<i;++c)h=a.data[c],k=c,e.set(h,d),k===a.data.length-1?d+=a.cursor:d+=a.pageSize}return m=new Blob([e],{type:'image/gif'}),this.emit('finished',m,e)},a.prototype.renderNextFrame=function(){var c,a,b;if(this.freeWorkers.length===0)throw new Error('No free workers');return this.nextFrame>=this.frames.length?void 0:(c=this.frames[this.nextFrame++],b=this.freeWorkers.shift(),a=this.getTask(c),console.log('starting frame '+(a.index+1)+' of '+this.frames.length),this.activeWorkers.push(b),b.postMessage(a))},a.prototype.getContextData=function(a){return a.getImageData(0,0,this.options.width,this.options.height).data},a.prototype.getImageData=function(b){var a;return null!=this._canvas||(this._canvas=document.createElement('canvas'),this._canvas.width=this.options.width,this._canvas.height=this.options.height),a=this._canvas.getContext('2d'),a.setFill=this.options.background,a.fillRect(0,0,this.options.width,this.options.height),a.drawImage(b,0,0),this.getContextData(a)},a.prototype.getTask=function(a){var c,b;if(c=this.frames.indexOf(a),b={index:c,last:c===this.frames.length-1,delay:a.delay,transparent:a.transparent,width:this.options.width,height:this.options.height,quality:this.options.quality,preserveColors:this.options.preserveColors,repeat:this.options.repeat,canTransfer:h.name==='chrome'},null!=a.data)b.data=a.data;else if(null!=a.context)b.data=this.getContextData(a.context);else if(null!=a.image)b.data=this.getImageData(a.image);else throw new Error('Invalid frame');return b},a}(f),d.exports=e}),a.define('/browser.coffee',function(f,g,h,i){var a,d,e,c,b;c=navigator.userAgent.toLowerCase(),e=navigator.platform.toLowerCase(),b=c.match(/(opera|ie|firefox|chrome|version)[\s\/:]([\w\d\.]+)?.*?(safari|version[\s\/:]([\w\d\.]+)|$)/)||[null,'unknown',0],d=b[1]==='ie'&&document.documentMode,a={name:b[1]==='version'?b[3]:b[1],version:d||parseFloat(b[1]==='opera'&&b[4]?b[4]:b[2]),platform:{name:c.match(/ip(?:ad|od|hone)/)?'ios':(c.match(/(?:webos|android)/)||e.match(/mac|win|linux/)||['other'])[0]}},a[a.name]=!0,a[a.name+parseInt(a.version,10)]=!0,a.platform[a.platform.name]=!0,f.exports=a}),a.define('events',function(f,e,g,h){b.EventEmitter||(b.EventEmitter=function(){});var a=e.EventEmitter=b.EventEmitter,c=typeof Array.isArray==='function'?Array.isArray:function(a){return Object.prototype.toString.call(a)==='[object Array]'},d=10;a.prototype.setMaxListeners=function(a){this._events||(this._events={}),this._events.maxListeners=a},a.prototype.emit=function(f){if(f==='error'&&(!(this._events&&this._events.error)||c(this._events.error)&&!this._events.error.length))throw arguments[1]instanceof Error?arguments[1]:new Error("Uncaught, unspecified 'error' event.");if(!this._events)return!1;var a=this._events[f];if(!a)return!1;if(!(typeof a=='function'))if(c(a)){var b=Array.prototype.slice.call(arguments,1),e=a.slice();for(var d=0,g=e.length;d<g;d++)e[d].apply(this,b);return!0}else return!1;switch(arguments.length){case 1:a.call(this);break;case 2:a.call(this,arguments[1]);break;case 3:a.call(this,arguments[1],arguments[2]);break;default:var b=Array.prototype.slice.call(arguments,1);a.apply(this,b)}return!0},a.prototype.addListener=function(a,b){if('function'!==typeof b)throw new Error('addListener only takes instances of Function');if(this._events||(this._events={}),this.emit('newListener',a,b),!this._events[a])this._events[a]=b;else if(c(this._events[a])){if(!this._events[a].warned){var e;this._events.maxListeners!==undefined?e=this._events.maxListeners:e=d,e&&e>0&&this._events[a].length>e&&(this._events[a].warned=!0,console.error('(node) warning: possible EventEmitter memory leak detected. %d listeners added. Use emitter.setMaxListeners() to increase limit.',this._events[a].length),console.trace())}this._events[a].push(b)}else this._events[a]=[this._events[a],b];return this},a.prototype.on=a.prototype.addListener,a.prototype.once=function(b,c){var a=this;return a.on(b,function d(){a.removeListener(b,d),c.apply(this,arguments)}),this},a.prototype.removeListener=function(a,d){if('function'!==typeof d)throw new Error('removeListener only takes instances of Function');if(!(this._events&&this._events[a]))return this;var b=this._events[a];if(c(b)){var e=b.indexOf(d);if(e<0)return this;b.splice(e,1),b.length==0&&delete this._events[a]}else this._events[a]===d&&delete this._events[a];return this},a.prototype.removeAllListeners=function(a){return a&&this._events&&this._events[a]&&(this._events[a]=null),this},a.prototype.listeners=function(a){return this._events||(this._events={}),this._events[a]||(this._events[a]=[]),c(this._events[a])||(this._events[a]=[this._events[a]]),this._events[a]}}),c.GIF=a('/gif.coffee')}.call(this,this))
+//# sourceMappingURL=gif.js.map
+// gif.js 0.1.6 - https://github.com/jnordberg/gif.js
+;( function( window ) { 'use strict';
+
+// Stream
+/**
+ * @constructor
+ */
+// Make compiler happy.
+var Stream = function (data) {
+  this.data = data;
+  this.len = this.data.length;
+  this.pos = 0;
+};
+
+Stream.prototype.readByte = function () {
+  if (this.pos >= this.data.length) {
+    throw new Error('Attempted to read past end of stream.');
+  }
+  return this.data.charCodeAt(this.pos++) & 0xFF;
+};
+
+Stream.prototype.readBytes = function (n) {
+  var bytes = [];
+  for (var i = 0; i < n; i++) {
+    bytes.push(this.readByte());
+  }
+  return bytes;
+};
+
+Stream.prototype.read = function (n) {
+  var s = '';
+  for (var i = 0; i < n; i++) {
+    s += String.fromCharCode(this.readByte());
+  }
+  return s;
+};
+
+Stream.prototype.readUnsigned = function () { // Little-endian.
+  var a = this.readBytes(2);
+  return (a[1] << 8) + a[0];
+};
+
+var SuperGIF = window.SuperGIF = window.SuperGIF || {};
+SuperGIF.Stream = Stream;
+
+})( window );
+
+/*
+  SuperGif
+
+  Example usage:
+
+    <img src="example1_preview.gif" data-animated-src="example1.gif" />
+
+    <script type="text/javascript">
+      $$('img').each(function (img_tag) {
+        if (/.*\.gif/.test(img_tag.src)) {
+          var rub = new SuperGif({ gif: img_tag } );
+          rub.load();
+        }
+      });
+    </script>
+
+  Image tag attributes:
+
+    data-animated-src - If this url is specified, it's loaded into the player instead of src.
+              This allows a preview frame to be shown until animated gif data is streamed into the canvas
+
+  Constructor options args
+
+    gif         Required. The DOM element of an img tag.
+
+  Instance methods
+
+    // loading
+    load( callback )  Loads the gif into a canvas element and then calls callback if one is passed
+
+    For additional customization (viewport inside iframe) these params may be passed:
+    c_w, c_h - width and height of canvas
+    vp_t, vp_l, vp_ w, vp_h - top, left, width and height of the viewport
+
+    A bonus: few articles to understand what is going on
+      http://enthusiasms.org/post/16976438906
+      http://www.matthewflickinger.com/lab/whatsinagif/bits_and_bytes.asp
+      http://humpy77.deviantart.com/journal/Frame-Delay-Times-for-Animated-GIFs-214150546
+
+*/
+
+( function( window ) { 'use strict';
+
+// Generic functions
+var bitsToNum = function (ba) {
+  return ba.reduce(function (s, n) {
+    return s * 2 + n;
+  }, 0);
+};
+
+var byteToBitArr = function (bite) {
+  var a = [];
+  for (var i = 7; i >= 0; i--) {
+    a.push( !! (bite & (1 << i)));
+  }
+  return a;
+};
+
+// Stream
+/**
+ * @constructor
+ */
+// Make compiler happy.
+var Stream = function (data) {
+  this.data = data;
+  this.len = this.data.length;
+  this.pos = 0;
+
+  this.readByte = function () {
+    if (this.pos >= this.data.length) {
+      throw new Error('Attempted to read past end of stream.');
+    }
+    return data.charCodeAt(this.pos++) & 0xFF;
+  };
+
+  this.readBytes = function (n) {
+    var bytes = [];
+    for (var i = 0; i < n; i++) {
+      bytes.push(this.readByte());
+    }
+    return bytes;
+  };
+
+  this.read = function (n) {
+    var s = '';
+    for (var i = 0; i < n; i++) {
+      s += String.fromCharCode(this.readByte());
+    }
+    return s;
+  };
+
+  this.readUnsigned = function () { // Little-endian.
+    var a = this.readBytes(2);
+    return (a[1] << 8) + a[0];
+  };
+};
+
+var lzwDecode = function (minCodeSize, data) {
+  // TODO: Now that the GIF parser is a bit different, maybe this should get an array of bytes instead of a String?
+  var pos = 0; // Maybe this streaming thing should be merged with the Stream?
+  var readCode = function (size) {
+    var code = 0;
+    for (var i = 0; i < size; i++) {
+      if (data.charCodeAt(pos >> 3) & (1 << (pos & 7))) {
+        code |= 1 << i;
+      }
+      pos++;
+    }
+    return code;
+  };
+
+  var output = [];
+
+  var clearCode = 1 << minCodeSize;
+  var eoiCode = clearCode + 1;
+
+  var codeSize = minCodeSize + 1;
+
+  var dict = [];
+
+  var clear = function () {
+    dict = [];
+    codeSize = minCodeSize + 1;
+    for (var i = 0; i < clearCode; i++) {
+      dict[i] = [i];
+    }
+    dict[clearCode] = [];
+    dict[eoiCode] = null;
+
+  };
+
+  var code;
+  var last;
+
+  while (true) {
+    last = code;
+    code = readCode(codeSize);
+
+    if (code === clearCode) {
+      clear();
+      continue;
+    }
+    if (code === eoiCode) break;
+
+    if (code < dict.length) {
+      if (last !== clearCode) {
+        dict.push(dict[last].concat(dict[code][0]));
+      }
+    }
+    else {
+      if (code !== dict.length) throw new Error('Invalid LZW code.');
+      dict.push(dict[last].concat(dict[last][0]));
+    }
+    output.push.apply(output, dict[code]);
+
+    if (dict.length === (1 << codeSize) && codeSize < 12) {
+      // If we're at the last code and codeSize is 12, the next code will be a clearCode, and it'll be 12 bits long.
+      codeSize++;
+    }
+  }
+
+  // I don't know if this is technically an error, but some GIFs do it.
+  //if (Math.ceil(pos / 8) !== data.length) throw new Error('Extraneous LZW bytes.');
+  return output;
+};
+
+
+// The actual parsing; returns an object with properties.
+var parseGIF = function (st, handler) {
+  handler || (handler = {});
+
+  // LZW (GIF-specific)
+  var parseCT = function (entries) { // Each entry is 3 bytes, for RGB.
+    var ct = [];
+    for (var i = 0; i < entries; i++) {
+      ct.push(st.readBytes(3));
+    }
+    return ct;
+  };
+
+  var readSubBlocks = function () {
+    var size, data;
+    data = '';
+    do {
+      size = st.readByte();
+      data += st.read(size);
+    } while (size !== 0);
+    return data;
+  };
+
+  var parseHeader = function () {
+    var hdr = {};
+    hdr.sig = st.read(3);
+    hdr.ver = st.read(3);
+    if (hdr.sig !== 'GIF') {
+      handler.onError(); // XXX: This should probably be handled more nicely.
+      throw new Error('Not a GIF file.');
+    }
+    hdr.width = st.readUnsigned();
+    hdr.height = st.readUnsigned();
+
+    var bits = byteToBitArr(st.readByte());
+    hdr.gctFlag = bits.shift();
+    hdr.colorRes = bitsToNum(bits.splice(0, 3));
+    hdr.sorted = bits.shift();
+    hdr.gctSize = bitsToNum(bits.splice(0, 3));
+
+    hdr.bgColor = st.readByte();
+    hdr.pixelAspectRatio = st.readByte(); // if not 0, aspectRatio = (pixelAspectRatio + 15) / 64
+    if (hdr.gctFlag) {
+      hdr.gct = parseCT(1 << (hdr.gctSize + 1));
+    }
+    handler.hdr && handler.hdr(hdr);
+  };
+
+  var parseExt = function (block) {
+    var parseGCExt = function (block) {
+      var blockSize = st.readByte(); // Always 4
+      var bits = byteToBitArr(st.readByte());
+      block.reserved = bits.splice(0, 3); // Reserved; should be 000.
+      block.disposalMethod = bitsToNum(bits.splice(0, 3));
+      block.userInput = bits.shift();
+      block.transparencyGiven = bits.shift();
+
+      block.delayTime = st.readUnsigned();
+
+      block.transparencyIndex = st.readByte();
+
+      block.terminator = st.readByte();
+
+      handler.gce && handler.gce(block);
+    };
+
+    var parseComExt = function (block) {
+      block.comment = readSubBlocks();
+      handler.com && handler.com(block);
+    };
+
+    var parsePTExt = function (block) {
+      // No one *ever* uses this. If you use it, deal with parsing it yourself.
+      var blockSize = st.readByte(); // Always 12
+      block.ptHeader = st.readBytes(12);
+      block.ptData = readSubBlocks();
+      handler.pte && handler.pte(block);
+    };
+
+    var parseAppExt = function (block) {
+      var parseNetscapeExt = function (block) {
+        var blockSize = st.readByte(); // Always 3
+        block.unknown = st.readByte(); // ??? Always 1? What is this?
+        block.iterations = st.readUnsigned();
+        block.terminator = st.readByte();
+        handler.app && handler.app.NETSCAPE && handler.app.NETSCAPE(block);
+      };
+
+      var parseUnknownAppExt = function (block) {
+        block.appData = readSubBlocks();
+        // FIXME: This won't work if a handler wants to match on any identifier.
+        handler.app && handler.app[block.identifier] && handler.app[block.identifier](block);
+      };
+
+      var blockSize = st.readByte(); // Always 11
+      block.identifier = st.read(8);
+      block.authCode = st.read(3);
+      switch (block.identifier) {
+      case 'NETSCAPE':
+        parseNetscapeExt(block);
+        break;
+      default:
+        parseUnknownAppExt(block);
+        break;
+      }
+    };
+
+    var parseUnknownExt = function (block) {
+      block.data = readSubBlocks();
+      handler.unknown && handler.unknown(block);
+    };
+
+    block.label = st.readByte();
+    switch (block.label) {
+    case 0xF9:
+      block.extType = 'gce';
+      parseGCExt(block);
+      break;
+    case 0xFE:
+      block.extType = 'com';
+      parseComExt(block);
+      break;
+    case 0x01:
+      block.extType = 'pte';
+      parsePTExt(block);
+      break;
+    case 0xFF:
+      block.extType = 'app';
+      parseAppExt(block);
+      break;
+    default:
+      block.extType = 'unknown';
+      parseUnknownExt(block);
+      break;
+    }
+  };
+
+  var parseImg = function (img) {
+    var deinterlace = function (pixels, width) {
+      // Of course this defeats the purpose of interlacing. And it's *probably*
+      // the least efficient way it's ever been implemented. But nevertheless...
+      var newPixels = new Array(pixels.length);
+      var rows = pixels.length / width;
+      var cpRow = function (toRow, fromRow) {
+        var fromPixels = pixels.slice(fromRow * width, (fromRow + 1) * width);
+        newPixels.splice.apply(newPixels, [toRow * width, width].concat(fromPixels));
+      };
+
+      // See appendix E.
+      var offsets = [0, 4, 2, 1];
+      var steps = [8, 8, 4, 2];
+
+      var fromRow = 0;
+      for (var pass = 0; pass < 4; pass++) {
+        for (var toRow = offsets[pass]; toRow < rows; toRow += steps[pass]) {
+          cpRow(toRow, fromRow)
+          fromRow++;
+        }
+      }
+
+      return newPixels;
+    };
+
+    img.leftPos = st.readUnsigned();
+    img.topPos = st.readUnsigned();
+    img.width = st.readUnsigned();
+    img.height = st.readUnsigned();
+
+    var bits = byteToBitArr(st.readByte());
+    img.lctFlag = bits.shift();
+    img.interlaced = bits.shift();
+    img.sorted = bits.shift();
+    img.reserved = bits.splice(0, 2);
+    img.lctSize = bitsToNum(bits.splice(0, 3));
+
+    if (img.lctFlag) {
+      img.lct = parseCT(1 << (img.lctSize + 1));
+    }
+
+    img.lzwMinCodeSize = st.readByte();
+
+    var lzwData = readSubBlocks();
+
+    img.pixels = lzwDecode(img.lzwMinCodeSize, lzwData);
+
+    if (img.interlaced) { // Move
+      img.pixels = deinterlace(img.pixels, img.width);
+    }
+
+    handler.img && handler.img(img);
+  };
+
+  var parseBlock = function () {
+    var block = {};
+    block.sentinel = st.readByte();
+
+    switch (String.fromCharCode(block.sentinel)) { // For ease of matching
+    case '!':
+      block.type = 'ext';
+      parseExt(block);
+      break;
+    case ',':
+      block.type = 'img';
+      parseImg(block);
+      break;
+    case ';':
+      block.type = 'eof';
+      handler.eof && handler.eof(block);
+      break;
+    default:
+      return handler.onError(new Error('Unknown block: 0x' + block.sentinel.toString(16))); // TODO: Pad this with a 0.
+    }
+
+    if (block.type !== 'eof') {
+      setTimeout(parseBlock, 0);
+    }
+  };
+
+  var parse = function () {
+    parseHeader();
+    setTimeout(parseBlock, 0);
+  };
+
+  parse();
+};
+
+
+var SuperGif = function ( opts ) {
+  var options = {
+    //viewport position
+    vp_l: 0,
+    vp_t: 0,
+    vp_w: null,
+    vp_h: null,
+    //canvas sizes
+    c_w: null,
+    c_h: null
+  };
+  for (var i in opts ) { options[i] = opts[i] }
+  if (options.vp_w && options.vp_h) options.is_vp = true;
+
+  var stream;
+  var hdr;
+
+  var loadError = null;
+  var loading = false;
+
+  var transparency = null;
+  var delay = null;
+  var disposalMethod = null;
+  var disposalRestoreFromIdx = 0;
+  var lastDisposalMethod = null;
+  var frame = null;
+  var lastImg = null;
+
+  var frames = [];
+
+  var gif = options.gif;
+
+  var clear = function () {
+    transparency = null;
+    delay = null;
+    lastDisposalMethod = disposalMethod;
+    disposalMethod = null;
+    frame = null;
+  };
+
+  // XXX: There's probably a better way to handle catching exceptions when
+  // callbacks are involved.
+  var doParse = function () {
+    try {
+      parseGIF(stream, handler);
+    }
+    catch (err) {
+      doLoadError('parse');
+    }
+  };
+
+  var setSizes = function(w, h) {
+    tmpCanvas.width = w;
+    tmpCanvas.height = h;
+    tmpCanvas.getContext('2d').setTransform(1, 0, 0, 1, 0, 0);
+  }
+
+  var doLoadError = function (originOfError) {
+
+
+    loadError = originOfError;
+    hdr = {
+      width: gif.width,
+      height: gif.height
+    }; // Fake header.
+    frames = [];
+  };
+
+  var doHdr = function (_hdr) {
+    hdr = _hdr;
+    setSizes(hdr.width, hdr.height)
+  };
+
+  var doGCE = function (gce) {
+    pushFrame();
+    clear();
+    transparency = gce.transparencyGiven ? gce.transparencyIndex : null;
+    delay = gce.delayTime;
+    disposalMethod = gce.disposalMethod;
+    // We don't have much to do with the rest of GCE.
+  };
+
+  var pushFrame = function () {
+    if (!frame) return;
+    frames.push({
+      data: frame.getImageData(0, 0, hdr.width, hdr.height),
+      delay: delay
+    });
+  };
+
+  // flag for drawing initial frame
+  var isInitFrameDrawn = false;
+
+  var doImg = function (img) {
+    if (!frame) frame = tmpCanvas.getContext('2d');
+
+    var currIdx = frames.length;
+
+    //ct = color table, gct = global color table
+    var ct = img.lctFlag ? img.lct : hdr.gct; // TODO: What if neither exists?
+
+    /*
+    Disposal method indicates the way in which the graphic is to
+    be treated after being displayed.
+
+    Values :    0 - No disposal specified. The decoder is
+            not required to take any action.
+          1 - Do not dispose. The graphic is to be left
+            in place.
+          2 - Restore to background color. The area used by the
+            graphic must be restored to the background color.
+          3 - Restore to previous. The decoder is required to
+            restore the area overwritten by the graphic with
+            what was there prior to rendering the graphic.
+
+            Importantly, "previous" means the frame state
+            after the last disposal of method 0, 1, or 2.
+    */
+    if (currIdx > 0) {
+      if (lastDisposalMethod === 3) {
+        // Restore to previous
+        frame.putImageData(frames[disposalRestoreFromIdx].data, 0, 0);
+      } else {
+        disposalRestoreFromIdx = currIdx - 1;
+      }
+
+      if (lastDisposalMethod === 2) {
+        // Restore to background color
+        // Browser implementations historically restore to transparent; we do the same.
+        // http://www.wizards-toolkit.org/discourse-server/viewtopic.php?f=1&t=21172#p86079
+        frame.clearRect(lastImg.leftPos, lastImg.topPos, lastImg.width, lastImg.height);
+      }
+    }
+    // else, Undefined/Do not dispose.
+    // frame contains final pixel data from the last frame; do nothing
+
+    //Get existing pixels for img region after applying disposal method
+    var imgData = frame.getImageData(img.leftPos, img.topPos, img.width, img.height);
+    //apply color table colors
+    var cdd = imgData.data;
+    img.pixels.forEach(function (pixel, i) {
+      // imgData.data === [R,G,B,A,R,G,B,A,...]
+      if (pixel !== transparency) {
+        cdd[i * 4 + 0] = ct[pixel][0];
+        cdd[i * 4 + 1] = ct[pixel][1];
+        cdd[i * 4 + 2] = ct[pixel][2];
+        cdd[i * 4 + 3] = 255; // Opaque.
+      }
+    });
+
+    frame.putImageData(imgData, img.leftPos, img.topPos);
+
+    lastImg = img;
+  };
+
+  var doNothing = function () {};
+  /**
+   * @param{boolean=} draw Whether to draw progress bar or not; this is not idempotent because of translucency.
+   *                       Note that this means that the text will be unsynchronized with the progress bar on non-frames;
+   *                       but those are typically so small (GCE etc.) that it doesn't really matter. TODO: Do this properly.
+   */
+  var handler = {
+    hdr: doHdr,
+    gce: doGCE,
+    // I guess that's all for now.
+    // app: {
+    //  // TODO: Is there much point in actually supporting iterations?
+    //  NETSCAPE: withProgress(doNothing)
+    // },
+    img: doImg,
+    eof: function (block) {
+      pushFrame();
+      loading = false;
+      if (load_callback) {
+        load_callback();
+      }
+    },
+
+    onError : function (error) {
+      if (error_callback) {
+        error_callback();
+      }
+    }
+  };
+
+  var load_callback = false;
+  var error_callback = false;
+  var tmpCanvas = document.createElement('canvas');
+
+  return {
+
+    load: function (callback) {
+
+      load_callback = callback.success;
+      error_callback = callback.error;
+
+      loading = true;
+
+      if (gif.src.indexOf('data:') !== -1) {
+        var data = gif.src.substring(gif.src.indexOf(',')+1);
+        stream = new Stream(window.atob(data));
+        doParse();
+      } else {
+        var h = new XMLHttpRequest();
+        h.overrideMimeType('text/plain; charset=x-user-defined');
+        h.onload = function(e) {
+          stream = new Stream(h.responseText);
+          setTimeout(doParse, 0);
+        };
+        h.onerror = function() { doLoadError('xhr'); };
+        h.open('GET', gif.getAttribute('data-animated-src') || gif.src, true);
+        h.send();
+      }
+    },
+
+    getFrames : function () {
+      return frames;
+    }
+  };
+};
+
+
+window.SuperGif = SuperGif;
+
+})( window );;/*!
+
+JSZip - A Javascript class for generating and reading zip files
+<http://stuartk.com/jszip>
+
+(c) 2009-2014 Stuart Knightley <stuart [at] stuartk.com>
+Dual licenced under the MIT license or GPLv3. See https://raw.github.com/Stuk/jszip/master/LICENSE.markdown.
+
+JSZip uses the library zlib.js released under the following license :
+zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
+*/
+!function(a){"object"==typeof exports?module.exports=a():"function"==typeof define&&define.amd?define(a):"undefined"!=typeof window?window.JSZip=a():"undefined"!=typeof global?global.JSZip=a():"undefined"!=typeof self&&(self.JSZip=a())}(function(){return function a(b,c,d){function e(g,h){if(!c[g]){if(!b[g]){var i="function"==typeof require&&require;if(!h&&i)return i(g,!0);if(f)return f(g,!0);throw new Error("Cannot find module '"+g+"'")}var j=c[g]={exports:{}};b[g][0].call(j.exports,function(a){var c=b[g][1][a];return e(c?c:a)},j,j.exports,a,b,c,d)}return c[g].exports}for(var f="function"==typeof require&&require,g=0;g<d.length;g++)e(d[g]);return e}({1:[function(a,b,c){"use strict";var d="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";c.encode=function(a){for(var b,c,e,f,g,h,i,j="",k=0;k<a.length;)b=a.charCodeAt(k++),c=a.charCodeAt(k++),e=a.charCodeAt(k++),f=b>>2,g=(3&b)<<4|c>>4,h=(15&c)<<2|e>>6,i=63&e,isNaN(c)?h=i=64:isNaN(e)&&(i=64),j=j+d.charAt(f)+d.charAt(g)+d.charAt(h)+d.charAt(i);return j},c.decode=function(a){var b,c,e,f,g,h,i,j="",k=0;for(a=a.replace(/[^A-Za-z0-9\+\/\=]/g,"");k<a.length;)f=d.indexOf(a.charAt(k++)),g=d.indexOf(a.charAt(k++)),h=d.indexOf(a.charAt(k++)),i=d.indexOf(a.charAt(k++)),b=f<<2|g>>4,c=(15&g)<<4|h>>2,e=(3&h)<<6|i,j+=String.fromCharCode(b),64!=h&&(j+=String.fromCharCode(c)),64!=i&&(j+=String.fromCharCode(e));return j}},{}],2:[function(a,b){"use strict";function c(){this.compressedSize=0,this.uncompressedSize=0,this.crc32=0,this.compressionMethod=null,this.compressedContent=null}c.prototype={getContent:function(){return null},getCompressedContent:function(){return null}},b.exports=c},{}],3:[function(a,b,c){"use strict";c.STORE={magic:"\x00\x00",compress:function(a){return a},uncompress:function(a){return a},compressInputType:null,uncompressInputType:null},c.DEFLATE=a("./flate")},{"./flate":6}],4:[function(a,b){"use strict";function c(){this.data=null,this.length=0,this.index=0}var d=a("./utils");c.prototype={checkOffset:function(a){this.checkIndex(this.index+a)},checkIndex:function(a){if(this.length<a||0>a)throw new Error("End of data reached (data length = "+this.length+", asked index = "+a+"). Corrupted zip ?")},setIndex:function(a){this.checkIndex(a),this.index=a},skip:function(a){this.setIndex(this.index+a)},byteAt:function(){},readInt:function(a){var b,c=0;for(this.checkOffset(a),b=this.index+a-1;b>=this.index;b--)c=(c<<8)+this.byteAt(b);return this.index+=a,c},readString:function(a){return d.transformTo("string",this.readData(a))},readData:function(){},lastIndexOfSignature:function(){},readDate:function(){var a=this.readInt(4);return new Date((a>>25&127)+1980,(a>>21&15)-1,a>>16&31,a>>11&31,a>>5&63,(31&a)<<1)}},b.exports=c},{"./utils":14}],5:[function(a,b,c){"use strict";c.base64=!1,c.binary=!1,c.dir=!1,c.date=null,c.compression=null},{}],6:[function(a,b,c){"use strict";var d="undefined"!=typeof Uint8Array&&"undefined"!=typeof Uint16Array&&"undefined"!=typeof Uint32Array,e=a("zlibjs/bin/rawdeflate.min").Zlib,f=a("zlibjs/bin/rawinflate.min").Zlib;c.uncompressInputType=d?"uint8array":"array",c.compressInputType=d?"uint8array":"array",c.magic="\b\x00",c.compress=function(a){var b=new e.RawDeflate(a);return b.compress()},c.uncompress=function(a){var b=new f.RawInflate(a);return b.decompress()}},{"zlibjs/bin/rawdeflate.min":19,"zlibjs/bin/rawinflate.min":20}],7:[function(a,b){"use strict";function c(a,b){return this instanceof c?(this.files={},this.root="",a&&this.load(a,b),void(this.clone=function(){var a=new c;for(var b in this)"function"!=typeof this[b]&&(a[b]=this[b]);return a})):new c(a,b)}c.prototype=a("./object"),c.prototype.load=a("./load"),c.support=a("./support"),c.defaults=a("./defaults"),c.utils=a("./utils"),c.base64=a("./base64"),c.compressions=a("./compressions"),b.exports=c},{"./base64":1,"./compressions":3,"./defaults":5,"./load":8,"./object":9,"./support":12,"./utils":14}],8:[function(a,b){"use strict";var c=a("./base64"),d=a("./zipEntries");b.exports=function(a,b){var e,f,g,h;for(b=b||{},b.base64&&(a=c.decode(a)),f=new d(a,b),e=f.files,g=0;g<e.length;g++)h=e[g],this.file(h.fileName,h.decompressed,{binary:!0,optimizedBinaryString:!0,date:h.date,dir:h.dir});return this}},{"./base64":1,"./zipEntries":15}],9:[function(a,b){"use strict";var c,d,e=a("./support"),f=a("./utils"),g=a("./signature"),h=a("./defaults"),i=a("./base64"),j=a("./compressions"),k=a("./compressedObject"),l=a("./nodeBuffer");e.uint8array&&"function"==typeof TextEncoder&&"function"==typeof TextDecoder&&(c=new TextEncoder("utf-8"),d=new TextDecoder("utf-8"));var m=function(a){if(a._data instanceof k&&(a._data=a._data.getContent(),a.options.binary=!0,a.options.base64=!1,"uint8array"===f.getTypeOf(a._data))){var b=a._data;a._data=new Uint8Array(b.length),0!==b.length&&a._data.set(b,0)}return a._data},n=function(a){var b=m(a),d=f.getTypeOf(b);if("string"===d){if(!a.options.binary){if(c)return c.encode(b);if(e.nodebuffer)return l(b,"utf-8")}return a.asBinary()}return b},o=function(a){var b=m(this);return null===b||"undefined"==typeof b?"":(this.options.base64&&(b=i.decode(b)),b=a&&this.options.binary?A.utf8decode(b):f.transformTo("string",b),a||this.options.binary||(b=A.utf8encode(b)),b)},p=function(a,b,c){this.name=a,this._data=b,this.options=c};p.prototype={asText:function(){return o.call(this,!0)},asBinary:function(){return o.call(this,!1)},asNodeBuffer:function(){var a=n(this);return f.transformTo("nodebuffer",a)},asUint8Array:function(){var a=n(this);return f.transformTo("uint8array",a)},asArrayBuffer:function(){return this.asUint8Array().buffer}};var q=function(a,b){var c,d="";for(c=0;b>c;c++)d+=String.fromCharCode(255&a),a>>>=8;return d},r=function(){var a,b,c={};for(a=0;a<arguments.length;a++)for(b in arguments[a])arguments[a].hasOwnProperty(b)&&"undefined"==typeof c[b]&&(c[b]=arguments[a][b]);return c},s=function(a){return a=a||{},a.base64!==!0||null!==a.binary&&void 0!==a.binary||(a.binary=!0),a=r(a,h),a.date=a.date||new Date,null!==a.compression&&(a.compression=a.compression.toUpperCase()),a},t=function(a,b,c){var d=u(a),e=f.getTypeOf(b);if(d&&v.call(this,d),c=s(c),c.dir||null===b||"undefined"==typeof b)c.base64=!1,c.binary=!1,b=null;else if("string"===e)c.binary&&!c.base64&&c.optimizedBinaryString!==!0&&(b=f.string2binary(b));else{if(c.base64=!1,c.binary=!0,!(e||b instanceof k))throw new Error("The data of '"+a+"' is in an unsupported format !");"arraybuffer"===e&&(b=f.transformTo("uint8array",b))}var g=new p(a,b,c);return this.files[a]=g,g},u=function(a){"/"==a.slice(-1)&&(a=a.substring(0,a.length-1));var b=a.lastIndexOf("/");return b>0?a.substring(0,b):""},v=function(a){return"/"!=a.slice(-1)&&(a+="/"),this.files[a]||t.call(this,a,null,{dir:!0}),this.files[a]},w=function(a,b){var c,d=new k;return a._data instanceof k?(d.uncompressedSize=a._data.uncompressedSize,d.crc32=a._data.crc32,0===d.uncompressedSize||a.options.dir?(b=j.STORE,d.compressedContent="",d.crc32=0):a._data.compressionMethod===b.magic?d.compressedContent=a._data.getCompressedContent():(c=a._data.getContent(),d.compressedContent=b.compress(f.transformTo(b.compressInputType,c)))):(c=n(a),(!c||0===c.length||a.options.dir)&&(b=j.STORE,c=""),d.uncompressedSize=c.length,d.crc32=this.crc32(c),d.compressedContent=b.compress(f.transformTo(b.compressInputType,c))),d.compressedSize=d.compressedContent.length,d.compressionMethod=b.magic,d},x=function(a,b,c,d){var e,f,h=(c.compressedContent,this.utf8encode(b.name)),i=h!==b.name,j=b.options,k="",l="";e=j.date.getHours(),e<<=6,e|=j.date.getMinutes(),e<<=5,e|=j.date.getSeconds()/2,f=j.date.getFullYear()-1980,f<<=4,f|=j.date.getMonth()+1,f<<=5,f|=j.date.getDate(),i&&(l=q(1,1)+q(this.crc32(h),4)+h,k+="up"+q(l.length,2)+l);var m="";m+="\n\x00",m+=i?"\x00\b":"\x00\x00",m+=c.compressionMethod,m+=q(e,2),m+=q(f,2),m+=q(c.crc32,4),m+=q(c.compressedSize,4),m+=q(c.uncompressedSize,4),m+=q(h.length,2),m+=q(k.length,2);var n=g.LOCAL_FILE_HEADER+m+h+k,o=g.CENTRAL_FILE_HEADER+"\x00"+m+"\x00\x00\x00\x00\x00\x00"+(b.options.dir===!0?"\x00\x00\x00":"\x00\x00\x00\x00")+q(d,4)+h+k;return{fileRecord:n,dirRecord:o,compressedObject:c}},y=function(){this.data=[]};y.prototype={append:function(a){a=f.transformTo("string",a),this.data.push(a)},finalize:function(){return this.data.join("")}};var z=function(a){this.data=new Uint8Array(a),this.index=0};z.prototype={append:function(a){0!==a.length&&(a=f.transformTo("uint8array",a),this.data.set(a,this.index),this.index+=a.length)},finalize:function(){return this.data}};var A={load:function(){throw new Error("Load method is not defined. Is the file jszip-load.js included ?")},filter:function(a){var b,c,d,e,f=[];for(b in this.files)this.files.hasOwnProperty(b)&&(d=this.files[b],e=new p(d.name,d._data,r(d.options)),c=b.slice(this.root.length,b.length),b.slice(0,this.root.length)===this.root&&a(c,e)&&f.push(e));return f},file:function(a,b,c){if(1===arguments.length){if(f.isRegExp(a)){var d=a;return this.filter(function(a,b){return!b.options.dir&&d.test(a)})}return this.filter(function(b,c){return!c.options.dir&&b===a})[0]||null}return a=this.root+a,t.call(this,a,b,c),this},folder:function(a){if(!a)return this;if(f.isRegExp(a))return this.filter(function(b,c){return c.options.dir&&a.test(b)});var b=this.root+a,c=v.call(this,b),d=this.clone();return d.root=c.name,d},remove:function(a){a=this.root+a;var b=this.files[a];if(b||("/"!=a.slice(-1)&&(a+="/"),b=this.files[a]),b)if(b.options.dir)for(var c=this.filter(function(b,c){return c.name.slice(0,a.length)===a}),d=0;d<c.length;d++)delete this.files[c[d].name];else delete this.files[a];return this},generate:function(a){a=r(a||{},{base64:!0,compression:"STORE",type:"base64"}),f.checkSupport(a.type);var b,c,d=[],e=0,h=0;for(var k in this.files)if(this.files.hasOwnProperty(k)){var l=this.files[k],m=l.options.compression||a.compression.toUpperCase(),n=j[m];if(!n)throw new Error(m+" is not a valid compression method !");var o=w.call(this,l,n),p=x.call(this,k,l,o,e);e+=p.fileRecord.length+o.compressedSize,h+=p.dirRecord.length,d.push(p)}var s="";s=g.CENTRAL_DIRECTORY_END+"\x00\x00\x00\x00"+q(d.length,2)+q(d.length,2)+q(h,4)+q(e,4)+"\x00\x00";var t=a.type.toLowerCase();for(b="uint8array"===t||"arraybuffer"===t||"blob"===t||"nodebuffer"===t?new z(e+h+s.length):new y(e+h+s.length),c=0;c<d.length;c++)b.append(d[c].fileRecord),b.append(d[c].compressedObject.compressedContent);for(c=0;c<d.length;c++)b.append(d[c].dirRecord);b.append(s);var u=b.finalize();switch(a.type.toLowerCase()){case"uint8array":case"arraybuffer":case"nodebuffer":return f.transformTo(a.type.toLowerCase(),u);case"blob":return f.arrayBuffer2Blob(f.transformTo("arraybuffer",u));case"base64":return a.base64?i.encode(u):u;default:return u}},crc32:function(a,b){if("undefined"==typeof a||!a.length)return 0;var c="string"!==f.getTypeOf(a),d=[0,1996959894,3993919788,2567524794,124634137,1886057615,3915621685,2657392035,249268274,2044508324,3772115230,2547177864,162941995,2125561021,3887607047,2428444049,498536548,1789927666,4089016648,2227061214,450548861,1843258603,4107580753,2211677639,325883990,1684777152,4251122042,2321926636,335633487,1661365465,4195302755,2366115317,997073096,1281953886,3579855332,2724688242,1006888145,1258607687,3524101629,2768942443,901097722,1119000684,3686517206,2898065728,853044451,1172266101,3705015759,2882616665,651767980,1373503546,3369554304,3218104598,565507253,1454621731,3485111705,3099436303,671266974,1594198024,3322730930,2970347812,795835527,1483230225,3244367275,3060149565,1994146192,31158534,2563907772,4023717930,1907459465,112637215,2680153253,3904427059,2013776290,251722036,2517215374,3775830040,2137656763,141376813,2439277719,3865271297,1802195444,476864866,2238001368,4066508878,1812370925,453092731,2181625025,4111451223,1706088902,314042704,2344532202,4240017532,1658658271,366619977,2362670323,4224994405,1303535960,984961486,2747007092,3569037538,1256170817,1037604311,2765210733,3554079995,1131014506,879679996,2909243462,3663771856,1141124467,855842277,2852801631,3708648649,1342533948,654459306,3188396048,3373015174,1466479909,544179635,3110523913,3462522015,1591671054,702138776,2966460450,3352799412,1504918807,783551873,3082640443,3233442989,3988292384,2596254646,62317068,1957810842,3939845945,2647816111,81470997,1943803523,3814918930,2489596804,225274430,2053790376,3826175755,2466906013,167816743,2097651377,4027552580,2265490386,503444072,1762050814,4150417245,2154129355,426522225,1852507879,4275313526,2312317920,282753626,1742555852,4189708143,2394877945,397917763,1622183637,3604390888,2714866558,953729732,1340076626,3518719985,2797360999,1068828381,1219638859,3624741850,2936675148,906185462,1090812512,3747672003,2825379669,829329135,1181335161,3412177804,3160834842,628085408,1382605366,3423369109,3138078467,570562233,1426400815,3317316542,2998733608,733239954,1555261956,3268935591,3050360625,752459403,1541320221,2607071920,3965973030,1969922972,40735498,2617837225,3943577151,1913087877,83908371,2512341634,3803740692,2075208622,213261112,2463272603,3855990285,2094854071,198958881,2262029012,4057260610,1759359992,534414190,2176718541,4139329115,1873836001,414664567,2282248934,4279200368,1711684554,285281116,2405801727,4167216745,1634467795,376229701,2685067896,3608007406,1308918612,956543938,2808555105,3495958263,1231636301,1047427035,2932959818,3654703836,1088359270,936918e3,2847714899,3736837829,1202900863,817233897,3183342108,3401237130,1404277552,615818150,3134207493,3453421203,1423857449,601450431,3009837614,3294710456,1567103746,711928724,3020668471,3272380065,1510334235,755167117];"undefined"==typeof b&&(b=0);var e=0,g=0,h=0;b=-1^b;for(var i=0,j=a.length;j>i;i++)h=c?a[i]:a.charCodeAt(i),g=255&(b^h),e=d[g],b=b>>>8^e;return-1^b},utf8encode:function(a){if(c){var b=c.encode(a);return f.transformTo("string",b)}if(e.nodebuffer)return f.transformTo("string",l(a,"utf-8"));for(var d=[],g=0,h=0;h<a.length;h++){var i=a.charCodeAt(h);128>i?d[g++]=String.fromCharCode(i):i>127&&2048>i?(d[g++]=String.fromCharCode(i>>6|192),d[g++]=String.fromCharCode(63&i|128)):(d[g++]=String.fromCharCode(i>>12|224),d[g++]=String.fromCharCode(i>>6&63|128),d[g++]=String.fromCharCode(63&i|128))}return d.join("")},utf8decode:function(a){var b=[],c=0,g=f.getTypeOf(a),h="string"!==g,i=0,j=0,k=0,l=0;if(d)return d.decode(f.transformTo("uint8array",a));if(e.nodebuffer)return f.transformTo("nodebuffer",a).toString("utf-8");for(;i<a.length;)j=h?a[i]:a.charCodeAt(i),128>j?(b[c++]=String.fromCharCode(j),i++):j>191&&224>j?(k=h?a[i+1]:a.charCodeAt(i+1),b[c++]=String.fromCharCode((31&j)<<6|63&k),i+=2):(k=h?a[i+1]:a.charCodeAt(i+1),l=h?a[i+2]:a.charCodeAt(i+2),b[c++]=String.fromCharCode((15&j)<<12|(63&k)<<6|63&l),i+=3);return b.join("")}};b.exports=A},{"./base64":1,"./compressedObject":2,"./compressions":3,"./defaults":5,"./nodeBuffer":17,"./signature":10,"./support":12,"./utils":14}],10:[function(a,b,c){"use strict";c.LOCAL_FILE_HEADER="PK",c.CENTRAL_FILE_HEADER="PK",c.CENTRAL_DIRECTORY_END="PK",c.ZIP64_CENTRAL_DIRECTORY_LOCATOR="PK",c.ZIP64_CENTRAL_DIRECTORY_END="PK",c.DATA_DESCRIPTOR="PK\b"},{}],11:[function(a,b){"use strict";function c(a,b){this.data=a,b||(this.data=e.string2binary(this.data)),this.length=this.data.length,this.index=0}var d=a("./dataReader"),e=a("./utils");c.prototype=new d,c.prototype.byteAt=function(a){return this.data.charCodeAt(a)},c.prototype.lastIndexOfSignature=function(a){return this.data.lastIndexOf(a)},c.prototype.readData=function(a){this.checkOffset(a);var b=this.data.slice(this.index,this.index+a);return this.index+=a,b},b.exports=c},{"./dataReader":4,"./utils":14}],12:[function(a,b,c){var d=a("__browserify_process");if(c.base64=!0,c.array=!0,c.string=!0,c.arraybuffer="undefined"!=typeof ArrayBuffer&&"undefined"!=typeof Uint8Array,c.nodebuffer=!d.browser,c.uint8array="undefined"!=typeof Uint8Array,"undefined"==typeof ArrayBuffer)c.blob=!1;else{var e=new ArrayBuffer(0);try{c.blob=0===new Blob([e],{type:"application/zip"}).size}catch(f){try{var g=window.BlobBuilder||window.WebKitBlobBuilder||window.MozBlobBuilder||window.MSBlobBuilder,h=new g;h.append(e),c.blob=0===h.getBlob("application/zip").size}catch(f){c.blob=!1}}}},{__browserify_process:18}],13:[function(a,b){"use strict";function c(a){a&&(this.data=a,this.length=this.data.length,this.index=0)}var d=a("./dataReader");c.prototype=new d,c.prototype.byteAt=function(a){return this.data[a]},c.prototype.lastIndexOfSignature=function(a){for(var b=a.charCodeAt(0),c=a.charCodeAt(1),d=a.charCodeAt(2),e=a.charCodeAt(3),f=this.length-4;f>=0;--f)if(this.data[f]===b&&this.data[f+1]===c&&this.data[f+2]===d&&this.data[f+3]===e)return f;return-1},c.prototype.readData=function(a){this.checkOffset(a);var b=this.data.subarray(this.index,this.index+a);return this.index+=a,b},b.exports=c},{"./dataReader":4}],14:[function(a,b,c){"use strict";function d(a){return a}function e(a,b){for(var c=0;c<a.length;++c)b[c]=255&a.charCodeAt(c);return b}function f(a){var b=65536,d=[],e=a.length,f=c.getTypeOf(a),g=0,h=!0;try{switch(f){case"uint8array":String.fromCharCode.apply(null,new Uint8Array(0));break;case"nodebuffer":String.fromCharCode.apply(null,j(0))}}catch(i){h=!1}if(!h){for(var k="",l=0;l<a.length;l++)k+=String.fromCharCode(a[l]);return k}for(;e>g&&b>1;)try{d.push("array"===f||"nodebuffer"===f?String.fromCharCode.apply(null,a.slice(g,Math.min(g+b,e))):String.fromCharCode.apply(null,a.subarray(g,Math.min(g+b,e)))),g+=b}catch(i){b=Math.floor(b/2)}return d.join("")}function g(a,b){for(var c=0;c<a.length;c++)b[c]=a[c];return b}var h=a("./support"),i=a("./compressions"),j=a("./nodeBuffer");c.string2binary=function(a){for(var b="",c=0;c<a.length;c++)b+=String.fromCharCode(255&a.charCodeAt(c));return b},c.string2Uint8Array=function(a){return c.transformTo("uint8array",a)},c.uint8Array2String=function(a){return c.transformTo("string",a)},c.string2Blob=function(a){var b=c.transformTo("arraybuffer",a);return c.arrayBuffer2Blob(b)},c.arrayBuffer2Blob=function(a){c.checkSupport("blob");try{return new Blob([a],{type:"application/zip"})}catch(b){try{var d=window.BlobBuilder||window.WebKitBlobBuilder||window.MozBlobBuilder||window.MSBlobBuilder,e=new d;return e.append(a),e.getBlob("application/zip")}catch(b){throw new Error("Bug : can't construct the Blob.")}}};var k={};k.string={string:d,array:function(a){return e(a,new Array(a.length))},arraybuffer:function(a){return k.string.uint8array(a).buffer},uint8array:function(a){return e(a,new Uint8Array(a.length))},nodebuffer:function(a){return e(a,j(a.length))}},k.array={string:f,array:d,arraybuffer:function(a){return new Uint8Array(a).buffer},uint8array:function(a){return new Uint8Array(a)},nodebuffer:function(a){return j(a)}},k.arraybuffer={string:function(a){return f(new Uint8Array(a))},array:function(a){return g(new Uint8Array(a),new Array(a.byteLength))},arraybuffer:d,uint8array:function(a){return new Uint8Array(a)},nodebuffer:function(a){return j(new Uint8Array(a))}},k.uint8array={string:f,array:function(a){return g(a,new Array(a.length))},arraybuffer:function(a){return a.buffer},uint8array:d,nodebuffer:function(a){return j(a)}},k.nodebuffer={string:f,array:function(a){return g(a,new Array(a.length))},arraybuffer:function(a){return k.nodebuffer.uint8array(a).buffer},uint8array:function(a){return g(a,new Uint8Array(a.length))},nodebuffer:d},c.transformTo=function(a,b){if(b||(b=""),!a)return b;c.checkSupport(a);var d=c.getTypeOf(b),e=k[d][a](b);return e},c.getTypeOf=function(a){return"string"==typeof a?"string":"[object Array]"===Object.prototype.toString.call(a)?"array":h.nodebuffer&&j.test(a)?"nodebuffer":h.uint8array&&a instanceof Uint8Array?"uint8array":h.arraybuffer&&a instanceof ArrayBuffer?"arraybuffer":void 0},c.checkSupport=function(a){var b=h[a.toLowerCase()];if(!b)throw new Error(a+" is not supported by this browser")},c.MAX_VALUE_16BITS=65535,c.MAX_VALUE_32BITS=-1,c.pretty=function(a){var b,c,d="";for(c=0;c<(a||"").length;c++)b=a.charCodeAt(c),d+="\\x"+(16>b?"0":"")+b.toString(16).toUpperCase();return d},c.findCompression=function(a){for(var b in i)if(i.hasOwnProperty(b)&&i[b].magic===a)return i[b];return null},c.isRegExp=function(a){return"[object RegExp]"===Object.prototype.toString.call(a)}},{"./compressions":3,"./nodeBuffer":17,"./support":12}],15:[function(a,b){"use strict";function c(a,b){this.files=[],this.loadOptions=b,a&&this.load(a)}var d=a("./stringReader"),e=a("./nodeBufferReader"),f=a("./uint8ArrayReader"),g=a("./utils"),h=a("./signature"),i=a("./zipEntry"),j=a("./support");c.prototype={checkSignature:function(a){var b=this.reader.readString(4);if(b!==a)throw new Error("Corrupted zip or bug : unexpected signature ("+g.pretty(b)+", expected "+g.pretty(a)+")")},readBlockEndOfCentral:function(){this.diskNumber=this.reader.readInt(2),this.diskWithCentralDirStart=this.reader.readInt(2),this.centralDirRecordsOnThisDisk=this.reader.readInt(2),this.centralDirRecords=this.reader.readInt(2),this.centralDirSize=this.reader.readInt(4),this.centralDirOffset=this.reader.readInt(4),this.zipCommentLength=this.reader.readInt(2),this.zipComment=this.reader.readString(this.zipCommentLength)},readBlockZip64EndOfCentral:function(){this.zip64EndOfCentralSize=this.reader.readInt(8),this.versionMadeBy=this.reader.readString(2),this.versionNeeded=this.reader.readInt(2),this.diskNumber=this.reader.readInt(4),this.diskWithCentralDirStart=this.reader.readInt(4),this.centralDirRecordsOnThisDisk=this.reader.readInt(8),this.centralDirRecords=this.reader.readInt(8),this.centralDirSize=this.reader.readInt(8),this.centralDirOffset=this.reader.readInt(8),this.zip64ExtensibleData={};for(var a,b,c,d=this.zip64EndOfCentralSize-44,e=0;d>e;)a=this.reader.readInt(2),b=this.reader.readInt(4),c=this.reader.readString(b),this.zip64ExtensibleData[a]={id:a,length:b,value:c}},readBlockZip64EndOfCentralLocator:function(){if(this.diskWithZip64CentralDirStart=this.reader.readInt(4),this.relativeOffsetEndOfZip64CentralDir=this.reader.readInt(8),this.disksCount=this.reader.readInt(4),this.disksCount>1)throw new Error("Multi-volumes zip are not supported")},readLocalFiles:function(){var a,b;for(a=0;a<this.files.length;a++)b=this.files[a],this.reader.setIndex(b.localHeaderOffset),this.checkSignature(h.LOCAL_FILE_HEADER),b.readLocalPart(this.reader),b.handleUTF8()},readCentralDir:function(){var a;for(this.reader.setIndex(this.centralDirOffset);this.reader.readString(4)===h.CENTRAL_FILE_HEADER;)a=new i({zip64:this.zip64},this.loadOptions),a.readCentralPart(this.reader),this.files.push(a)},readEndOfCentral:function(){var a=this.reader.lastIndexOfSignature(h.CENTRAL_DIRECTORY_END);if(-1===a)throw new Error("Corrupted zip : can't find end of central directory");if(this.reader.setIndex(a),this.checkSignature(h.CENTRAL_DIRECTORY_END),this.readBlockEndOfCentral(),this.diskNumber===g.MAX_VALUE_16BITS||this.diskWithCentralDirStart===g.MAX_VALUE_16BITS||this.centralDirRecordsOnThisDisk===g.MAX_VALUE_16BITS||this.centralDirRecords===g.MAX_VALUE_16BITS||this.centralDirSize===g.MAX_VALUE_32BITS||this.centralDirOffset===g.MAX_VALUE_32BITS){if(this.zip64=!0,a=this.reader.lastIndexOfSignature(h.ZIP64_CENTRAL_DIRECTORY_LOCATOR),-1===a)throw new Error("Corrupted zip : can't find the ZIP64 end of central directory locator");this.reader.setIndex(a),this.checkSignature(h.ZIP64_CENTRAL_DIRECTORY_LOCATOR),this.readBlockZip64EndOfCentralLocator(),this.reader.setIndex(this.relativeOffsetEndOfZip64CentralDir),this.checkSignature(h.ZIP64_CENTRAL_DIRECTORY_END),this.readBlockZip64EndOfCentral()}},prepareReader:function(a){var b=g.getTypeOf(a);this.reader="string"!==b||j.uint8array?"nodebuffer"===b?new e(a):new f(g.transformTo("uint8array",a)):new d(a,this.loadOptions.optimizedBinaryString)},load:function(a){this.prepareReader(a),this.readEndOfCentral(),this.readCentralDir(),this.readLocalFiles()}},b.exports=c},{"./nodeBufferReader":17,"./signature":10,"./stringReader":11,"./support":12,"./uint8ArrayReader":13,"./utils":14,"./zipEntry":16}],16:[function(a,b){"use strict";function c(a,b){this.options=a,this.loadOptions=b}var d=a("./stringReader"),e=a("./utils"),f=a("./compressedObject"),g=a("./object");c.prototype={isEncrypted:function(){return 1===(1&this.bitFlag)},useUTF8:function(){return 2048===(2048&this.bitFlag)},prepareCompressedContent:function(a,b,c){return function(){var d=a.index;a.setIndex(b);var e=a.readData(c);return a.setIndex(d),e}},prepareContent:function(a,b,c,d,f){return function(){var a=e.transformTo(d.uncompressInputType,this.getCompressedContent()),b=d.uncompress(a);if(b.length!==f)throw new Error("Bug : uncompressed data size mismatch");return b}},readLocalPart:function(a){var b,c;if(a.skip(22),this.fileNameLength=a.readInt(2),c=a.readInt(2),this.fileName=a.readString(this.fileNameLength),a.skip(c),-1==this.compressedSize||-1==this.uncompressedSize)throw new Error("Bug or corrupted zip : didn't get enough informations from the central directory (compressedSize == -1 || uncompressedSize == -1)");if(b=e.findCompression(this.compressionMethod),null===b)throw new Error("Corrupted zip : compression "+e.pretty(this.compressionMethod)+" unknown (inner file : "+this.fileName+")");if(this.decompressed=new f,this.decompressed.compressedSize=this.compressedSize,this.decompressed.uncompressedSize=this.uncompressedSize,this.decompressed.crc32=this.crc32,this.decompressed.compressionMethod=this.compressionMethod,this.decompressed.getCompressedContent=this.prepareCompressedContent(a,a.index,this.compressedSize,b),this.decompressed.getContent=this.prepareContent(a,a.index,this.compressedSize,b,this.uncompressedSize),this.loadOptions.checkCRC32&&(this.decompressed=e.transformTo("string",this.decompressed.getContent()),g.crc32(this.decompressed)!==this.crc32))throw new Error("Corrupted zip : CRC32 mismatch")},readCentralPart:function(a){if(this.versionMadeBy=a.readString(2),this.versionNeeded=a.readInt(2),this.bitFlag=a.readInt(2),this.compressionMethod=a.readString(2),this.date=a.readDate(),this.crc32=a.readInt(4),this.compressedSize=a.readInt(4),this.uncompressedSize=a.readInt(4),this.fileNameLength=a.readInt(2),this.extraFieldsLength=a.readInt(2),this.fileCommentLength=a.readInt(2),this.diskNumberStart=a.readInt(2),this.internalFileAttributes=a.readInt(2),this.externalFileAttributes=a.readInt(4),this.localHeaderOffset=a.readInt(4),this.isEncrypted())throw new Error("Encrypted zip are not supported");this.fileName=a.readString(this.fileNameLength),this.readExtraFields(a),this.parseZIP64ExtraField(a),this.fileComment=a.readString(this.fileCommentLength),this.dir=16&this.externalFileAttributes?!0:!1},parseZIP64ExtraField:function(){if(this.extraFields[1]){var a=new d(this.extraFields[1].value);this.uncompressedSize===e.MAX_VALUE_32BITS&&(this.uncompressedSize=a.readInt(8)),this.compressedSize===e.MAX_VALUE_32BITS&&(this.compressedSize=a.readInt(8)),this.localHeaderOffset===e.MAX_VALUE_32BITS&&(this.localHeaderOffset=a.readInt(8)),this.diskNumberStart===e.MAX_VALUE_32BITS&&(this.diskNumberStart=a.readInt(4))}},readExtraFields:function(a){var b,c,d,e=a.index;for(this.extraFields=this.extraFields||{};a.index<e+this.extraFieldsLength;)b=a.readInt(2),c=a.readInt(2),d=a.readString(c),this.extraFields[b]={id:b,length:c,value:d}},handleUTF8:function(){if(this.useUTF8())this.fileName=g.utf8decode(this.fileName),this.fileComment=g.utf8decode(this.fileComment);else{var a=this.findExtraFieldUnicodePath();null!==a&&(this.fileName=a)}},findExtraFieldUnicodePath:function(){var a=this.extraFields[28789];if(a){var b=new d(a.value);return 1!==b.readInt(1)?null:g.crc32(this.fileName)!==b.readInt(4)?null:g.utf8decode(b.readString(a.length-5))}return null}},b.exports=c},{"./compressedObject":2,"./object":9,"./stringReader":11,"./utils":14}],17:[function(){},{}],18:[function(a,b){var c=b.exports={};c.nextTick=function(){var a="undefined"!=typeof window&&window.setImmediate,b="undefined"!=typeof window&&window.postMessage&&window.addEventListener;if(a)return function(a){return window.setImmediate(a)};if(b){var c=[];return window.addEventListener("message",function(a){var b=a.source;if((b===window||null===b)&&"process-tick"===a.data&&(a.stopPropagation(),c.length>0)){var d=c.shift();d()}},!0),function(a){c.push(a),window.postMessage("process-tick","*")}}return function(a){setTimeout(a,0)}}(),c.title="browser",c.browser=!0,c.env={},c.argv=[],c.binding=function(){throw new Error("process.binding is not supported")},c.cwd=function(){return"/"},c.chdir=function(){throw new Error("process.chdir is not supported")}},{}],19:[function(){/** @license zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License */
+(function(){"use strict";function a(a,b){var c=a.split("."),d=n;!(c[0]in d)&&d.execScript&&d.execScript("var "+c[0]);for(var e;c.length&&(e=c.shift());)c.length||b===l?d=d[e]?d[e]:d[e]={}:d[e]=b}function b(a,b){if(this.index="number"==typeof b?b:0,this.d=0,this.buffer=a instanceof(o?Uint8Array:Array)?a:new(o?Uint8Array:Array)(32768),2*this.buffer.length<=this.index)throw Error("invalid index");this.buffer.length<=this.index&&c(this)}function c(a){var b,c=a.buffer,d=c.length,e=new(o?Uint8Array:Array)(d<<1);if(o)e.set(c);else for(b=0;d>b;++b)e[b]=c[b];return a.buffer=e}function d(a){this.buffer=new(o?Uint16Array:Array)(2*a),this.length=0}function e(a,b){this.e=w,this.f=0,this.input=o&&a instanceof Array?new Uint8Array(a):a,this.c=0,b&&(b.lazy&&(this.f=b.lazy),"number"==typeof b.compressionType&&(this.e=b.compressionType),b.outputBuffer&&(this.b=o&&b.outputBuffer instanceof Array?new Uint8Array(b.outputBuffer):b.outputBuffer),"number"==typeof b.outputIndex&&(this.c=b.outputIndex)),this.b||(this.b=new(o?Uint8Array:Array)(32768))}function f(a,b){this.length=a,this.g=b}function g(a,b){function c(a,b){var c,d=a.g,e=[],f=0;c=z[a.length],e[f++]=65535&c,e[f++]=c>>16&255,e[f++]=c>>24;var g;switch(m){case 1===d:g=[0,d-1,0];break;case 2===d:g=[1,d-2,0];break;case 3===d:g=[2,d-3,0];break;case 4===d:g=[3,d-4,0];break;case 6>=d:g=[4,d-5,1];break;case 8>=d:g=[5,d-7,1];break;case 12>=d:g=[6,d-9,2];break;case 16>=d:g=[7,d-13,2];break;case 24>=d:g=[8,d-17,3];break;case 32>=d:g=[9,d-25,3];break;case 48>=d:g=[10,d-33,4];break;case 64>=d:g=[11,d-49,4];break;case 96>=d:g=[12,d-65,5];break;case 128>=d:g=[13,d-97,5];break;case 192>=d:g=[14,d-129,6];break;case 256>=d:g=[15,d-193,6];break;case 384>=d:g=[16,d-257,7];break;case 512>=d:g=[17,d-385,7];break;case 768>=d:g=[18,d-513,8];break;case 1024>=d:g=[19,d-769,8];break;case 1536>=d:g=[20,d-1025,9];break;case 2048>=d:g=[21,d-1537,9];break;case 3072>=d:g=[22,d-2049,10];break;case 4096>=d:g=[23,d-3073,10];break;case 6144>=d:g=[24,d-4097,11];break;case 8192>=d:g=[25,d-6145,11];break;case 12288>=d:g=[26,d-8193,12];break;case 16384>=d:g=[27,d-12289,12];break;case 24576>=d:g=[28,d-16385,13];break;case 32768>=d:g=[29,d-24577,13];break;default:throw"invalid distance"}c=g,e[f++]=c[0],e[f++]=c[1],e[f++]=c[2];var h,i;for(h=0,i=e.length;i>h;++h)r[s++]=e[h];u[e[0]]++,v[e[3]]++,t=a.length+b-1,n=null}var d,e,f,g,i,j,k,n,p,q={},r=o?new Uint16Array(2*b.length):[],s=0,t=0,u=new(o?Uint32Array:Array)(286),v=new(o?Uint32Array:Array)(30),w=a.f;if(!o){for(f=0;285>=f;)u[f++]=0;for(f=0;29>=f;)v[f++]=0}for(u[256]=1,d=0,e=b.length;e>d;++d){for(f=i=0,g=3;g>f&&d+f!==e;++f)i=i<<8|b[d+f];if(q[i]===l&&(q[i]=[]),j=q[i],!(0<t--)){for(;0<j.length&&32768<d-j[0];)j.shift();if(d+3>=e){for(n&&c(n,-1),f=0,g=e-d;g>f;++f)p=b[d+f],r[s++]=p,++u[p];break}0<j.length?(k=h(b,d,j),n?n.length<k.length?(p=b[d-1],r[s++]=p,++u[p],c(k,0)):c(n,-1):k.length<w?n=k:c(k,0)):n?c(n,-1):(p=b[d],r[s++]=p,++u[p])}j.push(d)}return r[s++]=256,u[256]++,a.j=u,a.i=v,o?r.subarray(0,s):r}function h(a,b,c){var d,e,g,h,i,j,k=0,l=a.length;h=0,j=c.length;a:for(;j>h;h++){if(d=c[j-h-1],g=3,k>3){for(i=k;i>3;i--)if(a[d+i-1]!==a[b+i-1])continue a;g=k}for(;258>g&&l>b+g&&a[d+g]===a[b+g];)++g;if(g>k&&(e=d,k=g),258===g)break}return new f(k,b-e)}function i(a,b){var c,e,f,g,h,i=a.length,k=new d(572),l=new(o?Uint8Array:Array)(i);if(!o)for(g=0;i>g;g++)l[g]=0;for(g=0;i>g;++g)0<a[g]&&k.push(g,a[g]);if(c=Array(k.length/2),e=new(o?Uint32Array:Array)(k.length/2),1===c.length)return l[k.pop().index]=1,l;for(g=0,h=k.length/2;h>g;++g)c[g]=k.pop(),e[g]=c[g].value;for(f=j(e,e.length,b),g=0,h=c.length;h>g;++g)l[c[g].index]=f[g];return l}function j(a,b,c){function d(a){var c=n[a][p[a]];c===b?(d(a+1),d(a+1)):--l[c],++p[a]}var e,f,g,h,i,j=new(o?Uint16Array:Array)(c),k=new(o?Uint8Array:Array)(c),l=new(o?Uint8Array:Array)(b),m=Array(c),n=Array(c),p=Array(c),q=(1<<c)-b,r=1<<c-1;for(j[c-1]=b,f=0;c>f;++f)r>q?k[f]=0:(k[f]=1,q-=r),q<<=1,j[c-2-f]=(j[c-1-f]/2|0)+b;for(j[0]=k[0],m[0]=Array(j[0]),n[0]=Array(j[0]),f=1;c>f;++f)j[f]>2*j[f-1]+k[f]&&(j[f]=2*j[f-1]+k[f]),m[f]=Array(j[f]),n[f]=Array(j[f]);for(e=0;b>e;++e)l[e]=c;for(g=0;g<j[c-1];++g)m[c-1][g]=a[g],n[c-1][g]=g;for(e=0;c>e;++e)p[e]=0;for(1===k[c-1]&&(--l[0],++p[c-1]),f=c-2;f>=0;--f){for(h=e=0,i=p[f+1],g=0;g<j[f];g++)h=m[f+1][i]+m[f+1][i+1],h>a[e]?(m[f][g]=h,n[f][g]=b,i+=2):(m[f][g]=a[e],n[f][g]=e,++e);p[f]=0,1===k[f]&&d(f)}return l}function k(a){var b,c,d,e,f=new(o?Uint16Array:Array)(a.length),g=[],h=[],i=0;for(b=0,c=a.length;c>b;b++)g[a[b]]=(0|g[a[b]])+1;for(b=1,c=16;c>=b;b++)h[b]=i,i+=0|g[b],i<<=1;for(b=0,c=a.length;c>b;b++)for(i=h[a[b]],h[a[b]]+=1,d=f[b]=0,e=a[b];e>d;d++)f[b]=f[b]<<1|1&i,i>>>=1;return f}var l=void 0,m=!0,n=this,o="undefined"!=typeof Uint8Array&&"undefined"!=typeof Uint16Array&&"undefined"!=typeof Uint32Array&&"undefined"!=typeof DataView;b.prototype.a=function(a,b,d){var e,f=this.buffer,g=this.index,h=this.d,i=f[g];if(d&&b>1&&(a=b>8?(u[255&a]<<24|u[a>>>8&255]<<16|u[a>>>16&255]<<8|u[a>>>24&255])>>32-b:u[a]>>8-b),8>b+h)i=i<<b|a,h+=b;else for(e=0;b>e;++e)i=i<<1|a>>b-e-1&1,8===++h&&(h=0,f[g++]=u[i],i=0,g===f.length&&(f=c(this)));f[g]=i,this.buffer=f,this.d=h,this.index=g},b.prototype.finish=function(){var a,b=this.buffer,c=this.index;return 0<this.d&&(b[c]<<=8-this.d,b[c]=u[b[c]],c++),o?a=b.subarray(0,c):(b.length=c,a=b),a};var p,q=new(o?Uint8Array:Array)(256);for(p=0;256>p;++p){for(var r=p,s=r,t=7,r=r>>>1;r;r>>>=1)s<<=1,s|=1&r,--t;q[p]=(s<<t&255)>>>0}var u=q;d.prototype.getParent=function(a){return 2*((a-2)/4|0)},d.prototype.push=function(a,b){var c,d,e,f=this.buffer;for(c=this.length,f[this.length++]=b,f[this.length++]=a;c>0&&(d=this.getParent(c),f[c]>f[d]);)e=f[c],f[c]=f[d],f[d]=e,e=f[c+1],f[c+1]=f[d+1],f[d+1]=e,c=d;return this.length},d.prototype.pop=function(){var a,b,c,d,e,f=this.buffer;for(b=f[0],a=f[1],this.length-=2,f[0]=f[this.length],f[1]=f[this.length+1],e=0;(d=2*e+2,!(d>=this.length))&&(d+2<this.length&&f[d+2]>f[d]&&(d+=2),f[d]>f[e]);)c=f[e],f[e]=f[d],f[d]=c,c=f[e+1],f[e+1]=f[d+1],f[d+1]=c,e=d;return{index:a,value:b,length:this.length}};var v,w=2,x=[];for(v=0;288>v;v++)switch(m){case 143>=v:x.push([v+48,8]);break;case 255>=v:x.push([v-144+400,9]);break;case 279>=v:x.push([v-256+0,7]);break;case 287>=v:x.push([v-280+192,8]);break;default:throw"invalid literal: "+v}e.prototype.h=function(){var a,c,d,e,f=this.input;switch(this.e){case 0:for(d=0,e=f.length;e>d;){c=o?f.subarray(d,d+65535):f.slice(d,d+65535),d+=c.length;var h=c,j=d===e,n=l,p=l,q=l,r=l,s=l,t=this.b,u=this.c;if(o){for(t=new Uint8Array(this.b.buffer);t.length<=u+h.length+5;)t=new Uint8Array(t.length<<1);t.set(this.b)}if(n=j?1:0,t[u++]=0|n,p=h.length,q=~p+65536&65535,t[u++]=255&p,t[u++]=p>>>8&255,t[u++]=255&q,t[u++]=q>>>8&255,o)t.set(h,u),u+=h.length,t=t.subarray(0,u);else{for(r=0,s=h.length;s>r;++r)t[u++]=h[r];t.length=u}this.c=u,this.b=t}break;case 1:var v=new b(o?new Uint8Array(this.b.buffer):this.b,this.c);v.a(1,1,m),v.a(1,2,m);var y,z,A,B=g(this,f);for(y=0,z=B.length;z>y;y++)if(A=B[y],b.prototype.a.apply(v,x[A]),A>256)v.a(B[++y],B[++y],m),v.a(B[++y],5),v.a(B[++y],B[++y],m);else if(256===A)break;this.b=v.finish(),this.c=this.b.length;break;case w:var C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R=new b(o?new Uint8Array(this.b.buffer):this.b,this.c),S=[16,17,18,0,8,7,9,6,10,5,11,4,12,3,13,2,14,1,15],T=Array(19);for(C=w,R.a(1,1,m),R.a(C,2,m),D=g(this,f),H=i(this.j,15),I=k(H),J=i(this.i,7),K=k(J),E=286;E>257&&0===H[E-1];E--);for(F=30;F>1&&0===J[F-1];F--);var U,V,W,X,Y,Z,$=E,_=F,ab=new(o?Uint32Array:Array)($+_),bb=new(o?Uint32Array:Array)(316),cb=new(o?Uint8Array:Array)(19);for(U=V=0;$>U;U++)ab[V++]=H[U];for(U=0;_>U;U++)ab[V++]=J[U];if(!o)for(U=0,X=cb.length;X>U;++U)cb[U]=0;for(U=Y=0,X=ab.length;X>U;U+=V){for(V=1;X>U+V&&ab[U+V]===ab[U];++V);if(W=V,0===ab[U])if(3>W)for(;0<W--;)bb[Y++]=0,cb[0]++;else for(;W>0;)Z=138>W?W:138,Z>W-3&&W>Z&&(Z=W-3),10>=Z?(bb[Y++]=17,bb[Y++]=Z-3,cb[17]++):(bb[Y++]=18,bb[Y++]=Z-11,cb[18]++),W-=Z;else if(bb[Y++]=ab[U],cb[ab[U]]++,W--,3>W)for(;0<W--;)bb[Y++]=ab[U],cb[ab[U]]++;else for(;W>0;)Z=6>W?W:6,Z>W-3&&W>Z&&(Z=W-3),bb[Y++]=16,bb[Y++]=Z-3,cb[16]++,W-=Z}for(a=o?bb.subarray(0,Y):bb.slice(0,Y),L=i(cb,7),P=0;19>P;P++)T[P]=L[S[P]];for(G=19;G>4&&0===T[G-1];G--);for(M=k(L),R.a(E-257,5,m),R.a(F-1,5,m),R.a(G-4,4,m),P=0;G>P;P++)R.a(T[P],3,m);for(P=0,Q=a.length;Q>P;P++)if(N=a[P],R.a(M[N],L[N],m),N>=16){switch(P++,N){case 16:O=2;break;case 17:O=3;break;case 18:O=7;break;default:throw"invalid code: "+N}R.a(a[P],O,m)}var db,eb,fb,gb,hb,ib,jb,kb,lb=[I,H],mb=[K,J];for(hb=lb[0],ib=lb[1],jb=mb[0],kb=mb[1],db=0,eb=D.length;eb>db;++db)if(fb=D[db],R.a(hb[fb],ib[fb],m),fb>256)R.a(D[++db],D[++db],m),gb=D[++db],R.a(jb[gb],kb[gb],m),R.a(D[++db],D[++db],m);else if(256===fb)break;this.b=R.finish(),this.c=this.b.length;break;default:throw"invalid compression type"}return this.b};var y=function(){function a(a){switch(m){case 3===a:return[257,a-3,0];case 4===a:return[258,a-4,0];case 5===a:return[259,a-5,0];case 6===a:return[260,a-6,0];case 7===a:return[261,a-7,0];case 8===a:return[262,a-8,0];case 9===a:return[263,a-9,0];case 10===a:return[264,a-10,0];case 12>=a:return[265,a-11,1];case 14>=a:return[266,a-13,1];case 16>=a:return[267,a-15,1];case 18>=a:return[268,a-17,1];case 22>=a:return[269,a-19,2];case 26>=a:return[270,a-23,2];case 30>=a:return[271,a-27,2];case 34>=a:return[272,a-31,2];case 42>=a:return[273,a-35,3];case 50>=a:return[274,a-43,3];case 58>=a:return[275,a-51,3];case 66>=a:return[276,a-59,3];case 82>=a:return[277,a-67,4];case 98>=a:return[278,a-83,4];case 114>=a:return[279,a-99,4];case 130>=a:return[280,a-115,4];case 162>=a:return[281,a-131,5];case 194>=a:return[282,a-163,5];case 226>=a:return[283,a-195,5];case 257>=a:return[284,a-227,5];case 258===a:return[285,a-258,0];default:throw"invalid length: "+a}}var b,c,d=[];for(b=3;258>=b;b++)c=a(b),d[b]=c[2]<<24|c[1]<<16|c[0];return d}(),z=o?new Uint32Array(y):y;a("Zlib.RawDeflate",e),a("Zlib.RawDeflate.prototype.compress",e.prototype.h);var A,B,C,D,E={NONE:0,FIXED:1,DYNAMIC:w};if(Object.keys)A=Object.keys(E);else for(B in A=[],C=0,E)A[C++]=B;for(C=0,D=A.length;D>C;++C)B=A[C],a("Zlib.RawDeflate.CompressionType."+B,E[B])}).call(this)},{}],20:[function(){/** @license zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License */
+(function(){"use strict";function a(a,b){var c=a.split("."),d=g;!(c[0]in d)&&d.execScript&&d.execScript("var "+c[0]);for(var e;c.length&&(e=c.shift());)c.length||void 0===b?d=d[e]?d[e]:d[e]={}:d[e]=b}function b(a){var b,c,d,e,f,g,i,j,k,l,m=a.length,n=0,o=Number.POSITIVE_INFINITY;for(j=0;m>j;++j)a[j]>n&&(n=a[j]),a[j]<o&&(o=a[j]);for(b=1<<n,c=new(h?Uint32Array:Array)(b),d=1,e=0,f=2;n>=d;){for(j=0;m>j;++j)if(a[j]===d){for(g=0,i=e,k=0;d>k;++k)g=g<<1|1&i,i>>=1;for(l=d<<16|j,k=g;b>k;k+=f)c[k]=l;++e}++d,e<<=1,f<<=1}return[c,n,o]}function c(a,b){switch(this.g=[],this.h=32768,this.c=this.f=this.d=this.k=0,this.input=h?new Uint8Array(a):a,this.l=!1,this.i=j,this.q=!1,(b||!(b={}))&&(b.index&&(this.d=b.index),b.bufferSize&&(this.h=b.bufferSize),b.bufferType&&(this.i=b.bufferType),b.resize&&(this.q=b.resize)),this.i){case i:this.a=32768,this.b=new(h?Uint8Array:Array)(32768+this.h+258);break;case j:this.a=0,this.b=new(h?Uint8Array:Array)(this.h),this.e=this.v,this.m=this.s,this.j=this.t;break;default:throw Error("invalid inflate mode")}}function d(a,b){for(var c,d=a.f,e=a.c,f=a.input,g=a.d,h=f.length;b>e;){if(g>=h)throw Error("input buffer is broken");d|=f[g++]<<e,e+=8}return c=d&(1<<b)-1,a.f=d>>>b,a.c=e-b,a.d=g,c}function e(a,b){for(var c,d,e=a.f,f=a.c,g=a.input,h=a.d,i=g.length,j=b[0],k=b[1];k>f&&!(h>=i);)e|=g[h++]<<f,f+=8;return c=j[e&(1<<k)-1],d=c>>>16,a.f=e>>d,a.c=f-d,a.d=h,65535&c}function f(a){function c(a,b,c){var f,g,h,i=this.p;for(h=0;a>h;)switch(f=e(this,b)){case 16:for(g=3+d(this,2);g--;)c[h++]=i;break;case 17:for(g=3+d(this,3);g--;)c[h++]=0;i=0;break;case 18:for(g=11+d(this,7);g--;)c[h++]=0;i=0;break;default:i=c[h++]=f}return this.p=i,c}var f,g,i,j,k=d(a,5)+257,l=d(a,5)+1,m=d(a,4)+4,o=new(h?Uint8Array:Array)(n.length);for(j=0;m>j;++j)o[n[j]]=d(a,3);if(!h)for(j=m,m=o.length;m>j;++j)o[n[j]]=0;f=b(o),g=new(h?Uint8Array:Array)(k),i=new(h?Uint8Array:Array)(l),a.p=0,a.j(b(c.call(a,k,f,g)),b(c.call(a,l,f,i)))}var g=this,h="undefined"!=typeof Uint8Array&&"undefined"!=typeof Uint16Array&&"undefined"!=typeof Uint32Array&&"undefined"!=typeof DataView,i=0,j=1;c.prototype.u=function(){for(;!this.l;){var a=d(this,3);switch(1&a&&(this.l=!0),a>>>=1){case 0:var b=this.input,c=this.d,e=this.b,g=this.a,k=b.length,l=void 0,m=void 0,n=e.length,o=void 0;if(this.c=this.f=0,c+1>=k)throw Error("invalid uncompressed block header: LEN");if(l=b[c++]|b[c++]<<8,c+1>=k)throw Error("invalid uncompressed block header: NLEN");if(m=b[c++]|b[c++]<<8,l===~m)throw Error("invalid uncompressed block header: length verify");if(c+l>b.length)throw Error("input buffer is broken");switch(this.i){case i:for(;g+l>e.length;){if(o=n-g,l-=o,h)e.set(b.subarray(c,c+o),g),g+=o,c+=o;else for(;o--;)e[g++]=b[c++];this.a=g,e=this.e(),g=this.a}break;case j:for(;g+l>e.length;)e=this.e({o:2});break;default:throw Error("invalid inflate mode")}if(h)e.set(b.subarray(c,c+l),g),g+=l,c+=l;else for(;l--;)e[g++]=b[c++];this.d=c,this.a=g,this.b=e;break;case 1:this.j(z,B);break;case 2:f(this);break;default:throw Error("unknown BTYPE: "+a)}}return this.m()};var k,l,m=[16,17,18,0,8,7,9,6,10,5,11,4,12,3,13,2,14,1,15],n=h?new Uint16Array(m):m,o=[3,4,5,6,7,8,9,10,11,13,15,17,19,23,27,31,35,43,51,59,67,83,99,115,131,163,195,227,258,258,258],p=h?new Uint16Array(o):o,q=[0,0,0,0,0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,0,0,0],r=h?new Uint8Array(q):q,s=[1,2,3,4,5,7,9,13,17,25,33,49,65,97,129,193,257,385,513,769,1025,1537,2049,3073,4097,6145,8193,12289,16385,24577],t=h?new Uint16Array(s):s,u=[0,0,0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11,12,12,13,13],v=h?new Uint8Array(u):u,w=new(h?Uint8Array:Array)(288);for(k=0,l=w.length;l>k;++k)w[k]=143>=k?8:255>=k?9:279>=k?7:8;var x,y,z=b(w),A=new(h?Uint8Array:Array)(30);for(x=0,y=A.length;y>x;++x)A[x]=5;var B=b(A);c.prototype.j=function(a,b){var c=this.b,f=this.a;this.n=a;for(var g,h,i,j,k=c.length-258;256!==(g=e(this,a));)if(256>g)f>=k&&(this.a=f,c=this.e(),f=this.a),c[f++]=g;else for(h=g-257,j=p[h],0<r[h]&&(j+=d(this,r[h])),g=e(this,b),i=t[g],0<v[g]&&(i+=d(this,v[g])),f>=k&&(this.a=f,c=this.e(),f=this.a);j--;)c[f]=c[f++-i];for(;8<=this.c;)this.c-=8,this.d--;this.a=f},c.prototype.t=function(a,b){var c=this.b,f=this.a;this.n=a;for(var g,h,i,j,k=c.length;256!==(g=e(this,a));)if(256>g)f>=k&&(c=this.e(),k=c.length),c[f++]=g;else for(h=g-257,j=p[h],0<r[h]&&(j+=d(this,r[h])),g=e(this,b),i=t[g],0<v[g]&&(i+=d(this,v[g])),f+j>k&&(c=this.e(),k=c.length);j--;)c[f]=c[f++-i];for(;8<=this.c;)this.c-=8,this.d--;this.a=f},c.prototype.e=function(){var a,b,c=new(h?Uint8Array:Array)(this.a-32768),d=this.a-32768,e=this.b;if(h)c.set(e.subarray(32768,c.length));else for(a=0,b=c.length;b>a;++a)c[a]=e[a+32768];if(this.g.push(c),this.k+=c.length,h)e.set(e.subarray(d,d+32768));else for(a=0;32768>a;++a)e[a]=e[d+a];return this.a=32768,e},c.prototype.v=function(a){var b,c,d,e,f=this.input.length/this.d+1|0,g=this.input,i=this.b;return a&&("number"==typeof a.o&&(f=a.o),"number"==typeof a.r&&(f+=a.r)),2>f?(c=(g.length-this.d)/this.n[2],e=258*(c/2)|0,d=e<i.length?i.length+e:i.length<<1):d=i.length*f,h?(b=new Uint8Array(d),b.set(i)):b=i,this.b=b},c.prototype.m=function(){var a,b,c,d,e,f=0,g=this.b,i=this.g,j=new(h?Uint8Array:Array)(this.k+(this.a-32768));if(0===i.length)return h?this.b.subarray(32768,this.a):this.b.slice(32768,this.a);for(b=0,c=i.length;c>b;++b)for(a=i[b],d=0,e=a.length;e>d;++d)j[f++]=a[d];for(b=32768,c=this.a;c>b;++b)j[f++]=g[b];return this.g=[],this.buffer=j},c.prototype.s=function(){var a,b=this.a;return h?this.q?(a=new Uint8Array(b),a.set(this.b.subarray(0,b))):a=this.b.subarray(0,b):(this.b.length>b&&(this.b.length=b),a=this.b),this.buffer=a},a("Zlib.RawInflate",c),a("Zlib.RawInflate.prototype.decompress",c.prototype.u);var C,D,E,F,G={ADAPTIVE:j,BLOCK:i};if(Object.keys)C=Object.keys(G);else for(D in C=[],E=0,G)C[E++]=D;for(E=0,F=C.length;F>E;++E)D=C[E],a("Zlib.RawInflate.BufferType."+D,G[D])}).call(this)},{}]},{},[7])(7)});;/* canvas-toBlob.js
+ * A canvas.toBlob() implementation.
+ * 2011-07-13
+ *
+ * By Eli Grey, http://eligrey.com and Devin Samarin, https://github.com/eboyjr
+ * License: X11/MIT
+ *   See LICENSE.md
+ */
+
+/*global self */
+/*jslint bitwise: true, regexp: true, confusion: true, es5: true, vars: true, white: true,
+  plusplus: true */
+
+/*! @source http://purl.eligrey.com/github/canvas-toBlob.js/blob/master/canvas-toBlob.js */
+
+(function(view) {
+"use strict";
+var
+    Uint8Array = view.Uint8Array
+  , HTMLCanvasElement = view.HTMLCanvasElement
+  , is_base64_regex = /\s*;\s*base64\s*(?:;|$)/i
+  , base64_ranks
+  , decode_base64 = function(base64) {
+    var
+        len = base64.length
+      , buffer = new Uint8Array(len / 4 * 3 | 0)
+      , i = 0
+      , outptr = 0
+      , last = [0, 0]
+      , state = 0
+      , save = 0
+      , rank
+      , code
+      , undef
+    ;
+    while (len--) {
+      code = base64.charCodeAt(i++);
+      rank = base64_ranks[code-43];
+      if (rank !== 255 && rank !== undef) {
+        last[1] = last[0];
+        last[0] = code;
+        save = (save << 6) | rank;
+        state++;
+        if (state === 4) {
+          buffer[outptr++] = save >>> 16;
+          if (last[1] !== 61 /* padding character */) {
+            buffer[outptr++] = save >>> 8;
+          }
+          if (last[0] !== 61 /* padding character */) {
+            buffer[outptr++] = save;
+          }
+          state = 0;
+        }
+      }
+    }
+    // 2/3 chance there's going to be some null bytes at the end, but that
+    // doesn't really matter with most image formats.
+    // If it somehow matters for you, truncate the buffer up outptr.
+    return buffer.buffer;
+  }
+;
+if (Uint8Array) {
+  base64_ranks = new Uint8Array([
+      62, -1, -1, -1, 63, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, -1
+    , -1, -1,  0, -1, -1, -1,  0,  1,  2,  3,  4,  5,  6,  7,  8,  9
+    , 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25
+    , -1, -1, -1, -1, -1, -1, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35
+    , 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51
+  ]);
+}
+if (HTMLCanvasElement && !HTMLCanvasElement.prototype.toBlob) {
+  HTMLCanvasElement.prototype.toBlob = function(callback, type /*, ...args*/) {
+      if (!type) {
+      type = "image/png";
+    } if (this.mozGetAsFile) {
+      callback(this.mozGetAsFile("canvas", type));
+      return;
+    }
+    var
+        args = Array.prototype.slice.call(arguments, 1)
+      , dataURI = this.toDataURL.apply(this, args)
+      , header_end = dataURI.indexOf(",")
+      , data = dataURI.substring(header_end + 1)
+      , is_base64 = is_base64_regex.test(dataURI.substring(0, header_end))
+      , blob
+    ;
+    if (Blob.fake) {
+      // no reason to decode a data: URI that's just going to become a data URI again
+      blob = new Blob
+      if (is_base64) {
+        blob.encoding = "base64";
+      } else {
+        blob.encoding = "URI";
+      }
+      blob.data = data;
+      blob.size = data.length;
+    } else if (Uint8Array) {
+      if (is_base64) {
+        blob = new Blob([decode_base64(data)], {type: type});
+      } else {
+        blob = new Blob([decodeURIComponent(data)], {type: type});
+      }
+    }
+    callback(blob);
+  };
+}
+}(self));;// Spectrum Colorpicker v1.1.2
 // https://github.com/bgrins/spectrum
 // Author: Brian Grinstead
 // License: MIT
@@ -13768,13 +14553,15 @@ var Constants = {
 
   MINIMUM_ZOOM : 1,
 
-  PREVIEW_FILM_SIZE : 120,
+  PREVIEW_FILM_SIZE : 96,
   ANIMATED_PREVIEW_WIDTH : 200,
 
   DEFAULT_PEN_COLOR : '#000000',
   TRANSPARENT_COLOR : 'rgba(0, 0, 0, 0)',
 
   NO_PALETTE_ID : '__no-palette',
+  CURRENT_COLORS_PALETTE_ID : '__current-colors',
+  MANAGE_PALETTE_ID : '__manage-palettes',
 
   // Used for Spectrum input
   PREFERRED_COLOR_FORMAT : 'rgb',
@@ -13815,7 +14602,8 @@ var Constants = {
   RIGHT_BUTTON : 2,
   MOUSEMOVE_THROTTLING : 10,
 
-  ABSTRACT_FUNCTION : function () {throw 'abstract method should be implemented';}
+  ABSTRACT_FUNCTION : function () {throw 'abstract method should be implemented';},
+  EMPTY_FUNCTION : function () {}
 };;// TODO(grosbouddha): put under pskl namespace.
 var Events = {
 
@@ -13826,17 +14614,14 @@ var Events = {
   PRIMARY_COLOR_SELECTED : 'PRIMARY_COLOR_SELECTED',
   SECONDARY_COLOR_SELECTED : 'SECONDARY_COLOR_SELECTED',
 
+  CURSOR_MOVED : 'CURSOR_MOVED',
+  DRAG_START : 'DRAG_START',
+  DRAG_END : 'DRAG_END',
+
   DIALOG_DISPLAY : 'DIALOG_DISPLAY',
   DIALOG_HIDE : 'DIALOG_HIDE',
 
   PALETTE_LIST_UPDATED : 'PALETTE_LIST_UPDATED',
-
-  /**
-   *  When this event is emitted, a request is sent to the localstorage
-   *  Service to save the current framesheet. The storage service
-   *  may not immediately store data (internal throttling of requests).
-   */
-  LOCALSTORAGE_REQUEST: "LOCALSTORAGE_REQUEST",
 
   /**
    * Fired each time a user setting change.
@@ -13853,6 +14638,7 @@ var Events = {
    * Number of frames, content of frames, color used for the palette may have changed.
    */
   PISKEL_RESET: "PISKEL_RESET",
+  PISKEL_SAVE_STATE: "PISKEL_SAVE_STATE",
 
   PISKEL_SAVED: "PISKEL_SAVED",
 
@@ -13865,7 +14651,9 @@ var Events = {
   SHOW_NOTIFICATION: "SHOW_NOTIFICATION",
   HIDE_NOTIFICATION: "HIDE_NOTIFICATION",
 
-  ZOOM_CHANGED : "ZOOM_CHANGED"
+  ZOOM_CHANGED : "ZOOM_CHANGED",
+
+  CURRENT_COLORS_UPDATED : "CURRENT_COLORS_UPDATED"
 };;jQuery.namespace = function() {
   var a=arguments, o=null, i, j, d;
   for (i=0; i<a.length; i=i+1) {
@@ -13915,6 +14703,14 @@ if (typeof Function.prototype.bind !== "function") {
     extendedObject.prototype.superclass = inheritFrom.prototype;
   };
 
+  ns.wrap = function (wrapper, wrappedObject) {
+    for (var prop in wrappedObject) {
+      if (typeof wrappedObject[prop] === 'function' && typeof wrapper[prop] === 'undefined') {
+        wrapper[prop] = wrappedObject[prop].bind(wrappedObject);
+      }
+    }
+  };
+
 })();
 
 ;(function () {
@@ -13957,6 +14753,13 @@ if (typeof Function.prototype.bind !== "function") {
       return canvas;
     },
 
+    createFromImageData : function (imageData) {
+      var canvas = pskl.CanvasUtils.createCanvas(imageData.width, imageData.height);
+      var context = canvas.getContext('2d');
+      context.putImageData(imageData, 0, 0);
+      return canvas;
+    },
+
     /**
      * By default, all scaling operations on a Canvas 2D Context are performed using antialiasing.
      * Resizing a 32x32 image to 320x320 will lead to a blurry output.
@@ -13982,6 +14785,12 @@ if (typeof Function.prototype.bind !== "function") {
     getImageDataFromCanvas : function (canvas) {
       var sourceContext = canvas.getContext('2d');
       return sourceContext.getImageData(0, 0, canvas.width, canvas.height).data;
+    },
+
+    getBase64FromCanvas : function (canvas, format) {
+      format = format || "png";
+      var data = canvas.toDataURL("image/" + format);
+      return data.substr(data.indexOf(',')+1);
     }
   };
 })();;(function () {
@@ -14010,6 +14819,16 @@ if (typeof Function.prototype.bind !== "function") {
         }
       }
       return false;
+    },
+
+    getParentWithData : function (node, data) {
+      while (node) {
+        if (node.dataset && typeof node.dataset[data] !== 'undefined') {
+          return node;
+        }
+        node = node.parentNode;
+      }
+      return null;
     }
   };
 })();;(function () {
@@ -14030,9 +14849,25 @@ if (typeof Function.prototype.bind !== "function") {
         callback(event.target.result);
       };
       reader.readAsDataURL(file);
+    },
+
+    downloadAsFile : function (filename, content) {
+      var saveAs = window.saveAs || (navigator.msSaveBlob && navigator.msSaveBlob.bind(navigator));
+      if (saveAs) {
+        saveAs(content, filename);
+      } else {
+        var downloadLink = document.createElement('a');
+        content = window.URL.createObjectURL(content);
+        downloadLink.setAttribute('href', content);
+        downloadLink.setAttribute('download', filename);
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+      }
     }
   };
-})();;(function () {
+})();
+;(function () {
   var ns = $.namespace('pskl.utils');
   var colorCache = {};
   ns.FrameUtils = {
@@ -14054,6 +14889,12 @@ if (typeof Function.prototype.bind !== "function") {
           frameA.setPixel(col, row, p);
         }
       });
+    },
+
+    resize : function (frame, targetWidth, targetHeight, smoothing) {
+      var image = pskl.utils.FrameUtils.toImage(frame);
+      var resizedImage = pskl.utils.ImageResizer.resize(image, targetWidth, targetHeight, smoothing);
+      return pskl.utils.FrameUtils.createFromImage(resizedImage);
     },
 
     /**
@@ -14185,6 +15026,14 @@ if (typeof Function.prototype.bind !== "function") {
     componentToHex : function (c) {
       var hex = c.toString(16);
       return hex.length == 1 ? "0" + hex : hex;
+    },
+
+    toImage : function (frame, zoom, bgColor) {
+      zoom = zoom || 1;
+      bgColor = bgColor || Constants.TRANSPARENT_COLOR;
+      var canvasRenderer = new pskl.rendering.CanvasRenderer(frame, zoom);
+      canvasRenderer.drawTransparentAs(bgColor);
+      return canvasRenderer.render();
     }
   };
 })();
@@ -14458,22 +15307,6 @@ if (typeof Function.prototype.bind !== "function") {
      */
     calculateZoomForContainer : function (container, pictureHeight, pictureWidth) {
       return this.calculateZoom(container.height(), container.width(), pictureHeight, pictureWidth);
-    },
-
-    /**
-     * Calculate and return the maximal zoom to display a picture for a given height and width.
-     *
-     * @param height number Height available to display the picture
-     * @param width number Width available to display the picture
-     * @param number pictureHeight height in pixels of the picture to display
-     * @param number pictureWidth width in pixels of the picture to display
-     * @return number maximal zoom
-     */
-    calculateZoom : function (height, width, pictureHeight, pictureWidth) {
-      var heightRatio = Math.floor(height / pictureHeight),
-        widthRatio = Math.floor(width / pictureWidth);
-
-      return Math.min(heightRatio, widthRatio);
     }
   };
 })();;(function () {
@@ -14522,11 +15355,13 @@ if (typeof Function.prototype.bind !== "function") {
     GRID_WIDTH : 'GRID_WIDTH',
     CANVAS_BACKGROUND : 'CANVAS_BACKGROUND',
     SELECTED_PALETTE : 'SELECTED_PALETTE',
+    TILED_PREVIEW : 'TILED_PREVIEW',
 
     KEY_TO_DEFAULT_VALUE_MAP_ : {
       'GRID_WIDTH' : 0,
       'CANVAS_BACKGROUND' : 'lowcont-dark-canvas-background',
-      'SELECTED_PALETTE' : Constants.NO_PALETTE_ID
+      'SELECTED_PALETTE' : Constants.CURRENT_COLORS_PALETTE_ID,
+      'TILED_PREVIEW' : false
     },
 
     /**
@@ -14595,30 +15430,35 @@ if (typeof Function.prototype.bind !== "function") {
   var ns = $.namespace('pskl.utils');
 
   ns.Serializer = {
-    serializePiskel : function (piskel) {
+    serializePiskel : function (piskel, expanded) {
       var serializedLayers = piskel.getLayers().map(function (l) {
-        return pskl.utils.Serializer.serializeLayer(l);
+        return pskl.utils.Serializer.serializeLayer(l, expanded);
       });
       return JSON.stringify({
         modelVersion : Constants.MODEL_VERSION,
         piskel : {
           height : piskel.getHeight(),
           width : piskel.getWidth(),
-          layers : serializedLayers
+          layers : serializedLayers,
+          expanded : expanded
         }
       });
     },
 
-    serializeLayer : function (layer) {
+    serializeLayer : function (layer, expanded) {
       var frames = layer.getFrames();
       var renderer = new pskl.rendering.FramesheetRenderer(frames);
-      var base64PNG = renderer.renderAsCanvas().toDataURL();
-
-      return JSON.stringify({
+      var layerToSerialize = {
         name : layer.getName(),
-        base64PNG : base64PNG,
         frameCount : frames.length
-      });
+      };
+      if (expanded) {
+        layerToSerialize.grids = frames.map(function (f) {return f.pixels;});
+        return layerToSerialize;
+      } else {
+        layerToSerialize.base64PNG = renderer.renderAsCanvas().toDataURL();
+        return JSON.stringify(layerToSerialize);
+      }
     }
   };
 })();
@@ -14653,11 +15493,11 @@ if (typeof Function.prototype.bind !== "function") {
     this.piskel_ = new pskl.model.Piskel(piskelData.width, piskelData.height, descriptor);
 
     this.layersToLoad_ = piskelData.layers.length;
-
-    piskelData.layers.forEach(function (serializedLayer) {
-      var layer = this.deserializeLayer(serializedLayer);
-      this.piskel_.addLayer(layer);
-    }.bind(this));
+    if (piskelData.expanded) {
+      piskelData.layers.forEach(this.loadExpandedLayer.bind(this));
+    } else {
+      piskelData.layers.forEach(this.deserializeLayer.bind(this));
+    }
   };
 
   ns.Deserializer.prototype.deserializeLayer = function (layerString) {
@@ -14672,11 +15512,8 @@ if (typeof Function.prototype.bind !== "function") {
     image.onload = function () {
       // 5 - extract the frames from the loaded image
       var frames = pskl.utils.LayerUtils.createFromImage(image, layerData.frameCount);
-
       // 6 - add each image to the layer
-      frames.forEach(layer.addFrame.bind(layer));
-
-      this.onLayerLoaded_();
+      this.addFramesToLayer(frames, layer);
     }.bind(this);
 
     // 3 - set the source of the image
@@ -14684,6 +15521,24 @@ if (typeof Function.prototype.bind !== "function") {
 
     // 4 - return a pointer to the new layer instance
     return layer;
+  };
+
+  ns.Deserializer.prototype.loadExpandedLayer = function (layerData) {
+    var layer = new pskl.model.Layer(layerData.name);
+    var frames = layerData.grids.map(function (grid) {
+      return pskl.model.Frame.fromPixelGrid(grid);
+    });
+    this.addFramesToLayer(frames, layer);
+
+    // 4 - return a pointer to the new layer instance
+    return layer;
+  };
+
+  ns.Deserializer.prototype.addFramesToLayer = function (frames, layer) {
+    frames.forEach(layer.addFrame.bind(layer));
+
+    this.piskel_.addLayer(layer);
+    this.onLayerLoaded_();
   };
 
   ns.Deserializer.prototype.onLayerLoaded_ = function () {
@@ -14808,12 +15663,13 @@ if (typeof Function.prototype.bind !== "function") {
   };
 })();;(function () {
   var ns = $.namespace("pskl.model");
-
+  var __idCounter = 0;
   ns.Frame = function (width, height) {
     if (width && height) {
       this.width = width;
       this.height = height;
-
+      this.id = __idCounter++;
+      this.version = 0;
       this.pixels = ns.Frame.createEmptyPixelGrid_(width, height);
       this.previousStates = [this.getPixels()];
       this.stateIndex = 0;
@@ -14867,6 +15723,7 @@ if (typeof Function.prototype.bind !== "function") {
    */
   ns.Frame.prototype.setPixels = function (pixels) {
     this.pixels = this.clonePixels_(pixels);
+    this.version++;
   };
 
   ns.Frame.prototype.clear = function () {
@@ -14886,16 +15743,26 @@ if (typeof Function.prototype.bind !== "function") {
     return clonedPixels;
   };
 
-  ns.Frame.prototype.serialize = function () {
-    return JSON.stringify(this.pixels);
+  ns.Frame.prototype.getHash = function () {
+    return [this.id, this.version].join('-');
   };
 
   ns.Frame.prototype.setPixel = function (col, row, color) {
-    this.pixels[col][row] = color;
+    if (this.containsPixel(col, row)) {
+      var p = this.pixels[col][row];
+      if (p !== color) {
+        this.pixels[col][row] = color;
+        this.version++;
+      }
+    }
   };
 
   ns.Frame.prototype.getPixel = function (col, row) {
-    return this.pixels[col][row];
+    if (this.containsPixel(col, row)) {
+      return this.pixels[col][row];
+    } else {
+      return null;
+    }
   };
 
   ns.Frame.prototype.forEachPixel = function (callback) {
@@ -14915,7 +15782,7 @@ if (typeof Function.prototype.bind !== "function") {
   };
 
   ns.Frame.prototype.containsPixel = function (col, row) {
-    return col >= 0 && row >= 0 && col < this.pixels.length && row < this.pixels[0].length;
+    return col >= 0 && row >= 0 && col < this.width && row < this.height;
   };
 
   ns.Frame.prototype.saveState = function () {
@@ -14971,6 +15838,10 @@ if (typeof Function.prototype.bind !== "function") {
 
   ns.Layer.prototype.getName = function () {
     return this.name;
+  };
+
+  ns.Layer.prototype.setName = function (name) {
+    this.name = name;
   };
 
   ns.Layer.prototype.getFrames = function () {
@@ -15160,6 +16031,11 @@ if (typeof Function.prototype.bind !== "function") {
 })();;(function () {
   var ns = $.namespace("pskl.selection");
 
+  var SELECTION_REPLAY = {
+    PASTE : 'REPLAY_PASTE',
+    ERASE : 'REPLAY_ERASE'
+  };
+
   ns.SelectionManager = function (piskelController) {
 
     this.piskelController = piskelController;
@@ -15173,9 +16049,11 @@ if (typeof Function.prototype.bind !== "function") {
     $.subscribe(Events.SELECTION_MOVE_REQUEST, $.proxy(this.onSelectionMoved_, this));
 
     pskl.app.shortcutService.addShortcut('ctrl+V', this.paste.bind(this));
+    pskl.app.shortcutService.addShortcut('ctrl+shift+V', this.pasteOpaqueOnly.bind(this));
     pskl.app.shortcutService.addShortcut('ctrl+X', this.cut.bind(this));
     pskl.app.shortcutService.addShortcut('ctrl+C', this.copy.bind(this));
     pskl.app.shortcutService.addShortcut('del', this.erase.bind(this));
+    pskl.app.shortcutService.addShortcut('back', this.onBackPressed_.bind(this));
 
     $.subscribe(Events.TOOL_SELECTED, $.proxy(this.onToolSelected_, this));
   };
@@ -15186,6 +16064,7 @@ if (typeof Function.prototype.bind !== "function") {
   ns.SelectionManager.prototype.cleanSelection_ = function() {
     if(this.currentSelection) {
       this.currentSelection.reset();
+      this.currentSelection = null;
     }
   };
 
@@ -15206,16 +16085,29 @@ if (typeof Function.prototype.bind !== "function") {
     this.cleanSelection_();
   };
 
+  ns.SelectionManager.prototype.onBackPressed_ = function(evt) {
+    if (this.currentSelection) {
+      this.erase();
+    } else {
+      return true; // bubble
+    }
+  };
+
   ns.SelectionManager.prototype.erase = function () {
     var pixels = this.currentSelection.pixels;
     var currentFrame = this.piskelController.getCurrentFrame();
     for(var i=0, l=pixels.length; i<l; i++) {
-      try {
-        currentFrame.setPixel(pixels[i].col, pixels[i].row, Constants.TRANSPARENT_COLOR);
-      } catch(e) {
-        // Catching out of frame's bound pixels without testing
-      }
+      currentFrame.setPixel(pixels[i].col, pixels[i].row, Constants.TRANSPARENT_COLOR);
     }
+
+    $.publish(Events.PISKEL_SAVE_STATE, {
+      type : pskl.service.HistoryService.REPLAY,
+      scope : this,
+      replay : {
+        type : SELECTION_REPLAY.ERASE,
+        pixels : JSON.parse(JSON.stringify(pixels.slice(0)))
+      }
+    });
   };
 
   ns.SelectionManager.prototype.cut = function() {
@@ -15232,17 +16124,43 @@ if (typeof Function.prototype.bind !== "function") {
   ns.SelectionManager.prototype.paste = function() {
     if(this.currentSelection && this.currentSelection.hasPastedContent) {
       var pixels = this.currentSelection.pixels;
-      var currentFrame = this.piskelController.getCurrentFrame();
-      for(var i=0, l=pixels.length; i<l; i++) {
-        try {
-          currentFrame.setPixel(
-            pixels[i].col, pixels[i].row,
-            pixels[i].copiedColor);
-        } catch(e) {
-          // Catching out of frame's bound pixels without testing
-        }
-      }
+      this.pastePixels(pixels);
     }
+  };
+
+  ns.SelectionManager.prototype.pasteOpaqueOnly = function() {
+    if(this.currentSelection && this.currentSelection.hasPastedContent) {
+      var pixels = this.currentSelection.pixels;
+      var opaquePixels = pixels.filter(function (p) {
+        return p.color !== Constants.TRANSPARENT_COLOR;
+      });
+      this.pastePixels(opaquePixels);
+    }
+  };
+
+  ns.SelectionManager.prototype.pastePixels = function(pixels) {
+    var currentFrame = this.piskelController.getCurrentFrame();
+
+    $.publish(Events.PISKEL_SAVE_STATE, {
+      type : pskl.service.HistoryService.REPLAY,
+      scope : this,
+      replay : {
+        type : SELECTION_REPLAY.PASTE,
+        pixels : JSON.parse(JSON.stringify(pixels.slice(0)))
+      }
+    });
+
+    pixels.forEach(function (pixel) {
+      currentFrame.setPixel(pixel.col,pixel.row,pixel.color);
+    });
+  };
+
+  ns.SelectionManager.prototype.replay = function (frame, replayData) {
+    var pixels = replayData.pixels;
+    pixels.forEach(function (pixel) {
+      var color = replayData.type === SELECTION_REPLAY.PASTE ? pixel.color : Constants.TRANSPARENT_COLOR;
+      frame.setPixel(pixel.col, pixel.row, color);
+    });
   };
 
   ns.SelectionManager.prototype.copy = function() {
@@ -15301,12 +16219,9 @@ if (typeof Function.prototype.bind !== "function") {
   };
 
   ns.BaseSelection.prototype.fillSelectionFromFrame = function (targetFrame) {
-    var pixelWithCopiedColor;
-    for(var i=0, l=this.pixels.length; i<l; i++) {
-      pixelWithCopiedColor = this.pixels[i];
-      pixelWithCopiedColor.copiedColor =
-        targetFrame.getPixel(pixelWithCopiedColor.col, pixelWithCopiedColor.row);
-    }
+    this.pixels.forEach(function (pixel) {
+      pixel.color = targetFrame.getPixel(pixel.col, pixel.row);
+    });
     this.hasPastedContent = true;
   };
 })();;(function () {
@@ -15331,6 +16246,7 @@ if (typeof Function.prototype.bind !== "function") {
   ns.AbstractRenderer = function () {};
 
   ns.AbstractRenderer.prototype.clear = Constants.ABSTRACT_FUNCTION;
+  ns.AbstractRenderer.prototype.render = Constants.ABSTRACT_FUNCTION;
 
   ns.AbstractRenderer.prototype.getCoordinates = Constants.ABSTRACT_FUNCTION;
 
@@ -15340,7 +16256,6 @@ if (typeof Function.prototype.bind !== "function") {
   ns.AbstractRenderer.prototype.setZoom = Constants.ABSTRACT_FUNCTION;
   ns.AbstractRenderer.prototype.getZoom = Constants.ABSTRACT_FUNCTION;
 
-  ns.AbstractRenderer.prototype.moveOffset = Constants.ABSTRACT_FUNCTION;
   ns.AbstractRenderer.prototype.setOffset = Constants.ABSTRACT_FUNCTION;
   ns.AbstractRenderer.prototype.getOffset = Constants.ABSTRACT_FUNCTION;
 
@@ -15384,12 +16299,6 @@ if (typeof Function.prototype.bind !== "function") {
 
   ns.CompositeRenderer.prototype.getDisplaySize = function () {
     return this.getSampleRenderer_().getDisplaySize();
-  };
-
-  ns.CompositeRenderer.prototype.moveOffset = function (x, y) {
-    this.renderers.forEach(function (renderer) {
-      renderer.moveOffset(x, y);
-    });
   };
 
   ns.CompositeRenderer.prototype.setOffset = function (x, y) {
@@ -15444,8 +16353,8 @@ if (typeof Function.prototype.bind !== "function") {
     var offset = this.getOffset();
     var size = this.getDisplaySize();
     var layers = this.piskelController.getLayers();
-    var currentFrameIndex = this.piskelController.currentFrameIndex;
-    var currentLayerIndex = this.piskelController.currentLayerIndex;
+    var currentFrameIndex = this.piskelController.getCurrentFrameIndex();
+    var currentLayerIndex = this.piskelController.getCurrentLayerIndex();
 
     var serializedRendering = [
       this.getZoom(),
@@ -15477,6 +16386,20 @@ if (typeof Function.prototype.bind !== "function") {
         this.aboveRenderer.render(upFrame);
       }
 
+    }
+  };
+
+
+  /**
+   * See @pskl.rendering.frame.CachedFrameRenderer
+   * Same issue : FrameRenderer setDisplaySize destroys the canvas
+   * @param {Number} width
+   * @param {Number} height
+   */
+  ns.LayersRenderer.prototype.setDisplaySize = function (width, height) {
+    var size = this.getDisplaySize();
+    if (size.width !== width || size.height !== height) {
+      this.superclass.setDisplaySize.call(this, width, height);
     }
   };
 
@@ -15546,8 +16469,7 @@ if (typeof Function.prototype.bind !== "function") {
 
     this.setGridWidth(pskl.UserSettings.get(pskl.UserSettings.GRID_WIDTH));
 
-    this.updateBackgroundClass_(pskl.UserSettings.get(pskl.UserSettings.CANVAS_BACKGROUND));
-    $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
+    $.subscribe(Events.USER_SETTINGS_CHANGED, this.onUserSettingsChange_.bind(this));
   };
 
   pskl.utils.inherit(pskl.rendering.frame.FrameRenderer, pskl.rendering.AbstractRenderer);
@@ -15607,10 +16529,6 @@ if (typeof Function.prototype.bind !== "function") {
     };
   };
 
-  ns.FrameRenderer.prototype.moveOffset = function (x, y) {
-    this.setOffset(this.offset.x + x, this.offset.y + y);
-  };
-
   ns.FrameRenderer.prototype.setOffset = function (x, y) {
     // TODO : provide frame size information to the FrameRenderer constructor
     // here I first need to verify I have a 'canvas' which I can use to infer the frame information
@@ -15637,11 +16555,11 @@ if (typeof Function.prototype.bind !== "function") {
     }
   };
 
-  ns.FrameRenderer.prototype.updateMargins_ = function () {
-    var deltaX = this.displayWidth - (this.zoom * this.canvas.width);
+  ns.FrameRenderer.prototype.updateMargins_ = function (frame) {
+    var deltaX = this.displayWidth - (this.zoom * frame.getWidth());
     this.margin.x = Math.max(0, deltaX) / 2;
 
-    var deltaY = this.displayHeight - (this.zoom * this.canvas.height);
+    var deltaY = this.displayHeight - (this.zoom * frame.getHeight());
     this.margin.y = Math.max(0, deltaY) / 2;
   };
 
@@ -15650,27 +16568,14 @@ if (typeof Function.prototype.bind !== "function") {
     var width = this.displayWidth;
 
     this.displayCanvas = pskl.CanvasUtils.createCanvas(width, height, this.classes);
-    if (true || this.zoom > 2) {
-      pskl.CanvasUtils.disableImageSmoothing(this.displayCanvas);
-    }
+    pskl.CanvasUtils.disableImageSmoothing(this.displayCanvas);
     this.container.append(this.displayCanvas);
   };
 
   ns.FrameRenderer.prototype.onUserSettingsChange_ = function (evt, settingName, settingValue) {
-    if (settingName == pskl.UserSettings.CANVAS_BACKGROUND) {
-      this.updateBackgroundClass_(settingValue);
-    } else if (settingName == pskl.UserSettings.GRID_WIDTH) {
+    if (settingName == pskl.UserSettings.GRID_WIDTH) {
       this.setGridWidth(settingValue);
     }
-  };
-
-  ns.FrameRenderer.prototype.updateBackgroundClass_ = function (newClass) {
-    var currentClass = this.container.data('current-background-class');
-    if (currentClass) {
-      this.container.removeClass(currentClass);
-    }
-    this.container.addClass(newClass);
-    this.container.data('current-background-class', newClass);
   };
 
   ns.FrameRenderer.prototype.renderPixel_ = function (color, x, y, context) {
@@ -15721,22 +16626,22 @@ if (typeof Function.prototype.bind !== "function") {
       }
     }
 
-    this.updateMargins_();
+    this.updateMargins_(frame);
 
-    context = this.displayCanvas.getContext('2d');
-    context.save();
+    var displayContext = this.displayCanvas.getContext('2d');
+    displayContext.save();
 
     if (this.canvas.width*this.zoom < this.displayCanvas.width) {
-      context.fillStyle = Constants.ZOOMED_OUT_BACKGROUND_COLOR;
-      context.fillRect(0,0,this.displayCanvas.width, this.displayCanvas.height);
+      displayContext.fillStyle = Constants.ZOOMED_OUT_BACKGROUND_COLOR;
+      displayContext.fillRect(0,0,this.displayCanvas.width, this.displayCanvas.height);
     }
 
-    context.translate(
+    displayContext.translate(
       this.margin.x-this.offset.x*this.zoom,
       this.margin.y-this.offset.y*this.zoom
     );
 
-    context.clearRect(0, 0, this.canvas.width*this.zoom, this.canvas.height*this.zoom);
+    displayContext.clearRect(0, 0, this.canvas.width*this.zoom, this.canvas.height*this.zoom);
 
     var isIE10 = pskl.utils.UserAgent.isIE && pskl.utils.UserAgent.version === 10;
 
@@ -15744,12 +16649,42 @@ if (typeof Function.prototype.bind !== "function") {
     var isGridEnabled = gridWidth > 0;
     if (isGridEnabled || isIE10) {
       var scaled = pskl.utils.ImageResizer.resizeNearestNeighbour(this.canvas, this.zoom, gridWidth);
-      context.drawImage(scaled, 0, 0);
+      displayContext.drawImage(scaled, 0, 0);
     } else {
-      context.scale(this.zoom, this.zoom);
-      context.drawImage(this.canvas, 0, 0);
+      displayContext.scale(this.zoom, this.zoom);
+      displayContext.drawImage(this.canvas, 0, 0);
     }
-    context.restore();
+    displayContext.restore();
+  };
+})();;(function () {
+  var ns = $.namespace('pskl.rendering.frame');
+
+  ns.TiledFrameRenderer = function (container, zoom) {
+    this.container = container;
+    this.setZoom(zoom);
+
+    this.displayContainer = document.createElement('div');
+    this.displayContainer.classList.add('tiled-frame-container');
+    container.get(0).appendChild(this.displayContainer);
+  };
+
+  ns.TiledFrameRenderer.prototype.render = function (frame) {
+    var canvas = new pskl.utils.FrameUtils.toImage(frame, this.zoom);
+    this.displayContainer.style.backgroundImage = 'url(' + canvas.toDataURL('image/png') + ')';
+  };
+
+  ns.TiledFrameRenderer.prototype.show = function () {
+    if (this.displayContainer) {
+      this.displayContainer.style.display = 'block';
+    }
+  };
+
+  ns.TiledFrameRenderer.prototype.setZoom = function (zoom) {
+    this.zoom = zoom;
+  };
+
+  ns.TiledFrameRenderer.prototype.getZoom = function () {
+    return this.zoom;
   };
 })();;(function () {
   var ns = $.namespace('pskl.rendering.frame');
@@ -15767,6 +16702,20 @@ if (typeof Function.prototype.bind !== "function") {
 
   pskl.utils.inherit(pskl.rendering.frame.CachedFrameRenderer, pskl.rendering.frame.FrameRenderer);
 
+  /**
+   * Only call display size if provided values are different from current values.
+   * FrameRenderer:setDisplaySize destroys the underlying canvas
+   * If the canvas is destroyed, a rendering is mandatory.
+   * (Alternatively we could find a way to force the rendering of the CachedFrameRenderer from the outside)
+   * @param {Number} width
+   * @param {Number} height
+   */
+  ns.CachedFrameRenderer.prototype.setDisplaySize = function (width, height) {
+    if (this.displayWidth !== width || this.displayHeight !== height) {
+      this.superclass.setDisplaySize.call(this, width, height);
+    }
+  };
+
   ns.CachedFrameRenderer.prototype.render = function (frame) {
     var offset = this.getOffset();
     var size = this.getDisplaySize();
@@ -15775,9 +16724,10 @@ if (typeof Function.prototype.bind !== "function") {
       this.getGridWidth(),
       offset.x, offset.y,
       size.width, size.height,
-      frame.serialize()
+      frame.getHash()
     ].join('-');
     if (this.serializedFrame != serializedFrame) {
+      // console.log('rendering')
       this.serializedFrame = serializedFrame;
       this.superclass.render.call(this, frame);
     }
@@ -15804,12 +16754,17 @@ if (typeof Function.prototype.bind !== "function") {
   ns.CanvasRenderer.prototype.render = function  () {
     var canvas = this.createCanvas_();
     var context = canvas.getContext('2d');
-
     this.frame.forEachPixel(function (color, x, y) {
       this.renderPixel_(color, x, y, context);
     }.bind(this));
 
-    return canvas;
+    var scaledCanvas = this.createCanvas_(this.zoom);
+    var scaledContext = scaledCanvas.getContext('2d');
+    pskl.CanvasUtils.disableImageSmoothing(scaledCanvas);
+    scaledContext.scale(this.zoom, this.zoom);
+    scaledContext.drawImage(canvas, 0, 0);
+
+    return scaledCanvas;
   };
 
   ns.CanvasRenderer.prototype.renderPixel_ = function (color, x, y, context) {
@@ -15817,12 +16772,13 @@ if (typeof Function.prototype.bind !== "function") {
       color = this.transparentColor_;
     }
     context.fillStyle = color;
-    context.fillRect(x * this.zoom, y * this.zoom, this.zoom, this.zoom);
+    context.fillRect(x, y, 1, 1);
   };
 
-  ns.CanvasRenderer.prototype.createCanvas_ = function () {
-    var width = this.frame.getWidth() * this.zoom;
-    var height = this.frame.getHeight() * this.zoom;
+  ns.CanvasRenderer.prototype.createCanvas_ = function (zoom) {
+    zoom = zoom || 1;
+    var width = this.frame.getWidth() * zoom;
+    var height = this.frame.getHeight() * zoom;
     return pskl.CanvasUtils.createCanvas(width, height);
   };
 })();;(function () {
@@ -15881,7 +16837,7 @@ if (typeof Function.prototype.bind !== "function") {
 
   pskl.utils.inherit(ns.PiskelRenderer, ns.FramesheetRenderer);
 })();;(function () {
-  var ns = $.namespace('pskl.controller');
+  var ns = $.namespace('pskl.controller.piskel');
 
   ns.PiskelController = function (piskel) {
     if (piskel) {
@@ -15897,16 +16853,9 @@ if (typeof Function.prototype.bind !== "function") {
     this.currentFrameIndex = 0;
 
     this.layerIdCounter = 1;
-
-    $.publish(Events.FRAME_SIZE_CHANGED);
-    $.publish(Events.PISKEL_RESET);
   };
 
   ns.PiskelController.prototype.init = function () {
-    pskl.app.shortcutService.addShortcut('up', this.selectPreviousFrame.bind(this));
-    pskl.app.shortcutService.addShortcut('down', this.selectNextFrame.bind(this));
-    pskl.app.shortcutService.addShortcut('n', this.addFrameAtCurrentIndex.bind(this));
-    pskl.app.shortcutService.addShortcut('shift+n', this.duplicateCurrentFrame.bind(this));
   };
 
   ns.PiskelController.prototype.getHeight = function () {
@@ -15933,12 +16882,29 @@ if (typeof Function.prototype.bind !== "function") {
   };
 
   ns.PiskelController.prototype.getCurrentLayer = function () {
-    return this.piskel.getLayerAt(this.currentLayerIndex);
+    return this.getLayerAt(this.currentLayerIndex);
+  };
+
+  ns.PiskelController.prototype.getLayerAt = function (index) {
+    return this.piskel.getLayerAt(index);
   };
 
   ns.PiskelController.prototype.getCurrentFrame = function () {
     var layer = this.getCurrentLayer();
     return layer.getFrameAt(this.currentFrameIndex);
+  };
+
+
+  ns.PiskelController.prototype.getCurrentLayerIndex = function () {
+    return this.currentLayerIndex;
+  };
+
+  ns.PiskelController.prototype.getCurrentFrameIndex = function () {
+    return this.currentFrameIndex;
+  };
+
+  ns.PiskelController.prototype.getPiskel = function () {
+    return this.piskel;
   };
 
   ns.PiskelController.prototype.getFrameAt = function (index) {
@@ -15961,12 +16927,9 @@ if (typeof Function.prototype.bind !== "function") {
   };
 
   ns.PiskelController.prototype.addFrameAt = function (index) {
-    var layers = this.getLayers();
-    layers.forEach(function (l) {
+    this.getLayers().forEach(function (l) {
       l.addFrameAt(this.createEmptyFrame_(), index);
     }.bind(this));
-
-    $.publish(Events.PISKEL_RESET);
   };
 
   ns.PiskelController.prototype.createEmptyFrame_ = function () {
@@ -15975,16 +16938,13 @@ if (typeof Function.prototype.bind !== "function") {
   };
 
   ns.PiskelController.prototype.removeFrameAt = function (index) {
-    var layers = this.getLayers();
-    layers.forEach(function (l) {
+    this.getLayers().forEach(function (l) {
       l.removeFrameAt(index);
     });
     // Current frame index is impacted if the removed frame was before the current frame
     if (this.currentFrameIndex >= index && this.currentFrameIndex > 0) {
       this.setCurrentFrameIndex(this.currentFrameIndex - 1);
     }
-
-    $.publish(Events.PISKEL_RESET);
   };
 
   ns.PiskelController.prototype.duplicateCurrentFrame = function () {
@@ -15992,17 +16952,13 @@ if (typeof Function.prototype.bind !== "function") {
   };
 
   ns.PiskelController.prototype.duplicateFrameAt = function (index) {
-    var layers = this.getLayers();
-    layers.forEach(function (l) {
+    this.getLayers().forEach(function (l) {
       l.duplicateFrameAt(index);
     });
-
-    $.publish(Events.PISKEL_RESET);
   };
 
   ns.PiskelController.prototype.moveFrame = function (fromIndex, toIndex) {
-    var layers = this.getLayers();
-    layers.forEach(function (l) {
+    this.getLayers().forEach(function (l) {
       l.moveFrame(fromIndex, toIndex);
     });
   };
@@ -16014,7 +16970,6 @@ if (typeof Function.prototype.bind !== "function") {
 
   ns.PiskelController.prototype.setCurrentFrameIndex = function (index) {
     this.currentFrameIndex = index;
-    $.publish(Events.PISKEL_RESET);
   };
 
   ns.PiskelController.prototype.selectNextFrame = function () {
@@ -16033,7 +16988,6 @@ if (typeof Function.prototype.bind !== "function") {
 
   ns.PiskelController.prototype.setCurrentLayerIndex = function (index) {
     this.currentLayerIndex = index;
-    $.publish(Events.PISKEL_RESET);
   };
 
   ns.PiskelController.prototype.selectLayer = function (layer) {
@@ -16043,10 +16997,19 @@ if (typeof Function.prototype.bind !== "function") {
     }
   };
 
-  ns.PiskelController.prototype.selectLayerByName = function (name) {
-    if (this.hasLayerForName_(name)) {
-      var layer = this.piskel.getLayersByName(name)[0];
-      this.selectLayer(layer);
+  ns.PiskelController.prototype.renameLayerAt = function (index, name) {
+    var layer = this.getLayerByIndex(index);
+    if (layer) {
+      layer.setName(name);
+    }
+  };
+
+  ns.PiskelController.prototype.getLayerByIndex = function (index) {
+    var layers = this.getLayers();
+    if (layers[index]) {
+      return layers[index];
+    } else {
+      return null;
     }
   };
 
@@ -16070,6 +17033,7 @@ if (typeof Function.prototype.bind !== "function") {
       }
       this.piskel.addLayer(layer);
       this.setCurrentLayerIndex(this.piskel.getLayers().length - 1);
+
     } else {
       throw 'Layer name should be unique';
     }
@@ -16099,13 +17063,214 @@ if (typeof Function.prototype.bind !== "function") {
     }
   };
 
-  ns.PiskelController.prototype.serialize = function () {
-    return pskl.utils.Serializer.serializePiskel(this.piskel);
+  ns.PiskelController.prototype.serialize = function (expanded) {
+    return pskl.utils.Serializer.serializePiskel(this.piskel, expanded);
+  };
+})();;(function () {
+  var ns = $.namespace('pskl.controller.piskel');
+
+  ns.PublicPiskelController = function (piskelController) {
+    this.piskelController = piskelController;
+    pskl.utils.wrap(this, this.piskelController);
   };
 
-  ns.PiskelController.prototype.load = function (data) {
-    this.deserialize(JSON.stringify(data));
+  ns.PublicPiskelController.prototype.init = function () {
+    pskl.app.shortcutService.addShortcut('up', this.selectPreviousFrame.bind(this));
+    pskl.app.shortcutService.addShortcut('down', this.selectNextFrame.bind(this));
+    pskl.app.shortcutService.addShortcut('n', this.addFrameAtCurrentIndex.bind(this));
+    pskl.app.shortcutService.addShortcut('shift+n', this.duplicateCurrentFrame.bind(this));
   };
+
+  ns.PublicPiskelController.prototype.setPiskel = function (piskel) {
+    this.piskelController.setPiskel(piskel);
+
+    $.publish(Events.FRAME_SIZE_CHANGED);
+    $.publish(Events.PISKEL_RESET);
+    $.publish(Events.PISKEL_SAVE_STATE, {
+      type : pskl.service.HistoryService.SNAPSHOT
+    });
+  };
+
+  ns.PublicPiskelController.prototype.addFrame = function () {
+    this.addFrameAt(this.getFrameCount());
+  };
+
+  ns.PublicPiskelController.prototype.addFrameAtCurrentIndex = function () {
+    this.addFrameAt(this.getCurrentFrameIndex());
+  };
+
+  ns.PublicPiskelController.prototype.addFrameAt = function (index) {
+    this.raiseSaveStateEvent_(this.piskelController.addFrameAt, [index]);
+    this.piskelController.addFrameAt(index);
+    $.publish(Events.PISKEL_RESET);
+  };
+
+  ns.PublicPiskelController.prototype.removeFrameAt = function (index) {
+    this.raiseSaveStateEvent_(this.piskelController.removeFrameAt, [index]);
+    this.piskelController.removeFrameAt(index);
+    $.publish(Events.PISKEL_RESET);
+  };
+
+  ns.PublicPiskelController.prototype.duplicateCurrentFrame = function () {
+    this.duplicateFrameAt(this.getCurrentFrameIndex());
+  };
+
+  ns.PublicPiskelController.prototype.raiseSaveStateEvent_ = function (fn, args) {
+    $.publish(Events.PISKEL_SAVE_STATE, {
+      type : pskl.service.HistoryService.REPLAY,
+      scope : this,
+      replay : {
+        fn : fn,
+        args : args
+      }
+    });
+  };
+
+  ns.PublicPiskelController.prototype.replay = function (frame, replayData) {
+    replayData.fn.apply(this.piskelController, replayData.args);
+  };
+
+  ns.PublicPiskelController.prototype.duplicateFrameAt = function (index) {
+    this.raiseSaveStateEvent_(this.piskelController.duplicateFrameAt, [index]);
+    this.piskelController.duplicateFrameAt(index);
+    $.publish(Events.PISKEL_RESET);
+  };
+
+  ns.PublicPiskelController.prototype.moveFrame = function (fromIndex, toIndex) {
+    this.raiseSaveStateEvent_(this.piskelController.moveFrame, [fromIndex, toIndex]);
+    this.piskelController.moveFrame(fromIndex, toIndex);
+    $.publish(Events.PISKEL_RESET);
+  };
+
+  ns.PublicPiskelController.prototype.setCurrentFrameIndex = function (index) {
+    this.piskelController.setCurrentFrameIndex(index);
+    $.publish(Events.PISKEL_RESET);
+  };
+
+  ns.PublicPiskelController.prototype.selectNextFrame = function () {
+    this.piskelController.selectNextFrame();
+    $.publish(Events.PISKEL_RESET);
+  };
+
+  ns.PublicPiskelController.prototype.selectPreviousFrame = function () {
+    this.piskelController.selectPreviousFrame();
+    $.publish(Events.PISKEL_RESET);
+  };
+
+  ns.PublicPiskelController.prototype.setCurrentLayerIndex = function (index) {
+    this.piskelController.setCurrentLayerIndex(index);
+    $.publish(Events.PISKEL_RESET);
+  };
+
+  ns.PublicPiskelController.prototype.selectLayer = function (layer) {
+    this.piskelController.selectLayer(layer);
+    $.publish(Events.PISKEL_RESET);
+  };
+
+  ns.PublicPiskelController.prototype.renameLayerAt = function (index, name) {
+    this.raiseSaveStateEvent_(this.piskelController.renameLayerAt, [index, name]);
+    this.piskelController.renameLayerAt(index, name);
+  };
+
+  ns.PublicPiskelController.prototype.createLayer = function (name) {
+    this.raiseSaveStateEvent_(this.piskelController.createLayer, [name]);
+    this.piskelController.createLayer(name);
+    $.publish(Events.PISKEL_RESET);
+  };
+
+  ns.PublicPiskelController.prototype.moveLayerUp = function () {
+    this.raiseSaveStateEvent_(this.piskelController.moveLayerUp, []);
+    this.piskelController.moveLayerUp();
+    $.publish(Events.PISKEL_RESET);
+  };
+
+  ns.PublicPiskelController.prototype.moveLayerDown = function () {
+    this.raiseSaveStateEvent_(this.piskelController.moveLayerDown, []);
+    this.piskelController.moveLayerDown();
+    $.publish(Events.PISKEL_RESET);
+  };
+
+  ns.PublicPiskelController.prototype.removeCurrentLayer = function () {
+    this.raiseSaveStateEvent_(this.piskelController.removeCurrentLayer, []);
+    this.piskelController.removeCurrentLayer();
+    $.publish(Events.PISKEL_RESET);
+  };
+
+  ns.PublicPiskelController.prototype.getCurrentLayerIndex = function () {
+    return this.piskelController.currentLayerIndex;
+  };
+
+  ns.PublicPiskelController.prototype.getCurrentFrameIndex = function () {
+    return this.piskelController.currentFrameIndex;
+  };
+
+  ns.PublicPiskelController.prototype.getPiskel = function () {
+    return this.piskelController.piskel;
+  };
+
+})();;(function () {
+  var ns = $.namespace('pskl.controller');
+
+  ns.CursorCoordinatesController = function (piskelController) {
+    this.piskelController = piskelController;
+    this.origin = null;
+    this.coordinates = {x:-1,y:-1};
+
+  };
+
+  ns.CursorCoordinatesController.prototype.init = function () {
+    this.coordinatesContainer = document.querySelector('.cursor-coordinates');
+
+    $.subscribe(Events.CURSOR_MOVED, this.onCursorMoved_.bind(this));
+    $.subscribe(Events.DRAG_START, this.onDragStart_.bind(this));
+    $.subscribe(Events.DRAG_END, this.onDragEnd_.bind(this));
+    $.subscribe(Events.FRAME_SIZE_CHANGED, this.redraw.bind(this));
+
+    this.redraw();
+  };
+
+  ns.CursorCoordinatesController.prototype.redraw = function () {
+    var html = '';
+    if (this.origin) {
+      html += this.origin.x + ':' + this.origin.y + ' to ';
+    }
+
+    var x = this.coordinates.x;
+    var y = this.coordinates.y;
+    var currentFrame = this.piskelController.getCurrentFrame();
+    if (currentFrame.containsPixel(x, y)) {
+      html += x + ':' + y;
+      if (this.origin) {
+        var dX = Math.abs(x-this.origin.x) + 1;
+        var dY = Math.abs(y-this.origin.y) + 1;
+        html += ' (' + dX + 'x' + dY +')';
+      }
+    }
+
+    this.coordinatesContainer.innerHTML = this.getFrameSizeHTML_() + html;
+  };
+
+  ns.CursorCoordinatesController.prototype.getFrameSizeHTML_ = function () {
+    var w = this.piskelController.getWidth();
+    var h = this.piskelController.getHeight();
+    return '['+w+'x'+h+'] ';
+  };
+
+  ns.CursorCoordinatesController.prototype.onCursorMoved_ = function (event, x, y) {
+    this.coordinates = {x:x, y:y};
+    this.redraw();
+  };
+
+  ns.CursorCoordinatesController.prototype.onDragStart_ = function (event, x, y) {
+    this.origin = {x:x, y:y};
+    this.redraw();
+  };
+
+  ns.CursorCoordinatesController.prototype.onDragEnd_ = function (event, x, y) {
+    this.origin = null;
+    this.redraw();
+  };
+
 })();;(function () {
   var ns = $.namespace("pskl.controller");
   ns.DrawingController = function (piskelController, paletteController, container) {
@@ -16174,8 +17339,6 @@ if (typeof Function.prototype.bind !== "function") {
   ns.DrawingController.prototype.initMouseBehavior = function() {
     var body = $('body');
     this.container.mousedown($.proxy(this.onMousedown_, this));
-    this.container.mouseenter($.proxy(this.onMouseenter_, this));
-    this.container.mouseleave($.proxy(this.onMouseleave_, this));
 
     if (pskl.utils.UserAgent.isChrome) {
       this.container.on('mousewheel', $.proxy(this.onMousewheel_, this));
@@ -16183,7 +17346,9 @@ if (typeof Function.prototype.bind !== "function") {
       this.container.on('wheel', $.proxy(this.onMousewheel_, this));
     }
 
-    body.mouseup($.proxy(this.onMouseup_, this));
+    window.addEventListener('mouseup', this.onMouseup_.bind(this));
+    window.addEventListener('mousemove', this.onMousemove_.bind(this));
+    window.addEventListener('keyup', this.onKeyup_.bind(this));
 
     // Deactivate right click:
     body.contextmenu(this.onCanvasContextMenu_);
@@ -16218,24 +17383,10 @@ if (typeof Function.prototype.bind !== "function") {
 
   ns.DrawingController.prototype.onFrameSizeChanged_ = function () {
     this.compositeRenderer.setDisplaySize(this.getContainerWidth_(), this.getContainerHeight_());
+    this.centerColumnWrapperHorizontally_();
     this.compositeRenderer.setZoom(this.calculateZoom_());
     this.compositeRenderer.setOffset(0, 0);
     $.publish(Events.ZOOM_CHANGED);
-  };
-
-  /**
-   * @private
-   */
-  ns.DrawingController.prototype.onMouseenter_ = function (event) {
-    this.container.bind('mousemove', $.proxy(this.onMousemove_, this));
-  };
-
-  /**
-   * @private
-   */
-  ns.DrawingController.prototype.onMouseleave_ = function (event) {
-    this.container.unbind('mousemove');
-    this.currentToolBehavior.hideHighlightedPixel(this.overlayFrame);
   };
 
   /**
@@ -16262,8 +17413,6 @@ if (typeof Function.prototype.bind !== "function") {
         this.overlayFrame,
         event
       );
-
-      $.publish(Events.LOCALSTORAGE_REQUEST);
     }
   };
 
@@ -16271,41 +17420,52 @@ if (typeof Function.prototype.bind !== "function") {
    * @private
    */
   ns.DrawingController.prototype.onMousemove_ = function (event) {
+    this._clientX = event.clientX;
+    this._clientY = event.clientY;
+
     var currentTime = new Date().getTime();
     // Throttling of the mousemove event:
 
     if ((currentTime - this.previousMousemoveTime) > Constants.MOUSEMOVE_THROTTLING ) {
-      var coords = this.renderer.getCoordinates(event.clientX, event.clientY);
-
-      if (this.isClicked) {
-        // Warning : do not call setCurrentButton here
-        // mousemove do not have the correct mouse button information on all browsers
-        this.currentToolBehavior.moveToolAt(
-          coords.x,
-          coords.y,
-          this.getCurrentColor_(event),
-          this.piskelController.getCurrentFrame(),
-          this.overlayFrame,
-          event
-        );
-
-        // TODO(vincz): Find a way to move that to the model instead of being at the interaction level.
-        // Eg when drawing, it may make sense to have it here. However for a non drawing tool,
-        // you don't need to draw anything when mousemoving and you request useless localStorage.
-        $.publish(Events.LOCALSTORAGE_REQUEST);
-      } else {
-
-        this.currentToolBehavior.moveUnactiveToolAt(
-          coords.x,
-          coords.y,
-          this.getCurrentColor_(event),
-          this.piskelController.getCurrentFrame(),
-          this.overlayFrame,
-          event
-        );
-      }
+      this.moveTool_(this._clientX, this._clientY, event);
       this.previousMousemoveTime = currentTime;
     }
+  };
+
+  /**
+   * @private
+   */
+  ns.DrawingController.prototype.onKeyup_ = function (event) {
+    this.moveTool_(this._clientX, this._clientY, event);
+  };
+
+  ns.DrawingController.prototype.moveTool_ = function (x, y, event) {
+    var coords = this.renderer.getCoordinates(x, y);
+    var currentFrame = this.piskelController.getCurrentFrame();
+
+    if (this.isClicked) {
+      // Warning : do not call setCurrentButton here
+      // mousemove do not have the correct mouse button information on all browsers
+      this.currentToolBehavior.moveToolAt(
+        coords.x | 0,
+        coords.y | 0,
+        this.getCurrentColor_(),
+        currentFrame,
+        this.overlayFrame,
+        event
+      );
+    } else {
+
+      this.currentToolBehavior.moveUnactiveToolAt(
+        coords.x,
+        coords.y,
+        this.getCurrentColor_(),
+        currentFrame,
+        this.overlayFrame,
+        event
+      );
+    }
+    $.publish(Events.CURSOR_MOVED, [coords.x, coords.y]);
   };
 
   ns.DrawingController.prototype.onMousewheel_ = function (jQueryEvent) {
@@ -16459,6 +17619,14 @@ if (typeof Function.prototype.bind !== "function") {
   };
 })();;(function () {
   var ns = $.namespace("pskl.controller");
+
+  var ACTION = {
+    SELECT : 'select',
+    CLONE : 'clone',
+    DELETE : 'delete',
+    NEW_FRAME : 'newframe'
+  };
+
   ns.PreviewFilmController = function (piskelController, container) {
 
     this.piskelController = piskelController;
@@ -16471,15 +17639,12 @@ if (typeof Function.prototype.bind !== "function") {
   ns.PreviewFilmController.prototype.init = function() {
     $.subscribe(Events.TOOL_RELEASED, this.flagForRedraw_.bind(this));
     $.subscribe(Events.PISKEL_RESET, this.flagForRedraw_.bind(this));
+    $.subscribe(Events.USER_SETTINGS_CHANGED, this.flagForRedraw_.bind(this));
+
     $.subscribe(Events.PISKEL_RESET, this.refreshZoom_.bind(this));
 
     $('#preview-list-scroller').scroll(this.updateScrollerOverflows.bind(this));
-    this.updateScrollerOverflows();
-  };
-
-  ns.PreviewFilmController.prototype.addFrame = function () {
-    this.piskelController.addFrame();
-    this.piskelController.setCurrentFrameIndex(this.piskelController.getFrameCount() - 1);
+    this.container.get(0).addEventListener('click', this.onContainerClick_.bind(this));
     this.updateScrollerOverflows();
   };
 
@@ -16521,6 +17686,30 @@ if (typeof Function.prototype.bind !== "function") {
     wrapper.toggleClass('bottom-overflow-visible', overflowBottom);
   };
 
+  ns.PreviewFilmController.prototype.onContainerClick_ = function (event) {
+    var target = pskl.utils.Dom.getParentWithData(event.target, 'tileAction');
+    if (!target) {
+      return;
+    }
+    var action = target.dataset.tileAction;
+    var index = parseInt(target.dataset.tileNumber, 10);
+
+    if (action === ACTION.CLONE) {
+      this.piskelController.duplicateFrameAt(index);
+      this.piskelController.setCurrentFrameIndex(index + 1);
+      this.updateScrollerOverflows();
+    } else if (action === ACTION.DELETE) {
+      this.piskelController.removeFrameAt(index);
+      this.updateScrollerOverflows();
+    } else if (action === ACTION.SELECT) {
+      this.piskelController.setCurrentFrameIndex(index);
+    } else if (action === ACTION.NEW_FRAME) {
+      this.piskelController.addFrame();
+      this.piskelController.setCurrentFrameIndex(this.piskelController.getFrameCount() - 1);
+      this.updateScrollerOverflows();
+    }
+  };
+
   ns.PreviewFilmController.prototype.createPreviews_ = function () {
 
     this.container.html("");
@@ -16536,10 +17725,9 @@ if (typeof Function.prototype.bind !== "function") {
     var newFrameButton = document.createElement("div");
     newFrameButton.id = "add-frame-action";
     newFrameButton.className = "add-frame-action";
+    newFrameButton.setAttribute('data-tile-action', ACTION.NEW_FRAME);
     newFrameButton.innerHTML = "<p class='label'>Add new frame</p>";
     this.container.append(newFrameButton);
-
-    $(newFrameButton).click(this.addFrame.bind(this));
 
     var needDragndropBehavior = (frameCount > 1);
     if(needDragndropBehavior) {
@@ -16571,9 +17759,6 @@ if (typeof Function.prototype.bind !== "function") {
 
     this.piskelController.moveFrame(originFrameId, targetInsertionId);
     this.piskelController.setCurrentFrameIndex(targetInsertionId);
-
-    // TODO(grosbouddha): move localstorage request to the model layer?
-    $.publish(Events.LOCALSTORAGE_REQUEST);
   };
 
 
@@ -16585,41 +17770,35 @@ if (typeof Function.prototype.bind !== "function") {
     var currentFrame = this.piskelController.getCurrentLayer().getFrameAt(tileNumber);
 
     var previewTileRoot = document.createElement("li");
-    var classname = "preview-tile";
     previewTileRoot.setAttribute("data-tile-number", tileNumber);
-
+    previewTileRoot.setAttribute('data-tile-action', ACTION.SELECT);
+    previewTileRoot.classList.add("preview-tile");
     if (this.piskelController.getCurrentFrame() == currentFrame) {
-      classname += " selected";
+      previewTileRoot.classList.add("selected");
     }
-    previewTileRoot.className = classname;
 
     var canvasContainer = document.createElement("div");
-    canvasContainer.className = "canvas-container";
+    canvasContainer.classList.add("canvas-container", pskl.UserSettings.get(pskl.UserSettings.CANVAS_BACKGROUND));
+
 
     var canvasBackground = document.createElement("div");
     canvasBackground.className = "canvas-background";
     canvasContainer.appendChild(canvasBackground);
 
-    previewTileRoot.addEventListener('click', this.onPreviewClick_.bind(this, tileNumber));
-
     var cloneFrameButton = document.createElement("button");
     cloneFrameButton.setAttribute('rel', 'tooltip');
     cloneFrameButton.setAttribute('data-placement', 'right');
+    cloneFrameButton.setAttribute('data-tile-number', tileNumber);
+    cloneFrameButton.setAttribute('data-tile-action', ACTION.CLONE);
     cloneFrameButton.setAttribute('title', 'Duplicate this frame');
     cloneFrameButton.className = "tile-overlay duplicate-frame-action";
     previewTileRoot.appendChild(cloneFrameButton);
-    cloneFrameButton.addEventListener('click', this.onAddButtonClick_.bind(this, tileNumber));
 
-    // TODO(vincz): Eventually optimize this part by not recreating a FrameRenderer. Note that the real optim
-    // is to make this update function (#createPreviewTile) less aggressive.
-    var renderingOptions = {
-      "zoom" : this.zoom,
-      "height" : this.piskelController.getCurrentFrame().getHeight() * this.zoom,
-      "width" : this.piskelController.getCurrentFrame().getWidth() * this.zoom
-    };
-    var currentFrameRenderer = new pskl.rendering.frame.FrameRenderer($(canvasContainer), renderingOptions, ["tile-view"]);
-    currentFrameRenderer.render(currentFrame);
-
+    var canvasRenderer = new pskl.rendering.CanvasRenderer(currentFrame, this.zoom);
+    canvasRenderer.drawTransparentAs(Constants.TRANSPARENT_COLOR);
+    var canvas = canvasRenderer.render();
+    canvas.classList.add('tile-view', 'canvas');
+    canvasContainer.appendChild(canvas);
     previewTileRoot.appendChild(canvasContainer);
 
     if(tileNumber > 0 || this.piskelController.getFrameCount() > 1) {
@@ -16628,8 +17807,9 @@ if (typeof Function.prototype.bind !== "function") {
       deleteButton.setAttribute('rel', 'tooltip');
       deleteButton.setAttribute('data-placement', 'right');
       deleteButton.setAttribute('title', 'Delete this frame');
+      deleteButton.setAttribute('data-tile-number', tileNumber);
+      deleteButton.setAttribute('data-tile-action', ACTION.DELETE);
       deleteButton.className = "tile-overlay delete-frame-action";
-      deleteButton.addEventListener('click', this.onDeleteButtonClick_.bind(this, tileNumber));
       previewTileRoot.appendChild(deleteButton);
 
       // Add 'dragndrop handle'.
@@ -16642,28 +17822,7 @@ if (typeof Function.prototype.bind !== "function") {
     tileCount.innerHTML = tileNumber + 1;
     previewTileRoot.appendChild(tileCount);
 
-
     return previewTileRoot;
-  };
-
-  ns.PreviewFilmController.prototype.onPreviewClick_ = function (index, evt) {
-    // has not class tile-action:
-    if(!evt.target.classList.contains('tile-overlay')) {
-      this.piskelController.setCurrentFrameIndex(index);
-    }
-  };
-
-  ns.PreviewFilmController.prototype.onDeleteButtonClick_ = function (index, evt) {
-    this.piskelController.removeFrameAt(index);
-    $.publish(Events.LOCALSTORAGE_REQUEST); // Should come from model
-    this.updateScrollerOverflows();
-  };
-
-  ns.PreviewFilmController.prototype.onAddButtonClick_ = function (index, evt) {
-    this.piskelController.duplicateFrameAt(index);
-    $.publish(Events.LOCALSTORAGE_REQUEST);  // Should come from model
-    this.piskelController.setCurrentFrameIndex(index + 1);
-    this.updateScrollerOverflows();
   };
 
   /**
@@ -16672,13 +17831,9 @@ if (typeof Function.prototype.bind !== "function") {
   ns.PreviewFilmController.prototype.calculateZoom_ = function () {
     var curFrame = this.piskelController.getCurrentFrame(),
       frameHeight = curFrame.getHeight(),
-      frameWidth = curFrame.getWidth(),
-      maxFrameDim = Math.max(frameWidth, frameHeight);
+      frameWidth = curFrame.getWidth();
 
-    var previewHeight = Constants.PREVIEW_FILM_SIZE * frameHeight / maxFrameDim;
-    var previewWidth = Constants.PREVIEW_FILM_SIZE * frameWidth / maxFrameDim;
-
-    return pskl.PixelUtils.calculateZoom(previewHeight, previewWidth, frameHeight, frameWidth) || 1;
+    return Math.min(Constants.PREVIEW_FILM_SIZE/frameHeight, Constants.PREVIEW_FILM_SIZE/frameWidth);
   };
 })();;(function () {
   var ns = $.namespace('pskl.controller');
@@ -16705,24 +17860,37 @@ if (typeof Function.prototype.bind !== "function") {
     layers.forEach(this.addLayerItem.bind(this));
   };
 
-  ns.LayersListController.prototype.addLayerItem = function (layer) {
+  ns.LayersListController.prototype.addLayerItem = function (layer, index) {
+    var isSelected = this.piskelController.getCurrentLayer() === layer;
     var layerItemHtml = pskl.utils.Template.replace(this.layerItemTemplate_, {
-      layername : layer.getName()
+      'layername' : layer.getName(),
+      'layerindex' : index,
+      'isselected:current-layer-item' : isSelected
     });
     var layerItem = pskl.utils.Template.createFromHTML(layerItemHtml);
-    if (this.piskelController.getCurrentLayer() === layer) {
-      layerItem.classList.add('current-layer-item');
-    }
     this.layersListEl.insertBefore(layerItem, this.layersListEl.firstChild);
   };
 
   ns.LayersListController.prototype.onClick_ = function (evt) {
     var el = evt.target || evt.srcElement;
-    if (el.nodeName == 'BUTTON') {
+    var index;
+    if (el.classList.contains('button')) {
       this.onButtonClick_(el);
-    } else if (el.nodeName == 'LI') {
-      var layerName = el.getAttribute('data-layer-name');
-      this.piskelController.selectLayerByName(layerName);
+    } else if (el.classList.contains('layer-item')) {
+      index = el.dataset.layerIndex;
+      this.piskelController.setCurrentLayerIndex(parseInt(index, 10));
+    } else if (el.classList.contains('edit-icon')) {
+      index = el.parentNode.dataset.layerIndex;
+      this.renameLayerAt_(index);
+    }
+  };
+
+  ns.LayersListController.prototype.renameLayerAt_ = function (index) {
+    var layer = this.piskelController.getLayerAt(index);
+    var name = window.prompt("Please enter the layer name", layer.getName());
+    if (name) {
+      this.piskelController.renameLayerAt(index, name);
+      this.renderLayerList_();
     }
   };
 
@@ -16741,6 +17909,9 @@ if (typeof Function.prototype.bind !== "function") {
 })();;(function () {
   var ns = $.namespace("pskl.controller");
 
+  // Preview is a square of PREVIEW_SIZE x PREVIEW_SIZE
+  var PREVIEW_SIZE = 200;
+
   ns.AnimatedPreviewController = function (piskelController, container) {
     this.piskelController = piskelController;
     this.container = container;
@@ -16750,16 +17921,38 @@ if (typeof Function.prototype.bind !== "function") {
 
     this.setFPS(Constants.DEFAULT.FPS);
 
-    var zoom = this.calculateZoom_();
     var frame = this.piskelController.getCurrentFrame();
-    var renderingOptions = {
-      "zoom": zoom,
-      "height" : frame.getHeight() * zoom,
-      "width" : frame.getWidth() * zoom
-    };
-    this.renderer = new pskl.rendering.frame.FrameRenderer(this.container, renderingOptions);
 
+    this.renderer = new pskl.rendering.frame.TiledFrameRenderer(this.container);
+    this.updateZoom_();
     $.subscribe(Events.FRAME_SIZE_CHANGED, this.onFrameSizeChange_.bind(this));
+    $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
+  };
+
+  ns.AnimatedPreviewController.prototype.onUserSettingsChange_ = function () {
+    this.updateZoom_();
+    this.updateContainerDimensions_();
+  };
+
+  ns.AnimatedPreviewController.prototype.updateZoom_ = function () {
+    var isTiled = pskl.UserSettings.get(pskl.UserSettings.TILED_PREVIEW);
+    var zoom = isTiled ? 1 : this.calculateZoom_();
+    this.renderer.setZoom(zoom);
+  };
+
+  ns.AnimatedPreviewController.prototype.getZoom = function () {
+    return this.calculateZoom_();
+  };
+
+  ns.AnimatedPreviewController.prototype.getCoordinates = function(x, y) {
+    var containerOffset = this.container.offset();
+    x = x - containerOffset.left;
+    y = y - containerOffset.top;
+    var zoom = this.getZoom();
+    return {
+      x : Math.floor(x / zoom),
+      y : Math.floor(y / zoom)
+    };
   };
 
   ns.AnimatedPreviewController.prototype.init = function () {
@@ -16793,7 +17986,8 @@ if (typeof Function.prototype.bind !== "function") {
         this.currentIndex = 0;
         this.elapsedTime = 0;
       }
-      this.renderer.render(this.piskelController.getFrameAt(this.currentIndex));
+      var frame = this.piskelController.getFrameAt(this.currentIndex);
+      this.renderer.render(frame);
     }
   };
 
@@ -16810,11 +18004,31 @@ if (typeof Function.prototype.bind !== "function") {
   };
 
   ns.AnimatedPreviewController.prototype.onFrameSizeChange_ = function () {
-    var frame = this.piskelController.getCurrentFrame();
-    var zoom = this.calculateZoom_();
-    this.renderer.setDisplaySize(frame.getWidth() * zoom, frame.getHeight() * zoom);
-    this.renderer.setZoom(zoom);
-    this.renderer.setOffset(0, 0);
+    this.updateZoom_();
+    this.updateContainerDimensions_();
+  };
+
+  ns.AnimatedPreviewController.prototype.updateContainerDimensions_ = function () {
+    var containerEl = this.container.get(0);
+    var isTiled = pskl.UserSettings.get(pskl.UserSettings.TILED_PREVIEW);
+    var height, width;
+
+    if (isTiled) {
+      height = PREVIEW_SIZE;
+      width = PREVIEW_SIZE;
+    } else {
+      var zoom = this.getZoom();
+      var frame = this.piskelController.getCurrentFrame();
+      height = frame.getHeight() * zoom;
+      width = frame.getWidth() * zoom;
+    }
+
+    containerEl.style.height = height + "px";
+    containerEl.style.width = width + "px";
+    containerEl.style.marginTop = ((PREVIEW_SIZE - height) / 2) + "px";
+    containerEl.style.marginBottom = ((PREVIEW_SIZE - height) / 2) + "px";
+    containerEl.style.marginLeft = ((PREVIEW_SIZE - width) / 2) + "px";
+    containerEl.style.marginRight = ((PREVIEW_SIZE - width) / 2) + "px";
   };
 })();;(function () {
   var ns = $.namespace('pskl.controller');
@@ -16854,8 +18068,8 @@ if (typeof Function.prototype.bind !== "function") {
 
   ns.MinimapController.prototype.displayCropFrame_ = function (ratio, offset) {
     this.cropFrame.style.display = 'block';
-    this.cropFrame.style.top = (offset.y * this.animationController.renderer.getZoom()) +  'px';
-    this.cropFrame.style.left = (offset.x * this.animationController.renderer.getZoom()) +  'px';
+    this.cropFrame.style.top = (offset.y * this.animationController.getZoom()) +  'px';
+    this.cropFrame.style.left = (offset.x * this.animationController.getZoom()) +  'px';
     var zoomRatio = this.getDrawingAreaZoomRatio_();
     this.cropFrame.style.width = (this.container.width() / zoomRatio) +  'px';
     this.cropFrame.style.height = (this.container.height() / zoomRatio) +  'px';
@@ -16884,7 +18098,7 @@ if (typeof Function.prototype.bind !== "function") {
   };
 
   ns.MinimapController.prototype.getCoordinatesCenteredAround_ = function (x, y) {
-    var frameCoords = this.animationController.renderer.getCoordinates(x, y);
+    var frameCoords = this.animationController.getCoordinates(x, y);
     var zoomRatio = this.getDrawingAreaZoomRatio_();
     var frameWidth = this.piskelController.getCurrentFrame().getWidth();
     var frameHeight = this.piskelController.getCurrentFrame().getHeight();
@@ -16924,6 +18138,7 @@ if (typeof Function.prototype.bind !== "function") {
       toDescriptor('move', 'M', new pskl.drawingtools.Move()),
       toDescriptor('rectangleSelect', 'S', new pskl.drawingtools.RectangleSelect()),
       toDescriptor('shapeSelect', 'Z', new pskl.drawingtools.ShapeSelect()),
+      toDescriptor('lighten', 'U', new pskl.drawingtools.Lighten()),
       toDescriptor('colorPicker', 'O', new pskl.drawingtools.ColorPicker())
     ];
 
@@ -17184,8 +18399,20 @@ if (typeof Function.prototype.bind !== "function") {
 ;(function () {
   var ns = $.namespace('pskl.controller');
 
-  ns.PalettesListController = function () {
+  var PRIMARY_COLOR_CLASSNAME = 'palettes-list-primary-color';
+  var SECONDARY_COLOR_CLASSNAME = 'palettes-list-secondary-color';
 
+  var HAS_SCROLL_CLASSNAME = 'palettes-list-has-scrollbar';
+  // well ... I know that if there are more than 20 colors, a scrollbar will be displayed
+  // It's linked to the max-height: 160px; defined in toolbox-palette-list.css !
+  // I apologize to my future self for this one.
+  var NO_SCROLL_MAX_COLORS = 20;
+
+  var MAX_COLORS = 100;
+
+  ns.PalettesListController = function (paletteController, usedColorService) {
+    this.usedColorService = usedColorService;
+    this.paletteController = paletteController;
   };
 
   ns.PalettesListController.prototype.init = function () {
@@ -17199,8 +18426,9 @@ if (typeof Function.prototype.bind !== "function") {
     this.colorListContainer_.addEventListener('contextmenu', this.onColorContainerContextMenu.bind(this));
 
     $.subscribe(Events.PALETTE_LIST_UPDATED, this.onPaletteListUpdated.bind(this));
-    $.subscribe(Events.PRIMARY_COLOR_SELECTED, this.onColorUpdated.bind(this, 'primary'));
-    $.subscribe(Events.SECONDARY_COLOR_SELECTED, this.onColorUpdated.bind(this, 'secondary'));
+    $.subscribe(Events.CURRENT_COLORS_UPDATED, this.fillColorListContainer.bind(this));
+    $.subscribe(Events.PRIMARY_COLOR_SELECTED, this.highlightSelectedColors.bind(this));
+    $.subscribe(Events.SECONDARY_COLOR_SELECTED, this.highlightSelectedColors.bind(this));
 
     this.fillPaletteList();
     this.selectPaletteFromUserSettings();
@@ -17221,23 +18449,40 @@ if (typeof Function.prototype.bind !== "function") {
   };
 
   ns.PalettesListController.prototype.fillColorListContainer = function () {
-    var html = '';
+    var colors = this.getSelectedPaletteColors_();
 
-    var palette = this.getSelectedPalette();
-    if (palette) {
-      html = palette.colors.map(function (color) {
-        return pskl.utils.Template.replace(this.paletteColorTemplate_, {color : color});
-      }.bind(this)).join('');
-    }
-
+    var html = colors.map(function (color) {
+      return pskl.utils.Template.replace(this.paletteColorTemplate_, {color : color});
+    }.bind(this)).join('');
     this.colorListContainer_.innerHTML = html;
+
+    this.highlightSelectedColors();
+
+    var hasScrollbar = colors.length > NO_SCROLL_MAX_COLORS;
+    if (hasScrollbar && !pskl.utils.UserAgent.isChrome) {
+      this.colorListContainer_.classList.add(HAS_SCROLL_CLASSNAME);
+    } else {
+      this.colorListContainer_.classList.remove(HAS_SCROLL_CLASSNAME);
+    }
   };
 
-  ns.PalettesListController.prototype.getSelectedPalette = function (evt) {
+  ns.PalettesListController.prototype.getSelectedPaletteColors_ = function () {
+    var colors = [];
     var paletteId = this.colorPaletteSelect_.value;
-    var palettes = this.retrievePalettes();
-    var palette = this.getPaletteById(paletteId, palettes);
-    return palette;
+    if (paletteId === Constants.CURRENT_COLORS_PALETTE_ID) {
+      colors = this.usedColorService.getCurrentColors();
+    } else {
+      var palette = this.getPaletteById(paletteId, this.retrievePalettes());
+      if (palette) {
+        colors = palette.colors;
+      }
+    }
+
+    if (colors.length > MAX_COLORS) {
+      colors = colors.slice(0, MAX_COLORS);
+    }
+
+    return colors;
   };
 
   ns.PalettesListController.prototype.selectPalette = function (paletteId) {
@@ -17250,7 +18495,7 @@ if (typeof Function.prototype.bind !== "function") {
 
   ns.PalettesListController.prototype.onPaletteSelected_ = function (evt) {
     var paletteId = this.colorPaletteSelect_.value;
-    if (paletteId === '__manage-palettes') {
+    if (paletteId === Constants.MANAGE_PALETTE_ID) {
       $.publish(Events.DIALOG_DISPLAY, 'manage-palettes');
       this.selectPaletteFromUserSettings();
     } else {
@@ -17279,27 +18524,29 @@ if (typeof Function.prototype.bind !== "function") {
     }
   };
 
-  ns.PalettesListController.prototype.onColorUpdated = function (type, event, color) {
-    var colorContainer = this.colorListContainer_.querySelector('.palettes-list-color[data-color="'+color+'"]');
+  ns.PalettesListController.prototype.highlightSelectedColors = function () {
+    this.removeClass_(PRIMARY_COLOR_CLASSNAME);
+    this.removeClass_(SECONDARY_COLOR_CLASSNAME);
 
-    // Color is not in the currently selected palette
-    if (!colorContainer) {
-      return;
+    var colorContainer = this.getColorContainer_(this.paletteController.getSecondaryColor());
+    if (colorContainer) {
+      colorContainer.classList.remove(PRIMARY_COLOR_CLASSNAME);
+      colorContainer.classList.add(SECONDARY_COLOR_CLASSNAME);
     }
 
-    if (type === 'primary') {
-      this.removeClass_('primary', '.palettes-list-color');
-      colorContainer.classList.add('primary');
-      colorContainer.classList.remove('secondary');
-    } else if (type === 'secondary') {
-      this.removeClass_('secondary', '.palettes-list-color');
-      colorContainer.classList.add('secondary');
-      colorContainer.classList.remove('primary');
+    colorContainer = this.getColorContainer_(this.paletteController.getPrimaryColor());
+    if (colorContainer) {
+      colorContainer.classList.remove(SECONDARY_COLOR_CLASSNAME);
+      colorContainer.classList.add(PRIMARY_COLOR_CLASSNAME);
     }
   };
 
-  ns.PalettesListController.prototype.removeClass_ = function (cssClass, selector) {
-    var element = document.querySelector(selector + '.' + cssClass);
+  ns.PalettesListController.prototype.getColorContainer_ = function (color) {
+    return this.colorListContainer_.querySelector('.palettes-list-color[data-color="'+color+'"]');
+  };
+
+  ns.PalettesListController.prototype.removeClass_ = function (cssClass) {
+    var element = document.querySelector('.' + cssClass);
     if (element) {
       element.classList.remove(cssClass);
     }
@@ -17369,6 +18616,33 @@ if (typeof Function.prototype.bind !== "function") {
   };
 })();
 ;(function () {
+  var ns = $.namespace('pskl.controller');
+
+  ns.CanvasBackgroundController = function () {
+    this.body = document.body;
+  };
+
+  ns.CanvasBackgroundController.prototype.init = function () {
+    $.subscribe(Events.USER_SETTINGS_CHANGED, this.onUserSettingsChange_.bind(this));
+    this.updateBackgroundClass_(pskl.UserSettings.get(pskl.UserSettings.CANVAS_BACKGROUND));
+  };
+
+
+  ns.CanvasBackgroundController.prototype.onUserSettingsChange_ = function (evt, settingName, settingValue) {
+    if (settingName == pskl.UserSettings.CANVAS_BACKGROUND) {
+      this.updateBackgroundClass_(settingValue);
+    }
+  };
+
+  ns.CanvasBackgroundController.prototype.updateBackgroundClass_ = function (newClass) {
+    var currentClass = this.body.dataset.currentBackgroundClass;
+    if (currentClass) {
+      this.body.classList.remove(currentClass);
+    }
+    this.body.classList.add(newClass);
+    this.body.dataset.currentBackgroundClass = newClass;
+  };
+})();;(function () {
   var ns = $.namespace("pskl.controller.settings");
 
   ns.ApplicationSettingsController = function () {};
@@ -17388,6 +18662,10 @@ if (typeof Function.prototype.bind !== "function") {
     $('#grid-width').val(gridWidth);
     $('#grid-width').change(this.onGridWidthChange.bind(this));
 
+    var tiledPreview = pskl.UserSettings.get(pskl.UserSettings.TILED_PREVIEW);
+    $('#tiled-preview').prop('checked', tiledPreview);
+    $('#tiled-preview').change(this.onTiledPreviewChange.bind(this));
+
     // Handle canvas background changes:
     $('#background-picker-wrapper').click(this.onBackgroundClick.bind(this));
   };
@@ -17395,6 +18673,11 @@ if (typeof Function.prototype.bind !== "function") {
   ns.ApplicationSettingsController.prototype.onGridWidthChange = function (evt) {
     var width = $('#grid-width').val();
     pskl.UserSettings.set(pskl.UserSettings.GRID_WIDTH, parseInt(width, 10));
+  };
+
+  ns.ApplicationSettingsController.prototype.onTiledPreviewChange = function (evt) {
+    var checked = $('#tiled-preview').prop('checked');
+    pskl.UserSettings.set(pskl.UserSettings.TILED_PREVIEW, checked);
   };
 
   ns.ApplicationSettingsController.prototype.onBackgroundClick = function (evt) {
@@ -17427,6 +18710,8 @@ if (typeof Function.prototype.bind !== "function") {
 
     this.resizeForm = $("[name=resize-form]");
     this.resizeForm.submit(this.onResizeFormSubmit_.bind(this));
+
+    this.resizeContentCheckbox = $(".resize-content-checkbox");
   };
 
   ns.ResizeController.prototype.onResizeFormSubmit_ = function (evt) {
@@ -17435,31 +18720,41 @@ if (typeof Function.prototype.bind !== "function") {
     var width = parseInt(this.resizeWidth.val(), 10);
     var height = parseInt(this.resizeHeight.val(), 10);
 
-    var layers = [];
-    var fromLayers = this.piskelController.getLayers();
-    for (var i = 0 ; i < fromLayers.length ; i++) {
-      var frames = [];
-      var fromFrames = fromLayers[i].getFrames();
-      for (var j = 0 ; j < fromFrames.length ; j++) {
-        var frame = new pskl.model.Frame(width, height);
-        this.copyFromFrameToFrame(fromFrames[j], frame);
-        frames.push(frame);
-      }
-      var layer = pskl.model.Layer.fromFrames(fromLayers[i].getName(), frames);
-      layers.push(layer);
-    }
 
-    var piskel = pskl.model.Piskel.fromLayers(layers, this.piskelController.piskel.getDescriptor());
+    var resizeContentEnabled = this.isResizeContentEnabled_();
+    var resizedLayers = this.piskelController.getLayers().map(this.resizeLayer_.bind(this));
+
+    var piskel = pskl.model.Piskel.fromLayers(resizedLayers, this.piskelController.getPiskel().getDescriptor());
     pskl.app.piskelController.setPiskel(piskel);
     $.publish(Events.CLOSE_SETTINGS_DRAWER);
   };
 
-  ns.ResizeController.prototype.copyFromFrameToFrame = function (from, to) {
-    from.forEachPixel(function (color, x, y) {
-      if (x < to.getWidth() && y < to.getHeight()) {
-        to.setPixel(x, y, color);
-      }
-    });
+  ns.ResizeController.prototype.resizeLayer_ = function (layer) {
+    var resizedFrames = layer.getFrames().map(this.resizeFrame_.bind(this));
+    return pskl.model.Layer.fromFrames(layer.getName(), resizedFrames);
+  };
+
+  ns.ResizeController.prototype.resizeFrame_ = function (frame) {
+    var width = parseInt(this.resizeWidth.val(), 10);
+    var height = parseInt(this.resizeHeight.val(), 10);
+    
+    var resizedFrame;
+    if (this.isResizeContentEnabled_()) {
+      resizedFrame = pskl.utils.FrameUtils.resize(frame, width, height, false);
+    } else {
+      resizedFrame = new pskl.model.Frame(width, height);
+      frame.forEachPixel(function (color, x, y) {
+        if (x < resizedFrame.getWidth() && y < resizedFrame.getHeight()) {
+          resizedFrame.setPixel(x, y, color);
+        }
+      });
+    }
+    
+    return resizedFrame;
+  };
+
+  ns.ResizeController.prototype.isResizeContentEnabled_ = function () {
+    return !!this.resizeContentCheckbox.prop('checked');
   };
 
   ns.ResizeController.prototype.onCancelButtonClicked_ = function (evt) {
@@ -17469,6 +18764,7 @@ if (typeof Function.prototype.bind !== "function") {
   var ns = $.namespace("pskl.controller.settings");
 
   var URL_MAX_LENGTH = 60;
+  var MAX_GIF_COLORS = 256;
 
   ns.GifExportController = function (piskelController) {
     this.piskelController = piskelController;
@@ -17495,13 +18791,16 @@ if (typeof Function.prototype.bind !== "function") {
   ns.GifExportController.prototype.init = function () {
     this.radioTemplate_ = pskl.utils.Template.get("gif-export-radio-template");
 
-    this.uploadStatusContainerEl = document.querySelectorAll(".gif-upload-status")[0];
+    this.uploadStatusContainerEl = document.querySelector(".gif-upload-status");
 
-    this.previewContainerEl = document.querySelectorAll(".gif-export-preview")[0];
-    this.radioGroupEl = document.querySelectorAll(".gif-export-radio-group")[0];
+    this.previewContainerEl = document.querySelector(".gif-export-preview");
+    this.radioGroupEl = document.querySelector(".gif-export-radio-group");
 
     this.uploadForm = $("[name=gif-export-upload-form]");
     this.uploadForm.submit(this.onUploadFormSubmit_.bind(this));
+
+    this.exportProgressStatusEl = document.querySelector('.gif-export-progress-status');
+    this.exportProgressBarEl = document.querySelector('.gif-export-progress-bar');
 
     this.createRadioElements_();
   };
@@ -17578,11 +18877,14 @@ if (typeof Function.prototype.bind !== "function") {
   };
 
   ns.GifExportController.prototype.renderAsImageDataAnimatedGIF = function(zoom, fps, cb) {
+    var colorCount = pskl.app.currentColorsService.getCurrentColors().length;
+    var preserveColors = colorCount < MAX_GIF_COLORS;
     var gif = new window.GIF({
       workers: 2,
-      quality: 10,
+      quality: 1,
       width: this.piskelController.getWidth()*zoom,
-      height: this.piskelController.getHeight()*zoom
+      height: this.piskelController.getHeight()*zoom,
+      preserveColors : preserveColors
     });
 
     for (var i = 0; i < this.piskelController.getFrameCount(); i++) {
@@ -17594,11 +18896,27 @@ if (typeof Function.prototype.bind !== "function") {
       });
     }
 
+    gif.on('progress', function(percentage) {
+      this.updateProgressStatus_((percentage*100).toFixed(2));
+    }.bind(this));
+
     gif.on('finished', function(blob) {
+      this.hideProgressStatus_();
       this.blobToBase64_(blob, cb);
     }.bind(this));
 
     gif.render();
+  };
+
+  ns.GifExportController.prototype.updateProgressStatus_ = function (percentage) {
+    this.exportProgressStatusEl.innerHTML = percentage + '%';
+    this.exportProgressBarEl.style.width = percentage + "%";
+
+  };
+
+  ns.GifExportController.prototype.hideProgressStatus_ = function () {
+    this.exportProgressStatusEl.innerHTML = '';
+    this.exportProgressBarEl.style.width = "0";
   };
 
   // FIXME : HORRIBLE COPY/PASTA
@@ -17636,17 +18954,52 @@ if (typeof Function.prototype.bind !== "function") {
     this.previewContainerEl = document.querySelectorAll(".png-export-preview")[0];
     this.uploadStatusContainerEl = document.querySelectorAll(".png-upload-status")[0];
 
-    this.uploadForm = $("[name=png-export-upload-form]");
-    this.uploadForm.submit(this.onUploadFormSubmit_.bind(this));
+    document.querySelector(".png-upload-button").addEventListener('click', this.onPngUploadButtonClick_.bind(this));
+    document.querySelector(".png-download-button").addEventListener('click', this.onPngDownloadButtonClick_.bind(this));
+
+    document.querySelector(".zip-generate-button").addEventListener('click', this.onZipButtonClick_.bind(this));
 
     this.updatePreview_(this.getFramesheetAsBase64Png());
   };
 
-  ns.PngExportController.prototype.onUploadFormSubmit_ = function (evt) {
-    evt.originalEvent.preventDefault();
+  ns.PngExportController.prototype.onPngDownloadButtonClick_ = function (evt) {
+    var fileName = this.getPiskelName_() + '.png';
+    var renderer = new pskl.rendering.PiskelRenderer(this.piskelController);
+    var canvas = renderer.renderAsCanvas();
+    canvas.toBlob(function(blob) {
+      pskl.utils.FileUtils.downloadAsFile(fileName, blob);
+    });
+  };
 
+  ns.PngExportController.prototype.onPngUploadButtonClick_ = function (evt) {
     this.previewContainerEl.classList.add("preview-upload-ongoing");
     pskl.app.imageUploadService.upload(this.getFramesheetAsBase64Png(), this.onImageUploadCompleted_.bind(this));
+  };
+
+  ns.PngExportController.prototype.onZipButtonClick_ = function () {
+    var zip = new window.JSZip();
+
+    for (var i = 0; i < this.piskelController.getFrameCount(); i++) {
+      var frame = this.piskelController.getFrameAt(i);
+      var canvas = this.getFrameAsCanvas_(frame);
+      var filename = "sprite_" + (i+1) + ".png";
+      zip.file(filename, pskl.CanvasUtils.getBase64FromCanvas(canvas) + '\n', {base64: true});
+    }
+
+    var fileName = this.getPiskelName_() + '.zip';
+
+    var fileContent = zip.generate({type:"blob"});
+    pskl.utils.FileUtils.downloadAsFile(fileName, fileContent);
+  };
+
+  ns.PngExportController.prototype.getFrameAsCanvas_ = function (frame) {
+    var canvasRenderer = new pskl.rendering.CanvasRenderer(frame, 1);
+    canvasRenderer.drawTransparentAs(Constants.TRANSPARENT_COLOR);
+    return canvasRenderer.render();
+  };
+
+  ns.PngExportController.prototype.getPiskelName_ = function () {
+    return this.piskelController.getPiskel().getDescriptor().name;
   };
 
   ns.PngExportController.prototype.getFramesheetAsBase64Png = function () {
@@ -17777,7 +19130,7 @@ if (typeof Function.prototype.bind !== "function") {
 
     this.status = $('#save-status');
 
-    var descriptor = this.piskelController.piskel.getDescriptor();
+    var descriptor = this.piskelController.getPiskel().getDescriptor();
     this.nameInput.val(descriptor.name);
     this.descriptionInput.val(descriptor.description);
 
@@ -17802,7 +19155,7 @@ if (typeof Function.prototype.bind !== "function") {
     var isPublic = !!this.isPublicCheckbox.prop('checked');
 
     var descriptor = new pskl.model.piskel.Descriptor(name, description, isPublic);
-    this.piskelController.piskel.setDescriptor(descriptor);
+    this.piskelController.getPiskel().setDescriptor(descriptor);
 
     this.beforeSaving_();
     pskl.app.store({
@@ -17982,6 +19335,11 @@ if (typeof Function.prototype.bind !== "function") {
   ns.ImportController.prototype.onImageLoaded_ = function (evt) {
     var w = this.importedImage_.width,
         h = this.importedImage_.height;
+
+    // FIXME : We remove the onload callback here because JsGif will insert
+    // the image again and we want to avoid retriggering the image onload
+    this.importedImage_.onload = function () {};
+
     var filePath = this.hiddenFileInput.val();
     var fileName = this.extractFileNameFromPath_(filePath);
     this.fileInputStatus.html(fileName);
@@ -18014,25 +19372,51 @@ if (typeof Function.prototype.bind !== "function") {
   };
 
   ns.ImportController.prototype.importImageToPiskel_ = function () {
-    if (this.importedImage_) {
+    var image = this.importedImage_;
+    if (image) {
       if (window.confirm('You are about to create a new Piskel, unsaved changes will be lost.')) {
-        var w = this.resizeWidth.val(),
-          h = this.resizeHeight.val(),
-          smoothing = !!this.smoothResize.prop('checked');
+        var gifLoader = new window.SuperGif({
+          gif : image
+        });
 
-        var image = pskl.utils.ImageResizer.resize(this.importedImage_, w, h, smoothing);
-        var frame = pskl.utils.FrameUtils.createFromImage(image);
+        gifLoader.load({
+          success : function(){
+            var images = gifLoader.getFrames().map(function (frame) {
+              return pskl.CanvasUtils.createFromImageData(frame.data);
+            });
+            this.createPiskelFromImages_(images);
+          }.bind(this),
+          error : function () {
+            this.createPiskelFromImages_([image]);
+          }.bind(this)
+        });
 
-        var layer = pskl.model.Layer.fromFrames('Layer 1', [frame]);
-
-        var descriptor = new pskl.model.piskel.Descriptor('Imported piskel', '');
-        var piskel = pskl.model.Piskel.fromLayers([layer], descriptor);
-
-        pskl.app.piskelController.setPiskel(piskel);
-        pskl.app.animationController.setFPS(Constants.DEFAULT.FPS);
-        this.reset_();
       }
     }
+  };
+
+  ns.ImportController.prototype.createFramesFromImages_ = function (images) {
+    var w = this.resizeWidth.val();
+    var h = this.resizeHeight.val();
+    var smoothing = !!this.smoothResize.prop('checked');
+
+    var frames = images.map(function (image) {
+      var resizedImage = pskl.utils.ImageResizer.resize(image, w, h, smoothing);
+      return pskl.utils.FrameUtils.createFromImage(resizedImage);
+    });
+    return frames;
+  };
+
+  ns.ImportController.prototype.createPiskelFromImages_ = function (images) {
+    var frames = this.createFramesFromImages_(images);
+    var layer = pskl.model.Layer.fromFrames('Layer 1', frames);
+    var descriptor = new pskl.model.piskel.Descriptor('Imported piskel', '');
+    var piskel = pskl.model.Piskel.fromLayers([layer], descriptor);
+
+    pskl.app.piskelController.setPiskel(piskel);
+    pskl.app.animationController.setFPS(Constants.DEFAULT.FPS);
+
+    this.reset_();
   };
 
   ns.ImportController.prototype.isImage_ = function (file) {
@@ -18136,6 +19520,8 @@ if (typeof Function.prototype.bind !== "function") {
 
     this.isExpanded = false;
     this.currentSetting = null;
+
+    document.activeElement.blur();
   };
 
 })();;(function () {
@@ -18146,7 +19532,7 @@ if (typeof Function.prototype.bind !== "function") {
   var SELECTED_CLASSNAME = 'selected';
   var NEW_COLOR_CLASS = 'palette-manager-new-color';
   var CLOSE_ICON_CLASS = 'palette-manager-delete-card';
-  var EDIT_NAME_CLASS = 'palette-manager-details-head-edit-icon';
+  var EDIT_NAME_CLASS = 'edit-icon';
 
   ns.PaletteManagerController = function (piskelController) {
     this.piskelController = piskelController;
@@ -18175,7 +19561,7 @@ if (typeof Function.prototype.bind !== "function") {
     // Delegated event listener for events repeated on all cards
     this.paletteBody.addEventListener('click', this.delegatedPaletteBodyClick.bind(this));
     this.paletteHead.addEventListener('click', this.delegatedPaletteHeadClick.bind(this));
-    this.createButton.addEventListener('click', this.createPalette.bind(this));
+    this.createButton.addEventListener('click', this.onCreateClick_.bind(this));
     this.saveAllButton.addEventListener('click', this.saveAll.bind(this));
     this.closeButton.addEventListener('click', this.closeDialog.bind(this));
 
@@ -18194,6 +19580,10 @@ if (typeof Function.prototype.bind !== "function") {
 
   ns.PaletteManagerController.prototype.closeDialog = function () {
     $.publish(Events.DIALOG_HIDE);
+  };
+
+  ns.PaletteManagerController.prototype.onCreateClick_ = function (evt) {
+    this.createPalette();
   };
 
   ns.PaletteManagerController.prototype.createPalette = function (name) {
@@ -18728,7 +20118,7 @@ if (typeof Function.prototype.bind !== "function") {
   };
 
   ns.AppEngineStorageService.prototype.prepareFormData_ = function () {
-    var piskel = this.piskelController.piskel;
+    var piskel = this.piskelController.getPiskel();
     var descriptor = piskel.getDescriptor();
 
     var formData = new FormData();
@@ -18746,44 +20136,148 @@ if (typeof Function.prototype.bind !== "function") {
     return formData;
   };
 })();;(function () {
-  var ns = $.namespace("pskl.service");
+  var ns = $.namespace('pskl.service');
+
+  var SNAPSHOT_PERIOD = 50;
+  var LOAD_STATE_INTERVAL = 50;
+
   ns.HistoryService = function (piskelController) {
     this.piskelController = piskelController;
-    this.saveState__b = this.saveState.bind(this);
+    this.stateQueue = [];
+    this.currentIndex = -1;
+    this.saveState__b = this.onSaveStateEvent.bind(this);
+
+    this.lastLoadState = -1;
   };
 
-  ns.HistoryService.prototype.init = function () {
+  ns.HistoryService.SNAPSHOT = 'SNAPSHOT';
+  ns.HistoryService.REPLAY = 'REPLAY';
 
-    $.subscribe(Events.PISKEL_RESET, this.saveState__b);
-    $.subscribe(Events.TOOL_RELEASED, this.saveState__b);
+  ns.HistoryService.prototype.init = function () {
+    $.subscribe(Events.PISKEL_SAVE_STATE, this.saveState__b);
 
     pskl.app.shortcutService.addShortcut('ctrl+Z', this.undo.bind(this));
     pskl.app.shortcutService.addShortcut('ctrl+Y', this.redo.bind(this));
+
+    this.saveState({
+      type : ns.HistoryService.SNAPSHOT
+    });
   };
 
-  ns.HistoryService.prototype.saveState = function () {
-    this.piskelController.getCurrentFrame().saveState();
+  ns.HistoryService.prototype.onSaveStateEvent = function (evt, stateInfo) {
+    this.saveState(stateInfo);
+  };
+
+  ns.HistoryService.prototype.saveState = function (stateInfo) {
+    this.stateQueue = this.stateQueue.slice(0, this.currentIndex + 1);
+    this.currentIndex = this.currentIndex + 1;
+
+    var state = {
+      action : stateInfo,
+      frameIndex : this.piskelController.currentFrameIndex,
+      layerIndex : this.piskelController.currentLayerIndex
+    };
+
+    if (stateInfo.type === ns.HistoryService.SNAPSHOT || this.currentIndex % SNAPSHOT_PERIOD === 0) {
+      state.piskel = this.piskelController.serialize(true);
+    }
+
+    this.stateQueue.push(state);
   };
 
   ns.HistoryService.prototype.undo = function () {
-    this.piskelController.getCurrentFrame().loadPreviousState();
-    $.unsubscribe(Events.PISKEL_RESET, this.saveState__b);
-    $.publish(Events.PISKEL_RESET);
-    $.subscribe(Events.PISKEL_RESET, this.saveState__b);
+    this.loadState(this.currentIndex - 1);
   };
 
   ns.HistoryService.prototype.redo = function () {
-    this.piskelController.getCurrentFrame().loadNextState();
-    $.unsubscribe(Events.PISKEL_RESET, this.saveState__b);
+    this.loadState(this.currentIndex + 1);
+  };
+
+  ns.HistoryService.prototype.isLoadStateAllowed_ = function (index) {
+    var timeOk = (Date.now() - this.lastLoadState) > LOAD_STATE_INTERVAL;
+    var indexInRange = index >= 0 && index < this.stateQueue.length;
+    return timeOk && indexInRange;
+  };
+
+  ns.HistoryService.prototype.getPreviousSnapshotIndex_ = function (index) {
+    while (this.stateQueue[index] && !this.stateQueue[index].piskel) {
+      index = index - 1;
+    }
+    return index;
+  };
+
+  ns.HistoryService.prototype.loadState = function (index) {
+    if (this.isLoadStateAllowed_(index)) {
+      this.lastLoadState = Date.now();
+
+      var snapshotIndex = this.getPreviousSnapshotIndex_(index);
+      if (snapshotIndex < 0) {
+        throw 'Could not find previous SNAPSHOT saved in history stateQueue';
+      }
+
+      var serializedPiskel = this.getSnapshotFromState_(snapshotIndex);
+      var onPiskelLoadedCb = this.onPiskelLoaded_.bind(this, index, snapshotIndex);
+      pskl.utils.serialization.Deserializer.deserialize(serializedPiskel, onPiskelLoadedCb);
+    }
+  };
+
+  ns.HistoryService.prototype.getSnapshotFromState_ = function (stateIndex) {
+    var state = this.stateQueue[stateIndex];
+    var piskelSnapshot = state.piskel;
+
+    // If the snapshot is stringified, parse it and backup the result for faster access next time
+    // FIXME : Memory consumption might go crazy if we keep unpacking big piskels indefinitely
+    // ==> should ensure I remove some of them :)
+    if (typeof piskelSnapshot === "string") {
+      piskelSnapshot = JSON.parse(piskelSnapshot);
+      state.piskel = piskelSnapshot;
+    }
+
+    return piskelSnapshot;
+  };
+
+  ns.HistoryService.prototype.onPiskelLoaded_ = function (index, snapshotIndex, piskel) {
+    var originalSize = this.getPiskelSize_();
+    piskel.setDescriptor(this.piskelController.piskel.getDescriptor());
+    this.piskelController.setPiskel(piskel);
+
+    for (var i = snapshotIndex + 1 ; i <= index ; i++) {
+      var state = this.stateQueue[i];
+      this.setupState(state);
+      this.replayState(state);
+    }
+
+    var lastState = this.stateQueue[index];
+    this.setupState(lastState);
+    this.currentIndex = index;
     $.publish(Events.PISKEL_RESET);
-    $.subscribe(Events.PISKEL_RESET, this.saveState__b);
+    if (originalSize !== this.getPiskelSize_()) {
+      $.publish(Events.FRAME_SIZE_CHANGED);
+    }
+  };
+
+  ns.HistoryService.prototype.getPiskelSize_ = function () {
+    return this.piskelController.getWidth() + 'x' + this.piskelController.getHeight();
+  };
+
+  ns.HistoryService.prototype.setupState = function (state) {
+    this.piskelController.setCurrentFrameIndex(state.frameIndex);
+    this.piskelController.setCurrentLayerIndex(state.layerIndex);
+  };
+
+  ns.HistoryService.prototype.replayState = function (state) {
+    var action = state.action;
+    var type = action.type;
+    var layer = this.piskelController.getLayerAt(state.layerIndex);
+    var frame = layer.getFrameAt(state.frameIndex);
+    action.scope.replay(frame, action.replay);
   };
 
 })();;(function () {
   var ns = $.namespace('pskl.service');
 
   ns.SavedStatusService = function (piskelController) {
-    this.piskelController_ = piskelController;
+    this.piskelController = piskelController;
   };
 
   ns.SavedStatusService.prototype.init = function () {
@@ -18796,7 +20290,7 @@ if (typeof Function.prototype.bind !== "function") {
   };
 
   ns.SavedStatusService.prototype.onPiskelReset = function () {
-    var piskel = this.piskelController_.piskel;
+    var piskel = this.piskelController.getPiskel();
     // A first PISKEL_RESET is triggered during the load of a new Piskel, it should be ignored
     // putting a firstResetDone flag as a nasty workaround for this
     if (piskel.firstResetDone_) {
@@ -18815,7 +20309,7 @@ if (typeof Function.prototype.bind !== "function") {
   };
 
   ns.SavedStatusService.prototype.updateDirtyStatus = function (status) {
-    var piskel = this.piskelController_.piskel;
+    var piskel = this.piskelController.getPiskel();
     if (piskel.isDirty_ !== status) {
       // Redraw piskel name only if dirty status actually changed
       piskel.isDirty_ = status;
@@ -18824,7 +20318,7 @@ if (typeof Function.prototype.bind !== "function") {
   };
 
   ns.SavedStatusService.prototype.updatePiskelName = function () {
-    var piskel = this.piskelController_.piskel;
+    var piskel = this.piskelController.getPiskel();
     var name = piskel.getDescriptor().name;
     if (piskel.isDirty_) {
       $('.piskel-name').html(name + ' *');
@@ -18834,7 +20328,7 @@ if (typeof Function.prototype.bind !== "function") {
   };
 
   ns.SavedStatusService.prototype.onBeforeUnload = function (evt) {
-    var piskel = this.piskelController_.piskel;
+    var piskel = this.piskelController.getPiskel();
     if (piskel.isDirty_) {
       var confirmationMessage = "Your Piskel seems to have unsaved changes";
 
@@ -18856,6 +20350,13 @@ if (typeof Function.prototype.bind !== "function") {
     $(document.body).keydown($.proxy(this.onKeyUp_, this));
   };
 
+  /**
+   * Add a keyboard shortcut
+   * @param {String}   rawKey   (case insensitive) key can be a meta (optional) + [a-z0-9] or
+   *                            a special key (check list of supported keys in KeycodeTranslator)
+   *                            eg. 'ctrl+A', 'del'
+   * @param {Function} callback should return true to let the original event perform its default action
+   */
   ns.ShortcutService.prototype.addShortcut = function (rawKey, callback) {
     var parsedKey = this.parseKey_(rawKey.toLowerCase());
 
@@ -18884,20 +20385,31 @@ if (typeof Function.prototype.bind !== "function") {
   };
 
   ns.ShortcutService.prototype.parseKey_ = function (key) {
-    var meta = 'normal';
-    if (key.indexOf('ctrl+') === 0) {
-      meta = 'ctrl';
-      key = key.replace('ctrl+', '');
-    } else if (key.indexOf('shift+') === 0) {
-      meta = 'shift';
-      key = key.replace('shift+', '');
-    } else if (key.indexOf('alt+') === 0) {
-      meta = 'alt';
-      key = key.replace('alt+', '');
-    }
+    var meta = this.getMetaKey_({
+      alt : key.indexOf('alt+') != -1,
+      shift : key.indexOf('shift+') != -1,
+      ctrl : key.indexOf('ctrl+') != -1
+    });
+
+    var parts = key.split('+');
+    key = parts[parts.length-1];
     return {meta : meta, key : key};
   };
 
+  ns.ShortcutService.prototype.getMetaKey_ = function (meta) {
+    var keyBuffer = [];
+    ['alt', 'ctrl', 'shift'].forEach(function (metaKey) {
+      if (meta[metaKey]) {
+        keyBuffer.push(metaKey);
+      }
+    });
+
+    if (keyBuffer.length > 0) {
+      return keyBuffer.join('+');
+    } else {
+      return 'normal';
+    }
+  };
   /**
    * @private
    */
@@ -18910,20 +20422,18 @@ if (typeof Function.prototype.bind !== "function") {
 
       var keyShortcuts = this.shortcuts_[charkey];
       if(keyShortcuts) {
-        var cb;
-        if (this.isCtrlKeyPressed_(evt)) {
-          cb = keyShortcuts.ctrl;
-        } else if (this.isShiftKeyPressed_(evt)) {
-          cb = keyShortcuts.shift;
-        } else if (this.isAltKeyPressed_(evt)) {
-          cb = keyShortcuts.alt;
-        } else {
-          cb = keyShortcuts.normal;
-        }
+        var meta = this.getMetaKey_({
+          alt : this.isAltKeyPressed_(evt),
+          shift : this.isShiftKeyPressed_(evt),
+          ctrl : this.isCtrlKeyPressed_(evt)
+        });
+        var cb = keyShortcuts[meta];
 
         if(cb) {
-          cb(charkey);
-          evt.preventDefault();
+          var bubble = cb(charkey);
+          if (bubble !== true) {
+            evt.preventDefault();
+          }
         }
       }
     }
@@ -18952,6 +20462,7 @@ if (typeof Function.prototype.bind !== "function") {
 })();;(function () {
   var specialKeys = {
     191 : "?",
+    8 : "back",
     27 : "esc",
     38 : "up",
     40 : "down",
@@ -19122,7 +20633,57 @@ if (typeof Function.prototype.bind !== "function") {
     xhr.send(formData);
   };
 })();
-;/**
+;(function () {
+  var ns = $.namespace('pskl.service');
+
+  ns.CurrentColorsService = function (piskelController) {
+    this.piskelController = piskelController;
+    this.currentColors = [];
+    this.framesColorsCache_ = {};
+  };
+
+  ns.CurrentColorsService.prototype.init = function () {
+    $.subscribe(Events.PISKEL_RESET, this.onPiskelUpdated_.bind(this));
+    $.subscribe(Events.TOOL_RELEASED, this.onPiskelUpdated_.bind(this));
+  };
+
+  ns.CurrentColorsService.prototype.getCurrentColors = function () {
+    return this.currentColors;
+  };
+
+  ns.CurrentColorsService.prototype.onPiskelUpdated_ = function (evt) {
+    var layers = this.piskelController.getLayers();
+    var frames = layers.map(function (l) {return l.getFrames();}).reduce(function (p, n) {return p.concat(n);});
+    var colors = {};
+    frames.forEach(function (f) {
+      var frameHash = f.getHash();
+      if (!this.framesColorsCache_[frameHash]) {
+        var frameColors = {};
+        f.forEachPixel(function (color, x, y) {
+          frameColors[color] = true;
+        });
+        this.framesColorsCache_[frameHash] = frameColors;
+      }
+      Object.keys(this.framesColorsCache_[frameHash]).forEach(function (color) {
+        colors[color] = true;
+      });
+    }.bind(this));
+    delete colors[Constants.TRANSPARENT_COLOR];
+    this.currentColors = Object.keys(colors);
+    this.currentColors = this.currentColors.sort(function (c1, c2) {
+      if (c1 < c2) {
+        return -1;
+      } else if (c1 > c2) {
+        return 1;
+      } else {
+        return 0;
+      }
+    });
+
+    // TODO : only fire if there was a change
+    $.publish(Events.CURRENT_COLORS_UPDATED, colors);
+  };
+})();;/**
  * @provide pskl.drawingtools.BaseTool
  *
  * @require pskl.utils
@@ -19130,13 +20691,18 @@ if (typeof Function.prototype.bind !== "function") {
 (function() {
   var ns = $.namespace("pskl.drawingtools");
 
-  ns.BaseTool = function() {};
+  ns.BaseTool = function() {
+    this.toolId = "tool-base";
+  };
 
   ns.BaseTool.prototype.applyToolAt = function(col, row, color, frame, overlay, event) {};
 
   ns.BaseTool.prototype.moveToolAt = function(col, row, color, frame, overlay, event) {};
 
+  ns.BaseTool.prototype.replay = Constants.ABSTRACT_FUNCTION;
+
   ns.BaseTool.prototype.moveUnactiveToolAt = function(col, row, color, frame, overlay, event) {
+
     if (overlay.containsPixel(col, row)) {
       if (!isNaN(this.highlightedPixelCol) &&
         !isNaN(this.highlightedPixelRow) &&
@@ -19152,6 +20718,8 @@ if (typeof Function.prototype.bind !== "function") {
 
       this.highlightedPixelCol = col;
       this.highlightedPixelRow = row;
+    } else {
+      this.hideHighlightedPixel(overlay);
     }
   };
 
@@ -19165,6 +20733,14 @@ if (typeof Function.prototype.bind !== "function") {
       this.highlightedPixelRow = null;
       this.highlightedPixelCol = null;
     }
+  };
+
+  ns.BaseTool.prototype.raiseSaveStateEvent = function (replayData) {
+    $.publish(Events.PISKEL_SAVE_STATE, {
+      type : pskl.service.HistoryService.REPLAY,
+      scope : this,
+      replay : replayData
+    });
   };
 
 
@@ -19210,7 +20786,113 @@ if (typeof Function.prototype.bind !== "function") {
     return pixels;
   };
 })();
-;/**
+;(function () {
+  var ns = $.namespace('pskl.drawingtools');
+  /**
+   * Abstract shape tool class, parent to all shape tools (rectangle, circle).
+   * Shape tools should override only the draw_ method
+   */
+  ns.ShapeTool = function() {
+    // Shapes's first point coordinates (set in applyToolAt)
+    this.startCol = null;
+    this.startRow = null;
+  };
+
+  pskl.utils.inherit(ns.ShapeTool, ns.BaseTool);
+
+  /**
+   * @override
+   */
+  ns.ShapeTool.prototype.applyToolAt = function(col, row, color, frame, overlay, event) {
+    $.publish(Events.DRAG_START, [col, row]);
+    this.startCol = col;
+    this.startRow = row;
+
+    // Drawing the first point of the rectangle in the fake overlay canvas:
+    overlay.setPixel(col, row, color);
+  };
+
+  ns.ShapeTool.prototype.moveToolAt = function(col, row, color, frame, overlay, event) {
+    var coords = this.getCoordinates_(col, row, event);
+    $.publish(Events.CURSOR_MOVED, [coords.col, coords.row]);
+
+    overlay.clear();
+    if(color == Constants.TRANSPARENT_COLOR) {
+      color = Constants.SELECTION_TRANSPARENT_COLOR;
+    }
+
+    // draw in overlay
+    this.draw_(coords.col, coords.row, color, overlay);
+  };
+
+  /**
+   * @override
+   */
+  ns.ShapeTool.prototype.releaseToolAt = function(col, row, color, frame, overlay, event) {
+    overlay.clear();
+    var coords = this.getCoordinates_(col, row, event);
+    this.draw_(coords.col, coords.row, color, frame);
+
+    $.publish(Events.DRAG_END, [col, row]);
+    this.raiseSaveStateEvent({
+      col : col,
+      row : row,
+      startCol : this.startCol,
+      startRow : this.startRow,
+      color : color
+    });
+  };
+
+  /**
+   * @override
+   */
+  ns.ShapeTool.prototype.replay = function(frame, replayData) {
+    this.startCol = replayData.startCol;
+    this.startRow = replayData.startRow;
+    this.draw_(replayData.col, replayData.row, replayData.color, frame);
+  };
+
+  /**
+   * Transform the current coordinates based on the original event
+   * @param {Number} col current col/x coordinate in the frame
+   * @param {Number} row current row/y coordinate in the frame
+   * @param {Event} event current event (can be mousemove, mouseup ...)
+   * @return {Object} {row : Number, col : Number}
+   */
+  ns.ShapeTool.prototype.getCoordinates_ = function(col, row, event) {
+    if (event.shiftKey) {
+      return this.getScaledCoordinates_(col, row);
+    } else {
+      return {col : col, row : row};
+    }
+  };
+
+  /**
+   * Transform the coordinates to preserve a square 1:1 ratio from the origin of the shape
+   * @param {Number} col current col/x coordinate in the frame
+   * @param {Number} row current row/y coordinate in the frame
+   * @return {Object} {row : Number, col : Number}
+   */
+  ns.ShapeTool.prototype.getScaledCoordinates_ = function(col, row) {
+    var dX = this.startCol - col;
+    var absX = Math.abs(dX);
+
+    var dY = this.startRow - row;
+    var absY = Math.abs(dY);
+
+    var delta = Math.min(absX, absY);
+    row = this.startRow - ((dY/absY)*delta);
+    col = this.startCol - ((dX/absX)*delta);
+
+    return {
+      col : col,
+      row : row
+    };
+  };
+
+  ns.ShapeTool.prototype.draw_ = Constants.ABSTRACT_FUNCTION;
+
+})();;/**
  * @provide pskl.drawingtools.SimplePen
  *
  * @require pskl.utils
@@ -19225,6 +20907,7 @@ if (typeof Function.prototype.bind !== "function") {
     this.previousCol = null;
     this.previousRow = null;
 
+    this.pixels = [];
   };
 
   pskl.utils.inherit(ns.SimplePen, ns.BaseTool);
@@ -19233,13 +20916,18 @@ if (typeof Function.prototype.bind !== "function") {
    * @override
    */
   ns.SimplePen.prototype.applyToolAt = function(col, row, color, frame, overlay, event) {
-    if (frame.containsPixel(col, row)) {
-      frame.setPixel(col, row, color);
-    }
+    frame.setPixel(col, row, color);
     this.previousCol = col;
     this.previousRow = row;
+    this.pixels.push({
+      col : col,
+      row : row
+    });
   };
 
+  /**
+   * @override
+   */
   ns.SimplePen.prototype.moveToolAt = function(col, row, color, frame, overlay, event) {
     if((Math.abs(col - this.previousCol) > 1) || (Math.abs(row - this.previousRow) > 1)) {
       // The pen movement is too fast for the mousemove frequency, there is a gap between the
@@ -19248,27 +20936,105 @@ if (typeof Function.prototype.bind !== "function") {
       var interpolatedPixels = this.getLinePixels_(col, this.previousCol, row, this.previousRow);
       for(var i=0, l=interpolatedPixels.length; i<l; i++) {
         var coords = interpolatedPixels[i];
-        this.applyToolAt(coords.col, coords.row, color, frame, overlay);
+        this.applyToolAt(coords.col, coords.row, color, frame, overlay, event);
       }
     }
     else {
-      this.applyToolAt(col, row, color, frame, overlay);
+      this.applyToolAt(col, row, color, frame, overlay, event);
     }
 
     this.previousCol = col;
     this.previousRow = row;
   };
+
+
+  ns.SimplePen.prototype.releaseToolAt = function(col, row, color, frame, overlay, event) {
+    this.raiseSaveStateEvent({
+      pixels : this.pixels.slice(0),
+      color : color
+    });
+    this.pixels = [];
+  };
+
+  ns.SimplePen.prototype.replay = function (frame, replayData) {
+    var pixels = replayData.pixels;
+    pixels.forEach(function (pixel) {
+      frame.setPixel(pixel.col, pixel.row, replayData.color);
+    });
+  };
 })();
-;(function() {
+;/**
+ * @provide pskl.drawingtools.Eraser
+ *
+ * @require Constants
+ * @require pskl.utils
+ */
+(function() {
+  var ns = $.namespace("pskl.drawingtools");
+
+  ns.Lighten = function() {
+    this.superclass.constructor.call(this);
+    this.toolId = "tool-lighten";
+    this.helpText = "Lighten / Darken";
+    this.step = 3;
+    this.resetUsedPixels_();
+  };
+
+  pskl.utils.inherit(ns.Lighten, ns.SimplePen);
+
+  ns.Lighten.prototype.resetUsedPixels_ = function() {
+    this.usedPixels_ = {
+      darken : {},
+      lighten : {}
+    };
+  };
+  /**
+   * @override
+   */
+  ns.Lighten.prototype.applyToolAt = function(col, row, color, frame, overlay, event, mouseButton) {
+    var isDarken = event.ctrlKey || event.cmdKey;
+    var isSinglePass = event.shiftKey;
+
+    var usedPixels = isDarken ? this.usedPixels_.darken : this.usedPixels_.lighten;
+
+    var key = col+'-'+row;
+    if (isSinglePass && usedPixels[key]) {
+      return;
+    }
+
+    var step = isSinglePass ? this.step * 2 : this.step;
+    var pixelColor = frame.getPixel(col, row);
+    if (pixelColor === Constants.TRANSPARENT_COLOR) {
+      pixelColor = isDarken ? 'white' : 'black';
+    }
+    if (isDarken) {
+      color = window.tinycolor.darken(pixelColor, step);
+    } else {
+      color = window.tinycolor.lighten(pixelColor, step);
+    }
+
+    if (color) {
+      usedPixels[key] = true;
+      this.superclass.applyToolAt.call(this, col, row, color.toRgbString(), frame, overlay, event);
+    }
+  };
+
+  ns.Lighten.prototype.releaseToolAt = function(col, row, color, frame, overlay, event) {
+    this.resetUsedPixels_();
+    $.publish(Events.PISKEL_SAVE_STATE, {
+      type : pskl.service.HistoryService.SNAPSHOT
+    });
+  };
+})();;(function() {
   var ns = $.namespace("pskl.drawingtools");
 
   ns.VerticalMirrorPen = function() {
+    this.superclass.constructor.call(this);
+
     this.toolId = "tool-vertical-mirror-pen";
     this.helpText = "vertical mirror pen tool";
 
     this.swap = null;
-    this.mirroredPreviousCol = null;
-    this.mirroredPreviousRow = null;
   };
 
   pskl.utils.inherit(ns.VerticalMirrorPen, ns.SimplePen);
@@ -19315,6 +21081,7 @@ if (typeof Function.prototype.bind !== "function") {
   var ns = $.namespace("pskl.drawingtools");
 
   ns.Eraser = function() {
+    this.superclass.constructor.call(this);
     this.toolId = "tool-eraser";
     this.helpText = "Eraser tool";
   };
@@ -19326,6 +21093,12 @@ if (typeof Function.prototype.bind !== "function") {
    */
   ns.Eraser.prototype.applyToolAt = function(col, row, color, frame, overlay, event) {
     this.superclass.applyToolAt.call(this, col, row, Constants.TRANSPARENT_COLOR, frame, overlay, event);
+  };
+  /**
+   * @override
+   */
+  ns.Eraser.prototype.releaseToolAt = function(col, row, color, frame, overlay, event) {
+    this.superclass.releaseToolAt.call(this, col, row, Constants.TRANSPARENT_COLOR, frame, overlay, event);
   };
 })();;/**
  * @provide pskl.drawingtools.Stroke
@@ -19392,19 +21165,26 @@ if (typeof Function.prototype.bind !== "function") {
    * @override
    */
   ns.Stroke.prototype.releaseToolAt = function(col, row, color, frame, overlay, event) {
-    // If the stroke tool is released outside of the canvas, we cancel the stroke:
-    // TODO: Mutualize this check in common method
-    if(frame.containsPixel(col, row)) {
-      // The user released the tool to draw a line. We will compute the pixel coordinate, impact
-      // the model and draw them in the drawing canvas (not the fake overlay anymore)
-      var strokePoints = this.getLinePixels_(this.startCol, col, this.startRow, row);
-      for(var i = 0; i< strokePoints.length; i++) {
-        // Change model:
-        frame.setPixel(strokePoints[i].col, strokePoints[i].row, color);
-      }
+    // The user released the tool to draw a line. We will compute the pixel coordinate, impact
+    // the model and draw them in the drawing canvas (not the fake overlay anymore)
+    var strokePoints = this.getLinePixels_(this.startCol, col, this.startRow, row);
+    for(var i = 0; i< strokePoints.length; i++) {
+      // Change model:
+      frame.setPixel(strokePoints[i].col, strokePoints[i].row, color);
     }
     // For now, we are done with the stroke tool and don't need an overlay anymore:
     overlay.clear();
+
+    this.raiseSaveStateEvent({
+      pixels : strokePoints,
+      color : color
+    });
+  };
+
+  ns.Stroke.prototype.replay = function(frame, replayData) {
+    replayData.pixels.forEach(function (pixel) {
+      frame.setPixel(pixel.col, pixel.row, replayData.color);
+    });
   };
 })();
 ;/**
@@ -19426,8 +21206,17 @@ if (typeof Function.prototype.bind !== "function") {
    * @override
    */
   ns.PaintBucket.prototype.applyToolAt = function(col, row, color, frame, overlay, event) {
-
     pskl.PixelUtils.paintSimilarConnectedPixelsFromFrame(frame, col, row, color);
+
+    this.raiseSaveStateEvent({
+      col : col,
+      row : row,
+      color : color
+    });
+  };
+
+  ns.PaintBucket.prototype.replay = function (frame, replayData) {
+    pskl.PixelUtils.paintSimilarConnectedPixelsFromFrame(frame, replayData.col, replayData.row, replayData.color);
   };
 })();
 
@@ -19452,49 +21241,15 @@ if (typeof Function.prototype.bind !== "function") {
   var ns = $.namespace("pskl.drawingtools");
 
   ns.Rectangle = function() {
+    ns.ShapeTool.call(this);
+
     this.toolId = "tool-rectangle";
     this.helpText = "Rectangle tool";
-
-    // Rectangle's first point coordinates (set in applyToolAt)
-    this.startCol = null;
-    this.startRow = null;
   };
 
-  pskl.utils.inherit(ns.Rectangle, ns.BaseTool);
+  pskl.utils.inherit(ns.Rectangle, ns.ShapeTool);
 
-  /**
-   * @override
-   */
-  ns.Rectangle.prototype.applyToolAt = function(col, row, color, frame, overlay, event) {
-    this.startCol = col;
-    this.startRow = row;
-
-    // Drawing the first point of the rectangle in the fake overlay canvas:
-    overlay.setPixel(col, row, color);
-  };
-
-  ns.Rectangle.prototype.moveToolAt = function(col, row, color, frame, overlay, event) {
-    overlay.clear();
-    if(color == Constants.TRANSPARENT_COLOR) {
-      color = Constants.SELECTION_TRANSPARENT_COLOR;
-    }
-
-    // draw in overlay
-    this.drawRectangle_(col, row, color, overlay);
-  };
-
-  /**
-   * @override
-   */
-  ns.Rectangle.prototype.releaseToolAt = function(col, row, color, frame, overlay, event) {
-    overlay.clear();
-    if(frame.containsPixel(col, row)) { // cancel if outside of canvas
-      // draw in frame to finalize
-      this.drawRectangle_(col, row, color, frame);
-    }
-  };
-
-  ns.Rectangle.prototype.drawRectangle_ = function (col, row, color, targetFrame) {
+  ns.Rectangle.prototype.draw_ = function (col, row, color, targetFrame) {
     var strokePoints = pskl.PixelUtils.getBoundRectanglePixels(this.startCol, this.startRow, col, row);
     for(var i = 0; i< strokePoints.length; i++) {
       // Change model:
@@ -19511,49 +21266,15 @@ if (typeof Function.prototype.bind !== "function") {
   var ns = $.namespace("pskl.drawingtools");
 
   ns.Circle = function() {
+    ns.ShapeTool.call(this);
+
     this.toolId = "tool-circle";
     this.helpText = "Circle tool";
-
-    // Circle's first point coordinates (set in applyToolAt)
-    this.startCol = null;
-    this.startRow = null;
   };
 
-  pskl.utils.inherit(ns.Circle, ns.BaseTool);
+  pskl.utils.inherit(ns.Circle, ns.ShapeTool);
 
-  /**
-   * @override
-   */
-  ns.Circle.prototype.applyToolAt = function(col, row, color, frame, overlay, event) {
-    this.startCol = col;
-    this.startRow = row;
-
-    // Drawing the first point of the rectangle in the fake overlay canvas:
-    overlay.setPixel(col, row, color);
-  };
-
-  ns.Circle.prototype.moveToolAt = function(col, row, color, frame, overlay, event) {
-    overlay.clear();
-    if(color == Constants.TRANSPARENT_COLOR) {
-      color = Constants.SELECTION_TRANSPARENT_COLOR;
-    }
-
-    // draw in overlay
-    this.drawCircle_(col, row, color, overlay);
-  };
-
-  /**
-   * @override
-   */
-  ns.Circle.prototype.releaseToolAt = function(col, row, color, frame, overlay, event) {
-    overlay.clear();
-    if(frame.containsPixel(col, row)) { // cancel if outside of canvas
-      // draw in frame to finalize
-      this.drawCircle_(col, row, color, frame);
-    }
-  };
-
-  ns.Circle.prototype.drawCircle_ = function (col, row, color, targetFrame) {
+  ns.Circle.prototype.draw_ = function (col, row, color, targetFrame) {
     var circlePoints = this.getCirclePixels_(this.startCol, this.startRow, col, row);
     for(var i = 0; i< circlePoints.length; i++) {
       // Change model:
@@ -19641,6 +21362,15 @@ if (typeof Function.prototype.bind !== "function") {
    */
   ns.Move.prototype.releaseToolAt = function(col, row, color, frame, overlay, event) {
     this.moveToolAt(col, row, color, frame, overlay);
+
+    this.raiseSaveStateEvent({
+      colDiff : col - this.startCol,
+      rowDiff : row - this.startRow
+    });
+  };
+
+  ns.Move.prototype.replay = function(frame, replayData) {
+    this.shiftFrame(replayData.colDiff, replayData.rowDiff, frame, frame.clone());
   };
 })();
 ;/**
@@ -19658,6 +21388,8 @@ if (typeof Function.prototype.bind !== "function") {
     // Select's first point coordinates (set in applyToolAt)
     this.startCol = null;
     this.startRow = null;
+
+    this.selection = null;
   };
 
   pskl.utils.inherit(ns.BaseSelect, ns.BaseTool);
@@ -19677,15 +21409,13 @@ if (typeof Function.prototype.bind !== "function") {
     // mode to create a selection.
     // If the initial click is on a previous selection, we go in "moveSelection"
     // mode to allow to move the selection by drag'n dropping it.
-    if(overlay.getPixel(col, row) != Constants.SELECTION_TRANSPARENT_COLOR) {
-
-      this.mode = "select";
-      this.onSelectStart_(col, row, color, frame, overlay);
-    }
-    else {
-
+    if(this.isInSelection(col, row)) {
       this.mode = "moveSelection";
       this.onSelectionDragStart_(col, row, color, frame, overlay);
+    }
+    else {
+      this.mode = "select";
+      this.onSelectStart_(col, row, color, frame, overlay);
     }
   };
 
@@ -19694,11 +21424,8 @@ if (typeof Function.prototype.bind !== "function") {
    */
   ns.BaseSelect.prototype.moveToolAt = function(col, row, color, frame, overlay, event) {
     if(this.mode == "select") {
-
       this.onSelect_(col, row, color, frame, overlay);
-    }
-    else if(this.mode == "moveSelection") {
-
+    } else if(this.mode == "moveSelection") {
       this.onSelectionDrag_(col, row, color, frame, overlay);
     }
   };
@@ -19715,26 +21442,29 @@ if (typeof Function.prototype.bind !== "function") {
     }
   };
 
-  ns.BaseSelect.prototype.hideHighlightedPixel = function () {
-    // not implemented for selection tools
-  };
-
   /**
    * If we mouseover the selection draw inside the overlay frame, show the 'move' cursor
    * instead of the 'select' one. It indicates that we can move the selection by dragndroping it.
    * @override
    */
   ns.BaseSelect.prototype.moveUnactiveToolAt = function(col, row, color, frame, overlay, event) {
-
-    if(overlay.getPixel(col, row) != Constants.SELECTION_TRANSPARENT_COLOR) {
-      // We're hovering the selection, show the move tool:
-      this.BodyRoot.addClass(this.toolId);
-      this.BodyRoot.removeClass(this.secondaryToolId);
-    } else {
-      // We're not hovering the selection, show create selection tool:
-      this.BodyRoot.addClass(this.secondaryToolId);
-      this.BodyRoot.removeClass(this.toolId);
+    if (overlay.containsPixel(col, row)) {
+      if(this.isInSelection(col, row)) {
+        // We're hovering the selection, show the move tool:
+        this.BodyRoot.addClass(this.secondaryToolId);
+        this.BodyRoot.removeClass(this.toolId);
+      } else {
+        // We're not hovering the selection, show create selection tool:
+        this.BodyRoot.addClass(this.toolId);
+        this.BodyRoot.removeClass(this.secondaryToolId);
+      }
     }
+  };
+
+  ns.BaseSelect.prototype.isInSelection = function (col, row) {
+    return this.selection && this.selection.pixels.some(function (pixel) {
+      return pixel.col === col && pixel.row === row;
+    });
   };
 
   ns.BaseSelect.prototype.hideHighlightedPixel = function() {
@@ -19745,31 +21475,23 @@ if (typeof Function.prototype.bind !== "function") {
    * For each pixel in the selection draw it in white transparent on the tool overlay
    * @protected
    */
-  ns.BaseSelect.prototype.drawSelectionOnOverlay_ = function (selection, overlay) {
-    var pixels = selection.pixels;
+  ns.BaseSelect.prototype.drawSelectionOnOverlay_ = function (overlay) {
+    var pixels = this.selection.pixels;
     for(var i=0, l=pixels.length; i<l; i++) {
-      overlay.setPixel(pixels[i].col, pixels[i].row, Constants.SELECTION_TRANSPARENT_COLOR);
+      var pixel = pixels[i];
+      var hasColor = pixel.color && pixel.color !== Constants.TRANSPARENT_COLOR ;
+      var color = hasColor ? this.getTransparentVariant(pixel.color) : Constants.SELECTION_TRANSPARENT_COLOR;
+
+      overlay.setPixel(pixels[i].col, pixels[i].row, color);
     }
   };
 
-  /**
-   * Move the overlay frame filled with semi-transparent pixels that represent the selection.
-   * @private
-   */
-  ns.BaseSelect.prototype.shiftOverlayFrame_ = function (colDiff, rowDiff, overlayFrame, reference) {
-    var color;
-    for (var col = 0 ; col < overlayFrame.getWidth() ; col++) {
-      for (var row = 0 ; row < overlayFrame.getHeight() ; row++) {
-        if (reference.containsPixel(col - colDiff, row - rowDiff)) {
-          color = reference.getPixel(col - colDiff, row - rowDiff);
-        } else {
-          color = Constants.TRANSPARENT_COLOR;
-        }
-        overlayFrame.setPixel(col, row, color);
-      }
-    }
+  ns.BaseSelect.prototype.getTransparentVariant = function (colorStr) {
+    var color = window.tinycolor(colorStr);
+    color = window.tinycolor.lighten(color, 10);
+    color.setAlpha(0.5);
+    return color.toRgbString();
   };
-
 
   // The list of callbacks to implement by specialized tools to implement the selection creation behavior.
   /** @protected */
@@ -19783,9 +21505,6 @@ if (typeof Function.prototype.bind !== "function") {
   // The list of callbacks that define the drag'n drop behavior of the selection.
   /** @private */
   ns.BaseSelect.prototype.onSelectionDragStart_ = function (col, row, color, frame, overlay) {
-    // Since we will move the overlayFrame in which  the current selection is rendered,
-    // we clone it to have a reference for the later shifting process.
-    this.overlayFrameReference = overlay.clone();
   };
 
   /** @private */
@@ -19795,11 +21514,10 @@ if (typeof Function.prototype.bind !== "function") {
 
     var colDiff = col - this.startCol, rowDiff = row - this.startRow;
 
-    // Shifting selection on overlay frame:
-    this.shiftOverlayFrame_(colDiff, rowDiff, overlay, this.overlayFrameReference);
+    this.selection.move(deltaCol, deltaRow);
 
-    // Update selection model:
-    $.publish(Events.SELECTION_MOVE_REQUEST, [deltaCol, deltaRow]);
+    overlay.clear();
+    this.drawSelectionOnOverlay_(overlay);
 
     this.lastCol = col;
     this.lastRow = row;
@@ -19821,19 +21539,28 @@ if (typeof Function.prototype.bind !== "function") {
   ns.RectangleSelect = function() {
     this.toolId = "tool-rectangle-select";
     this.helpText = "Rectangle selection tool";
-    
+
     ns.BaseSelect.call(this);
+    this.hasSelection = false;
   };
 
   pskl.utils.inherit(ns.RectangleSelect, ns.BaseSelect);
-  
+
 
   /**
    * @override
    */
   ns.RectangleSelect.prototype.onSelectStart_ = function (col, row, color, frame, overlay) {
-    // Drawing the first point of the rectangle in the fake overlay canvas:
-    overlay.setPixel(col, row, color);
+    if (this.hasSelection) {
+      this.hasSelection = false;
+      overlay.clear();
+      $.publish(Events.SELECTION_DISMISSED);
+    } else {
+      this.hasSelection = true;
+      $.publish(Events.DRAG_START, [col, row]);
+      // Drawing the first point of the rectangle in the fake overlay canvas:
+      overlay.setPixel(col, row, color);
+    }
   };
 
   /**
@@ -19843,22 +21570,20 @@ if (typeof Function.prototype.bind !== "function") {
    * @override
    */
   ns.RectangleSelect.prototype.onSelect_ = function (col, row, color, frame, overlay) {
-    overlay.clear();
-    if(this.startCol == col &&this.startRow == row) {
-      $.publish(Events.SELECTION_DISMISSED);
-    } else {
-      var selection = new pskl.selection.RectangularSelection(
+    if (this.hasSelection) {
+      overlay.clear();
+      this.selection = new pskl.selection.RectangularSelection(
         this.startCol, this.startRow, col, row);
-      $.publish(Events.SELECTION_CREATED, [selection]);
-      this.drawSelectionOnOverlay_(selection, overlay);
+      $.publish(Events.SELECTION_CREATED, [this.selection]);
+      this.drawSelectionOnOverlay_(overlay);
     }
   };
 
-  /**
-   * @override
-   */
   ns.RectangleSelect.prototype.onSelectEnd_ = function (col, row, color, frame, overlay) {
-    this.onSelect_(col, row, color, frame, overlay);
+    if (this.hasSelection) {
+      this.onSelect_(col, row, color, frame, overlay);
+      $.publish(Events.DRAG_END, [col, row]);
+    }
   };
 
 })();
@@ -19873,12 +21598,12 @@ if (typeof Function.prototype.bind !== "function") {
   ns.ShapeSelect = function() {
     this.toolId = "tool-shape-select";
     this.helpText = "Shape selection tool";
-    
+
     ns.BaseSelect.call(this);
   };
 
   pskl.utils.inherit(ns.ShapeSelect, ns.BaseSelect);
-  
+
   /**
    * For the shape select tool, you just need to click one time to create a selection.
    * So we jsut need to implement onSelectStart_ (no need for onSelect_ & onSelectEnd_)
@@ -19888,13 +21613,13 @@ if (typeof Function.prototype.bind !== "function") {
     // Clean previous selection:
     $.publish(Events.SELECTION_DISMISSED);
     overlay.clear();
-    
+
     // From the pixel cliked, get shape using an algorithm similar to the paintbucket one:
     var pixels = pskl.PixelUtils.getSimilarConnectedPixelsFromFrame(frame, col, row);
-    var selection = new pskl.selection.ShapeSelection(pixels);
+    this.selection = new pskl.selection.ShapeSelection(pixels);
 
-    $.publish(Events.SELECTION_CREATED, [selection]);
-    this.drawSelectionOnOverlay_(selection, overlay);
+    $.publish(Events.SELECTION_CREATED, [this.selection]);
+    this.drawSelectionOnOverlay_(overlay);
   };
 
 })();
@@ -19960,26 +21685,35 @@ if (typeof Function.prototype.bind !== "function") {
 
       piskel.addLayer(layer);
 
-      this.piskelController = new pskl.controller.PiskelController(piskel);
+      this.corePiskelController = new pskl.controller.piskel.PiskelController(piskel);
+      this.corePiskelController.init();
+
+      this.piskelController = new pskl.controller.piskel.PublicPiskelController(this.corePiskelController);
       this.piskelController.init();
 
       this.paletteController = new pskl.controller.PaletteController();
       this.paletteController.init();
 
-      this.palettesListController = new pskl.controller.PalettesListController();
+      this.currentColorsService = new pskl.service.CurrentColorsService(this.piskelController);
+      this.currentColorsService.init();
+
+      this.palettesListController = new pskl.controller.PalettesListController(this.paletteController, this.currentColorsService);
       this.palettesListController.init();
+
+      this.cursorCoordinatesController = new pskl.controller.CursorCoordinatesController(this.piskelController);
+      this.cursorCoordinatesController.init();
 
       this.drawingController = new pskl.controller.DrawingController(this.piskelController, this.paletteController, $('#drawing-canvas-container'));
       this.drawingController.init();
 
-      this.animationController = new pskl.controller.AnimatedPreviewController(this.piskelController, $('#preview-canvas-container'));
+      this.animationController = new pskl.controller.AnimatedPreviewController(this.piskelController, $('#animated-preview-canvas-container'));
       this.animationController.init();
 
-      this.minimapController = new pskl.controller.MinimapController(this.piskelController, this.animationController, this.drawingController, $('#preview-canvas-container'));
+      this.minimapController = new pskl.controller.MinimapController(this.piskelController, this.animationController, this.drawingController, $('#animated-preview-canvas-container'));
       this.minimapController.init();
 
-      this.previewsController = new pskl.controller.PreviewFilmController(this.piskelController, $('#preview-list'));
-      this.previewsController.init();
+      this.previewFilmController = new pskl.controller.PreviewFilmController(this.piskelController, $('#preview-list'));
+      this.previewFilmController.init();
 
       this.layersListController = new pskl.controller.LayersListController(this.piskelController);
       this.layersListController.init();
@@ -19996,11 +21730,14 @@ if (typeof Function.prototype.bind !== "function") {
       this.selectionManager = new pskl.selection.SelectionManager(this.piskelController);
       this.selectionManager.init();
 
-      this.historyService = new pskl.service.HistoryService(this.piskelController);
+      this.historyService = new pskl.service.HistoryService(this.corePiskelController);
       this.historyService.init();
 
       this.notificationController = new pskl.controller.NotificationController();
       this.notificationController.init();
+
+      this.canvasBackgroundController = new pskl.controller.CanvasBackgroundController();
+      this.canvasBackgroundController.init();
 
       this.localStorageService = new pskl.service.LocalStorageService(this.piskelController);
       this.localStorageService.init();
@@ -20013,6 +21750,7 @@ if (typeof Function.prototype.bind !== "function") {
 
       this.savedStatusService = new pskl.service.SavedStatusService(this.piskelController);
       this.savedStatusService.init();
+
 
       if (this.isAppEngineVersion) {
         this.storageService = new pskl.service.AppEngineStorageService(this.piskelController);
@@ -20068,7 +21806,7 @@ if (typeof Function.prototype.bind !== "function") {
     render : function (delta) {
       this.drawingController.render(delta);
       this.animationController.render(delta);
-      this.previewsController.render(delta);
+      this.previewFilmController.render(delta);
     },
 
     readSizeFromURL_ : function () {

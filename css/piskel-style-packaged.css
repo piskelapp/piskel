@@ -96,6 +96,8 @@ body {
 .right-column {
   vertical-align: top;
   margin-left: 10px;
+  height: 100%;
+  position: relative;
 }
 
 .drawing-canvas-container {
@@ -212,6 +214,24 @@ body {
   border : 0px Solid transparent;
 }
 
+#animated-preview-container {
+  background: #333;
+  border-radius : 0 0 2px 2px;
+  overflow : hidden;
+}
+
+#animated-preview-canvas-container {
+  height :200px;
+  width : 200px;
+}
+
+.tiled-frame-container {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  background-repeat : repeat;
+}
+
 .display-fps {
   float: left;
   color: #aaa;
@@ -224,6 +244,8 @@ body {
 .range-fps {
   overflow: hidden;
   width: 120px;
+  height : 24px;
+  margin : 0;
 }
 
 /**
@@ -262,6 +284,36 @@ body {
 
 .image-link {
   color : gold;
+}
+
+.pull-top,
+.pull-right,
+.pull-bottom,
+.pull-left {
+  position:absolute;
+}
+
+.pull-top {
+  top:0;
+}
+
+.pull-right {
+  right:0;
+}
+
+.pull-bottom {
+  bottom:0;
+}
+
+.pull-left {
+  left:0;
+}
+
+.cursor-coordinates {
+  color:#888;
+  font-size:12px;
+  font-weight:bold;
+  font-family:Courier;
 }
 .row {
   display: block;
@@ -362,9 +414,9 @@ body {
   margin-right: 0;
 }
 
-/*
- * Settings icons
- */
+/********************************************************** *j* j** j*j j j j** *****************/
+/* Settings icons                                            I  I   I I I\I  \                  */
+/********************************************************** *** *** *** * * '** *****************/
 
 .tool-icon.gallery-icon {
   background-image: url(../img/gallery.png);
@@ -445,6 +497,10 @@ body {
   border-left : 3px solid gold;
 }
 
+/************************************************************************************************/
+/* Common settings classes                                                                      */
+/************************************************************************************************/
+
 .settings-section {
   margin: 10px 20px;
   font-size: 12px;
@@ -465,13 +521,26 @@ body {
   padding-bottom: 5px;
 }
 
+.settings-description {
+  margin : 0 0 10px 0;
+  display : inline-block;
+}
+
 .settings-form-section {
   margin-bottom: 10px;
 }
 
+.settings-item {
+  margin : 10px 0;
+}
+
+/************************************************************************************************/
+/* Application settings                                                                         */
+/************************************************************************************************/
+
 .background-picker-wrapper {
   overflow: hidden;
-  padding: 10px 5px 20px 5px;
+  padding: 5px;
 }
 
 .background-picker {
@@ -502,17 +571,29 @@ body {
   border: gold 1px solid;
 }
 
-/* Gif/Png Export Setting panel*/
-/*******************************/
+/************************************************************************************************/
+/* Gif/Png Export panel                                                                         */
+/************************************************************************************************/
+
 .gif-upload-button,
 .gif-render-button {
-  /*float : right;*/
   margin-top : 10px;
   margin-right : 10px;
 }
 
 .gif-export-radio-group {
   margin:10px 0;
+}
+
+.gif-export-progress-status {
+  margin-left: 5px;
+}
+
+.gif-export-progress-bar {
+  margin-top:5px;
+  height:3px;
+  width: 0;
+  background:gold;
 }
 
 .gif-export-preview,
@@ -549,7 +630,10 @@ body {
   color: white;
 }
 
-/* Import panel */
+/************************************************************************************************/
+/* Import panel                                                                                 */
+/************************************************************************************************/
+
 .import-section,
 .resize-section {
   margin: 15px 0;
@@ -627,6 +711,11 @@ body {
   vertical-align: middle;
 }
 
+
+/************************************************************************************************/
+/* Browse local piskels panel                                                                   */
+/************************************************************************************************/
+
 .local-piskels-list {
   width: 100%;
 }
@@ -663,6 +752,7 @@ body {
 }
 
 .tool-icon {
+  position : relative;
   cursor : pointer;
   width: 46px;
   height: 46px;
@@ -676,10 +766,16 @@ body {
 .tool-icon.selected {
   cursor: default;
   background-color: #444;
+}
+
+.tool-icon.selected:before {
+  content:"";
+  position : absolute;
+  height : 100%;
+  width : 100%;
   border: 3px solid gold;
   box-sizing: border-box;
   -moz-box-sizing: border-box;
-  background-position: 9px 9px;
 }
 
 .tool-icon:hover {
@@ -697,10 +793,6 @@ body {
   background-image: url(../img/tools/mirror.png);
   background-position: 0px 10px;
   background-size: 38px 27px;
-}
-
-.tool-icon.tool-vertical-mirror-pen.selected {
-  background-position: -3px 7px;
 }
 
 .tool-icon.tool-paint-bucket {
@@ -736,13 +828,14 @@ body {
   background-size: 24px 20px;
 }
 
-.tool-icon.tool-rectangle.selected,
-.tool-icon.tool-rectangle-select.selected {
-  background-position: 9px 11px;
-}
-
 .tool-icon.tool-shape-select {
   background-image: url(../img/tools/magicwand.png);
+}
+
+.tool-icon.tool-lighten {
+  background-image: url(../img/tools/lighten.png);
+  background-size: 30px 30px;
+  background-position: 8px 8px;
 }
 
 .tool-icon.tool-colorpicker {
@@ -762,7 +855,8 @@ body {
   cursor: url(../img/icons/vertical-mirror-pen.png) 5 15, pointer;
 }
 
-.tool-pen .drawing-canvas-container:hover {
+.tool-pen .drawing-canvas-container:hover,
+.tool-lighten .drawing-canvas-container:hover {
   cursor: url(../img/icons/pen.png) 0 15, pointer;
 }
 
@@ -787,7 +881,7 @@ body {
 }
 
 .tool-rectangle-select .drawing-canvas-container:hover {
-  cursor: url(../img/icons/select.png) 15 15, pointer;
+  cursor: crosshair;
 }
 
 .tool-shape-select .drawing-canvas-container:hover {
@@ -824,7 +918,7 @@ body {
 
 .tool-color-picker:nth-child(2) {
   z-index : 90;
-  margin-top: 20px;
+  margin-top: 25px;
   margin-left:-20px;
 }
 
@@ -882,6 +976,16 @@ body {
 
 
 
+.action-icon {
+  cursor: pointer;
+  height: 100%;
+  background-repeat: no-repeat;
+  background-position: 50%;
+}
+
+.action-icon.edit-icon {
+  background-image: url('../img/tools/pen.png');
+}
 .cheatsheet-link {
   position: fixed;
   bottom: 10px;
@@ -1032,7 +1136,7 @@ body {
   -moz-box-sizing : border-box;
 
   border-radius: 3px;
-  background: rgba(0,0,0,0.9);
+  background: rgba(0,0,0,1);
   overflow: auto;
 }
 
@@ -1166,15 +1270,10 @@ body {
   font-weight: bold;
 }
 
-.palette-manager-details-head-edit-icon {
-  cursor: pointer;
+.palette-manager-details-head .edit-icon {
   width: 24px;
-  height: 100%;
-  background: url('../img/tools/pen.png');
   display: inline-block;
-  background-size: 20px;
-  background-repeat: no-repeat;
-  background-position: 50%;
+  background-size: 16px;
 }
 
 .palette-manager-details-head-actions {
@@ -1274,7 +1373,9 @@ body {
   color: white;
   text-align: left;
   border-radius: 4px;
-  margin-top: 10px;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  overflow: hidden;
 }
 
 .toolbox-title {
@@ -1323,9 +1424,25 @@ body {
 .layer-item {
   height:24px;
   line-height: 24px;
-  padding : 0 10px;
+  padding : 0 0 0 10px;
   border-top: 1px solid #444;
   cursor : pointer;
+}
+
+.layer-item .edit-icon {
+  float: right;
+  width: 30px;
+  background-size: 12px;
+  opacity: 0;
+  transition : opacity 0.2s;
+}
+
+.layer-item:hover .edit-icon {
+  opacity : 0.6;
+}
+
+.layer-item:hover .edit-icon:hover {
+  opacity : 1;
 }
 
 .layer-item:hover {
@@ -1342,9 +1459,6 @@ body {
   font-family : 'Lucida Grande', Calibri;
   padding : 2px 6px 0 6px;
 }
-.palettes-list-container {
-}
-
 .palettes-list-select {
   float:right;
   max-width:90px;
@@ -1358,7 +1472,8 @@ body {
 }
 
 .palettes-list-colors {
-  overflow:hidden;
+  overflow: auto;
+  max-height: 160px;
 }
 
 .palettes-list-color {
@@ -1379,8 +1494,13 @@ body {
   height : 32px;
 }
 
-.palettes-list-color.primary:before,
-.palettes-list-color.secondary:before {
+.palettes-list-has-scrollbar .palettes-list-color,
+.palettes-list-has-scrollbar .palettes-list-color div{
+  width: 29px
+}
+
+.palettes-list-primary-color:before,
+.palettes-list-secondary-color:before {
   content: "";
   position: absolute;
   bottom: 1px;
@@ -1392,13 +1512,13 @@ body {
   height: 0px;
 }
 
-.palettes-list-color.primary:before {
+.palettes-list-primary-color:before {
   left: 1px;
   border-right-color: transparent;
 }
 
 
-.palettes-list-color.secondary:before {
+.palettes-list-secondary-color:before {
   right: 1px;
   border-left-color: transparent;
 }
@@ -2137,7 +2257,7 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
   position: absolute;
   left: 0;
   right: 12px;
-  
+
   -webkit-transition: all 500ms ease-out;
   -moz-transition: all 500ms ease-out;
   -ms-transition: all 500ms ease-out;
@@ -2205,6 +2325,8 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
   border: #444 3px solid;
   border-radius: 3px;
   margin: 5px 0;
+  width: 96px;
+  height: 96px;
 }
 
 .preview-tile:first-child {
