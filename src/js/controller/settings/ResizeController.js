@@ -32,7 +32,8 @@
     var resizedLayers = this.piskelController.getLayers().map(this.resizeLayer_.bind(this));
 
     var piskel = pskl.model.Piskel.fromLayers(resizedLayers, this.piskelController.getPiskel().getDescriptor());
-    pskl.app.piskelController.setPiskel(piskel);
+
+    pskl.app.piskelController.setPiskel(piskel, true);
     $.publish(Events.CLOSE_SETTINGS_DRAWER);
   };
 
@@ -44,7 +45,7 @@
   ns.ResizeController.prototype.resizeFrame_ = function (frame) {
     var width = parseInt(this.resizeWidth.val(), 10);
     var height = parseInt(this.resizeHeight.val(), 10);
-    
+
     var resizedFrame;
     if (this.isResizeContentEnabled_()) {
       resizedFrame = pskl.utils.FrameUtils.resize(frame, width, height, false);
@@ -56,7 +57,7 @@
         }
       });
     }
-    
+
     return resizedFrame;
   };
 

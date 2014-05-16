@@ -13,8 +13,8 @@
     pskl.app.shortcutService.addShortcut('shift+n', this.duplicateCurrentFrame.bind(this));
   };
 
-  ns.PublicPiskelController.prototype.setPiskel = function (piskel) {
-    this.piskelController.setPiskel(piskel);
+  ns.PublicPiskelController.prototype.setPiskel = function (piskel, preserveState) {
+    this.piskelController.setPiskel(piskel, preserveState);
 
     $.publish(Events.FRAME_SIZE_CHANGED);
     $.publish(Events.PISKEL_RESET);
