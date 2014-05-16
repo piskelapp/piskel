@@ -10,6 +10,8 @@
   // I apologize to my future self for this one.
   var NO_SCROLL_MAX_COLORS = 20;
 
+  var MAX_COLORS = 100;
+
   ns.PalettesListController = function (paletteController, usedColorService) {
     this.usedColorService = usedColorService;
     this.paletteController = paletteController;
@@ -77,6 +79,11 @@
         colors = palette.colors;
       }
     }
+
+    if (colors.length > MAX_COLORS) {
+      colors = colors.slice(0, MAX_COLORS);
+    }
+
     return colors;
   };
 
