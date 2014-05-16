@@ -42,11 +42,6 @@
    */
   ns.ShapeTool.prototype.releaseToolAt = function(col, row, color, frame, overlay, event) {
     overlay.clear();
-    if (event.shiftKey) {
-      var scaled = this.getScaledCoordinates_(col, row);
-      col = scaled.col;
-      row = scaled.row;
-    }
     var coords = this.getCoordinates_(col, row, event);
     this.draw_(coords.col, coords.row, color, frame);
 
