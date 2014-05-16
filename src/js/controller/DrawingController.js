@@ -75,6 +75,7 @@
 
     window.addEventListener('mouseup', this.onMouseup_.bind(this));
     window.addEventListener('mousemove', this.onMousemove_.bind(this));
+    window.addEventListener('keyup', this.onKeyup_.bind(this));
 
     // Deactivate right click:
     body.contextmenu(this.onCanvasContextMenu_);
@@ -146,39 +147,53 @@
    * @private
    */
   ns.DrawingController.prototype.onMousemove_ = function (event) {
+    this._clientX = event.clientX;
+    this._clientY = event.clientY;
+
     var currentTime = new Date().getTime();
     // Throttling of the mousemove event:
 
     if ((currentTime - this.previousMousemoveTime) > Constants.MOUSEMOVE_THROTTLING ) {
-      var coords = this.renderer.getCoordinates(event.clientX, event.clientY);
-      var currentFrame = this.piskelController.getCurrentFrame();
-
-      if (this.isClicked) {
-        // Warning : do not call setCurrentButton here
-        // mousemove do not have the correct mouse button information on all browsers
-        this.currentToolBehavior.moveToolAt(
-          coords.x | 0,
-          coords.y | 0,
-          this.getCurrentColor_(event),
-          currentFrame,
-          this.overlayFrame,
-          event
-        );
-      } else {
-
-        this.currentToolBehavior.moveUnactiveToolAt(
-          coords.x,
-          coords.y,
-          this.getCurrentColor_(event),
-          currentFrame,
-          this.overlayFrame,
-          event
-        );
-      }
-      $.publish(Events.CURSOR_MOVED, [coords.x, coords.y]);
+      this.moveTool_(this._clientX, this._clientY, event);
       this.previousMousemoveTime = currentTime;
     }
   };
+
+  /**
+   * @private
+   */
+  ns.DrawingController.prototype.onKeyup_ = function (event) {
+    this.moveTool_(this._clientX, this._clientY, event);
+  };
+
+  ns.DrawingController.prototype.moveTool_ = function (x, y, event) {
+    var coords = this.renderer.getCoordinates(x, y);
+    var currentFrame = this.piskelController.getCurrentFrame();
+
+    if (this.isClicked) {
+      // Warning : do not call setCurrentButton here
+      // mousemove do not have the correct mouse button information on all browsers
+      this.currentToolBehavior.moveToolAt(
+        coords.x | 0,
+        coords.y | 0,
+        this.getCurrentColor_(),
+        currentFrame,
+        this.overlayFrame,
+        event
+      );
+    } else {
+
+      this.currentToolBehavior.moveUnactiveToolAt(
+        coords.x,
+        coords.y,
+        this.getCurrentColor_(),
+        currentFrame,
+        this.overlayFrame,
+        event
+      );
+    }
+    $.publish(Events.CURSOR_MOVED, [coords.x, coords.y]);
+  }
 
   ns.DrawingController.prototype.onMousewheel_ = function (jQueryEvent) {
     var event = jQueryEvent.originalEvent;
