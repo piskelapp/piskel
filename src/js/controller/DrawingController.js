@@ -193,7 +193,7 @@
       );
     }
     $.publish(Events.CURSOR_MOVED, [coords.x, coords.y]);
-  }
+  };
 
   ns.DrawingController.prototype.onMousewheel_ = function (jQueryEvent) {
     var event = jQueryEvent.originalEvent;
