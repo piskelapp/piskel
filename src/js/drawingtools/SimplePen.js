@@ -46,7 +46,7 @@
       }
     }
     else {
-      this.applyToolAt(col, row, color, frame, overlay);
+      this.applyToolAt(col, row, color, frame, overlay, event);
     }
 
     this.previousCol = col;
