@@ -30,15 +30,23 @@
 
   ns.Move.prototype.moveToolAt = function(col, row, color, frame, overlay, event) {
     var colDiff = col - this.startCol, rowDiff = row - this.startRow;
-    this.shiftFrame(colDiff, rowDiff, frame, this.frameClone);
+    this.shiftFrame(colDiff, rowDiff, frame, this.frameClone, event);
   };
 
-  ns.Move.prototype.shiftFrame = function (colDiff, rowDiff, frame, reference) {
+  ns.Move.prototype.shiftFrame = function (colDiff, rowDiff, frame, reference, event) {
     var color;
-    for (var col = 0 ; col < frame.getWidth() ; col++) {
-      for (var row = 0 ; row < frame.getHeight() ; row++) {
-        if (reference.containsPixel(col - colDiff, row - rowDiff)) {
-          color = reference.getPixel(col - colDiff, row - rowDiff);
+    var w = frame.getWidth();
+    var h = frame.getHeight();
+    for (var col = 0 ; col < w ; col++) {
+      for (var row = 0 ; row < h ; row++) {
+        var x = col - colDiff;
+        var y = row - rowDiff;
+        if (event.shiftKey) {
+          x = (x + w) % w;
+          y = (y + h) % h;
+        }
+        if (reference.containsPixel(x, y)) {
+          color = reference.getPixel(x, y);
         } else {
           color = Constants.TRANSPARENT_COLOR;
         }
@@ -51,15 +59,19 @@
    * @override
    */
   ns.Move.prototype.releaseToolAt = function(col, row, color, frame, overlay, event) {
-    this.moveToolAt(col, row, color, frame, overlay);
+    this.moveToolAt(col, row, color, frame, overlay, event);
 
     this.raiseSaveStateEvent({
       colDiff : col - this.startCol,
-      rowDiff : row - this.startRow
+      rowDiff : row - this.startRow,
+      shiftKey : event.shiftKey
     });
   };
 
   ns.Move.prototype.replay = function(frame, replayData) {
-    this.shiftFrame(replayData.colDiff, replayData.rowDiff, frame, frame.clone());
+    var event = {
+      shiftKey : replayData.shiftKey
+    };
+    this.shiftFrame(replayData.colDiff, replayData.rowDiff, frame, frame.clone(), event);
   };
 })();
