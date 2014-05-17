@@ -10,7 +10,7 @@
   ns.Lighten = function() {
     this.superclass.constructor.call(this);
     this.toolId = "tool-lighten";
-    this.helpText = "Lighten or ctrl:Darken";
+    this.helpText = "Lighten (hold ctrl for Darken)";
     this.step = 3;
     this.resetUsedPixels_();
   };
