@@ -110,8 +110,10 @@
       this.replayState(state);
     }
 
-    var lastState = this.stateQueue[index];
-    this.setupState(lastState);
+    var lastState = this.stateQueue[index+1];
+    if (lastState) {
+      this.setupState(lastState);
+    }
     this.currentIndex = index;
     $.publish(Events.PISKEL_RESET);
     if (originalSize !== this.getPiskelSize_()) {
