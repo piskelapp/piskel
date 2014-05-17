@@ -123,13 +123,14 @@
   };
 
   ns.PublicPiskelController.prototype.removeCurrentLayer = function () {
-    this.raiseSaveStateEvent_(this.piskelController.removeCurrentLayer, []);
-    this.piskelController.removeCurrentLayer();
+    var currentLayerIndex = this.getCurrentLayerIndex();
+    this.raiseSaveStateEvent_(this.piskelController.removeLayerAt, [currentLayerIndex]);
+    this.piskelController.removeLayerAt(currentLayerIndex);
     $.publish(Events.PISKEL_RESET);
   };
 
   ns.PublicPiskelController.prototype.getCurrentLayerIndex = function () {
-    return this.piskelController.currentLayerIndex;
+    return this.piskelController.getCurrentLayerIndex();
   };
 
   ns.PublicPiskelController.prototype.getCurrentFrameIndex = function () {
