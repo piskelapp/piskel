@@ -1,7 +1,6 @@
 (function () {
 
   var ns = $.namespace("pskl.controller");
-  var MOUSEWHEEL_THROTTLING = 20;
 
   ns.DrawingController = function (piskelController, paletteController, container) {
     /**
@@ -45,8 +44,6 @@
     this.isClicked = false;
     this.previousMousemoveTime = 0;
     this.currentToolBehavior = null;
-
-    this.lastMouseWheel_ = 0;
 
     // State of clicked button (need to be stateful here, see comment in getCurrentColor_)
     this.currentMouseButton_ = Constants.LEFT_BUTTON;
@@ -172,12 +169,14 @@
     this.setZoom_(this.calculateZoom_());
   };
 
-  ns.DrawingController.prototype.increaseZoom_ = function () {
-    this.setZoom_(this.renderer.getZoom() + this.getZoomStep_());
+  ns.DrawingController.prototype.increaseZoom_ = function (zoomMultiplier) {
+    var step = (zoomMultiplier || 1) * this.getZoomStep_();
+    this.setZoom_(this.renderer.getZoom() + step);
   };
 
-  ns.DrawingController.prototype.decreaseZoom_ = function () {
-    this.setZoom_(this.renderer.getZoom() - this.getZoomStep_());
+  ns.DrawingController.prototype.decreaseZoom_ = function (zoomMultiplier) {
+    var step = (zoomMultiplier || 1) * this.getZoomStep_();
+    this.setZoom_(this.renderer.getZoom() - step);
   };
 
   ns.DrawingController.prototype.getZoomStep_ = function () {
@@ -226,17 +225,13 @@
   };
 
   ns.DrawingController.prototype.onMousewheel_ = function (jQueryEvent) {
-    var now = Date.now();
-
-    if (now - this.lastMouseWheel_ > MOUSEWHEEL_THROTTLING) {
-      this.lastMouseWheel_ = now;
-      var event = jQueryEvent.originalEvent;
-      var delta = event.wheelDeltaY || (-2 * event.deltaY);
-      if (delta > 0) {
-        this.increaseZoom_();
-      } else if (delta < 0) {
-        this.decreaseZoom_();
-      }
+    var event = jQueryEvent.originalEvent;
+    var delta = event.wheelDeltaY || (-2 * event.deltaY);
+    var modifier = Math.abs(delta/120);
+    if (delta > 0) {
+      this.increaseZoom_(modifier);
+    } else if (delta < 0) {
+      this.decreaseZoom_(modifier);
     }
   };
 
