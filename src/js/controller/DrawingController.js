@@ -1,8 +1,7 @@
 (function () {
 
   var ns = $.namespace("pskl.controller");
-
-  var MAC_TOUCHPAD_SKIP = 8;
+  var MOUSEWHEEL_THROTTLING = 20;
 
   ns.DrawingController = function (piskelController, paletteController, container) {
     /**
@@ -47,7 +46,7 @@
     this.previousMousemoveTime = 0;
     this.currentToolBehavior = null;
 
-    this.skipMouseWheelCounter_ = 0;
+    this.lastMouseWheel_ = 0;
 
     // State of clicked button (need to be stateful here, see comment in getCurrentColor_)
     this.currentMouseButton_ = Constants.LEFT_BUTTON;
@@ -227,20 +226,17 @@
   };
 
   ns.DrawingController.prototype.onMousewheel_ = function (jQueryEvent) {
-    var event = jQueryEvent.originalEvent;
-    var delta = event.wheelDeltaY || (-2 * event.deltaY);
+    var now = Date.now();
 
-    var isMacTouchpad = typeof event.webkitDirectionInvertedFromDevice === 'boolean';
-    if (isMacTouchpad) {
-      if ((++this.skipMouseWheelCounter_%MAC_TOUCHPAD_SKIP)) {
-        return;
+    if (now - this.lastMouseWheel_ > MOUSEWHEEL_THROTTLING) {
+      this.lastMouseWheel_ = now;
+      var event = jQueryEvent.originalEvent;
+      var delta = event.wheelDeltaY || (-2 * event.deltaY);
+      if (delta > 0) {
+        this.increaseZoom_();
+      } else if (delta < 0) {
+        this.decreaseZoom_();
       }
-    }
-
-    if (delta > 0) {
-      this.increaseZoom_();
-    } else if (delta < 0) {
-      this.decreaseZoom_();
     }
   };
 
