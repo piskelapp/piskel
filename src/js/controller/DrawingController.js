@@ -1,5 +1,7 @@
 (function () {
+
   var ns = $.namespace("pskl.controller");
+
   ns.DrawingController = function (piskelController, paletteController, container) {
     /**
      * @public
@@ -59,6 +61,10 @@
 
     $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
     $.subscribe(Events.FRAME_SIZE_CHANGED, $.proxy(this.onFrameSizeChanged_, this));
+
+    pskl.app.shortcutService.addShortcut('0', this.resetZoom_.bind(this));
+    pskl.app.shortcutService.addShortcut('+', this.increaseZoom_.bind(this));
+    pskl.app.shortcutService.addShortcut('-', this.decreaseZoom_.bind(this));
 
     window.setTimeout(this.afterWindowResize_.bind(this), 100);
   };
@@ -159,6 +165,29 @@
     }
   };
 
+  ns.DrawingController.prototype.resetZoom_ = function () {
+    this.setZoom_(this.calculateZoom_());
+  };
+
+  ns.DrawingController.prototype.increaseZoom_ = function (zoomMultiplier) {
+    var step = (zoomMultiplier || 1) * this.getZoomStep_();
+    this.setZoom_(this.renderer.getZoom() + step);
+  };
+
+  ns.DrawingController.prototype.decreaseZoom_ = function (zoomMultiplier) {
+    var step = (zoomMultiplier || 1) * this.getZoomStep_();
+    this.setZoom_(this.renderer.getZoom() - step);
+  };
+
+  ns.DrawingController.prototype.getZoomStep_ = function () {
+    return this.calculateZoom_() / 10;
+  };
+
+  ns.DrawingController.prototype.setZoom_ = function (zoom) {
+    this.compositeRenderer.setZoom(zoom);
+    $.publish(Events.ZOOM_CHANGED);
+  };
+
   /**
    * @private
    */
@@ -198,17 +227,12 @@
   ns.DrawingController.prototype.onMousewheel_ = function (jQueryEvent) {
     var event = jQueryEvent.originalEvent;
     var delta = event.wheelDeltaY || (-2 * event.deltaY);
-    var currentZoom = this.renderer.getZoom();
-
-    var perfectZoom = this.calculateZoom_();
-    var step = perfectZoom / 10;
-
+    var modifier = Math.abs(delta/120);
     if (delta > 0) {
-      this.compositeRenderer.setZoom(currentZoom + step);
+      this.increaseZoom_(modifier);
     } else if (delta < 0) {
-      this.compositeRenderer.setZoom(currentZoom - step);
+      this.decreaseZoom_(modifier);
     }
-    $.publish(Events.ZOOM_CHANGED);
   };
 
   /**
