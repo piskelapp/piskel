@@ -137,13 +137,17 @@
   margin-bottom: 10px;
 }
 
+.settings-item {
+  margin : 10px 0;
+}
+
 /************************************************************************************************/
 /* Application settings                                                                         */
 /************************************************************************************************/
 
 .background-picker-wrapper {
   overflow: hidden;
-  padding: 10px 5px 20px 5px;
+  padding: 5px;
 }
 
 .background-picker {

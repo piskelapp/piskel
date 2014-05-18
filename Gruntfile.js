@@ -188,6 +188,16 @@ module.exports = function(grunt) {
         // This generated JS binary is currently not used and even excluded from source control using .gitignore.
         dest: 'build/closure/closure_compiled_binary.js'
       }
+    },
+    nodewebkit: {
+      options: {
+        build_dir: './dest/desktop/', // destination folder of releases.
+        mac: true,
+        win: true,
+        linux32: true,
+        linux64: true
+      },
+      src: ['./dest/**/*', "./package.json", "!./dest/desktop/"]
     }
   });
 
@@ -214,6 +224,8 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-ghost');
   grunt.loadNpmTasks('grunt-open');
   grunt.loadNpmTasks('grunt-leading-indent');
+  grunt.loadNpmTasks('grunt-node-webkit-builder');
+  grunt.loadNpmTasks('grunt-contrib-copy');
 
   // Validate
   grunt.registerTask('lint', ['leadingIndent:jsFiles', 'leadingIndent:cssFiles', 'jshint']);
@@ -232,7 +244,9 @@ module.exports = function(grunt) {
   // Validate & Build
   grunt.registerTask('default', ['clean:before', 'lint', 'compile', 'merge']);
 
-  // Start webserver
+  // Build stand alone app with nodewebkit
+  grunt.registerTask('desktop', ['default', 'nodewebkit']);
+
   grunt.registerTask('server', ['merge', 'express:regular', 'open:regular', 'express-keepalive']);
 
   // Start webserver and watch for changes

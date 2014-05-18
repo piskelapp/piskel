@@ -13,13 +13,15 @@ var Constants = {
 
   MINIMUM_ZOOM : 1,
 
-  PREVIEW_FILM_SIZE : 120,
+  PREVIEW_FILM_SIZE : 96,
   ANIMATED_PREVIEW_WIDTH : 200,
 
   DEFAULT_PEN_COLOR : '#000000',
   TRANSPARENT_COLOR : 'rgba(0, 0, 0, 0)',
 
   NO_PALETTE_ID : '__no-palette',
+  CURRENT_COLORS_PALETTE_ID : '__current-colors',
+  MANAGE_PALETTE_ID : '__manage-palettes',
 
   // Used for Spectrum input
   PREFERRED_COLOR_FORMAT : 'rgb',
@@ -60,5 +62,6 @@ var Constants = {
   RIGHT_BUTTON : 2,
   MOUSEMOVE_THROTTLING : 10,
 
-  ABSTRACT_FUNCTION : function () {throw 'abstract method should be implemented';}
+  ABSTRACT_FUNCTION : function () {throw 'abstract method should be implemented';},
+  EMPTY_FUNCTION : function () {}
 };

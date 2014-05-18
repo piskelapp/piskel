@@ -59,6 +59,7 @@
   "js/rendering/CompositeRenderer.js",
   "js/rendering/layer/LayersRenderer.js",
   "js/rendering/frame/FrameRenderer.js",
+  "js/rendering/frame/TiledFrameRenderer.js",
   "js/rendering/frame/CachedFrameRenderer.js",
   "js/rendering/CanvasRenderer.js",
   "js/rendering/FramesheetRenderer.js",
@@ -77,6 +78,7 @@
   "js/controller/PaletteController.js",
   "js/controller/PalettesListController.js",
   "js/controller/NotificationController.js",
+  "js/controller/CanvasBackgroundController.js",
 
   // Settings sub-controllers
   "js/controller/settings/ApplicationSettingsController.js",
@@ -106,11 +108,13 @@
   "js/service/keyboard/KeycodeTranslator.js",
   "js/service/keyboard/CheatsheetService.js",
   "js/service/ImageUploadService.js",
+  "js/service/CurrentColorsService.js",
 
   // Tools
   "js/drawingtools/BaseTool.js",
   "js/drawingtools/ShapeTool.js",
   "js/drawingtools/SimplePen.js",
+  "js/drawingtools/Lighten.js",
   "js/drawingtools/VerticalMirrorPen.js",
   "js/drawingtools/Eraser.js",
   "js/drawingtools/Stroke.js",

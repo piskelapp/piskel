@@ -13,8 +13,8 @@
     pskl.app.shortcutService.addShortcut('shift+n', this.duplicateCurrentFrame.bind(this));
   };
 
-  ns.PublicPiskelController.prototype.setPiskel = function (piskel) {
-    this.piskelController.setPiskel(piskel);
+  ns.PublicPiskelController.prototype.setPiskel = function (piskel, preserveState) {
+    this.piskelController.setPiskel(piskel, preserveState);
 
     $.publish(Events.FRAME_SIZE_CHANGED);
     $.publish(Events.PISKEL_RESET);
@@ -123,13 +123,14 @@
   };
 
   ns.PublicPiskelController.prototype.removeCurrentLayer = function () {
-    this.raiseSaveStateEvent_(this.piskelController.removeCurrentLayer, []);
-    this.piskelController.removeCurrentLayer();
+    var currentLayerIndex = this.getCurrentLayerIndex();
+    this.raiseSaveStateEvent_(this.piskelController.removeLayerAt, [currentLayerIndex]);
+    this.piskelController.removeLayerAt(currentLayerIndex);
     $.publish(Events.PISKEL_RESET);
   };
 
   ns.PublicPiskelController.prototype.getCurrentLayerIndex = function () {
-    return this.piskelController.currentLayerIndex;
+    return this.piskelController.getCurrentLayerIndex();
   };
 
   ns.PublicPiskelController.prototype.getCurrentFrameIndex = function () {

@@ -18,6 +18,10 @@
     $('#grid-width').val(gridWidth);
     $('#grid-width').change(this.onGridWidthChange.bind(this));
 
+    var tiledPreview = pskl.UserSettings.get(pskl.UserSettings.TILED_PREVIEW);
+    $('#tiled-preview').prop('checked', tiledPreview);
+    $('#tiled-preview').change(this.onTiledPreviewChange.bind(this));
+
     // Handle canvas background changes:
     $('#background-picker-wrapper').click(this.onBackgroundClick.bind(this));
   };
@@ -25,6 +29,11 @@
   ns.ApplicationSettingsController.prototype.onGridWidthChange = function (evt) {
     var width = $('#grid-width').val();
     pskl.UserSettings.set(pskl.UserSettings.GRID_WIDTH, parseInt(width, 10));
+  };
+
+  ns.ApplicationSettingsController.prototype.onTiledPreviewChange = function (evt) {
+    var checked = $('#tiled-preview').prop('checked');
+    pskl.UserSettings.set(pskl.UserSettings.TILED_PREVIEW, checked);
   };
 
   ns.ApplicationSettingsController.prototype.onBackgroundClick = function (evt) {

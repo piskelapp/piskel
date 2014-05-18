@@ -9,10 +9,17 @@
     }
   };
 
-  ns.PiskelController.prototype.setPiskel = function (piskel) {
+  /**
+   * Set the current piskel. Will reset the selected frame and layer unless specified
+   * @param {Object} piskel
+   * @param {Boolean} preserveState if true, keep the selected frame and layer
+   */
+  ns.PiskelController.prototype.setPiskel = function (piskel, preserveState) {
     this.piskel = piskel;
-    this.currentLayerIndex = 0;
-    this.currentFrameIndex = 0;
+    if (!preserveState) {
+      this.currentLayerIndex = 0;
+      this.currentFrameIndex = 0;
+    }
 
     this.layerIdCounter = 1;
   };
@@ -217,11 +224,13 @@
     this.selectLayer(layer);
   };
 
-  ns.PiskelController.prototype.removeCurrentLayer = function () {
+  ns.PiskelController.prototype.removeLayerAt = function (index) {
     if (this.getLayers().length > 1) {
-      var layer = this.getCurrentLayer();
-      this.piskel.removeLayer(layer);
-      this.setCurrentLayerIndex(0);
+      var layer = this.getLayerAt(index);
+      if (layer) {
+        this.piskel.removeLayer(layer);
+        this.setCurrentLayerIndex(0);
+      }
     }
   };
 

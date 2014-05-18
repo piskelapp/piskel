@@ -39,7 +39,10 @@
       this.paletteController = new pskl.controller.PaletteController();
       this.paletteController.init();
 
-      this.palettesListController = new pskl.controller.PalettesListController();
+      this.currentColorsService = new pskl.service.CurrentColorsService(this.piskelController);
+      this.currentColorsService.init();
+
+      this.palettesListController = new pskl.controller.PalettesListController(this.paletteController, this.currentColorsService);
       this.palettesListController.init();
 
       this.cursorCoordinatesController = new pskl.controller.CursorCoordinatesController(this.piskelController);
@@ -48,10 +51,10 @@
       this.drawingController = new pskl.controller.DrawingController(this.piskelController, this.paletteController, $('#drawing-canvas-container'));
       this.drawingController.init();
 
-      this.animationController = new pskl.controller.AnimatedPreviewController(this.piskelController, $('#preview-canvas-container'));
+      this.animationController = new pskl.controller.AnimatedPreviewController(this.piskelController, $('#animated-preview-canvas-container'));
       this.animationController.init();
 
-      this.minimapController = new pskl.controller.MinimapController(this.piskelController, this.animationController, this.drawingController, $('#preview-canvas-container'));
+      this.minimapController = new pskl.controller.MinimapController(this.piskelController, this.animationController, this.drawingController, $('#animated-preview-canvas-container'));
       this.minimapController.init();
 
       this.previewFilmController = new pskl.controller.PreviewFilmController(this.piskelController, $('#preview-list'));
@@ -78,6 +81,9 @@
       this.notificationController = new pskl.controller.NotificationController();
       this.notificationController.init();
 
+      this.canvasBackgroundController = new pskl.controller.CanvasBackgroundController();
+      this.canvasBackgroundController.init();
+
       this.localStorageService = new pskl.service.LocalStorageService(this.piskelController);
       this.localStorageService.init();
 
@@ -89,6 +95,7 @@
 
       this.savedStatusService = new pskl.service.SavedStatusService(this.piskelController);
       this.savedStatusService.init();
+
 
       if (this.isAppEngineVersion) {
         this.storageService = new pskl.service.AppEngineStorageService(this.piskelController);
