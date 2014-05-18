@@ -63,8 +63,8 @@
     $.subscribe(Events.FRAME_SIZE_CHANGED, $.proxy(this.onFrameSizeChanged_, this));
 
     pskl.app.shortcutService.addShortcut('0', this.resetZoom_.bind(this));
-    pskl.app.shortcutService.addShortcut('+', this.increaseZoom_.bind(this));
-    pskl.app.shortcutService.addShortcut('-', this.decreaseZoom_.bind(this));
+    pskl.app.shortcutService.addShortcut('+', this.increaseZoom_.bind(this, 1));
+    pskl.app.shortcutService.addShortcut('-', this.decreaseZoom_.bind(this, 1));
 
     window.setTimeout(this.afterWindowResize_.bind(this), 100);
   };
