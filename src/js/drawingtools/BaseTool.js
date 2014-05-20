@@ -80,7 +80,6 @@
     var sx = (x0 < x1) ? 1 : -1;
     var sy = (y0 < y1) ? 1 : -1;
     var err = dx-dy;
-    var it = 0;
     while(true){
 
       // Do what you need to for this
