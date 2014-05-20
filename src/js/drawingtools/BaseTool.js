@@ -71,6 +71,8 @@
    * @private
    */
   ns.BaseTool.prototype.getLinePixels_ = function(x0, x1, y0, y1) {
+    x1 = pskl.utils.normalize(x1, 0);
+    y1 = pskl.utils.normalize(y1, 0);
 
     var pixels = [];
     var dx = Math.abs(x1-x0);
@@ -78,7 +80,7 @@
     var sx = (x0 < x1) ? 1 : -1;
     var sy = (y0 < y1) ? 1 : -1;
     var err = dx-dy;
-
+    var it = 0;
     while(true){
 
       // Do what you need to for this

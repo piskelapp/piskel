@@ -41,6 +41,14 @@ if (typeof Function.prototype.bind !== "function") {
     return ((r << 16) | (g << 8) | b).toString(16);
   };
 
+  ns.normalize = function (value, def) {
+    if (typeof value === 'undefined' || value === null) {
+      return def;
+    } else {
+      return value;
+    }
+  };
+
   ns.inherit = function(extendedObject, inheritFrom) {
     extendedObject.prototype = Object.create(inheritFrom.prototype);
     extendedObject.prototype.constructor = extendedObject;

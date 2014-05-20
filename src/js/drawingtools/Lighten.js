@@ -6,12 +6,12 @@
  */
 (function() {
   var ns = $.namespace("pskl.drawingtools");
+  var DEFAULT_STEP = 3;
 
   ns.Lighten = function() {
     this.superclass.constructor.call(this);
     this.toolId = "tool-lighten";
     this.helpText = "Lighten (hold ctrl for Darken)";
-    this.step = 3;
     this.resetUsedPixels_();
   };
 
@@ -27,22 +27,25 @@
    * @override
    */
   ns.Lighten.prototype.applyToolAt = function(col, row, color, frame, overlay, event, mouseButton) {
+    var pixelColor = frame.getPixel(col, row);
+
     var isDarken = event.ctrlKey || event.cmdKey;
     var isSinglePass = event.shiftKey;
 
+    var isTransparent = pixelColor === Constants.TRANSPARENT_COLOR;
     var usedPixels = isDarken ? this.usedPixels_.darken : this.usedPixels_.lighten;
-
     var key = col+'-'+row;
-    if (isSinglePass && usedPixels[key]) {
-      return;
-    }
 
-    var step = isSinglePass ? this.step * 2 : this.step;
-    var pixelColor = frame.getPixel(col, row);
-    if (isDarken) {
-      color = window.tinycolor.darken(pixelColor, step);
+    var doNotModify = isTransparent || (isSinglePass && usedPixels[key]);
+    if (doNotModify) {
+      color = pixelColor;
     } else {
-      color = window.tinycolor.lighten(pixelColor, step);
+      var step = isSinglePass ? DEFAULT_STEP * 2 : DEFAULT_STEP;
+      if (isDarken) {
+        color = window.tinycolor.darken(pixelColor, step);
+      } else {
+        color = window.tinycolor.lighten(pixelColor, step);
+      }
     }
 
     if (color) {
