@@ -118,15 +118,13 @@
   };
 
   ns.FrameRenderer.prototype.setOffset = function (x, y) {
-    // TODO : provide frame size information to the FrameRenderer constructor
-    // here I first need to verify I have a 'canvas' which I can use to infer the frame information
-    // and then perform my boundaries checking. This sucks
-    if (this.canvas) {
-      var maxX = this.canvas.width - (this.displayWidth/this.zoom);
-      x = pskl.utils.Math.minmax(x, 0, maxX);
-      var maxY = this.canvas.height - (this.displayHeight/this.zoom);
-      y = pskl.utils.Math.minmax(y, 0, maxY);
-    }
+    var width = pskl.app.piskelController.getWidth();
+    var height = pskl.app.piskelController.getHeight();
+    var maxX = width - (this.displayWidth/this.zoom);
+    x = pskl.utils.Math.minmax(x, 0, maxX);
+    var maxY = height - (this.displayHeight/this.zoom);
+    y = pskl.utils.Math.minmax(y, 0, maxY);
+
     this.offset.x = x;
     this.offset.y = y;
   };
