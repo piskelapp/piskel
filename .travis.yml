@@ -9,5 +9,6 @@ before_install:
   - export PATH=$PATH:`pwd`/bin
   - cd -
 before_script:
+  - npm update -g npm
   - phantomjs --version
   - casperjs --version
