@@ -1,6 +1,8 @@
 Piskel
 ======
 
+![Travis Status](https://api.travis-ci.org/juliandescottes/piskel.png?branch=master)
+
 A simple web-based tool for Spriting and Pixel art.
 
 ![Piskel editor screenshot](https://screenletstore.appspot.com/img/8f03e768-ac59-11e3-b2a1-7f5a1b97c420.jpeg "Piskel editor screenshot")
