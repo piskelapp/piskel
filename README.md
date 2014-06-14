@@ -1,7 +1,7 @@
 Piskel
 ======
 
-![Travis Status](https://api.travis-ci.org/juliandescottes/piskel.png?branch=master)
+[![Travis Status](https://api.travis-ci.org/juliandescottes/piskel.png?branch=master)](https://travis-ci.org/juliandescottes/piskel) [![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](http://gruntjs.com/)
 
 A simple web-based tool for Spriting and Pixel art.
 
