@@ -34,8 +34,13 @@
     this.previewContainerEl = document.querySelector(".gif-export-preview");
     this.radioGroupEl = document.querySelector(".gif-export-radio-group");
 
-    this.uploadForm = $("[name=gif-export-upload-form]");
-    this.uploadForm.submit(this.onUploadFormSubmit_.bind(this));
+    this.uploadButton = $(".gif-upload-button");
+    this.uploadButton.click(this.onUploadButtonClick_.bind(this));
+
+    this.downloadButton = $(".gif-download-button");
+    this.downloadButton.click(this.onDownloadButtonClick_.bind(this));
+
+    this.exportForm = $(".gif-export-form");
 
     this.exportProgressStatusEl = document.querySelector('.gif-export-progress-status');
     this.exportProgressBarEl = document.querySelector('.gif-export-progress-bar');
@@ -43,13 +48,25 @@
     this.createRadioElements_();
   };
 
-  ns.GifExportController.prototype.onUploadFormSubmit_ = function (evt) {
+  ns.GifExportController.prototype.onUploadButtonClick_ = function (evt) {
     evt.originalEvent.preventDefault();
-    var selectedZoom = this.getSelectedZoom_(),
-        fps = this.piskelController.getFPS(),
-        zoom = selectedZoom;
+    var zoom = this.getSelectedZoom_(),
+        fps = this.piskelController.getFPS();
 
     this.renderAsImageDataAnimatedGIF(zoom, fps, this.onGifRenderingCompleted_.bind(this));
+  };
+
+  ns.GifExportController.prototype.onDownloadButtonClick_ = function (evt) {
+    var fileName = this.piskelController.getPiskel().getDescriptor().name + '.gif';
+    var zoom = this.getSelectedZoom_(),
+        fps = this.piskelController.getFPS();
+
+    this.renderAsImageDataAnimatedGIF(zoom, fps, function (imageData) {
+      pskl.app.imageUploadService.upload(imageData, this.onImageUploadCompleted_.bind(this));
+      pskl.utils.ImageToBlob.imageDataToBlob(imageData, "image/gif", function(blob) {
+        pskl.utils.FileUtils.downloadAsFile(fileName, blob);
+      });
+    }.bind(this));
   };
 
   ns.GifExportController.prototype.onGifRenderingCompleted_ = function (imageData) {
@@ -62,7 +79,6 @@
     this.updatePreview_(imageUrl);
     this.updateStatus_(imageUrl);
     this.previewContainerEl.classList.remove("preview-upload-ongoing");
-
   };
 
   ns.GifExportController.prototype.updatePreview_ = function (src) {
@@ -70,7 +86,7 @@
   };
 
   ns.GifExportController.prototype.getSelectedZoom_ = function () {
-    var radiosColl = this.uploadForm.get(0).querySelectorAll("[name=gif-zoom-level]"),
+    var radiosColl = this.exportForm.get(0).querySelectorAll("[name=gif-zoom-level]"),
         radios = Array.prototype.slice.call(radiosColl,0);
     var selectedRadios = radios.filter(function(radio) {return !!radio.checked;});
 
@@ -105,15 +121,6 @@
     return radioEl;
   };
 
-  ns.GifExportController.prototype.blobToBase64_ = function(blob, cb) {
-    var reader = new FileReader();
-    reader.onload = function() {
-      var dataUrl = reader.result;
-      cb(dataUrl);
-    };
-    reader.readAsDataURL(blob);
-  };
-
   ns.GifExportController.prototype.renderAsImageDataAnimatedGIF = function(zoom, fps, cb) {
     var colorCount = pskl.app.currentColorsService.getCurrentColors().length;
     var preserveColors = colorCount < MAX_GIF_COLORS;
@@ -140,7 +147,7 @@
 
     gif.on('finished', function(blob) {
       this.hideProgressStatus_();
-      this.blobToBase64_(blob, cb);
+      pskl.utils.FileUtils.readFile(blob, cb);
     }.bind(this));
 
     gif.render();

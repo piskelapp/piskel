@@ -19,7 +19,10 @@
       this.shortcutService = new pskl.service.keyboard.ShortcutService();
       this.shortcutService.init();
 
-      var size = this.readSizeFromURL_();
+      var size = {
+        height : Constants.DEFAULT.HEIGHT,
+        width : Constants.DEFAULT.WIDTH
+      };
 
       var descriptor = new pskl.model.piskel.Descriptor('New Piskel', '');
       var piskel = new pskl.model.Piskel(size.width, size.height, descriptor);
@@ -111,35 +114,27 @@
 
       this.initTooltips_();
 
-      if (this.isAppEngineVersion) {
-        this.finishInitAppEngine_();
-      } else {
-        this.finishInitGithub_();
+      var piskelData = this.getPiskelInitData_();
+      if (piskelData && piskelData.piskel) {
+        this.loadPiskel_(piskelData.piskel, piskelData.descriptor, piskelData.fps);
       }
     },
 
-    finishInitGithub_ : function () {
-      var framesheetId = this.readFramesheetIdFromURL_();
-      if (framesheetId) {
-        $.publish(Events.SHOW_NOTIFICATION, [{
-          "content" : "Loading animation with id : [" + framesheetId + "]"
-        }]);
-        this.loadFramesheetFromService(framesheetId);
-      }
+    loadPiskel_ : function (serializedPiskel, descriptor, fps) {
+      pskl.utils.serialization.Deserializer.deserialize(serializedPiskel, function (piskel) {
+        piskel.setDescriptor(descriptor);
+        pskl.app.piskelController.setPiskel(piskel);
+        pskl.app.animationController.setFPS(fps);
+      });
     },
 
-    finishInitAppEngine_ : function () {
-      if (pskl.appEnginePiskelData_ && pskl.appEnginePiskelData_.piskel) {
-        pskl.utils.serialization.Deserializer.deserialize(pskl.appEnginePiskelData_.piskel, function (piskel) {
-          piskel.setDescriptor(pskl.appEnginePiskelData_.descriptor);
-          pskl.app.piskelController.setPiskel(piskel);
-          pskl.app.animationController.setFPS(pskl.appEnginePiskelData_.fps);
-        });
-      }
+    getPiskelInitData_ : function () {
+      return pskl.appEnginePiskelData_;
     },
 
     isLoggedIn : function () {
-      return pskl.appEnginePiskelData_ && pskl.appEnginePiskelData_.isLoggedIn;
+      var piskelData = this.getPiskelInitData_();
+      return piskelData && piskelData.isLoggedIn;
     },
 
     initTooltips_ : function () {
@@ -154,69 +149,6 @@
       this.previewFilmController.render(delta);
     },
 
-    readSizeFromURL_ : function () {
-      var sizeParam = this.readUrlParameter_("size");
-      var size;
-      // parameter expected as size=64x48 => size=widthxheight
-      var parts = sizeParam.split("x");
-      if (parts && parts.length == 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
-        var width = parseInt(parts[0], 10),
-          height = parseInt(parts[1], 10);
-
-        size = {
-          height : Math.min(height, Constants.MAX_HEIGHT),
-          width : Math.min(width, Constants.MAX_WIDTH)
-        };
-      } else {
-        size = {
-          height : Constants.DEFAULT.HEIGHT,
-          width : Constants.DEFAULT.WIDTH
-        };
-      }
-      return size;
-    },
-
-    readFramesheetIdFromURL_ : function () {
-      return this.readUrlParameter_("frameId");
-    },
-
-    readUrlParameter_ : function (paramName) {
-      var searchString = window.location.search.substring(1);
-      var params = searchString.split("&");
-      for (var i = 0; i < params.length; i++) {
-        var param = params[i].split("=");
-        if (param[0] == paramName) {
-          return window.unescape(param[1]);
-        }
-      }
-      return "";
-    },
-
-    loadFramesheetFromService : function (frameId) {
-      var xhr = new XMLHttpRequest();
-      xhr.open('GET', Constants.STATIC.URL.GET + '?l=' + frameId, true);
-      xhr.responseType = 'text';
-      xhr.onload = function (e) {
-        var res = JSON.parse(this.responseText);
-        pskl.utils.serialization.Deserializer.deserialize(res.framesheet, function (piskel) {
-          pskl.app.piskelController.setPiskel(piskel);
-          pskl.app.animationController.setFPS(res.fps);
-
-          $.publish(Events.HIDE_NOTIFICATION);
-        });
-      };
-
-      xhr.onerror = function () {
-        $.publish(Events.HIDE_NOTIFICATION);
-      };
-
-      xhr.send();
-    },
-
-    store : function (callbacks) {
-      this.storageService.store(callbacks);
-    },
-
     getFirstFrameAsPng : function () {
       var firstFrame = this.piskelController.getFrameAt(0);
       var canvasRenderer = new pskl.rendering.CanvasRenderer(firstFrame, 1);
@@ -229,21 +161,6 @@
       var renderer = new pskl.rendering.PiskelRenderer(this.piskelController);
       var framesheetCanvas = renderer.renderAsCanvas();
       return framesheetCanvas.toDataURL("image/png");
-    },
-
-    uploadAsSpritesheetPNG : function () {
-      var imageData = this.getFramesheetAsPng();
-      this.imageUploadService.upload(imageData, this.openWindow.bind(this));
-    },
-
-    openWindow : function (url) {
-      var options = [
-        "dialog=yes", "scrollbars=no", "status=no",
-        "width=" + this.piskelController.getWidth() * this.piskelController.getFrameCount(),
-        "height=" + this.piskelController.getHeight()
-      ].join(",");
-
-      window.open(url, "piskel-export", options);
     }
   };
 })();

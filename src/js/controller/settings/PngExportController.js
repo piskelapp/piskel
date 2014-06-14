@@ -16,21 +16,19 @@
 
     document.querySelector(".zip-generate-button").addEventListener('click', this.onZipButtonClick_.bind(this));
 
-    this.updatePreview_(this.getFramesheetAsBase64Png());
+    this.setPreviewSrc_(this.getFramesheetAsCanvas().toDataURL("image/png"));
   };
 
   ns.PngExportController.prototype.onPngDownloadButtonClick_ = function (evt) {
     var fileName = this.getPiskelName_() + '.png';
-    var renderer = new pskl.rendering.PiskelRenderer(this.piskelController);
-    var canvas = renderer.renderAsCanvas();
-    canvas.toBlob(function(blob) {
+    pskl.utils.ImageToBlob.canvasToBlob(this.getFramesheetAsCanvas(), function(blob) {
       pskl.utils.FileUtils.downloadAsFile(fileName, blob);
     });
   };
 
   ns.PngExportController.prototype.onPngUploadButtonClick_ = function (evt) {
     this.previewContainerEl.classList.add("preview-upload-ongoing");
-    pskl.app.imageUploadService.upload(this.getFramesheetAsBase64Png(), this.onImageUploadCompleted_.bind(this));
+    pskl.app.imageUploadService.upload(this.getFramesheetAsCanvas().toDataURL("image/png"), this.onImageUploadCompleted_.bind(this));
   };
 
   ns.PngExportController.prototype.onZipButtonClick_ = function () {
@@ -59,10 +57,9 @@
     return this.piskelController.getPiskel().getDescriptor().name;
   };
 
-  ns.PngExportController.prototype.getFramesheetAsBase64Png = function () {
+  ns.PngExportController.prototype.getFramesheetAsCanvas = function () {
     var renderer = new pskl.rendering.PiskelRenderer(this.piskelController);
-    var framesheetCanvas = renderer.renderAsCanvas();
-    return framesheetCanvas.toDataURL("image/png");
+    return renderer.renderAsCanvas();
   };
 
   ns.PngExportController.prototype.onImageUploadCompleted_ = function (imageUrl) {
@@ -84,7 +81,7 @@
     }
   };
 
-  ns.PngExportController.prototype.updatePreview_ = function (src) {
+  ns.PngExportController.prototype.setPreviewSrc_ = function (src) {
     this.previewContainerEl.innerHTML = "<img class='light-picker-background' style='max-width:240px;' src='"+src+"'/>";
   };
 

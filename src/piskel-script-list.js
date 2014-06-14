@@ -11,7 +11,6 @@
 
   // JSZip https://github.com/Stuk/jszip
   "js/lib/jszip/jszip.min.js",
-  "js/lib/canvastoblob/canvasToBlob.js",
 
   // Spectrum color-picker library
   "js/lib/spectrum/spectrum.js",
@@ -24,12 +23,14 @@
   // Libraries
   "js/utils/core.js",
   "js/utils/UserAgent.js",
+  "js/utils/Base64.js",
   "js/utils/CanvasUtils.js",
   "js/utils/Dom.js",
   "js/utils/Math.js",
   "js/utils/FileUtils.js",
   "js/utils/FrameUtils.js",
   "js/utils/LayerUtils.js",
+  "js/utils/ImageToBlob.js",
   "js/utils/ImageResizer.js",
   "js/utils/PixelUtils.js",
   "js/utils/Template.js",

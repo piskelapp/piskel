@@ -1,0 +1,38 @@
+(function () {
+  var ns = $.namespace('pskl.utils');
+
+  var BASE64_REGEX = /\s*;\s*base64\s*(?:;|$)/i;
+
+  ns.ImageToBlob = {
+    imageDataToBlob : function(dataURI, type, callback) {
+      var header_end = dataURI.indexOf(","),
+          data = dataURI.substring(header_end + 1),
+          isBase64 = BASE64_REGEX.test(dataURI.substring(0, header_end)),
+          blob;
+
+      if (Blob.fake) {
+        // no reason to decode a data: URI that's just going to become a data URI again
+        blob = new Blob();
+        blob.encoding = isBase64 ? "base64" : "URI";
+        blob.data = data;
+        blob.size = data.length;
+      } else if (Uint8Array) {
+        var blobData = isBase64 ? pskl.utils.Base64.decode(data) : decodeURIComponent(data);
+        blob = new Blob([blobData], {type: type});
+      }
+      callback(blob);
+    },
+
+    canvasToBlob : function(canvas, callback, type /*, ...args*/) {
+      type = type || "image/png";
+
+      if (this.mozGetAsFile) {
+        callback(this.mozGetAsFile("canvas", type));
+      } else {
+        var args = Array.prototype.slice.call(arguments, 2);
+        var dataURI = this.toDataURL.apply(this, args);
+        pskl.utils.ImageToBlob.imageDataToBlob(dataURI, type, callback);
+      }
+    }
+  };
+})();

@@ -49,7 +49,7 @@
     this.piskelController.getPiskel().setDescriptor(descriptor);
 
     this.beforeSaving_();
-    pskl.app.store({
+    pskl.app.storageService.store({
       success : this.onSaveSuccess_.bind(this),
       error : this.onSaveError_.bind(this),
       after : this.afterSaving_.bind(this)
