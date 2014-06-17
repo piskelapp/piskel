@@ -16,7 +16,7 @@
 
     document.querySelector(".zip-generate-button").addEventListener('click', this.onZipButtonClick_.bind(this));
 
-    this.setPreviewSrc_(this.getFramesheetAsCanvas().toDataURL("image/png"));
+    this.updatePreview_(this.getFramesheetAsCanvas().toDataURL("image/png"));
   };
 
   ns.PngExportController.prototype.onPngDownloadButtonClick_ = function (evt) {
@@ -81,7 +81,7 @@
     }
   };
 
-  ns.PngExportController.prototype.setPreviewSrc_ = function (src) {
+  ns.PngExportController.prototype.updatePreview_ = function (src) {
     this.previewContainerEl.innerHTML = "<img class='light-picker-background' style='max-width:240px;' src='"+src+"'/>";
   };
 

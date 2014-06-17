@@ -30,7 +30,7 @@
         callback(this.mozGetAsFile("canvas", type));
       } else {
         var args = Array.prototype.slice.call(arguments, 2);
-        var dataURI = this.toDataURL.apply(this, args);
+        var dataURI = canvas.toDataURL.apply(canvas, args);
         pskl.utils.ImageToBlob.imageDataToBlob(dataURI, type, callback);
       }
     }
