@@ -58,7 +58,6 @@
     }
   };
 
-
   /**
    * See @pskl.rendering.frame.CachedFrameRenderer
    * Same issue : FrameRenderer setDisplaySize destroys the canvas
@@ -77,5 +76,9 @@
       return l.getFrameAt(frameIndex);
     });
     return pskl.utils.FrameUtils.merge(frames);
+  };
+
+  ns.LayersRenderer.prototype.flush = function () {
+    this.serializedRendering = '';
   };
 })();

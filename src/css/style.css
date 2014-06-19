@@ -136,12 +136,14 @@ body {
   background: url(../img/canvas_background/lowcont_dark_canvas_background.png) repeat;
 }
 
-.layers-canvas {
+.layers-canvas,
+.canvas.onion-skin-canvas {
   opacity: 0.2;
 }
 
 .canvas.canvas-overlay,
-.canvas.layers-canvas {
+.canvas.layers-canvas,
+.canvas.onion-skin-canvas {
   position: absolute;
   top: 0;
   left: 0;
@@ -157,7 +159,8 @@ body {
 .canvas.layers-below-canvas  {z-index:  7;}
 .canvas.drawing-canvas       {z-index:  8;}
 .canvas.layers-above-canvas  {z-index:  9;}
-.canvas.canvas-overlay       {z-index: 10;}
+.canvas.onion-skin-canvas    {z-index: 10;}
+.canvas.canvas-overlay       {z-index: 11;}
 
 /**
  * Animated preview styles.

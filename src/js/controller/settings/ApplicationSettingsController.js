@@ -18,9 +18,9 @@
     $('#grid-width').val(gridWidth);
     $('#grid-width').change(this.onGridWidthChange.bind(this));
 
-    var tiledPreview = pskl.UserSettings.get(pskl.UserSettings.TILED_PREVIEW);
-    $('#tiled-preview').prop('checked', tiledPreview);
-    $('#tiled-preview').change(this.onTiledPreviewChange.bind(this));
+    var overlay = pskl.UserSettings.get(pskl.UserSettings.OVERLAY);
+    $('#overlay').val(overlay);
+    $('#overlay').change(this.onOverlayChange.bind(this));
 
     // Handle canvas background changes:
     $('#background-picker-wrapper').click(this.onBackgroundClick.bind(this));
@@ -31,9 +31,9 @@
     pskl.UserSettings.set(pskl.UserSettings.GRID_WIDTH, parseInt(width, 10));
   };
 
-  ns.ApplicationSettingsController.prototype.onTiledPreviewChange = function (evt) {
-    var checked = $('#tiled-preview').prop('checked');
-    pskl.UserSettings.set(pskl.UserSettings.TILED_PREVIEW, checked);
+  ns.ApplicationSettingsController.prototype.onOverlayChange = function (evt) {
+    var overlay = $('#overlay').val();
+    pskl.UserSettings.set(pskl.UserSettings.OVERLAY, overlay);
   };
 
   ns.ApplicationSettingsController.prototype.onBackgroundClick = function (evt) {

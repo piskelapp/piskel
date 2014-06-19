@@ -19,6 +19,10 @@ var Constants = {
   DEFAULT_PEN_COLOR : '#000000',
   TRANSPARENT_COLOR : 'rgba(0, 0, 0, 0)',
 
+  OVERLAY_ONION_SKIN : 'onion-skin',
+  OVERLAY_LAYER_PREVIEW : 'layer-preview',
+  OVERLAY_DISABLED : 'no-overlay',
+
   NO_PALETTE_ID : '__no-palette',
   CURRENT_COLORS_PALETTE_ID : '__current-colors',
   MANAGE_PALETTE_ID : '__manage-palettes',

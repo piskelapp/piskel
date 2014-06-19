@@ -60,6 +60,7 @@
   "js/rendering/CompositeRenderer.js",
   "js/rendering/layer/LayersRenderer.js",
   "js/rendering/frame/FrameRenderer.js",
+  "js/rendering/OnionSkinRenderer.js",
   "js/rendering/frame/TiledFrameRenderer.js",
   "js/rendering/frame/CachedFrameRenderer.js",
   "js/rendering/CanvasRenderer.js",

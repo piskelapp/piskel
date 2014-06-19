@@ -32,13 +32,15 @@
 
     this.overlayRenderer = new pskl.rendering.frame.CachedFrameRenderer(this.container, renderingOptions, ["canvas-overlay"]);
     this.renderer = new pskl.rendering.frame.CachedFrameRenderer(this.container, renderingOptions, ["drawing-canvas"]);
+    this.onionSkinRenderer = new pskl.rendering.OnionSkinRenderer(this.container, renderingOptions, piskelController);
     this.layersRenderer = new pskl.rendering.layer.LayersRenderer(this.container, renderingOptions, piskelController);
 
     this.compositeRenderer = new pskl.rendering.CompositeRenderer();
     this.compositeRenderer
       .add(this.overlayRenderer)
       .add(this.renderer)
-      .add(this.layersRenderer);
+      .add(this.layersRenderer)
+      .add(this.onionSkinRenderer);
 
     // State of drawing controller:
     this.isClicked = false;
@@ -111,6 +113,12 @@
   ns.DrawingController.prototype.onUserSettingsChange_ = function (evt, settingsName, settingsValue) {
     if(settingsName == pskl.UserSettings.SHOW_GRID) {
       console.warn('DrawingController:onUserSettingsChange_ not implemented !');
+    } else if (settingsName == pskl.UserSettings.OVERLAY) {
+      this.onionSkinRenderer.clear();
+      this.onionSkinRenderer.flush();
+      this.layersRenderer.clear();
+      this.layersRenderer.flush();
+      this.render();
     }
   };
 
@@ -311,7 +319,13 @@
       this.overlayFrame = pskl.model.Frame.createEmptyFromFrame(currentFrame);
     }
 
-    this.layersRenderer.render();
+    var overlaySetting = pskl.UserSettings.get(pskl.UserSettings.OVERLAY);
+    if (overlaySetting === Constants.OVERLAY_ONION_SKIN) {
+      this.onionSkinRenderer.render();
+    } else if (overlaySetting === Constants.OVERLAY_LAYER_PREVIEW) {
+      this.layersRenderer.render();
+    }
+
     this.renderer.render(currentFrame);
     this.overlayRenderer.render(this.overlayFrame);
   };
