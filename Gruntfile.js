@@ -131,6 +131,7 @@ module.exports = function(grunt) {
       main: {
         files: [
           {src: ['src/piskel-boot.js'], dest: 'dest/piskel-boot.js'},
+          {src: ['src/logo.png'], dest: 'dest/logo.png'},
           {src: ['src/js/lib/iframeLoader.js'], dest: 'dest/js/lib/iframeLoader.js'},
           {expand: true, src: ['img/**'], cwd: 'src/', dest: 'dest/', filter: 'isFile'},
           {expand: true, src: ['**/*.html'], cwd: 'src/', dest: 'dest/', filter: 'isFile'}

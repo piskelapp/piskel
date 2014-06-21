@@ -31,6 +31,10 @@
     "nodewebkit": "0.8.4"
   },
   "window": {
-    "toolbar": false
+    "title": "Piskel",
+    "icon": "dest/logo.png",
+    "toolbar": false,
+    "width": 1000,
+    "height": 500
   }
 }
