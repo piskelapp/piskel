@@ -1,5 +1,5 @@
 setlocal
-@echo off
+@ECHO off
 
 pushd ..\..
 set PISKEL_HOME=%cd%
@@ -10,44 +10,44 @@ set MISC_FOLDER=%PISKEL_HOME%\misc
 set RELEASES_FOLDER=%PISKEL_HOME%\dest\desktop\releases
 set DEST_FOLDER=%RELEASES_FOLDER%\mac
 
-echo "Building Piskel executable for Windows ..."
+ECHO "Building Piskel executable for Windows ..."
 
-echo "Creating release directory ..."
+ECHO "Creating release directory ..."
 mkdir %DEST_FOLDER%
-echo "DONE"
+ECHO "DONE"
 
-echo "Creating application folder ..."
+ECHO "Creating application folder ..."
 mkdir "%DEST_FOLDER%\piskel.app"
-echo "DONE"
+ECHO "DONE"
 
-echo "Unzip application ..."
+ECHO "Unzip application ..."
 mkdir "%APP_BIN%\node-webkit-unzipped"
 7za x "%APP_BIN%\node-webkit-v0.9.2-osx-ia32.zip" -o"%APP_BIN%\node-webkit-unzipped"
-echo "DONE"
+ECHO "DONE"
 
 pause
 
-echo "Copy application ..."
+ECHO "Copy application ..."
 xcopy "%APP_BIN%\node-webkit-unzipped\node-webkit.app" "%DEST_FOLDER%\piskel.app" /E
 :: xcopy "%APP_BIN%\node-webkit.app" "%DEST_FOLDER%\piskel.app" /E
-echo "DONE"
+ECHO "DONE"
 
-echo "Copy Info.plist ..."
+ECHO "Copy Info.plist ..."
 set CONTENTS_FOLDER=%DEST_FOLDER%\piskel.app\Contents
 copy "%MISC_FOLDER%\desktop\Info.plist" "%CONTENTS_FOLDER%\"
-echo "DONE"
+ECHO "DONE"
 
-echo "Copy application ..."
+ECHO "Copy application ..."
 set RESOURCES_FOLDER=%CONTENTS_FOLDER%\Resources
 copy "%RELEASES_FOLDER%\piskel\piskel.nw" "%RESOURCES_FOLDER%\"
 mv "%RESOURCES_FOLDER%\piskel.nw" "%RESOURCES_FOLDER%\app.nw"
-echo "%RESOURCES_FOLDER%"
-echo "DONE"
+ECHO "%RESOURCES_FOLDER%"
+ECHO "DONE"
 
-echo "Copy icon ..."
-rm "%RESOURCES_FOLDER%\nw.icns"
-copy "%MISC_FOLDER%\desktop\nw.icns" "%RESOURCES_FOLDER%\"
-echo "DONE"
+ECHO "Copy icon ..."
+DEL "%RESOURCES_FOLDER%\nw.icns"
+COPY "%MISC_FOLDER%\desktop\nw.icns" "%RESOURCES_FOLDER%\"
+ECHO "DONE"
 
 pause
 
