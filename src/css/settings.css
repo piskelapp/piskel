@@ -70,7 +70,7 @@
   position: relative;
 }
 
-.upload-cloud-icon .label {
+.tool-icon .label {
   position: absolute;
   left: 0;
   bottom: 4px;
@@ -126,6 +126,7 @@
   text-transform: uppercase;
   border-bottom: 1px #aaa solid;
   padding-bottom: 5px;
+  color: gold;
 }
 
 .settings-description {
@@ -139,6 +140,10 @@
 
 .settings-item {
   margin : 10px 0;
+}
+
+[name*=checkbox] {
+  vertical-align: middle;
 }
 
 /************************************************************************************************/
@@ -203,13 +208,6 @@
   background:gold;
 }
 
-.gif-export-preview,
-.png-export-preview {
-  margin-top:20px;
-  max-width:240px;
-  position:relative;
-}
-
 .png-export-preview {
   margin:10px 0;
   overflow: hidden;
@@ -221,6 +219,38 @@
 
 .png-upload-status {
   margin : 10px 0;
+}
+
+.gif-upload-status,
+.gif-export-preview {
+  float : left;
+}
+
+.gif-export-preview {
+
+}
+
+.gif-upload-status {
+  width: 180px;
+  margin-left: 5px;
+  margin-top: 10px;
+}
+
+
+.gif-export-preview,
+.png-export-preview {
+  margin-top:10px;
+  position:relative;
+}
+
+.png-export-preview {
+  max-width:240px;
+}
+
+.gif-export-preview,
+.png-export-preview {
+  max-width:32px;
+  max-height:32px;
 }
 
 .preview-upload-ongoing:before{
@@ -243,7 +273,7 @@
 
 .import-section,
 .resize-section {
-  margin: 15px 0;
+  margin: 10px 0;
 }
 
 .import-section-title {
@@ -296,26 +326,36 @@
   text-shadow: none;
 }
 
-.save-field {
-  width: 100%;
-}
-
-#save-status {
-  margin-top: 10px;
-}
-.status {
-  height: 1.5rem;
-  vertical-align: middle;
-  font-weight: normal;
-  text-shadow: none;
-}
-
 [name=smooth-resize-checkbox] {
   margin : 0 8px;
 }
 
-[name*=checkbox] {
+/************************************************************************************************/
+/* Save panel                                                                   */
+/************************************************************************************************/
+
+.save-field {
+  width: 100%;
+}
+
+#save-online-status {
+  margin-top: 10px;
+}
+#save-local-status {
+  margin-bottom: 10px;
+}
+.save-status {
   vertical-align: middle;
+  font-weight: normal;
+  text-shadow: none;
+  font-style: italic;
+}
+
+.save-local-name {
+  white-space: nowrap;
+  font-weight: bold;
+  color: white;
+  font-style: normal;
 }
 
 

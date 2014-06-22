@@ -10,7 +10,7 @@
       reader.readAsDataURL(file);
     },
 
-    downloadAsFile : function (filename, content) {
+    downloadAsFile : function (content, filename) {
       var saveAs = window.saveAs || (navigator.msSaveBlob && navigator.msSaveBlob.bind(navigator));
       if (saveAs) {
         saveAs(content, filename);

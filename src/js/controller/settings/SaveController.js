@@ -13,13 +13,16 @@
     this.nameInput =  $('#save-name');
     this.descriptionInput = $('#save-description');
     this.isPublicCheckbox = $('input[name=save-public-checkbox]');
-    this.saveCloudButton = $('#save-cloud-button');
+    this.saveOnlineButton = $('#save-online-button');
     this.saveLocalButton = $('#save-local-button');
 
     // Only available in app-engine mode ...
     this.piskelName = $('.piskel-name').get(0);
 
-    this.status = $('#save-status');
+    this.saveOnlineStatus = $('#save-online-status');
+
+    this.saveLocalStatus = $('#save-local-status');
+    this.timestamp = new Date();
 
     var descriptor = this.piskelController.getPiskel().getDescriptor();
     this.nameInput.val(descriptor.name);
@@ -27,26 +30,37 @@
 
     this.isPublicCheckbox.prop('checked', descriptor.isPublic);
 
-    if (!pskl.app.isLoggedIn()) {
-      this.saveCloudButton.attr('disabled', 'disabled');
-      this.status.html('You are not logged in. Only Local Save is available.');
-    } else {
+    this.saveLocalButton.click(this.onSaveLocalClick_.bind(this));
+    this.nameInput.keyup(this.updateLocalStatusFilename_.bind(this));
+
+    if (pskl.app.isLoggedIn()) {
       this.saveForm.submit(this.onSaveFormSubmit_.bind(this));
+    } else {
+      this.saveOnlineButton.hide();
+      $('.save-public-section').hide();
+      this.saveOnlineStatus.html(pskl.utils.Template.get('save-please-login-partial'));
+      this.saveLocalButton.get(0).classList.add('button-primary');
+      this.saveForm.submit(this.onSaveLocalClick_.bind(this));
     }
 
-    this.saveLocalButton.click(this.onSaveLocalClick_.bind(this));
+    this.updateLocalStatusFilename_();
+  };
+
+  ns.SaveController.prototype.updateLocalStatusFilename_ = function () {
+    this.saveLocalStatus.html(pskl.utils.Template.getAndReplace('save-local-status-template', {
+      name : this.getLocalFilename_()
+    }));
+  };
+
+  ns.SaveController.prototype.getLocalFilename_ = function () {
+    var piskelName = this.getName();
+    var timestamp = pskl.utils.DateUtils.format(this.timestamp, "{{Y}}{{M}}{{D}}-{{H}}{{m}}{{s}}");
+    return piskelName + "-" + timestamp + ".piskel";
   };
 
   ns.SaveController.prototype.onSaveFormSubmit_ = function (evt) {
     evt.preventDefault();
     evt.stopPropagation();
-
-    var name = this.getName();
-    var description = this.getDescription();
-    var isPublic = !!this.isPublicCheckbox.prop('checked');
-
-    var descriptor = new pskl.model.piskel.Descriptor(name, description, isPublic);
-    this.piskelController.getPiskel().setDescriptor(descriptor);
 
     this.beforeSaving_();
     pskl.app.storageService.store({
@@ -57,22 +71,13 @@
   };
 
   ns.SaveController.prototype.onSaveLocalClick_ = function (evt) {
-    var localStorageService = pskl.app.localStorageService;
-    var isOk = true;
-    var name = this.getName();
-    var description = this.getDescription();
-    if (localStorageService.getPiskel(name)) {
-      isOk = window.confirm('There is already a piskel saved as ' + name + '. Override ?');
-    }
+    this.beforeSaving_();
 
-    if (isOk) {
-      this.beforeSaving_();
-      localStorageService.save(name, description, pskl.app.piskelController.serialize());
-      window.setTimeout(function () {
-        this.onSaveSuccess_();
-        this.afterSaving_();
-      }.bind(this), 1000);
-    }
+    pskl.utils.BlobUtils.stringToBlob(pskl.app.piskelController.serialize(), function(blob) {
+      pskl.utils.FileUtils.downloadAsFile(blob, this.getLocalFilename_());
+      this.onSaveSuccess_();
+      this.afterSaving_();
+    }.bind(this), "application/piskel+json");
   };
 
   ns.SaveController.prototype.getName = function () {
@@ -84,12 +89,23 @@
   };
 
   ns.SaveController.prototype.beforeSaving_ = function () {
-    this.saveCloudButton.attr('disabled', true);
-    this.status.html('Saving ...');
+    this.updatePiskelDescriptor_();
+
+    this.saveOnlineButton.attr('disabled', true);
+    this.saveOnlineStatus.html('Saving ...');
 
     if (this.piskelName) {
       this.piskelName.classList.add('piskel-name-saving');
     }
+  };
+
+  ns.SaveController.prototype.updatePiskelDescriptor_ = function () {
+    var name = this.getName();
+    var description = this.getDescription();
+    var isPublic = !!this.isPublicCheckbox.prop('checked');
+
+    var descriptor = new pskl.model.piskel.Descriptor(name, description, isPublic);
+    this.piskelController.getPiskel().setDescriptor(descriptor);
   };
 
   ns.SaveController.prototype.onSaveSuccess_ = function () {
@@ -103,8 +119,8 @@
   };
 
   ns.SaveController.prototype.afterSaving_ = function () {
-    this.saveCloudButton.attr('disabled', false);
-    this.status.html('');
+    this.saveOnlineButton.attr('disabled', false);
+    this.submitButton.html('');
 
     if (this.piskelName) {
       this.piskelName.classList.remove('piskel-name-saving');

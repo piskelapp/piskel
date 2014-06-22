@@ -1,7 +1,7 @@
 <div class="settings-section">
-  <div class="settings-title">Save</div>
-  <div class="settings-item">
-    <form action="" method="POST" name="save-form">
+  <form action="" method="POST" name="save-form">
+    <div class="settings-title">Describe your piskel</div>
+    <div class="settings-item">
       <div class="settings-form-section">
         <label class="row">Title : </label>
         <input id="save-name" type="text" class="save-field textfield"/>
@@ -10,14 +10,29 @@
         <label class="row">Description :</label>
         <textarea id="save-description" class="save-field textfield" placeholder="Your piskel in a few words"></textarea>
       </div>
-      <div class="settings-form-section">
+      <div class="settings-form-section save-public-section">
         <label class="row">
           Public : <input type="checkbox" value="1" name="save-public-checkbox"/>
         </label>
       </div>
-      <input type="submit" class="button button-primary" id="save-cloud-button" value="Upload" />
-      <input type="button" class="button" id="save-local-button" value="Local save" />
-      <div id="save-status" class="status"></div>
-    </form>
-  </div>
+    </div>
+    <div class="settings-title">Save online</div>
+    <div class="settings-item">
+      <input type="submit" class="button button-primary" id="save-online-button" value="Upload" />
+      <div id="save-online-status" class="save-status"></div>
+    </div>
+    <div class="settings-title">Download Project</div>
+    <div class="settings-item">
+      <div id="save-local-status" class="save-status"></div>
+      <input type="button" class="button" id="save-local-button" value="Download Piskel Project" />
+    </div>
+  </form>
+
+  <script type="text/template" id="save-please-login-partial">
+    <span>Login to <a href="http://piskelapp.com" target="_blank">piskelapp.com</a> to save and share your sprites online !</span>
+  </script>
+
+  <script type="text/template" id="save-local-status-template">
+    <span>Your piskel will be downloaded as <span class="save-local-name">{{name}}<span></span>
+  </script>
 </div>

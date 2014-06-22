@@ -10,12 +10,8 @@
       template : 'templates/settings/resize.html',
       controller : ns.ResizeController
     },
-    'gif' : {
-      template : 'templates/settings/export-gif.html',
-      controller : ns.GifExportController
-    },
     'png' : {
-      template : 'templates/settings/export-png.html',
+      template : 'templates/settings/export.html',
       controller : ns.PngExportController
     },
     'import' : {

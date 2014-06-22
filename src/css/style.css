@@ -11,6 +11,10 @@ body {
   display: none;
 }
 
+.clearfix {
+  overflow: hidden;
+}
+
 .allow-user-select {
   -webkit-touch-callout: initial;
   -webkit-user-select: initial;

@@ -3,8 +3,8 @@
 
   var BASE64_REGEX = /\s*;\s*base64\s*(?:;|$)/i;
 
-  ns.ImageToBlob = {
-    imageDataToBlob : function(dataURI, type, callback) {
+  ns.BlobUtils = {
+    dataToBlob : function(dataURI, type, callback) {
       var header_end = dataURI.indexOf(","),
           data = dataURI.substring(header_end + 1),
           isBase64 = BASE64_REGEX.test(dataURI.substring(0, header_end)),
@@ -26,13 +26,18 @@
     canvasToBlob : function(canvas, callback, type /*, ...args*/) {
       type = type || "image/png";
 
-      if (this.mozGetAsFile) {
-        callback(this.mozGetAsFile("canvas", type));
+      if (canvas.mozGetAsFile) {
+        callback(canvas.mozGetAsFile("canvas", type));
       } else {
         var args = Array.prototype.slice.call(arguments, 2);
         var dataURI = canvas.toDataURL.apply(canvas, args);
-        pskl.utils.ImageToBlob.imageDataToBlob(dataURI, type, callback);
+        pskl.utils.BlobUtils.dataToBlob(dataURI, type, callback);
       }
+    },
+
+    stringToBlob : function (string, callback, type) {
+      type = type || "text/plain";
+      pskl.utils.BlobUtils.dataToBlob('data:'+type+',' + string, type, callback);
     }
   };
 })();
