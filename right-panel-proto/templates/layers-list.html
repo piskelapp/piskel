@@ -1,0 +1,15 @@
+<div class="toolbox-container layers-list-container">
+  <h3 class="toolbox-title layers-title">Layers</h3>
+  <div class="toolbox-button-container layers-button-container">
+    <button class="button toolbox-button" data-action="add"  >Add</button>
+    <button class="button toolbox-button" data-action="delete"  >Delete</button>
+    <button class="button toolbox-button layers-button-arrow" data-action="up"   >&#8593;</button>
+    <button class="button toolbox-button layers-button-arrow" data-action="down" >&#8595;</button>
+  </div>
+  <script type="text/template" id="layer-item-template">
+    <li class="layer-item {{isselected:current-layer-item}}" data-layer-index="{{layerindex}}">{{layername}}
+      <span class="action-icon edit-icon" title="edit name">&nbsp;</span>
+    </li>
+  </script>
+  <ul class="layers-list"></ul>
+</div>
