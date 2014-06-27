@@ -10,8 +10,6 @@
     $.subscribe(Events.PISKEL_RESET, this.onPiskelReset.bind(this));
 
     $.subscribe(Events.PISKEL_SAVED, this.onPiskelSaved.bind(this));
-
-    window.addEventListener("beforeunload", this.onBeforeUnload.bind(this));
   };
 
   ns.SavedStatusService.prototype.onPiskelReset = function () {
@@ -52,13 +50,8 @@
     }
   };
 
-  ns.SavedStatusService.prototype.onBeforeUnload = function (evt) {
+  ns.SavedStatusService.prototype.isDirty = function (evt) {
     var piskel = this.piskelController.getPiskel();
-    if (piskel.isDirty_) {
-      var confirmationMessage = "Your Piskel seems to have unsaved changes";
-
-      (evt || window.event).returnValue = confirmationMessage;
-      return confirmationMessage;
-    }
+    return piskel.isDirty_;
   };
 })();

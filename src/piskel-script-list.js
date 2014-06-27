@@ -105,6 +105,8 @@
   "js/service/LocalStorageService.js",
   "js/service/GithubStorageService.js",
   "js/service/AppEngineStorageService.js",
+  "js/service/BackupService.js",
+  "js/service/BeforeUnloadService.js",
   "js/service/HistoryService.js",
   "js/service/SavedStatusService.js",
   "js/service/keyboard/ShortcutService.js",

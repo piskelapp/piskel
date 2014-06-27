@@ -11,8 +11,6 @@
 
   ns.LocalStorageService.prototype.init = function() {};
 
-// localStorage.setItem('piskel_bkp', pskl.app.piskelController.serialize())
-
   ns.LocalStorageService.prototype.save = function(name, description, piskel) {
     this.removeFromKeys_(name);
     this.addToKeys_(name, description, Date.now());

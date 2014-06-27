@@ -1,5 +1,10 @@
 <div class="settings-section">
   <div class="settings-title">
+    Restore previous session
+  </div>
+  <div class="settings-item previous-session">
+  </div>
+  <div class="settings-title">
     Browse Local Piskels
   </div>
   <div class="settings-item">
@@ -14,5 +19,13 @@
       <td><a class="local-piskel-load-link" data-action="load" data-name="{{name}}" href="javascript:void(0);">load</a></td>
       <td><a class="local-piskel-delete-link" data-action="delete" data-name="{{name}}" href="javascript:void(0);">x</a></td>
     </tr>
+  </script>
+  <script type="text/template" id="previous-session-info-template">
+    <div>
+      Restore a backup of <span style="color:gold">{{name}}</span>, saved at <span style="color:white">{{date}}</span> ?
+      <div style="margin-top:10px;">
+        <button type="button" class="button  button-primary restore-session-button">Restore</button>
+      </div>
+    </div>
   </script>
 </div>

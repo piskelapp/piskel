@@ -96,4 +96,10 @@
   ns.Layer.prototype.length = function () {
     return this.frames.length;
   };
+
+  ns.Layer.prototype.getHash = function () {
+    return this.frames.map(function (frame) {
+      return frame.getHash();
+    }).join('-');
+  };
 })();

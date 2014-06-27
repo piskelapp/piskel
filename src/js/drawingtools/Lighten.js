@@ -46,12 +46,12 @@
       } else {
         color = window.tinycolor.lighten(pixelColor, step);
       }
+      if (color) {
+        usedPixels[key] = true;
+        this.superclass.applyToolAt.call(this, col, row, color.toRgbString(), frame, overlay, event);
+      }
     }
 
-    if (color) {
-      usedPixels[key] = true;
-      this.superclass.applyToolAt.call(this, col, row, color.toRgbString(), frame, overlay, event);
-    }
   };
 
   ns.Lighten.prototype.releaseToolAt = function(col, row, color, frame, overlay, event) {

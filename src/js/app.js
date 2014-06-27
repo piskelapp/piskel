@@ -99,6 +99,12 @@
       this.savedStatusService = new pskl.service.SavedStatusService(this.piskelController);
       this.savedStatusService.init();
 
+      this.backupService = new pskl.service.BackupService(this.piskelController);
+      this.backupService.init();
+
+      this.beforeUnloadService = new pskl.service.BeforeUnloadService(this.piskelController);
+      this.beforeUnloadService.init();
+
 
       if (this.isAppEngineVersion) {
         this.storageService = new pskl.service.AppEngineStorageService(this.piskelController);
