@@ -63,24 +63,39 @@
   };
 
   ns.HistoryService.prototype.getPreviousSnapshotIndex_ = function (index) {
+    var counter = 0;
     while (this.stateQueue[index] && !this.stateQueue[index].piskel) {
       index = index - 1;
+      if(++counter > 2*SNAPSHOT_PERIOD) {
+        break;
+      }
     }
     return index;
   };
 
   ns.HistoryService.prototype.loadState = function (index) {
-    if (this.isLoadStateAllowed_(index)) {
-      this.lastLoadState = Date.now();
+    try {
+      if (this.isLoadStateAllowed_(index)) {
+        this.lastLoadState = Date.now();
 
-      var snapshotIndex = this.getPreviousSnapshotIndex_(index);
-      if (snapshotIndex < 0) {
-        throw 'Could not find previous SNAPSHOT saved in history stateQueue';
+        var snapshotIndex = this.getPreviousSnapshotIndex_(index);
+        if (snapshotIndex < 0) {
+          throw 'Could not find previous SNAPSHOT saved in history stateQueue';
+        }
+        var serializedPiskel = this.getSnapshotFromState_(snapshotIndex);
+        var onPiskelLoadedCb = this.onPiskelLoaded_.bind(this, index, snapshotIndex);
+        pskl.utils.serialization.Deserializer.deserialize(serializedPiskel, onPiskelLoadedCb);
       }
-
-      var serializedPiskel = this.getSnapshotFromState_(snapshotIndex);
-      var onPiskelLoadedCb = this.onPiskelLoaded_.bind(this, index, snapshotIndex);
-      pskl.utils.serialization.Deserializer.deserialize(serializedPiskel, onPiskelLoadedCb);
+    } catch (e) {
+      window.console.error("[CRITICAL ERROR] : Unable to load a history state.");
+      window.console.error("Can you open an issue on http://github.com/juliandescottes/piskel or contact @piskelapp on twitter ? Thanks !");
+      window.console.error("Thanks !");
+      if (typeof e === "string") {
+        window.console.error(e);
+      } else {
+        window.console.error(e.message);
+        window.console.error(e.stack);
+      }
     }
   };
 

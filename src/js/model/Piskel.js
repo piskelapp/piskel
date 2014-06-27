@@ -109,4 +109,10 @@
     var appEngineEditorHeader = $('.piskel-name').html(this.descriptor.name);
   };
 
+  ns.Piskel.prototype.getHash = function () {
+    return this.layers.map(function (layer) {
+      return layer.getHash();
+    }).join('-');
+  };
+
 })();
