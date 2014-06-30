@@ -1,6 +1,8 @@
 (function () {
   var ns = $.namespace("pskl.controller");
 
+  var CACHE_RESET_INTERVAL = 1000 * 60 * 10;
+
   var ACTION = {
     SELECT : 'select',
     CLONE : 'clone',
@@ -15,6 +17,9 @@
     this.refreshZoom_();
 
     this.redrawFlag = true;
+
+    this.cache_ = {};
+    window.setInterval(function () {this.cache_ = {};}.bind(this), CACHE_RESET_INTERVAL);
   };
 
   ns.PreviewFilmController.prototype.init = function() {
@@ -175,11 +180,8 @@
     cloneFrameButton.className = "tile-overlay duplicate-frame-action";
     previewTileRoot.appendChild(cloneFrameButton);
 
-    var canvasRenderer = new pskl.rendering.CanvasRenderer(currentFrame, this.zoom);
-    canvasRenderer.drawTransparentAs(Constants.TRANSPARENT_COLOR);
-    var canvas = canvasRenderer.render();
-    canvas.classList.add('tile-view', 'canvas');
-    canvasContainer.appendChild(canvas);
+
+    canvasContainer.appendChild(this.getCanvasForFrame(currentFrame));
     previewTileRoot.appendChild(canvasContainer);
 
     if(tileNumber > 0 || this.piskelController.getFrameCount() > 1) {
@@ -204,6 +206,27 @@
     previewTileRoot.appendChild(tileCount);
 
     return previewTileRoot;
+  };
+
+  ns.PreviewFilmController.prototype.getCanvasForFrame = function (frame) {
+    var canvas = null;
+    var cacheKey = frame.getHash() + this.zoom;
+    if (this.cache_[cacheKey]) {
+      canvas = this.cache_[cacheKey];
+    } else {
+      var frameAsString = JSON.stringify(frame.getPixels());
+      if (this.cache_[frameAsString]) {
+        canvas = pskl.CanvasUtils.clone(this.cache_[frameAsString]);
+      } else {
+        var canvasRenderer = new pskl.rendering.CanvasRenderer(frame, this.zoom);
+        canvasRenderer.drawTransparentAs(Constants.TRANSPARENT_COLOR);
+        canvas = canvasRenderer.render();
+        this.cache_[frameAsString] = canvas;
+      }
+      canvas.classList.add('tile-view', 'canvas');
+      this.cache_[cacheKey] = canvas;
+    }
+    return canvas;
   };
 
   /**

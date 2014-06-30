@@ -22,7 +22,7 @@
    * @override
    */
   ns.SimplePen.prototype.applyToolAt = function(col, row, color, frame, overlay, event) {
-    frame.setPixel(col, row, color);
+    overlay.setPixel(col, row, color);
     this.previousCol = col;
     this.previousRow = row;
     this.pixels.push({
@@ -55,17 +55,26 @@
 
 
   ns.SimplePen.prototype.releaseToolAt = function(col, row, color, frame, overlay, event) {
+    // apply on real frame
+    this.setPixelsToFrame_(frame, this.pixels, color);
+
+    // save state
     this.raiseSaveStateEvent({
       pixels : this.pixels.slice(0),
       color : color
     });
+
+    // reset
     this.pixels = [];
   };
 
   ns.SimplePen.prototype.replay = function (frame, replayData) {
-    var pixels = replayData.pixels;
+    this.setPixelsToFrame_(frame, replayData.pixels, replayData.color);
+  };
+
+  ns.SimplePen.prototype.setPixelsToFrame_ = function (frame, pixels, color) {
     pixels.forEach(function (pixel) {
-      frame.setPixel(pixel.col, pixel.row, replayData.color);
+      frame.setPixel(pixel.col, pixel.row, color);
     });
   };
 })();
