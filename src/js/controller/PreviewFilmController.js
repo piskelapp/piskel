@@ -1,8 +1,6 @@
 (function () {
   var ns = $.namespace("pskl.controller");
 
-  var CACHE_RESET_INTERVAL = 1000 * 60 * 10;
-
   var ACTION = {
     SELECT : 'select',
     CLONE : 'clone',
@@ -18,8 +16,9 @@
 
     this.redrawFlag = true;
 
-    this.cache_ = {};
-    window.setInterval(function () {this.cache_ = {};}.bind(this), CACHE_RESET_INTERVAL);
+    this.cachedImageProcessor = new pskl.model.frame.CachedFrameProcessor();
+    this.cachedImageProcessor.setFrameProcessor(this.frameToPreviewCanvas_.bind(this));
+    this.cachedImageProcessor.setOutputCloner(this.clonePreviewCanvas_.bind(this));
   };
 
   ns.PreviewFilmController.prototype.init = function() {
@@ -44,7 +43,6 @@
 
   ns.PreviewFilmController.prototype.render = function () {
     if (this.redrawFlag) {
-      // TODO(vincz): Full redraw on any drawing modification, optimize.
       this.createPreviews_();
       this.redrawFlag = false;
     }
@@ -209,24 +207,23 @@
   };
 
   ns.PreviewFilmController.prototype.getCanvasForFrame = function (frame) {
-    var canvas = null;
-    var cacheKey = frame.getHash() + this.zoom;
-    if (this.cache_[cacheKey]) {
-      canvas = this.cache_[cacheKey];
-    } else {
-      var frameAsString = JSON.stringify(frame.getPixels());
-      if (this.cache_[frameAsString]) {
-        canvas = pskl.CanvasUtils.clone(this.cache_[frameAsString]);
-      } else {
-        var canvasRenderer = new pskl.rendering.CanvasRenderer(frame, this.zoom);
-        canvasRenderer.drawTransparentAs(Constants.TRANSPARENT_COLOR);
-        canvas = canvasRenderer.render();
-        this.cache_[frameAsString] = canvas;
-      }
-      canvas.classList.add('tile-view', 'canvas');
-      this.cache_[cacheKey] = canvas;
-    }
+    var canvas = this.cachedImageProcessor.get(frame, this.zoom);
+    canvas.classList.add('tile-view', 'canvas');
     return canvas;
+  };
+
+  ns.PreviewFilmController.prototype.frameToPreviewCanvas_ = function (frame) {
+    var canvasRenderer = new pskl.rendering.CanvasRenderer(frame, this.zoom);
+    canvasRenderer.drawTransparentAs(Constants.TRANSPARENT_COLOR);
+    var canvas = canvasRenderer.render();
+    canvas.classList.add('tile-view', 'canvas');
+    return canvas;
+  };
+
+  ns.PreviewFilmController.prototype.clonePreviewCanvas_ = function (canvas) {
+    var clone = pskl.CanvasUtils.clone(canvas);
+    clone.classList.add('tile-view', 'canvas');
+    return clone;
   };
 
   /**

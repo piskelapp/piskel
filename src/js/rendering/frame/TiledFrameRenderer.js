@@ -1,8 +1,6 @@
 (function () {
   var ns = $.namespace('pskl.rendering.frame');
 
-  var CACHE_RESET_INTERVAL = 1000 * 60 * 10;
-
   ns.TiledFrameRenderer = function (container, zoom) {
     this.container = container;
     this.setZoom(zoom);
@@ -11,30 +9,18 @@
     this.displayContainer.classList.add('tiled-frame-container');
     container.get(0).appendChild(this.displayContainer);
 
-    this.cache_ = {};
-    window.setInterval(function () {this.cache_ = {};}.bind(this), CACHE_RESET_INTERVAL);
+    this.cachedImageProcessor = new pskl.model.frame.CachedFrameProcessor();
+    this.cachedImageProcessor.setFrameProcessor(this.frameToDataUrl_.bind(this));
+  };
+
+  ns.TiledFrameRenderer.prototype.frameToDataUrl_ = function (frame) {
+    var canvas = new pskl.utils.FrameUtils.toImage(frame, this.zoom);
+    return canvas.toDataURL('image/png');
   };
 
   ns.TiledFrameRenderer.prototype.render = function (frame) {
-    var frameData = null;
-
-    var hash = frame.getHash();
-    if (this.cache_[hash]) {
-      frameData = this.cache_[hash];
-    } else {
-      var frameAsString = JSON.stringify(frame.getPixels());
-      if (this.cache_[frameAsString]) {
-        frameData = this.cache_[frameAsString];
-      } else {
-        var canvas = new pskl.utils.FrameUtils.toImage(frame, this.zoom);
-        frameData = canvas.toDataURL('image/png');
-        this.cache_[frameAsString] = frameData;
-      }
-
-      this.cache_[hash] = frameData;
-    }
-
-    this.displayContainer.style.backgroundImage = 'url(' + frameData + ')';
+    var imageSrc = this.cachedImageProcessor.get(frame, this.zoom);
+    this.displayContainer.style.backgroundImage = 'url(' + imageSrc + ')';
   };
 
   ns.TiledFrameRenderer.prototype.show = function () {
