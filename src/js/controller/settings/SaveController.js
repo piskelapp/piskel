@@ -42,18 +42,25 @@
     evt.stopPropagation();
 
     var name = this.getName();
-    var description = this.getDescription();
-    var isPublic = !!this.isPublicCheckbox.prop('checked');
 
-    var descriptor = new pskl.model.piskel.Descriptor(name, description, isPublic);
-    this.piskelController.getPiskel().setDescriptor(descriptor);
+    if (!name) {
+      name = window.prompt('Please specify a name', 'New piskel');
+    }
 
-    this.beforeSaving_();
-    pskl.app.storageService.store({
-      success : this.onSaveSuccess_.bind(this),
-      error : this.onSaveError_.bind(this),
-      after : this.afterSaving_.bind(this)
-    });
+    if (name) {
+      var description = this.getDescription();
+      var isPublic = !!this.isPublicCheckbox.prop('checked');
+
+      var descriptor = new pskl.model.piskel.Descriptor(name, description, isPublic);
+      this.piskelController.getPiskel().setDescriptor(descriptor);
+
+      this.beforeSaving_();
+      pskl.app.storageService.store({
+        success : this.onSaveSuccess_.bind(this),
+        error : this.onSaveError_.bind(this),
+        after : this.afterSaving_.bind(this)
+      });
+    }
   };
 
   ns.SaveController.prototype.onSaveLocalClick_ = function (evt) {

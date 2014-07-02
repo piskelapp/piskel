@@ -23,11 +23,16 @@
    */
   ns.SimplePen.prototype.applyToolAt = function(col, row, color, frame, overlay, event) {
     overlay.setPixel(col, row, color);
+
+    if (color === Constants.TRANSPARENT_COLOR) {
+      frame.setPixel(col, row, color);
+    }
     this.previousCol = col;
     this.previousRow = row;
     this.pixels.push({
       col : col,
-      row : row
+      row : row,
+      color : color
     });
   };
 
@@ -56,7 +61,7 @@
 
   ns.SimplePen.prototype.releaseToolAt = function(col, row, color, frame, overlay, event) {
     // apply on real frame
-    this.setPixelsToFrame_(frame, this.pixels, color);
+    this.setPixelsToFrame_(frame, this.pixels);
 
     // save state
     this.raiseSaveStateEvent({
@@ -74,7 +79,7 @@
 
   ns.SimplePen.prototype.setPixelsToFrame_ = function (frame, pixels, color) {
     pixels.forEach(function (pixel) {
-      frame.setPixel(pixel.col, pixel.row, color);
+      frame.setPixel(pixel.col, pixel.row, pixel.color);
     });
   };
 })();
