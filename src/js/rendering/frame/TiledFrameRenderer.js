@@ -9,8 +9,8 @@
     this.displayContainer.classList.add('tiled-frame-container');
     container.get(0).appendChild(this.displayContainer);
 
-    this.cachedImageProcessor = new pskl.model.frame.CachedFrameProcessor();
-    this.cachedImageProcessor.setFrameProcessor(this.frameToDataUrl_.bind(this));
+    this.cachedFrameProcessor = new pskl.model.frame.CachedFrameProcessor();
+    this.cachedFrameProcessor.setFrameProcessor(this.frameToDataUrl_.bind(this));
   };
 
   ns.TiledFrameRenderer.prototype.frameToDataUrl_ = function (frame) {
@@ -19,7 +19,7 @@
   };
 
   ns.TiledFrameRenderer.prototype.render = function (frame) {
-    var imageSrc = this.cachedImageProcessor.get(frame, this.zoom);
+    var imageSrc = this.cachedFrameProcessor.get(frame, this.zoom);
     this.displayContainer.style.backgroundImage = 'url(' + imageSrc + ')';
   };
 

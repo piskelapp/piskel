@@ -16,9 +16,9 @@
 
     this.redrawFlag = true;
 
-    this.cachedImageProcessor = new pskl.model.frame.CachedFrameProcessor();
-    this.cachedImageProcessor.setFrameProcessor(this.frameToPreviewCanvas_.bind(this));
-    this.cachedImageProcessor.setOutputCloner(this.clonePreviewCanvas_.bind(this));
+    this.cachedFrameProcessor = new pskl.model.frame.CachedFrameProcessor();
+    this.cachedFrameProcessor.setFrameProcessor(this.frameToPreviewCanvas_.bind(this));
+    this.cachedFrameProcessor.setOutputCloner(this.clonePreviewCanvas_.bind(this));
   };
 
   ns.PreviewFilmController.prototype.init = function() {
@@ -207,7 +207,7 @@
   };
 
   ns.PreviewFilmController.prototype.getCanvasForFrame = function (frame) {
-    var canvas = this.cachedImageProcessor.get(frame, this.zoom);
+    var canvas = this.cachedFrameProcessor.get(frame, this.zoom);
     canvas.classList.add('tile-view', 'canvas');
     return canvas;
   };
