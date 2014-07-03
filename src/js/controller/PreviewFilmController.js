@@ -208,7 +208,6 @@
 
   ns.PreviewFilmController.prototype.getCanvasForFrame = function (frame) {
     var canvas = this.cachedFrameProcessor.get(frame, this.zoom);
-    canvas.classList.add('tile-view', 'canvas');
     return canvas;
   };
 
