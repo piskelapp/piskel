@@ -8,11 +8,19 @@
     this.displayContainer = document.createElement('div');
     this.displayContainer.classList.add('tiled-frame-container');
     container.get(0).appendChild(this.displayContainer);
+
+    this.cachedFrameProcessor = new pskl.model.frame.CachedFrameProcessor();
+    this.cachedFrameProcessor.setFrameProcessor(this.frameToDataUrl_.bind(this));
+  };
+
+  ns.TiledFrameRenderer.prototype.frameToDataUrl_ = function (frame) {
+    var canvas = new pskl.utils.FrameUtils.toImage(frame, this.zoom);
+    return canvas.toDataURL('image/png');
   };
 
   ns.TiledFrameRenderer.prototype.render = function (frame) {
-    var canvas = new pskl.utils.FrameUtils.toImage(frame, this.zoom);
-    this.displayContainer.style.backgroundImage = 'url(' + canvas.toDataURL('image/png') + ')';
+    var imageSrc = this.cachedFrameProcessor.get(frame, this.zoom);
+    this.displayContainer.style.backgroundImage = 'url(' + imageSrc + ')';
   };
 
   ns.TiledFrameRenderer.prototype.show = function () {

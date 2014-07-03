@@ -15,6 +15,10 @@
     this.refreshZoom_();
 
     this.redrawFlag = true;
+
+    this.cachedFrameProcessor = new pskl.model.frame.CachedFrameProcessor();
+    this.cachedFrameProcessor.setFrameProcessor(this.frameToPreviewCanvas_.bind(this));
+    this.cachedFrameProcessor.setOutputCloner(this.clonePreviewCanvas_.bind(this));
   };
 
   ns.PreviewFilmController.prototype.init = function() {
@@ -39,7 +43,6 @@
 
   ns.PreviewFilmController.prototype.render = function () {
     if (this.redrawFlag) {
-      // TODO(vincz): Full redraw on any drawing modification, optimize.
       this.createPreviews_();
       this.redrawFlag = false;
     }
@@ -175,11 +178,8 @@
     cloneFrameButton.className = "tile-overlay duplicate-frame-action";
     previewTileRoot.appendChild(cloneFrameButton);
 
-    var canvasRenderer = new pskl.rendering.CanvasRenderer(currentFrame, this.zoom);
-    canvasRenderer.drawTransparentAs(Constants.TRANSPARENT_COLOR);
-    var canvas = canvasRenderer.render();
-    canvas.classList.add('tile-view', 'canvas');
-    canvasContainer.appendChild(canvas);
+
+    canvasContainer.appendChild(this.getCanvasForFrame(currentFrame));
     previewTileRoot.appendChild(canvasContainer);
 
     if(tileNumber > 0 || this.piskelController.getFrameCount() > 1) {
@@ -204,6 +204,25 @@
     previewTileRoot.appendChild(tileCount);
 
     return previewTileRoot;
+  };
+
+  ns.PreviewFilmController.prototype.getCanvasForFrame = function (frame) {
+    var canvas = this.cachedFrameProcessor.get(frame, this.zoom);
+    return canvas;
+  };
+
+  ns.PreviewFilmController.prototype.frameToPreviewCanvas_ = function (frame) {
+    var canvasRenderer = new pskl.rendering.CanvasRenderer(frame, this.zoom);
+    canvasRenderer.drawTransparentAs(Constants.TRANSPARENT_COLOR);
+    var canvas = canvasRenderer.render();
+    canvas.classList.add('tile-view', 'canvas');
+    return canvas;
+  };
+
+  ns.PreviewFilmController.prototype.clonePreviewCanvas_ = function (canvas) {
+    var clone = pskl.CanvasUtils.clone(canvas);
+    clone.classList.add('tile-view', 'canvas');
+    return clone;
   };
 
   /**

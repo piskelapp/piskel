@@ -1,6 +1,6 @@
 (function () {
   var ns = $.namespace('pskl.service');
-  var BACKUP_INTERVAL = 1000 * 30;
+  var BACKUP_INTERVAL = 1000 * 60;
 
   ns.BackupService = function (piskelController) {
     this.piskelController = piskelController;

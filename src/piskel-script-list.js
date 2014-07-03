@@ -47,6 +47,7 @@
   "js/model/Frame.js",
   "js/model/Layer.js",
   "js/model/piskel/Descriptor.js",
+  "js/model/frame/CachedFrameProcessor.js",
   "js/model/Piskel.js",
 
   // Selection
