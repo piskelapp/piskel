@@ -4,6 +4,9 @@
   ns.CurrentColorsService = function (piskelController) {
     this.piskelController = piskelController;
     this.currentColors = [];
+    this.cachedFrameProcessor = new pskl.model.frame.CachedFrameProcessor();
+    this.cachedFrameProcessor.setFrameProcessor(this.frameToColors_.bind(this));
+
     this.framesColorsCache_ = {};
   };
 
@@ -16,33 +19,35 @@
     return this.currentColors;
   };
 
+  ns.CurrentColorsService.prototype.frameToColors_ = function (frame) {
+    var frameColors = {};
+    frame.forEachPixel(function (color, x, y) {
+      frameColors[color] = (frameColors[color] || 0) + 1;
+    });
+    return frameColors;
+  };
+
+
   ns.CurrentColorsService.prototype.onPiskelUpdated_ = function (evt) {
     var layers = this.piskelController.getLayers();
     var frames = layers.map(function (l) {return l.getFrames();}).reduce(function (p, n) {return p.concat(n);});
     var colors = {};
     frames.forEach(function (f) {
-      var frameHash = f.getHash();
-      if (!this.framesColorsCache_[frameHash]) {
-        var frameColors = {};
-        f.forEachPixel(function (color, x, y) {
-          frameColors[color] = true;
-        });
-        this.framesColorsCache_[frameHash] = frameColors;
-      }
-      Object.keys(this.framesColorsCache_[frameHash]).forEach(function (color) {
-        colors[color] = true;
+      var frameColors = this.cachedFrameProcessor.get(f);
+      Object.keys(frameColors).slice(0, Constants.MAX_CURRENT_COLORS_DISPLAYED).forEach(function (color) {
+        colors[color] = (colors[color] || 0) + frameColors[color];
       });
     }.bind(this));
+
+    // Remove transparent color from used colors
     delete colors[Constants.TRANSPARENT_COLOR];
-    this.currentColors = Object.keys(colors);
+
+    // limit the array to the max colors to display
+    this.currentColors = Object.keys(colors).slice(0, Constants.MAX_CURRENT_COLORS_DISPLAYED);
+
+    // sort by most frequent color
     this.currentColors = this.currentColors.sort(function (c1, c2) {
-      if (c1 < c2) {
-        return -1;
-      } else if (c1 > c2) {
-        return 1;
-      } else {
-        return 0;
-      }
+      return colors[c2] - colors[c1];
     });
 
     // TODO : only fire if there was a change

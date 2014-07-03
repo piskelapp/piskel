@@ -27,7 +27,9 @@
    * @override
    */
   ns.Lighten.prototype.applyToolAt = function(col, row, color, frame, overlay, event, mouseButton) {
-    var pixelColor = frame.getPixel(col, row);
+    var overlayColor = overlay.getPixel(col, row);
+    var frameColor = frame.getPixel(col, row);
+    var pixelColor = overlayColor === Constants.TRANSPARENT_COLOR ? frameColor : overlayColor;
 
     var isDarken = event.ctrlKey || event.cmdKey;
     var isSinglePass = event.shiftKey;
@@ -55,7 +57,11 @@
   };
 
   ns.Lighten.prototype.releaseToolAt = function(col, row, color, frame, overlay, event) {
+    // apply on real frame
+    this.setPixelsToFrame_(frame, this.pixels);
+
     this.resetUsedPixels_();
+
     $.publish(Events.PISKEL_SAVE_STATE, {
       type : pskl.service.HistoryService.SNAPSHOT
     });

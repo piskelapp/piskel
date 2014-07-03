@@ -77,10 +77,16 @@
   };
 
   ns.PiskelController.prototype.getFrameAt = function (index) {
+    var hash = [];
     var frames = this.getLayers().map(function (l) {
-      return l.getFrameAt(index);
+      var frame = l.getFrameAt(index);
+      hash.push(frame.getHash());
+      return frame;
     });
-    return pskl.utils.FrameUtils.merge(frames);
+    var mergedFrame = pskl.utils.FrameUtils.merge(frames);
+    mergedFrame.id = hash.join('-');
+    mergedFrame.version = 0;
+    return mergedFrame;
   };
 
   ns.PiskelController.prototype.hasFrameAt = function (index) {

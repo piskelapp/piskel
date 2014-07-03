@@ -48,6 +48,16 @@
       }
     },
 
+    clone : function (canvas) {
+      var clone = pskl.CanvasUtils.createCanvas(canvas.width, canvas.height);
+
+      //apply the old canvas to the new one
+      clone.getContext('2d').drawImage(canvas, 0, 0);
+
+      //return the new canvas
+      return clone;
+    },
+
     getImageDataFromCanvas : function (canvas) {
       var sourceContext = canvas.getContext('2d');
       return sourceContext.getImageData(0, 0, canvas.width, canvas.height).data;
