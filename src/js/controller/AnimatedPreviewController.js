@@ -19,6 +19,8 @@
     this.updateZoom_();
     $.subscribe(Events.FRAME_SIZE_CHANGED, this.onFrameSizeChange_.bind(this));
     $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
+
+    pskl.app.shortcutService.addShortcut('alt+O', this.toggleOnionSkin_.bind(this));
   };
 
   ns.AnimatedPreviewController.prototype.onUserSettingsChange_ = function () {
@@ -121,5 +123,10 @@
     containerEl.style.marginBottom = ((PREVIEW_SIZE - height) / 2) + "px";
     containerEl.style.marginLeft = ((PREVIEW_SIZE - width) / 2) + "px";
     containerEl.style.marginRight = ((PREVIEW_SIZE - width) / 2) + "px";
+  };
+
+  ns.AnimatedPreviewController.prototype.toggleOnionSkin_ = function () {
+    var currentValue = pskl.UserSettings.get(pskl.UserSettings.ONION_SKIN);
+    pskl.UserSettings.set(pskl.UserSettings.ONION_SKIN, !currentValue);
   };
 })();

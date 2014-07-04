@@ -6,14 +6,16 @@
     CANVAS_BACKGROUND : 'CANVAS_BACKGROUND',
     SELECTED_PALETTE : 'SELECTED_PALETTE',
     TILED_PREVIEW : 'TILED_PREVIEW',
-    OVERLAY : 'OVERLAY',
+    ONION_SKIN : 'ONION_SKIN',
+    LAYER_PREVIEW : 'LAYER_PREVIEW',
 
     KEY_TO_DEFAULT_VALUE_MAP_ : {
       'GRID_WIDTH' : 0,
       'CANVAS_BACKGROUND' : 'lowcont-dark-canvas-background',
       'SELECTED_PALETTE' : Constants.CURRENT_COLORS_PALETTE_ID,
       'TILED_PREVIEW' : false,
-      'OVERLAY' : Constants.OVERLAY_ONION_SKIN
+      'ONION_SKIN' : false,
+      'LAYER_PREVIEW' : true
     },
 
     /**

@@ -14,6 +14,8 @@
 
     $.subscribe(Events.PISKEL_RESET, this.renderLayerList_.bind(this));
 
+    pskl.app.shortcutService.addShortcut('alt+L', this.toggleLayerPreview_.bind(this));
+
     this.renderLayerList_();
   };
 
@@ -68,5 +70,10 @@
     } else if (action == 'delete') {
       this.piskelController.removeCurrentLayer();
     }
+  };
+
+  ns.LayersListController.prototype.toggleLayerPreview_ = function () {
+    var currentValue = pskl.UserSettings.get(pskl.UserSettings.LAYER_PREVIEW);
+    pskl.UserSettings.set(pskl.UserSettings.LAYER_PREVIEW, !currentValue);
   };
 })();
