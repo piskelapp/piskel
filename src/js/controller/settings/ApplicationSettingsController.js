@@ -18,10 +18,6 @@
     $('#grid-width').val(gridWidth);
     $('#grid-width').change(this.onGridWidthChange.bind(this));
 
-    var overlay = pskl.UserSettings.get(pskl.UserSettings.OVERLAY);
-    $('#overlay').val(overlay);
-    $('#overlay').change(this.onOverlayChange.bind(this));
-
     // Handle canvas background changes:
     $('#background-picker-wrapper').click(this.onBackgroundClick.bind(this));
   };
@@ -29,11 +25,6 @@
   ns.ApplicationSettingsController.prototype.onGridWidthChange = function (evt) {
     var width = $('#grid-width').val();
     pskl.UserSettings.set(pskl.UserSettings.GRID_WIDTH, parseInt(width, 10));
-  };
-
-  ns.ApplicationSettingsController.prototype.onOverlayChange = function (evt) {
-    var overlay = $('#overlay').val();
-    pskl.UserSettings.set(pskl.UserSettings.OVERLAY, overlay);
   };
 
   ns.ApplicationSettingsController.prototype.onBackgroundClick = function (evt) {

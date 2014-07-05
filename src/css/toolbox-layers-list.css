@@ -10,6 +10,28 @@
   background-size: 22px;
   background-repeat: no-repeat;
   background-position: 97%;
+  position: relative;
+}
+
+.layers-toggle-preview {
+  position: absolute;
+  top: 0.3em;
+  right: 2em;
+
+  color: #999;
+  font-size: 1.3em;
+  cursor: pointer;
+
+  transition: 0.2s linear;
+}
+
+.layers-toggle-preview:hover {
+  color: white;
+}
+
+.layers-toggle-preview-enabled,
+.layers-toggle-preview-enabled:hover {
+  color : gold;
 }
 
 .layers-list {
