@@ -30,8 +30,12 @@
     get : function (key) {
       this.checkKeyValidity_(key);
       if (!(key in this.cache_)) {
-        this.cache_[key] =
-          this.readFromLocalStorage_(key) || this.readFromDefaults_(key);
+        var storedValue = this.readFromLocalStorage_(key);
+        if (typeof storedValue !== 'undefined' && storedValue !== null) {
+          this.cache_[key] = storedValue;
+        } else {
+          this.cache_[key] = this.readFromDefaults_(key);
+        }
       }
       return this.cache_[key];
     },

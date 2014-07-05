@@ -7,22 +7,42 @@
 
   ns.LayersListController.prototype.init = function () {
     this.layerItemTemplate_ = pskl.utils.Template.get('layer-item-template');
-    this.rootEl = document.querySelectorAll('.layers-list-container')[0];
-    this.layersListEl = document.querySelectorAll('.layers-list')[0];
+    this.rootEl = document.querySelector('.layers-list-container');
+    this.layersListEl = document.querySelector('.layers-list');
+    this.toggleLayerPreviewEl = document.querySelector('.layers-toggle-preview');
 
     this.rootEl.addEventListener('click', this.onClick_.bind(this));
+    this.toggleLayerPreviewEl.addEventListener('click', this.toggleLayerPreview_.bind(this));
 
     $.subscribe(Events.PISKEL_RESET, this.renderLayerList_.bind(this));
 
     pskl.app.shortcutService.addShortcut('alt+L', this.toggleLayerPreview_.bind(this));
 
     this.renderLayerList_();
+    this.updateToggleLayerPreview_();
+
+    $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
   };
 
   ns.LayersListController.prototype.renderLayerList_ = function () {
     this.layersListEl.innerHTML = '';
     var layers = this.piskelController.getLayers();
     layers.forEach(this.addLayerItem.bind(this));
+  };
+
+  ns.LayersListController.prototype.updateToggleLayerPreview_ = function () {
+    var enabledClassname = 'layers-toggle-preview-enabled';
+    if (pskl.UserSettings.get(pskl.UserSettings.LAYER_PREVIEW)) {
+      this.toggleLayerPreviewEl.classList.add(enabledClassname);
+    } else {
+      this.toggleLayerPreviewEl.classList.remove(enabledClassname);
+    }
+  };
+
+  ns.LayersListController.prototype.onUserSettingsChange_ = function (evt, name, value) {
+    if (name == pskl.UserSettings.LAYER_PREVIEW) {
+      this.updateToggleLayerPreview_();
+    }
   };
 
   ns.LayersListController.prototype.addLayerItem = function (layer, index) {

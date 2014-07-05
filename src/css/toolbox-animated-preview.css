@@ -1,0 +1,74 @@
+/**
+ * Animated preview styles.
+ */
+
+.preview-container {
+  border : 0px Solid black;
+  border-radius:5px 0px 0px 5px;
+  box-shadow : 0px 0px 2px rgba(0,0,0,0.2);
+  font-size: 0;
+}
+
+.preview-container .canvas-container {
+  overflow : hidden;
+}
+
+.preview-container canvas {
+  border : 0px Solid transparent;
+}
+
+#animated-preview-container {
+  background: #333;
+  border-radius : 0 0 2px 2px;
+  overflow : hidden;
+}
+
+#animated-preview-canvas-container {
+  height :200px;
+  width : 200px;
+}
+
+.tiled-frame-container {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  background-repeat : repeat;
+}
+
+.display-fps {
+  float: left;
+  color: #aaa;
+  font-size: 12px;
+  min-width: 55px;
+  vertical-align: bottom;
+  line-height: 24px;
+}
+
+.range-fps {
+  overflow: hidden;
+  width: 100px;
+  height : 24px;
+  margin : 0;
+}
+
+.preview-toggle-onion-skin {
+  font-size: 1.6rem;
+  color: #aaa;
+  float: left;
+  line-height: 24px;
+  height: 100%;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-right: 1px solid #222;
+  transition: 0.2s linear;
+  cursor:pointer;
+}
+
+.preview-toggle-onion-skin:hover {
+  color : white;
+}
+
+.preview-toggle-onion-skin-enabled,
+.preview-toggle-onion-skin-enabled:hover {
+  color : gold;
+}

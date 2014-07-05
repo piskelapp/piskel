@@ -16,16 +16,43 @@
     var frame = this.piskelController.getCurrentFrame();
 
     this.renderer = new pskl.rendering.frame.TiledFrameRenderer(this.container);
-    this.updateZoom_();
+  };
+
+  ns.AnimatedPreviewController.prototype.init = function () {
+    // the oninput event won't work on IE10 unfortunately, but at least will provide a
+    // consistent behavior across all other browsers that support the input type range
+    // see https://bugzilla.mozilla.org/show_bug.cgi?id=853670
+    $("#preview-fps")[0].addEventListener('change', this.onFPSSliderChange.bind(this));
+    document.querySelector(".right-column").style.width = Constants.ANIMATED_PREVIEW_WIDTH + 'px';
+
+    this.toggleOnionSkinEl = document.querySelector(".preview-toggle-onion-skin");
+    this.toggleOnionSkinEl.addEventListener('click', this.toggleOnionSkin_.bind(this));
+
+    pskl.app.shortcutService.addShortcut('alt+O', this.toggleOnionSkin_.bind(this));
+
     $.subscribe(Events.FRAME_SIZE_CHANGED, this.onFrameSizeChange_.bind(this));
     $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
 
-    pskl.app.shortcutService.addShortcut('alt+O', this.toggleOnionSkin_.bind(this));
+    this.updateZoom_();
+    this.updateOnionSkinPreview_();
   };
 
-  ns.AnimatedPreviewController.prototype.onUserSettingsChange_ = function () {
-    this.updateZoom_();
-    this.updateContainerDimensions_();
+  ns.AnimatedPreviewController.prototype.onUserSettingsChange_ = function (evt, name, value) {
+    if (name == pskl.UserSettings.ONION_SKIN) {
+      this.updateOnionSkinPreview_();
+    } else {
+      this.updateZoom_();
+      this.updateContainerDimensions_();
+    }
+  };
+
+  ns.AnimatedPreviewController.prototype.updateOnionSkinPreview_ = function () {
+    var enabledClassname = 'preview-toggle-onion-skin-enabled';
+    if (pskl.UserSettings.get(pskl.UserSettings.ONION_SKIN)) {
+      this.toggleOnionSkinEl.classList.add(enabledClassname);
+    } else {
+      this.toggleOnionSkinEl.classList.remove(enabledClassname);
+    }
   };
 
   ns.AnimatedPreviewController.prototype.updateZoom_ = function () {
@@ -47,14 +74,6 @@
       x : Math.floor(x / zoom),
       y : Math.floor(y / zoom)
     };
-  };
-
-  ns.AnimatedPreviewController.prototype.init = function () {
-    // the oninput event won't work on IE10 unfortunately, but at least will provide a
-    // consistent behavior across all other browsers that support the input type range
-    // see https://bugzilla.mozilla.org/show_bug.cgi?id=853670
-    $("#preview-fps")[0].addEventListener('change', this.onFPSSliderChange.bind(this));
-    document.querySelector(".right-column").style.width = Constants.ANIMATED_PREVIEW_WIDTH + 'px';
   };
 
   ns.AnimatedPreviewController.prototype.onFPSSliderChange = function (evt) {
