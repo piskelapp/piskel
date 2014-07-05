@@ -21346,13 +21346,14 @@ if (typeof Function.prototype.bind !== "function") {
    * @override
    */
   ns.SimplePen.prototype.applyToolAt = function(col, row, color, frame, overlay, event) {
+    this.previousCol = col;
+    this.previousRow = row;
+
     overlay.setPixel(col, row, color);
 
     if (color === Constants.TRANSPARENT_COLOR) {
       frame.setPixel(col, row, color);
     }
-    this.previousCol = col;
-    this.previousRow = row;
     this.pixels.push({
       col : col,
       row : row,
@@ -21482,22 +21483,19 @@ if (typeof Function.prototype.bind !== "function") {
     this.superclass.constructor.call(this);
 
     this.toolId = "tool-vertical-mirror-pen";
-    this.helpText = "vertical mirror pen tool";
-
-    this.swap = null;
+    this.helpText = "Vertical Mirror pen tool (hold CTRL for Horizontal, hold SHIFT for both)";
   };
 
   pskl.utils.inherit(ns.VerticalMirrorPen, ns.SimplePen);
 
-
-  ns.VerticalMirrorPen.prototype.setMirrorContext = function() {
-    this.swap = this.previousCol;
-    this.previousCol = this.mirroredPreviousCol;
+  ns.VerticalMirrorPen.prototype.backupPreviousPositions_ = function () {
+    this.backupPreviousCol = this.previousCol;
+    this.backupPreviousRow = this.previousRow;
   };
 
-  ns.VerticalMirrorPen.prototype.unsetMirrorContext = function() {
-    this.mirroredPreviousCol = this.previousCol;
-    this.previousCol = this.swap;
+  ns.VerticalMirrorPen.prototype.restorePreviousPositions_ = function () {
+    this.previousCol = this.backupPreviousCol;
+    this.previousRow = this.backupPreviousRow;
   };
 
   /**
@@ -21505,20 +21503,33 @@ if (typeof Function.prototype.bind !== "function") {
    */
   ns.VerticalMirrorPen.prototype.applyToolAt = function(col, row, color, frame, overlay, event) {
     this.superclass.applyToolAt.call(this, col, row, color, frame, overlay);
+    this.backupPreviousPositions_();
 
     var mirroredCol = this.getSymmetricCol_(col, frame);
-    this.mirroredPreviousCol = mirroredCol;
+    var mirroredRow = this.getSymmetricRow_(row, frame);
 
-    this.setMirrorContext();
-    this.superclass.applyToolAt.call(this, mirroredCol, row, color, frame, overlay);
-    this.unsetMirrorContext();
+    if (!event.ctrlKey) {
+      this.superclass.applyToolAt.call(this, mirroredCol, row, color, frame, overlay);
+    }
+
+    if (event.shiftKey || event.ctrlKey) {
+      this.superclass.applyToolAt.call(this, col, mirroredRow, color, frame, overlay);
+    }
+
+    if (event.shiftKey) {
+      this.superclass.applyToolAt.call(this, mirroredCol, mirroredRow, color, frame, overlay);
+    }
+
+
+    this.restorePreviousPositions_();
   };
 
-  /**
-   * @private
-   */
   ns.VerticalMirrorPen.prototype.getSymmetricCol_ = function(col, frame) {
     return frame.getWidth() - col - 1;
+  };
+
+  ns.VerticalMirrorPen.prototype.getSymmetricRow_ = function(row, frame) {
+    return frame.getHeight() - row - 1;
   };
 })();
 ;/**

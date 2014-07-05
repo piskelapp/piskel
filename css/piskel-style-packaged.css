@@ -293,7 +293,7 @@ body {
 }
 
 .piskel-icon-eye:before {
-  content: "\e600";
+  content: "\e602";
 }
 
 .piskel-icon-onion:before {
@@ -1407,11 +1407,11 @@ body {
 
 .layers-toggle-preview {
   position: absolute;
-  top : 0.9em;
-  right: 3.3em;
+  top: 0.3em;
+  right: 2em;
 
   color: #999;
-  font-size: 0.8em;
+  font-size: 1.3em;
   cursor: pointer;
 
   transition: 0.2s linear;
@@ -1587,7 +1587,7 @@ body {
 }
 
 .preview-toggle-onion-skin {
-  font-size: 1.6rem;
+  font-size: 2rem;
   color: #aaa;
   float: left;
   line-height: 26px;
