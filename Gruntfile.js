@@ -134,6 +134,7 @@ module.exports = function(grunt) {
           {src: ['src/logo.png'], dest: 'dest/logo.png'},
           {src: ['src/js/lib/iframeLoader.js'], dest: 'dest/js/lib/iframeLoader.js'},
           {expand: true, src: ['img/**'], cwd: 'src/', dest: 'dest/', filter: 'isFile'},
+          {expand: true, src: ['css/fonts/**'], cwd: 'src/', dest: 'dest/', filter: 'isFile'},
           {expand: true, src: ['**/*.html'], cwd: 'src/', dest: 'dest/', filter: 'isFile'}
         ]
       }

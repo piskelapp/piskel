@@ -113,7 +113,7 @@
   ns.DrawingController.prototype.onUserSettingsChange_ = function (evt, settingsName, settingsValue) {
     if(settingsName == pskl.UserSettings.SHOW_GRID) {
       console.warn('DrawingController:onUserSettingsChange_ not implemented !');
-    } else if (settingsName == pskl.UserSettings.OVERLAY) {
+    } else if (settingsName == pskl.UserSettings.ONION_SKIN || settingsName == pskl.UserSettings.LAYER_PREVIEW) {
       this.onionSkinRenderer.clear();
       this.onionSkinRenderer.flush();
       this.layersRenderer.clear();
@@ -319,10 +319,11 @@
       this.overlayFrame = pskl.model.Frame.createEmptyFromFrame(currentFrame);
     }
 
-    var overlaySetting = pskl.UserSettings.get(pskl.UserSettings.OVERLAY);
-    if (overlaySetting === Constants.OVERLAY_ONION_SKIN) {
+    if (pskl.UserSettings.get(pskl.UserSettings.ONION_SKIN)) {
       this.onionSkinRenderer.render();
-    } else if (overlaySetting === Constants.OVERLAY_LAYER_PREVIEW) {
+    }
+
+    if (pskl.UserSettings.get(pskl.UserSettings.LAYER_PREVIEW)) {
       this.layersRenderer.render();
     }
 
