@@ -41,21 +41,22 @@
   font-size: 12px;
   min-width: 55px;
   vertical-align: bottom;
-  line-height: 24px;
+  line-height: 26px;
 }
 
 .range-fps {
   overflow: hidden;
   width: 100px;
-  height : 24px;
+  height : 26px;
   margin : 0;
+  box-sizing: border-box;
 }
 
 .preview-toggle-onion-skin {
   font-size: 1.6rem;
   color: #aaa;
   float: left;
-  line-height: 24px;
+  line-height: 26px;
   height: 100%;
   padding-left: 5px;
   padding-right: 5px;
