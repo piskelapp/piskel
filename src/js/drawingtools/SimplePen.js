@@ -22,13 +22,14 @@
    * @override
    */
   ns.SimplePen.prototype.applyToolAt = function(col, row, color, frame, overlay, event) {
+    this.previousCol = col;
+    this.previousRow = row;
+
     overlay.setPixel(col, row, color);
 
     if (color === Constants.TRANSPARENT_COLOR) {
       frame.setPixel(col, row, color);
     }
-    this.previousCol = col;
-    this.previousRow = row;
     this.pixels.push({
       col : col,
       row : row,
