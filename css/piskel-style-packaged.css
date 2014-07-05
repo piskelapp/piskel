@@ -172,12 +172,14 @@ body {
   background: url(../img/canvas_background/lowcont_dark_canvas_background.png) repeat;
 }
 
-.layers-canvas {
+.layers-canvas,
+.canvas.onion-skin-canvas {
   opacity: 0.2;
 }
 
 .canvas.canvas-overlay,
-.canvas.layers-canvas {
+.canvas.layers-canvas,
+.canvas.onion-skin-canvas {
   position: absolute;
   top: 0;
   left: 0;
@@ -193,60 +195,10 @@ body {
 .canvas.layers-below-canvas  {z-index:  7;}
 .canvas.drawing-canvas       {z-index:  8;}
 .canvas.layers-above-canvas  {z-index:  9;}
-.canvas.canvas-overlay       {z-index: 10;}
+.canvas.onion-skin-canvas    {z-index: 10;}
+.canvas.canvas-overlay       {z-index: 11;}
 
-/**
- * Animated preview styles.
- */
 
-.preview-container {
-  border : 0px Solid black;
-  border-radius:5px 0px 0px 5px;
-  box-shadow : 0px 0px 2px rgba(0,0,0,0.2);
-  font-size: 0;
-}
-
-.preview-container .canvas-container {
-  overflow : hidden;
-}
-
-.preview-container canvas {
-  border : 0px Solid transparent;
-}
-
-#animated-preview-container {
-  background: #333;
-  border-radius : 0 0 2px 2px;
-  overflow : hidden;
-}
-
-#animated-preview-canvas-container {
-  height :200px;
-  width : 200px;
-}
-
-.tiled-frame-container {
-  height: 100%;
-  width: 100%;
-  position: relative;
-  background-repeat : repeat;
-}
-
-.display-fps {
-  float: left;
-  color: #aaa;
-  font-size: 12px;
-  min-width: 55px;
-  vertical-align: bottom;
-  line-height: 24px;
-}
-
-.range-fps {
-  overflow: hidden;
-  width: 120px;
-  height : 24px;
-  margin : 0;
-}
 
 /**
  * User messages
@@ -315,6 +267,40 @@ body {
   font-weight:bold;
   font-family:Courier;
 }
+@font-face {
+  font-family: 'piskel';
+  src:url('fonts/piskel.eot?-3olv93');
+  src:url('fonts/piskel.eot?#iefix-3olv93') format('embedded-opentype'),
+    url('fonts/piskel.woff?-3olv93') format('woff'),
+    url('fonts/piskel.ttf?-3olv93') format('truetype'),
+    url('fonts/piskel.svg?-3olv93#icomoon') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+[class^="piskel-icon-"], [class*=" piskel-icon-"] {
+  font-family: 'piskel';
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.piskel-icon-eye:before {
+  content: "\e600";
+}
+
+.piskel-icon-onion:before {
+  content: "\e601";
+}
+
+
 .row {
   display: block;
 }
@@ -514,6 +500,7 @@ body {
 }
 
 .settings-title {
+  color : gold;
   margin-top: 20px;
   margin-bottom: 10px;
   text-transform: uppercase;
@@ -1415,6 +1402,28 @@ body {
   background-size: 22px;
   background-repeat: no-repeat;
   background-position: 97%;
+  position: relative;
+}
+
+.layers-toggle-preview {
+  position: absolute;
+  top : 0.9em;
+  right: 3.3em;
+
+  color: #999;
+  font-size: 0.8em;
+  cursor: pointer;
+
+  transition: 0.2s linear;
+}
+
+.layers-toggle-preview:hover {
+  color: white;
+}
+
+.layers-toggle-preview-enabled,
+.layers-toggle-preview-enabled:hover {
+  color : gold;
 }
 
 .layers-list {
@@ -1521,6 +1530,82 @@ body {
 .palettes-list-secondary-color:before {
   right: 1px;
   border-left-color: transparent;
+}
+/**
+ * Animated preview styles.
+ */
+
+.preview-container {
+  border : 0px Solid black;
+  border-radius:5px 0px 0px 5px;
+  box-shadow : 0px 0px 2px rgba(0,0,0,0.2);
+  font-size: 0;
+}
+
+.preview-container .canvas-container {
+  overflow : hidden;
+}
+
+.preview-container canvas {
+  border : 0px Solid transparent;
+}
+
+#animated-preview-container {
+  background: #333;
+  border-radius : 0 0 2px 2px;
+  overflow : hidden;
+}
+
+#animated-preview-canvas-container {
+  height :200px;
+  width : 200px;
+}
+
+.tiled-frame-container {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  background-repeat : repeat;
+}
+
+.display-fps {
+  float: left;
+  color: #aaa;
+  font-size: 12px;
+  min-width: 55px;
+  vertical-align: bottom;
+  line-height: 26px;
+}
+
+.range-fps {
+  overflow: hidden;
+  width: 100px;
+  height : 26px;
+  margin : 0;
+  box-sizing: border-box;
+  padding:0;
+}
+
+.preview-toggle-onion-skin {
+  font-size: 1.6rem;
+  color: #aaa;
+  float: left;
+  line-height: 26px;
+  height: 100%;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-right: 1px solid #222;
+  transition: 0.2s linear;
+  cursor:pointer;
+}
+
+.preview-toggle-onion-skin:hover {
+  color : white;
+}
+
+.preview-toggle-onion-skin-enabled,
+.preview-toggle-onion-skin-enabled:hover {
+  color : gold;
 }
 /***
 Spectrum Colorpicker v1.1.2
