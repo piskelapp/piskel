@@ -2,13 +2,12 @@
   <form action="" method="POST" name="save-form">
     <div class="settings-title">Describe your piskel</div>
     <div class="settings-item">
-      <div class="settings-form-section">
-        <label class="row">Title : </label>
-        <input id="save-name" type="text" class="save-field textfield"/>
+      <div class="settings-form-section" style="overflow:hidden">
+        <label class="row" style="float:left;line-height:28px;">Title : </label>
+        <input id="save-name" type="text" class="save-field textfield" style="float:left;width:200px;margin-left:10px;"/>
       </div>
       <div class="settings-form-section">
-        <label class="row">Description :</label>
-        <textarea id="save-description" class="save-field textfield" placeholder="Your piskel in a few words"></textarea>
+        <textarea id="save-description" class="save-field textfield" placeholder="Description ..."></textarea>
       </div>
       <div class="settings-form-section save-public-section">
         <label class="row">
@@ -21,10 +20,15 @@
       <input type="submit" class="button button-primary" id="save-online-button" value="Upload" />
       <div id="save-online-status" class="save-status"></div>
     </div>
-    <div class="settings-title">Download Project</div>
+    <div class="settings-title">Save offline in Browser</div>
     <div class="settings-item">
-      <div id="save-local-status" class="save-status"></div>
-      <input type="button" class="button" id="save-local-button" value="Download Piskel Project" />
+      <div id="save-browser-status" class="save-status">Your piskel will be saved in the browser and will only be accessible from this browser.</div>
+      <input type="submit" class="button button-primary" id="save-browser-button" value="Save in Browser" />
+    </div>
+    <div class="settings-title">Save offline as File</div>
+    <div class="settings-item">
+      <div id="save-file-status" class="save-status"></div>
+      <input type="button" class="button" id="save-file-button" value="Save as File" />
     </div>
   </form>
 
@@ -32,7 +36,7 @@
     <span>Login to <a href="http://piskelapp.com" target="_blank">piskelapp.com</a> to save and share your sprites online !</span>
   </script>
 
-  <script type="text/template" id="save-local-status-template">
-    <span>Your piskel will be downloaded as <span class="save-local-name">{{name}}<span></span>
+  <script type="text/template" id="save-file-status-template">
+    <span>Your piskel will be downloaded as <span class="save-file-name">{{name}}<span></span>
   </script>
 </div>

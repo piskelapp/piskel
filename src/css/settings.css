@@ -339,20 +339,15 @@
   width: 100%;
 }
 
-#save-online-status {
-  margin-top: 10px;
-}
-#save-local-status {
-  margin-bottom: 10px;
-}
 .save-status {
+  margin-bottom: 10px;
   vertical-align: middle;
   font-weight: normal;
   text-shadow: none;
   font-style: italic;
 }
 
-.save-local-name {
+.save-file-name {
   white-space: nowrap;
   font-weight: bold;
   color: white;

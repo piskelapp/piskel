@@ -1,13 +1,22 @@
 <div class="settings-section">
   <div class="settings-title">
-    Open Piskel Project
+    Load from Browser
+  </div>
+  <div class="settings-item">
+    <span>Load a <span style="font-weight:bold;color:white">local piskel</span> saved in this Browser</span>
+    <div class="import-section">
+      <button type="button" class="button  button-primary load-browser-button">Browse local saves</button>
+    </div>
+  </div>
+  <div class="settings-title">
+    Load .piskel file
   </div>
   <div class="settings-item">
     <form action="" method="POST" name="open-piskel-form">
-      <span>Load a <span style="font-weight:bold;color:white">.piskel</span> file from your computer.</span>
+      <span>Load a <span style="font-weight:bold;color:white">.piskel</span> file from your computer</span>
 
       <div class="import-section">
-        <button type="button" class="button  button-primary open-piskel-button">Open...</button>
+        <button type="button" class="button  button-primary open-piskel-button">Browse .piskel files</button>
         <span class="file-input-open-piskel-status"></span>
         <input style="display:none"
           type="file" name="open-piskel-input"
@@ -20,9 +29,9 @@
   </div>
   <div class="settings-item">
     <form action="" method="POST" name="import-form">
-      <div style="margin-top:5px;margin-bottom:5px;">Supports : PNG, JPG, BMP, Animated GIF ...</div>
+      <div style="margin-top:5px;margin-bottom:5px;">Supports : <span style="font-weight:bold;color:white">PNG, JPG, BMP, Animated GIF ...</span></div>
       <div class="import-section">
-        <button type="button" class="button  button-primary file-input-button">Browse...</button>
+        <button type="button" class="button  button-primary file-input-button">Browse images</button>
         <span class="file-input-status"></span>
         <input style="display:none"
           type="file" name="file-upload-input"
@@ -47,5 +56,14 @@
       </div>
 
     </form>
+  </div>
+  <div class="settings-title">
+    Recover recent sessions
+  </div>
+  <div class="settings-item">
+      <span>Load a <span style="font-weight:bold;color:white">backup</span> from a recent session</span>
+      <div class="import-section">
+        <button type="button" class="button  button-primary load-recent-button">Browse recent sessions</button>
+      </div>
   </div>
 </div>

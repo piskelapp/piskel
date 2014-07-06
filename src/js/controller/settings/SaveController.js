@@ -14,14 +14,14 @@
     this.descriptionInput = $('#save-description');
     this.isPublicCheckbox = $('input[name=save-public-checkbox]');
     this.saveOnlineButton = $('#save-online-button');
-    this.saveLocalButton = $('#save-local-button');
+    this.saveFileButton = $('#save-file-button');
 
     // Only available in app-engine mode ...
     this.piskelName = $('.piskel-name').get(0);
 
     this.saveOnlineStatus = $('#save-online-status');
 
-    this.saveLocalStatus = $('#save-local-status');
+    this.saveFileStatus = $('#save-file-status');
     this.timestamp = new Date();
 
     var descriptor = this.piskelController.getPiskel().getDescriptor();
@@ -30,7 +30,7 @@
 
     this.isPublicCheckbox.prop('checked', descriptor.isPublic);
 
-    this.saveLocalButton.click(this.onSaveLocalClick_.bind(this));
+    this.saveFileButton.click(this.onSaveLocalClick_.bind(this));
     this.nameInput.keyup(this.updateLocalStatusFilename_.bind(this));
 
     if (pskl.app.isLoggedIn()) {
@@ -39,7 +39,7 @@
       this.saveOnlineButton.hide();
       $('.save-public-section').hide();
       this.saveOnlineStatus.html(pskl.utils.Template.get('save-please-login-partial'));
-      this.saveLocalButton.get(0).classList.add('button-primary');
+      this.saveFileButton.get(0).classList.add('button-primary');
       this.saveForm.submit(this.onSaveLocalClick_.bind(this));
     }
 
@@ -47,7 +47,7 @@
   };
 
   ns.SaveController.prototype.updateLocalStatusFilename_ = function () {
-    this.saveLocalStatus.html(pskl.utils.Template.getAndReplace('save-local-status-template', {
+    this.saveFileStatus.html(pskl.utils.Template.getAndReplace('save-file-status-template', {
       name : this.getLocalFilename_()
     }));
   };
