@@ -84,19 +84,19 @@
     return [this.id, this.version].join('-');
   };
 
-  ns.Frame.prototype.setPixel = function (col, row, color) {
-    if (this.containsPixel(col, row)) {
-      var p = this.pixels[col][row];
+  ns.Frame.prototype.setPixel = function (x, y, color) {
+    if (this.containsPixel(x, y)) {
+      var p = this.pixels[x][y];
       if (p !== color) {
-        this.pixels[col][row] = color;
+        this.pixels[x][y] = color;
         this.version++;
       }
     }
   };
 
-  ns.Frame.prototype.getPixel = function (col, row) {
-    if (this.containsPixel(col, row)) {
-      return this.pixels[col][row];
+  ns.Frame.prototype.getPixel = function (x, y) {
+    if (this.containsPixel(x, y)) {
+      return this.pixels[x][y];
     } else {
       return null;
     }
