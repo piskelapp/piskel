@@ -96,6 +96,10 @@
   border: #999 3px solid;
 }
 
+.tile-view {
+  position : relative;
+}
+
 .preview-tile .tile-overlay {
   z-index: 10;
   position: absolute;

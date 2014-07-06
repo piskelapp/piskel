@@ -142,7 +142,7 @@ module.exports = function(grunt) {
           ]
         },
         files: [
-          {expand: true, flatten: true, src: ['src/piskel-boot.js'], dest: 'dest/'}
+          {expand: true, flatten: true, src: ['src/piskel-boot-0.1.0.js'], dest: 'dest/'}
         ]
       },
       index: {
@@ -189,7 +189,7 @@ module.exports = function(grunt) {
         files: [
           {src: ['dest/js/piskel-packaged-min.js'], dest: 'dest/js/piskel-packaged-min' + version + '.js'},
           {src: ['src/logo.png'], dest: 'dest/logo.png'},
-          {src: ['src/js/lib/iframeLoader.js'], dest: 'dest/js/lib/iframeLoader.js'},
+          {src: ['src/js/lib/iframeLoader-0.1.0.js'], dest: 'dest/js/lib/iframeLoader-0.1.0.js'},
           {expand: true, src: ['img/**'], cwd: 'src/', dest: 'dest/', filter: 'isFile'},
           {expand: true, src: ['css/fonts/**'], cwd: 'src/', dest: 'dest/', filter: 'isFile'},
           {expand: true, src: ['**/*.html'], cwd: 'src/templates/', dest: 'dest/templates' + version + '/', filter: 'isFile'}
@@ -239,7 +239,7 @@ module.exports = function(grunt) {
         },
         src: [
           'src/js/**/*.js',
-          'src/piskel-boot.js',
+          'src/piskel-boot-0.1.0.js',
           'src/piskel-script-list.js',
           '!src/js/lib/**/*.js'
         ],
