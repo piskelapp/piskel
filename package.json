@@ -23,12 +23,14 @@
     "grunt-contrib-uglify": "0.2.2",
     "grunt-contrib-watch": "0.6.1",
     "grunt-express": "1.0",
+    "grunt-replace": "0.7.8",
     "grunt-ghost": "1.0.12",
     "grunt-open": "0.2.3",
     "grunt-leading-indent": "0.1.0",
     "grunt-closure-tools": "~0.8.3",
     "grunt-node-webkit-builder": "0.1.19",
-    "nodewebkit": "0.8.4"
+    "nodewebkit": "0.8.4",
+    "dateformat" : "1.0.8-1.2.3"
   },
   "window": {
     "title": "Piskel",

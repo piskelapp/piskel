@@ -13,6 +13,10 @@
 var SOURCE_FOLDER = "src";
 
 module.exports = function(grunt) {
+  var dateFormat = require('dateformat');
+  var now = new Date();
+  var version = '-' + dateFormat(now, "yyyy-mm-dd-hh-MM");
+
   var mapToSrcFolder = function (path) {return [SOURCE_FOLDER, path].join('/');};
 
   var piskelScripts = require('./src/piskel-script-list.js').scripts.map(mapToSrcFolder);
@@ -110,11 +114,11 @@ module.exports = function(grunt) {
           separator : ';'
         },
         src : piskelScripts,
-        dest : 'dest/js/piskel-packaged.js'
+        dest : 'dest/js/piskel-packaged' + version + '.js'
       },
       css : {
         src : piskelStyles,
-        dest : 'dest/css/piskel-style-packaged.css'
+        dest : 'dest/css/piskel-style-packaged' + version + '.css'
       }
     },
     uglify : {
@@ -123,19 +127,72 @@ module.exports = function(grunt) {
       },
       my_target : {
         files : {
-          'dest/js/piskel-packaged-min.js' : ['dest/js/piskel-packaged.js']
+          'dest/js/piskel-packaged-min.js' : ['dest/js/piskel-packaged' + version + '.js']
         }
+      }
+    },
+    replace: {
+      main: {
+        options: {
+          patterns: [
+            {
+              match: 'version',
+              replacement: version
+            }
+          ]
+        },
+        files: [
+          {expand: true, flatten: true, src: ['src/piskel-boot.js'], dest: 'dest/'}
+        ]
+      },
+      index: {
+        options: {
+          patterns: [
+            {
+              match: /templates\//g,
+              replacement: "templates"+version+"/"
+            }
+          ]
+        },
+        files: [
+          {src: ['src/index.html'], dest: 'dest/index.html'}
+        ]
+      },
+      editor: {
+        options: {
+          patterns: [
+            {
+              match: /templates\//g,
+              replacement: "../templates"+version+"/"
+            },{
+              match: /^(.|[\r\n])*<!--body-main-start-->/,
+              replacement: "",
+              description : "Remove everything before body-main-start comment"
+            },{
+              match: /<!--body-main-end-->(.|[\r\n])*$/,
+              replacement: "",
+              description : "Remove everything after body-main-end comment"
+            },{
+              match: /([\r\n])  /g,
+              replacement: "$1",
+              description : "Decrease indentation by one"
+            }
+          ]
+        },
+        files: [
+          {src: ['src/index.html'], dest: 'dest/piskelapp-partials/main-partial.html'}
+        ]
       }
     },
     copy: {
       main: {
         files: [
-          {src: ['src/piskel-boot.js'], dest: 'dest/piskel-boot.js'},
+          {src: ['dest/js/piskel-packaged-min.js'], dest: 'dest/js/piskel-packaged-min' + version + '.js'},
           {src: ['src/logo.png'], dest: 'dest/logo.png'},
           {src: ['src/js/lib/iframeLoader.js'], dest: 'dest/js/lib/iframeLoader.js'},
           {expand: true, src: ['img/**'], cwd: 'src/', dest: 'dest/', filter: 'isFile'},
           {expand: true, src: ['css/fonts/**'], cwd: 'src/', dest: 'dest/', filter: 'isFile'},
-          {expand: true, src: ['**/*.html'], cwd: 'src/', dest: 'dest/', filter: 'isFile'}
+          {expand: true, src: ['**/*.html'], cwd: 'src/templates/', dest: 'dest/templates' + version + '/', filter: 'isFile'}
         ]
       }
     },
@@ -223,6 +280,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-express');
+  grunt.loadNpmTasks('grunt-replace');
   grunt.loadNpmTasks('grunt-ghost');
   grunt.loadNpmTasks('grunt-open');
   grunt.loadNpmTasks('grunt-leading-indent');
@@ -241,7 +299,9 @@ module.exports = function(grunt) {
   // Compile JS code (eg verify JSDoc annotation and types, no actual minified code generated).
   grunt.registerTask('compile', ['closureCompiler:compile', 'clean:after']);
 
-  grunt.registerTask('merge',  ['concat:js', 'concat:css', 'uglify', 'copy']);
+  grunt.registerTask('rep', ['replace:main', 'replace:index', 'replace:editor']);
+
+  grunt.registerTask('merge',  ['concat:js', 'concat:css', 'uglify', 'rep', 'copy']);
 
   // Validate & Build
   grunt.registerTask('default', ['clean:before', 'lint', 'compile', 'merge']);
