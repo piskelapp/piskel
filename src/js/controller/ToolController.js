@@ -18,7 +18,8 @@
       toDescriptor('rectangleSelect', 'S', new pskl.drawingtools.RectangleSelect()),
       toDescriptor('shapeSelect', 'Z', new pskl.drawingtools.ShapeSelect()),
       toDescriptor('lighten', 'U', new pskl.drawingtools.Lighten()),
-      toDescriptor('colorPicker', 'O', new pskl.drawingtools.ColorPicker())
+      toDescriptor('colorPicker', 'O', new pskl.drawingtools.ColorPicker()),
+      toDescriptor('colorSwap', 'F', new pskl.drawingtools.ColorSwap())
     ];
 
     this.currentSelectedTool = this.tools[0];

@@ -96,16 +96,22 @@
 
   ns.Frame.prototype.getPixel = function (x, y) {
     if (this.containsPixel(x, y)) {
-      return this.pixels[x][y];
+      return this._unsafeGetPixel(x,y);
     } else {
       return null;
     }
   };
 
+  ns.Frame.prototype._unsafeGetPixel = function (x, y) {
+    return this.pixels[x][y];
+  };
+
   ns.Frame.prototype.forEachPixel = function (callback) {
-    for (var col = 0 ; col < this.getWidth() ; col++) {
-      for (var row = 0 ; row < this.getHeight() ; row++) {
-        callback(this.getPixel(col, row), col, row);
+    var width = this.getWidth();
+    var height = this.getHeight();
+    for (var col = 0 ; col < width ; col++) {
+      for (var row = 0 ; row < height ; row++) {
+        callback(this._unsafeGetPixel(col, row), col, row, this);
       }
     }
   };
