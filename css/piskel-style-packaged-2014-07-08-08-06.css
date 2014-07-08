@@ -830,6 +830,12 @@ body {
   background-size: 23px 23px;
 }
 
+.tool-icon.tool-colorswap {
+  background-image: url(../img/tools/swap-colors.png);
+  background-position: 6px 6px;
+  background-size: 36px 36px;
+}
+
 /*
  * Tool cursors:
  */
@@ -2420,6 +2426,10 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
 
 .preview-tile:hover {
   border: #999 3px solid;
+}
+
+.tile-view {
+  position : relative;
 }
 
 .preview-tile .tile-overlay {

@@ -1,9 +1,15 @@
 (function () {
 
+  var version = '-2014-07-08-08-06';
+  var versionHasNotBeenReplaced = version.indexOf('@@') === 0;
+  if (versionHasNotBeenReplaced)  {
+    version = '';
+  }
+
   window.onPiskelReady = function () {
     var loadingMask = document.getElementById('loading-mask');
     loadingMask.style.opacity = 0;
-    window.setTimeout(function () {loadingMask.parentNode.removeChild(loadingMask);}, 600)
+    window.setTimeout(function () {loadingMask.parentNode.removeChild(loadingMask);}, 600);
     pskl.app.init();
     // cleanup
     delete window.pskl_exports;
@@ -36,18 +42,18 @@
     document.head.appendChild(link);
   };
 
-  if (window.location.href.indexOf("debug") != -1) {
+  if (window.location.href.indexOf('debug') != -1) {
     window.pskl_exports = {};
     var scriptIndex = 0;
     window.loadNextScript = function () {
       if (scriptIndex == window.pskl_exports.scripts.length) {
         window.onPiskelReady();
       } else {
-        loadScript(window.pskl_exports.scripts[scriptIndex], "loadNextScript()");
+        loadScript(window.pskl_exports.scripts[scriptIndex], 'loadNextScript()');
         scriptIndex ++;
       }
     };
-    loadScript("piskel-script-list.js", "loadNextScript()");
+    loadScript('piskel-script-list.js', 'loadNextScript()');
 
     window.loadStyles = function () {
       var styles = window.pskl_exports.styles;
@@ -55,22 +61,22 @@
         loadStyle(styles[i]);
       }
     };
-    loadScript("piskel-style-list.js", "loadStyles()");
+    loadScript('piskel-style-list.js', 'loadStyles()');
   } else {
     var script;
-    if (window.location.href.indexOf("pack") != -1) {
-      script = "js/piskel-packaged.js";
+    if (window.location.href.indexOf('pack') != -1) {
+      script = 'js/piskel-packaged' + version + '.js';
     } else {
-      script = "js/piskel-packaged-min.js";
+      script = 'js/piskel-packaged-min' + version + '.js';
     }
-    loadStyle('css/piskel-style-packaged.css');
+    loadStyle('css/piskel-style-packaged' + version + '.css');
 
     var loaderInterval = window.setInterval(function () {
-      if (document.querySelectorAll("[data-iframe-loader]").length === 0) {
+      if (document.querySelectorAll('[data-iframe-loader]').length === 0) {
         window.clearInterval(loaderInterval);
-        loadScript(script, "onPiskelReady()");
+        loadScript(script, 'onPiskelReady()');
       } else {
-        console.log("waiting for templates to load ....");
+        window.console.log('waiting for templates to load ....');
       }
     }, 100);
   }

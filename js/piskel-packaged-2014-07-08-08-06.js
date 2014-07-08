@@ -11776,14 +11776,1201 @@ $.widget("ui.sortable", $.ui.mouse, {
   }
 
 }(window.jQuery);
+;// TODO(grosbouddha): put under pskl namespace.
+var Constants = {
+  DEFAULT : {
+    HEIGHT : 32,
+    WIDTH : 32,
+    FPS : 12
+  },
+
+  MODEL_VERSION : 2,
+
+  MAX_HEIGHT : 1024,
+  MAX_WIDTH : 1024,
+
+  MAX_CURRENT_COLORS_DISPLAYED : 100,
+
+  MINIMUM_ZOOM : 1,
+
+  PREVIEW_FILM_SIZE : 96,
+  ANIMATED_PREVIEW_WIDTH : 200,
+
+  DEFAULT_PEN_COLOR : '#000000',
+  TRANSPARENT_COLOR : 'rgba(0, 0, 0, 0)',
+
+  OVERLAY_ONION_SKIN : 'onion-skin',
+  OVERLAY_LAYER_PREVIEW : 'layer-preview',
+  OVERLAY_DISABLED : 'no-overlay',
+
+  NO_PALETTE_ID : '__no-palette',
+  CURRENT_COLORS_PALETTE_ID : '__current-colors',
+  MANAGE_PALETTE_ID : '__manage-palettes',
+
+  // Used for Spectrum input
+  PREFERRED_COLOR_FORMAT : 'rgb',
+
+  /*
+   * Fake semi-transparent color used to highlight transparent
+   * strokes and rectangles:
+   */
+  SELECTION_TRANSPARENT_COLOR: 'rgba(255, 255, 255, 0.6)',
+
+  /*
+   * When a tool is hovering the drawing canvas, we highlight the eventual
+   * pixel target with this color:
+   */
+  TOOL_TARGET_HIGHLIGHT_COLOR: 'rgba(255, 255, 255, 0.2)',
+
+  /*
+   * Default entry point for piskel web service:
+   */
+  STATIC : {
+    URL : {
+      SAVE : 'http://3.piskel-app.appspot.com/store',
+      GET : 'http://3.piskel-app.appspot.com/get'
+    }
+  },
+  APPENGINE : {
+    URL : {
+      SAVE : 'save'
+    }
+  },
+  IMAGE_SERVICE_UPLOAD_URL : 'http://piskel-imgstore-a.appspot.com/__/upload',
+  IMAGE_SERVICE_GET_URL : 'http://piskel-imgstore-a.appspot.com/img/',
+
+  ZOOMED_OUT_BACKGROUND_COLOR : '#A0A0A0',
+
+  LEFT_BUTTON : 0,
+  MIDDLE_BUTTON : 1,
+  RIGHT_BUTTON : 2,
+  MOUSEMOVE_THROTTLING : 10,
+
+  ABSTRACT_FUNCTION : function () {throw 'abstract method should be implemented';},
+  EMPTY_FUNCTION : function () {}
+};;// TODO(grosbouddha): put under pskl namespace.
+var Events = {
+
+  TOOL_SELECTED : "TOOL_SELECTED",
+  TOOL_RELEASED : "TOOL_RELEASED",
+  SELECT_PRIMARY_COLOR: "SELECT_PRIMARY_COLOR",
+  SELECT_SECONDARY_COLOR: "SELECT_SECONDARY_COLOR",
+  PRIMARY_COLOR_SELECTED : 'PRIMARY_COLOR_SELECTED',
+  SECONDARY_COLOR_SELECTED : 'SECONDARY_COLOR_SELECTED',
+
+  CURSOR_MOVED : 'CURSOR_MOVED',
+  DRAG_START : 'DRAG_START',
+  DRAG_END : 'DRAG_END',
+
+  DIALOG_DISPLAY : 'DIALOG_DISPLAY',
+  DIALOG_HIDE : 'DIALOG_HIDE',
+
+  PALETTE_LIST_UPDATED : 'PALETTE_LIST_UPDATED',
+
+  /**
+   * Fired each time a user setting change.
+   * The payload will be:
+   *   1st argument: Name of the settings
+   *   2nd argument: New value
+   */
+  USER_SETTINGS_CHANGED: "USER_SETTINGS_CHANGED",
+
+  CLOSE_SETTINGS_DRAWER : "CLOSE_SETTINGS_DRAWER",
+
+  /**
+   * The framesheet was reseted and is now probably drastically different.
+   * Number of frames, content of frames, color used for the palette may have changed.
+   */
+  PISKEL_RESET: "PISKEL_RESET",
+  PISKEL_SAVE_STATE: "PISKEL_SAVE_STATE",
+
+  PISKEL_SAVED: "PISKEL_SAVED",
+
+  FRAME_SIZE_CHANGED : "FRAME_SIZE_CHANGED",
+
+  SELECTION_CREATED: "SELECTION_CREATED",
+  SELECTION_MOVE_REQUEST: "SELECTION_MOVE_REQUEST",
+  SELECTION_DISMISSED: "SELECTION_DISMISSED",
+
+  SHOW_NOTIFICATION: "SHOW_NOTIFICATION",
+  HIDE_NOTIFICATION: "HIDE_NOTIFICATION",
+
+  ZOOM_CHANGED : "ZOOM_CHANGED",
+
+  CURRENT_COLORS_UPDATED : "CURRENT_COLORS_UPDATED"
+};;jQuery.namespace = function() {
+  var a=arguments, o=null, i, j, d;
+  for (i=0; i<a.length; i=i+1) {
+    d=a[i].split(".");
+    o=window;
+    for (j=0; j<d.length; j=j+1) {
+      o[d[j]]=o[d[j]] || {};
+      o=o[d[j]];
+    }
+  }
+  return o;
+};
+
+/**
+ * Need a polyfill for PhantomJS
+ */
+if (typeof Function.prototype.bind !== "function") {
+  Function.prototype.bind = function(scope) {
+    "use strict";
+    var _function = this;
+    return function() {
+      return _function.apply(scope, arguments);
+    };
+  };
+}
+
+/**
+ * @provide pskl.utils
+ *
+ * @require Constants
+ */
+(function() { // namespace: pskl.utils
+
+  var ns = $.namespace("pskl.utils");
+
+  ns.rgbToHex = function(r, g, b) {
+    if (r > 255 || g > 255 || b > 255) {
+      throw "Invalid color component";
+    }
+
+    return ((r << 16) | (g << 8) | b).toString(16);
+  };
+
+  ns.normalize = function (value, def) {
+    if (typeof value === 'undefined' || value === null) {
+      return def;
+    } else {
+      return value;
+    }
+  };
+
+  ns.inherit = function(extendedObject, inheritFrom) {
+    extendedObject.prototype = Object.create(inheritFrom.prototype);
+    extendedObject.prototype.constructor = extendedObject;
+    extendedObject.prototype.superclass = inheritFrom.prototype;
+  };
+
+  ns.wrap = function (wrapper, wrappedObject) {
+    for (var prop in wrappedObject) {
+      if (typeof wrappedObject[prop] === 'function' && typeof wrapper[prop] === 'undefined') {
+        wrapper[prop] = wrappedObject[prop].bind(wrappedObject);
+      }
+    }
+  };
+
+})();
+
 ;(function () {
+  var ns = $.namespace('pskl.utils');
+  var ua = navigator.userAgent;
+
+  ns.UserAgent = {
+    isIE : /MSIE/i.test( ua ),
+    isIE11 : /trident/i.test( ua ),
+    isChrome : /Chrome/i.test( ua ),
+    isFirefox : /Firefox/i.test( ua )
+  };
+
+  ns.UserAgent.version = (function () {
+    if (pskl.utils.UserAgent.isIE) {
+      return parseInt(/MSIE\s?(\d+)/i.exec( ua )[1], 10);
+    } else if (pskl.utils.UserAgent.isChrome) {
+      return parseInt(/Chrome\/(\d+)/i.exec( ua )[1], 10);
+    } else if (pskl.utils.UserAgent.isFirefox) {
+      return parseInt(/Firefox\/(\d+)/i.exec( ua )[1], 10);
+    }
+  })();
+})();;(function () {
+  var ns = $.namespace('pskl.utils');
+
+  var base64_ranks;
+  if (Uint8Array) {
+    base64_ranks = new Uint8Array([
+      62, -1, -1, -1, 63, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, -1,
+      -1, -1,  0, -1, -1, -1,  0,  1,  2,  3,  4,  5,  6,  7,  8,  9,
+      10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+      -1, -1, -1, -1, -1, -1, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35,
+      36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51
+    ]);
+  }
+
+  ns.Base64 = {
+    decode : function(base64) {
+      var outptr = 0;
+      var last = [0, 0];
+      var state = 0;
+      var save = 0;
+
+      var undef;
+      var len = base64.length, i = 0;
+      var buffer = new Uint8Array(len / 4 * 3 | 0);
+      while (len--) {
+        var code = base64.charCodeAt(i++);
+        var rank = base64_ranks[code-43];
+        if (rank !== 255 && rank !== undef) {
+          last[1] = last[0];
+          last[0] = code;
+          save = (save << 6) | rank;
+          state++;
+          if (state === 4) {
+            buffer[outptr++] = save >>> 16;
+            if (last[1] !== 61 /* padding character */) {
+              buffer[outptr++] = save >>> 8;
+            }
+            if (last[0] !== 61 /* padding character */) {
+              buffer[outptr++] = save;
+            }
+            state = 0;
+          }
+        }
+      }
+      // 2/3 chance there's going to be some null bytes at the end, but that
+      // doesn't really matter with most image formats.
+      // If it somehow matters for you, truncate the buffer up outptr.
+      return buffer.buffer;
+    }
+  };
+})();;(function () {
+  var ns = $.namespace("pskl");
+
+  ns.CanvasUtils = {
+    createCanvas : function (width, height, classList) {
+      var canvas = document.createElement("canvas");
+      canvas.setAttribute("width", width);
+      canvas.setAttribute("height", height);
+
+      if (typeof classList == "string") {
+        classList = [classList];
+      }
+      if (Array.isArray(classList)) {
+        for (var i = 0 ; i < classList.length ; i++) {
+          canvas.classList.add(classList[i]);
+        }
+      }
+
+      return canvas;
+    },
+
+    createFromImageData : function (imageData) {
+      var canvas = pskl.CanvasUtils.createCanvas(imageData.width, imageData.height);
+      var context = canvas.getContext('2d');
+      context.putImageData(imageData, 0, 0);
+      return canvas;
+    },
+
+    /**
+     * By default, all scaling operations on a Canvas 2D Context are performed using antialiasing.
+     * Resizing a 32x32 image to 320x320 will lead to a blurry output.
+     * On Chrome, FF and IE>=11, this can be disabled by setting a property on the Canvas 2D Context.
+     * In this case the browser will use a nearest-neighbor scaling.
+     * @param  {Canvas} canvas
+     */
+    disableImageSmoothing : function (canvas) {
+      var context = canvas.getContext('2d');
+      context.imageSmoothingEnabled = false;
+      context.mozImageSmoothingEnabled = false;
+      context.oImageSmoothingEnabled = false;
+      context.webkitImageSmoothingEnabled = false;
+      context.msImageSmoothingEnabled = false;
+    },
+
+    clear : function (canvas) {
+      if (canvas) {
+        canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
+      }
+    },
+
+    clone : function (canvas) {
+      var clone = pskl.CanvasUtils.createCanvas(canvas.width, canvas.height);
+
+      //apply the old canvas to the new one
+      clone.getContext('2d').drawImage(canvas, 0, 0);
+
+      //return the new canvas
+      return clone;
+    },
+
+    getImageDataFromCanvas : function (canvas) {
+      var sourceContext = canvas.getContext('2d');
+      return sourceContext.getImageData(0, 0, canvas.width, canvas.height).data;
+    },
+
+    getBase64FromCanvas : function (canvas, format) {
+      format = format || "png";
+      var data = canvas.toDataURL("image/" + format);
+      return data.substr(data.indexOf(',')+1);
+    }
+  };
+})();;(function () {
+  var ns = $.namespace('pskl.utils');
+
+  ns.Dom = {
+    /**
+     * Check if a given HTML element is nested inside another
+     * @param  {HTMLElement}  node  Element to test
+     * @param  {HTMLElement}  parent Potential Ancestor for node
+     * @param  {Boolean}      excludeParent set to true if the parent should be excluded from potential matches
+     * @return {Boolean}      true if parent was found amongst the parentNode chain of node
+     */
+    isParent : function (node, parent, excludeParent) {
+      if (node && parent) {
+
+        if (excludeParent) {
+          node = node.parentNode;
+        }
+
+        while (node) {
+          if (node === parent) {
+            return true;
+          }
+          node = node.parentNode;
+        }
+      }
+      return false;
+    },
+
+    getParentWithData : function (node, data) {
+      while (node) {
+        if (node.dataset && typeof node.dataset[data] !== 'undefined') {
+          return node;
+        }
+        node = node.parentNode;
+      }
+      return null;
+    }
+  };
+})();;(function () {
+  var ns = $.namespace('pskl.utils');
+
+  ns.Math = {
+    minmax : function (val, min, max) {
+      return Math.max(Math.min(val, max), min);
+    }
+  };
+})();;(function () {
+  var ns = $.namespace('pskl.utils');
+
+  ns.FileUtils = {
+    readFile : function (file, callback) {
+      var reader = new FileReader();
+      reader.onload = function(event){
+        callback(event.target.result);
+      };
+      reader.readAsDataURL(file);
+    },
+
+    downloadAsFile : function (filename, content) {
+      var saveAs = window.saveAs || (navigator.msSaveBlob && navigator.msSaveBlob.bind(navigator));
+      if (saveAs) {
+        saveAs(content, filename);
+      } else {
+        var downloadLink = document.createElement('a');
+        content = window.URL.createObjectURL(content);
+        downloadLink.setAttribute('href', content);
+        downloadLink.setAttribute('download', filename);
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+      }
+    }
+  };
+})();
+;(function () {
+  var ns = $.namespace('pskl.utils');
+  var colorCache = {};
+  ns.FrameUtils = {
+    merge : function (frames) {
+      var merged = null;
+      if (frames.length) {
+        merged = frames[0].clone();
+        var w = merged.getWidth(), h = merged.getHeight();
+        for (var i = 1 ; i < frames.length ; i++) {
+          pskl.utils.FrameUtils.mergeFrames_(merged, frames[i]);
+        }
+      }
+      return merged;
+    },
+
+    mergeFrames_ : function (frameA, frameB) {
+      frameB.forEachPixel(function (p, col, row) {
+        if (p != Constants.TRANSPARENT_COLOR) {
+          frameA.setPixel(col, row, p);
+        }
+      });
+    },
+
+    resize : function (frame, targetWidth, targetHeight, smoothing) {
+      var image = pskl.utils.FrameUtils.toImage(frame);
+      var resizedImage = pskl.utils.ImageResizer.resize(image, targetWidth, targetHeight, smoothing);
+      return pskl.utils.FrameUtils.createFromImage(resizedImage);
+    },
+
+    /**
+     * Alpha compositing using porter duff algorithm :
+     * http://en.wikipedia.org/wiki/Alpha_compositing
+     * http://keithp.com/~keithp/porterduff/p253-porter.pdf
+     * @param  {String} strColor1 color over
+     * @param  {String} strColor2 color under
+     * @return {String} the composite color
+     */
+    mergePixels : function (strColor1, strColor2, globalOpacity1) {
+      var col1 = pskl.utils.FrameUtils.toRgba(strColor1);
+      var col2 = pskl.utils.FrameUtils.toRgba(strColor2);
+      if (typeof globalOpacity1 == 'number') {
+        col1 = JSON.parse(JSON.stringify(col1));
+        col1.a = globalOpacity1 * col1.a;
+      }
+      var a = col1.a + col2.a * (1 - col1.a);
+
+      var r = ((col1.r * col1.a + col2.r * col2.a * (1 - col1.a)) / a)|0;
+      var g = ((col1.g * col1.a + col2.g * col2.a * (1 - col1.a)) / a)|0;
+      var b = ((col1.b * col1.a + col2.b * col2.a * (1 - col1.a)) / a)|0;
+
+      return 'rgba('+r+','+g+','+b+','+a+')';
+    },
+
+    /**
+     * Convert a color defined as a string (hex, rgba, rgb, 'TRANSPARENT') to an Object with r,g,b,a properties.
+     * r, g and b are integers between 0 and 255, a is a float between 0 and 1
+     * @param  {String} c color as a string
+     * @return {Object} {r:Number,g:Number,b:Number,a:Number}
+     */
+    toRgba : function (c) {
+      if (colorCache[c]) {
+        return colorCache[c];
+      }
+      var color, matches;
+      if (c === 'TRANSPARENT') {
+        color = {
+          r : 0,
+          g : 0,
+          b : 0,
+          a : 0
+        };
+      } else if (c.indexOf('rgba(') != -1) {
+        matches = /rgba\((\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(1|0\.\d+)\s*\)/.exec(c);
+        color = {
+          r : parseInt(matches[1],10),
+          g : parseInt(matches[2],10),
+          b : parseInt(matches[3],10),
+          a : parseFloat(matches[4])
+        };
+      } else if (c.indexOf('rgb(') != -1) {
+        matches = /rgb\((\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/.exec(c);
+        color = {
+          r : parseInt(matches[1],10),
+          g : parseInt(matches[2],10),
+          b : parseInt(matches[3],10),
+          a : 1
+        };
+      } else {
+        matches = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(c);
+        color = {
+          r : parseInt(matches[1], 16),
+          g : parseInt(matches[2], 16),
+          b : parseInt(matches[3], 16),
+          a : 1
+        };
+      }
+      colorCache[c] = color;
+      return color;
+    },
+
+    /*
+     * Create a pskl.model.Frame from an Image object.
+     * Transparent pixels will either be converted to completely opaque or completely transparent pixels.
+     * @param  {Image} image source image
+     * @return {pskl.model.Frame} corresponding frame
+     */
+    createFromImage : function (image) {
+      var w = image.width,
+        h = image.height;
+      var canvas = pskl.CanvasUtils.createCanvas(w, h);
+      var context = canvas.getContext('2d');
+
+      context.drawImage(image, 0,0,w,h,0,0,w,h);
+      var imgData = context.getImageData(0,0,w,h).data;
+      return pskl.utils.FrameUtils.createFromImageData(imgData, w, h);
+    },
+
+    createFromImageData : function (imageData, width, height) {
+      // Draw the zoomed-up pixels to a different canvas context
+      var grid = [];
+      for (var x = 0 ; x < width ; x++){
+        grid[x] = [];
+        for (var y = 0 ; y < height ; y++){
+          // Find the starting index in the one-dimensional image data
+          var i = (y * width + x)*4;
+          var r = imageData[i  ];
+          var g = imageData[i+1];
+          var b = imageData[i+2];
+          var a = imageData[i+3];
+          if (a < 125) {
+            grid[x][y] = Constants.TRANSPARENT_COLOR;
+          } else {
+            grid[x][y] = pskl.utils.FrameUtils.rgbToHex(r,g,b);
+          }
+        }
+      }
+      return pskl.model.Frame.fromPixelGrid(grid);
+    },
+
+    /**
+     * Convert a rgb(Number, Number, Number) color to hexadecimal representation
+     * @param  {Number} r red value, between 0 and 255
+     * @param  {Number} g green value, between 0 and 255
+     * @param  {Number} b blue value, between 0 and 255
+     * @return {String} hex representation of the color '#ABCDEF'
+     */
+    rgbToHex : function (r, g, b) {
+      return "#" + this.componentToHex(r) + this.componentToHex(g) + this.componentToHex(b);
+    },
+
+    /**
+     * Convert a color component (as a Number between 0 and 255) to its string hexa representation
+     * @param  {Number} c component value, between 0 and 255
+     * @return {String} eg. '0A'
+     */
+    componentToHex : function (c) {
+      var hex = c.toString(16);
+      return hex.length == 1 ? "0" + hex : hex;
+    },
+
+    toImage : function (frame, zoom, bgColor) {
+      zoom = zoom || 1;
+      bgColor = bgColor || Constants.TRANSPARENT_COLOR;
+      var canvasRenderer = new pskl.rendering.CanvasRenderer(frame, zoom);
+      canvasRenderer.drawTransparentAs(bgColor);
+      return canvasRenderer.render();
+    }
+  };
+})();
+;(function () {
+  var ns = $.namespace('pskl.utils');
+
+  ns.LayerUtils = {
+    /**
+     * Create a pskl.model.Layer from an Image object.
+     * Transparent pixels will either be converted to completely opaque or completely transparent pixels.
+     * @param  {Image} image source image
+     * @return {pskl.model.Frame} corresponding frame
+     */
+    createFromImage : function (image, frameCount) {
+      var w = image.width,
+        h = image.height,
+        frameWidth = w / frameCount;
+
+      var canvas = pskl.CanvasUtils.createCanvas(w, h);
+      var context = canvas.getContext('2d');
+
+      context.drawImage(image, 0,0,w,h,0,0,w,h);
+      // Draw the zoomed-up pixels to a different canvas context
+      var frames = [];
+      for (var i = 0 ; i < frameCount ; i++) {
+        var imgData = context.getImageData(frameWidth*i,0,frameWidth,h).data;
+        var frame = pskl.utils.FrameUtils.createFromImageData(imgData, frameWidth, h);
+        frames.push(frame);
+      }
+      return frames;
+    }
+  };
+
+})();;(function () {
+  var ns = $.namespace('pskl.utils');
+
+  var BASE64_REGEX = /\s*;\s*base64\s*(?:;|$)/i;
+
+  ns.ImageToBlob = {
+    imageDataToBlob : function(dataURI, type, callback) {
+      var header_end = dataURI.indexOf(","),
+          data = dataURI.substring(header_end + 1),
+          isBase64 = BASE64_REGEX.test(dataURI.substring(0, header_end)),
+          blob;
+
+      if (Blob.fake) {
+        // no reason to decode a data: URI that's just going to become a data URI again
+        blob = new Blob();
+        blob.encoding = isBase64 ? "base64" : "URI";
+        blob.data = data;
+        blob.size = data.length;
+      } else if (Uint8Array) {
+        var blobData = isBase64 ? pskl.utils.Base64.decode(data) : decodeURIComponent(data);
+        blob = new Blob([blobData], {type: type});
+      }
+      callback(blob);
+    },
+
+    canvasToBlob : function(canvas, callback, type /*, ...args*/) {
+      type = type || "image/png";
+
+      if (this.mozGetAsFile) {
+        callback(this.mozGetAsFile("canvas", type));
+      } else {
+        var args = Array.prototype.slice.call(arguments, 2);
+        var dataURI = canvas.toDataURL.apply(canvas, args);
+        pskl.utils.ImageToBlob.imageDataToBlob(dataURI, type, callback);
+      }
+    }
+  };
+})();;(function () {
+  var ns = $.namespace('pskl.utils');
+
+  ns.ImageResizer = {
+    resize : function (image, targetWidth, targetHeight, smoothingEnabled) {
+      var canvas = pskl.CanvasUtils.createCanvas(targetWidth, targetHeight);
+      var context = canvas.getContext('2d');
+      context.save();
+
+      if (!smoothingEnabled) {
+        pskl.CanvasUtils.disableImageSmoothing(canvas);
+      }
+
+      context.translate(canvas.width / 2, canvas.height / 2);
+      context.scale(targetWidth / image.width, targetHeight / image.height);
+      context.drawImage(image, -image.width / 2, -image.height / 2);
+      context.restore();
+
+      return canvas;
+    },
+
+    /**
+     * Manual implementation of resize using a nearest neighbour algorithm
+     * It is slower than relying on the native 'disabledImageSmoothing' available on CanvasRenderingContext2d.
+     * But it can be useful if :
+     * - IE < 11 (doesn't support msDisableImageSmoothing)
+     * - need to display a gap between pixel
+     *
+     * @param  {Canvas2d} source original image to be resized, as a 2d canvas
+     * @param  {Number} zoom   ratio between desired dim / source dim
+     * @param  {Number} margin gap to be displayed between pixels
+     * @param  {String} color or the margin (will be transparent if not provided)
+     * @return {Canvas2d} the resized canvas
+     */
+    resizeNearestNeighbour : function (source, zoom, margin, marginColor) {
+      margin = margin || 0;
+      var canvas = pskl.CanvasUtils.createCanvas(zoom*source.width, zoom*source.height);
+      var context = canvas.getContext('2d');
+
+      var imgData = pskl.CanvasUtils.getImageDataFromCanvas(source);
+
+      var yRanges = {},
+        xOffset = 0,
+        yOffset = 0,
+        xRange,
+        yRange;
+      // Draw the zoomed-up pixels to a different canvas context
+      for (var x = 0; x < source.width; x++) {
+        // Calculate X Range
+        xRange = Math.floor((x + 1) * zoom) - xOffset;
+
+        for (var y = 0; y < source.height; y++) {
+          // Calculate Y Range
+          if (!yRanges[y + ""]) {
+            // Cache Y Range
+            yRanges[y + ""] = Math.floor((y + 1) * zoom) - yOffset;
+          }
+          yRange = yRanges[y + ""];
+
+          var i = (y * source.width + x) * 4;
+          var r = imgData[i];
+          var g = imgData[i + 1];
+          var b = imgData[i + 2];
+          var a = imgData[i + 3];
+
+          context.fillStyle = "rgba(" + r + "," + g + "," + b + "," + (a / 255) + ")";
+          context.fillRect(xOffset, yOffset, xRange-margin, yRange-margin);
+
+          if (margin && marginColor) {
+            context.fillStyle = marginColor;
+            context.fillRect(xOffset + xRange - margin, yOffset, margin, yRange);
+            context.fillRect(xOffset, yOffset + yRange - margin, xRange, margin);
+          }
+
+          yOffset += yRange;
+        }
+        yOffset = 0;
+        xOffset += xRange;
+      }
+      return canvas;
+    }
+  };
+})();;(function () {
+  var ns = $.namespace("pskl");
+
+  ns.PixelUtils = {
+
+    getRectanglePixels : function (x0, y0, x1, y1) {
+      var rectangle = this.getOrderedRectangleCoordinates(x0, y0, x1, y1);
+      var pixels = [];
+
+      for(var x = rectangle.x0; x <= rectangle.x1; x++) {
+        for(var y = rectangle.y0; y <= rectangle.y1; y++) {
+          pixels.push({"col": x, "row": y});
+        }
+      }
+
+      return pixels;
+    },
+
+    getBoundRectanglePixels : function (x0, y0, x1, y1) {
+      var rectangle = this.getOrderedRectangleCoordinates(x0, y0, x1, y1);
+      var pixels = [];
+      // Creating horizontal sides of the rectangle:
+      for(var x = rectangle.x0; x <= rectangle.x1; x++) {
+        pixels.push({"col": x, "row": rectangle.y0});
+        pixels.push({"col": x, "row": rectangle.y1});
+      }
+
+      // Creating vertical sides of the rectangle:
+      for(var y = rectangle.y0; y <= rectangle.y1; y++) {
+        pixels.push({"col": rectangle.x0, "row": y});
+        pixels.push({"col": rectangle.x1, "row": y});
+      }
+
+      return pixels;
+    },
+
+    /**
+     * Return an object of ordered rectangle coordinate.
+     * In returned object {x0, y0} => top left corner - {x1, y1} => bottom right corner
+     * @private
+     */
+    getOrderedRectangleCoordinates : function (x0, y0, x1, y1) {
+      return {
+        x0 : Math.min(x0, x1),
+        y0 : Math.min(y0, y1),
+        x1 : Math.max(x0, x1),
+        y1 : Math.max(y0, y1)
+      };
+    },
+
+    /**
+     * Return the list of pixels that would have been filled by a paintbucket tool applied
+     * on pixel at coordinate (x,y).
+     * This function is not altering the Frame object argument.
+     *
+     * @param frame pskl.model.Frame The frame target in which we want to paintbucket
+     * @param col number Column coordinate in the frame
+     * @param row number Row coordinate in the frame
+     *
+     * @return an array of the pixel coordinates paint with the replacement color
+     */
+    getSimilarConnectedPixelsFromFrame: function(frame, col, row) {
+      // To get the list of connected (eg the same color) pixels, we will use the paintbucket algorithm
+      // in a fake cloned frame. The returned pixels by the paintbucket algo are the painted pixels
+      // and are as well connected.
+      var fakeFrame = frame.clone(); // We just want to
+      var fakeFillColor = "sdfsdfsdf"; // A fake color that will never match a real color.
+      var paintedPixels = this.paintSimilarConnectedPixelsFromFrame(fakeFrame, col, row, fakeFillColor);
+
+      return paintedPixels;
+    },
+
+    /**
+     * Apply the paintbucket tool in a frame at the (col, row) initial position
+     * with the replacement color.
+     *
+     * @param frame pskl.model.Frame The frame target in which we want to paintbucket
+     * @param col number Column coordinate in the frame
+     * @param row number Row coordinate in the frame
+     * @param replacementColor string Hexadecimal color used to fill the area
+     *
+     * @return an array of the pixel coordinates paint with the replacement color
+     */
+    paintSimilarConnectedPixelsFromFrame: function(frame, col, row, replacementColor) {
+      /**
+       *  Queue linear Flood-fill (node, target-color, replacement-color):
+       *   1. Set Q to the empty queue.
+       *   2. If the color of node is not equal to target-color, return.
+       *   3. Add node to Q.
+       *   4. For each element n of Q:
+       *   5.     If the color of n is equal to target-color:
+       *   6.         Set w and e equal to n.
+       *   7.         Move w to the west until the color of the node to the west of w no longer matches target-color.
+       *   8.         Move e to the east until the color of the node to the east of e no longer matches target-color.
+       *   9.         Set the color of nodes between w and e to replacement-color.
+       *  10.         For each node n between w and e:
+       *  11.             If the color of the node to the north of n is target-color, add that node to Q.
+       *  12.             If the color of the node to the south of n is target-color, add that node to Q.
+       *  13. Continue looping until Q is exhausted.
+       *  14. Return.
+       */
+      var paintedPixels = [];
+      var queue = [];
+      var dy = [-1, 0, 1, 0];
+      var dx = [0, 1, 0, -1];
+      var targetColor;
+      try {
+        targetColor = frame.getPixel(col, row);
+      } catch(e) {
+        // Frame out of bound exception.
+      }
+
+      if(targetColor == replacementColor) {
+        return;
+      }
+
+
+      queue.push({"col": col, "row": row});
+      var loopCount = 0;
+      var cellCount = frame.getWidth() * frame.getHeight();
+      while(queue.length > 0) {
+        loopCount ++;
+
+        var currentItem = queue.pop();
+        frame.setPixel(currentItem.col, currentItem.row, replacementColor);
+        paintedPixels.push({"col": currentItem.col, "row": currentItem.row });
+
+        for (var i = 0; i < 4; i++) {
+          var nextCol = currentItem.col + dx[i];
+          var nextRow = currentItem.row + dy[i];
+          try {
+            if (frame.containsPixel(nextCol, nextRow)  && frame.getPixel(nextCol, nextRow) == targetColor) {
+              queue.push({"col": nextCol, "row": nextRow });
+            }
+          } catch(e) {
+            // Frame out of bound exception.
+          }
+        }
+
+        // Security loop breaker:
+        if(loopCount > 10 * cellCount) {
+          console.log("loop breaker called");
+          break;
+        }
+      }
+      return paintedPixels;
+    },
+
+    /**
+     * Calculate and return the maximal zoom level to display a picture in a given container.
+     *
+     * @param container jQueryObject Container where the picture should be displayed
+     * @param number pictureHeight height in pixels of the picture to display
+     * @param number pictureWidth width in pixels of the picture to display
+     * @return number maximal zoom
+     */
+    calculateZoomForContainer : function (container, pictureHeight, pictureWidth) {
+      return this.calculateZoom(container.height(), container.width(), pictureHeight, pictureWidth);
+    }
+  };
+})();;(function () {
+  var ns = $.namespace("pskl.utils");
+
+  ns.Template = {
+    get : function (templateId) {
+      var template = document.getElementById(templateId);
+      if (template) {
+        return template.innerHTML;
+      } else {
+        console.error("Could not find template for id :", templateId);
+      }
+    },
+
+    createFromHTML : function (html) {
+      var dummyEl = document.createElement("div");
+      dummyEl.innerHTML = html;
+      return dummyEl.children[0];
+    },
+
+    replace : function (template, dict) {
+      for (var key in dict) {
+        if (dict.hasOwnProperty(key)) {
+          var value = dict[key];
+
+          // special boolean keys keys key:default
+          // if the value is a boolean, use default as value
+          if (key.indexOf(':') !== -1) {
+            if (value === true) {
+              value = key.split(':')[1];
+            } else if (value === false) {
+              value = '';
+            }
+          }
+          template = template.replace(new RegExp('\\{\\{'+key+'\\}\\}', 'g'), value);
+        }
+      }
+      return template;
+    }
+  };
+})();;(function () {
+  var ns = $.namespace("pskl");
+
+  ns.UserSettings = {
+    GRID_WIDTH : 'GRID_WIDTH',
+    CANVAS_BACKGROUND : 'CANVAS_BACKGROUND',
+    SELECTED_PALETTE : 'SELECTED_PALETTE',
+    TILED_PREVIEW : 'TILED_PREVIEW',
+    ONION_SKIN : 'ONION_SKIN',
+    LAYER_PREVIEW : 'LAYER_PREVIEW',
+
+    KEY_TO_DEFAULT_VALUE_MAP_ : {
+      'GRID_WIDTH' : 0,
+      'CANVAS_BACKGROUND' : 'lowcont-dark-canvas-background',
+      'SELECTED_PALETTE' : Constants.CURRENT_COLORS_PALETTE_ID,
+      'TILED_PREVIEW' : false,
+      'ONION_SKIN' : false,
+      'LAYER_PREVIEW' : true
+    },
+
+    /**
+     * @private
+     */
+    cache_ : {},
+
+    /**
+     * Static method to access a user defined settings value ot its default
+     * value if not defined yet.
+     */
+    get : function (key) {
+      this.checkKeyValidity_(key);
+      if (!(key in this.cache_)) {
+        var storedValue = this.readFromLocalStorage_(key);
+        if (typeof storedValue !== 'undefined' && storedValue !== null) {
+          this.cache_[key] = storedValue;
+        } else {
+          this.cache_[key] = this.readFromDefaults_(key);
+        }
+      }
+      return this.cache_[key];
+    },
+
+    set : function (key, value) {
+      this.checkKeyValidity_(key);
+      this.cache_[key] = value;
+      this.writeToLocalStorage_(key, value);
+
+      $.publish(Events.USER_SETTINGS_CHANGED, [key, value]);
+    },
+
+    /**
+     * @private
+     */
+    readFromLocalStorage_ : function(key) {
+      var value = window.localStorage[key];
+      if (typeof value != "undefined") {
+        value = JSON.parse(value);
+      }
+      return value;
+    },
+
+    /**
+     * @private
+     */
+    writeToLocalStorage_ : function(key, value) {
+      // TODO(grosbouddha): Catch storage exception here.
+      window.localStorage[key] = JSON.stringify(value);
+    },
+
+    /**
+     * @private
+     */
+    readFromDefaults_ : function (key) {
+      return this.KEY_TO_DEFAULT_VALUE_MAP_[key];
+    },
+
+    /**
+     * @private
+     */
+    checkKeyValidity_ : function(key) {
+      if(!(key in this.KEY_TO_DEFAULT_VALUE_MAP_)) {
+        // TODO(grosbouddha): Define error catching strategy and throw exception from here.
+        console.log("UserSettings key <"+ key +"> not find in supported keys.");
+      }
+    }
+  };
+})();;(function () {
+  var ns = $.namespace('pskl.utils');
+
+  ns.Serializer = {
+    serializePiskel : function (piskel, expanded) {
+      var serializedLayers = piskel.getLayers().map(function (l) {
+        return pskl.utils.Serializer.serializeLayer(l, expanded);
+      });
+      return JSON.stringify({
+        modelVersion : Constants.MODEL_VERSION,
+        piskel : {
+          height : piskel.getHeight(),
+          width : piskel.getWidth(),
+          layers : serializedLayers,
+          expanded : expanded
+        }
+      });
+    },
+
+    serializeLayer : function (layer, expanded) {
+      var frames = layer.getFrames();
+      var renderer = new pskl.rendering.FramesheetRenderer(frames);
+      var layerToSerialize = {
+        name : layer.getName(),
+        frameCount : frames.length
+      };
+      if (expanded) {
+        layerToSerialize.grids = frames.map(function (f) {return f.pixels;});
+        return layerToSerialize;
+      } else {
+        layerToSerialize.base64PNG = renderer.renderAsCanvas().toDataURL();
+        return JSON.stringify(layerToSerialize);
+      }
+    }
+  };
+})();
+;(function () {
+  var ns = $.namespace('pskl.utils.serialization');
+
+  ns.Deserializer = function (data, callback) {
+    this.layersToLoad_ = 0;
+    this.data_ = data;
+    this.callback_ = callback;
+    this.piskel_ = null;
+  };
+
+  ns.Deserializer.deserialize = function (data, callback) {
+    var deserializer;
+    if (data.modelVersion == Constants.MODEL_VERSION) {
+      deserializer = new ns.Deserializer(data, callback);
+    } else if (data.modelVersion == 1) {
+      deserializer = new ns.backward.Deserializer_v1(data, callback);
+    } else {
+      deserializer = new ns.backward.Deserializer_v0(data, callback);
+    }
+    deserializer.deserialize();
+  };
+
+  ns.Deserializer.prototype.deserialize = function (name) {
+    var data = this.data_;
+    var piskelData = data.piskel;
+    name = name || 'Deserialized piskel';
+
+    var descriptor = new pskl.model.piskel.Descriptor(name, '');
+    this.piskel_ = new pskl.model.Piskel(piskelData.width, piskelData.height, descriptor);
+
+    this.layersToLoad_ = piskelData.layers.length;
+    if (piskelData.expanded) {
+      piskelData.layers.forEach(this.loadExpandedLayer.bind(this));
+    } else {
+      piskelData.layers.forEach(this.deserializeLayer.bind(this));
+    }
+  };
+
+  ns.Deserializer.prototype.deserializeLayer = function (layerString) {
+    var layerData = JSON.parse(layerString);
+    var layer = new pskl.model.Layer(layerData.name);
+
+    // 1 - create an image to load the base64PNG representing the layer
+    var base64PNG = layerData.base64PNG;
+    var image = new Image();
+
+    // 2 - attach the onload callback that will be triggered asynchronously
+    image.onload = function () {
+      // 5 - extract the frames from the loaded image
+      var frames = pskl.utils.LayerUtils.createFromImage(image, layerData.frameCount);
+      // 6 - add each image to the layer
+      this.addFramesToLayer(frames, layer);
+    }.bind(this);
+
+    // 3 - set the source of the image
+    image.src = base64PNG;
+
+    // 4 - return a pointer to the new layer instance
+    return layer;
+  };
+
+  ns.Deserializer.prototype.loadExpandedLayer = function (layerData) {
+    var layer = new pskl.model.Layer(layerData.name);
+    var frames = layerData.grids.map(function (grid) {
+      return pskl.model.Frame.fromPixelGrid(grid);
+    });
+    this.addFramesToLayer(frames, layer);
+
+    // 4 - return a pointer to the new layer instance
+    return layer;
+  };
+
+  ns.Deserializer.prototype.addFramesToLayer = function (frames, layer) {
+    frames.forEach(layer.addFrame.bind(layer));
+
+    this.piskel_.addLayer(layer);
+    this.onLayerLoaded_();
+  };
+
+  ns.Deserializer.prototype.onLayerLoaded_ = function () {
+    this.layersToLoad_ = this.layersToLoad_ - 1;
+    if (this.layersToLoad_ === 0) {
+      this.callback_(this.piskel_);
+    }
+  };
+})();;(function () {
+  var ns = $.namespace('pskl.utils.serialization.backward');
+
+  ns.Deserializer_v0 = function (data, callback) {
+    this.data_ = data;
+    this.callback_ = callback;
+  };
+
+  ns.Deserializer_v0.prototype.deserialize = function () {
+    var pixelGrids = this.data_;
+    var frames = pixelGrids.map(function (grid) {
+      return pskl.model.Frame.fromPixelGrid(grid);
+    });
+    var descriptor = new pskl.model.piskel.Descriptor('Deserialized piskel', '');
+    var layer = pskl.model.Layer.fromFrames('Layer 1', frames);
+
+    this.callback_(pskl.model.Piskel.fromLayers([layer], descriptor));
+  };
+})();;(function () {
+  var ns = $.namespace('pskl.utils.serialization.backward');
+
+  ns.Deserializer_v1 = function (data, callback) {
+    this.callback_ = callback;
+    this.data_ = data;
+  };
+
+  ns.Deserializer_v1.prototype.deserialize = function () {
+    var piskelData = this.data_.piskel;
+    var descriptor = new pskl.model.piskel.Descriptor('Deserialized piskel', '');
+    var piskel = new pskl.model.Piskel(piskelData.width, piskelData.height, descriptor);
+
+    piskelData.layers.forEach(function (serializedLayer) {
+      var layer = this.deserializeLayer(serializedLayer);
+      piskel.addLayer(layer);
+    }.bind(this));
+
+    this.callback_(piskel);
+  };
+
+  ns.Deserializer_v1.prototype.deserializeLayer = function (layerString) {
+    var layerData = JSON.parse(layerString);
+    var layer = new pskl.model.Layer(layerData.name);
+    layerData.frames.forEach(function (serializedFrame) {
+      var frame = this.deserializeFrame(serializedFrame);
+      layer.addFrame(frame);
+    }.bind(this));
+
+    return layer;
+  };
+
+  ns.Deserializer_v1.prototype.deserializeFrame = function (frameString) {
+    var framePixelGrid = JSON.parse(frameString);
+    return pskl.model.Frame.fromPixelGrid(framePixelGrid);
+  };
+})();;(function () {
 	var worker = function () {
 		(function(b){function a(b,d){if({}.hasOwnProperty.call(a.cache,b))return a.cache[b];var e=a.resolve(b);if(!e)throw new Error('Failed to resolve module '+b);var c={id:b,require:a,filename:b,exports:{},loaded:!1,parent:d,children:[]};d&&d.children.push(c);var f=b.slice(0,b.lastIndexOf('/')+1);return a.cache[b]=c.exports,e.call(c.exports,c,c.exports,f,b),c.loaded=!0,a.cache[b]=c.exports}a.modules={},a.cache={},a.resolve=function(b){return{}.hasOwnProperty.call(a.modules,b)?a.modules[b]:void 0},a.define=function(b,c){a.modules[b]=c},a.define('/gif.worker.coffee',function(d,e,f,g){var b,c;b=a('/GIFEncoder.js',d),c=function(a){var c,e,d,f;return c=new b(a.width,a.height),a.index===0?c.writeHeader():c.firstFrame=!1,c.setTransparent(a.transparent),c.setRepeat(a.repeat),c.setDelay(a.delay),c.setQuality(a.quality),c.setPreserveColors(a.preserveColors),c.addFrame(a.data),a.last&&c.finish(),d=c.stream(),a.data=d.pages,a.cursor=d.cursor,a.pageSize=d.constructor.pageSize,a.canTransfer?(f=function(c){for(var b=0,d=a.data.length;b<d;++b)e=a.data[b],c.push(e.buffer);return c}.call(this,[]),self.postMessage(a,f)):self.postMessage(a)},self.onmessage=function(a){return c(a.data)}}),a.define('/GIFEncoder.js',function(e,k,i,j){function c(){this.page=-1,this.pages=[],this.newPage()}function b(a,b){this.width=~~a,this.height=~~b,this.transparent=null,this.transIndex=0,this.repeat=-1,this.delay=0,this.image=null,this.pixels=null,this.indexedPixels=null,this.colorDepth=null,this.colorTab=null,this.usedEntry=new Array,this.palSize=7,this.dispose=-1,this.firstFrame=!0,this.sample=10,this.preserveColors=!1,this.out=new c}var f=a('/TypedNeuQuant.js',e),g=a('/SimpleQuant.js',e),h=a('/LZWEncoder.js',e);c.pageSize=4096,c.charMap={};for(var d=0;d<256;d++)c.charMap[d]=String.fromCharCode(d);c.prototype.newPage=function(){this.pages[++this.page]=new Uint8Array(c.pageSize),this.cursor=0},c.prototype.getData=function(){var d='';for(var a=0;a<this.pages.length;a++)for(var b=0;b<c.pageSize;b++)d+=c.charMap[this.pages[a][b]];return d},c.prototype.writeByte=function(a){this.cursor>=c.pageSize&&this.newPage(),this.pages[this.page][this.cursor++]=a},c.prototype.writeUTFBytes=function(b){for(var c=b.length,a=0;a<c;a++)this.writeByte(b.charCodeAt(a))},c.prototype.writeBytes=function(b,d,e){for(var c=e||b.length,a=d||0;a<c;a++)this.writeByte(b[a])},b.prototype.setDelay=function(a){this.delay=Math.round(a/10)},b.prototype.setFrameRate=function(a){this.delay=Math.round(100/a)},b.prototype.setDispose=function(a){a>=0&&(this.dispose=a)},b.prototype.setRepeat=function(a){this.repeat=a},b.prototype.setTransparent=function(a){this.transparent=a},b.prototype.addFrame=function(a){this.image=a,this.getImagePixels(),this.analyzePixels(),this.firstFrame&&(this.writeLSD(),this.writePalette(),this.repeat>=0&&this.writeNetscapeExt()),this.writeGraphicCtrlExt(),this.writeImageDesc(),this.firstFrame||this.writePalette(),this.writePixels(),this.firstFrame=!1},b.prototype.finish=function(){this.out.writeByte(59)},b.prototype.setQuality=function(a){a<1&&(a=1),this.sample=a},b.prototype.setPreserveColors=function(a){this.preserveColors=a},b.prototype.writeHeader=function(){this.out.writeUTFBytes('GIF89a')},b.prototype.analyzePixels=function(){var h=this.pixels.length,d=h/3;this.indexedPixels=new Uint8Array(d);var a;this.preserveColors?a=new g(this.pixels,this.sample):a=new f(this.pixels,this.sample),a.buildColormap(),this.colorTab=a.getColormap();var b=0;for(var c=0;c<d;c++){var e=a.lookupRGB(this.pixels[b++]&255,this.pixels[b++]&255,this.pixels[b++]&255);this.usedEntry[e]=!0,this.indexedPixels[c]=e}this.pixels=null,this.colorDepth=8,this.palSize=7,this.transparent!==null&&(this.transIndex=this.findClosest(this.transparent))},b.prototype.findClosest=function(e){if(this.colorTab===null)return-1;var k=(e&16711680)>>16,l=(e&65280)>>8,m=e&255,c=0,d=16777216,j=this.colorTab.length;for(var a=0;a<j;){var f=k-(this.colorTab[a++]&255),g=l-(this.colorTab[a++]&255),h=m-(this.colorTab[a]&255),i=f*f+g*g+h*h,b=parseInt(a/3);this.usedEntry[b]&&i<d&&(d=i,c=b),a++}return c},b.prototype.getImagePixels=function(){var a=this.width,g=this.height;this.pixels=new Uint8Array(a*g*3);var b=this.image,c=0;for(var d=0;d<g;d++)for(var e=0;e<a;e++){var f=d*a*4+e*4;this.pixels[c++]=b[f],this.pixels[c++]=b[f+1],this.pixels[c++]=b[f+2]}},b.prototype.writeGraphicCtrlExt=function(){this.out.writeByte(33),this.out.writeByte(249),this.out.writeByte(4);var b,a;this.transparent===null?(b=0,a=0):(b=1,a=2),this.dispose>=0&&(a=dispose&7),a<<=2,this.out.writeByte(0|a|0|b),this.writeShort(this.delay),this.out.writeByte(this.transIndex),this.out.writeByte(0)},b.prototype.writeImageDesc=function(){this.out.writeByte(44),this.writeShort(0),this.writeShort(0),this.writeShort(this.width),this.writeShort(this.height),this.firstFrame?this.out.writeByte(0):this.out.writeByte(128|this.palSize)},b.prototype.writeLSD=function(){this.writeShort(this.width),this.writeShort(this.height),this.out.writeByte(240|this.palSize),this.out.writeByte(0),this.out.writeByte(0)},b.prototype.writeNetscapeExt=function(){this.out.writeByte(33),this.out.writeByte(255),this.out.writeByte(11),this.out.writeUTFBytes('NETSCAPE2.0'),this.out.writeByte(3),this.out.writeByte(1),this.writeShort(this.repeat),this.out.writeByte(0)},b.prototype.writePalette=function(){this.out.writeBytes(this.colorTab);var b=768-this.colorTab.length;for(var a=0;a<b;a++)this.out.writeByte(0)},b.prototype.writeShort=function(a){this.out.writeByte(a&255),this.out.writeByte(a>>8&255)},b.prototype.writePixels=function(){var a=new h(this.width,this.height,this.indexedPixels,this.colorDepth);a.encode(this.out)},b.prototype.stream=function(){return this.out},e.exports=b}),a.define('/LZWEncoder.js',function(e,g,h,i){function f(y,D,C,B){function w(a,b){r[f++]=a,f>=254&&t(b)}function x(b){u(a),k=i+2,j=!0,l(i,b)}function u(b){for(var a=0;a<b;++a)h[a]=-1}function A(z,r){var g,t,d,e,y,w,s;for(q=z,j=!1,n_bits=q,m=p(n_bits),i=1<<z-1,o=i+1,k=i+2,f=0,e=v(),s=0,g=a;g<65536;g*=2)++s;s=8-s,w=a,u(w),l(i,r);a:while((t=v())!=c){if(g=(t<<b)+e,d=t<<s^e,h[d]===g){e=n[d];continue}if(h[d]>=0){y=w-d,d===0&&(y=1);do if((d-=y)<0&&(d+=w),h[d]===g){e=n[d];continue a}while(h[d]>=0)}l(e,r),e=t,k<1<<b?(n[d]=k++,h[d]=g):x(r)}l(e,r),l(o,r)}function z(a){a.writeByte(s),remaining=y*D,curPixel=0,A(s+1,a),a.writeByte(0)}function t(a){f>0&&(a.writeByte(f),a.writeBytes(r,0,f),f=0)}function p(a){return(1<<a)-1}function v(){if(remaining===0)return c;--remaining;var a=C[curPixel++];return a&255}function l(a,c){g&=d[e],e>0?g|=a<<e:g=a,e+=n_bits;while(e>=8)w(g&255,c),g>>=8,e-=8;if((k>m||j)&&(j?(m=p(n_bits=q),j=!1):(++n_bits,n_bits==b?m=1<<b:m=p(n_bits))),a==o){while(e>0)w(g&255,c),g>>=8,e-=8;t(c)}}var s=Math.max(2,B),r=new Uint8Array(256),h=new Int32Array(a),n=new Int32Array(a),g,e=0,f,k=0,m,j=!1,q,i,o;this.encode=z}var c=-1,b=12,a=5003,d=[0,1,3,7,15,31,63,127,255,511,1023,2047,4095,8191,16383,32767,65535];e.exports=f}),a.define('/SimpleQuant.js',function(b,d,e,f){function a(a,b,c){return[a,b,c].join('.')}function c(b){this.pixels=b,this.palette=[],this.paletteIndex={},this.getColormap=function(){return this.palette},this.buildColormap=function(){var h=this.pixels.length/3,b=0;for(var c=0;c<h;c++){var d=this.pixels[b++],e=this.pixels[b++],f=this.pixels[b++],g=a(d,e,f);this.paletteIndex[g]||(this.palette.push(d),this.palette.push(e),this.palette.push(f),this.paletteIndex[g]=this.palette.length/3-1)}},this.lookupRGB=function(b,c,d){return this.paletteIndex[a(b,c,d)]}}b.exports=c}),a.define('/TypedNeuQuant.js',function(A,F,E,D){function C(A,B){function I(){o=[],q=new Int32Array(256),t=new Int32Array(a),y=new Int32Array(a),z=new Int32Array(a>>3);var c,d;for(c=0;c<a;c++)d=(c<<b+8)/a,o[c]=new Float64Array([d,d,d,0]),y[c]=e/a,t[c]=0}function J(){for(var c=0;c<a;c++)o[c][0]>>=b,o[c][1]>>=b,o[c][2]>>=b,o[c][3]=c}function K(b,a,c,e,f){o[a][0]-=b*(o[a][0]-c)/d,o[a][1]-=b*(o[a][1]-e)/d,o[a][2]-=b*(o[a][2]-f)/d}function L(j,e,n,l,k){var h=Math.abs(e-j),i=Math.min(e+j,a),g=e+1,f=e-1,m=1,b,d;while(g<i||f>h)d=z[m++],g<i&&(b=o[g++],b[0]-=d*(b[0]-n)/c,b[1]-=d*(b[1]-l)/c,b[2]-=d*(b[2]-k)/c),f>h&&(b=o[f--],b[0]-=d*(b[0]-n)/c,b[1]-=d*(b[1]-l)/c,b[2]-=d*(b[2]-k)/c)}function C(p,s,q){var h=2147483647,k=h,d=-1,m=d,c,j,e,n,l;for(c=0;c<a;c++)j=o[c],e=Math.abs(j[0]-p)+Math.abs(j[1]-s)+Math.abs(j[2]-q),e<h&&(h=e,d=c),n=e-(t[c]>>i-b),n<k&&(k=n,m=c),l=y[c]>>g,y[c]-=l,t[c]+=l<<f;return y[d]+=x,t[d]-=r,m}function D(){var d,b,e,c,h,g,f=0,i=0;for(d=0;d<a;d++){for(e=o[d],h=d,g=e[1],b=d+1;b<a;b++)c=o[b],c[1]<g&&(h=b,g=c[1]);if(c=o[h],d!=h&&(b=c[0],c[0]=e[0],e[0]=b,b=c[1],c[1]=e[1],e[1]=b,b=c[2],c[2]=e[2],e[2]=b,b=c[3],c[3]=e[3],e[3]=b),g!=f){for(q[f]=i+d>>1,b=f+1;b<g;b++)q[b]=d;f=g,i=d}}for(q[f]=i+n>>1,b=f+1;b<256;b++)q[b]=n}function E(j,i,k){var b,d,c,e=1e3,h=-1,f=q[i],g=f-1;while(f<a||g>=0)f<a&&(d=o[f],c=d[1]-i,c>=e?f=a:(f++,c<0&&(c=-c),b=d[0]-j,b<0&&(b=-b),c+=b,c<e&&(b=d[2]-k,b<0&&(b=-b),c+=b,c<e&&(e=c,h=d[3])))),g>=0&&(d=o[g],c=i-d[1],c>=e?g=-1:(g--,c<0&&(c=-c),b=d[0]-j,b<0&&(b=-b),c+=b,c<e&&(b=d[2]-k,b<0&&(b=-b),c+=b,c<e&&(e=c,h=d[3]))));return h}function F(){var c,f=A.length,D=30+(B-1)/3,y=f/(3*B),q=~~(y/w),n=d,o=u,a=o>>h;for(a<=1&&(a=0),c=0;c<a;c++)z[c]=n*((a*a-c*c)*m/(a*a));var i;f<s?(B=1,i=3):f%l!==0?i=3*l:f%k!==0?i=3*k:f%p!==0?i=3*p:i=3*j;var r,t,x,e,g=0;c=0;while(c<y)if(r=(A[g]&255)<<b,t=(A[g+1]&255)<<b,x=(A[g+2]&255)<<b,e=C(r,t,x),K(n,e,r,t,x),a!==0&&L(a,e,r,t,x),g+=i,g>=f&&(g-=f),c++,q===0&&(q=1),c%q===0)for(n-=n/D,o-=o/v,a=o>>h,a<=1&&(a=0),e=0;e<a;e++)z[e]=n*((a*a-e*e)*m/(a*a))}function G(){I(),F(),J(),D()}function H(){var b=[],g=[];for(var c=0;c<a;c++)g[o[c][3]]=c;var d=0;for(var e=0;e<a;e++){var f=g[e];b[d++]=o[f][0],b[d++]=o[f][1],b[d++]=o[f][2]}return b}var o,q,t,y,z;this.buildColormap=G,this.getColormap=H,this.lookupRGB=E}var w=100,a=256,n=a-1,b=4,i=16,e=1<<i,f=10,B=1<<f,g=10,x=e>>g,r=e<<f-g,z=a>>3,h=6,t=1<<h,u=z*t,v=30,o=10,d=1<<o,q=8,m=1<<q,y=o+q,c=1<<y,l=499,k=491,p=487,j=503,s=3*j;A.exports=C}),a('/gif.worker.coffee')}.call(this,this))
 	};
 	try {
-		var typedArray = [(worker+"").replace(/function \(\)\s?\{/,"").replace(/\}[^}]*$/, "")];
-		var blob = new Blob([typedArray], {type: "text/javascript"}); // pass a useful mime type here
-		window.GifWorkerURL = URL.createObjectURL(blob);
+		if (pskl.utils.UserAgent.isIE11) {
+			window.GifWorkerURL = '/js/lib/gif/gif.ie.worker.js';
+		} else {
+			var typedArray = [(worker+"").replace(/function \(\)\s?\{/,"").replace(/\}[^}]*$/, "")];
+			var blob = new Blob(typedArray, {type: "application/javascript"}); // pass a useful mime type here
+			window.GifWorkerURL = URL.createObjectURL(blob);
+		}
 	} catch (e) {
 		console.error("Could not create worker", e.message);
 	}
@@ -14432,1189 +15619,7 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
     });
 
 })(window, jQuery);
-;// TODO(grosbouddha): put under pskl namespace.
-var Constants = {
-  DEFAULT : {
-    HEIGHT : 32,
-    WIDTH : 32,
-    FPS : 12
-  },
-
-  MODEL_VERSION : 2,
-
-  MAX_HEIGHT : 1024,
-  MAX_WIDTH : 1024,
-
-  MAX_CURRENT_COLORS_DISPLAYED : 100,
-
-  MINIMUM_ZOOM : 1,
-
-  PREVIEW_FILM_SIZE : 96,
-  ANIMATED_PREVIEW_WIDTH : 200,
-
-  DEFAULT_PEN_COLOR : '#000000',
-  TRANSPARENT_COLOR : 'rgba(0, 0, 0, 0)',
-
-  OVERLAY_ONION_SKIN : 'onion-skin',
-  OVERLAY_LAYER_PREVIEW : 'layer-preview',
-  OVERLAY_DISABLED : 'no-overlay',
-
-  NO_PALETTE_ID : '__no-palette',
-  CURRENT_COLORS_PALETTE_ID : '__current-colors',
-  MANAGE_PALETTE_ID : '__manage-palettes',
-
-  // Used for Spectrum input
-  PREFERRED_COLOR_FORMAT : 'rgb',
-
-  /*
-   * Fake semi-transparent color used to highlight transparent
-   * strokes and rectangles:
-   */
-  SELECTION_TRANSPARENT_COLOR: 'rgba(255, 255, 255, 0.6)',
-
-  /*
-   * When a tool is hovering the drawing canvas, we highlight the eventual
-   * pixel target with this color:
-   */
-  TOOL_TARGET_HIGHLIGHT_COLOR: 'rgba(255, 255, 255, 0.2)',
-
-  /*
-   * Default entry point for piskel web service:
-   */
-  STATIC : {
-    URL : {
-      SAVE : 'http://3.piskel-app.appspot.com/store',
-      GET : 'http://3.piskel-app.appspot.com/get'
-    }
-  },
-  APPENGINE : {
-    URL : {
-      SAVE : 'save'
-    }
-  },
-  IMAGE_SERVICE_UPLOAD_URL : 'http://piskel-imgstore-a.appspot.com/__/upload',
-  IMAGE_SERVICE_GET_URL : 'http://piskel-imgstore-a.appspot.com/img/',
-
-  ZOOMED_OUT_BACKGROUND_COLOR : '#A0A0A0',
-
-  LEFT_BUTTON : 0,
-  MIDDLE_BUTTON : 1,
-  RIGHT_BUTTON : 2,
-  MOUSEMOVE_THROTTLING : 10,
-
-  ABSTRACT_FUNCTION : function () {throw 'abstract method should be implemented';},
-  EMPTY_FUNCTION : function () {}
-};;// TODO(grosbouddha): put under pskl namespace.
-var Events = {
-
-  TOOL_SELECTED : "TOOL_SELECTED",
-  TOOL_RELEASED : "TOOL_RELEASED",
-  SELECT_PRIMARY_COLOR: "SELECT_PRIMARY_COLOR",
-  SELECT_SECONDARY_COLOR: "SELECT_SECONDARY_COLOR",
-  PRIMARY_COLOR_SELECTED : 'PRIMARY_COLOR_SELECTED',
-  SECONDARY_COLOR_SELECTED : 'SECONDARY_COLOR_SELECTED',
-
-  CURSOR_MOVED : 'CURSOR_MOVED',
-  DRAG_START : 'DRAG_START',
-  DRAG_END : 'DRAG_END',
-
-  DIALOG_DISPLAY : 'DIALOG_DISPLAY',
-  DIALOG_HIDE : 'DIALOG_HIDE',
-
-  PALETTE_LIST_UPDATED : 'PALETTE_LIST_UPDATED',
-
-  /**
-   * Fired each time a user setting change.
-   * The payload will be:
-   *   1st argument: Name of the settings
-   *   2nd argument: New value
-   */
-  USER_SETTINGS_CHANGED: "USER_SETTINGS_CHANGED",
-
-  CLOSE_SETTINGS_DRAWER : "CLOSE_SETTINGS_DRAWER",
-
-  /**
-   * The framesheet was reseted and is now probably drastically different.
-   * Number of frames, content of frames, color used for the palette may have changed.
-   */
-  PISKEL_RESET: "PISKEL_RESET",
-  PISKEL_SAVE_STATE: "PISKEL_SAVE_STATE",
-
-  PISKEL_SAVED: "PISKEL_SAVED",
-
-  FRAME_SIZE_CHANGED : "FRAME_SIZE_CHANGED",
-
-  SELECTION_CREATED: "SELECTION_CREATED",
-  SELECTION_MOVE_REQUEST: "SELECTION_MOVE_REQUEST",
-  SELECTION_DISMISSED: "SELECTION_DISMISSED",
-
-  SHOW_NOTIFICATION: "SHOW_NOTIFICATION",
-  HIDE_NOTIFICATION: "HIDE_NOTIFICATION",
-
-  ZOOM_CHANGED : "ZOOM_CHANGED",
-
-  CURRENT_COLORS_UPDATED : "CURRENT_COLORS_UPDATED"
-};;jQuery.namespace = function() {
-  var a=arguments, o=null, i, j, d;
-  for (i=0; i<a.length; i=i+1) {
-    d=a[i].split(".");
-    o=window;
-    for (j=0; j<d.length; j=j+1) {
-      o[d[j]]=o[d[j]] || {};
-      o=o[d[j]];
-    }
-  }
-  return o;
-};
-
-/**
- * Need a polyfill for PhantomJS
- */
-if (typeof Function.prototype.bind !== "function") {
-  Function.prototype.bind = function(scope) {
-    "use strict";
-    var _function = this;
-    return function() {
-      return _function.apply(scope, arguments);
-    };
-  };
-}
-
-/**
- * @provide pskl.utils
- *
- * @require Constants
- */
-(function() { // namespace: pskl.utils
-
-  var ns = $.namespace("pskl.utils");
-
-  ns.rgbToHex = function(r, g, b) {
-    if (r > 255 || g > 255 || b > 255) {
-      throw "Invalid color component";
-    }
-
-    return ((r << 16) | (g << 8) | b).toString(16);
-  };
-
-  ns.normalize = function (value, def) {
-    if (typeof value === 'undefined' || value === null) {
-      return def;
-    } else {
-      return value;
-    }
-  };
-
-  ns.inherit = function(extendedObject, inheritFrom) {
-    extendedObject.prototype = Object.create(inheritFrom.prototype);
-    extendedObject.prototype.constructor = extendedObject;
-    extendedObject.prototype.superclass = inheritFrom.prototype;
-  };
-
-  ns.wrap = function (wrapper, wrappedObject) {
-    for (var prop in wrappedObject) {
-      if (typeof wrappedObject[prop] === 'function' && typeof wrapper[prop] === 'undefined') {
-        wrapper[prop] = wrappedObject[prop].bind(wrappedObject);
-      }
-    }
-  };
-
-})();
-
 ;(function () {
-  var ns = $.namespace('pskl.utils');
-  var ua = navigator.userAgent;
-
-  ns.UserAgent = {
-    isIE : /MSIE/i.test( ua ),
-    isChrome : /Chrome/i.test( ua ),
-    isFirefox : /Firefox/i.test( ua )
-  };
-
-  ns.UserAgent.version = (function () {
-    if (pskl.utils.UserAgent.isIE) {
-      return parseInt(/MSIE\s?(\d+)/i.exec( ua )[1], 10);
-    } else if (pskl.utils.UserAgent.isChrome) {
-      return parseInt(/Chrome\/(\d+)/i.exec( ua )[1], 10);
-    } else if (pskl.utils.UserAgent.isFirefox) {
-      return parseInt(/Firefox\/(\d+)/i.exec( ua )[1], 10);
-    }
-  })();
-})();;(function () {
-  var ns = $.namespace('pskl.utils');
-
-  var base64_ranks;
-  if (Uint8Array) {
-    base64_ranks = new Uint8Array([
-      62, -1, -1, -1, 63, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, -1,
-      -1, -1,  0, -1, -1, -1,  0,  1,  2,  3,  4,  5,  6,  7,  8,  9,
-      10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
-      -1, -1, -1, -1, -1, -1, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35,
-      36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51
-    ]);
-  }
-
-  ns.Base64 = {
-    decode : function(base64) {
-      var outptr = 0;
-      var last = [0, 0];
-      var state = 0;
-      var save = 0;
-
-      var undef;
-      var len = base64.length, i = 0;
-      var buffer = new Uint8Array(len / 4 * 3 | 0);
-      while (len--) {
-        var code = base64.charCodeAt(i++);
-        var rank = base64_ranks[code-43];
-        if (rank !== 255 && rank !== undef) {
-          last[1] = last[0];
-          last[0] = code;
-          save = (save << 6) | rank;
-          state++;
-          if (state === 4) {
-            buffer[outptr++] = save >>> 16;
-            if (last[1] !== 61 /* padding character */) {
-              buffer[outptr++] = save >>> 8;
-            }
-            if (last[0] !== 61 /* padding character */) {
-              buffer[outptr++] = save;
-            }
-            state = 0;
-          }
-        }
-      }
-      // 2/3 chance there's going to be some null bytes at the end, but that
-      // doesn't really matter with most image formats.
-      // If it somehow matters for you, truncate the buffer up outptr.
-      return buffer.buffer;
-    }
-  };
-})();;(function () {
-  var ns = $.namespace("pskl");
-
-  ns.CanvasUtils = {
-    createCanvas : function (width, height, classList) {
-      var canvas = document.createElement("canvas");
-      canvas.setAttribute("width", width);
-      canvas.setAttribute("height", height);
-
-      if (typeof classList == "string") {
-        classList = [classList];
-      }
-      if (Array.isArray(classList)) {
-        for (var i = 0 ; i < classList.length ; i++) {
-          canvas.classList.add(classList[i]);
-        }
-      }
-
-      return canvas;
-    },
-
-    createFromImageData : function (imageData) {
-      var canvas = pskl.CanvasUtils.createCanvas(imageData.width, imageData.height);
-      var context = canvas.getContext('2d');
-      context.putImageData(imageData, 0, 0);
-      return canvas;
-    },
-
-    /**
-     * By default, all scaling operations on a Canvas 2D Context are performed using antialiasing.
-     * Resizing a 32x32 image to 320x320 will lead to a blurry output.
-     * On Chrome, FF and IE>=11, this can be disabled by setting a property on the Canvas 2D Context.
-     * In this case the browser will use a nearest-neighbor scaling.
-     * @param  {Canvas} canvas
-     */
-    disableImageSmoothing : function (canvas) {
-      var context = canvas.getContext('2d');
-      context.imageSmoothingEnabled = false;
-      context.mozImageSmoothingEnabled = false;
-      context.oImageSmoothingEnabled = false;
-      context.webkitImageSmoothingEnabled = false;
-      context.msImageSmoothingEnabled = false;
-    },
-
-    clear : function (canvas) {
-      if (canvas) {
-        canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
-      }
-    },
-
-    clone : function (canvas) {
-      var clone = pskl.CanvasUtils.createCanvas(canvas.width, canvas.height);
-
-      //apply the old canvas to the new one
-      clone.getContext('2d').drawImage(canvas, 0, 0);
-
-      //return the new canvas
-      return clone;
-    },
-
-    getImageDataFromCanvas : function (canvas) {
-      var sourceContext = canvas.getContext('2d');
-      return sourceContext.getImageData(0, 0, canvas.width, canvas.height).data;
-    },
-
-    getBase64FromCanvas : function (canvas, format) {
-      format = format || "png";
-      var data = canvas.toDataURL("image/" + format);
-      return data.substr(data.indexOf(',')+1);
-    }
-  };
-})();;(function () {
-  var ns = $.namespace('pskl.utils');
-
-  ns.Dom = {
-    /**
-     * Check if a given HTML element is nested inside another
-     * @param  {HTMLElement}  node  Element to test
-     * @param  {HTMLElement}  parent Potential Ancestor for node
-     * @param  {Boolean}      excludeParent set to true if the parent should be excluded from potential matches
-     * @return {Boolean}      true if parent was found amongst the parentNode chain of node
-     */
-    isParent : function (node, parent, excludeParent) {
-      if (node && parent) {
-
-        if (excludeParent) {
-          node = node.parentNode;
-        }
-
-        while (node) {
-          if (node === parent) {
-            return true;
-          }
-          node = node.parentNode;
-        }
-      }
-      return false;
-    },
-
-    getParentWithData : function (node, data) {
-      while (node) {
-        if (node.dataset && typeof node.dataset[data] !== 'undefined') {
-          return node;
-        }
-        node = node.parentNode;
-      }
-      return null;
-    }
-  };
-})();;(function () {
-  var ns = $.namespace('pskl.utils');
-
-  ns.Math = {
-    minmax : function (val, min, max) {
-      return Math.max(Math.min(val, max), min);
-    }
-  };
-})();;(function () {
-  var ns = $.namespace('pskl.utils');
-
-  ns.FileUtils = {
-    readFile : function (file, callback) {
-      var reader = new FileReader();
-      reader.onload = function(event){
-        callback(event.target.result);
-      };
-      reader.readAsDataURL(file);
-    },
-
-    downloadAsFile : function (filename, content) {
-      var saveAs = window.saveAs || (navigator.msSaveBlob && navigator.msSaveBlob.bind(navigator));
-      if (saveAs) {
-        saveAs(content, filename);
-      } else {
-        var downloadLink = document.createElement('a');
-        content = window.URL.createObjectURL(content);
-        downloadLink.setAttribute('href', content);
-        downloadLink.setAttribute('download', filename);
-        document.body.appendChild(downloadLink);
-        downloadLink.click();
-        document.body.removeChild(downloadLink);
-      }
-    }
-  };
-})();
-;(function () {
-  var ns = $.namespace('pskl.utils');
-  var colorCache = {};
-  ns.FrameUtils = {
-    merge : function (frames) {
-      var merged = null;
-      if (frames.length) {
-        merged = frames[0].clone();
-        var w = merged.getWidth(), h = merged.getHeight();
-        for (var i = 1 ; i < frames.length ; i++) {
-          pskl.utils.FrameUtils.mergeFrames_(merged, frames[i]);
-        }
-      }
-      return merged;
-    },
-
-    mergeFrames_ : function (frameA, frameB) {
-      frameB.forEachPixel(function (p, col, row) {
-        if (p != Constants.TRANSPARENT_COLOR) {
-          frameA.setPixel(col, row, p);
-        }
-      });
-    },
-
-    resize : function (frame, targetWidth, targetHeight, smoothing) {
-      var image = pskl.utils.FrameUtils.toImage(frame);
-      var resizedImage = pskl.utils.ImageResizer.resize(image, targetWidth, targetHeight, smoothing);
-      return pskl.utils.FrameUtils.createFromImage(resizedImage);
-    },
-
-    /**
-     * Alpha compositing using porter duff algorithm :
-     * http://en.wikipedia.org/wiki/Alpha_compositing
-     * http://keithp.com/~keithp/porterduff/p253-porter.pdf
-     * @param  {String} strColor1 color over
-     * @param  {String} strColor2 color under
-     * @return {String} the composite color
-     */
-    mergePixels : function (strColor1, strColor2, globalOpacity1) {
-      var col1 = pskl.utils.FrameUtils.toRgba(strColor1);
-      var col2 = pskl.utils.FrameUtils.toRgba(strColor2);
-      if (typeof globalOpacity1 == 'number') {
-        col1 = JSON.parse(JSON.stringify(col1));
-        col1.a = globalOpacity1 * col1.a;
-      }
-      var a = col1.a + col2.a * (1 - col1.a);
-
-      var r = ((col1.r * col1.a + col2.r * col2.a * (1 - col1.a)) / a)|0;
-      var g = ((col1.g * col1.a + col2.g * col2.a * (1 - col1.a)) / a)|0;
-      var b = ((col1.b * col1.a + col2.b * col2.a * (1 - col1.a)) / a)|0;
-
-      return 'rgba('+r+','+g+','+b+','+a+')';
-    },
-
-    /**
-     * Convert a color defined as a string (hex, rgba, rgb, 'TRANSPARENT') to an Object with r,g,b,a properties.
-     * r, g and b are integers between 0 and 255, a is a float between 0 and 1
-     * @param  {String} c color as a string
-     * @return {Object} {r:Number,g:Number,b:Number,a:Number}
-     */
-    toRgba : function (c) {
-      if (colorCache[c]) {
-        return colorCache[c];
-      }
-      var color, matches;
-      if (c === 'TRANSPARENT') {
-        color = {
-          r : 0,
-          g : 0,
-          b : 0,
-          a : 0
-        };
-      } else if (c.indexOf('rgba(') != -1) {
-        matches = /rgba\((\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(1|0\.\d+)\s*\)/.exec(c);
-        color = {
-          r : parseInt(matches[1],10),
-          g : parseInt(matches[2],10),
-          b : parseInt(matches[3],10),
-          a : parseFloat(matches[4])
-        };
-      } else if (c.indexOf('rgb(') != -1) {
-        matches = /rgb\((\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/.exec(c);
-        color = {
-          r : parseInt(matches[1],10),
-          g : parseInt(matches[2],10),
-          b : parseInt(matches[3],10),
-          a : 1
-        };
-      } else {
-        matches = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(c);
-        color = {
-          r : parseInt(matches[1], 16),
-          g : parseInt(matches[2], 16),
-          b : parseInt(matches[3], 16),
-          a : 1
-        };
-      }
-      colorCache[c] = color;
-      return color;
-    },
-
-    /*
-     * Create a pskl.model.Frame from an Image object.
-     * Transparent pixels will either be converted to completely opaque or completely transparent pixels.
-     * @param  {Image} image source image
-     * @return {pskl.model.Frame} corresponding frame
-     */
-    createFromImage : function (image) {
-      var w = image.width,
-        h = image.height;
-      var canvas = pskl.CanvasUtils.createCanvas(w, h);
-      var context = canvas.getContext('2d');
-
-      context.drawImage(image, 0,0,w,h,0,0,w,h);
-      var imgData = context.getImageData(0,0,w,h).data;
-      return pskl.utils.FrameUtils.createFromImageData(imgData, w, h);
-    },
-
-    createFromImageData : function (imageData, width, height) {
-      // Draw the zoomed-up pixels to a different canvas context
-      var grid = [];
-      for (var x = 0 ; x < width ; x++){
-        grid[x] = [];
-        for (var y = 0 ; y < height ; y++){
-          // Find the starting index in the one-dimensional image data
-          var i = (y * width + x)*4;
-          var r = imageData[i  ];
-          var g = imageData[i+1];
-          var b = imageData[i+2];
-          var a = imageData[i+3];
-          if (a < 125) {
-            grid[x][y] = Constants.TRANSPARENT_COLOR;
-          } else {
-            grid[x][y] = pskl.utils.FrameUtils.rgbToHex(r,g,b);
-          }
-        }
-      }
-      return pskl.model.Frame.fromPixelGrid(grid);
-    },
-
-    /**
-     * Convert a rgb(Number, Number, Number) color to hexadecimal representation
-     * @param  {Number} r red value, between 0 and 255
-     * @param  {Number} g green value, between 0 and 255
-     * @param  {Number} b blue value, between 0 and 255
-     * @return {String} hex representation of the color '#ABCDEF'
-     */
-    rgbToHex : function (r, g, b) {
-      return "#" + this.componentToHex(r) + this.componentToHex(g) + this.componentToHex(b);
-    },
-
-    /**
-     * Convert a color component (as a Number between 0 and 255) to its string hexa representation
-     * @param  {Number} c component value, between 0 and 255
-     * @return {String} eg. '0A'
-     */
-    componentToHex : function (c) {
-      var hex = c.toString(16);
-      return hex.length == 1 ? "0" + hex : hex;
-    },
-
-    toImage : function (frame, zoom, bgColor) {
-      zoom = zoom || 1;
-      bgColor = bgColor || Constants.TRANSPARENT_COLOR;
-      var canvasRenderer = new pskl.rendering.CanvasRenderer(frame, zoom);
-      canvasRenderer.drawTransparentAs(bgColor);
-      return canvasRenderer.render();
-    }
-  };
-})();
-;(function () {
-  var ns = $.namespace('pskl.utils');
-
-  ns.LayerUtils = {
-    /**
-     * Create a pskl.model.Layer from an Image object.
-     * Transparent pixels will either be converted to completely opaque or completely transparent pixels.
-     * @param  {Image} image source image
-     * @return {pskl.model.Frame} corresponding frame
-     */
-    createFromImage : function (image, frameCount) {
-      var w = image.width,
-        h = image.height,
-        frameWidth = w / frameCount;
-
-      var canvas = pskl.CanvasUtils.createCanvas(w, h);
-      var context = canvas.getContext('2d');
-
-      context.drawImage(image, 0,0,w,h,0,0,w,h);
-      // Draw the zoomed-up pixels to a different canvas context
-      var frames = [];
-      for (var i = 0 ; i < frameCount ; i++) {
-        var imgData = context.getImageData(frameWidth*i,0,frameWidth,h).data;
-        var frame = pskl.utils.FrameUtils.createFromImageData(imgData, frameWidth, h);
-        frames.push(frame);
-      }
-      return frames;
-    }
-  };
-
-})();;(function () {
-  var ns = $.namespace('pskl.utils');
-
-  var BASE64_REGEX = /\s*;\s*base64\s*(?:;|$)/i;
-
-  ns.ImageToBlob = {
-    imageDataToBlob : function(dataURI, type, callback) {
-      var header_end = dataURI.indexOf(","),
-          data = dataURI.substring(header_end + 1),
-          isBase64 = BASE64_REGEX.test(dataURI.substring(0, header_end)),
-          blob;
-
-      if (Blob.fake) {
-        // no reason to decode a data: URI that's just going to become a data URI again
-        blob = new Blob();
-        blob.encoding = isBase64 ? "base64" : "URI";
-        blob.data = data;
-        blob.size = data.length;
-      } else if (Uint8Array) {
-        var blobData = isBase64 ? pskl.utils.Base64.decode(data) : decodeURIComponent(data);
-        blob = new Blob([blobData], {type: type});
-      }
-      callback(blob);
-    },
-
-    canvasToBlob : function(canvas, callback, type /*, ...args*/) {
-      type = type || "image/png";
-
-      if (this.mozGetAsFile) {
-        callback(this.mozGetAsFile("canvas", type));
-      } else {
-        var args = Array.prototype.slice.call(arguments, 2);
-        var dataURI = canvas.toDataURL.apply(canvas, args);
-        pskl.utils.ImageToBlob.imageDataToBlob(dataURI, type, callback);
-      }
-    }
-  };
-})();;(function () {
-  var ns = $.namespace('pskl.utils');
-
-  ns.ImageResizer = {
-    resize : function (image, targetWidth, targetHeight, smoothingEnabled) {
-      var canvas = pskl.CanvasUtils.createCanvas(targetWidth, targetHeight);
-      var context = canvas.getContext('2d');
-      context.save();
-
-      if (!smoothingEnabled) {
-        pskl.CanvasUtils.disableImageSmoothing(canvas);
-      }
-
-      context.translate(canvas.width / 2, canvas.height / 2);
-      context.scale(targetWidth / image.width, targetHeight / image.height);
-      context.drawImage(image, -image.width / 2, -image.height / 2);
-      context.restore();
-
-      return canvas;
-    },
-
-    /**
-     * Manual implementation of resize using a nearest neighbour algorithm
-     * It is slower than relying on the native 'disabledImageSmoothing' available on CanvasRenderingContext2d.
-     * But it can be useful if :
-     * - IE < 11 (doesn't support msDisableImageSmoothing)
-     * - need to display a gap between pixel
-     *
-     * @param  {Canvas2d} source original image to be resized, as a 2d canvas
-     * @param  {Number} zoom   ratio between desired dim / source dim
-     * @param  {Number} margin gap to be displayed between pixels
-     * @param  {String} color or the margin (will be transparent if not provided)
-     * @return {Canvas2d} the resized canvas
-     */
-    resizeNearestNeighbour : function (source, zoom, margin, marginColor) {
-      margin = margin || 0;
-      var canvas = pskl.CanvasUtils.createCanvas(zoom*source.width, zoom*source.height);
-      var context = canvas.getContext('2d');
-
-      var imgData = pskl.CanvasUtils.getImageDataFromCanvas(source);
-
-      var yRanges = {},
-        xOffset = 0,
-        yOffset = 0,
-        xRange,
-        yRange;
-      // Draw the zoomed-up pixels to a different canvas context
-      for (var x = 0; x < source.width; x++) {
-        // Calculate X Range
-        xRange = Math.floor((x + 1) * zoom) - xOffset;
-
-        for (var y = 0; y < source.height; y++) {
-          // Calculate Y Range
-          if (!yRanges[y + ""]) {
-            // Cache Y Range
-            yRanges[y + ""] = Math.floor((y + 1) * zoom) - yOffset;
-          }
-          yRange = yRanges[y + ""];
-
-          var i = (y * source.width + x) * 4;
-          var r = imgData[i];
-          var g = imgData[i + 1];
-          var b = imgData[i + 2];
-          var a = imgData[i + 3];
-
-          context.fillStyle = "rgba(" + r + "," + g + "," + b + "," + (a / 255) + ")";
-          context.fillRect(xOffset, yOffset, xRange-margin, yRange-margin);
-
-          if (margin && marginColor) {
-            context.fillStyle = marginColor;
-            context.fillRect(xOffset + xRange - margin, yOffset, margin, yRange);
-            context.fillRect(xOffset, yOffset + yRange - margin, xRange, margin);
-          }
-
-          yOffset += yRange;
-        }
-        yOffset = 0;
-        xOffset += xRange;
-      }
-      return canvas;
-    }
-  };
-})();;(function () {
-  var ns = $.namespace("pskl");
-
-  ns.PixelUtils = {
-
-    getRectanglePixels : function (x0, y0, x1, y1) {
-      var rectangle = this.getOrderedRectangleCoordinates(x0, y0, x1, y1);
-      var pixels = [];
-
-      for(var x = rectangle.x0; x <= rectangle.x1; x++) {
-        for(var y = rectangle.y0; y <= rectangle.y1; y++) {
-          pixels.push({"col": x, "row": y});
-        }
-      }
-
-      return pixels;
-    },
-
-    getBoundRectanglePixels : function (x0, y0, x1, y1) {
-      var rectangle = this.getOrderedRectangleCoordinates(x0, y0, x1, y1);
-      var pixels = [];
-      // Creating horizontal sides of the rectangle:
-      for(var x = rectangle.x0; x <= rectangle.x1; x++) {
-        pixels.push({"col": x, "row": rectangle.y0});
-        pixels.push({"col": x, "row": rectangle.y1});
-      }
-
-      // Creating vertical sides of the rectangle:
-      for(var y = rectangle.y0; y <= rectangle.y1; y++) {
-        pixels.push({"col": rectangle.x0, "row": y});
-        pixels.push({"col": rectangle.x1, "row": y});
-      }
-
-      return pixels;
-    },
-
-    /**
-     * Return an object of ordered rectangle coordinate.
-     * In returned object {x0, y0} => top left corner - {x1, y1} => bottom right corner
-     * @private
-     */
-    getOrderedRectangleCoordinates : function (x0, y0, x1, y1) {
-      return {
-        x0 : Math.min(x0, x1),
-        y0 : Math.min(y0, y1),
-        x1 : Math.max(x0, x1),
-        y1 : Math.max(y0, y1)
-      };
-    },
-
-    /**
-     * Return the list of pixels that would have been filled by a paintbucket tool applied
-     * on pixel at coordinate (x,y).
-     * This function is not altering the Frame object argument.
-     *
-     * @param frame pskl.model.Frame The frame target in which we want to paintbucket
-     * @param col number Column coordinate in the frame
-     * @param row number Row coordinate in the frame
-     *
-     * @return an array of the pixel coordinates paint with the replacement color
-     */
-    getSimilarConnectedPixelsFromFrame: function(frame, col, row) {
-      // To get the list of connected (eg the same color) pixels, we will use the paintbucket algorithm
-      // in a fake cloned frame. The returned pixels by the paintbucket algo are the painted pixels
-      // and are as well connected.
-      var fakeFrame = frame.clone(); // We just want to
-      var fakeFillColor = "sdfsdfsdf"; // A fake color that will never match a real color.
-      var paintedPixels = this.paintSimilarConnectedPixelsFromFrame(fakeFrame, col, row, fakeFillColor);
-
-      return paintedPixels;
-    },
-
-    /**
-     * Apply the paintbucket tool in a frame at the (col, row) initial position
-     * with the replacement color.
-     *
-     * @param frame pskl.model.Frame The frame target in which we want to paintbucket
-     * @param col number Column coordinate in the frame
-     * @param row number Row coordinate in the frame
-     * @param replacementColor string Hexadecimal color used to fill the area
-     *
-     * @return an array of the pixel coordinates paint with the replacement color
-     */
-    paintSimilarConnectedPixelsFromFrame: function(frame, col, row, replacementColor) {
-      /**
-       *  Queue linear Flood-fill (node, target-color, replacement-color):
-       *   1. Set Q to the empty queue.
-       *   2. If the color of node is not equal to target-color, return.
-       *   3. Add node to Q.
-       *   4. For each element n of Q:
-       *   5.     If the color of n is equal to target-color:
-       *   6.         Set w and e equal to n.
-       *   7.         Move w to the west until the color of the node to the west of w no longer matches target-color.
-       *   8.         Move e to the east until the color of the node to the east of e no longer matches target-color.
-       *   9.         Set the color of nodes between w and e to replacement-color.
-       *  10.         For each node n between w and e:
-       *  11.             If the color of the node to the north of n is target-color, add that node to Q.
-       *  12.             If the color of the node to the south of n is target-color, add that node to Q.
-       *  13. Continue looping until Q is exhausted.
-       *  14. Return.
-       */
-      var paintedPixels = [];
-      var queue = [];
-      var dy = [-1, 0, 1, 0];
-      var dx = [0, 1, 0, -1];
-      var targetColor;
-      try {
-        targetColor = frame.getPixel(col, row);
-      } catch(e) {
-        // Frame out of bound exception.
-      }
-
-      if(targetColor == replacementColor) {
-        return;
-      }
-
-
-      queue.push({"col": col, "row": row});
-      var loopCount = 0;
-      var cellCount = frame.getWidth() * frame.getHeight();
-      while(queue.length > 0) {
-        loopCount ++;
-
-        var currentItem = queue.pop();
-        frame.setPixel(currentItem.col, currentItem.row, replacementColor);
-        paintedPixels.push({"col": currentItem.col, "row": currentItem.row });
-
-        for (var i = 0; i < 4; i++) {
-          var nextCol = currentItem.col + dx[i];
-          var nextRow = currentItem.row + dy[i];
-          try {
-            if (frame.containsPixel(nextCol, nextRow)  && frame.getPixel(nextCol, nextRow) == targetColor) {
-              queue.push({"col": nextCol, "row": nextRow });
-            }
-          } catch(e) {
-            // Frame out of bound exception.
-          }
-        }
-
-        // Security loop breaker:
-        if(loopCount > 10 * cellCount) {
-          console.log("loop breaker called");
-          break;
-        }
-      }
-      return paintedPixels;
-    },
-
-    /**
-     * Calculate and return the maximal zoom level to display a picture in a given container.
-     *
-     * @param container jQueryObject Container where the picture should be displayed
-     * @param number pictureHeight height in pixels of the picture to display
-     * @param number pictureWidth width in pixels of the picture to display
-     * @return number maximal zoom
-     */
-    calculateZoomForContainer : function (container, pictureHeight, pictureWidth) {
-      return this.calculateZoom(container.height(), container.width(), pictureHeight, pictureWidth);
-    }
-  };
-})();;(function () {
-  var ns = $.namespace("pskl.utils");
-
-  ns.Template = {
-    get : function (templateId) {
-      var template = document.getElementById(templateId);
-      if (template) {
-        return template.innerHTML;
-      } else {
-        console.error("Could not find template for id :", templateId);
-      }
-    },
-
-    createFromHTML : function (html) {
-      var dummyEl = document.createElement("div");
-      dummyEl.innerHTML = html;
-      return dummyEl.children[0];
-    },
-
-    replace : function (template, dict) {
-      for (var key in dict) {
-        if (dict.hasOwnProperty(key)) {
-          var value = dict[key];
-
-          // special boolean keys keys key:default
-          // if the value is a boolean, use default as value
-          if (key.indexOf(':') !== -1) {
-            if (value === true) {
-              value = key.split(':')[1];
-            } else if (value === false) {
-              value = '';
-            }
-          }
-          template = template.replace(new RegExp('\\{\\{'+key+'\\}\\}', 'g'), value);
-        }
-      }
-      return template;
-    }
-  };
-})();;(function () {
-  var ns = $.namespace("pskl");
-
-  ns.UserSettings = {
-    GRID_WIDTH : 'GRID_WIDTH',
-    CANVAS_BACKGROUND : 'CANVAS_BACKGROUND',
-    SELECTED_PALETTE : 'SELECTED_PALETTE',
-    TILED_PREVIEW : 'TILED_PREVIEW',
-    ONION_SKIN : 'ONION_SKIN',
-    LAYER_PREVIEW : 'LAYER_PREVIEW',
-
-    KEY_TO_DEFAULT_VALUE_MAP_ : {
-      'GRID_WIDTH' : 0,
-      'CANVAS_BACKGROUND' : 'lowcont-dark-canvas-background',
-      'SELECTED_PALETTE' : Constants.CURRENT_COLORS_PALETTE_ID,
-      'TILED_PREVIEW' : false,
-      'ONION_SKIN' : false,
-      'LAYER_PREVIEW' : true
-    },
-
-    /**
-     * @private
-     */
-    cache_ : {},
-
-    /**
-     * Static method to access a user defined settings value ot its default
-     * value if not defined yet.
-     */
-    get : function (key) {
-      this.checkKeyValidity_(key);
-      if (!(key in this.cache_)) {
-        var storedValue = this.readFromLocalStorage_(key);
-        if (typeof storedValue !== 'undefined' && storedValue !== null) {
-          this.cache_[key] = storedValue;
-        } else {
-          this.cache_[key] = this.readFromDefaults_(key);
-        }
-      }
-      return this.cache_[key];
-    },
-
-    set : function (key, value) {
-      this.checkKeyValidity_(key);
-      this.cache_[key] = value;
-      this.writeToLocalStorage_(key, value);
-
-      $.publish(Events.USER_SETTINGS_CHANGED, [key, value]);
-    },
-
-    /**
-     * @private
-     */
-    readFromLocalStorage_ : function(key) {
-      var value = window.localStorage[key];
-      if (typeof value != "undefined") {
-        value = JSON.parse(value);
-      }
-      return value;
-    },
-
-    /**
-     * @private
-     */
-    writeToLocalStorage_ : function(key, value) {
-      // TODO(grosbouddha): Catch storage exception here.
-      window.localStorage[key] = JSON.stringify(value);
-    },
-
-    /**
-     * @private
-     */
-    readFromDefaults_ : function (key) {
-      return this.KEY_TO_DEFAULT_VALUE_MAP_[key];
-    },
-
-    /**
-     * @private
-     */
-    checkKeyValidity_ : function(key) {
-      if(!(key in this.KEY_TO_DEFAULT_VALUE_MAP_)) {
-        // TODO(grosbouddha): Define error catching strategy and throw exception from here.
-        console.log("UserSettings key <"+ key +"> not find in supported keys.");
-      }
-    }
-  };
-})();;(function () {
-  var ns = $.namespace('pskl.utils');
-
-  ns.Serializer = {
-    serializePiskel : function (piskel, expanded) {
-      var serializedLayers = piskel.getLayers().map(function (l) {
-        return pskl.utils.Serializer.serializeLayer(l, expanded);
-      });
-      return JSON.stringify({
-        modelVersion : Constants.MODEL_VERSION,
-        piskel : {
-          height : piskel.getHeight(),
-          width : piskel.getWidth(),
-          layers : serializedLayers,
-          expanded : expanded
-        }
-      });
-    },
-
-    serializeLayer : function (layer, expanded) {
-      var frames = layer.getFrames();
-      var renderer = new pskl.rendering.FramesheetRenderer(frames);
-      var layerToSerialize = {
-        name : layer.getName(),
-        frameCount : frames.length
-      };
-      if (expanded) {
-        layerToSerialize.grids = frames.map(function (f) {return f.pixels;});
-        return layerToSerialize;
-      } else {
-        layerToSerialize.base64PNG = renderer.renderAsCanvas().toDataURL();
-        return JSON.stringify(layerToSerialize);
-      }
-    }
-  };
-})();
-;(function () {
-  var ns = $.namespace('pskl.utils.serialization');
-
-  ns.Deserializer = function (data, callback) {
-    this.layersToLoad_ = 0;
-    this.data_ = data;
-    this.callback_ = callback;
-    this.piskel_ = null;
-  };
-
-  ns.Deserializer.deserialize = function (data, callback) {
-    var deserializer;
-    if (data.modelVersion == Constants.MODEL_VERSION) {
-      deserializer = new ns.Deserializer(data, callback);
-    } else if (data.modelVersion == 1) {
-      deserializer = new ns.backward.Deserializer_v1(data, callback);
-    } else {
-      deserializer = new ns.backward.Deserializer_v0(data, callback);
-    }
-    deserializer.deserialize();
-  };
-
-  ns.Deserializer.prototype.deserialize = function (name) {
-    var data = this.data_;
-    var piskelData = data.piskel;
-    name = name || 'Deserialized piskel';
-
-    var descriptor = new pskl.model.piskel.Descriptor(name, '');
-    this.piskel_ = new pskl.model.Piskel(piskelData.width, piskelData.height, descriptor);
-
-    this.layersToLoad_ = piskelData.layers.length;
-    if (piskelData.expanded) {
-      piskelData.layers.forEach(this.loadExpandedLayer.bind(this));
-    } else {
-      piskelData.layers.forEach(this.deserializeLayer.bind(this));
-    }
-  };
-
-  ns.Deserializer.prototype.deserializeLayer = function (layerString) {
-    var layerData = JSON.parse(layerString);
-    var layer = new pskl.model.Layer(layerData.name);
-
-    // 1 - create an image to load the base64PNG representing the layer
-    var base64PNG = layerData.base64PNG;
-    var image = new Image();
-
-    // 2 - attach the onload callback that will be triggered asynchronously
-    image.onload = function () {
-      // 5 - extract the frames from the loaded image
-      var frames = pskl.utils.LayerUtils.createFromImage(image, layerData.frameCount);
-      // 6 - add each image to the layer
-      this.addFramesToLayer(frames, layer);
-    }.bind(this);
-
-    // 3 - set the source of the image
-    image.src = base64PNG;
-
-    // 4 - return a pointer to the new layer instance
-    return layer;
-  };
-
-  ns.Deserializer.prototype.loadExpandedLayer = function (layerData) {
-    var layer = new pskl.model.Layer(layerData.name);
-    var frames = layerData.grids.map(function (grid) {
-      return pskl.model.Frame.fromPixelGrid(grid);
-    });
-    this.addFramesToLayer(frames, layer);
-
-    // 4 - return a pointer to the new layer instance
-    return layer;
-  };
-
-  ns.Deserializer.prototype.addFramesToLayer = function (frames, layer) {
-    frames.forEach(layer.addFrame.bind(layer));
-
-    this.piskel_.addLayer(layer);
-    this.onLayerLoaded_();
-  };
-
-  ns.Deserializer.prototype.onLayerLoaded_ = function () {
-    this.layersToLoad_ = this.layersToLoad_ - 1;
-    if (this.layersToLoad_ === 0) {
-      this.callback_(this.piskel_);
-    }
-  };
-})();;(function () {
-  var ns = $.namespace('pskl.utils.serialization.backward');
-
-  ns.Deserializer_v0 = function (data, callback) {
-    this.data_ = data;
-    this.callback_ = callback;
-  };
-
-  ns.Deserializer_v0.prototype.deserialize = function () {
-    var pixelGrids = this.data_;
-    var frames = pixelGrids.map(function (grid) {
-      return pskl.model.Frame.fromPixelGrid(grid);
-    });
-    var descriptor = new pskl.model.piskel.Descriptor('Deserialized piskel', '');
-    var layer = pskl.model.Layer.fromFrames('Layer 1', frames);
-
-    this.callback_(pskl.model.Piskel.fromLayers([layer], descriptor));
-  };
-})();;(function () {
-  var ns = $.namespace('pskl.utils.serialization.backward');
-
-  ns.Deserializer_v1 = function (data, callback) {
-    this.callback_ = callback;
-    this.data_ = data;
-  };
-
-  ns.Deserializer_v1.prototype.deserialize = function () {
-    var piskelData = this.data_.piskel;
-    var descriptor = new pskl.model.piskel.Descriptor('Deserialized piskel', '');
-    var piskel = new pskl.model.Piskel(piskelData.width, piskelData.height, descriptor);
-
-    piskelData.layers.forEach(function (serializedLayer) {
-      var layer = this.deserializeLayer(serializedLayer);
-      piskel.addLayer(layer);
-    }.bind(this));
-
-    this.callback_(piskel);
-  };
-
-  ns.Deserializer_v1.prototype.deserializeLayer = function (layerString) {
-    var layerData = JSON.parse(layerString);
-    var layer = new pskl.model.Layer(layerData.name);
-    layerData.frames.forEach(function (serializedFrame) {
-      var frame = this.deserializeFrame(serializedFrame);
-      layer.addFrame(frame);
-    }.bind(this));
-
-    return layer;
-  };
-
-  ns.Deserializer_v1.prototype.deserializeFrame = function (frameString) {
-    var framePixelGrid = JSON.parse(frameString);
-    return pskl.model.Frame.fromPixelGrid(framePixelGrid);
-  };
-})();;(function () {
   var ns = $.namespace("pskl.rendering");
 
   ns.DrawingLoop = function () {
@@ -15760,28 +15765,30 @@ if (typeof Function.prototype.bind !== "function") {
     return [this.id, this.version].join('-');
   };
 
-  ns.Frame.prototype.setPixel = function (col, row, color) {
-    if (this.containsPixel(col, row)) {
-      var p = this.pixels[col][row];
+  ns.Frame.prototype.setPixel = function (x, y, color) {
+    if (this.containsPixel(x, y)) {
+      var p = this.pixels[x][y];
       if (p !== color) {
-        this.pixels[col][row] = color;
+        this.pixels[x][y] = color;
         this.version++;
       }
     }
   };
 
-  ns.Frame.prototype.getPixel = function (col, row) {
-    if (this.containsPixel(col, row)) {
-      return this.pixels[col][row];
+  ns.Frame.prototype.getPixel = function (x, y) {
+    if (this.containsPixel(x, y)) {
+      return this.pixels[x][y];
     } else {
       return null;
     }
   };
 
   ns.Frame.prototype.forEachPixel = function (callback) {
-    for (var col = 0 ; col < this.getWidth() ; col++) {
-      for (var row = 0 ; row < this.getHeight() ; row++) {
-        callback(this.getPixel(col, row), col, row);
+    var width = this.getWidth();
+    var height = this.getHeight();
+    for (var x = 0 ; x < width ; x++) {
+      for (var y = 0 ; y < height ; y++) {
+        callback(this.pixels[x][y], x, y, this);
       }
     }
   };
@@ -15796,29 +15803,6 @@ if (typeof Function.prototype.bind !== "function") {
 
   ns.Frame.prototype.containsPixel = function (col, row) {
     return col >= 0 && row >= 0 && col < this.width && row < this.height;
-  };
-
-  ns.Frame.prototype.saveState = function () {
-    // remove all states past current state
-    this.previousStates.length = this.stateIndex + 1;
-    // push new state
-    this.previousStates.push(this.getPixels());
-    // set the stateIndex to latest saved state
-    this.stateIndex = this.previousStates.length - 1;
-  };
-
-  ns.Frame.prototype.loadPreviousState = function () {
-    if (this.stateIndex > 0) {
-      this.stateIndex--;
-      this.setPixels(this.previousStates[this.stateIndex]);
-    }
-  };
-
-  ns.Frame.prototype.loadNextState = function () {
-    if (this.stateIndex < this.previousStates.length - 1) {
-      this.stateIndex++;
-      this.setPixels(this.previousStates[this.stateIndex]);
-    }
   };
 
   ns.Frame.prototype.isSameSize = function (otherFrame) {
@@ -18445,8 +18429,9 @@ if (typeof Function.prototype.bind !== "function") {
     this.tools = [
       toDescriptor('simplePen', 'P', new pskl.drawingtools.SimplePen()),
       toDescriptor('verticalMirrorPen', 'V', new pskl.drawingtools.VerticalMirrorPen()),
-      toDescriptor('eraser', 'E', new pskl.drawingtools.Eraser()),
       toDescriptor('paintBucket', 'B', new pskl.drawingtools.PaintBucket()),
+      toDescriptor('colorSwap', 'F', new pskl.drawingtools.ColorSwap()),
+      toDescriptor('eraser', 'E', new pskl.drawingtools.Eraser()),
       toDescriptor('stroke', 'L', new pskl.drawingtools.Stroke()),
       toDescriptor('rectangle', 'R', new pskl.drawingtools.Rectangle()),
       toDescriptor('circle', 'C', new pskl.drawingtools.Circle()),
@@ -21483,7 +21468,7 @@ if (typeof Function.prototype.bind !== "function") {
     this.superclass.constructor.call(this);
 
     this.toolId = "tool-vertical-mirror-pen";
-    this.helpText = "Vertical Mirror pen tool (hold CTRL for Horizontal, hold SHIFT for both)";
+    this.helpText = "Vertical Mirror pen (CTRL for Horizontal, SHIFT for both)";
   };
 
   pskl.utils.inherit(ns.VerticalMirrorPen, ns.SimplePen);
@@ -22118,12 +22103,66 @@ if (typeof Function.prototype.bind !== "function") {
   ns.ColorPicker.prototype.applyToolAt = function(col, row, color, frame, overlay, event) {
     if (frame.containsPixel(col, row)) {
       var sampledColor = frame.getPixel(col, row);
-      if (event.button == Constants.LEFT_BUTTON) {
-        $.publish(Events.SELECT_PRIMARY_COLOR, [sampledColor]);
-      } else if (event.button == Constants.RIGHT_BUTTON) {
-        $.publish(Events.SELECT_SECONDARY_COLOR, [sampledColor]);
+      if (event.ctrlKey) {
+        pskl.app.piskelController.getPiskel().getLayers().forEach(function (l) {
+          l.getFrames().forEach(function (f) {
+            f.forEachPixel(function (pixelColor,x,y) {
+              if (pixelColor === sampledColor) {
+                f.setPixel(x, y, pskl.app.paletteController.getPrimaryColor());
+              }
+            });
+          });
+        });
+      } else {
+        if (event.button == Constants.LEFT_BUTTON) {
+          $.publish(Events.SELECT_PRIMARY_COLOR, [sampledColor]);
+        } else if (event.button == Constants.RIGHT_BUTTON) {
+          $.publish(Events.SELECT_SECONDARY_COLOR, [sampledColor]);
+        }
       }
     }
+  };
+})();
+;/**
+ * @provide pskl.drawingtools.ColorSwap
+ *
+ */
+(function() {
+  var ns = $.namespace("pskl.drawingtools");
+
+  ns.ColorSwap = function() {
+    this.toolId = "tool-colorswap";
+    this.helpText = "Color swap";
+  };
+
+  pskl.utils.inherit(ns.ColorSwap, ns.BaseTool);
+
+  /**
+   * @override
+   */
+  ns.ColorSwap.prototype.applyToolAt = function(col, row, color, frame, overlay, event) {
+    if (frame.containsPixel(col, row)) {
+      var sampledColor = frame.getPixel(col, row);
+      this.swapColors(sampledColor, color);
+
+      $.publish(Events.PISKEL_SAVE_STATE, {
+        type : pskl.service.HistoryService.SNAPSHOT
+      });
+    }
+  };
+
+  ns.ColorSwap.prototype.swapColors = function(oldColor, newColor) {
+    var swapPixelColor = function (pixelColor,x,y,frame) {
+      if (pixelColor == oldColor) {
+        frame.pixels[x][y] = newColor;
+      }
+    };
+    pskl.app.piskelController.getPiskel().getLayers().forEach(function (l) {
+      l.getFrames().forEach(function (f) {
+        f.forEachPixel(swapPixelColor);
+        f.version++;
+      });
+    });
   };
 })();
 ;/**
