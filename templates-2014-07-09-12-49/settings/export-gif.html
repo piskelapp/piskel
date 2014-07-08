@@ -1,0 +1,22 @@
+<div class="settings-section">
+  <div class="settings-title">
+    Export to Animated GIF
+  </div>
+  <div class="settings-item">
+    <form action="" method="POST" class="gif-export-form">
+      <label>Select resolution:</label>
+      <script type="text/template" id="gif-export-radio-template">
+          <label style="display:block"><input type="radio" name="gif-zoom-level" value="{{value}}"/>
+          {{label}}</label>
+      </script>
+      <div class="gif-export-radio-group"></div>
+
+      <button type="button" class="button button-primary gif-download-button">Download GIF</button>
+      <button type="button" class="button button gif-upload-button">Export online</button>
+    </form>
+    <span class="gif-export-progress-status"></span>
+    <div class="gif-export-progress-bar"></div>
+    <div class="gif-export-preview"></div>
+    <div class="gif-upload-status"></div>
+  </div>
+</div>

@@ -1,0 +1,34 @@
+<div class="settings-section">
+  <div class="settings-title">
+    Import Picture
+  </div>
+  <div class="settings-item">
+    <form action="" method="POST" name="import-form">
+      <div class="import-section">
+        <span class="import-section-title  import-section-title-small">File :</span>
+        <button type="button" class="button  button-primary file-input-button">Browse</button>
+        <span class="file-input-status"></span>
+        <input style="display:none"
+          type="file" name="file-upload-input"
+          value="file" accept="image/*"/>
+      </div>
+      <div class="import-section import-section-disabled">
+        <span class="import-section-title  import-section-title-small" style="vertical-align:top">Info :</span>
+        <div class="import-section-preview"></div>
+      </div>
+      <div class="import-section import-section-disabled">
+        <span class="import-section-title  import-section-title-small">Size :</span>
+        <input type="text" disabled="disabled" class="textfield import-size-field" name="resize-width"/>x
+        <input type="text" disabled="disabled" class="textfield import-size-field" name="resize-height"/>
+      </div>
+      <div class="import-section import-section-disabled">
+        <span class="import-section-title">Smooth resize :</span>
+        <input type="checkbox" disabled="disabled" checked="checked" name="smooth-resize-checkbox" value="1"/>
+      </div>
+      <input type="submit" name="import-submit" disabled="disabled" class="button button-primary import-button" value="Import" />
+
+      <span class="settings-description" style="margin-top:5px;">Animated GIFs will be split in several frames. Other images will be imported as a single-frame.</span>
+
+    </form>
+  </div>
+</div>

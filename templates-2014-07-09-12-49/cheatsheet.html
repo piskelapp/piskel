@@ -1,0 +1,24 @@
+<div id="cheatsheet-wrapper" style="display:none">
+  <div class="cheatsheet-container">
+    <div class="cheatsheet-section">
+      <h3>Tool shortcuts</h3>
+      <ul class="cheatsheet-tool-shortcuts"></ul>
+    </div>
+    <div class="cheatsheet-section">
+      <h3>Misc shortcuts</h3>
+      <ul class="cheatsheet-misc-shortcuts"></ul>
+    </div>
+    <div class="cheatsheet-section">
+      <h3>Selection shortcuts</h3>
+      <ul class="cheatsheet-selection-shortcuts"></ul>
+    </div>
+  </div>
+</div>
+<span class="cheatsheet-link">Keyboard shortcuts</a>
+<script type="text/template" id="cheatsheet-shortcut-template">
+  <li class="cheatsheet-shortcut">
+    <div class="cheatsheet-icon {{shortcutIcon}}"></div>
+    <span class="cheatsheet-key">{{shortcutKey}}</span>
+    <span class="cheatsheet-description">{{shortcutDescription}}</span>
+  </li>
+</script>

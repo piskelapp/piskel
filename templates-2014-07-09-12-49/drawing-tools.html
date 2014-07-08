@@ -1,0 +1,34 @@
+<div class="sticky-section left-sticky-section" id="tool-section">
+  <div class="sticky-section-wrap">
+    <div class="vertical-centerer">
+      <script type="text/template" id="drawing-tool-item-template">
+        <li rel="tooltip" data-placement="right" class="{{cssclass}}" data-tool-id="{{toolid}}" title="{{title}}"></li>
+      </script>
+      <ul id="tools-container" class="tools-wrapper"></ul>
+      <div class="palette-wrapper">
+        <div
+          class="tool-icon tool-color-picker"
+          title="Primary - left mouse button"
+          rel="tooltip"
+          data-placement="right"
+        >
+          <input id="color-picker" class="color" type="text"/>
+        </div>
+        <div
+          class="tool-icon tool-color-picker"
+          title="Secondary - right mouse button"
+          rel="tooltip"
+          data-placement="right"
+        >
+          <input id="secondary-color-picker" class="secondary-color-picker color" type="text" />
+        </div>
+        <div
+          class="swap-colors-icon"
+          title="Swap colors (X)"
+          rel="tooltip"
+          data-placement="right"
+        ></div>
+      </div>
+    </div>
+  </div>
+</div>

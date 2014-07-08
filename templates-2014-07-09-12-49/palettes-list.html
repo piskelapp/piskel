@@ -1,0 +1,19 @@
+<div class="toolbox-container palettes-list-container">
+  <h3 class="toolbox-title palettes-title" style="overflow:hidden">
+    <span style="line-height:24px ">Palettes</span>
+    <select class="palettes-list-select">
+      <option value="__current-colors">Current colors</option>
+      <option value="__manage-palettes">Create custom palettes</option>
+      <optgroup class="palettes-list-select-group" label="Custom palettes">
+      </optgroup>
+    </select>
+  </h3>
+  <div class="palettes-list-colors"></div>
+  <script type="text/template" id="palette-color-template">
+    <div class="palettes-list-color" data-color="{{color}}" title="{{color}}">
+      <div data-color="{{color}}" style="background:{{color}}"></div>
+    </div>
+  </script>
+</div>
+
+

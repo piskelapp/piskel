@@ -1,0 +1,23 @@
+<div class="settings-section">
+  <div class="settings-title">Save</div>
+  <div class="settings-item">
+    <form action="" method="POST" name="save-form">
+      <div class="settings-form-section">
+        <label class="row">Title : </label>
+        <input id="save-name" type="text" class="save-field textfield"/>
+      </div>
+      <div class="settings-form-section">
+        <label class="row">Description :</label>
+        <textarea id="save-description" class="save-field textfield" placeholder="Your piskel in a few words"></textarea>
+      </div>
+      <div class="settings-form-section">
+        <label class="row">
+          Public : <input type="checkbox" value="1" name="save-public-checkbox"/>
+        </label>
+      </div>
+      <input type="submit" class="button button-primary" id="save-cloud-button" value="Upload" />
+      <input type="button" class="button" id="save-local-button" value="Local save" />
+      <div id="save-status" class="status"></div>
+    </form>
+  </div>
+</div>

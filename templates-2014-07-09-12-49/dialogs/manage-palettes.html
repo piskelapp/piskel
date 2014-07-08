@@ -1,0 +1,57 @@
+<div class="palette-manager-wrapper">
+  <h3 class="palette-manager-head">
+    Palette manager
+    <span class="palette-manager-close">X</span>
+  </h3>
+  <div class="palette-manager-body">
+    <div class="palette-manager-drawer">
+      <div class="palette-manager-actions">
+        <button type="button" class="palette-manager-actions-button button " data-action="create">Create</button>
+        <button type="button" class="palette-manager-actions-button button " data-action="save-all">Save all</button>
+      </div>
+      <ul class="palette-manager-list">
+      </ul>
+    </div>
+    <div class="palette-manager-details">
+      <div class="palette-manager-details-head"></div>
+      <div class="palette-manager-details-body"></div>
+    </div>
+  </div>
+</div>
+
+<script type="text/template" id="palette-details-head-template">
+  <span class="palette-manager-details-head-name">{{name}}</span>
+  <span class="action-icon edit-icon" title="edit name">&nbsp;</span>
+  <div class="palette-manager-details-head-actions">
+    <button class="palette-manager-palette-button button button-primary" {{save:disabled}} data-action="save" type="button">Save</button>
+    <button class="palette-manager-palette-button button " {{revert:disabled}} data-action="revert" type="button">Revert</button>
+    <button class="palette-manager-palette-button button " {{delete:disabled}} data-action="delete" type="button">Delete</button>
+  </div>
+</script>
+
+<script type="text/template" id="palette-color-card-template">
+  <div class="palette-manager-color-card" data-color-id="{{colorId}}">
+    <span class="palette-manager-delete-card" title="remove this color">X</span>
+    <div class="palette-manager-color-square" style="background-color:{{hex}}"></div>
+    <div class="palette-manager-color-details allow-user-select">
+      <ul>
+        <li>{{hex}}</li>
+        <li>{{rgb}}</li>
+        <li>{{hsl}}</li>
+      </ul>
+    </div>
+  </div>
+</script>
+
+<script type="text/template" id="palette-new-color-template">
+  <div class="palette-manager-color-card {{classname}}">
+    <div class="palette-manager-color-square">Add</div>
+    <div class="palette-manager-color-details">
+      <ul>
+        <li>Hex</li>
+        <li>RGB</li>
+        <li>HSL</li>
+      </ul>
+    </div>
+  </div>
+</script>
