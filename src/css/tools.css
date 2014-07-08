@@ -97,6 +97,12 @@
   background-size: 23px 23px;
 }
 
+.tool-icon.tool-colorswap {
+  background-image: url(../img/tools/swap-colors-twirl-3.png);
+  background-position: 6px 6px;
+  background-size: 36px 36px;
+}
+
 /*
  * Tool cursors:
  */

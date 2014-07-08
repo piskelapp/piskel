@@ -9,8 +9,9 @@
     this.tools = [
       toDescriptor('simplePen', 'P', new pskl.drawingtools.SimplePen()),
       toDescriptor('verticalMirrorPen', 'V', new pskl.drawingtools.VerticalMirrorPen()),
-      toDescriptor('eraser', 'E', new pskl.drawingtools.Eraser()),
       toDescriptor('paintBucket', 'B', new pskl.drawingtools.PaintBucket()),
+      toDescriptor('colorSwap', 'F', new pskl.drawingtools.ColorSwap()),
+      toDescriptor('eraser', 'E', new pskl.drawingtools.Eraser()),
       toDescriptor('stroke', 'L', new pskl.drawingtools.Stroke()),
       toDescriptor('rectangle', 'R', new pskl.drawingtools.Rectangle()),
       toDescriptor('circle', 'C', new pskl.drawingtools.Circle()),
@@ -18,8 +19,7 @@
       toDescriptor('rectangleSelect', 'S', new pskl.drawingtools.RectangleSelect()),
       toDescriptor('shapeSelect', 'Z', new pskl.drawingtools.ShapeSelect()),
       toDescriptor('lighten', 'U', new pskl.drawingtools.Lighten()),
-      toDescriptor('colorPicker', 'O', new pskl.drawingtools.ColorPicker()),
-      toDescriptor('colorSwap', 'F', new pskl.drawingtools.ColorSwap())
+      toDescriptor('colorPicker', 'O', new pskl.drawingtools.ColorPicker())
     ];
 
     this.currentSelectedTool = this.tools[0];

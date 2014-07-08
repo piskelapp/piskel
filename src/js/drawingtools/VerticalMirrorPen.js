@@ -5,7 +5,7 @@
     this.superclass.constructor.call(this);
 
     this.toolId = "tool-vertical-mirror-pen";
-    this.helpText = "Vertical Mirror pen tool (hold CTRL for Horizontal, hold SHIFT for both)";
+    this.helpText = "Vertical Mirror pen (CTRL for Horizontal, SHIFT for both)";
   };
 
   pskl.utils.inherit(ns.VerticalMirrorPen, ns.SimplePen);
