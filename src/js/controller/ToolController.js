@@ -136,7 +136,12 @@
   };
 
   ns.ToolController.prototype.getTooltipText_ = function (tool) {
-    return tool.instance.helpText + ' (' + tool.shortcut + ')';
+    var shortcutMarkup = "<span class='tools-tooltip-shortcut'>("+tool.shortcut+")</span>";
+    if (tool.instance.helpText.indexOf('{{shortcut}}') !== -1) {
+      return tool.instance.helpText.replace('{{shortcut}}', shortcutMarkup);
+    } else {
+      return tool.instance.helpText + ' ' + shortcutMarkup;
+    }
   };
 
   ns.ToolController.prototype.addKeyboardShortcuts_ = function () {

@@ -7,7 +7,13 @@
 
   ns.ColorSwap = function() {
     this.toolId = "tool-colorswap";
-    this.helpText = "Color swap";
+    this.helpText = [
+      "<div class='tools-tooltip-container'>",
+      "Paint all pixels of the same color {{shortcut}}<br/>",
+      "<span class='tools-tooltip-modifier'><span class='tools-tooltip-modifier-button'>CTRL</span>Apply to all layers</span><br/>",
+      "<span class='tools-tooltip-modifier'><span class='tools-tooltip-modifier-button'>SHIFT</span>Apply to all frames</span><br/>",
+      "</div>"
+    ].join("");
   };
 
   pskl.utils.inherit(ns.ColorSwap, ns.BaseTool);
@@ -18,7 +24,11 @@
   ns.ColorSwap.prototype.applyToolAt = function(col, row, color, frame, overlay, event) {
     if (frame.containsPixel(col, row)) {
       var sampledColor = frame.getPixel(col, row);
-      this.swapColors(sampledColor, color);
+
+      var allLayers = pskl.utils.UserAgent.isMac ?  event.metaKey : event.ctrlKey;
+      var allFrames = event.shiftKey;
+
+      this.swapColors(sampledColor, color, allLayers, allFrames);
 
       $.publish(Events.PISKEL_SAVE_STATE, {
         type : pskl.service.HistoryService.SNAPSHOT
@@ -26,17 +36,23 @@
     }
   };
 
-  ns.ColorSwap.prototype.swapColors = function(oldColor, newColor) {
+  ns.ColorSwap.prototype.swapColors = function(oldColor, newColor, allLayers, allFrames) {
     var swapPixelColor = function (pixelColor,x,y,frame) {
       if (pixelColor == oldColor) {
         frame.pixels[x][y] = newColor;
       }
     };
+    var currentLayer = pskl.app.piskelController.getCurrentLayer();
+    var currentFrameIndex = pskl.app.piskelController.getCurrentFrameIndex();
     pskl.app.piskelController.getPiskel().getLayers().forEach(function (l) {
-      l.getFrames().forEach(function (f) {
-        f.forEachPixel(swapPixelColor);
-        f.version++;
-      });
+      if (allLayers || l === currentLayer) {
+        l.getFrames().forEach(function (f, frameIndex) {
+          if (allFrames || frameIndex === currentFrameIndex) {
+            f.forEachPixel(swapPixelColor);
+            f.version++;
+          }
+        });
+      }
     });
   };
 })();

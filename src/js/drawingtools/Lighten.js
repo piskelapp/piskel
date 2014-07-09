@@ -11,7 +11,15 @@
   ns.Lighten = function() {
     this.superclass.constructor.call(this);
     this.toolId = "tool-lighten";
-    this.helpText = "Lighten (hold ctrl for Darken)";
+
+    this.helpText = [
+      "<div class='tools-tooltip-container'>",
+      "Lighten {{shortcut}}<br/>",
+      "<span class='tools-tooltip-modifier'><span class='tools-tooltip-modifier-button'>CTRL</span>Darken</span><br/>",
+      "<span class='tools-tooltip-modifier'><span class='tools-tooltip-modifier-button'>SHIFT</span>Apply only once per pixel</span><br/>",
+      "</div>"
+    ].join("");
+
     this.resetUsedPixels_();
   };
 
@@ -31,7 +39,7 @@
     var frameColor = frame.getPixel(col, row);
     var pixelColor = overlayColor === Constants.TRANSPARENT_COLOR ? frameColor : overlayColor;
 
-    var isDarken = event.ctrlKey || event.cmdKey;
+    var isDarken = pskl.utils.UserAgent.isMac ?  event.metaKey : event.ctrlKey;
     var isSinglePass = event.shiftKey;
 
     var isTransparent = pixelColor === Constants.TRANSPARENT_COLOR;

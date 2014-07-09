@@ -10,7 +10,13 @@
     ns.ShapeTool.call(this);
 
     this.toolId = "tool-circle";
-    this.helpText = "Circle tool";
+
+    this.helpText = [
+      "<div class='tools-tooltip-container'>",
+      "Circle tool {{shortcut}}<br/>",
+      "<span class='tools-tooltip-modifier'><span class='tools-tooltip-modifier-button'>SHIFT</span>Keep 1 to 1 ratio</span><br/>",
+      "</div>"
+    ].join("");
   };
 
   pskl.utils.inherit(ns.Circle, ns.ShapeTool);

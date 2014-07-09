@@ -107,7 +107,7 @@
   };
 
   ns.ShortcutService.prototype.isCtrlKeyPressed_ = function (evt) {
-    return this.isMac_() ? evt.metaKey : evt.ctrlKey;
+    return pskl.utils.UserAgent.isMac ? evt.metaKey : evt.ctrlKey;
   };
 
   ns.ShortcutService.prototype.isShiftKeyPressed_ = function (evt) {
@@ -116,9 +116,5 @@
 
   ns.ShortcutService.prototype.isAltKeyPressed_ = function (evt) {
     return evt.altKey;
-  };
-
-  ns.ShortcutService.prototype.isMac_ = function () {
-    return navigator.appVersion.indexOf("Mac") != -1;
   };
 })();

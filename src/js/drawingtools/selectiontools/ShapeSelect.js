@@ -8,7 +8,15 @@
 
   ns.ShapeSelect = function() {
     this.toolId = "tool-shape-select";
-    this.helpText = "Shape selection tool";
+
+    this.helpText = [
+      "<div class='tools-tooltip-container'>",
+      "Shape selection {{shortcut}}<br/>",
+      "<span class='tools-tooltip-modifier'>Drag the selection to move it. You may switch to other layers and frames.</span><br/>",
+      "<span class='tools-tooltip-modifier'><span class='tools-tooltip-modifier-button'>CTRL+C</span>Copy the selected area</span><br/>",
+      "<span class='tools-tooltip-modifier'><span class='tools-tooltip-modifier-button'>CTRL+V</span>Paste the copied area</span><br/>",
+      "</div>"
+    ].join("");
 
     ns.BaseSelect.call(this);
   };
