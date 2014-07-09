@@ -58,6 +58,18 @@
     });
   };
 
+  ns.BaseTool.prototype.getShortHelpText = function() {
+    return this.shortHelpText || this.helpText;
+  };
+
+  ns.BaseTool.prototype.getModifierHelpText = function(modifier, helptext) {
+    var tpl = "<span class='tools-tooltip-modifier'><span class='tools-tooltip-modifier-button'>{{modifier}}</span>{{helptext}}</span><br/>";
+    modifier = modifier.toUpperCase();
+    if (pskl.utils.UserAgent.isMac) {
+      modifier = modifier.replace('CTRL', 'CMD');
+    }
+    return pskl.utils.Template.replace(tpl, {modifier : modifier, helptext : helptext});
+  };
 
   ns.BaseTool.prototype.releaseToolAt = function(col, row, color, frame, overlay, event) {};
 

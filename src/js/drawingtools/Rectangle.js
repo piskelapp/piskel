@@ -11,10 +11,11 @@
 
     this.toolId = "tool-rectangle";
 
+    this.shortHelpText = "Rectangle tool";
     this.helpText = [
       "<div class='tools-tooltip-container'>",
       "Rectangle tool {{shortcut}}<br/>",
-      "<span class='tools-tooltip-modifier'><span class='tools-tooltip-modifier-button'>SHIFT</span>Keep 1 to 1 ratio</span><br/>",
+      this.getModifierHelpText('shift', 'Keep 1 to 1 ratio'),
       "</div>"
     ].join("");
   };

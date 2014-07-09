@@ -9,12 +9,13 @@
   ns.RectangleSelect = function() {
     this.toolId = "tool-rectangle-select";
 
+    this.shortHelpText = "Rectangle selection";
     this.helpText = [
       "<div class='tools-tooltip-container'>",
       "Rectangle selection {{shortcut}}<br/>",
       "<span class='tools-tooltip-modifier'>Drag the selection to move it. You may switch to other layers and frames.</span><br/>",
-      "<span class='tools-tooltip-modifier'><span class='tools-tooltip-modifier-button'>CTRL+C</span>Copy the selected area</span><br/>",
-      "<span class='tools-tooltip-modifier'><span class='tools-tooltip-modifier-button'>CTRL+V</span>Paste the copied area</span><br/>",
+      this.getModifierHelpText('ctrl+c', 'Copy the selected area'),
+      this.getModifierHelpText('ctrl+v', 'Paste the copied area'),
       "</div>"
     ].join("");
 

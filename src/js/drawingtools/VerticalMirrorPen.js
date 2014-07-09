@@ -5,13 +5,13 @@
     this.superclass.constructor.call(this);
 
     this.toolId = "tool-vertical-mirror-pen";
-    this.helpText = "Vertical Mirror pen (CTRL for Horizontal, SHIFT for both)";
+    this.shortHelpText = "Vertical Mirror pen";
 
     this.helpText = [
       "<div class='tools-tooltip-container'>",
       "Vertical Mirror pen {{shortcut}}<br/>",
-      "<span class='tools-tooltip-modifier'><span class='tools-tooltip-modifier-button'>CTRL</span>Use horizontal axis</span><br/>",
-      "<span class='tools-tooltip-modifier'><span class='tools-tooltip-modifier-button'>SHIFT</span>Use horizontal and vertical axis</span><br/>",
+      this.getModifierHelpText('ctrl', 'Use horizontal axis'),
+      this.getModifierHelpText('shift', 'Use horizontal and vertical axis'),
       "</div>"
     ].join("");
   };

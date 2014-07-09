@@ -7,11 +7,13 @@
 
   ns.ColorSwap = function() {
     this.toolId = "tool-colorswap";
+
+    this.shortHelpText = "Paint all";
     this.helpText = [
       "<div class='tools-tooltip-container'>",
       "Paint all pixels of the same color {{shortcut}}<br/>",
-      "<span class='tools-tooltip-modifier'><span class='tools-tooltip-modifier-button'>CTRL</span>Apply to all layers</span><br/>",
-      "<span class='tools-tooltip-modifier'><span class='tools-tooltip-modifier-button'>SHIFT</span>Apply to all frames</span><br/>",
+      this.getModifierHelpText('ctrl', 'Apply to all layers'),
+      this.getModifierHelpText('shift', 'Apply to all frames'),
       "</div>"
     ].join("");
   };

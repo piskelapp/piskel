@@ -192,7 +192,7 @@ module.exports = function(grunt) {
           {src: ['src/js/lib/iframeLoader-0.1.0.js'], dest: 'dest/js/lib/iframeLoader-0.1.0.js'},
           {expand: true, src: ['img/**'], cwd: 'src/', dest: 'dest/', filter: 'isFile'},
           {expand: true, src: ['css/fonts/**'], cwd: 'src/', dest: 'dest/', filter: 'isFile'},
-          {expand: true, src: ['**/*.html'], cwd: 'src/templates/', dest: 'dest/templates' + version + '/', filter: 'isFile'}
+          {expand: true, src: ['**/*.html'], cwd: 'src/templates/', dest: 'dest/templates/', filter: 'isFile'}
         ]
       }
     },

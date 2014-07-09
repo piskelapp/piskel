@@ -10,7 +10,7 @@
       toDescriptor('simplePen', 'P', new pskl.drawingtools.SimplePen()),
       toDescriptor('verticalMirrorPen', 'V', new pskl.drawingtools.VerticalMirrorPen()),
       toDescriptor('paintBucket', 'B', new pskl.drawingtools.PaintBucket()),
-      toDescriptor('colorSwap', 'F', new pskl.drawingtools.ColorSwap()),
+      toDescriptor('colorSwap', 'A', new pskl.drawingtools.ColorSwap()),
       toDescriptor('eraser', 'E', new pskl.drawingtools.Eraser()),
       toDescriptor('stroke', 'L', new pskl.drawingtools.Stroke()),
       toDescriptor('rectangle', 'R', new pskl.drawingtools.Rectangle()),
