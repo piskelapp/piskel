@@ -12,14 +12,12 @@
     this.superclass.constructor.call(this);
     this.toolId = "tool-lighten";
 
-    this.shortHelpText = "Lighten / Darken";
-    this.helpText = [
-      "<div class='tools-tooltip-container'>",
-      "Lighten {{shortcut}}<br/>",
-      this.getModifierHelpText('ctrl', 'Darken'),
-      this.getModifierHelpText('shift', 'Apply only once per pixel'),
-      "</div>"
-    ].join("");
+    this.helpText = "Lighten";
+
+    this.tooltipDescriptors = [
+      {key : 'ctrl', description : 'Darken'},
+      {key : 'shift', description : 'Apply only once per pixel'}
+    ];
 
     this.resetUsedPixels_();
   };

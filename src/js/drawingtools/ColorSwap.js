@@ -8,14 +8,12 @@
   ns.ColorSwap = function() {
     this.toolId = "tool-colorswap";
 
-    this.shortHelpText = "Paint all";
-    this.helpText = [
-      "<div class='tools-tooltip-container'>",
-      "Paint all pixels of the same color {{shortcut}}<br/>",
-      this.getModifierHelpText('ctrl', 'Apply to all layers'),
-      this.getModifierHelpText('shift', 'Apply to all frames'),
-      "</div>"
-    ].join("");
+    this.helpText = "Paint all pixels of the same color";
+
+    this.tooltipDescriptors = [
+      {key : 'ctrl', description : 'Apply to all layers'},
+      {key : 'shift', description : 'Apply to all frames'}
+    ];
   };
 
   pskl.utils.inherit(ns.ColorSwap, ns.BaseTool);

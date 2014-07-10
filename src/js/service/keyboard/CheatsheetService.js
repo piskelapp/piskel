@@ -87,7 +87,7 @@
 
   ns.CheatsheetService.prototype.initMarkupForTools_ = function () {
     var descriptors = pskl.app.toolController.tools.map(function (tool) {
-      return this.toDescriptor_(tool.shortcut, tool.instance.getShortHelpText(), 'tool-icon ' + tool.instance.toolId);
+      return this.toDescriptor_(tool.shortcut, tool.instance.getHelpText(), 'tool-icon ' + tool.instance.toolId);
     }.bind(this));
 
     this.initMarkupAbstract_(descriptors, '.cheatsheet-tool-shortcuts');

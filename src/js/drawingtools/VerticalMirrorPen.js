@@ -5,15 +5,12 @@
     this.superclass.constructor.call(this);
 
     this.toolId = "tool-vertical-mirror-pen";
-    this.shortHelpText = "Vertical Mirror pen";
+    this.helpText = "Vertical Mirror pen";
 
-    this.helpText = [
-      "<div class='tools-tooltip-container'>",
-      "Vertical Mirror pen {{shortcut}}<br/>",
-      this.getModifierHelpText('ctrl', 'Use horizontal axis'),
-      this.getModifierHelpText('shift', 'Use horizontal and vertical axis'),
-      "</div>"
-    ].join("");
+    this.tooltipDescriptors = [
+      {key : 'ctrl', description : 'Use horizontal axis'},
+      {key : 'shift', description : 'Use horizontal and vertical axis'}
+    ];
   };
 
   pskl.utils.inherit(ns.VerticalMirrorPen, ns.SimplePen);

@@ -131,17 +131,8 @@
     return pskl.utils.Template.replace(tpl, {
       cssclass : classList.join(' '),
       toolid : toolId,
-      title : this.getTooltipText_(tool)
+      title : tool.instance.getTooltipText(tool.shortcut)
     });
-  };
-
-  ns.ToolController.prototype.getTooltipText_ = function (tool) {
-    var shortcutMarkup = "<span class='tools-tooltip-shortcut'>("+tool.shortcut+")</span>";
-    if (tool.instance.helpText.indexOf('{{shortcut}}') !== -1) {
-      return tool.instance.helpText.replace('{{shortcut}}', shortcutMarkup);
-    } else {
-      return tool.instance.helpText + ' ' + shortcutMarkup;
-    }
   };
 
   ns.ToolController.prototype.addKeyboardShortcuts_ = function () {
