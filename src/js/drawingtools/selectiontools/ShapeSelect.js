@@ -8,7 +8,8 @@
 
   ns.ShapeSelect = function() {
     this.toolId = "tool-shape-select";
-    this.helpText = "Shape selection tool";
+
+    this.helpText = "Shape selection";
 
     ns.BaseSelect.call(this);
   };

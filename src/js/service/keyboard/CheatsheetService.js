@@ -55,6 +55,9 @@
   };
 
   ns.CheatsheetService.prototype.toDescriptor_ = function (shortcut, description, icon) {
+    if (pskl.utils.UserAgent.isMac) {
+      shortcut = shortcut.replace('ctrl', 'cmd');
+    }
     return {
       'shortcut' : shortcut,
       'description' : description,
@@ -84,7 +87,7 @@
 
   ns.CheatsheetService.prototype.initMarkupForTools_ = function () {
     var descriptors = pskl.app.toolController.tools.map(function (tool) {
-      return this.toDescriptor_(tool.shortcut, tool.instance.helpText, 'tool-icon ' + tool.instance.toolId);
+      return this.toDescriptor_(tool.shortcut, tool.instance.getHelpText(), 'tool-icon ' + tool.instance.toolId);
     }.bind(this));
 
     this.initMarkupAbstract_(descriptors, '.cheatsheet-tool-shortcuts');

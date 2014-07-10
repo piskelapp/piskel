@@ -10,6 +10,7 @@
     ns.ShapeTool.call(this);
 
     this.toolId = "tool-circle";
+
     this.helpText = "Circle tool";
   };
 

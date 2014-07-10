@@ -5,7 +5,12 @@
     this.superclass.constructor.call(this);
 
     this.toolId = "tool-vertical-mirror-pen";
-    this.helpText = "Vertical Mirror pen tool (hold CTRL for Horizontal, hold SHIFT for both)";
+    this.helpText = "Vertical Mirror pen";
+
+    this.tooltipDescriptors = [
+      {key : 'ctrl', description : 'Use horizontal axis'},
+      {key : 'shift', description : 'Use horizontal and vertical axis'}
+    ];
   };
 
   pskl.utils.inherit(ns.VerticalMirrorPen, ns.SimplePen);
@@ -30,11 +35,12 @@
     var mirroredCol = this.getSymmetricCol_(col, frame);
     var mirroredRow = this.getSymmetricRow_(row, frame);
 
-    if (!event.ctrlKey) {
+    var hasCtrlKey = pskl.utils.UserAgent.isMac ?  event.metaKey : event.ctrlKey;
+    if (!hasCtrlKey) {
       this.superclass.applyToolAt.call(this, mirroredCol, row, color, frame, overlay);
     }
 
-    if (event.shiftKey || event.ctrlKey) {
+    if (event.shiftKey || hasCtrlKey) {
       this.superclass.applyToolAt.call(this, col, mirroredRow, color, frame, overlay);
     }
 

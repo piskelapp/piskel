@@ -131,6 +131,7 @@
   "js/drawingtools/selectiontools/RectangleSelect.js",
   "js/drawingtools/selectiontools/ShapeSelect.js",
   "js/drawingtools/ColorPicker.js",
+  "js/drawingtools/ColorSwap.js",
   // Application controller and initialization
   "js/app.js"
 ];

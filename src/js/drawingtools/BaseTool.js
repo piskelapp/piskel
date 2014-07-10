@@ -43,7 +43,7 @@
       try {
         overlay.setPixel(this.highlightedPixelCol, this.highlightedPixelRow, Constants.TRANSPARENT_COLOR);
       } catch (e) {
-        console.warn('ns.BaseTool.prototype.hideHighlightedPixel failed');
+        window.console.warn('ns.BaseTool.prototype.hideHighlightedPixel failed');
       }
       this.highlightedPixelRow = null;
       this.highlightedPixelCol = null;
@@ -58,11 +58,45 @@
     });
   };
 
+  ns.BaseTool.prototype.getHelpText = function() {
+    return this.shortHelpText || this.helpText;
+  };
+
+  ns.BaseTool.prototype.getTooltipText = function(shortcut) {
+    var tpl = pskl.utils.Template.get('drawing-tool-tooltip-container-template');
+
+    var descriptors = "";
+    if (Array.isArray(this.tooltipDescriptors)) {
+      this.tooltipDescriptors.forEach(function (descriptor) {
+        descriptors += this.getTooltipDescription(descriptor);
+      }.bind(this));
+    }
+
+    return pskl.utils.Template.replace(tpl, {
+      helptext : this.getHelpText(),
+      shortcut : shortcut,
+      descriptors : descriptors
+    });
+  };
+
+  ns.BaseTool.prototype.getTooltipDescription = function(descriptor) {
+    var tpl;
+    if (descriptor.key) {
+      tpl = pskl.utils.Template.get('drawing-tool-tooltip-descriptor-template');
+      descriptor.key = descriptor.key.toUpperCase();
+      if (pskl.utils.UserAgent.isMac) {
+        descriptor.key = descriptor.key.replace('CTRL', 'CMD');
+      }
+    } else {
+      tpl = pskl.utils.Template.get('drawing-tool-tooltip-descriptor-simple-template');
+    }
+    return pskl.utils.Template.replace(tpl, descriptor);
+  };
 
   ns.BaseTool.prototype.releaseToolAt = function(col, row, color, frame, overlay, event) {};
 
   /**
-   * Bresenham line algorihtm: Get an array of pixels from
+   * Bresenham line algorithm: Get an array of pixels from
    * start and end coordinates.
    *
    * http://en.wikipedia.org/wiki/Bresenham's_line_algorithm

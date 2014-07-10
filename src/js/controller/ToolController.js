@@ -9,8 +9,9 @@
     this.tools = [
       toDescriptor('simplePen', 'P', new pskl.drawingtools.SimplePen()),
       toDescriptor('verticalMirrorPen', 'V', new pskl.drawingtools.VerticalMirrorPen()),
-      toDescriptor('eraser', 'E', new pskl.drawingtools.Eraser()),
       toDescriptor('paintBucket', 'B', new pskl.drawingtools.PaintBucket()),
+      toDescriptor('colorSwap', 'A', new pskl.drawingtools.ColorSwap()),
+      toDescriptor('eraser', 'E', new pskl.drawingtools.Eraser()),
       toDescriptor('stroke', 'L', new pskl.drawingtools.Stroke()),
       toDescriptor('rectangle', 'R', new pskl.drawingtools.Rectangle()),
       toDescriptor('circle', 'C', new pskl.drawingtools.Circle()),
@@ -130,12 +131,8 @@
     return pskl.utils.Template.replace(tpl, {
       cssclass : classList.join(' '),
       toolid : toolId,
-      title : this.getTooltipText_(tool)
+      title : tool.instance.getTooltipText(tool.shortcut)
     });
-  };
-
-  ns.ToolController.prototype.getTooltipText_ = function (tool) {
-    return tool.instance.helpText + ' (' + tool.shortcut + ')';
   };
 
   ns.ToolController.prototype.addKeyboardShortcuts_ = function () {

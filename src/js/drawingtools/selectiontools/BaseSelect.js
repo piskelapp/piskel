@@ -15,6 +15,12 @@
     this.startRow = null;
 
     this.selection = null;
+
+    this.tooltipDescriptors = [
+      {description : "Drag the selection to move it. You may switch to other layers and frames."},
+      {key : 'ctrl+c', description : 'Copy the selected area'},
+      {key : 'ctrl+v', description : 'Paste the copied area'}
+    ];
   };
 
   pskl.utils.inherit(ns.BaseSelect, ns.BaseTool);
