@@ -4,17 +4,6 @@
   // Core libraries
   "js/lib/jquery-1.8.0.js","js/lib/jquery-ui-1.10.3.custom.js","js/lib/pubsub.js","js/lib/bootstrap/bootstrap.js",
 
-  // GIF Encoding libraries
-  "js/lib/gif/gif.worker.js",
-  "js/lib/gif/gif.js",
-  "js/lib/gif/libgif.js",
-
-  // JSZip https://github.com/Stuk/jszip
-  "js/lib/jszip/jszip.min.js",
-
-  // Spectrum color-picker library
-  "js/lib/spectrum/spectrum.js",
-
   // Application wide configuration
   "js/Constants.js",
   "js/Events.js",
@@ -40,6 +29,17 @@
   "js/utils/serialization/Deserializer.js",
   "js/utils/serialization/backward/Deserializer_v0.js",
   "js/utils/serialization/backward/Deserializer_v1.js",
+
+    // GIF Encoding libraries
+  "js/lib/gif/gif.worker.js",
+  "js/lib/gif/gif.js",
+  "js/lib/gif/libgif.js",
+
+  // JSZip https://github.com/Stuk/jszip
+  "js/lib/jszip/jszip.min.js",
+
+  // Spectrum color-picker library
+  "js/lib/spectrum/spectrum.js",
 
   // Application libraries-->
   "js/rendering/DrawingLoop.js",
@@ -132,6 +132,7 @@
   "js/drawingtools/selectiontools/RectangleSelect.js",
   "js/drawingtools/selectiontools/ShapeSelect.js",
   "js/drawingtools/ColorPicker.js",
+  "js/drawingtools/ColorSwap.js",
   // Application controller and initialization
   "js/app.js"
 ];

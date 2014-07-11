@@ -4,8 +4,10 @@
 
   ns.UserAgent = {
     isIE : /MSIE/i.test( ua ),
+    isIE11 : /trident/i.test( ua ),
     isChrome : /Chrome/i.test( ua ),
-    isFirefox : /Firefox/i.test( ua )
+    isFirefox : /Firefox/i.test( ua ),
+    isMac : /Mac/.test( ua )
   };
 
   ns.UserAgent.version = (function () {

@@ -10,7 +10,8 @@
     ns.ShapeTool.call(this);
 
     this.toolId = "tool-rectangle";
-    this.helpText = "Rectangle tool";
+
+    this.shortHelpText = "Rectangle tool";
   };
 
   pskl.utils.inherit(ns.Rectangle, ns.ShapeTool);

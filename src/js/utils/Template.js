@@ -1,14 +1,18 @@
 (function () {
   var ns = $.namespace("pskl.utils");
+  var templates = {};
 
   ns.Template = {
     get : function (templateId) {
-      var template = document.getElementById(templateId);
-      if (template) {
-        return template.innerHTML;
-      } else {
-        console.error("Could not find template for id :", templateId);
+      if (!templates[templateId]) {
+        var template = document.getElementById(templateId);
+        if (template) {
+          templates[templateId] = template.innerHTML;
+        } else {
+          console.error("Could not find template for id :", templateId);
+        }
       }
+      return templates[templateId];
     },
 
     createFromHTML : function (html) {

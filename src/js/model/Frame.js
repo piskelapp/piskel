@@ -84,28 +84,30 @@
     return [this.id, this.version].join('-');
   };
 
-  ns.Frame.prototype.setPixel = function (col, row, color) {
-    if (this.containsPixel(col, row)) {
-      var p = this.pixels[col][row];
+  ns.Frame.prototype.setPixel = function (x, y, color) {
+    if (this.containsPixel(x, y)) {
+      var p = this.pixels[x][y];
       if (p !== color) {
-        this.pixels[col][row] = color;
+        this.pixels[x][y] = color;
         this.version++;
       }
     }
   };
 
-  ns.Frame.prototype.getPixel = function (col, row) {
-    if (this.containsPixel(col, row)) {
-      return this.pixels[col][row];
+  ns.Frame.prototype.getPixel = function (x, y) {
+    if (this.containsPixel(x, y)) {
+      return this.pixels[x][y];
     } else {
       return null;
     }
   };
 
   ns.Frame.prototype.forEachPixel = function (callback) {
-    for (var col = 0 ; col < this.getWidth() ; col++) {
-      for (var row = 0 ; row < this.getHeight() ; row++) {
-        callback(this.getPixel(col, row), col, row);
+    var width = this.getWidth();
+    var height = this.getHeight();
+    for (var x = 0 ; x < width ; x++) {
+      for (var y = 0 ; y < height ; y++) {
+        callback(this.pixels[x][y], x, y, this);
       }
     }
   };
@@ -120,29 +122,6 @@
 
   ns.Frame.prototype.containsPixel = function (col, row) {
     return col >= 0 && row >= 0 && col < this.width && row < this.height;
-  };
-
-  ns.Frame.prototype.saveState = function () {
-    // remove all states past current state
-    this.previousStates.length = this.stateIndex + 1;
-    // push new state
-    this.previousStates.push(this.getPixels());
-    // set the stateIndex to latest saved state
-    this.stateIndex = this.previousStates.length - 1;
-  };
-
-  ns.Frame.prototype.loadPreviousState = function () {
-    if (this.stateIndex > 0) {
-      this.stateIndex--;
-      this.setPixels(this.previousStates[this.stateIndex]);
-    }
-  };
-
-  ns.Frame.prototype.loadNextState = function () {
-    if (this.stateIndex < this.previousStates.length - 1) {
-      this.stateIndex++;
-      this.setPixels(this.previousStates[this.stateIndex]);
-    }
   };
 
   ns.Frame.prototype.isSameSize = function (otherFrame) {

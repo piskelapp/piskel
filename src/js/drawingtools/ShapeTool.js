@@ -8,6 +8,10 @@
     // Shapes's first point coordinates (set in applyToolAt)
     this.startCol = null;
     this.startRow = null;
+
+    this.tooltipDescriptors = [
+      {key : 'shift', description : 'Keep 1 to 1 ratio'}
+    ];
   };
 
   pskl.utils.inherit(ns.ShapeTool, ns.BaseTool);
