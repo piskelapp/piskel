@@ -11973,7 +11973,8 @@ if (typeof Function.prototype.bind !== "function") {
     isIE : /MSIE/i.test( ua ),
     isIE11 : /trident/i.test( ua ),
     isChrome : /Chrome/i.test( ua ),
-    isFirefox : /Firefox/i.test( ua )
+    isFirefox : /Firefox/i.test( ua ),
+    isMac : /Mac/.test( ua )
   };
 
   ns.UserAgent.version = (function () {
@@ -12661,15 +12662,19 @@ if (typeof Function.prototype.bind !== "function") {
   };
 })();;(function () {
   var ns = $.namespace("pskl.utils");
+  var templates = {};
 
   ns.Template = {
     get : function (templateId) {
-      var template = document.getElementById(templateId);
-      if (template) {
-        return template.innerHTML;
-      } else {
-        console.error("Could not find template for id :", templateId);
+      if (!templates[templateId]) {
+        var template = document.getElementById(templateId);
+        if (template) {
+          templates[templateId] = template.innerHTML;
+        } else {
+          console.error("Could not find template for id :", templateId);
+        }
       }
+      return templates[templateId];
     },
 
     createFromHTML : function (html) {
@@ -16136,7 +16141,6 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
     $.subscribe(Events.SELECTION_MOVE_REQUEST, $.proxy(this.onSelectionMoved_, this));
 
     pskl.app.shortcutService.addShortcut('ctrl+V', this.paste.bind(this));
-    pskl.app.shortcutService.addShortcut('ctrl+shift+V', this.pasteOpaqueOnly.bind(this));
     pskl.app.shortcutService.addShortcut('ctrl+X', this.cut.bind(this));
     pskl.app.shortcutService.addShortcut('ctrl+C', this.copy.bind(this));
     pskl.app.shortcutService.addShortcut('del', this.erase.bind(this));
@@ -16209,13 +16213,6 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
   };
 
   ns.SelectionManager.prototype.paste = function() {
-    if(this.currentSelection && this.currentSelection.hasPastedContent) {
-      var pixels = this.currentSelection.pixels;
-      this.pastePixels(pixels);
-    }
-  };
-
-  ns.SelectionManager.prototype.pasteOpaqueOnly = function() {
     if(this.currentSelection && this.currentSelection.hasPastedContent) {
       var pixels = this.currentSelection.pixels;
       var opaquePixels = pixels.filter(function (p) {
@@ -18430,7 +18427,7 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
       toDescriptor('simplePen', 'P', new pskl.drawingtools.SimplePen()),
       toDescriptor('verticalMirrorPen', 'V', new pskl.drawingtools.VerticalMirrorPen()),
       toDescriptor('paintBucket', 'B', new pskl.drawingtools.PaintBucket()),
-      toDescriptor('colorSwap', 'F', new pskl.drawingtools.ColorSwap()),
+      toDescriptor('colorSwap', 'A', new pskl.drawingtools.ColorSwap()),
       toDescriptor('eraser', 'E', new pskl.drawingtools.Eraser()),
       toDescriptor('stroke', 'L', new pskl.drawingtools.Stroke()),
       toDescriptor('rectangle', 'R', new pskl.drawingtools.Rectangle()),
@@ -18551,12 +18548,8 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
     return pskl.utils.Template.replace(tpl, {
       cssclass : classList.join(' '),
       toolid : toolId,
-      title : this.getTooltipText_(tool)
+      title : tool.instance.getTooltipText(tool.shortcut)
     });
-  };
-
-  ns.ToolController.prototype.getTooltipText_ = function (tool) {
-    return tool.instance.helpText + ' (' + tool.shortcut + ')';
   };
 
   ns.ToolController.prototype.addKeyboardShortcuts_ = function () {
@@ -20848,7 +20841,7 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
   };
 
   ns.ShortcutService.prototype.isCtrlKeyPressed_ = function (evt) {
-    return this.isMac_() ? evt.metaKey : evt.ctrlKey;
+    return pskl.utils.UserAgent.isMac ? evt.metaKey : evt.ctrlKey;
   };
 
   ns.ShortcutService.prototype.isShiftKeyPressed_ = function (evt) {
@@ -20857,10 +20850,6 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
 
   ns.ShortcutService.prototype.isAltKeyPressed_ = function (evt) {
     return evt.altKey;
-  };
-
-  ns.ShortcutService.prototype.isMac_ = function () {
-    return navigator.appVersion.indexOf("Mac") != -1;
   };
 })();;(function () {
   var specialKeys = {
@@ -20946,6 +20935,9 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
   };
 
   ns.CheatsheetService.prototype.toDescriptor_ = function (shortcut, description, icon) {
+    if (pskl.utils.UserAgent.isMac) {
+      shortcut = shortcut.replace('ctrl', 'cmd');
+    }
     return {
       'shortcut' : shortcut,
       'description' : description,
@@ -20975,7 +20967,7 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
 
   ns.CheatsheetService.prototype.initMarkupForTools_ = function () {
     var descriptors = pskl.app.toolController.tools.map(function (tool) {
-      return this.toDescriptor_(tool.shortcut, tool.instance.helpText, 'tool-icon ' + tool.instance.toolId);
+      return this.toDescriptor_(tool.shortcut, tool.instance.getHelpText(), 'tool-icon ' + tool.instance.toolId);
     }.bind(this));
 
     this.initMarkupAbstract_(descriptors, '.cheatsheet-tool-shortcuts');
@@ -21097,6 +21089,75 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
     // TODO : only fire if there was a change
     $.publish(Events.CURRENT_COLORS_UPDATED, colors);
   };
+})();;(function () {
+  var ns = $.namespace('pskl.service');
+
+  ns.ImageDropperService = function (piskelController, drawingAreaContainer) {
+    this.piskelController = piskelController;
+    this.drawingAreaContainer = drawingAreaContainer;
+  };
+
+  ns.ImageDropperService.prototype.init = function () {
+    document.body.addEventListener('drop', this.onFileDrop.bind(this), false);
+    document.body.addEventListener('dragover', this.onFileDragOver.bind(this), false);
+  };
+
+  ns.ImageDropperService.prototype.onFileDrop = function (event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    // FIXME : Ahah this is horrible
+    this.coords_ = pskl.app.drawingController.getSpriteCoordinates(event);
+
+    var files = event.dataTransfer.files;
+
+    for (var i = 0; i < files.length ; i++) {
+      var file = files[i];
+      var isImage = file.type.indexOf('image') === 0;
+      if (isImage) {
+        this.readImageFile_(file);
+      }
+    }
+  };
+
+  ns.ImageDropperService.prototype.onFileDragOver = function (event) {
+    event.stopPropagation();
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
+  };
+
+
+  ns.ImageDropperService.prototype.readImageFile_ = function (imageFile) {
+    pskl.utils.FileUtils.readFile(imageFile, this.processImageSource_.bind(this));
+  };
+
+  ns.ImageDropperService.prototype.processImageSource_ = function (imageSource) {
+    this.importedImage_ = new Image();
+    this.importedImage_.onload = this.onImageLoaded_.bind(this);
+    this.importedImage_.src = imageSource;
+  };
+
+  ns.ImageDropperService.prototype.onImageLoaded_ = function () {
+    var frame = pskl.utils.FrameUtils.createFromImage(this.importedImage_);
+    var currentFrame = this.piskelController.getCurrentFrame();
+
+    var xCoord = this.coords_.x - Math.floor(frame.width/2);
+    var yCoord = this.coords_.y - Math.floor(frame.height/2);
+    xCoord = Math.max(0, xCoord);
+    yCoord = Math.max(0, yCoord);
+    currentFrame.forEachPixel(function (color, x, y) {
+      var fColor = frame.getPixel(x-xCoord, y-yCoord);
+      if (fColor && fColor != Constants.TRANSPARENT_COLOR) {
+        currentFrame.setPixel(x, y, fColor);
+      }
+    });
+
+    $.publish(Events.PISKEL_RESET);
+    $.publish(Events.PISKEL_SAVE_STATE, {
+      type : pskl.service.HistoryService.SNAPSHOT
+    });
+  };
+
 })();;/**
  * @provide pskl.drawingtools.BaseTool
  *
@@ -21142,7 +21203,7 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
       try {
         overlay.setPixel(this.highlightedPixelCol, this.highlightedPixelRow, Constants.TRANSPARENT_COLOR);
       } catch (e) {
-        console.warn('ns.BaseTool.prototype.hideHighlightedPixel failed');
+        window.console.warn('ns.BaseTool.prototype.hideHighlightedPixel failed');
       }
       this.highlightedPixelRow = null;
       this.highlightedPixelCol = null;
@@ -21157,11 +21218,45 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
     });
   };
 
+  ns.BaseTool.prototype.getHelpText = function() {
+    return this.shortHelpText || this.helpText;
+  };
+
+  ns.BaseTool.prototype.getTooltipText = function(shortcut) {
+    var tpl = pskl.utils.Template.get('drawing-tool-tooltip-container-template');
+
+    var descriptors = "";
+    if (Array.isArray(this.tooltipDescriptors)) {
+      this.tooltipDescriptors.forEach(function (descriptor) {
+        descriptors += this.getTooltipDescription(descriptor);
+      }.bind(this));
+    }
+
+    return pskl.utils.Template.replace(tpl, {
+      helptext : this.getHelpText(),
+      shortcut : shortcut,
+      descriptors : descriptors
+    });
+  };
+
+  ns.BaseTool.prototype.getTooltipDescription = function(descriptor) {
+    var tpl;
+    if (descriptor.key) {
+      tpl = pskl.utils.Template.get('drawing-tool-tooltip-descriptor-template');
+      descriptor.key = descriptor.key.toUpperCase();
+      if (pskl.utils.UserAgent.isMac) {
+        descriptor.key = descriptor.key.replace('CTRL', 'CMD');
+      }
+    } else {
+      tpl = pskl.utils.Template.get('drawing-tool-tooltip-descriptor-simple-template');
+    }
+    return pskl.utils.Template.replace(tpl, descriptor);
+  };
 
   ns.BaseTool.prototype.releaseToolAt = function(col, row, color, frame, overlay, event) {};
 
   /**
-   * Bresenham line algorihtm: Get an array of pixels from
+   * Bresenham line algorithm: Get an array of pixels from
    * start and end coordinates.
    *
    * http://en.wikipedia.org/wiki/Bresenham's_line_algorithm
@@ -21211,6 +21306,10 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
     // Shapes's first point coordinates (set in applyToolAt)
     this.startCol = null;
     this.startRow = null;
+
+    this.tooltipDescriptors = [
+      {key : 'shift', description : 'Keep 1 to 1 ratio'}
+    ];
   };
 
   pskl.utils.inherit(ns.ShapeTool, ns.BaseTool);
@@ -21406,7 +21505,14 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
   ns.Lighten = function() {
     this.superclass.constructor.call(this);
     this.toolId = "tool-lighten";
-    this.helpText = "Lighten (hold ctrl for Darken)";
+
+    this.helpText = "Lighten";
+
+    this.tooltipDescriptors = [
+      {key : 'ctrl', description : 'Darken'},
+      {key : 'shift', description : 'Apply only once per pixel'}
+    ];
+
     this.resetUsedPixels_();
   };
 
@@ -21426,7 +21532,7 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
     var frameColor = frame.getPixel(col, row);
     var pixelColor = overlayColor === Constants.TRANSPARENT_COLOR ? frameColor : overlayColor;
 
-    var isDarken = event.ctrlKey || event.cmdKey;
+    var isDarken = pskl.utils.UserAgent.isMac ?  event.metaKey : event.ctrlKey;
     var isSinglePass = event.shiftKey;
 
     var isTransparent = pixelColor === Constants.TRANSPARENT_COLOR;
@@ -21468,7 +21574,12 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
     this.superclass.constructor.call(this);
 
     this.toolId = "tool-vertical-mirror-pen";
-    this.helpText = "Vertical Mirror pen (CTRL for Horizontal, SHIFT for both)";
+    this.helpText = "Vertical Mirror pen";
+
+    this.tooltipDescriptors = [
+      {key : 'ctrl', description : 'Use horizontal axis'},
+      {key : 'shift', description : 'Use horizontal and vertical axis'}
+    ];
   };
 
   pskl.utils.inherit(ns.VerticalMirrorPen, ns.SimplePen);
@@ -21493,11 +21604,12 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
     var mirroredCol = this.getSymmetricCol_(col, frame);
     var mirroredRow = this.getSymmetricRow_(row, frame);
 
-    if (!event.ctrlKey) {
+    var hasCtrlKey = pskl.utils.UserAgent.isMac ?  event.metaKey : event.ctrlKey;
+    if (!hasCtrlKey) {
       this.superclass.applyToolAt.call(this, mirroredCol, row, color, frame, overlay);
     }
 
-    if (event.shiftKey || event.ctrlKey) {
+    if (event.shiftKey || hasCtrlKey) {
       this.superclass.applyToolAt.call(this, col, mirroredRow, color, frame, overlay);
     }
 
@@ -21690,7 +21802,8 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
     ns.ShapeTool.call(this);
 
     this.toolId = "tool-rectangle";
-    this.helpText = "Rectangle tool";
+
+    this.shortHelpText = "Rectangle tool";
   };
 
   pskl.utils.inherit(ns.Rectangle, ns.ShapeTool);
@@ -21715,6 +21828,7 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
     ns.ShapeTool.call(this);
 
     this.toolId = "tool-circle";
+
     this.helpText = "Circle tool";
   };
 
@@ -21848,6 +21962,12 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
     this.startRow = null;
 
     this.selection = null;
+
+    this.tooltipDescriptors = [
+      {description : "Drag the selection to move it. You may switch to other layers and frames."},
+      {key : 'ctrl+c', description : 'Copy the selected area'},
+      {key : 'ctrl+v', description : 'Paste the copied area'}
+    ];
   };
 
   pskl.utils.inherit(ns.BaseSelect, ns.BaseTool);
@@ -21996,7 +22116,8 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
 
   ns.RectangleSelect = function() {
     this.toolId = "tool-rectangle-select";
-    this.helpText = "Rectangle selection tool";
+
+    this.helpText = "Rectangle selection";
 
     ns.BaseSelect.call(this);
     this.hasSelection = false;
@@ -22055,7 +22176,8 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
 
   ns.ShapeSelect = function() {
     this.toolId = "tool-shape-select";
-    this.helpText = "Shape selection tool";
+
+    this.helpText = "Shape selection";
 
     ns.BaseSelect.call(this);
   };
@@ -22103,22 +22225,10 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
   ns.ColorPicker.prototype.applyToolAt = function(col, row, color, frame, overlay, event) {
     if (frame.containsPixel(col, row)) {
       var sampledColor = frame.getPixel(col, row);
-      if (event.ctrlKey) {
-        pskl.app.piskelController.getPiskel().getLayers().forEach(function (l) {
-          l.getFrames().forEach(function (f) {
-            f.forEachPixel(function (pixelColor,x,y) {
-              if (pixelColor === sampledColor) {
-                f.setPixel(x, y, pskl.app.paletteController.getPrimaryColor());
-              }
-            });
-          });
-        });
-      } else {
-        if (event.button == Constants.LEFT_BUTTON) {
-          $.publish(Events.SELECT_PRIMARY_COLOR, [sampledColor]);
-        } else if (event.button == Constants.RIGHT_BUTTON) {
-          $.publish(Events.SELECT_SECONDARY_COLOR, [sampledColor]);
-        }
+      if (event.button == Constants.LEFT_BUTTON) {
+        $.publish(Events.SELECT_PRIMARY_COLOR, [sampledColor]);
+      } else if (event.button == Constants.RIGHT_BUTTON) {
+        $.publish(Events.SELECT_SECONDARY_COLOR, [sampledColor]);
       }
     }
   };
@@ -22132,7 +22242,13 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
 
   ns.ColorSwap = function() {
     this.toolId = "tool-colorswap";
-    this.helpText = "Color swap";
+
+    this.helpText = "Paint all pixels of the same color";
+
+    this.tooltipDescriptors = [
+      {key : 'ctrl', description : 'Apply to all layers'},
+      {key : 'shift', description : 'Apply to all frames'}
+    ];
   };
 
   pskl.utils.inherit(ns.ColorSwap, ns.BaseTool);
@@ -22143,7 +22259,11 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
   ns.ColorSwap.prototype.applyToolAt = function(col, row, color, frame, overlay, event) {
     if (frame.containsPixel(col, row)) {
       var sampledColor = frame.getPixel(col, row);
-      this.swapColors(sampledColor, color);
+
+      var allLayers = pskl.utils.UserAgent.isMac ?  event.metaKey : event.ctrlKey;
+      var allFrames = event.shiftKey;
+
+      this.swapColors(sampledColor, color, allLayers, allFrames);
 
       $.publish(Events.PISKEL_SAVE_STATE, {
         type : pskl.service.HistoryService.SNAPSHOT
@@ -22151,17 +22271,23 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
     }
   };
 
-  ns.ColorSwap.prototype.swapColors = function(oldColor, newColor) {
+  ns.ColorSwap.prototype.swapColors = function(oldColor, newColor, allLayers, allFrames) {
     var swapPixelColor = function (pixelColor,x,y,frame) {
       if (pixelColor == oldColor) {
         frame.pixels[x][y] = newColor;
       }
     };
+    var currentLayer = pskl.app.piskelController.getCurrentLayer();
+    var currentFrameIndex = pskl.app.piskelController.getCurrentFrameIndex();
     pskl.app.piskelController.getPiskel().getLayers().forEach(function (l) {
-      l.getFrames().forEach(function (f) {
-        f.forEachPixel(swapPixelColor);
-        f.version++;
-      });
+      if (allLayers || l === currentLayer) {
+        l.getFrames().forEach(function (f, frameIndex) {
+          if (allFrames || frameIndex === currentFrameIndex) {
+            f.forEachPixel(swapPixelColor);
+            f.version++;
+          }
+        });
+      }
     });
   };
 })();
@@ -22271,6 +22397,9 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
 
       this.beforeUnloadService = new pskl.service.BeforeUnloadService(this.piskelController);
       this.beforeUnloadService.init();
+
+      this.imageDropperService = new pskl.service.ImageDropperService(this.piskelController, $('#drawing-canvas-container').get(0));
+      this.imageDropperService.init();
 
 
       if (this.isAppEngineVersion) {

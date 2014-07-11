@@ -977,11 +977,11 @@ body {
   color:gold;
 }
 
-.tools-tooltip-modifier {
+.tools-tooltip-descriptor {
   color:#999;
 }
 
-.tools-tooltip-modifier-button {
+.tools-tooltip-descriptor-button {
   padding:2px;
   border:1px Solid #999;
   font-size:0.8em;
