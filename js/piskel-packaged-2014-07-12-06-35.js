@@ -11836,8 +11836,8 @@ var Constants = {
       SAVE : 'save'
     }
   },
-  IMAGE_SERVICE_UPLOAD_URL : 'http://piskel-imgstore-a.appspot.com/__/upload',
-  IMAGE_SERVICE_GET_URL : 'http://piskel-imgstore-a.appspot.com/img/',
+  IMAGE_SERVICE_UPLOAD_URL : 'http://piskel-imgstore-b.appspot.com/__/upload',
+  IMAGE_SERVICE_GET_URL : 'http://piskel-imgstore-b.appspot.com/img/',
 
   ZOOMED_OUT_BACKGROUND_COLOR : '#A0A0A0',
 
@@ -12037,6 +12037,48 @@ if (typeof Function.prototype.bind !== "function") {
     }
   };
 })();;(function () {
+  var ns = $.namespace('pskl.utils');
+
+  var BASE64_REGEX = /\s*;\s*base64\s*(?:;|$)/i;
+
+  ns.BlobUtils = {
+    dataToBlob : function(dataURI, type, callback) {
+      var header_end = dataURI.indexOf(","),
+          data = dataURI.substring(header_end + 1),
+          isBase64 = BASE64_REGEX.test(dataURI.substring(0, header_end)),
+          blob;
+
+      if (Blob.fake) {
+        // no reason to decode a data: URI that's just going to become a data URI again
+        blob = new Blob();
+        blob.encoding = isBase64 ? "base64" : "URI";
+        blob.data = data;
+        blob.size = data.length;
+      } else if (Uint8Array) {
+        var blobData = isBase64 ? pskl.utils.Base64.decode(data) : decodeURIComponent(data);
+        blob = new Blob([blobData], {type: type});
+      }
+      callback(blob);
+    },
+
+    canvasToBlob : function(canvas, callback, type /*, ...args*/) {
+      type = type || "image/png";
+
+      if (canvas.mozGetAsFile) {
+        callback(canvas.mozGetAsFile("canvas", type));
+      } else {
+        var args = Array.prototype.slice.call(arguments, 2);
+        var dataURI = canvas.toDataURL.apply(canvas, args);
+        pskl.utils.BlobUtils.dataToBlob(dataURI, type, callback);
+      }
+    },
+
+    stringToBlob : function (string, callback, type) {
+      type = type || "text/plain";
+      pskl.utils.BlobUtils.dataToBlob('data:'+type+',' + string, type, callback);
+    }
+  };
+})();;(function () {
   var ns = $.namespace("pskl");
 
   ns.CanvasUtils = {
@@ -12110,6 +12152,30 @@ if (typeof Function.prototype.bind !== "function") {
 })();;(function () {
   var ns = $.namespace('pskl.utils');
 
+  var pad = function (num) {
+    if (num < 10) {
+      return "0" + num;
+    } else {
+      return "" + num;
+    }
+  };
+
+  ns.DateUtils = {
+    format : function (date, format) {
+      date = new Date(date);
+      return pskl.utils.Template.replace(format, {
+        Y : date.getFullYear(),
+        M : pad(date.getMonth() + 1),
+        D : pad(date.getDate()),
+        H : pad(date.getHours()),
+        m : pad(date.getMinutes()),
+        s : pad(date.getSeconds())
+      });
+    }
+  };
+})();;(function () {
+  var ns = $.namespace('pskl.utils');
+
   ns.Dom = {
     /**
      * Check if a given HTML element is nested inside another
@@ -12165,7 +12231,7 @@ if (typeof Function.prototype.bind !== "function") {
       reader.readAsDataURL(file);
     },
 
-    downloadAsFile : function (filename, content) {
+    downloadAsFile : function (content, filename) {
       var saveAs = window.saveAs || (navigator.msSaveBlob && navigator.msSaveBlob.bind(navigator));
       if (saveAs) {
         saveAs(content, filename);
@@ -12381,43 +12447,6 @@ if (typeof Function.prototype.bind !== "function") {
     }
   };
 
-})();;(function () {
-  var ns = $.namespace('pskl.utils');
-
-  var BASE64_REGEX = /\s*;\s*base64\s*(?:;|$)/i;
-
-  ns.ImageToBlob = {
-    imageDataToBlob : function(dataURI, type, callback) {
-      var header_end = dataURI.indexOf(","),
-          data = dataURI.substring(header_end + 1),
-          isBase64 = BASE64_REGEX.test(dataURI.substring(0, header_end)),
-          blob;
-
-      if (Blob.fake) {
-        // no reason to decode a data: URI that's just going to become a data URI again
-        blob = new Blob();
-        blob.encoding = isBase64 ? "base64" : "URI";
-        blob.data = data;
-        blob.size = data.length;
-      } else if (Uint8Array) {
-        var blobData = isBase64 ? pskl.utils.Base64.decode(data) : decodeURIComponent(data);
-        blob = new Blob([blobData], {type: type});
-      }
-      callback(blob);
-    },
-
-    canvasToBlob : function(canvas, callback, type /*, ...args*/) {
-      type = type || "image/png";
-
-      if (this.mozGetAsFile) {
-        callback(this.mozGetAsFile("canvas", type));
-      } else {
-        var args = Array.prototype.slice.call(arguments, 2);
-        var dataURI = canvas.toDataURL.apply(canvas, args);
-        pskl.utils.ImageToBlob.imageDataToBlob(dataURI, type, callback);
-      }
-    }
-  };
 })();;(function () {
   var ns = $.namespace('pskl.utils');
 
@@ -12661,6 +12690,22 @@ if (typeof Function.prototype.bind !== "function") {
     }
   };
 })();;(function () {
+  var ns = $.namespace('pskl.utils');
+
+  ns.PiskelFileUtils = {
+    loadFromFile : function (file, onSuccess, onError) {
+      pskl.utils.FileUtils.readFile(file, function (content) {
+        var rawPiskel = window.atob(content.replace('data:;base64,',''));
+        var serializedPiskel = JSON.parse(rawPiskel);
+        var fps = serializedPiskel.piskel.fps;
+        var descriptor = new pskl.model.piskel.Descriptor(serializedPiskel.piskel.name, serializedPiskel.piskel.description, true);
+        pskl.utils.serialization.Deserializer.deserialize(serializedPiskel, function (piskel) {
+          onSuccess(piskel, descriptor, fps);
+        });
+      });
+    }
+  };
+})();;(function () {
   var ns = $.namespace("pskl.utils");
   var templates = {};
 
@@ -12681,6 +12726,15 @@ if (typeof Function.prototype.bind !== "function") {
       var dummyEl = document.createElement("div");
       dummyEl.innerHTML = html;
       return dummyEl.children[0];
+    },
+
+    getAndReplace : function (templateId, dict) {
+      var result = "";
+      var tpl = pskl.utils.Template.get(templateId);
+      if (tpl) {
+        result = pskl.utils.Template.replace(tpl, dict);
+      }
+      return result;
     },
 
     replace : function (template, dict) {
@@ -12800,6 +12854,9 @@ if (typeof Function.prototype.bind !== "function") {
       return JSON.stringify({
         modelVersion : Constants.MODEL_VERSION,
         piskel : {
+          name : piskel.getDescriptor().name,
+          description : piskel.getDescriptor().description,
+          fps : pskl.app.piskelController.getFPS(),
           height : piskel.getHeight(),
           width : piskel.getWidth(),
           layers : serializedLayers,
@@ -19047,7 +19104,7 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
 })();;(function () {
   var ns = $.namespace("pskl.controller.settings");
 
-  var URL_MAX_LENGTH = 60;
+  var URL_MAX_LENGTH = 30;
   var MAX_GIF_COLORS = 256;
 
   ns.GifExportController = function (piskelController) {
@@ -19073,12 +19130,12 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
   ];
 
   ns.GifExportController.prototype.init = function () {
-    this.radioTemplate_ = pskl.utils.Template.get("gif-export-radio-template");
+    this.optionTemplate_ = pskl.utils.Template.get("gif-export-option-template");
 
     this.uploadStatusContainerEl = document.querySelector(".gif-upload-status");
 
     this.previewContainerEl = document.querySelector(".gif-export-preview");
-    this.radioGroupEl = document.querySelector(".gif-export-radio-group");
+    this.selectResolutionEl = document.querySelector(".gif-export-select-resolution");
 
     this.uploadButton = $(".gif-upload-button");
     this.uploadButton.click(this.onUploadButtonClick_.bind(this));
@@ -19091,7 +19148,7 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
     this.exportProgressStatusEl = document.querySelector('.gif-export-progress-status');
     this.exportProgressBarEl = document.querySelector('.gif-export-progress-bar');
 
-    this.createRadioElements_();
+    this.createOptionElements_();
   };
 
   ns.GifExportController.prototype.onUploadButtonClick_ = function (evt) {
@@ -19109,8 +19166,8 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
 
     this.renderAsImageDataAnimatedGIF(zoom, fps, function (imageData) {
       pskl.app.imageUploadService.upload(imageData, this.onImageUploadCompleted_.bind(this));
-      pskl.utils.ImageToBlob.imageDataToBlob(imageData, "image/gif", function(blob) {
-        pskl.utils.FileUtils.downloadAsFile(fileName, blob);
+      pskl.utils.BlobUtils.dataToBlob(imageData, "image/gif", function(blob) {
+        pskl.utils.FileUtils.downloadAsFile(blob, fileName);
       });
     }.bind(this));
   };
@@ -19128,43 +19185,30 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
   };
 
   ns.GifExportController.prototype.updatePreview_ = function (src) {
-    this.previewContainerEl.innerHTML = "<div><img style='max-width:240px;' src='"+src+"'/></div>";
+    this.previewContainerEl.innerHTML = "<div><img style='max-width:32px;' src='"+src+"'/></div>";
   };
 
   ns.GifExportController.prototype.getSelectedZoom_ = function () {
-    var radiosColl = this.exportForm.get(0).querySelectorAll("[name=gif-zoom-level]"),
-        radios = Array.prototype.slice.call(radiosColl,0);
-    var selectedRadios = radios.filter(function(radio) {return !!radio.checked;});
-
-    if (selectedRadios.length == 1) {
-      return selectedRadios[0].value;
-    } else {
-      throw "Unexpected error when retrieving selected zoom";
-    }
+    return this.selectResolutionEl.value;
   };
 
-  ns.GifExportController.prototype.createRadioElements_ = function () {
+  ns.GifExportController.prototype.createOptionElements_ = function () {
     var resolutions = ns.GifExportController.RESOLUTIONS;
     for (var i = 0 ; i < resolutions.length ; i++) {
-      var radio = this.createRadioForResolution_(resolutions[i]);
-      this.radioGroupEl.appendChild(radio);
+      var option = this.createOptionForResolution_(resolutions[i]);
+      this.selectResolutionEl.appendChild(option);
     }
   };
 
-  ns.GifExportController.prototype.createRadioForResolution_ = function (resolution) {
+  ns.GifExportController.prototype.createOptionForResolution_ = function (resolution) {
     var zoom = resolution.zoom;
     var label = zoom*this.piskelController.getWidth() + "x" + zoom*this.piskelController.getHeight();
     var value = zoom;
 
-    var radioHTML = pskl.utils.Template.replace(this.radioTemplate_, {value : value, label : label});
-    var radioEl = pskl.utils.Template.createFromHTML(radioHTML);
+    var optionHTML = pskl.utils.Template.replace(this.optionTemplate_, {value : value, label : label});
+    var optionEl = pskl.utils.Template.createFromHTML(optionHTML);
 
-    if (resolution['default']) {
-      var input = radioEl.getElementsByTagName("input")[0];
-      input.setAttribute("checked", "checked");
-    }
-
-    return radioEl;
+    return optionEl;
   };
 
   ns.GifExportController.prototype.renderAsImageDataAnimatedGIF = function(zoom, fps, cb) {
@@ -19227,8 +19271,10 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
 
   ns.GifExportController.prototype.shorten_ = function (url, maxLength, suffix) {
     if (url.length > maxLength) {
-      url = url.substring(0, maxLength);
-      url += suffix;
+      var index = Math.round((maxLength-suffix.length) / 2);
+      var part1 = url.substring(0, index);
+      var part2 = url.substring(url.length - index, url.length);
+      url = part1 + suffix + part2;
     }
     return url;
   };
@@ -19243,26 +19289,21 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
 
   ns.PngExportController.prototype.init = function () {
     this.previewContainerEl = document.querySelectorAll(".png-export-preview")[0];
-    this.uploadStatusContainerEl = document.querySelectorAll(".png-upload-status")[0];
 
-    document.querySelector(".png-upload-button").addEventListener('click', this.onPngUploadButtonClick_.bind(this));
     document.querySelector(".png-download-button").addEventListener('click', this.onPngDownloadButtonClick_.bind(this));
 
     document.querySelector(".zip-generate-button").addEventListener('click', this.onZipButtonClick_.bind(this));
 
     this.updatePreview_(this.getFramesheetAsCanvas().toDataURL("image/png"));
+
+    (new ns.GifExportController(this.piskelController)).init();
   };
 
   ns.PngExportController.prototype.onPngDownloadButtonClick_ = function (evt) {
     var fileName = this.getPiskelName_() + '.png';
-    pskl.utils.ImageToBlob.canvasToBlob(this.getFramesheetAsCanvas(), function(blob) {
-      pskl.utils.FileUtils.downloadAsFile(fileName, blob);
+    pskl.utils.BlobUtils.canvasToBlob(this.getFramesheetAsCanvas(), function(blob) {
+      pskl.utils.FileUtils.downloadAsFile(blob, fileName);
     });
-  };
-
-  ns.PngExportController.prototype.onPngUploadButtonClick_ = function (evt) {
-    this.previewContainerEl.classList.add("preview-upload-ongoing");
-    pskl.app.imageUploadService.upload(this.getFramesheetAsCanvas().toDataURL("image/png"), this.onImageUploadCompleted_.bind(this));
   };
 
   ns.PngExportController.prototype.onZipButtonClick_ = function () {
@@ -19277,8 +19318,8 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
 
     var fileName = this.getPiskelName_() + '.zip';
 
-    var fileContent = zip.generate({type:"blob"});
-    pskl.utils.FileUtils.downloadAsFile(fileName, fileContent);
+    var blob = zip.generate({type:"blob"});
+    pskl.utils.FileUtils.downloadAsFile(blob, fileName);
   };
 
   ns.PngExportController.prototype.getFrameAsCanvas_ = function (frame) {
@@ -19441,13 +19482,17 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
     this.nameInput =  $('#save-name');
     this.descriptionInput = $('#save-description');
     this.isPublicCheckbox = $('input[name=save-public-checkbox]');
-    this.saveCloudButton = $('#save-cloud-button');
-    this.saveLocalButton = $('#save-local-button');
+    this.saveOnlineButton = $('#save-online-button');
+    this.saveLocalButton = $('#save-browser-button');
+    this.saveFileButton = $('#save-file-button');
 
     // Only available in app-engine mode ...
     this.piskelName = $('.piskel-name').get(0);
 
-    this.status = $('#save-status');
+    this.saveOnlineStatus = $('#save-online-status');
+
+    this.saveFileStatus = $('#save-file-status');
+    this.timestamp = new Date();
 
     var descriptor = this.piskelController.getPiskel().getDescriptor();
     this.nameInput.val(descriptor.name);
@@ -19455,20 +19500,48 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
 
     this.isPublicCheckbox.prop('checked', descriptor.isPublic);
 
+    this.saveFileButton.click(this.saveFile_.bind(this));
+    this.saveLocalButton.click(this.saveLocal_.bind(this));
+    this.saveOnlineButton.click(this.saveOnline_.bind(this));
+    this.saveForm.submit(this.onSaveFormSubmit_.bind(this));
+
+    this.nameInput.keyup(this.updateLocalStatusFilename_.bind(this));
+
     if (!pskl.app.isLoggedIn()) {
-      this.saveCloudButton.attr('disabled', 'disabled');
-      this.status.html('You are not logged in. Only Local Save is available.');
-    } else {
-      this.saveForm.submit(this.onSaveFormSubmit_.bind(this));
+      this.saveOnlineButton.hide();
+      $('.save-public-section').hide();
+      this.saveOnlineStatus.html(pskl.utils.Template.get('save-please-login-partial'));
+      this.saveFileButton.get(0).classList.add('button-primary');
     }
 
-    this.saveLocalButton.click(this.onSaveLocalClick_.bind(this));
+    this.updateLocalStatusFilename_();
+  };
+
+  ns.SaveController.prototype.updateLocalStatusFilename_ = function () {
+    this.saveFileStatus.html(pskl.utils.Template.getAndReplace('save-file-status-template', {
+      name : this.getLocalFilename_()
+    }));
+  };
+
+  ns.SaveController.prototype.getLocalFilename_ = function () {
+    var piskelName = this.getName();
+    var timestamp = pskl.utils.DateUtils.format(this.timestamp, "{{Y}}{{M}}{{D}}-{{H}}{{m}}{{s}}");
+    return piskelName + "-" + timestamp + ".piskel";
   };
 
   ns.SaveController.prototype.onSaveFormSubmit_ = function (evt) {
     evt.preventDefault();
     evt.stopPropagation();
 
+    if (pskl.app.isLoggedIn()) {
+      this.saveOnline_();
+    } else {
+      this.saveLocal_();
+    }
+
+  };
+
+  ns.SaveController.prototype.saveOnline_ = function () {
     var name = this.getName();
 
     if (!name) {
@@ -19491,7 +19564,7 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
     }
   };
 
-  ns.SaveController.prototype.onSaveLocalClick_ = function (evt) {
+  ns.SaveController.prototype.saveLocal_ = function () {
     var localStorageService = pskl.app.localStorageService;
     var isOk = true;
     var name = this.getName();
@@ -19506,8 +19579,18 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
       window.setTimeout(function () {
         this.onSaveSuccess_();
         this.afterSaving_();
-      }.bind(this), 1000);
+      }.bind(this), 500);
     }
+  };
+
+  ns.SaveController.prototype.saveFile_ = function () {
+    this.beforeSaving_();
+    this.saveToFile_();
+    pskl.utils.BlobUtils.stringToBlob(pskl.app.piskelController.serialize(), function(blob) {
+      pskl.utils.FileUtils.downloadAsFile(blob, this.getLocalFilename_());
+      this.onSaveSuccess_();
+      this.afterSaving_();
+    }.bind(this), "application/piskel+json");
   };
 
   ns.SaveController.prototype.getName = function () {
@@ -19519,12 +19602,23 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
   };
 
   ns.SaveController.prototype.beforeSaving_ = function () {
-    this.saveCloudButton.attr('disabled', true);
-    this.status.html('Saving ...');
+    this.updatePiskelDescriptor_();
+
+    this.saveOnlineButton.attr('disabled', true);
+    this.saveOnlineStatus.html('Saving ...');
 
     if (this.piskelName) {
       this.piskelName.classList.add('piskel-name-saving');
     }
+  };
+
+  ns.SaveController.prototype.updatePiskelDescriptor_ = function () {
+    var name = this.getName();
+    var description = this.getDescription();
+    var isPublic = !!this.isPublicCheckbox.prop('checked');
+
+    var descriptor = new pskl.model.piskel.Descriptor(name, description, isPublic);
+    this.piskelController.getPiskel().setDescriptor(descriptor);
   };
 
   ns.SaveController.prototype.onSaveSuccess_ = function () {
@@ -19538,8 +19632,8 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
   };
 
   ns.SaveController.prototype.afterSaving_ = function () {
-    this.saveCloudButton.attr('disabled', false);
-    this.status.html('');
+    this.saveOnlineButton.attr('disabled', false);
+    this.saveOnlineStatus.html('');
 
     if (this.piskelName) {
       this.piskelName.classList.remove('piskel-name-saving');
@@ -19549,8 +19643,6 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
   };
 })();;(function () {
   var ns = $.namespace('pskl.controller.settings');
-  var DEFAULT_FILE_STATUS = 'No file selected ...';
-  var PREVIEW_HEIGHT  = 60;
 
   ns.ImportController = function (piskelController) {
     this.piskelController = piskelController;
@@ -19558,195 +19650,117 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
   };
 
   ns.ImportController.prototype.init = function () {
-    this.importForm = $('[name=import-form]');
+    this.hiddenOpenPiskelInput = $('[name=open-piskel-input]');
+    this.openPiskelInputButton = $('.open-piskel-button');
+
     this.hiddenFileInput = $('[name=file-upload-input]');
     this.fileInputButton = $('.file-input-button');
-    this.fileInputStatus = $('.file-input-status');
-    this.fileInputStatus.html(DEFAULT_FILE_STATUS);
 
-    this.importPreview = $('.import-section-preview');
+    this.browseLocalButton = document.querySelector('.browse-local-button');
+    this.browseLocalButton.addEventListener('click', this.onBrowseLocalClick_.bind(this));
 
-    this.resizeWidth = $('[name=resize-width]');
-    this.resizeHeight = $('[name=resize-height]');
-    this.smoothResize =  $('[name=smooth-resize-checkbox]');
-    this.submitButton =  $('[name=import-submit]');
-
-    this.importForm.submit(this.onImportFormSubmit_.bind(this));
     this.hiddenFileInput.change(this.onFileUploadChange_.bind(this));
     this.fileInputButton.click(this.onFileInputClick_.bind(this));
 
-    this.resizeWidth.keyup(this.onResizeInputKeyUp_.bind(this, 'width'));
-    this.resizeHeight.keyup(this.onResizeInputKeyUp_.bind(this, 'height'));
+    this.hiddenOpenPiskelInput.change(this.onOpenPiskelChange_.bind(this));
+    this.openPiskelInputButton.click(this.onOpenPiskelClick_.bind(this));
+
+    this.prevSessionContainer = $('.previous-session');
+    this.previousSessionTemplate_ = pskl.utils.Template.get("previous-session-info-template");
+    this.fillRestoreSession_();
   };
 
-  ns.ImportController.prototype.reset_ = function () {
-    this.importForm.get(0).reset();
-    this.fileInputStatus.html(DEFAULT_FILE_STATUS);
+  ns.ImportController.prototype.closeDrawer_ = function () {
     $.publish(Events.CLOSE_SETTINGS_DRAWER);
   };
-
-  ns.ImportController.prototype.onResizeInputKeyUp_ = function (from, evt) {
-    if (this.importedImage_) {
-      this.synchronizeResizeFields_(evt.target.value, from);
-    }
-  };
-
-  ns.ImportController.prototype.synchronizeResizeFields_ = function (value, from) {
-    value = parseInt(value, 10);
-    if (isNaN(value)) {
-      value = 0;
-    }
-    var height = this.importedImage_.height, width = this.importedImage_.width;
-    if (from === 'width') {
-      this.resizeHeight.val(Math.round(value * height / width));
-    } else {
-      this.resizeWidth.val(Math.round(value * width / height));
-    }
-  };
-
-  ns.ImportController.prototype.onImportFormSubmit_ = function (evt) {
-    evt.originalEvent.preventDefault();
-    this.importImageToPiskel_();
-  };
-
   ns.ImportController.prototype.onFileUploadChange_ = function (evt) {
-    this.importFromFile_();
+    this.importPictureFromFile_();
   };
 
   ns.ImportController.prototype.onFileInputClick_ = function (evt) {
     this.hiddenFileInput.click();
   };
 
-  ns.ImportController.prototype.importFromFile_ = function () {
+  ns.ImportController.prototype.onOpenPiskelChange_ = function (evt) {
+    this.openPiskelFile_();
+  };
+
+  ns.ImportController.prototype.onOpenPiskelClick_ = function (evt) {
+    this.hiddenOpenPiskelInput.click();
+  };
+
+  ns.ImportController.prototype.onBrowseLocalClick_ = function (evt) {
+    $.publish(Events.DIALOG_DISPLAY, 'browse-local');
+    this.closeDrawer_();
+  };
+
+  ns.ImportController.prototype.openPiskelFile_ = function () {
+    var files = this.hiddenOpenPiskelInput.get(0).files;
+    if (files.length == 1) {
+
+      var file = files[0];
+      if (this.isPiskel_(file)){
+        pskl.utils.PiskelFileUtils.loadFromFile(file, function (piskel, descriptor, fps) {
+          piskel.setDescriptor(descriptor);
+          pskl.app.piskelController.setPiskel(piskel);
+          pskl.app.animationController.setFPS(fps);
+        });
+        this.closeDrawer_();
+      }
+    }
+  };
+
+  ns.ImportController.prototype.importPictureFromFile_ = function () {
     var files = this.hiddenFileInput.get(0).files;
     if (files.length == 1) {
       var file = files[0];
       if (this.isImage_(file)) {
-        this.readImageFile_(file);
-        this.enableDisabledSections_();
+        $.publish(Events.DIALOG_DISPLAY, {
+          dialogId : 'import-image',
+          initArgs : file
+        });
+        this.closeDrawer_();
       } else {
-        this.reset_();
+        this.closeDrawer_();
         throw 'File is not an image : ' + file.type;
       }
     }
   };
 
   ns.ImportController.prototype.enableDisabledSections_ = function () {
-    this.resizeWidth.removeAttr('disabled');
-    this.resizeHeight.removeAttr('disabled');
-    this.smoothResize.removeAttr('disabled');
-    this.submitButton.removeAttr('disabled');
-
     this.fileInputButton.removeClass('button-primary');
     this.fileInputButton.blur();
-
-    $('.import-section-disabled').removeClass('import-section-disabled');
-  };
-
-  ns.ImportController.prototype.readImageFile_ = function (imageFile) {
-    pskl.utils.FileUtils.readFile(imageFile, this.processImageSource_.bind(this));
-  };
-
-  /**
-   * Create an image from the given source (url or data-url), and onload forward to onImageLoaded
-   * TODO : should be a generic utility method, should take a callback
-   * @param  {String} imageSource url or data-url, will be used as src for the image
-   */
-  ns.ImportController.prototype.processImageSource_ = function (imageSource) {
-    this.importedImage_ = new Image();
-    this.importedImage_.onload = this.onImageLoaded_.bind(this);
-    this.importedImage_.src = imageSource;
-  };
-
-  ns.ImportController.prototype.onImageLoaded_ = function (evt) {
-    var w = this.importedImage_.width,
-        h = this.importedImage_.height;
-
-    // FIXME : We remove the onload callback here because JsGif will insert
-    // the image again and we want to avoid retriggering the image onload
-    this.importedImage_.onload = function () {};
-
-    var filePath = this.hiddenFileInput.val();
-    var fileName = this.extractFileNameFromPath_(filePath);
-    this.fileInputStatus.html(fileName);
-
-    this.resizeWidth.val(w);
-    this.resizeHeight.val(h);
-
-    this.importPreview.width('auto');
-    this.importPreview.html('');
-    this.importPreview.append(this.createImagePreview_());
-  };
-
-  ns.ImportController.prototype.createImagePreview_ = function () {
-    var image = document.createElement('IMG');
-    image.src = this.importedImage_.src;
-    image.setAttribute('height', PREVIEW_HEIGHT);
-    return image;
-  };
-
-  ns.ImportController.prototype.extractFileNameFromPath_ = function (path) {
-    var parts = [];
-    if (path.indexOf('/') !== -1) {
-      parts = path.split('/');
-    } else if (path.indexOf('\\') !== -1) {
-      parts = path.split('\\');
-    } else {
-      parts = [path];
-    }
-    return parts[parts.length-1];
-  };
-
-  ns.ImportController.prototype.importImageToPiskel_ = function () {
-    var image = this.importedImage_;
-    if (image) {
-      if (window.confirm('You are about to create a new Piskel, unsaved changes will be lost.')) {
-        var gifLoader = new window.SuperGif({
-          gif : image
-        });
-
-        gifLoader.load({
-          success : function(){
-            var images = gifLoader.getFrames().map(function (frame) {
-              return pskl.CanvasUtils.createFromImageData(frame.data);
-            });
-            this.createPiskelFromImages_(images);
-          }.bind(this),
-          error : function () {
-            this.createPiskelFromImages_([image]);
-          }.bind(this)
-        });
-
-      }
-    }
-  };
-
-  ns.ImportController.prototype.createFramesFromImages_ = function (images) {
-    var w = this.resizeWidth.val();
-    var h = this.resizeHeight.val();
-    var smoothing = !!this.smoothResize.prop('checked');
-
-    var frames = images.map(function (image) {
-      var resizedImage = pskl.utils.ImageResizer.resize(image, w, h, smoothing);
-      return pskl.utils.FrameUtils.createFromImage(resizedImage);
-    });
-    return frames;
-  };
-
-  ns.ImportController.prototype.createPiskelFromImages_ = function (images) {
-    var frames = this.createFramesFromImages_(images);
-    var layer = pskl.model.Layer.fromFrames('Layer 1', frames);
-    var descriptor = new pskl.model.piskel.Descriptor('Imported piskel', '');
-    var piskel = pskl.model.Piskel.fromLayers([layer], descriptor);
-
-    pskl.app.piskelController.setPiskel(piskel);
-    pskl.app.animationController.setFPS(Constants.DEFAULT.FPS);
-
-    this.reset_();
+    $('.import-options').show();
   };
 
   ns.ImportController.prototype.isImage_ = function (file) {
     return file.type.indexOf('image') === 0;
+  };
+
+  ns.ImportController.prototype.isPiskel_ = function (file) {
+    return (/\.piskel$/).test(file.name);
+  };
+
+  ns.ImportController.prototype.fillRestoreSession_ = function () {
+    var previousInfo = pskl.app.backupService.getPreviousPiskelInfo();
+    if (previousInfo) {
+      var info = {
+        name : previousInfo.name,
+        date : pskl.utils.DateUtils.format(previousInfo.date, "{{H}}:{{m}} - {{Y}}/{{M}}/{{D}}")
+      };
+
+      this.prevSessionContainer.html(pskl.utils.Template.replace(this.previousSessionTemplate_, info));
+      $(".restore-session-button").click(this.onRestorePreviousSessionClick_.bind(this));
+    } else {
+      this.prevSessionContainer.html("No piskel backup was found on this browser.");
+    }
+  };
+
+  ns.ImportController.prototype.onRestorePreviousSessionClick_ = function () {
+    if (window.confirm('This will erase your current workspace. Continue ?')) {
+      pskl.app.backupService.load();
+      $.publish(Events.CLOSE_SETTINGS_DRAWER);
+    }
   };
 
 })();;(function () {
@@ -19761,12 +19775,8 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
       template : 'templates/settings/resize.html',
       controller : ns.ResizeController
     },
-    'gif' : {
-      template : 'templates/settings/export-gif.html',
-      controller : ns.GifExportController
-    },
     'png' : {
-      template : 'templates/settings/export-png.html',
+      template : 'templates/settings/export.html',
       controller : ns.PngExportController
     },
     'import' : {
@@ -19853,6 +19863,23 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
 })();;(function () {
   var ns = $.namespace('pskl.controller.dialogs');
 
+  ns.AbstractDialogController = function () {};
+
+
+  ns.AbstractDialogController.prototype.init = function () {
+    this.closeButton = document.querySelector('.dialog-close');
+    this.closeButton.addEventListener('click', this.closeDialog.bind(this));
+  };
+
+  ns.AbstractDialogController.prototype.destroy = function () {};
+
+  ns.AbstractDialogController.prototype.closeDialog = function () {
+    $.publish(Events.DIALOG_HIDE);
+  };
+
+})();;(function () {
+  var ns = $.namespace('pskl.controller.dialogs');
+
   var tinycolor = window.tinycolor;
 
   var SELECTED_CLASSNAME = 'selected';
@@ -19870,13 +19897,16 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
     this.spectrumContainers = [];
   };
 
+  pskl.utils.inherit(ns.PaletteManagerController, ns.AbstractDialogController);
+
   ns.PaletteManagerController.prototype.init = function () {
+    this.superclass.init.call(this);
+
     this.palettesList = document.querySelector('.palette-manager-list');
     this.paletteBody = document.querySelector('.palette-manager-details-body');
     this.paletteHead = document.querySelector('.palette-manager-details-head');
     this.createButton = document.querySelector('.palette-manager-actions-button[data-action="create"]');
     this.saveAllButton = document.querySelector('.palette-manager-actions-button[data-action="save-all"]');
-    this.closeButton = document.querySelector('.palette-manager-close');
 
     this.colorCardTemplate = pskl.utils.Template.get('palette-color-card-template');
     this.newColorTemplate = pskl.utils.Template.get('palette-new-color-template');
@@ -19889,7 +19919,6 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
     this.paletteHead.addEventListener('click', this.delegatedPaletteHeadClick.bind(this));
     this.createButton.addEventListener('click', this.onCreateClick_.bind(this));
     this.saveAllButton.addEventListener('click', this.saveAll.bind(this));
-    this.closeButton.addEventListener('click', this.closeDialog.bind(this));
 
     // Init markup
     this.createPaletteListMarkup();
@@ -19902,10 +19931,6 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
 
   ns.PaletteManagerController.prototype.destroy = function () {
     this.destroySpectrumPickers();
-  };
-
-  ns.PaletteManagerController.prototype.closeDialog = function () {
-    $.publish(Events.DIALOG_HIDE);
   };
 
   ns.PaletteManagerController.prototype.onCreateClick_ = function (evt) {
@@ -20235,11 +20260,228 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
 
 })();;(function () {
   var ns = $.namespace('pskl.controller.dialogs');
+  var PREVIEW_HEIGHT  = 60;
+
+  ns.ImportImageController = function (piskelController) {
+    this.importedImage_ = null;
+    this.file_ = null;
+  };
+
+  pskl.utils.inherit(ns.ImportImageController, ns.AbstractDialogController);
+
+  ns.ImportImageController.prototype.init = function (file) {
+    this.superclass.init.call(this);
+
+    this.file_ = file;
+
+    this.importPreview = $('.import-section-preview');
+
+    this.fileNameContainer = $('.import-image-file-name');
+
+    this.resizeWidth = $('[name=resize-width]');
+    this.resizeHeight = $('[name=resize-height]');
+    this.smoothResize =  $('[name=smooth-resize-checkbox]');
+
+    this.resizeWidth.keyup(this.onResizeInputKeyUp_.bind(this, 'width'));
+    this.resizeHeight.keyup(this.onResizeInputKeyUp_.bind(this, 'height'));
+
+    this.importImageForm = $('[name=import-image-form]');
+    this.importImageForm.submit(this.onImportFormSubmit_.bind(this));
+
+    pskl.utils.FileUtils.readFile(this.file_, this.processImageSource_.bind(this));
+  };
+
+  ns.ImportImageController.prototype.onImportFormSubmit_ = function (evt) {
+    evt.originalEvent.preventDefault();
+    this.importImageToPiskel_();
+  };
+
+  ns.ImportImageController.prototype.onResizeInputKeyUp_ = function (from, evt) {
+    if (this.importedImage_) {
+      this.synchronizeResizeFields_(evt.target.value, from);
+    }
+  };
+
+  ns.ImportImageController.prototype.synchronizeResizeFields_ = function (value, from) {
+    value = parseInt(value, 10);
+    if (isNaN(value)) {
+      value = 0;
+    }
+    var height = this.importedImage_.height, width = this.importedImage_.width;
+    if (from === 'width') {
+      this.resizeHeight.val(Math.round(value * height / width));
+    } else {
+      this.resizeWidth.val(Math.round(value * width / height));
+    }
+  };
+
+  /**
+   * Create an image from the given source (url or data-url), and onload forward to onImageLoaded
+   * TODO : should be a generic utility method, should take a callback
+   * @param  {String} imageSource url or data-url, will be used as src for the image
+   */
+  ns.ImportImageController.prototype.processImageSource_ = function (imageSource) {
+    this.importedImage_ = new Image();
+    this.importedImage_.onload = this.onImageLoaded_.bind(this);
+    this.importedImage_.src = imageSource;
+  };
+
+  ns.ImportImageController.prototype.onImageLoaded_ = function (evt) {
+    var w = this.importedImage_.width,
+        h = this.importedImage_.height;
+
+    // FIXME : We remove the onload callback here because JsGif will insert
+    // the image again and we want to avoid retriggering the image onload
+    this.importedImage_.onload = function () {};
+
+    var fileName = this.extractFileNameFromPath_(this.file_.name);
+    this.fileNameContainer.html(fileName);
+
+    this.resizeWidth.val(w);
+    this.resizeHeight.val(h);
+
+    this.importPreview.width('auto');
+    this.importPreview.html('');
+    this.importPreview.append(this.createImagePreview_());
+  };
+
+  ns.ImportImageController.prototype.createImagePreview_ = function () {
+    var image = document.createElement('IMG');
+    image.src = this.importedImage_.src;
+    image.setAttribute('height', PREVIEW_HEIGHT);
+    return image;
+  };
+
+  ns.ImportImageController.prototype.extractFileNameFromPath_ = function (path) {
+    var parts = [];
+    if (path.indexOf('/') !== -1) {
+      parts = path.split('/');
+    } else if (path.indexOf('\\') !== -1) {
+      parts = path.split('\\');
+    } else {
+      parts = [path];
+    }
+    return parts[parts.length-1];
+  };
+
+  ns.ImportImageController.prototype.importImageToPiskel_ = function () {
+    var image = this.importedImage_;
+    if (image) {
+      if (window.confirm('You are about to create a new Piskel, unsaved changes will be lost.')) {
+        var gifLoader = new window.SuperGif({
+          gif : image
+        });
+
+        gifLoader.load({
+          success : function(){
+            var images = gifLoader.getFrames().map(function (frame) {
+              return pskl.CanvasUtils.createFromImageData(frame.data);
+            });
+            this.createPiskelFromImages_(images);
+            this.closeDialog();
+          }.bind(this),
+          error : function () {
+            this.createPiskelFromImages_([image]);
+            this.closeDialog();
+          }.bind(this)
+        });
+
+      }
+    }
+  };
+
+  ns.ImportImageController.prototype.createFramesFromImages_ = function (images) {
+    var w = this.resizeWidth.val();
+    var h = this.resizeHeight.val();
+    var smoothing = !!this.smoothResize.prop('checked');
+
+    var frames = images.map(function (image) {
+      var resizedImage = pskl.utils.ImageResizer.resize(image, w, h, smoothing);
+      return pskl.utils.FrameUtils.createFromImage(resizedImage);
+    });
+    return frames;
+  };
+
+  ns.ImportImageController.prototype.createPiskelFromImages_ = function (images) {
+    var frames = this.createFramesFromImages_(images);
+    var layer = pskl.model.Layer.fromFrames('Layer 1', frames);
+    var descriptor = new pskl.model.piskel.Descriptor('Imported piskel', '');
+    var piskel = pskl.model.Piskel.fromLayers([layer], descriptor);
+
+    pskl.app.piskelController.setPiskel(piskel);
+    pskl.app.animationController.setFPS(Constants.DEFAULT.FPS);
+  };
+})();;(function () {
+  var ns = $.namespace('pskl.controller.dialogs');
+
+  ns.BrowseLocalController = function (piskelController) {
+  };
+
+  pskl.utils.inherit(ns.BrowseLocalController, ns.AbstractDialogController);
+
+  ns.BrowseLocalController.prototype.init = function () {
+    this.superclass.init.call(this);
+
+    this.localStorageItemTemplate_ = pskl.utils.Template.get("local-storage-item-template");
+
+    this.service_ = pskl.app.localStorageService;
+    this.piskelsList = $('.local-piskels-list');
+    this.prevSessionContainer = $('.previous-session');
+
+    this.fillLocalPiskelsList_();
+
+    this.piskelsList.click(this.onPiskelsListClick_.bind(this));
+  };
+
+  ns.BrowseLocalController.prototype.onPiskelsListClick_ = function (evt) {
+    var action = evt.target.getAttribute('data-action');
+    var name = evt.target.getAttribute('data-name');
+    if (action === 'load') {
+      if (window.confirm('This will erase your current piskel. Continue ?')) {
+        this.service_.load(name);
+        this.closeDialog();
+      }
+    } else if (action === 'delete') {
+      if (window.confirm('This will permanently DELETE this piskel from your computer. Continue ?')) {
+        this.service_.remove(name);
+        this.fillLocalPiskelsList_();
+      }
+    }
+  };
+
+  ns.BrowseLocalController.prototype.fillLocalPiskelsList_ = function () {
+    var html = "";
+    var keys = this.service_.getKeys();
+
+    keys.sort(function (k1, k2) {
+      if (k1.date < k2.date) {return 1;}
+      if (k1.date > k2.date) {return -1;}
+      return 0;
+    });
+
+    keys.forEach((function (key) {
+      var date = pskl.utils.DateUtils.format(key.date, "{{Y}}/{{M}}/{{D}} {{H}}:{{m}}");
+      html += pskl.utils.Template.replace(this.localStorageItemTemplate_, {name : key.name, date : date});
+    }).bind(this));
+
+    var tableBody_ = this.piskelsList.get(0).tBodies[0];
+    tableBody_.innerHTML = html;
+  };
+})();;(function () {
+  var ns = $.namespace('pskl.controller.dialogs');
 
   var dialogs = {
     'manage-palettes' : {
       template : 'templates/dialogs/manage-palettes.html',
       controller : ns.PaletteManagerController
+    },
+    'browse-local' : {
+      template : 'templates/dialogs/browse-local.html',
+      controller : ns.BrowseLocalController
+    },
+    'import-image' : {
+      template : 'templates/dialogs/import-image.html',
+      controller : ns.ImportImageController
     }
   };
 
@@ -20255,15 +20497,25 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
     $.subscribe(Events.DIALOG_HIDE, this.onDialogHideEvent_.bind(this));
 
     pskl.app.shortcutService.addShortcut('alt+P', this.onDialogDisplayEvent_.bind(this, null, 'manage-palettes'));
+    this.dialogWrapper_.classList.add('animated');
   };
 
-  ns.DialogsController.prototype.onDialogDisplayEvent_ = function (evt, dialogId) {
+  ns.DialogsController.prototype.onDialogDisplayEvent_ = function (evt, args) {
+    var dialogId, initArgs;
+    if (typeof args === 'string') {
+      dialogId = args;
+    } else {
+      dialogId = args.dialogId;
+      initArgs = args.initArgs;
+    }
     if (!this.isDisplayed()) {
       var config = dialogs[dialogId];
       if (config) {
         this.dialogContainer_.innerHTML = pskl.utils.Template.get(config.template);
+        this.dialogContainer_.classList.add(dialogId);
+
         var controller = new config.controller(this.piskelController);
-        controller.init();
+        controller.init(initArgs);
 
         this.showDialogWrapper_();
         this.currentDialog_ = {
@@ -20289,6 +20541,10 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
     var currentDialog = this.currentDialog_;
     if (currentDialog) {
       currentDialog.controller.destroy();
+      var dialogId = this.currentDialog_.id;
+      window.setTimeout(function () {
+        this.dialogContainer_.classList.remove(dialogId);
+      }.bind(this), 800);
     }
 
     this.hideDialogWrapper_();
@@ -21092,17 +21348,23 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
 })();;(function () {
   var ns = $.namespace('pskl.service');
 
-  ns.ImageDropperService = function (piskelController, drawingAreaContainer) {
+  ns.FileDropperService = function (piskelController, drawingAreaContainer) {
     this.piskelController = piskelController;
     this.drawingAreaContainer = drawingAreaContainer;
   };
 
-  ns.ImageDropperService.prototype.init = function () {
+  ns.FileDropperService.prototype.init = function () {
     document.body.addEventListener('drop', this.onFileDrop.bind(this), false);
     document.body.addEventListener('dragover', this.onFileDragOver.bind(this), false);
   };
 
-  ns.ImageDropperService.prototype.onFileDrop = function (event) {
+  ns.FileDropperService.prototype.onFileDragOver = function (event) {
+    event.stopPropagation();
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'copy';
+  };
+
+  ns.FileDropperService.prototype.onFileDrop = function (event) {
     event.preventDefault();
     event.stopPropagation();
 
@@ -21116,28 +21378,31 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
       var isImage = file.type.indexOf('image') === 0;
       if (isImage) {
         this.readImageFile_(file);
+      } else if (/\.piskel$/i.test(file.name)) {
+        pskl.utils.PiskelFileUtils.loadFromFile(file, this.onPiskelFileLoaded_);
       }
     }
   };
 
-  ns.ImageDropperService.prototype.onFileDragOver = function (event) {
-    event.stopPropagation();
-    event.preventDefault();
-    event.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
+  ns.FileDropperService.prototype.onPiskelFileLoaded_ = function (piskel, descriptor, fps) {
+    if (window.confirm('This will replace your current animation')) {
+      piskel.setDescriptor(descriptor);
+      pskl.app.piskelController.setPiskel(piskel);
+      pskl.app.animationController.setFPS(fps);
+    }
   };
 
-
-  ns.ImageDropperService.prototype.readImageFile_ = function (imageFile) {
+  ns.FileDropperService.prototype.readImageFile_ = function (imageFile) {
     pskl.utils.FileUtils.readFile(imageFile, this.processImageSource_.bind(this));
   };
 
-  ns.ImageDropperService.prototype.processImageSource_ = function (imageSource) {
+  ns.FileDropperService.prototype.processImageSource_ = function (imageSource) {
     this.importedImage_ = new Image();
     this.importedImage_.onload = this.onImageLoaded_.bind(this);
     this.importedImage_.src = imageSource;
   };
 
-  ns.ImageDropperService.prototype.onImageLoaded_ = function () {
+  ns.FileDropperService.prototype.onImageLoaded_ = function () {
     var frame = pskl.utils.FrameUtils.createFromImage(this.importedImage_);
     var currentFrame = this.piskelController.getCurrentFrame();
 
@@ -21145,6 +21410,14 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
     var yCoord = this.coords_.y - Math.floor(frame.height/2);
     xCoord = Math.max(0, xCoord);
     yCoord = Math.max(0, yCoord);
+
+    if (frame.width <= currentFrame.width) {
+      xCoord = Math.min(xCoord, currentFrame.width - frame.width);
+    }
+
+    if (frame.height <= currentFrame.height) {
+      yCoord = Math.min(yCoord, currentFrame.height - frame.height);
+    }
     currentFrame.forEachPixel(function (color, x, y) {
       var fColor = frame.getPixel(x-xCoord, y-yCoord);
       if (fColor && fColor != Constants.TRANSPARENT_COLOR) {
@@ -22398,9 +22671,8 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
       this.beforeUnloadService = new pskl.service.BeforeUnloadService(this.piskelController);
       this.beforeUnloadService.init();
 
-      this.imageDropperService = new pskl.service.ImageDropperService(this.piskelController, $('#drawing-canvas-container').get(0));
-      this.imageDropperService.init();
-
+      this.fileDropperService = new pskl.service.FileDropperService(this.piskelController, $('#drawing-canvas-container').get(0));
+      this.fileDropperService.init();
 
       if (this.isAppEngineVersion) {
         this.storageService = new pskl.service.AppEngineStorageService(this.piskelController);

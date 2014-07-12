@@ -34,6 +34,10 @@ ul, li {
 ::-webkit-scrollbar-track {
    background-color: rgba(50, 50, 50, 0.4);
 }
+
+a, a:visited {
+  color:gold;
+}
 body {
   background: radial-gradient(circle, #000, #373737);
   /* 16/06/2013 : -webkit still needed for
@@ -45,6 +49,10 @@ body {
 /* Browser fixes */
 ::-ms-clear {
   display: none;
+}
+
+.clearfix {
+  overflow: hidden;
 }
 
 .allow-user-select {
@@ -428,9 +436,9 @@ body {
   background-size: 32px 32px;
 }
 
-.tool-icon.upload-cloud-icon {
-  background-image: url(../img/cloud_export.png);
-  background-position: 4px 0px;
+.tool-icon.export-icon {
+  background-image: url(../img/export.png);
+  background-position: 7px 5px;
   background-size: 36px 36px;
   position: relative;
 }
@@ -449,7 +457,7 @@ body {
   position: relative;
 }
 
-.upload-cloud-icon .label {
+.tool-icon .label {
   position: absolute;
   left: 0;
   bottom: 4px;
@@ -506,6 +514,7 @@ body {
   text-transform: uppercase;
   border-bottom: 1px #aaa solid;
   padding-bottom: 5px;
+  color: gold;
 }
 
 .settings-description {
@@ -519,6 +528,10 @@ body {
 
 .settings-item {
   margin : 10px 0;
+}
+
+[name*=checkbox] {
+  vertical-align: middle;
 }
 
 /************************************************************************************************/
@@ -583,13 +596,6 @@ body {
   background:gold;
 }
 
-.gif-export-preview,
-.png-export-preview {
-  margin-top:20px;
-  max-width:240px;
-  position:relative;
-}
-
 .png-export-preview {
   margin:10px 0;
   overflow: hidden;
@@ -601,6 +607,38 @@ body {
 
 .png-upload-status {
   margin : 10px 0;
+}
+
+.gif-upload-status,
+.gif-export-preview {
+  float : left;
+}
+
+.gif-export-preview {
+
+}
+
+.gif-upload-status {
+  width: 180px;
+  margin-left: 5px;
+  margin-top: 10px;
+}
+
+
+.gif-export-preview,
+.png-export-preview {
+  margin-top:10px;
+  position:relative;
+}
+
+.gif-export-preview,
+.png-export-preview {
+  max-width:32px;
+  max-height:32px;
+}
+
+.png-export-preview {
+  max-width:240px;
 }
 
 .preview-upload-ongoing:before{
@@ -623,7 +661,7 @@ body {
 
 .import-section,
 .resize-section {
-  margin: 15px 0;
+  margin: 10px 0;
 }
 
 .import-section-title {
@@ -631,7 +669,7 @@ body {
 }
 
 .import-section-title-small {
-  width: 35px;
+  width: 55px;
 }
 
 .import-section-disabled {
@@ -663,29 +701,14 @@ body {
   border-radius: 2px;
 }
 
-.file-input-status {
+.import-image-file-name {
   display: inline-block;
-  width: 130px;
   overflow: hidden;
 
-  height: 1.5rem;
+  height: 2rem;
   word-break : break-all;
   vertical-align: middle;
   font-style: italic;
-  font-weight: normal;
-  text-shadow: none;
-}
-
-.save-field {
-  width: 100%;
-}
-
-#save-status {
-  margin-top: 10px;
-}
-.status {
-  height: 1.5rem;
-  vertical-align: middle;
   font-weight: normal;
   text-shadow: none;
 }
@@ -694,42 +717,27 @@ body {
   margin : 0 8px;
 }
 
-[name*=checkbox] {
-  vertical-align: middle;
-}
-
-
 /************************************************************************************************/
-/* Browse local piskels panel                                                                   */
+/* Save panel                                                                   */
 /************************************************************************************************/
 
-.local-piskels-list {
+.save-field {
   width: 100%;
 }
 
-.local-piskel-item {
-  height: 3em;
+.save-status {
+  margin-bottom: 10px;
+  vertical-align: middle;
+  font-weight: normal;
+  text-shadow: none;
+  font-style: italic;
 }
 
-.local-piskel-name {
-  width: 40%;
-}
-
-.local-piskel-save-date {
-  font-weight : normal;
-}
-
-.local-piskels-list a {
-  text-decoration: none;
-}
-.local-piskels-list a:hover {
-  text-decoration: underline;
-}
-.local-piskel-load-link {
-  color : gold;
-}
-.local-piskel-delete-link {
-  color : red;
+.save-file-name {
+  white-space: nowrap;
+  font-weight: bold;
+  color: white;
+  font-style: normal;
 }
 
 .tools-wrapper,
@@ -1131,16 +1139,16 @@ body {
   opacity: 0;
   pointer-events: none;
 
-  transition: opacity 0.5s;
-
-
   color: white;
+}
+
+#dialog-container-wrapper.animated {
+  transition: opacity 0.5s;
 }
 
 #dialog-container-wrapper.show {
   opacity: 1;
   pointer-events: auto;
-  transition: opacity 0.5s;
 }
 
 #dialog-container {
@@ -1148,20 +1156,74 @@ body {
   height:  100%;
 
   margin-top: -1500px;
-  transition:margin-top 0.5s;
 
   box-sizing: border-box;
   -moz-box-sizing : border-box;
 
   border-radius: 3px;
-  background: rgba(0,0,0,1);
+  border : 3px solid gold;
+  background: #444;
   overflow: auto;
+}
+
+.animated #dialog-container {
+  transition:margin-top 0.5s;
 }
 
 .show #dialog-container {
   margin-top: 0;
 }
 
+#dialog-container.browse-local {
+  width: 700px;
+  height: 500px;
+  top : 50%;
+  left : 50%;
+  position : absolute;
+  margin-left: -350px;
+}
+
+.show #dialog-container.browse-local {
+  margin-top: -250px;
+}
+
+#dialog-container.import-image {
+  width: 500px;
+  height: 300px;
+  top : 50%;
+  left : 50%;
+  position : absolute;
+  margin-left: -250px;
+}
+
+.show #dialog-container.import-image {
+  margin-top: -150px;
+}
+
+.dialog-wrapper {
+  position : relative;
+}
+
+.dialog-head {
+  width: 100%;
+  background: gold;
+  margin: 0;
+  padding: 10px;
+  color: black;
+  font-size: 1.8em;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+}
+
+.dialog-close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  line-height: 45px;
+  margin-right: 10px;
+  font-size: 1.3em;
+  cursor: pointer;
+}
 
 .palette-manager-wrapper {
   height: 100%;
@@ -1384,6 +1446,37 @@ body {
 .palette-manager-color-details li{
   line-height: 20px;
   font-weight: bold;
+}
+
+/************************************************************************************************/
+/* Browse local piskels panel                                                                   */
+/************************************************************************************************/
+
+.local-piskels-list {
+  width: 100%;
+}
+
+.local-piskel-item {
+  height: 3em;
+}
+
+.local-piskel-name {
+  width: 40%;
+}
+
+.local-piskel-save-date {
+  font-weight : normal;
+}
+
+.local-piskels-list a {
+  text-decoration: none;
+}
+.local-piskels-list a:hover {
+  text-decoration: underline;
+}
+.local-piskel-load-button,
+.local-piskel-delete-button {
+  width : 75px;
 }
 .toolbox-container {
   border: 4px solid #888;
