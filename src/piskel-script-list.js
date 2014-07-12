@@ -115,6 +115,7 @@
   "js/service/keyboard/CheatsheetService.js",
   "js/service/ImageUploadService.js",
   "js/service/CurrentColorsService.js",
+  "js/service/ImageDropperService.js",
 
   // Tools
   "js/drawingtools/BaseTool.js",
