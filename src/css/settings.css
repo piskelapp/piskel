@@ -49,9 +49,9 @@
   background-size: 32px 32px;
 }
 
-.tool-icon.upload-cloud-icon {
-  background-image: url(../img/cloud_export.png);
-  background-position: 4px 0px;
+.tool-icon.export-icon {
+  background-image: url(../img/export.png);
+  background-position: 7px 5px;
   background-size: 36px 36px;
   position: relative;
 }
@@ -244,14 +244,14 @@
   position:relative;
 }
 
-.png-export-preview {
-  max-width:240px;
-}
-
 .gif-export-preview,
 .png-export-preview {
   max-width:32px;
   max-height:32px;
+}
+
+.png-export-preview {
+  max-width:240px;
 }
 
 .preview-upload-ongoing:before{
@@ -282,7 +282,7 @@
 }
 
 .import-section-title-small {
-  width: 35px;
+  width: 55px;
 }
 
 .import-section-disabled {
@@ -316,10 +316,9 @@
 
 .import-image-file-name {
   display: inline-block;
-  width: 130px;
   overflow: hidden;
 
-  height: 1.5rem;
+  height: 2rem;
   word-break : break-all;
   vertical-align: middle;
   font-style: italic;
@@ -352,38 +351,4 @@
   font-weight: bold;
   color: white;
   font-style: normal;
-}
-
-
-/************************************************************************************************/
-/* Browse local piskels panel                                                                   */
-/************************************************************************************************/
-
-.local-piskels-list {
-  width: 100%;
-}
-
-.local-piskel-item {
-  height: 3em;
-}
-
-.local-piskel-name {
-  width: 40%;
-}
-
-.local-piskel-save-date {
-  font-weight : normal;
-}
-
-.local-piskels-list a {
-  text-decoration: none;
-}
-.local-piskels-list a:hover {
-  text-decoration: underline;
-}
-.local-piskel-load-link {
-  color : gold;
-}
-.local-piskel-delete-link {
-  color : red;
 }

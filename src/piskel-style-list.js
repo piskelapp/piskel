@@ -11,6 +11,7 @@
   "css/cheatsheet.css",
   "css/dialogs.css",
   "css/dialogs-manage-palettes.css",
+  "css/dialogs-browse-local.css",
   "css/toolbox.css",
   "css/toolbox-layers-list.css",
   "css/toolbox-palettes-list.css",

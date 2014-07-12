@@ -3,8 +3,16 @@
     Browse Local Piskels
     <span class="palette-manager-close dialog-close">X</span>
   </h3>
-  <div>
+  <div style="padding:10px 20px; font-size:1.5em">
     <table class="local-piskels-list">
+      <thead>
+        <tr class="local-piskel-list-head">
+          <td class="local-piskel-name">Name</td>
+          <td class="local-piskel-save-date">Date</td>
+          <td colspan=2>Actions</td>
+
+        </tr>
+      </thead>
       <tbody></tbody>
     </table>
   </div>
@@ -12,16 +20,8 @@
     <tr class="local-piskel-item">
       <td class="local-piskel-name">{{name}}</td>
       <td class="local-piskel-save-date">{{date}}</td>
-      <td><a class="local-piskel-load-link" data-action="load" data-name="{{name}}" href="javascript:void(0);">load</a></td>
-      <td><a class="local-piskel-delete-link" data-action="delete" data-name="{{name}}" href="javascript:void(0);">x</a></td>
+      <td><button type="button" data-action="load" data-name="{{name}}" class="button button-primary local-piskel-load-button">Load</button></td>
+      <td><button type="button" data-action="delete" data-name="{{name}}" class="button local-piskel-delete-button">Delete</button></td>
     </tr>
-  </script>
-  <script type="text/template" id="previous-session-info-template">
-    <div>
-      Restore a backup of <span style="color:gold">{{name}}</span>, saved at <span style="color:white">{{date}}</span> ?
-      <div style="margin-top:10px;">
-        <button type="button" class="button  button-primary restore-session-button">Restore</button>
-      </div>
-    </div>
   </script>
 </div>

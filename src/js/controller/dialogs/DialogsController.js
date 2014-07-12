@@ -28,6 +28,7 @@
     $.subscribe(Events.DIALOG_HIDE, this.onDialogHideEvent_.bind(this));
 
     pskl.app.shortcutService.addShortcut('alt+P', this.onDialogDisplayEvent_.bind(this, null, 'manage-palettes'));
+    this.dialogWrapper_.classList.add('animated');
   };
 
   ns.DialogsController.prototype.onDialogDisplayEvent_ = function (evt, args) {
@@ -42,6 +43,8 @@
       var config = dialogs[dialogId];
       if (config) {
         this.dialogContainer_.innerHTML = pskl.utils.Template.get(config.template);
+        this.dialogContainer_.classList.add(dialogId);
+
         var controller = new config.controller(this.piskelController);
         controller.init(initArgs);
 
@@ -69,6 +72,10 @@
     var currentDialog = this.currentDialog_;
     if (currentDialog) {
       currentDialog.controller.destroy();
+      var dialogId = this.currentDialog_.id;
+      window.setTimeout(function () {
+        this.dialogContainer_.classList.remove(dialogId);
+      }.bind(this), 800);
     }
 
     this.hideDialogWrapper_();

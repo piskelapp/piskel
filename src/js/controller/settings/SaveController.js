@@ -14,6 +14,7 @@
     this.descriptionInput = $('#save-description');
     this.isPublicCheckbox = $('input[name=save-public-checkbox]');
     this.saveOnlineButton = $('#save-online-button');
+    this.saveLocalButton = $('#save-browser-button');
     this.saveFileButton = $('#save-file-button');
 
     // Only available in app-engine mode ...
@@ -30,17 +31,18 @@
 
     this.isPublicCheckbox.prop('checked', descriptor.isPublic);
 
-    this.saveFileButton.click(this.onSaveLocalClick_.bind(this));
+    this.saveFileButton.click(this.saveFile_.bind(this));
+    this.saveLocalButton.click(this.saveLocal_.bind(this));
+    this.saveOnlineButton.click(this.saveOnline_.bind(this));
+    this.saveForm.submit(this.onSaveFormSubmit_.bind(this));
+
     this.nameInput.keyup(this.updateLocalStatusFilename_.bind(this));
 
-    if (pskl.app.isLoggedIn()) {
-      this.saveForm.submit(this.onSaveFormSubmit_.bind(this));
-    } else {
+    if (!pskl.app.isLoggedIn()) {
       this.saveOnlineButton.hide();
       $('.save-public-section').hide();
       this.saveOnlineStatus.html(pskl.utils.Template.get('save-please-login-partial'));
       this.saveFileButton.get(0).classList.add('button-primary');
-      this.saveForm.submit(this.onSaveLocalClick_.bind(this));
     }
 
     this.updateLocalStatusFilename_();
@@ -62,6 +64,15 @@
     evt.preventDefault();
     evt.stopPropagation();
 
+    if (pskl.app.isLoggedIn()) {
+      this.saveOnline_();
+    } else {
+      this.saveLocal_();
+    }
+
+  };
+
+  ns.SaveController.prototype.saveOnline_ = function () {
     var name = this.getName();
 
     if (!name) {
@@ -84,9 +95,28 @@
     }
   };
 
-  ns.SaveController.prototype.onSaveLocalClick_ = function (evt) {
-    this.beforeSaving_();
+  ns.SaveController.prototype.saveLocal_ = function () {
+    var localStorageService = pskl.app.localStorageService;
+    var isOk = true;
+    var name = this.getName();
+    var description = this.getDescription();
+    if (localStorageService.getPiskel(name)) {
+      isOk = window.confirm('There is already a piskel saved as ' + name + '. Override ?');
+    }
 
+    if (isOk) {
+      this.beforeSaving_();
+      localStorageService.save(name, description, pskl.app.piskelController.serialize());
+      window.setTimeout(function () {
+        this.onSaveSuccess_();
+        this.afterSaving_();
+      }.bind(this), 500);
+    }
+  };
+
+  ns.SaveController.prototype.saveFile_ = function () {
+    this.beforeSaving_();
+    this.saveToFile_();
     pskl.utils.BlobUtils.stringToBlob(pskl.app.piskelController.serialize(), function(blob) {
       pskl.utils.FileUtils.downloadAsFile(blob, this.getLocalFilename_());
       this.onSaveSuccess_();
@@ -134,7 +164,7 @@
 
   ns.SaveController.prototype.afterSaving_ = function () {
     this.saveOnlineButton.attr('disabled', false);
-    this.submitButton.html('');
+    this.saveOnlineStatus.html('');
 
     if (this.piskelName) {
       this.piskelName.classList.remove('piskel-name-saving');

@@ -21,6 +21,10 @@
 
     this.hiddenOpenPiskelInput.change(this.onOpenPiskelChange_.bind(this));
     this.openPiskelInputButton.click(this.onOpenPiskelClick_.bind(this));
+
+    this.prevSessionContainer = $('.previous-session');
+    this.previousSessionTemplate_ = pskl.utils.Template.get("previous-session-info-template");
+    this.fillRestoreSession_();
   };
 
   ns.ImportController.prototype.closeDrawer_ = function () {
@@ -92,6 +96,28 @@
 
   ns.ImportController.prototype.isPiskel_ = function (file) {
     return (/\.piskel$/).test(file.name);
+  };
+
+  ns.ImportController.prototype.fillRestoreSession_ = function () {
+    var previousInfo = pskl.app.backupService.getPreviousPiskelInfo();
+    if (previousInfo) {
+      var info = {
+        name : previousInfo.name,
+        date : pskl.utils.DateUtils.format(previousInfo.date, "{{H}}:{{m}} - {{Y}}/{{M}}/{{D}}")
+      };
+
+      this.prevSessionContainer.html(pskl.utils.Template.replace(this.previousSessionTemplate_, info));
+      $(".restore-session-button").click(this.onRestorePreviousSessionClick_.bind(this));
+    } else {
+      this.prevSessionContainer.html("No piskel backup was found on this browser.");
+    }
+  };
+
+  ns.ImportController.prototype.onRestorePreviousSessionClick_ = function () {
+    if (window.confirm('This will erase your current workspace. Continue ?')) {
+      pskl.app.backupService.load();
+      $.publish(Events.CLOSE_SETTINGS_DRAWER);
+    }
   };
 
 })();

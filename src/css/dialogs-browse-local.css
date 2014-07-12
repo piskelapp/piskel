@@ -1,0 +1,31 @@
+
+/************************************************************************************************/
+/* Browse local piskels panel                                                                   */
+/************************************************************************************************/
+
+.local-piskels-list {
+  width: 100%;
+}
+
+.local-piskel-item {
+  height: 3em;
+}
+
+.local-piskel-name {
+  width: 40%;
+}
+
+.local-piskel-save-date {
+  font-weight : normal;
+}
+
+.local-piskels-list a {
+  text-decoration: none;
+}
+.local-piskels-list a:hover {
+  text-decoration: underline;
+}
+.local-piskel-load-button,
+.local-piskel-delete-button {
+  width : 75px;
+}
