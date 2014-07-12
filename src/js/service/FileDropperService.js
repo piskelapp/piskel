@@ -4,6 +4,7 @@
   ns.FileDropperService = function (piskelController, drawingAreaContainer) {
     this.piskelController = piskelController;
     this.drawingAreaContainer = drawingAreaContainer;
+    this.dropPosition_ = null;
   };
 
   ns.FileDropperService.prototype.init = function () {
@@ -21,8 +22,10 @@
     event.preventDefault();
     event.stopPropagation();
 
-
-    this.coords_ = pskl.app.drawingController.getSpriteCoordinates(event.clientX, event.clientY);
+    this.dropPosition_ = {
+      x : event.clientX,
+      y : event.clientY
+    };
 
     var files = event.dataTransfer.files;
     for (var i = 0; i < files.length ; i++) {
@@ -55,23 +58,13 @@
   };
 
   ns.FileDropperService.prototype.onImageLoaded_ = function () {
-    var frame = pskl.utils.FrameUtils.createFromImage(this.importedImage_);
+    var droppedFrame = pskl.utils.FrameUtils.createFromImage(this.importedImage_);
     var currentFrame = this.piskelController.getCurrentFrame();
 
-    var xCoord = this.coords_.x - Math.floor(frame.width/2);
-    var yCoord = this.coords_.y - Math.floor(frame.height/2);
-    xCoord = Math.max(0, xCoord);
-    yCoord = Math.max(0, yCoord);
+    var dropCoordinates = this.adjustDropPosition_(this.dropPosition_, droppedFrame);
 
-    if (frame.width <= currentFrame.width) {
-      xCoord = Math.min(xCoord, currentFrame.width - frame.width);
-    }
-
-    if (frame.height <= currentFrame.height) {
-      yCoord = Math.min(yCoord, currentFrame.height - frame.height);
-    }
     currentFrame.forEachPixel(function (color, x, y) {
-      var fColor = frame.getPixel(x-xCoord, y-yCoord);
+      var fColor = droppedFrame.getPixel(x-dropCoordinates.x, y-dropCoordinates.y);
       if (fColor && fColor != Constants.TRANSPARENT_COLOR) {
         currentFrame.setPixel(x, y, fColor);
       }
@@ -81,6 +74,30 @@
     $.publish(Events.PISKEL_SAVE_STATE, {
       type : pskl.service.HistoryService.SNAPSHOT
     });
+  };
+
+  ns.FileDropperService.prototype.adjustDropPosition_ = function (position, droppedFrame) {
+    var framePosition = pskl.app.drawingController.getSpriteCoordinates(position.x, position.y);
+
+    var xCoord = framePosition.x - Math.floor(droppedFrame.width/2);
+    var yCoord = framePosition.y - Math.floor(droppedFrame.height/2);
+
+    xCoord = Math.max(0, xCoord);
+    yCoord = Math.max(0, yCoord);
+
+    var currentFrame = this.piskelController.getCurrentFrame();
+    if (droppedFrame.width <= currentFrame.width) {
+      xCoord = Math.min(xCoord, currentFrame.width - droppedFrame.width);
+    }
+
+    if (droppedFrame.height <= currentFrame.height) {
+      yCoord = Math.min(yCoord, currentFrame.height - droppedFrame.height);
+    }
+
+    return {
+      x : xCoord,
+      y : yCoord
+    };
   };
 
 })();

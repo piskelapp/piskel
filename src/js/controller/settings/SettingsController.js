@@ -10,7 +10,7 @@
       template : 'templates/settings/resize.html',
       controller : ns.ResizeController
     },
-    'png' : {
+    'export' : {
       template : 'templates/settings/export.html',
       controller : ns.ImageExportController
     },
