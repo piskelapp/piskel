@@ -21,11 +21,10 @@
     event.preventDefault();
     event.stopPropagation();
 
-    // FIXME : Ahah this is horrible
-    this.coords_ = pskl.app.drawingController.getSpriteCoordinates(event);
+
+    this.coords_ = pskl.app.drawingController.getSpriteCoordinates(event.clientX, event.clientY);
 
     var files = event.dataTransfer.files;
-
     for (var i = 0; i < files.length ; i++) {
       var file = files[i];
       var isImage = file.type.indexOf('image') === 0;

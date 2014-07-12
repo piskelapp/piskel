@@ -87,10 +87,14 @@
       this.piskelController.getPiskel().setDescriptor(descriptor);
 
       this.beforeSaving_();
+
+      this.saveOnlineButton.attr('disabled', true);
+      this.saveOnlineStatus.html('Saving ...');
+
       pskl.app.storageService.store({
         success : this.onSaveSuccess_.bind(this),
         error : this.onSaveError_.bind(this),
-        after : this.afterSaving_.bind(this)
+        after : this.afterOnlineSaving_.bind(this)
       });
     }
   };
@@ -116,7 +120,6 @@
 
   ns.SaveController.prototype.saveFile_ = function () {
     this.beforeSaving_();
-    this.saveToFile_();
     pskl.utils.BlobUtils.stringToBlob(pskl.app.piskelController.serialize(), function(blob) {
       pskl.utils.FileUtils.downloadAsFile(blob, this.getLocalFilename_());
       this.onSaveSuccess_();
@@ -134,9 +137,6 @@
 
   ns.SaveController.prototype.beforeSaving_ = function () {
     this.updatePiskelDescriptor_();
-
-    this.saveOnlineButton.attr('disabled', true);
-    this.saveOnlineStatus.html('Saving ...');
 
     if (this.piskelName) {
       this.piskelName.classList.add('piskel-name-saving');
@@ -162,10 +162,13 @@
     $.publish(Events.SHOW_NOTIFICATION, [{"content": "Saving failed ("+status+")"}]);
   };
 
-  ns.SaveController.prototype.afterSaving_ = function () {
+  ns.SaveController.prototype.afterOnlineSaving_ = function () {
     this.saveOnlineButton.attr('disabled', false);
     this.saveOnlineStatus.html('');
+    this.afterSaving_();
+  };
 
+  ns.SaveController.prototype.afterSaving_ = function () {
     if (this.piskelName) {
       this.piskelName.classList.remove('piskel-name-saving');
     }

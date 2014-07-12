@@ -1,0 +1,18 @@
+/************************************************************************************************/
+/* Import panel                                                                                 */
+/************************************************************************************************/
+
+.import-section,
+.resize-section {
+  margin: 10px 0;
+}
+
+.file-input-button {
+  margin-right: 8px;
+  border-radius: 2px;
+}
+
+.import-highlight {
+  font-weight: bold;
+  color: white;
+}

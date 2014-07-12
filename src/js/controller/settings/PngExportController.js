@@ -15,8 +15,6 @@
     document.querySelector(".zip-generate-button").addEventListener('click', this.onZipButtonClick_.bind(this));
 
     this.updatePreview_(this.getFramesheetAsCanvas().toDataURL("image/png"));
-
-    (new ns.GifExportController(this.piskelController)).init();
   };
 
   ns.PngExportController.prototype.onPngDownloadButtonClick_ = function (evt) {

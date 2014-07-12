@@ -12,7 +12,7 @@
     },
     'png' : {
       template : 'templates/settings/export.html',
-      controller : ns.PngExportController
+      controller : ns.ImageExportController
     },
     'import' : {
       template : 'templates/settings/import.html',

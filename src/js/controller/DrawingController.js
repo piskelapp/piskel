@@ -271,10 +271,13 @@
   };
 
   /**
-   * @private
+   * Translate absolute x,y screen coordinates into sprite coordinates
+   * @param  {Number} screenX
+   * @param  {Number} screenY
+   * @return {Object} {x:Number, y:Number}
    */
-  ns.DrawingController.prototype.getSpriteCoordinates = function(event) {
-    return this.renderer.getCoordinates(event.clientX, event.clientY);
+  ns.DrawingController.prototype.getSpriteCoordinates = function(screenX, screenY) {
+    return this.renderer.getCoordinates(screenX, screenY);
   };
 
   ns.DrawingController.prototype.setCurrentButton = function (event) {

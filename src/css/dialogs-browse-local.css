@@ -3,7 +3,7 @@
 /* Browse local piskels panel                                                                   */
 /************************************************************************************************/
 
-.local-piskels-list {
+.local-piskel-list {
   width: 100%;
 }
 
@@ -19,12 +19,19 @@
   font-weight : normal;
 }
 
-.local-piskels-list a {
+.local-piskel-list a {
   text-decoration: none;
 }
-.local-piskels-list a:hover {
+
+.local-piskel-list a:hover {
   text-decoration: underline;
 }
+
+.local-piskel-list-head {
+  font-weight: bold;
+  color: gold;
+}
+
 .local-piskel-load-button,
 .local-piskel-delete-button {
   width : 75px;

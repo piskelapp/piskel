@@ -88,9 +88,9 @@
   // Settings sub-controllers
   "js/controller/settings/ApplicationSettingsController.js",
   "js/controller/settings/ResizeController.js",
+  "js/controller/settings/ImageExportController.js",
   "js/controller/settings/GifExportController.js",
   "js/controller/settings/PngExportController.js",
-  "js/controller/settings/LocalStorageController.js",
   "js/controller/settings/SaveController.js",
   "js/controller/settings/ImportController.js",
 
