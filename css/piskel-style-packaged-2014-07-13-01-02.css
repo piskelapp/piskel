@@ -621,6 +621,7 @@ body {
 }
 
 .png-export-preview img {
+  max-height:32px;
   float: left;
 }
 
