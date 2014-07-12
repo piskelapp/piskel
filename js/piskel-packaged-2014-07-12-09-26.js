@@ -19585,7 +19585,6 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
 
   ns.SaveController.prototype.saveFile_ = function () {
     this.beforeSaving_();
-    this.saveToFile_();
     pskl.utils.BlobUtils.stringToBlob(pskl.app.piskelController.serialize(), function(blob) {
       pskl.utils.FileUtils.downloadAsFile(blob, this.getLocalFilename_());
       this.onSaveSuccess_();
