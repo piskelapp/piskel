@@ -17786,10 +17786,13 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
   };
 
   /**
-   * @private
+   * Translate absolute x,y screen coordinates into sprite coordinates
+   * @param  {Number} screenX
+   * @param  {Number} screenY
+   * @return {Object} {x:Number, y:Number}
    */
-  ns.DrawingController.prototype.getSpriteCoordinates = function(event) {
-    return this.renderer.getCoordinates(event.clientX, event.clientY);
+  ns.DrawingController.prototype.getSpriteCoordinates = function(screenX, screenY) {
+    return this.renderer.getCoordinates(screenX, screenY);
   };
 
   ns.DrawingController.prototype.setCurrentButton = function (event) {
@@ -19104,6 +19107,19 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
 })();;(function () {
   var ns = $.namespace("pskl.controller.settings");
 
+  ns.ImageExportController = function (piskelController) {
+    this.piskelController = piskelController;
+    this.pngExportController = new ns.PngExportController(piskelController);
+    this.gifExportController = new ns.GifExportController(piskelController);
+  };
+
+  ns.ImageExportController.prototype.init = function () {
+    this.pngExportController.init();
+    this.gifExportController.init();
+  };
+})();;(function () {
+  var ns = $.namespace("pskl.controller.settings");
+
   var URL_MAX_LENGTH = 30;
   var MAX_GIF_COLORS = 256;
 
@@ -19295,8 +19311,6 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
     document.querySelector(".zip-generate-button").addEventListener('click', this.onZipButtonClick_.bind(this));
 
     this.updatePreview_(this.getFramesheetAsCanvas().toDataURL("image/png"));
-
-    (new ns.GifExportController(this.piskelController)).init();
   };
 
   ns.PngExportController.prototype.onPngDownloadButtonClick_ = function (evt) {
@@ -19367,106 +19381,6 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
     }
     return url;
   };
-})();;(function () {
-  var ns = $.namespace("pskl.controller.settings");
-
-  ns.LocalStorageController = function () {};
-
-  /**
-   * @public
-   */
-  ns.LocalStorageController.prototype.init = function() {
-    this.localStorageItemTemplate_ = pskl.utils.Template.get("local-storage-item-template");
-    this.previousSessionTemplate_ = pskl.utils.Template.get("previous-session-info-template");
-
-    this.service_ = pskl.app.localStorageService;
-    this.piskelsList = $('.local-piskels-list');
-    this.prevSessionContainer = $('.previous-session');
-
-    this.fillRestoreSession_();
-    this.fillLocalPiskelsList_();
-
-    this.piskelsList.click(this.onPiskelsListClick_.bind(this));
-  };
-
-  ns.LocalStorageController.prototype.onPiskelsListClick_ = function (evt) {
-    var action = evt.target.getAttribute('data-action');
-    var name = evt.target.getAttribute('data-name');
-    if (action === 'load') {
-      if (window.confirm('This will erase your current piskel. Continue ?')) {
-        this.service_.load(name);
-        $.publish(Events.CLOSE_SETTINGS_DRAWER);
-      }
-    } else if (action === 'delete') {
-      if (window.confirm('This will permanently DELETE this piskel from your computer. Continue ?')) {
-        this.service_.remove(name);
-        this.fillLocalPiskelsList_();
-      }
-    }
-  };
-
-  ns.LocalStorageController.prototype.fillRestoreSession_ = function () {
-    var previousInfo = pskl.app.backupService.getPreviousPiskelInfo();
-    if (previousInfo) {
-      var info = {
-        name : previousInfo.name,
-        date : this.formatDate_(previousInfo.date, "{{H}}:{{m}} - {{Y}}/{{M}}/{{D}}")
-      };
-
-      this.prevSessionContainer.html(pskl.utils.Template.replace(this.previousSessionTemplate_, info));
-      $(".restore-session-button").click(this.onRestorePreviousSessionClick_.bind(this));
-    } else {
-      this.prevSessionContainer.html("No piskel backup was found on this browser.");
-    }
-  };
-
-  ns.LocalStorageController.prototype.onRestorePreviousSessionClick_ = function () {
-    if (window.confirm('This will erase your current workspace. Continue ?')) {
-      pskl.app.backupService.load();
-      $.publish(Events.CLOSE_SETTINGS_DRAWER);
-    }
-  };
-
-  var pad = function (num) {
-    if (num < 10) {
-      return "0" + num;
-    } else {
-      return "" + num;
-    }
-  };
-
-  ns.LocalStorageController.prototype.formatDate_ = function (date, format) {
-    date = new Date(date);
-    var formattedDate = pskl.utils.Template.replace(format, {
-      Y : date.getFullYear(),
-      M : pad(date.getMonth() + 1),
-      D : pad(date.getDate()),
-      H : pad(date.getHours()),
-      m : pad(date.getMinutes())
-    });
-
-    return formattedDate;
-  };
-
-  ns.LocalStorageController.prototype.fillLocalPiskelsList_ = function () {
-    var html = "";
-    var keys = this.service_.getKeys();
-
-    keys.sort(function (k1, k2) {
-      if (k1.date < k2.date) {return 1;}
-      if (k1.date > k2.date) {return -1;}
-      return 0;
-    });
-
-    keys.forEach((function (key) {
-      var date = this.formatDate_(key.date, "{{Y}}/{{M}}/{{D}} {{H}}:{{m}}");
-      html += pskl.utils.Template.replace(this.localStorageItemTemplate_, {name : key.name, date : date});
-    }).bind(this));
-
-    var tableBody_ = this.piskelsList.get(0).tBodies[0];
-    tableBody_.innerHTML = html;
-  };
-
 })();;(function () {
   var ns = $.namespace('pskl.controller.settings');
 
@@ -19556,10 +19470,14 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
       this.piskelController.getPiskel().setDescriptor(descriptor);
 
       this.beforeSaving_();
+
+      this.saveOnlineButton.attr('disabled', true);
+      this.saveOnlineStatus.html('Saving ...');
+
       pskl.app.storageService.store({
         success : this.onSaveSuccess_.bind(this),
         error : this.onSaveError_.bind(this),
-        after : this.afterSaving_.bind(this)
+        after : this.afterOnlineSaving_.bind(this)
       });
     }
   };
@@ -19603,9 +19521,6 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
   ns.SaveController.prototype.beforeSaving_ = function () {
     this.updatePiskelDescriptor_();
 
-    this.saveOnlineButton.attr('disabled', true);
-    this.saveOnlineStatus.html('Saving ...');
-
     if (this.piskelName) {
       this.piskelName.classList.add('piskel-name-saving');
     }
@@ -19630,10 +19545,13 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
     $.publish(Events.SHOW_NOTIFICATION, [{"content": "Saving failed ("+status+")"}]);
   };
 
-  ns.SaveController.prototype.afterSaving_ = function () {
+  ns.SaveController.prototype.afterOnlineSaving_ = function () {
     this.saveOnlineButton.attr('disabled', false);
     this.saveOnlineStatus.html('');
+    this.afterSaving_();
+  };
 
+  ns.SaveController.prototype.afterSaving_ = function () {
     if (this.piskelName) {
       this.piskelName.classList.remove('piskel-name-saving');
     }
@@ -19774,9 +19692,9 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
       template : 'templates/settings/resize.html',
       controller : ns.ResizeController
     },
-    'png' : {
+    'export' : {
       template : 'templates/settings/export.html',
-      controller : ns.PngExportController
+      controller : ns.ImageExportController
     },
     'import' : {
       template : 'templates/settings/import.html',
@@ -20424,12 +20342,12 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
     this.localStorageItemTemplate_ = pskl.utils.Template.get("local-storage-item-template");
 
     this.service_ = pskl.app.localStorageService;
-    this.piskelsList = $('.local-piskels-list');
+    this.piskelList = $('.local-piskel-list');
     this.prevSessionContainer = $('.previous-session');
 
     this.fillLocalPiskelsList_();
 
-    this.piskelsList.click(this.onPiskelsListClick_.bind(this));
+    this.piskelList.click(this.onPiskelsListClick_.bind(this));
   };
 
   ns.BrowseLocalController.prototype.onPiskelsListClick_ = function (evt) {
@@ -20463,7 +20381,7 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
       html += pskl.utils.Template.replace(this.localStorageItemTemplate_, {name : key.name, date : date});
     }).bind(this));
 
-    var tableBody_ = this.piskelsList.get(0).tBodies[0];
+    var tableBody_ = this.piskelList.get(0).tBodies[0];
     tableBody_.innerHTML = html;
   };
 })();;(function () {
@@ -21350,6 +21268,7 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
   ns.FileDropperService = function (piskelController, drawingAreaContainer) {
     this.piskelController = piskelController;
     this.drawingAreaContainer = drawingAreaContainer;
+    this.dropPosition_ = null;
   };
 
   ns.FileDropperService.prototype.init = function () {
@@ -21367,11 +21286,12 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
     event.preventDefault();
     event.stopPropagation();
 
-    // FIXME : Ahah this is horrible
-    this.coords_ = pskl.app.drawingController.getSpriteCoordinates(event);
+    this.dropPosition_ = {
+      x : event.clientX,
+      y : event.clientY
+    };
 
     var files = event.dataTransfer.files;
-
     for (var i = 0; i < files.length ; i++) {
       var file = files[i];
       var isImage = file.type.indexOf('image') === 0;
@@ -21402,23 +21322,13 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
   };
 
   ns.FileDropperService.prototype.onImageLoaded_ = function () {
-    var frame = pskl.utils.FrameUtils.createFromImage(this.importedImage_);
+    var droppedFrame = pskl.utils.FrameUtils.createFromImage(this.importedImage_);
     var currentFrame = this.piskelController.getCurrentFrame();
 
-    var xCoord = this.coords_.x - Math.floor(frame.width/2);
-    var yCoord = this.coords_.y - Math.floor(frame.height/2);
-    xCoord = Math.max(0, xCoord);
-    yCoord = Math.max(0, yCoord);
+    var dropCoordinates = this.adjustDropPosition_(this.dropPosition_, droppedFrame);
 
-    if (frame.width <= currentFrame.width) {
-      xCoord = Math.min(xCoord, currentFrame.width - frame.width);
-    }
-
-    if (frame.height <= currentFrame.height) {
-      yCoord = Math.min(yCoord, currentFrame.height - frame.height);
-    }
     currentFrame.forEachPixel(function (color, x, y) {
-      var fColor = frame.getPixel(x-xCoord, y-yCoord);
+      var fColor = droppedFrame.getPixel(x-dropCoordinates.x, y-dropCoordinates.y);
       if (fColor && fColor != Constants.TRANSPARENT_COLOR) {
         currentFrame.setPixel(x, y, fColor);
       }
@@ -21428,6 +21338,30 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
     $.publish(Events.PISKEL_SAVE_STATE, {
       type : pskl.service.HistoryService.SNAPSHOT
     });
+  };
+
+  ns.FileDropperService.prototype.adjustDropPosition_ = function (position, droppedFrame) {
+    var framePosition = pskl.app.drawingController.getSpriteCoordinates(position.x, position.y);
+
+    var xCoord = framePosition.x - Math.floor(droppedFrame.width/2);
+    var yCoord = framePosition.y - Math.floor(droppedFrame.height/2);
+
+    xCoord = Math.max(0, xCoord);
+    yCoord = Math.max(0, yCoord);
+
+    var currentFrame = this.piskelController.getCurrentFrame();
+    if (droppedFrame.width <= currentFrame.width) {
+      xCoord = Math.min(xCoord, currentFrame.width - droppedFrame.width);
+    }
+
+    if (droppedFrame.height <= currentFrame.height) {
+      yCoord = Math.min(yCoord, currentFrame.height - droppedFrame.height);
+    }
+
+    return {
+      x : xCoord,
+      y : yCoord
+    };
   };
 
 })();;/**
@@ -22049,19 +21983,6 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
     pskl.PixelUtils.paintSimilarConnectedPixelsFromFrame(frame, replayData.col, replayData.row, replayData.color);
   };
 })();
-
-
-
-
-
-
-
-
-
-
-
-
-
 ;/**
  * @provide pskl.drawingtools.Rectangle
  *

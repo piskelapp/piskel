@@ -1,6 +1,6 @@
 (function () {
 
-  var version = '-2014-07-12-09-26';
+  var version = '-2014-07-13-12-45';
   var versionHasNotBeenReplaced = version.indexOf('@@') === 0;
   if (versionHasNotBeenReplaced)  {
     version = '';
