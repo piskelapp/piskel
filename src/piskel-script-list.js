@@ -23,6 +23,7 @@
   "js/utils/LayerUtils.js",
   "js/utils/ImageResizer.js",
   "js/utils/PixelUtils.js",
+  "js/utils/PiskelFileUtils.js",
   "js/utils/Template.js",
   "js/utils/UserSettings.js",
   "js/utils/serialization/Serializer.js",
@@ -97,7 +98,10 @@
   "js/controller/settings/SettingsController.js",
 
   // Dialogs sub-controllers
+  "js/controller/dialogs/AbstractDialogController.js",
   "js/controller/dialogs/PaletteManagerController.js",
+  "js/controller/dialogs/ImportImageController.js",
+  "js/controller/dialogs/BrowseLocalController.js",
 
   // Dialogs controller
   "js/controller/dialogs/DialogsController.js",
@@ -115,7 +119,7 @@
   "js/service/keyboard/CheatsheetService.js",
   "js/service/ImageUploadService.js",
   "js/service/CurrentColorsService.js",
-  "js/service/ImageDropperService.js",
+  "js/service/FileDropperService.js",
 
   // Tools
   "js/drawingtools/BaseTool.js",

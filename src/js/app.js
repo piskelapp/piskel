@@ -105,8 +105,8 @@
       this.beforeUnloadService = new pskl.service.BeforeUnloadService(this.piskelController);
       this.beforeUnloadService.init();
 
-      this.imageDropperService = new pskl.service.ImageDropperService(this.piskelController, $('#drawing-canvas-container').get(0));
-      this.imageDropperService.init();
+      this.fileDropperService = new pskl.service.FileDropperService(this.piskelController, $('#drawing-canvas-container').get(0));
+      this.fileDropperService.init();
 
 
       if (this.isAppEngineVersion) {

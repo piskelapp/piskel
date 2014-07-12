@@ -1,0 +1,27 @@
+<div class="dialog-wrapper">
+  <h3 class="dialog-head">
+    Import Image
+    <span class="palette-manager-close dialog-close">X</span>
+  </h3>
+  <div class="import-options">
+    <form action="" method="POST" name="import-image-form">
+      <div class="import-section">
+        <span class="import-image-file-name"></span>
+      </div>
+      <div class="import-section">
+        <span class="import-section-title  import-section-title-small" style="vertical-align:top">Info :</span>
+        <div class="import-section-preview"></div>
+      </div>
+      <div class="import-section">
+        <span class="import-section-title  import-section-title-small">Size :</span>
+        <input type="text" class="textfield import-size-field" name="resize-width"/>x
+        <input type="text" class="textfield import-size-field" name="resize-height"/>
+      </div>
+      <div class="import-section">
+        <span class="import-section-title">Smooth resize :</span>
+        <input type="checkbox" checked="checked" name="smooth-resize-checkbox" value="1"/>
+      </div>
+      <input type="submit" name="import-submit" class="button button-primary import-button" value="Import" />
+    </form>
+  </div>
+</div>

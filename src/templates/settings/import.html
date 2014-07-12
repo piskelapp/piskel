@@ -5,57 +5,34 @@
   <div class="settings-item">
     <span>Load a <span style="font-weight:bold;color:white">local piskel</span> saved in this Browser</span>
     <div class="import-section">
-      <button type="button" class="button  button-primary load-browser-button">Browse local saves</button>
+      <button type="button" class="button  button-primary browse-local-button">Browse local saves</button>
     </div>
   </div>
   <div class="settings-title">
     Load .piskel file
   </div>
   <div class="settings-item">
-    <form action="" method="POST" name="open-piskel-form">
-      <span>Load a <span style="font-weight:bold;color:white">.piskel</span> file from your computer</span>
+    <span>Load a <span style="font-weight:bold;color:white">.piskel</span> file from your computer</span>
 
-      <div class="import-section">
-        <button type="button" class="button  button-primary open-piskel-button">Browse .piskel files</button>
-        <span class="file-input-open-piskel-status"></span>
-        <input style="display:none"
-          type="file" name="open-piskel-input"
-          value="file" accept=".piskel"/>
-      </div>
-    </form>
+    <div class="import-section">
+      <button type="button" class="button  button-primary open-piskel-button">Browse .piskel files</button>
+      <span class="file-input-open-piskel-status"></span>
+      <input style="display:none"
+        type="file" name="open-piskel-input"
+        value="file" accept=".piskel"/>
+    </div>
   </div>
   <div class="settings-title">
     Import From Picture
   </div>
   <div class="settings-item">
-    <form action="" method="POST" name="import-form">
-      <div style="margin-top:5px;margin-bottom:5px;">Supports : <span style="font-weight:bold;color:white">PNG, JPG, BMP, Animated GIF ...</span></div>
-      <div class="import-section">
-        <button type="button" class="button  button-primary file-input-button">Browse images</button>
-        <span class="file-input-status"></span>
-        <input style="display:none"
-          type="file" name="file-upload-input"
-          value="file" accept="image/*"/>
-      </div>
-
-      <div class="import-options">
-        <div class="import-section">
-          <span class="import-section-title  import-section-title-small" style="vertical-align:top">Info :</span>
-          <div class="import-section-preview"></div>
-        </div>
-        <div class="import-section">
-          <span class="import-section-title  import-section-title-small">Size :</span>
-          <input type="text" class="textfield import-size-field" name="resize-width"/>x
-          <input type="text" class="textfield import-size-field" name="resize-height"/>
-        </div>
-        <div class="import-section">
-          <span class="import-section-title">Smooth resize :</span>
-          <input type="checkbox" checked="checked" name="smooth-resize-checkbox" value="1"/>
-        </div>
-        <input type="submit" name="import-submit" class="button button-primary import-button" value="Import" />
-      </div>
-
-    </form>
+    <div style="margin-top:5px;margin-bottom:5px;">Supports : <span style="font-weight:bold;color:white">PNG, JPG, BMP, Animated GIF ...</span></div>
+    <div class="import-section">
+      <button type="button" class="button  button-primary file-input-button">Browse images</button>
+      <input style="display:none"
+        type="file" name="file-upload-input"
+        value="file" accept="image/*"/>
+    </div>
   </div>
   <div class="settings-title">
     Recover recent sessions

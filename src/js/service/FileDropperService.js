@@ -1,17 +1,23 @@
 (function () {
   var ns = $.namespace('pskl.service');
 
-  ns.ImageDropperService = function (piskelController, drawingAreaContainer) {
+  ns.FileDropperService = function (piskelController, drawingAreaContainer) {
     this.piskelController = piskelController;
     this.drawingAreaContainer = drawingAreaContainer;
   };
 
-  ns.ImageDropperService.prototype.init = function () {
+  ns.FileDropperService.prototype.init = function () {
     document.body.addEventListener('drop', this.onFileDrop.bind(this), false);
     document.body.addEventListener('dragover', this.onFileDragOver.bind(this), false);
   };
 
-  ns.ImageDropperService.prototype.onFileDrop = function (event) {
+  ns.FileDropperService.prototype.onFileDragOver = function (event) {
+    event.stopPropagation();
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'copy';
+  };
+
+  ns.FileDropperService.prototype.onFileDrop = function (event) {
     event.preventDefault();
     event.stopPropagation();
 
@@ -25,28 +31,31 @@
       var isImage = file.type.indexOf('image') === 0;
       if (isImage) {
         this.readImageFile_(file);
+      } else if (/\.piskel$/i.test(file.name)) {
+        pskl.utils.PiskelFileUtils.loadFromFile(file, this.onPiskelFileLoaded_);
       }
     }
   };
 
-  ns.ImageDropperService.prototype.onFileDragOver = function (event) {
-    event.stopPropagation();
-    event.preventDefault();
-    event.dataTransfer.dropEffect = 'Copy image on the frame'; // Explicitly show this is a copy.
+  ns.FileDropperService.prototype.onPiskelFileLoaded_ = function (piskel, descriptor, fps) {
+    if (window.confirm('This will replace your current animation')) {
+      piskel.setDescriptor(descriptor);
+      pskl.app.piskelController.setPiskel(piskel);
+      pskl.app.animationController.setFPS(fps);
+    }
   };
 
-
-  ns.ImageDropperService.prototype.readImageFile_ = function (imageFile) {
+  ns.FileDropperService.prototype.readImageFile_ = function (imageFile) {
     pskl.utils.FileUtils.readFile(imageFile, this.processImageSource_.bind(this));
   };
 
-  ns.ImageDropperService.prototype.processImageSource_ = function (imageSource) {
+  ns.FileDropperService.prototype.processImageSource_ = function (imageSource) {
     this.importedImage_ = new Image();
     this.importedImage_.onload = this.onImageLoaded_.bind(this);
     this.importedImage_.src = imageSource;
   };
 
-  ns.ImageDropperService.prototype.onImageLoaded_ = function () {
+  ns.FileDropperService.prototype.onImageLoaded_ = function () {
     var frame = pskl.utils.FrameUtils.createFromImage(this.importedImage_);
     var currentFrame = this.piskelController.getCurrentFrame();
 

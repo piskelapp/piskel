@@ -5,6 +5,14 @@
     'manage-palettes' : {
       template : 'templates/dialogs/manage-palettes.html',
       controller : ns.PaletteManagerController
+    },
+    'browse-local' : {
+      template : 'templates/dialogs/browse-local.html',
+      controller : ns.BrowseLocalController
+    },
+    'import-image' : {
+      template : 'templates/dialogs/import-image.html',
+      controller : ns.ImportImageController
     }
   };
 
@@ -22,13 +30,20 @@
     pskl.app.shortcutService.addShortcut('alt+P', this.onDialogDisplayEvent_.bind(this, null, 'manage-palettes'));
   };
 
-  ns.DialogsController.prototype.onDialogDisplayEvent_ = function (evt, dialogId) {
+  ns.DialogsController.prototype.onDialogDisplayEvent_ = function (evt, args) {
+    var dialogId, initArgs;
+    if (typeof args === 'string') {
+      dialogId = args;
+    } else {
+      dialogId = args.dialogId;
+      initArgs = args.initArgs;
+    }
     if (!this.isDisplayed()) {
       var config = dialogs[dialogId];
       if (config) {
         this.dialogContainer_.innerHTML = pskl.utils.Template.get(config.template);
         var controller = new config.controller(this.piskelController);
-        controller.init();
+        controller.init(initArgs);
 
         this.showDialogWrapper_();
         this.currentDialog_ = {
