@@ -19,11 +19,17 @@
       {key : 'shift', description : 'Apply only once per pixel'}
     ];
 
-    this.resetUsedPixels_();
+    this.usedPixels_ = {
+      darken : {},
+      lighten : {}
+    };
   };
 
   pskl.utils.inherit(ns.Lighten, ns.SimplePen);
 
+  /**
+   * @Override
+   */
   ns.Lighten.prototype.resetUsedPixels_ = function() {
     this.usedPixels_ = {
       darken : {},
@@ -31,8 +37,9 @@
     };
     this.superclass.resetUsedPixels_.call(this);
   };
+
   /**
-   * @override
+   * @Override
    */
   ns.Lighten.prototype.applyToolAt = function(col, row, color, frame, overlay, event, mouseButton) {
     var overlayColor = overlay.getPixel(col, row);
@@ -62,15 +69,5 @@
       }
     }
 
-  };
-
-  ns.Lighten.prototype.releaseToolAt = function(col, row, color, frame, overlay, event) {
-    this.setPixelsToFrame_(frame, this.pixels);
-
-    $.publish(Events.PISKEL_SAVE_STATE, {
-      type : pskl.service.HistoryService.SNAPSHOT
-    });
-
-    this.resetUsedPixels_();
   };
 })();

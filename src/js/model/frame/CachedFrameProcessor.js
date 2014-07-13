@@ -62,17 +62,17 @@
     var cache = this.cache_[namespace];
 
     var cacheKey = frame.getHash();
-    if (this.cache_[cacheKey]) {
-      processedFrame = this.cache_[cacheKey];
+    if (cache[cacheKey]) {
+      processedFrame = cache[cacheKey];
     } else {
       var frameAsString = JSON.stringify(frame.getPixels());
-      if (this.cache_[frameAsString]) {
-        processedFrame = this.outputCloner(this.cache_[frameAsString], frame);
+      if (cache[frameAsString]) {
+        processedFrame = this.outputCloner(cache[frameAsString], frame);
       } else {
         processedFrame = this.frameProcessor(frame);
-        this.cache_[frameAsString] = processedFrame;
+        cache[frameAsString] = processedFrame;
       }
-      this.cache_[cacheKey] = processedFrame;
+      cache[cacheKey] = processedFrame;
     }
     return processedFrame;
   };
