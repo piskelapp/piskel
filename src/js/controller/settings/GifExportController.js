@@ -3,6 +3,8 @@
 
   var URL_MAX_LENGTH = 30;
   var MAX_GIF_COLORS = 256;
+  var MAX_EXPORT_ZOOM = 20;
+  var DEFAULT_EXPORT_ZOOM = 10;
 
   ns.GifExportController = function (piskelController) {
     this.piskelController = piskelController;
@@ -13,18 +15,12 @@
    * @static
    * @type {Array} array of Objects {zoom:{Number}, default:{Boolean}}
    */
-  ns.GifExportController.RESOLUTIONS = [
-    {
-      'zoom' : 1
-    },{
-      'zoom' : 5
-    },{
-      'zoom' : 10,
-      'default' : true
-    },{
-      'zoom' : 20
-    }
-  ];
+  ns.GifExportController.RESOLUTIONS = [];
+  for (var i = 1 ; i <= MAX_EXPORT_ZOOM ; i++) {
+    ns.GifExportController.RESOLUTIONS.push({
+      zoom : i
+    });
+  }
 
   ns.GifExportController.prototype.init = function () {
     this.optionTemplate_ = pskl.utils.Template.get("gif-export-option-template");
@@ -39,8 +35,6 @@
 
     this.downloadButton = $(".gif-download-button");
     this.downloadButton.click(this.onDownloadButtonClick_.bind(this));
-
-    this.exportForm = $(".gif-export-form");
 
     this.exportProgressStatusEl = document.querySelector('.gif-export-progress-status');
     this.exportProgressBarEl = document.querySelector('.gif-export-progress-bar');
@@ -62,7 +56,6 @@
         fps = this.piskelController.getFPS();
 
     this.renderAsImageDataAnimatedGIF(zoom, fps, function (imageData) {
-      pskl.app.imageUploadService.upload(imageData, this.onImageUploadCompleted_.bind(this));
       pskl.utils.BlobUtils.dataToBlob(imageData, "image/gif", function(blob) {
         pskl.utils.FileUtils.downloadAsFile(blob, fileName);
       });
@@ -102,7 +95,9 @@
     var label = zoom*this.piskelController.getWidth() + "x" + zoom*this.piskelController.getHeight();
     var value = zoom;
 
-    var optionHTML = pskl.utils.Template.replace(this.optionTemplate_, {value : value, label : label});
+    var isSelected = zoom === DEFAULT_EXPORT_ZOOM;
+    var selected = isSelected ? 'selected' : '';
+    var optionHTML = pskl.utils.Template.replace(this.optionTemplate_, {value : value, label : label, selected : selected});
     var optionEl = pskl.utils.Template.createFromHTML(optionHTML);
 
     return optionEl;
