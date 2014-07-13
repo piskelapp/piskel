@@ -18,11 +18,6 @@
   max-width:32px;
 }
 
-.png-export-preview {
-  margin:10px 0;
-  overflow: hidden;
-}
-
 .png-export-preview img {
   max-height:32px;
   float: left;
@@ -32,6 +27,11 @@
   width: 180px;
   margin-left: 5px;
   margin-top: 10px;
+}
+
+.gif-upload,
+.png-export-preview {
+  overflow: hidden;
 }
 
 .gif-upload-status,
