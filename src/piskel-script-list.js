@@ -8,7 +8,6 @@
   "js/Constants.js",
   "js/Events.js",
 
-
   // Libraries
   "js/utils/core.js",
   "js/utils/UserAgent.js",
