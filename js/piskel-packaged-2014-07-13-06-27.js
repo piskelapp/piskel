@@ -17141,6 +17141,21 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
     return this.piskel.getLayerAt(index);
   };
 
+  ns.PiskelController.prototype.hasLayerAt = function (index) {
+    return !!this.getLayerAt(index);
+  };
+
+  // FIXME ?? No added value compared to getLayerAt ??
+  // Except normalizing to null if undefined ?? ==> To merge
+  ns.PiskelController.prototype.getLayerByIndex = function (index) {
+    var layers = this.getLayers();
+    if (layers[index]) {
+      return layers[index];
+    } else {
+      return null;
+    }
+  };
+
   ns.PiskelController.prototype.getCurrentFrame = function () {
     var layer = this.getCurrentLayer();
     return layer.getFrameAt(this.currentFrameIndex);
@@ -17188,6 +17203,8 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
     this.getLayers().forEach(function (l) {
       l.addFrameAt(this.createEmptyFrame_(), index);
     }.bind(this));
+
+    this.setCurrentFrameIndex(index);
   };
 
   ns.PiskelController.prototype.createEmptyFrame_ = function () {
@@ -17213,6 +17230,7 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
     this.getLayers().forEach(function (l) {
       l.duplicateFrameAt(index);
     });
+    this.setCurrentFrameIndex(index+1);
   };
 
   ns.PiskelController.prototype.moveFrame = function (fromIndex, toIndex) {
@@ -17227,7 +17245,11 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
   };
 
   ns.PiskelController.prototype.setCurrentFrameIndex = function (index) {
-    this.currentFrameIndex = index;
+    if (this.hasFrameAt(index)) {
+      this.currentFrameIndex = index;
+    } else {
+      window.console.error('Could not set current frame index to ' + index);
+    }
   };
 
   ns.PiskelController.prototype.selectNextFrame = function () {
@@ -17245,7 +17267,11 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
   };
 
   ns.PiskelController.prototype.setCurrentLayerIndex = function (index) {
-    this.currentLayerIndex = index;
+    if (this.hasLayerAt(index)) {
+      this.currentLayerIndex = index;
+    } else {
+      window.console.error('Could not set current layer index to ' + index);
+    }
   };
 
   ns.PiskelController.prototype.selectLayer = function (layer) {
@@ -17259,15 +17285,6 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
     var layer = this.getLayerByIndex(index);
     if (layer) {
       layer.setName(name);
-    }
-  };
-
-  ns.PiskelController.prototype.getLayerByIndex = function (index) {
-    var layers = this.getLayers();
-    if (layers[index]) {
-      return layers[index];
-    } else {
-      return null;
     }
   };
 
@@ -17377,7 +17394,7 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
 
   ns.PublicPiskelController.prototype.raiseSaveStateEvent_ = function (fn, args) {
     $.publish(Events.PISKEL_SAVE_STATE, {
-      type : pskl.service.HistoryService.REPLAY,
+      type : pskl.service.HistoryService.REPLAY_NO_SNAPSHOT,
       scope : this,
       replay : {
         fn : fn,
@@ -18002,7 +18019,6 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
 
     if (action === ACTION.CLONE) {
       this.piskelController.duplicateFrameAt(index);
-      this.piskelController.setCurrentFrameIndex(index + 1);
       this.updateScrollerOverflows();
     } else if (action === ACTION.DELETE) {
       this.piskelController.removeFrameAt(index);
@@ -18011,7 +18027,6 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
       this.piskelController.setCurrentFrameIndex(index);
     } else if (action === ACTION.NEW_FRAME) {
       this.piskelController.addFrame();
-      this.piskelController.setCurrentFrameIndex(this.piskelController.getFrameCount() - 1);
       this.updateScrollerOverflows();
     }
   };
@@ -20717,10 +20732,17 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
     this.saveState__b = this.onSaveStateEvent.bind(this);
 
     this.lastLoadState = -1;
+
+    this.saveNextAsSnapshot = false;
   };
 
   ns.HistoryService.SNAPSHOT = 'SNAPSHOT';
   ns.HistoryService.REPLAY = 'REPLAY';
+  /**
+   * This event alters the state (frames, layers) of the piskel. The event is triggered before the execution of associated command.
+   * Don't store snapshots for such events.
+   */
+  ns.HistoryService.REPLAY_NO_SNAPSHOT = 'REPLAY_NO_SNAPSHOT';
 
   ns.HistoryService.prototype.init = function () {
     $.subscribe(Events.PISKEL_SAVE_STATE, this.saveState__b);
@@ -20747,8 +20769,18 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
       layerIndex : this.piskelController.currentLayerIndex
     };
 
-    if (stateInfo.type === ns.HistoryService.SNAPSHOT || this.currentIndex % SNAPSHOT_PERIOD === 0) {
+    var isSnapshot = stateInfo.type === ns.HistoryService.SNAPSHOT;
+    var isNoSnapshot = stateInfo.type === ns.HistoryService.REPLAY_NO_SNAPSHOT;
+    var isAtAutoSnapshotInterval = this.currentIndex % SNAPSHOT_PERIOD === 0 || this.saveNextAsSnapshot;
+    if (isNoSnapshot && isAtAutoSnapshotInterval) {
+      this.saveNextAsSnapshot = true;
+    } else if (isSnapshot || isAtAutoSnapshotInterval) {
       state.piskel = this.piskelController.serialize(true);
+      this.saveNextAsSnapshot = false;
+    }
+
+    if (isSnapshot) {
+
     }
 
     this.stateQueue.push(state);
@@ -20769,12 +20801,8 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
   };
 
   ns.HistoryService.prototype.getPreviousSnapshotIndex_ = function (index) {
-    var counter = 0;
     while (this.stateQueue[index] && !this.stateQueue[index].piskel) {
       index = index - 1;
-      if(++counter > 2*SNAPSHOT_PERIOD) {
-        break;
-      }
     }
     return index;
   };
@@ -20794,14 +20822,14 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
       }
     } catch (e) {
       window.console.error("[CRITICAL ERROR] : Unable to load a history state.");
-      window.console.error("Can you open an issue on http://github.com/juliandescottes/piskel or contact @piskelapp on twitter ? Thanks !");
-      window.console.error("Thanks !");
       if (typeof e === "string") {
         window.console.error(e);
       } else {
         window.console.error(e.message);
         window.console.error(e.stack);
       }
+      this.stateQueue = [];
+      this.currentIndex = -1;
     }
   };
 
@@ -20835,6 +20863,7 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
     if (lastState) {
       this.setupState(lastState);
     }
+
     this.currentIndex = index;
     $.publish(Events.PISKEL_RESET);
     if (originalSize !== this.getPiskelSize_()) {
@@ -21695,7 +21724,7 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
     });
 
     // reset
-    this.pixels = [];
+    this.resetUsedPixels_();
   };
 
   ns.SimplePen.prototype.replay = function (frame, replayData) {
@@ -21706,6 +21735,10 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
     pixels.forEach(function (pixel) {
       frame.setPixel(pixel.col, pixel.row, pixel.color);
     });
+  };
+
+  ns.SimplePen.prototype.resetUsedPixels_ = function() {
+    this.pixels = [];
   };
 })();
 ;/**
@@ -21739,6 +21772,7 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
       darken : {},
       lighten : {}
     };
+    this.superclass.resetUsedPixels_.call(this);
   };
   /**
    * @override
@@ -21774,14 +21808,13 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
   };
 
   ns.Lighten.prototype.releaseToolAt = function(col, row, color, frame, overlay, event) {
-    // apply on real frame
     this.setPixelsToFrame_(frame, this.pixels);
-
-    this.resetUsedPixels_();
 
     $.publish(Events.PISKEL_SAVE_STATE, {
       type : pskl.service.HistoryService.SNAPSHOT
     });
+
+    this.resetUsedPixels_();
   };
 })();;(function() {
   var ns = $.namespace("pskl.drawingtools");
