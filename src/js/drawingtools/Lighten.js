@@ -29,6 +29,7 @@
       darken : {},
       lighten : {}
     };
+    this.superclass.resetUsedPixels_.call(this);
   };
   /**
    * @override
@@ -64,13 +65,12 @@
   };
 
   ns.Lighten.prototype.releaseToolAt = function(col, row, color, frame, overlay, event) {
-    // apply on real frame
     this.setPixelsToFrame_(frame, this.pixels);
-
-    this.resetUsedPixels_();
 
     $.publish(Events.PISKEL_SAVE_STATE, {
       type : pskl.service.HistoryService.SNAPSHOT
     });
+
+    this.resetUsedPixels_();
   };
 })();

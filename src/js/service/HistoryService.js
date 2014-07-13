@@ -1,7 +1,7 @@
 (function () {
   var ns = $.namespace('pskl.service');
 
-  var SNAPSHOT_PERIOD = 50;
+  var SNAPSHOT_PERIOD = 5;
   var LOAD_STATE_INTERVAL = 50;
 
   ns.HistoryService = function (piskelController) {
@@ -11,10 +11,17 @@
     this.saveState__b = this.onSaveStateEvent.bind(this);
 
     this.lastLoadState = -1;
+
+    this.saveNextAsSnapshot = false;
   };
 
   ns.HistoryService.SNAPSHOT = 'SNAPSHOT';
   ns.HistoryService.REPLAY = 'REPLAY';
+  /**
+   * This event alters the state (frames, layers) of the piskel. The event is triggered before the execution of associated command.
+   * Don't store snapshots for such events.
+   */
+  ns.HistoryService.REPLAY_NO_SNAPSHOT = 'REPLAY_NO_SNAPSHOT';
 
   ns.HistoryService.prototype.init = function () {
     $.subscribe(Events.PISKEL_SAVE_STATE, this.saveState__b);
@@ -41,8 +48,14 @@
       layerIndex : this.piskelController.currentLayerIndex
     };
 
-    if (stateInfo.type === ns.HistoryService.SNAPSHOT || this.currentIndex % SNAPSHOT_PERIOD === 0) {
+    var isSnapshot = stateInfo.type === ns.HistoryService.SNAPSHOT;
+    var isNoSnapshot = stateInfo.type === ns.HistoryService.REPLAY_NO_SNAPSHOT;
+    var isAtAutoSnapshotInterval = this.currentIndex % SNAPSHOT_PERIOD === 0;
+    if (isNoSnapshot && isAtAutoSnapshotInterval) {
+      this.saveNextAsSnapshot = true;
+    } else if (isSnapshot || isAtAutoSnapshotInterval) {
       state.piskel = this.piskelController.serialize(true);
+      this.saveNextAsSnapshot = false;
     }
 
     this.stateQueue.push(state);
@@ -96,6 +109,8 @@
         window.console.error(e.message);
         window.console.error(e.stack);
       }
+      this.stateQueue = [];
+      this.currentIndex = -1;
     }
   };
 
@@ -125,10 +140,11 @@
       this.replayState(state);
     }
 
-    var lastState = this.stateQueue[index+1];
+    var lastState = this.stateQueue[index];
     if (lastState) {
       this.setupState(lastState);
     }
+
     this.currentIndex = index;
     $.publish(Events.PISKEL_RESET);
     if (originalSize !== this.getPiskelSize_()) {

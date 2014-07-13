@@ -80,7 +80,6 @@
 
     if (action === ACTION.CLONE) {
       this.piskelController.duplicateFrameAt(index);
-      this.piskelController.setCurrentFrameIndex(index + 1);
       this.updateScrollerOverflows();
     } else if (action === ACTION.DELETE) {
       this.piskelController.removeFrameAt(index);
@@ -89,7 +88,6 @@
       this.piskelController.setCurrentFrameIndex(index);
     } else if (action === ACTION.NEW_FRAME) {
       this.piskelController.addFrame();
-      this.piskelController.setCurrentFrameIndex(this.piskelController.getFrameCount() - 1);
       this.updateScrollerOverflows();
     }
   };

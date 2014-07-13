@@ -71,7 +71,7 @@
     });
 
     // reset
-    this.pixels = [];
+    this.resetUsedPixels_();
   };
 
   ns.SimplePen.prototype.replay = function (frame, replayData) {
@@ -82,5 +82,9 @@
     pixels.forEach(function (pixel) {
       frame.setPixel(pixel.col, pixel.row, pixel.color);
     });
+  };
+
+  ns.SimplePen.prototype.resetUsedPixels_ = function() {
+    this.pixels = [];
   };
 })();
