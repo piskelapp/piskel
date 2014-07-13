@@ -1,7 +1,7 @@
 (function () {
   var ns = $.namespace('pskl.service');
 
-  var SNAPSHOT_PERIOD = 5;
+  var SNAPSHOT_PERIOD = 50;
   var LOAD_STATE_INTERVAL = 50;
 
   ns.HistoryService = function (piskelController) {
@@ -50,12 +50,16 @@
 
     var isSnapshot = stateInfo.type === ns.HistoryService.SNAPSHOT;
     var isNoSnapshot = stateInfo.type === ns.HistoryService.REPLAY_NO_SNAPSHOT;
-    var isAtAutoSnapshotInterval = this.currentIndex % SNAPSHOT_PERIOD === 0;
+    var isAtAutoSnapshotInterval = this.currentIndex % SNAPSHOT_PERIOD === 0 || this.saveNextAsSnapshot;
     if (isNoSnapshot && isAtAutoSnapshotInterval) {
       this.saveNextAsSnapshot = true;
     } else if (isSnapshot || isAtAutoSnapshotInterval) {
       state.piskel = this.piskelController.serialize(true);
       this.saveNextAsSnapshot = false;
+    }
+
+    if (isSnapshot) {
+
     }
 
     this.stateQueue.push(state);
@@ -76,12 +80,8 @@
   };
 
   ns.HistoryService.prototype.getPreviousSnapshotIndex_ = function (index) {
-    var counter = 0;
     while (this.stateQueue[index] && !this.stateQueue[index].piskel) {
       index = index - 1;
-      if(++counter > 2*SNAPSHOT_PERIOD) {
-        break;
-      }
     }
     return index;
   };
@@ -101,8 +101,6 @@
       }
     } catch (e) {
       window.console.error("[CRITICAL ERROR] : Unable to load a history state.");
-      window.console.error("Can you open an issue on http://github.com/juliandescottes/piskel or contact @piskelapp on twitter ? Thanks !");
-      window.console.error("Thanks !");
       if (typeof e === "string") {
         window.console.error(e);
       } else {
@@ -140,7 +138,7 @@
       this.replayState(state);
     }
 
-    var lastState = this.stateQueue[index];
+    var lastState = this.stateQueue[index+1];
     if (lastState) {
       this.setupState(lastState);
     }
