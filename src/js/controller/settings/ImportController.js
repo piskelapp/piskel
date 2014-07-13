@@ -7,19 +7,19 @@
   };
 
   ns.ImportController.prototype.init = function () {
-    this.hiddenOpenPiskelInput = $('[name=open-piskel-input]');
-    this.openPiskelInputButton = $('.open-piskel-button');
-
-    this.hiddenFileInput = $('[name=file-upload-input]');
-    this.fileInputButton = $('.file-input-button');
-
     this.browseLocalButton = document.querySelector('.browse-local-button');
     this.browseLocalButton.addEventListener('click', this.onBrowseLocalClick_.bind(this));
 
+    this.hiddenFileInput = $('[name=file-upload-input]');
     this.hiddenFileInput.change(this.onFileUploadChange_.bind(this));
+
+    this.fileInputButton = $('.file-input-button');
     this.fileInputButton.click(this.onFileInputClick_.bind(this));
 
+    this.hiddenOpenPiskelInput = $('[name=open-piskel-input]');
     this.hiddenOpenPiskelInput.change(this.onOpenPiskelChange_.bind(this));
+
+    this.openPiskelInputButton = $('.open-piskel-button');
     this.openPiskelInputButton.click(this.onOpenPiskelClick_.bind(this));
 
     this.prevSessionContainer = $('.previous-session');
@@ -82,12 +82,6 @@
         throw 'File is not an image : ' + file.type;
       }
     }
-  };
-
-  ns.ImportController.prototype.enableDisabledSections_ = function () {
-    this.fileInputButton.removeClass('button-primary');
-    this.fileInputButton.blur();
-    $('.import-options').show();
   };
 
   ns.ImportController.prototype.isImage_ = function (file) {

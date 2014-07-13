@@ -9,16 +9,9 @@
    * @public
    */
   ns.SaveController.prototype.init = function () {
-    this.saveForm = $('form[name=save-form]');
-    this.nameInput =  $('#save-name');
-    this.descriptionInput = $('#save-description');
-    this.isPublicCheckbox = $('input[name=save-public-checkbox]');
-    this.saveOnlineButton = $('#save-online-button');
-    this.saveLocalButton = $('#save-browser-button');
-    this.saveFileButton = $('#save-file-button');
 
     // Only available in app-engine mode ...
-    this.piskelName = $('.piskel-name').get(0);
+    this.piskelName = document.querySelector('.piskel-name');
 
     this.saveOnlineStatus = $('#save-online-status');
 
@@ -26,16 +19,26 @@
     this.timestamp = new Date();
 
     var descriptor = this.piskelController.getPiskel().getDescriptor();
-    this.nameInput.val(descriptor.name);
+    this.descriptionInput = $('#save-description');
     this.descriptionInput.val(descriptor.description);
 
+    this.isPublicCheckbox = $('input[name=save-public-checkbox]');
     this.isPublicCheckbox.prop('checked', descriptor.isPublic);
 
+    this.saveFileButton = $('#save-file-button');
     this.saveFileButton.click(this.saveFile_.bind(this));
+
+    this.saveLocalButton = $('#save-browser-button');
     this.saveLocalButton.click(this.saveLocal_.bind(this));
+
+    this.saveOnlineButton = $('#save-online-button');
     this.saveOnlineButton.click(this.saveOnline_.bind(this));
+
+    this.saveForm = $('form[name=save-form]');
     this.saveForm.submit(this.onSaveFormSubmit_.bind(this));
 
+    this.nameInput =  $('#save-name');
+    this.nameInput.val(descriptor.name);
     this.nameInput.keyup(this.updateLocalStatusFilename_.bind(this));
 
     if (!pskl.app.isLoggedIn()) {
