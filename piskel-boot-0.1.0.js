@@ -1,9 +1,9 @@
 (function () {
 
   /**
-   * See @Gruntfile.js => after build, -2014-07-13-03-15 is replaced by the build version
+   * See @Gruntfile.js => after build, -2014-07-13-03-54 is replaced by the build version
    */
-  var version = '-2014-07-13-03-15';
+  var version = '-2014-07-13-03-54';
   var versionHasNotBeenReplaced = version.indexOf('@@') === 0;
   if (versionHasNotBeenReplaced)  {
     version = '';
