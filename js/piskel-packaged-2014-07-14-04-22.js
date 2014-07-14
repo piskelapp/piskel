@@ -16505,6 +16505,8 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
     this.add(this.aboveRenderer);
 
     this.serializedRendering = '';
+
+    $.subscribe(Events.PISKEL_RESET, this.flush.bind(this));
   };
 
   pskl.utils.inherit(pskl.rendering.layer.LayersRenderer, pskl.rendering.CompositeRenderer);
@@ -16516,6 +16518,10 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
     var currentFrameIndex = this.piskelController.getCurrentFrameIndex();
     var currentLayerIndex = this.piskelController.getCurrentLayerIndex();
 
+    var downLayers = layers.slice(0, currentLayerIndex);
+    var upLayers = layers.slice(currentLayerIndex + 1, layers.length);
+
+
     var serializedRendering = [
       this.getZoom(),
       this.getGridWidth(),
@@ -16523,8 +16529,8 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
       offset.y,
       size.width,
       size.height,
-      currentFrameIndex,
-      currentLayerIndex,
+      this.getHashForLayersAt_(currentFrameIndex, downLayers),
+      this.getHashForLayersAt_(currentFrameIndex, upLayers),
       layers.length
     ].join("-");
 
@@ -16534,18 +16540,15 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
 
       this.clear();
 
-      var downLayers = layers.slice(0, currentLayerIndex);
       if (downLayers.length > 0) {
         var downFrame = this.getFrameForLayersAt_(currentFrameIndex, downLayers);
         this.belowRenderer.render(downFrame);
       }
 
-      var upLayers = layers.slice(currentLayerIndex + 1, layers.length);
       if (upLayers.length > 0) {
         var upFrame = this.getFrameForLayersAt_(currentFrameIndex, upLayers);
         this.aboveRenderer.render(upFrame);
       }
-
     }
   };
 
@@ -16567,6 +16570,13 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
       return l.getFrameAt(frameIndex);
     });
     return pskl.utils.FrameUtils.merge(frames);
+  };
+
+  ns.LayersRenderer.prototype.getHashForLayersAt_ = function (frameIndex, layers) {
+    var hash = layers.map(function (l) {
+      return l.getFrameAt(frameIndex).getHash();
+    });
+    return hash.join('-');
   };
 
   ns.LayersRenderer.prototype.flush = function () {
@@ -18353,9 +18363,11 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
   };
 
   ns.AnimatedPreviewController.prototype.setFPS = function (fps) {
-    this.fps = fps;
-    $("#preview-fps").val(this.fps);
-    $("#display-fps").html(this.fps + " FPS");
+    if (fps) {
+      this.fps = fps;
+      $("#preview-fps").val(this.fps);
+      $("#display-fps").html(this.fps + " FPS");
+    }
   };
 
   ns.AnimatedPreviewController.prototype.getFPS = function () {
@@ -20524,10 +20536,16 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
   ns.LocalStorageService.prototype.load = function(name) {
     var piskelString = this.getPiskel(name);
     var key = this.getKey_(name);
+    var serializedPiskel = JSON.parse(piskelString);
+    // FIXME : should be moved to deserializer
+    // Deserializer should call callback with descriptor + fps information
+    var fps = serializedPiskel.piskel.fps;
+    var description = serializedPiskel.piskel.description;
 
-    pskl.utils.serialization.Deserializer.deserialize(JSON.parse(piskelString), function (piskel) {
-      piskel.setDescriptor(new pskl.model.piskel.Descriptor(name, key.description, true));
+    pskl.utils.serialization.Deserializer.deserialize(serializedPiskel, function (piskel) {
+      piskel.setDescriptor(new pskl.model.piskel.Descriptor(name, description, true));
       pskl.app.piskelController.setPiskel(piskel);
+      pskl.app.animationController.setFPS(fps);
     });
   };
 
@@ -20665,6 +20683,7 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
     var info = {
       name : descriptor.name,
       description : descriptor.info,
+      fps : this.piskelController.getFPS(),
       date : Date.now(),
       hash : hash
     };
@@ -20695,9 +20714,11 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
     pskl.utils.serialization.Deserializer.deserialize(previousPiskel, function (piskel) {
       piskel.setDescriptor(new pskl.model.piskel.Descriptor(previousInfo.name, previousInfo.description, true));
       pskl.app.piskelController.setPiskel(piskel);
+      pskl.app.animationController.setFPS(previousInfo.fps);
     });
   };
-})();;(function () {
+})();
+;(function () {
   var ns = $.namespace('pskl.service');
 
   ns.BeforeUnloadService = function (piskelController) {
@@ -22696,5 +22717,49 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
       var framesheetCanvas = renderer.renderAsCanvas();
       return framesheetCanvas.toDataURL("image/png");
     }
+  };
+})();
+
+;(function () {
+  var flipFrame = function (frame, horizontal, vertical) {
+    var clone = frame.clone();
+    var w = frame.getWidth();
+    var h = frame.getHeight();
+    clone.forEachPixel(function (color, x, y) {
+      if (horizontal) {
+        x = w-x-1;
+      }
+      if (vertical) {
+        y = h-y-1;
+      }
+      frame.pixels[x][y] = color;
+    });
+    frame.version++;
+  };
+
+  window.flip = function (horizontal, vertical) {
+    var currentFrameIndex = pskl.app.piskelController.getCurrentFrameIndex();
+    var layers = pskl.app.piskelController.getLayers();
+    layers.forEach(function (layer) {
+      flipFrame(layer.getFrameAt(currentFrameIndex), horizontal, vertical);
+    });
+    $.publish(Events.PISKEL_RESET);
+    $.publish(Events.PISKEL_SAVE_STATE, {
+      type : pskl.service.HistoryService.SNAPSHOT
+    });
+  };
+
+  window.copyToAll = function () {
+    var ref = pskl.app.piskelController.getCurrentFrame();
+    var layer = pskl.app.piskelController.getCurrentLayer();
+    layer.getFrames().forEach(function (frame) {
+      if (frame !==  ref) {
+        frame.setPixels(ref.getPixels());
+      }
+    });
+    $.publish(Events.PISKEL_RESET);
+    $.publish(Events.PISKEL_SAVE_STATE, {
+      type : pskl.service.HistoryService.SNAPSHOT
+    });
   };
 })();

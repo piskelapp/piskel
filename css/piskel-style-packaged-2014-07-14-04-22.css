@@ -198,9 +198,9 @@ body {
  */
 .canvas.layers-below-canvas  {z-index:  7;}
 .canvas.drawing-canvas       {z-index:  8;}
-.canvas.layers-above-canvas  {z-index:  9;}
-.canvas.onion-skin-canvas    {z-index: 10;}
-.canvas.canvas-overlay       {z-index: 11;}
+.canvas.canvas-overlay       {z-index:  9;}
+.canvas.onion-skin-canvas    {z-index:  10;}
+.canvas.layers-above-canvas  {z-index:  11;}
 
 
 
