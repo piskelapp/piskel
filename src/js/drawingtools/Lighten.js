@@ -19,19 +19,27 @@
       {key : 'shift', description : 'Apply only once per pixel'}
     ];
 
-    this.resetUsedPixels_();
-  };
-
-  pskl.utils.inherit(ns.Lighten, ns.SimplePen);
-
-  ns.Lighten.prototype.resetUsedPixels_ = function() {
     this.usedPixels_ = {
       darken : {},
       lighten : {}
     };
   };
+
+  pskl.utils.inherit(ns.Lighten, ns.SimplePen);
+
   /**
-   * @override
+   * @Override
+   */
+  ns.Lighten.prototype.resetUsedPixels_ = function() {
+    this.usedPixels_ = {
+      darken : {},
+      lighten : {}
+    };
+    this.superclass.resetUsedPixels_.call(this);
+  };
+
+  /**
+   * @Override
    */
   ns.Lighten.prototype.applyToolAt = function(col, row, color, frame, overlay, event, mouseButton) {
     var overlayColor = overlay.getPixel(col, row);
@@ -47,7 +55,7 @@
 
     var doNotModify = isTransparent || (isSinglePass && usedPixels[key]);
     if (doNotModify) {
-      color = pixelColor;
+      color = window.tinycolor(pixelColor);
     } else {
       var step = isSinglePass ? DEFAULT_STEP * 2 : DEFAULT_STEP;
       if (isDarken) {
@@ -55,22 +63,11 @@
       } else {
         color = window.tinycolor.lighten(pixelColor, step);
       }
-      if (color) {
-        usedPixels[key] = true;
-        this.superclass.applyToolAt.call(this, col, row, color.toRgbString(), frame, overlay, event);
-      }
+    }
+    if (color) {
+      usedPixels[key] = true;
+      this.superclass.applyToolAt.call(this, col, row, color.toRgbString(), frame, overlay, event);
     }
 
-  };
-
-  ns.Lighten.prototype.releaseToolAt = function(col, row, color, frame, overlay, event) {
-    // apply on real frame
-    this.setPixelsToFrame_(frame, this.pixels);
-
-    this.resetUsedPixels_();
-
-    $.publish(Events.PISKEL_SAVE_STATE, {
-      type : pskl.service.HistoryService.SNAPSHOT
-    });
   };
 })();

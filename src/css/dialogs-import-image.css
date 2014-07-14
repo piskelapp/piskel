@@ -1,0 +1,55 @@
+/************************************************************************************************/
+/* Import dialog                                                                                 */
+/************************************************************************************************/
+
+.import-section-preview {
+  display : inline-block;
+  height : 60px;
+  width: 60px;
+  border : 1px dashed #999;
+  border-radius: 3px;
+}
+
+.dialog-section-title {
+  display : inline-block;
+  width: 55px;
+}
+
+.import-size-field,
+.resize-size-field {
+  width: 50px;
+  margin-right: 8px;
+  text-align: right;
+}
+
+.import-size-field:nth-of-type(2),
+.resize-size-field:nth-of-type(2) {
+  margin-left: 5px;
+}
+
+.import-image-file-name {
+  display: inline-block;
+  overflow: hidden;
+
+  height: 2rem;
+  word-break : break-all;
+  vertical-align: middle;
+  font-style: italic;
+  font-weight: normal;
+  text-shadow: none;
+}
+
+[name=smooth-resize-checkbox] {
+  margin : 0 8px;
+}
+
+.dialog-import-body {
+  padding:10px 20px;
+  font-size:1.5em
+}
+
+.import-button {
+  font-size: 1em;
+  height: auto;
+  padding: 5px 10px;
+}

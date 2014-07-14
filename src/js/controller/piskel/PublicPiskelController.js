@@ -49,7 +49,7 @@
 
   ns.PublicPiskelController.prototype.raiseSaveStateEvent_ = function (fn, args) {
     $.publish(Events.PISKEL_SAVE_STATE, {
-      type : pskl.service.HistoryService.REPLAY,
+      type : pskl.service.HistoryService.REPLAY_NO_SNAPSHOT,
       scope : this,
       replay : {
         fn : fn,

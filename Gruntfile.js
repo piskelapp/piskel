@@ -145,19 +145,6 @@ module.exports = function(grunt) {
           {expand: true, flatten: true, src: ['src/piskel-boot-0.1.0.js'], dest: 'dest/'}
         ]
       },
-      index: {
-        options: {
-          patterns: [
-            {
-              match: /templates\//g,
-              replacement: "templates"+version+"/"
-            }
-          ]
-        },
-        files: [
-          {src: ['src/index.html'], dest: 'dest/index.html'}
-        ]
-      },
       editor: {
         options: {
           patterns: [
@@ -190,9 +177,10 @@ module.exports = function(grunt) {
           {src: ['dest/js/piskel-packaged-min.js'], dest: 'dest/js/piskel-packaged-min' + version + '.js'},
           {src: ['src/logo.png'], dest: 'dest/logo.png'},
           {src: ['src/js/lib/iframeLoader-0.1.0.js'], dest: 'dest/js/lib/iframeLoader-0.1.0.js'},
+          {src: ['src/js/lib/gif/gif.ie.worker.js'], dest: 'dest/js/lib/gif/gif.ie.worker.js'},
           {expand: true, src: ['img/**'], cwd: 'src/', dest: 'dest/', filter: 'isFile'},
           {expand: true, src: ['css/fonts/**'], cwd: 'src/', dest: 'dest/', filter: 'isFile'},
-          {expand: true, src: ['**/*.html'], cwd: 'src/templates/', dest: 'dest/templates/', filter: 'isFile'}
+          {expand: true, src: ['**/*.html'], cwd: 'src/', dest: 'dest/', filter: 'isFile'}
         ]
       }
     },
@@ -299,7 +287,7 @@ module.exports = function(grunt) {
   // Compile JS code (eg verify JSDoc annotation and types, no actual minified code generated).
   grunt.registerTask('compile', ['closureCompiler:compile', 'clean:after']);
 
-  grunt.registerTask('rep', ['replace:main', 'replace:index', 'replace:editor']);
+  grunt.registerTask('rep', ['replace:main', 'replace:editor']);
 
   grunt.registerTask('merge',  ['concat:js', 'concat:css', 'uglify', 'rep', 'copy']);
 

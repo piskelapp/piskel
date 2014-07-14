@@ -1,8 +1,10 @@
 (function () {
   var ns = $.namespace("pskl.controller.settings");
 
-  var URL_MAX_LENGTH = 60;
+  var URL_MAX_LENGTH = 30;
   var MAX_GIF_COLORS = 256;
+  var MAX_EXPORT_ZOOM = 20;
+  var DEFAULT_EXPORT_ZOOM = 10;
 
   ns.GifExportController = function (piskelController) {
     this.piskelController = piskelController;
@@ -13,26 +15,20 @@
    * @static
    * @type {Array} array of Objects {zoom:{Number}, default:{Boolean}}
    */
-  ns.GifExportController.RESOLUTIONS = [
-    {
-      'zoom' : 1
-    },{
-      'zoom' : 5
-    },{
-      'zoom' : 10,
-      'default' : true
-    },{
-      'zoom' : 20
-    }
-  ];
+  ns.GifExportController.RESOLUTIONS = [];
+  for (var i = 1 ; i <= MAX_EXPORT_ZOOM ; i++) {
+    ns.GifExportController.RESOLUTIONS.push({
+      zoom : i
+    });
+  }
 
   ns.GifExportController.prototype.init = function () {
-    this.radioTemplate_ = pskl.utils.Template.get("gif-export-radio-template");
+    this.optionTemplate_ = pskl.utils.Template.get("gif-export-option-template");
 
     this.uploadStatusContainerEl = document.querySelector(".gif-upload-status");
 
     this.previewContainerEl = document.querySelector(".gif-export-preview");
-    this.radioGroupEl = document.querySelector(".gif-export-radio-group");
+    this.selectResolutionEl = document.querySelector(".gif-export-select-resolution");
 
     this.uploadButton = $(".gif-upload-button");
     this.uploadButton.click(this.onUploadButtonClick_.bind(this));
@@ -40,12 +36,10 @@
     this.downloadButton = $(".gif-download-button");
     this.downloadButton.click(this.onDownloadButtonClick_.bind(this));
 
-    this.exportForm = $(".gif-export-form");
-
     this.exportProgressStatusEl = document.querySelector('.gif-export-progress-status');
     this.exportProgressBarEl = document.querySelector('.gif-export-progress-bar');
 
-    this.createRadioElements_();
+    this.createOptionElements_();
   };
 
   ns.GifExportController.prototype.onUploadButtonClick_ = function (evt) {
@@ -62,9 +56,8 @@
         fps = this.piskelController.getFPS();
 
     this.renderAsImageDataAnimatedGIF(zoom, fps, function (imageData) {
-      pskl.app.imageUploadService.upload(imageData, this.onImageUploadCompleted_.bind(this));
-      pskl.utils.ImageToBlob.imageDataToBlob(imageData, "image/gif", function(blob) {
-        pskl.utils.FileUtils.downloadAsFile(fileName, blob);
+      pskl.utils.BlobUtils.dataToBlob(imageData, "image/gif", function(blob) {
+        pskl.utils.FileUtils.downloadAsFile(blob, fileName);
       });
     }.bind(this));
   };
@@ -82,43 +75,32 @@
   };
 
   ns.GifExportController.prototype.updatePreview_ = function (src) {
-    this.previewContainerEl.innerHTML = "<div><img style='max-width:240px;' src='"+src+"'/></div>";
+    this.previewContainerEl.innerHTML = "<div><img style='max-width:32px;' src='"+src+"'/></div>";
   };
 
   ns.GifExportController.prototype.getSelectedZoom_ = function () {
-    var radiosColl = this.exportForm.get(0).querySelectorAll("[name=gif-zoom-level]"),
-        radios = Array.prototype.slice.call(radiosColl,0);
-    var selectedRadios = radios.filter(function(radio) {return !!radio.checked;});
-
-    if (selectedRadios.length == 1) {
-      return selectedRadios[0].value;
-    } else {
-      throw "Unexpected error when retrieving selected zoom";
-    }
+    return this.selectResolutionEl.value;
   };
 
-  ns.GifExportController.prototype.createRadioElements_ = function () {
+  ns.GifExportController.prototype.createOptionElements_ = function () {
     var resolutions = ns.GifExportController.RESOLUTIONS;
     for (var i = 0 ; i < resolutions.length ; i++) {
-      var radio = this.createRadioForResolution_(resolutions[i]);
-      this.radioGroupEl.appendChild(radio);
+      var option = this.createOptionForResolution_(resolutions[i]);
+      this.selectResolutionEl.appendChild(option);
     }
   };
 
-  ns.GifExportController.prototype.createRadioForResolution_ = function (resolution) {
+  ns.GifExportController.prototype.createOptionForResolution_ = function (resolution) {
     var zoom = resolution.zoom;
     var label = zoom*this.piskelController.getWidth() + "x" + zoom*this.piskelController.getHeight();
     var value = zoom;
 
-    var radioHTML = pskl.utils.Template.replace(this.radioTemplate_, {value : value, label : label});
-    var radioEl = pskl.utils.Template.createFromHTML(radioHTML);
+    var isSelected = zoom === DEFAULT_EXPORT_ZOOM;
+    var selected = isSelected ? 'selected' : '';
+    var optionHTML = pskl.utils.Template.replace(this.optionTemplate_, {value : value, label : label, selected : selected});
+    var optionEl = pskl.utils.Template.createFromHTML(optionHTML);
 
-    if (resolution['default']) {
-      var input = radioEl.getElementsByTagName("input")[0];
-      input.setAttribute("checked", "checked");
-    }
-
-    return radioEl;
+    return optionEl;
   };
 
   ns.GifExportController.prototype.renderAsImageDataAnimatedGIF = function(zoom, fps, cb) {
@@ -181,8 +163,10 @@
 
   ns.GifExportController.prototype.shorten_ = function (url, maxLength, suffix) {
     if (url.length > maxLength) {
-      url = url.substring(0, maxLength);
-      url += suffix;
+      var index = Math.round((maxLength-suffix.length) / 2);
+      var part1 = url.substring(0, index);
+      var part2 = url.substring(url.length - index, url.length);
+      url = part1 + suffix + part2;
     }
     return url;
   };

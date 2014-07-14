@@ -105,6 +105,8 @@
       this.beforeUnloadService = new pskl.service.BeforeUnloadService(this.piskelController);
       this.beforeUnloadService.init();
 
+      this.fileDropperService = new pskl.service.FileDropperService(this.piskelController, $('#drawing-canvas-container').get(0));
+      this.fileDropperService.init();
 
       if (this.isAppEngineVersion) {
         this.storageService = new pskl.service.AppEngineStorageService(this.piskelController);
@@ -170,3 +172,4 @@
     }
   };
 })();
+

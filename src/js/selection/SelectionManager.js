@@ -103,6 +103,10 @@
   ns.SelectionManager.prototype.pastePixels = function(pixels) {
     var currentFrame = this.piskelController.getCurrentFrame();
 
+    pixels.forEach(function (pixel) {
+      currentFrame.setPixel(pixel.col,pixel.row,pixel.color);
+    });
+
     $.publish(Events.PISKEL_SAVE_STATE, {
       type : pskl.service.HistoryService.REPLAY,
       scope : this,
@@ -110,10 +114,6 @@
         type : SELECTION_REPLAY.PASTE,
         pixels : JSON.parse(JSON.stringify(pixels.slice(0)))
       }
-    });
-
-    pixels.forEach(function (pixel) {
-      currentFrame.setPixel(pixel.col,pixel.row,pixel.color);
     });
   };
 

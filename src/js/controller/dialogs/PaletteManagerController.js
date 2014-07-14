@@ -18,13 +18,16 @@
     this.spectrumContainers = [];
   };
 
+  pskl.utils.inherit(ns.PaletteManagerController, ns.AbstractDialogController);
+
   ns.PaletteManagerController.prototype.init = function () {
+    this.superclass.init.call(this);
+
     this.palettesList = document.querySelector('.palette-manager-list');
     this.paletteBody = document.querySelector('.palette-manager-details-body');
     this.paletteHead = document.querySelector('.palette-manager-details-head');
     this.createButton = document.querySelector('.palette-manager-actions-button[data-action="create"]');
     this.saveAllButton = document.querySelector('.palette-manager-actions-button[data-action="save-all"]');
-    this.closeButton = document.querySelector('.palette-manager-close');
 
     this.colorCardTemplate = pskl.utils.Template.get('palette-color-card-template');
     this.newColorTemplate = pskl.utils.Template.get('palette-new-color-template');
@@ -37,7 +40,6 @@
     this.paletteHead.addEventListener('click', this.delegatedPaletteHeadClick.bind(this));
     this.createButton.addEventListener('click', this.onCreateClick_.bind(this));
     this.saveAllButton.addEventListener('click', this.saveAll.bind(this));
-    this.closeButton.addEventListener('click', this.closeDialog.bind(this));
 
     // Init markup
     this.createPaletteListMarkup();
@@ -50,10 +52,6 @@
 
   ns.PaletteManagerController.prototype.destroy = function () {
     this.destroySpectrumPickers();
-  };
-
-  ns.PaletteManagerController.prototype.closeDialog = function () {
-    $.publish(Events.DIALOG_HIDE);
   };
 
   ns.PaletteManagerController.prototype.onCreateClick_ = function (evt) {

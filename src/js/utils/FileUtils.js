@@ -1,6 +1,10 @@
 (function () {
   var ns = $.namespace('pskl.utils');
 
+  var stopPropagation = function (e) {
+    e.stopPropagation();
+  };
+
   ns.FileUtils = {
     readFile : function (file, callback) {
       var reader = new FileReader();
@@ -10,7 +14,7 @@
       reader.readAsDataURL(file);
     },
 
-    downloadAsFile : function (filename, content) {
+    downloadAsFile : function (content, filename) {
       var saveAs = window.saveAs || (navigator.msSaveBlob && navigator.msSaveBlob.bind(navigator));
       if (saveAs) {
         saveAs(content, filename);
@@ -20,7 +24,9 @@
         downloadLink.setAttribute('href', content);
         downloadLink.setAttribute('download', filename);
         document.body.appendChild(downloadLink);
+        downloadLink.addEventListener('click', stopPropagation);
         downloadLink.click();
+        downloadLink.removeEventListener('click', stopPropagation);
         document.body.removeChild(downloadLink);
       }
     }

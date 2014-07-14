@@ -8,20 +8,21 @@
   "js/Constants.js",
   "js/Events.js",
 
-
   // Libraries
   "js/utils/core.js",
   "js/utils/UserAgent.js",
   "js/utils/Base64.js",
+  "js/utils/BlobUtils.js",
   "js/utils/CanvasUtils.js",
+  "js/utils/DateUtils.js",
   "js/utils/Dom.js",
   "js/utils/Math.js",
   "js/utils/FileUtils.js",
   "js/utils/FrameUtils.js",
   "js/utils/LayerUtils.js",
-  "js/utils/ImageToBlob.js",
   "js/utils/ImageResizer.js",
   "js/utils/PixelUtils.js",
+  "js/utils/PiskelFileUtils.js",
   "js/utils/Template.js",
   "js/utils/UserSettings.js",
   "js/utils/serialization/Serializer.js",
@@ -86,9 +87,9 @@
   // Settings sub-controllers
   "js/controller/settings/ApplicationSettingsController.js",
   "js/controller/settings/ResizeController.js",
+  "js/controller/settings/ImageExportController.js",
   "js/controller/settings/GifExportController.js",
   "js/controller/settings/PngExportController.js",
-  "js/controller/settings/LocalStorageController.js",
   "js/controller/settings/SaveController.js",
   "js/controller/settings/ImportController.js",
 
@@ -96,7 +97,10 @@
   "js/controller/settings/SettingsController.js",
 
   // Dialogs sub-controllers
+  "js/controller/dialogs/AbstractDialogController.js",
   "js/controller/dialogs/PaletteManagerController.js",
+  "js/controller/dialogs/ImportImageController.js",
+  "js/controller/dialogs/BrowseLocalController.js",
 
   // Dialogs controller
   "js/controller/dialogs/DialogsController.js",
@@ -114,6 +118,7 @@
   "js/service/keyboard/CheatsheetService.js",
   "js/service/ImageUploadService.js",
   "js/service/CurrentColorsService.js",
+  "js/service/FileDropperService.js",
 
   // Tools
   "js/drawingtools/BaseTool.js",
@@ -133,5 +138,7 @@
   "js/drawingtools/ColorPicker.js",
   "js/drawingtools/ColorSwap.js",
   // Application controller and initialization
-  "js/app.js"
+  "js/app.js",
+  // Bonus features !!
+  "js/snippets.js"
 ];

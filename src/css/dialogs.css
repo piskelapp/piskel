@@ -17,16 +17,16 @@
   opacity: 0;
   pointer-events: none;
 
-  transition: opacity 0.5s;
-
-
   color: white;
+}
+
+#dialog-container-wrapper.animated {
+  transition: opacity 0.5s;
 }
 
 #dialog-container-wrapper.show {
   opacity: 1;
   pointer-events: auto;
-  transition: opacity 0.5s;
 }
 
 #dialog-container {
@@ -34,17 +34,71 @@
   height:  100%;
 
   margin-top: -1500px;
-  transition:margin-top 0.5s;
 
   box-sizing: border-box;
   -moz-box-sizing : border-box;
 
   border-radius: 3px;
-  background: rgba(0,0,0,1);
+  border : 3px solid gold;
+  background: #444;
   overflow: auto;
+}
+
+.animated #dialog-container {
+  transition:margin-top 0.5s;
 }
 
 .show #dialog-container {
   margin-top: 0;
 }
 
+#dialog-container.browse-local {
+  width: 700px;
+  height: 500px;
+  top : 50%;
+  left : 50%;
+  position : absolute;
+  margin-left: -350px;
+}
+
+.show #dialog-container.browse-local {
+  margin-top: -250px;
+}
+
+#dialog-container.import-image {
+  width: 500px;
+  height: 300px;
+  top : 50%;
+  left : 50%;
+  position : absolute;
+  margin-left: -250px;
+}
+
+.show #dialog-container.import-image {
+  margin-top: -150px;
+}
+
+.dialog-wrapper {
+  position : relative;
+}
+
+.dialog-head {
+  width: 100%;
+  background: gold;
+  margin: 0;
+  padding: 10px;
+  color: black;
+  font-size: 1.8em;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+}
+
+.dialog-close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  line-height: 45px;
+  margin-right: 10px;
+  font-size: 1.3em;
+  cursor: pointer;
+}

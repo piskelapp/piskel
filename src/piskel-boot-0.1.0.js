@@ -1,5 +1,8 @@
 (function () {
 
+  /**
+   * See @Gruntfile.js => after build, @@version is replaced by the build version
+   */
   var version = '@@version';
   var versionHasNotBeenReplaced = version.indexOf('@@') === 0;
   if (versionHasNotBeenReplaced)  {

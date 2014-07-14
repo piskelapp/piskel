@@ -58,6 +58,21 @@
     return this.piskel.getLayerAt(index);
   };
 
+  ns.PiskelController.prototype.hasLayerAt = function (index) {
+    return !!this.getLayerAt(index);
+  };
+
+  // FIXME ?? No added value compared to getLayerAt ??
+  // Except normalizing to null if undefined ?? ==> To merge
+  ns.PiskelController.prototype.getLayerByIndex = function (index) {
+    var layers = this.getLayers();
+    if (layers[index]) {
+      return layers[index];
+    } else {
+      return null;
+    }
+  };
+
   ns.PiskelController.prototype.getCurrentFrame = function () {
     var layer = this.getCurrentLayer();
     return layer.getFrameAt(this.currentFrameIndex);
@@ -105,6 +120,8 @@
     this.getLayers().forEach(function (l) {
       l.addFrameAt(this.createEmptyFrame_(), index);
     }.bind(this));
+
+    this.setCurrentFrameIndex(index);
   };
 
   ns.PiskelController.prototype.createEmptyFrame_ = function () {
@@ -130,6 +147,7 @@
     this.getLayers().forEach(function (l) {
       l.duplicateFrameAt(index);
     });
+    this.setCurrentFrameIndex(index+1);
   };
 
   ns.PiskelController.prototype.moveFrame = function (fromIndex, toIndex) {
@@ -144,7 +162,11 @@
   };
 
   ns.PiskelController.prototype.setCurrentFrameIndex = function (index) {
-    this.currentFrameIndex = index;
+    if (this.hasFrameAt(index)) {
+      this.currentFrameIndex = index;
+    } else {
+      window.console.error('Could not set current frame index to ' + index);
+    }
   };
 
   ns.PiskelController.prototype.selectNextFrame = function () {
@@ -162,7 +184,11 @@
   };
 
   ns.PiskelController.prototype.setCurrentLayerIndex = function (index) {
-    this.currentLayerIndex = index;
+    if (this.hasLayerAt(index)) {
+      this.currentLayerIndex = index;
+    } else {
+      window.console.error('Could not set current layer index to ' + index);
+    }
   };
 
   ns.PiskelController.prototype.selectLayer = function (layer) {
@@ -176,15 +202,6 @@
     var layer = this.getLayerByIndex(index);
     if (layer) {
       layer.setName(name);
-    }
-  };
-
-  ns.PiskelController.prototype.getLayerByIndex = function (index) {
-    var layers = this.getLayers();
-    if (layers[index]) {
-      return layers[index];
-    } else {
-      return null;
     }
   };
 

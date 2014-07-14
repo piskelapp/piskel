@@ -9,9 +9,7 @@
 
   ns.PngExportController.prototype.init = function () {
     this.previewContainerEl = document.querySelectorAll(".png-export-preview")[0];
-    this.uploadStatusContainerEl = document.querySelectorAll(".png-upload-status")[0];
 
-    document.querySelector(".png-upload-button").addEventListener('click', this.onPngUploadButtonClick_.bind(this));
     document.querySelector(".png-download-button").addEventListener('click', this.onPngDownloadButtonClick_.bind(this));
 
     document.querySelector(".zip-generate-button").addEventListener('click', this.onZipButtonClick_.bind(this));
@@ -21,14 +19,9 @@
 
   ns.PngExportController.prototype.onPngDownloadButtonClick_ = function (evt) {
     var fileName = this.getPiskelName_() + '.png';
-    pskl.utils.ImageToBlob.canvasToBlob(this.getFramesheetAsCanvas(), function(blob) {
-      pskl.utils.FileUtils.downloadAsFile(fileName, blob);
+    pskl.utils.BlobUtils.canvasToBlob(this.getFramesheetAsCanvas(), function(blob) {
+      pskl.utils.FileUtils.downloadAsFile(blob, fileName);
     });
-  };
-
-  ns.PngExportController.prototype.onPngUploadButtonClick_ = function (evt) {
-    this.previewContainerEl.classList.add("preview-upload-ongoing");
-    pskl.app.imageUploadService.upload(this.getFramesheetAsCanvas().toDataURL("image/png"), this.onImageUploadCompleted_.bind(this));
   };
 
   ns.PngExportController.prototype.onZipButtonClick_ = function () {
@@ -43,8 +36,8 @@
 
     var fileName = this.getPiskelName_() + '.zip';
 
-    var fileContent = zip.generate({type:"blob"});
-    pskl.utils.FileUtils.downloadAsFile(fileName, fileContent);
+    var blob = zip.generate({type:"blob"});
+    pskl.utils.FileUtils.downloadAsFile(blob, fileName);
   };
 
   ns.PngExportController.prototype.getFrameAsCanvas_ = function (frame) {

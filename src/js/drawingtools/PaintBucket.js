@@ -30,16 +30,3 @@
     pskl.PixelUtils.paintSimilarConnectedPixelsFromFrame(frame, replayData.col, replayData.row, replayData.color);
   };
 })();
-
-
-
-
-
-
-
-
-
-
-
-
-

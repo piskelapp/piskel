@@ -11,10 +11,17 @@
     this.saveState__b = this.onSaveStateEvent.bind(this);
 
     this.lastLoadState = -1;
+
+    this.saveNextAsSnapshot = false;
   };
 
   ns.HistoryService.SNAPSHOT = 'SNAPSHOT';
   ns.HistoryService.REPLAY = 'REPLAY';
+  /**
+   * This event alters the state (frames, layers) of the piskel. The event is triggered before the execution of associated command.
+   * Don't store snapshots for such events.
+   */
+  ns.HistoryService.REPLAY_NO_SNAPSHOT = 'REPLAY_NO_SNAPSHOT';
 
   ns.HistoryService.prototype.init = function () {
     $.subscribe(Events.PISKEL_SAVE_STATE, this.saveState__b);
@@ -41,8 +48,18 @@
       layerIndex : this.piskelController.currentLayerIndex
     };
 
-    if (stateInfo.type === ns.HistoryService.SNAPSHOT || this.currentIndex % SNAPSHOT_PERIOD === 0) {
+    var isSnapshot = stateInfo.type === ns.HistoryService.SNAPSHOT;
+    var isNoSnapshot = stateInfo.type === ns.HistoryService.REPLAY_NO_SNAPSHOT;
+    var isAtAutoSnapshotInterval = this.currentIndex % SNAPSHOT_PERIOD === 0 || this.saveNextAsSnapshot;
+    if (isNoSnapshot && isAtAutoSnapshotInterval) {
+      this.saveNextAsSnapshot = true;
+    } else if (isSnapshot || isAtAutoSnapshotInterval) {
       state.piskel = this.piskelController.serialize(true);
+      this.saveNextAsSnapshot = false;
+    }
+
+    if (isSnapshot) {
+
     }
 
     this.stateQueue.push(state);
@@ -63,12 +80,8 @@
   };
 
   ns.HistoryService.prototype.getPreviousSnapshotIndex_ = function (index) {
-    var counter = 0;
     while (this.stateQueue[index] && !this.stateQueue[index].piskel) {
       index = index - 1;
-      if(++counter > 2*SNAPSHOT_PERIOD) {
-        break;
-      }
     }
     return index;
   };
@@ -88,14 +101,14 @@
       }
     } catch (e) {
       window.console.error("[CRITICAL ERROR] : Unable to load a history state.");
-      window.console.error("Can you open an issue on http://github.com/juliandescottes/piskel or contact @piskelapp on twitter ? Thanks !");
-      window.console.error("Thanks !");
       if (typeof e === "string") {
         window.console.error(e);
       } else {
         window.console.error(e.message);
         window.console.error(e.stack);
       }
+      this.stateQueue = [];
+      this.currentIndex = -1;
     }
   };
 
@@ -129,6 +142,7 @@
     if (lastState) {
       this.setupState(lastState);
     }
+
     this.currentIndex = index;
     $.publish(Events.PISKEL_RESET);
     if (originalSize !== this.getPiskelSize_()) {

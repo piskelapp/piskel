@@ -27,7 +27,6 @@
     var width = parseInt(this.resizeWidth.val(), 10);
     var height = parseInt(this.resizeHeight.val(), 10);
 
-
     var resizeContentEnabled = this.isResizeContentEnabled_();
     var resizedLayers = this.piskelController.getLayers().map(this.resizeLayer_.bind(this));
 

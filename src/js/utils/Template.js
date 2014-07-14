@@ -21,6 +21,15 @@
       return dummyEl.children[0];
     },
 
+    getAndReplace : function (templateId, dict) {
+      var result = "";
+      var tpl = pskl.utils.Template.get(templateId);
+      if (tpl) {
+        result = pskl.utils.Template.replace(tpl, dict);
+      }
+      return result;
+    },
+
     replace : function (template, dict) {
       for (var key in dict) {
         if (dict.hasOwnProperty(key)) {
