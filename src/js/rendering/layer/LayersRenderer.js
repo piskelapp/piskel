@@ -14,6 +14,8 @@
     this.add(this.aboveRenderer);
 
     this.serializedRendering = '';
+
+    $.subscribe(Events.PISKEL_RESET, this.flush.bind(this));
   };
 
   pskl.utils.inherit(pskl.rendering.layer.LayersRenderer, pskl.rendering.CompositeRenderer);

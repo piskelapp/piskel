@@ -138,5 +138,7 @@
   "js/drawingtools/ColorPicker.js",
   "js/drawingtools/ColorSwap.js",
   // Application controller and initialization
-  "js/app.js"
+  "js/app.js",
+  // Bonus features !!
+  "js/snippets.js"
 ];
