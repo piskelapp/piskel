@@ -21819,7 +21819,7 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
 
     var doNotModify = isTransparent || (isSinglePass && usedPixels[key]);
     if (doNotModify) {
-      color = pixelColor;
+      color = window.tinycolor(pixelColor);
     } else {
       var step = isSinglePass ? DEFAULT_STEP * 2 : DEFAULT_STEP;
       if (isDarken) {
@@ -21827,10 +21827,10 @@ zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License
       } else {
         color = window.tinycolor.lighten(pixelColor, step);
       }
-      if (color) {
-        usedPixels[key] = true;
-        this.superclass.applyToolAt.call(this, col, row, color.toRgbString(), frame, overlay, event);
-      }
+    }
+    if (color) {
+      usedPixels[key] = true;
+      this.superclass.applyToolAt.call(this, col, row, color.toRgbString(), frame, overlay, event);
     }
 
   };
