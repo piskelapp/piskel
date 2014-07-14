@@ -45,7 +45,8 @@
       this.saveOnlineButton.hide();
       $('.save-public-section').hide();
       this.saveOnlineStatus.html(pskl.utils.Template.get('save-please-login-partial'));
-      this.saveFileButton.get(0).classList.add('button-primary');
+    } else {
+      this.saveOnlineStatus.html(pskl.utils.Template.get('save-online-status-partial'));
     }
 
     this.updateLocalStatusFilename_();
@@ -176,6 +177,6 @@
       this.piskelName.classList.remove('piskel-name-saving');
     }
 
-    window.setTimeout($.publish.bind($, Events.HIDE_NOTIFICATION), 2000);
+    window.setTimeout($.publish.bind($, Events.HIDE_NOTIFICATION), 5000);
   };
 })();

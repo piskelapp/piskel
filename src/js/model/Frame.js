@@ -8,7 +8,6 @@
       this.id = __idCounter++;
       this.version = 0;
       this.pixels = ns.Frame.createEmptyPixelGrid_(width, height);
-      this.previousStates = [this.getPixels()];
       this.stateIndex = 0;
     } else {
       throw 'Bad arguments in pskl.model.Frame constructor : ' + width + ', ' + height;

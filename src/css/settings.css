@@ -195,7 +195,8 @@
 }
 
 .save-status {
-  margin-bottom: 10px;
+  margin-top: 10px;
+  margin-bottom: -10px;
   vertical-align: middle;
   font-weight: normal;
   text-shadow: none;
