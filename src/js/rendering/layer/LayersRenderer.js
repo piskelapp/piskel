@@ -27,6 +27,10 @@
     var currentFrameIndex = this.piskelController.getCurrentFrameIndex();
     var currentLayerIndex = this.piskelController.getCurrentLayerIndex();
 
+    var downLayers = layers.slice(0, currentLayerIndex);
+    var upLayers = layers.slice(currentLayerIndex + 1, layers.length);
+
+
     var serializedRendering = [
       this.getZoom(),
       this.getGridWidth(),
@@ -34,8 +38,8 @@
       offset.y,
       size.width,
       size.height,
-      currentFrameIndex,
-      currentLayerIndex,
+      this.getHashForLayersAt_(currentFrameIndex, downLayers),
+      this.getHashForLayersAt_(currentFrameIndex, upLayers),
       layers.length
     ].join("-");
 
@@ -45,18 +49,15 @@
 
       this.clear();
 
-      var downLayers = layers.slice(0, currentLayerIndex);
       if (downLayers.length > 0) {
         var downFrame = this.getFrameForLayersAt_(currentFrameIndex, downLayers);
         this.belowRenderer.render(downFrame);
       }
 
-      var upLayers = layers.slice(currentLayerIndex + 1, layers.length);
       if (upLayers.length > 0) {
         var upFrame = this.getFrameForLayersAt_(currentFrameIndex, upLayers);
         this.aboveRenderer.render(upFrame);
       }
-
     }
   };
 
@@ -78,6 +79,13 @@
       return l.getFrameAt(frameIndex);
     });
     return pskl.utils.FrameUtils.merge(frames);
+  };
+
+  ns.LayersRenderer.prototype.getHashForLayersAt_ = function (frameIndex, layers) {
+    var hash = layers.map(function (l) {
+      return l.getFrameAt(frameIndex).getHash();
+    });
+    return hash.join('-');
   };
 
   ns.LayersRenderer.prototype.flush = function () {

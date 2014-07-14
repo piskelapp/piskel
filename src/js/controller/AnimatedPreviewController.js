@@ -81,9 +81,11 @@
   };
 
   ns.AnimatedPreviewController.prototype.setFPS = function (fps) {
-    this.fps = fps;
-    $("#preview-fps").val(this.fps);
-    $("#display-fps").html(this.fps + " FPS");
+    if (fps) {
+      this.fps = fps;
+      $("#preview-fps").val(this.fps);
+      $("#display-fps").html(this.fps + " FPS");
+    }
   };
 
   ns.AnimatedPreviewController.prototype.getFPS = function () {

@@ -24,6 +24,7 @@
     var info = {
       name : descriptor.name,
       description : descriptor.info,
+      fps : this.piskelController.getFPS(),
       date : Date.now(),
       hash : hash
     };
@@ -54,6 +55,7 @@
     pskl.utils.serialization.Deserializer.deserialize(previousPiskel, function (piskel) {
       piskel.setDescriptor(new pskl.model.piskel.Descriptor(previousInfo.name, previousInfo.description, true));
       pskl.app.piskelController.setPiskel(piskel);
+      pskl.app.animationController.setFPS(previousInfo.fps);
     });
   };
 })();
