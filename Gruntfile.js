@@ -27,7 +27,7 @@ module.exports = function(grunt) {
       filesSrc : ['test/integration/casperjs/*_test.js'],
       options : {
         args : {
-          baseUrl : 'http://localhost:' + '<%= connect.test.options.port %>/src/',
+          baseUrl : 'http://localhost:' + '<%= express.test.options.port %>/',
           mode : '?debug',
           delay : delay
         },
@@ -35,6 +35,16 @@ module.exports = function(grunt) {
         logLevel : 'info',
         printCommand : false,
         printFilePaths : true
+      }
+    };
+  };
+
+  var getExpressConfig = function (source, port, host) {
+    return {
+      options: {
+        port: port,
+        hostname : host || 'localhost',
+        bases: [source]
       }
     };
   };
@@ -62,29 +72,10 @@ module.exports = function(grunt) {
         '!src/js/lib/**/*.js' // Exclude lib folder (note the leading !)
       ]
     },
-    connect : {
-      test : {
-        options : {
-          base : '.',
-          port : 4321
-        }
-      }
-    },
     express: {
-      regular: {
-        options: {
-          port: 9001,
-          hostname : 'localhost',
-          bases: ['dest']
-        }
-      },
-      debug: {
-        options: {
-          port: 9901,
-          hostname : 'localhost',
-          bases: ['src']
-        }
-      }
+      test: getExpressConfig('src', 9991),
+      regular: getExpressConfig('dest', 9001),
+      debug: getExpressConfig('src', 9901)
     },
     open : {
       regular : {
@@ -106,7 +97,7 @@ module.exports = function(grunt) {
     },
     ghost : {
       'default' : getGhostConfig(5000),
-      local : getGhostConfig(50)
+      'local' : getGhostConfig(50)
     },
     concat : {
       js : {
@@ -262,7 +253,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-closure-tools');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-concat');
-  grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-uglify');
@@ -279,10 +269,10 @@ module.exports = function(grunt) {
   grunt.registerTask('lint', ['leadingIndent:jsFiles', 'leadingIndent:cssFiles', 'jshint']);
 
   // Validate & Test
-  grunt.registerTask('test', ['lint', 'compile', 'connect:test', 'ghost:default']);
+  grunt.registerTask('test', ['lint', 'compile', 'express:test', 'ghost:default']);
 
   // Validate & Test (faster version) will NOT work on travis !!
-  grunt.registerTask('precommit', ['lint', 'compile', 'connect:test', 'ghost:local']);
+  grunt.registerTask('precommit', ['lint', 'compile', 'express:test', 'ghost:local']);
 
   // Compile JS code (eg verify JSDoc annotation and types, no actual minified code generated).
   grunt.registerTask('compile', ['closureCompiler:compile', 'clean:after']);
