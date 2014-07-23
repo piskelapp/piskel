@@ -31,6 +31,7 @@ module.exports = function(grunt) {
           mode : '?debug',
           delay : delay
         },
+        async : false,
         direct : false,
         logLevel : 'info',
         printCommand : false,
