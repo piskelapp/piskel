@@ -4,11 +4,12 @@
   var SNAPSHOT_PERIOD = 50;
   var LOAD_STATE_INTERVAL = 50;
 
-  ns.HistoryService = function (piskelController) {
-    this.piskelController = piskelController;
+  ns.HistoryService = function (piskelController, shortcutService) {
+    this.piskelController = piskelController || pskl.app.piskelController;
+    this.shortcutService = shortcutService || pskl.app.shortcutService;
+
     this.stateQueue = [];
     this.currentIndex = -1;
-    this.saveState__b = this.onSaveStateEvent.bind(this);
 
     this.lastLoadState = -1;
 
@@ -24,10 +25,10 @@
   ns.HistoryService.REPLAY_NO_SNAPSHOT = 'REPLAY_NO_SNAPSHOT';
 
   ns.HistoryService.prototype.init = function () {
-    $.subscribe(Events.PISKEL_SAVE_STATE, this.saveState__b);
+    $.subscribe(Events.PISKEL_SAVE_STATE, this.onSaveStateEvent.bind(this));
 
-    pskl.app.shortcutService.addShortcut('ctrl+Z', this.undo.bind(this));
-    pskl.app.shortcutService.addShortcut('ctrl+Y', this.redo.bind(this));
+    this.shortcutService.addShortcut('ctrl+Z', this.undo.bind(this));
+    this.shortcutService.addShortcut('ctrl+Y', this.redo.bind(this));
 
     this.saveState({
       type : ns.HistoryService.SNAPSHOT
@@ -56,10 +57,6 @@
     } else if (isSnapshot || isAtAutoSnapshotInterval) {
       state.piskel = this.piskelController.serialize(true);
       this.saveNextAsSnapshot = false;
-    }
-
-    if (isSnapshot) {
-
     }
 
     this.stateQueue.push(state);
