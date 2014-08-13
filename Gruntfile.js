@@ -228,6 +228,11 @@ module.exports = function(grunt) {
         dest: 'build/closure/closure_compiled_binary.js'
       }
     },
+    karma: {
+      unit: {
+        configFile: 'karma.conf.js'
+      }
+    },
     nodewebkit: {
       options: {
         build_dir: './dest/desktop/', // destination folder of releases.
@@ -262,6 +267,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-replace');
   grunt.loadNpmTasks('grunt-ghost');
   grunt.loadNpmTasks('grunt-open');
+  grunt.loadNpmTasks('grunt-karma');
   grunt.loadNpmTasks('grunt-leading-indent');
   grunt.loadNpmTasks('grunt-node-webkit-builder');
   grunt.loadNpmTasks('grunt-contrib-copy');
@@ -269,8 +275,11 @@ module.exports = function(grunt) {
   // Validate
   grunt.registerTask('lint', ['leadingIndent:jsFiles', 'leadingIndent:cssFiles', 'jshint']);
 
+  // karma/unit-tests task
+  grunt.registerTask('unit-test', ['karma']);
+
   // Validate & Test
-  grunt.registerTask('test', ['lint', 'compile', 'express:test', 'ghost:default']);
+  grunt.registerTask('test', ['lint', 'compile', 'unit-test','express:test', 'ghost:default']);
 
   // Validate & Test (faster version) will NOT work on travis !!
   grunt.registerTask('precommit', ['lint', 'compile', 'express:test', 'ghost:local']);
