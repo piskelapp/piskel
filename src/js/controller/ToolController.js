@@ -38,6 +38,8 @@
     this.selectTool_(this.tools[0]);
     // Activate listener on tool panel:
     $("#tool-section").mousedown($.proxy(this.onToolIconClicked_, this));
+
+    $.subscribe(Events.SELECT_TOOL, this.onSelectToolEvent_.bind(this));
   };
 
   /**
@@ -52,6 +54,13 @@
     }
     stage.addClass(tool.instance.toolId);
     stage.data("selected-tool-class", tool.instance.toolId);
+  };
+
+  ns.ToolController.prototype.onSelectToolEvent_ = function(event, toolId) {
+    var tool = this.getToolById_(toolId);
+    if (tool) {
+      this.selectTool_(tool);
+    }
   };
 
   /**

@@ -47,17 +47,6 @@
     this.duplicateFrameAt(this.getCurrentFrameIndex());
   };
 
-  ns.PublicPiskelController.prototype.raiseSaveStateEvent_ = function (fn, args) {
-    $.publish(Events.PISKEL_SAVE_STATE, {
-      type : pskl.service.HistoryService.REPLAY_NO_SNAPSHOT,
-      scope : this,
-      replay : {
-        fn : fn,
-        args : args
-      }
-    });
-  };
-
   ns.PublicPiskelController.prototype.replay = function (frame, replayData) {
     replayData.fn.apply(this.piskelController, replayData.args);
   };
@@ -139,6 +128,17 @@
 
   ns.PublicPiskelController.prototype.getPiskel = function () {
     return this.piskelController.piskel;
+  };
+
+  ns.PublicPiskelController.prototype.raiseSaveStateEvent_ = function (fn, args) {
+    $.publish(Events.PISKEL_SAVE_STATE, {
+      type : pskl.service.HistoryService.REPLAY_NO_SNAPSHOT,
+      scope : this,
+      replay : {
+        fn : fn,
+        args : args
+      }
+    });
   };
 
 })();

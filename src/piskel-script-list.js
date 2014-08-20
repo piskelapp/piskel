@@ -137,6 +137,13 @@
   "js/drawingtools/selectiontools/ShapeSelect.js",
   "js/drawingtools/ColorPicker.js",
   "js/drawingtools/ColorSwap.js",
+
+  // Devtools
+  "js/devtools/MouseEvent.js",
+  "js/devtools/TestRecorder.js",
+  "js/devtools/TestRecordPlayer.js",
+  "js/devtools/TestRecordController.js",
+
   // Application controller and initialization
   "js/app.js",
   // Bonus features !!

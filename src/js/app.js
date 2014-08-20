@@ -29,8 +29,8 @@
 
       var layer = new pskl.model.Layer("Layer 1");
       var frame = new pskl.model.Frame(size.width, size.height);
-      layer.addFrame(frame);
 
+      layer.addFrame(frame);
       piskel.addLayer(layer);
 
       this.corePiskelController = new pskl.controller.piskel.PiskelController(piskel);
@@ -115,6 +115,15 @@
       }
       this.storageService.init();
 
+      // test tools
+      var testModeOn = document.location.href.toLowerCase().indexOf('test=true') !== -1;
+      if (testModeOn) {
+        this.testRecorder = new pskl.devtools.TestRecorder(this.piskelController);
+        this.testRecorder.init();
+
+        this.testRecordController = new pskl.devtools.TestRecordController(this.testRecorder);
+        this.testRecordController.init();
+      }
 
       var drawingLoop = new pskl.rendering.DrawingLoop();
       drawingLoop.addCallback(this.render, this);

@@ -196,6 +196,28 @@
     };
   };
 
+  ns.FrameRenderer.prototype.reverseCoordinates = function(x, y) {
+    var cellSize = this.zoom;
+
+    x = x * cellSize;
+    y = y * cellSize;
+
+    x = x - this.offset.x * cellSize;
+    y = y - this.offset.y * cellSize;
+
+    x = x + this.margin.x;
+    y = y + this.margin.y;
+
+    var containerOffset = this.container.offset();
+    x = x + containerOffset.left;
+    y = y + containerOffset.top;
+
+    return {
+      x : x + (cellSize/2),
+      y : y + (cellSize/2)
+    };
+  };
+
   /**
    * @private
    */

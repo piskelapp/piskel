@@ -39,7 +39,10 @@
   };
 
   ns.ImportController.prototype.onOpenPiskelChange_ = function (evt) {
-    this.openPiskelFile_();
+    var files = this.hiddenOpenPiskelInput.get(0).files;
+    if (files.length == 1) {
+      this.openPiskelFile_(files[0]);
+    }
   };
 
   ns.ImportController.prototype.onOpenPiskelClick_ = function (evt) {
@@ -51,19 +54,14 @@
     this.closeDrawer_();
   };
 
-  ns.ImportController.prototype.openPiskelFile_ = function () {
-    var files = this.hiddenOpenPiskelInput.get(0).files;
-    if (files.length == 1) {
-
-      var file = files[0];
-      if (this.isPiskel_(file)){
-        pskl.utils.PiskelFileUtils.loadFromFile(file, function (piskel, descriptor, fps) {
-          piskel.setDescriptor(descriptor);
-          pskl.app.piskelController.setPiskel(piskel);
-          pskl.app.animationController.setFPS(fps);
-        });
-        this.closeDrawer_();
-      }
+  ns.ImportController.prototype.openPiskelFile_ = function (file) {
+    if (this.isPiskel_(file)){
+      pskl.utils.PiskelFileUtils.loadFromFile(file, function (piskel, descriptor, fps) {
+        piskel.setDescriptor(descriptor);
+        pskl.app.piskelController.setPiskel(piskel);
+        pskl.app.animationController.setFPS(fps);
+      });
+      this.closeDrawer_();
     }
   };
 
