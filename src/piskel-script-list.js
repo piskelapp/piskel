@@ -143,6 +143,7 @@
   "js/devtools/TestRecorder.js",
   "js/devtools/TestRecordPlayer.js",
   "js/devtools/TestRecordController.js",
+  "js/devtools/DrawingTestRunner.js",
 
   // Application controller and initialization
   "js/app.js",

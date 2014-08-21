@@ -10,21 +10,27 @@
  *       If you run this task locally, it may require some env set up first.
  */
 
-var SOURCE_FOLDER = "src";
 
 module.exports = function(grunt) {
   var dateFormat = require('dateformat');
   var now = new Date();
   var version = '-' + dateFormat(now, "yyyy-mm-dd-hh-MM");
 
-  var mapToSrcFolder = function (path) {return [SOURCE_FOLDER, path].join('/');};
+  var mapToSrcFolder = function (path) {
+    return "src/" + path;
+  };
 
   var piskelScripts = require('./src/piskel-script-list.js').scripts.map(mapToSrcFolder);
   var piskelStyles = require('./src/piskel-style-list.js').styles.map(mapToSrcFolder);
 
-  var getGhostConfig = function (delay) {
+  var mapToCasperFolder = function (path) {
+    return "test/integration/casperjs/" + path;
+  };
+  var casperTests = require('./test/integration/casperjs/TestSuite.js').tests.map(mapToCasperFolder);
+
+  var getCasperConfig = function (delay) {
     return {
-      filesSrc : ['test/integration/casperjs/*_test.js'],
+      filesSrc : casperTests,
       options : {
         args : {
           baseUrl : 'http://localhost:' + '<%= express.test.options.port %>/',
@@ -41,11 +47,18 @@ module.exports = function(grunt) {
   };
 
   var getExpressConfig = function (source, port, host) {
+    var bases;
+    if (typeof source === 'string') {
+      bases = [source];
+    } else if (Array.isArray(source)) {
+      bases = source;
+    }
+
     return {
       options: {
         port: port,
         hostname : host || 'localhost',
-        bases: [source]
+        bases: bases
       }
     };
   };
@@ -74,9 +87,9 @@ module.exports = function(grunt) {
       ]
     },
     express: {
-      test: getExpressConfig('src', 9991),
+      test: getExpressConfig(['src', 'test'], 9991),
       regular: getExpressConfig('dest', 9001),
-      debug: getExpressConfig('src', 9901)
+      debug: getExpressConfig(['src', 'test'], 9901)
     },
     open : {
       regular : {
@@ -97,8 +110,8 @@ module.exports = function(grunt) {
       }
     },
     ghost : {
-      'default' : getGhostConfig(5000),
-      'local' : getGhostConfig(50)
+      'default' : getCasperConfig(5000),
+      'local' : getCasperConfig(50)
     },
     concat : {
       js : {
@@ -282,7 +295,7 @@ module.exports = function(grunt) {
   grunt.registerTask('test', ['lint', 'compile', 'unit-test','express:test', 'ghost:default']);
 
   // Validate & Test (faster version) will NOT work on travis !!
-  grunt.registerTask('precommit', ['lint', 'compile', 'express:test', 'ghost:local']);
+  grunt.registerTask('precommit', ['lint', 'compile', 'express:test', 'ghost:default']);
 
   // Compile JS code (eg verify JSDoc annotation and types, no actual minified code generated).
   grunt.registerTask('compile', ['closureCompiler:compile', 'clean:after']);

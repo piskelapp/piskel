@@ -17,6 +17,7 @@
     if (otherEvent && otherEvent instanceof ns.MouseEvent) {
       var sameEvent = JSON.stringify(otherEvent.event) == JSON.stringify(this.event);
       var sameCoords = JSON.stringify(otherEvent.coords) == JSON.stringify(this.coords);
+      return sameEvent && sameCoords;
     } else {
       return false;
     }

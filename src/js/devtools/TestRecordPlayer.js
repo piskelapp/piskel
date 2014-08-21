@@ -4,11 +4,11 @@
   ns.TestRecordPlayer = function (testRecord) {
     this.initialState = testRecord.initialState;
     this.events = testRecord.events;
-    this.png = testRecord.png;
+    this.referencePng = testRecord.png;
     this.shim = null;
   };
 
-  ns.TestRecordPlayer.STEP = 30;
+  ns.TestRecordPlayer.STEP = 40;
 
   ns.TestRecordPlayer.prototype.start = function () {
     this.setupInitialState_();
@@ -74,12 +74,19 @@
     var renderer = new pskl.rendering.PiskelRenderer(pskl.app.piskelController);
     var png = renderer.renderAsCanvas().toDataURL();
 
-    var success = png === this.png;
+    var image = new Image();
+    image.onload = function () {
+      var canvas = pskl.CanvasUtils.createFromImage(image);
+      var referencePng = canvas.toDataURL();
+      var success = png === referencePng;
 
-    this.shim.parentNode.removeChild(this.shim);
-    this.shim = null;
+      this.shim.parentNode.removeChild(this.shim);
+      this.shim = null;
 
-    $.publish(Events.TEST_RECORD_END, [success]);
+      $.publish(Events.TEST_RECORD_END, [success, png + '  vs  ' + referencePng]);
+    }.bind(this);
+    image.src = this.referencePng;
+
   };
 
   ns.TestRecordPlayer.prototype.playMouseEvent_ = function (recordEvent) {

@@ -115,14 +115,23 @@
       }
       this.storageService.init();
 
+
+      var href = document.location.href.toLowerCase();
       // test tools
-      var testModeOn = document.location.href.toLowerCase().indexOf('test=true') !== -1;
+      var testModeOn = href.indexOf('test=true') !== -1;
       if (testModeOn) {
         this.testRecorder = new pskl.devtools.TestRecorder(this.piskelController);
         this.testRecorder.init();
 
         this.testRecordController = new pskl.devtools.TestRecordController(this.testRecorder);
         this.testRecordController.init();
+      }
+
+      // test tools
+      var runTestModeOn = href.indexOf('test-run=') !== -1;
+      if (runTestModeOn) {
+        var testName = href.split('test-run=')[1];
+        this.testRunner = new pskl.devtools.DrawingTestRunner(testName);
       }
 
       var drawingLoop = new pskl.rendering.DrawingLoop();
@@ -134,6 +143,10 @@
       var piskelData = this.getPiskelInitData_();
       if (piskelData && piskelData.piskel) {
         this.loadPiskel_(piskelData.piskel, piskelData.descriptor, piskelData.fps);
+      }
+
+      if (this.testRunner) {
+        this.testRunner.start();
       }
     },
 
