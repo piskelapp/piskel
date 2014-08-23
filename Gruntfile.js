@@ -20,22 +20,36 @@ module.exports = function(grunt) {
     return "src/" + path;
   };
 
-  var piskelScripts = require('./src/piskel-script-list.js').scripts.map(mapToSrcFolder);
+  var piskelScripts = require('./src/piskel-script-list.js').scripts.map(mapToSrcFolder).filter(function (path) {
+    return path.indexOf('devtools') === -1;
+  });
   var piskelStyles = require('./src/piskel-style-list.js').styles.map(mapToSrcFolder);
 
   var mapToCasperFolder = function (path) {
     return "test/integration/casperjs/" + path;
   };
-  var casperTests = require('./test/integration/casperjs/TestSuite.js').tests.map(mapToCasperFolder);
 
-  var getCasperConfig = function (delay) {
+  var casperEnvironments = {
+    'local' : {
+      suite : './test/integration/casperjs/TestSuite.js',
+      delay : 50
+    },
+    'travis' : {
+      suite : './test/integration/casperjs/TravisTestSuite.js',
+      delay : 5000
+    }
+  };
+
+  var getCasperConfig = function (env) {
+    var conf = casperEnvironments[env];
+    var tests = require(conf.suite).tests.map(mapToCasperFolder);
     return {
-      filesSrc : casperTests,
+      filesSrc : tests,
       options : {
         args : {
           baseUrl : 'http://localhost:' + '<%= express.test.options.port %>/',
           mode : '?debug',
-          delay : delay
+          delay : conf.delay
         },
         async : false,
         direct : false,
@@ -110,8 +124,8 @@ module.exports = function(grunt) {
       }
     },
     ghost : {
-      'default' : getCasperConfig(5000),
-      'local' : getCasperConfig(50)
+      'travis' : getCasperConfig('travis'),
+      'local' : getCasperConfig('local')
     },
     concat : {
       js : {
@@ -292,10 +306,13 @@ module.exports = function(grunt) {
   grunt.registerTask('unit-test', ['karma']);
 
   // Validate & Test
-  grunt.registerTask('test', ['lint', 'compile', 'unit-test','express:test', 'ghost:default']);
-
+  grunt.registerTask('test-travis', ['lint', 'compile', 'unit-test', 'express:test', 'ghost:travis']);
   // Validate & Test (faster version) will NOT work on travis !!
-  grunt.registerTask('precommit', ['lint', 'compile', 'express:test', 'ghost:default']);
+  grunt.registerTask('test-local', ['lint', 'compile', 'unit-test', 'express:test', 'ghost:local']);
+
+  grunt.registerTask('test', ['test-travis']);
+  grunt.registerTask('precommit', ['test-local']);
+
 
   // Compile JS code (eg verify JSDoc annotation and types, no actual minified code generated).
   grunt.registerTask('compile', ['closureCompiler:compile', 'clean:after']);

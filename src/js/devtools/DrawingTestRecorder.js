@@ -1,13 +1,13 @@
 (function () {
   var ns = $.namespace('pskl.devtools');
 
-  ns.TestRecorder = function (piskelController) {
+  ns.DrawingTestRecorder = function (piskelController) {
     this.piskelController = piskelController;
     this.isRecording = false;
     this.reset();
   };
 
-  ns.TestRecorder.prototype.init = function () {
+  ns.DrawingTestRecorder.prototype.init = function () {
     $.subscribe(Events.MOUSE_EVENT, this.onMouseEvent_.bind(this));
     $.subscribe(Events.TOOL_SELECTED, this.onToolEvent_.bind(this));
     $.subscribe(Events.PRIMARY_COLOR_SELECTED, this.onColorEvent_.bind(this, true));
@@ -23,7 +23,7 @@
     }
   };
 
-  ns.TestRecorder.prototype.instrumentMethod_ = function (object, methodName) {
+  ns.DrawingTestRecorder.prototype.instrumentMethod_ = function (object, methodName) {
     var method = object[methodName];
     var testRecorder = this;
     return function () {
@@ -32,12 +32,12 @@
     };
   };
 
-  ns.TestRecorder.prototype.reset = function () {
+  ns.DrawingTestRecorder.prototype.reset = function () {
     this.initialState = {};
     this.events = [];
   };
 
-  ns.TestRecorder.prototype.startRecord = function () {
+  ns.DrawingTestRecorder.prototype.startRecord = function () {
     this.isRecording = true;
     this.initialState = {
       size : {
@@ -50,7 +50,7 @@
     };
   };
 
-  ns.TestRecorder.prototype.stopRecord = function () {
+  ns.DrawingTestRecorder.prototype.stopRecord = function () {
     this.isRecording = false;
 
     var renderer = new pskl.rendering.PiskelRenderer(this.piskelController);
@@ -67,13 +67,13 @@
     return testRecord;
   };
 
-  ns.TestRecorder.prototype.onMouseEvent_ = function (evt, mouseEvent, originator) {
+  ns.DrawingTestRecorder.prototype.onMouseEvent_ = function (evt, mouseEvent, originator) {
     if (this.isRecording) {
       this.recordMouseEvent_(mouseEvent);
     }
   };
 
-  ns.TestRecorder.prototype.onColorEvent_ = function (isPrimary, evt, color) {
+  ns.DrawingTestRecorder.prototype.onColorEvent_ = function (isPrimary, evt, color) {
     if (this.isRecording) {
       var recordEvent = {};
       recordEvent.type = 'color-event';
@@ -83,7 +83,7 @@
     }
   };
 
-  ns.TestRecorder.prototype.onToolEvent_ = function (evt, tool) {
+  ns.DrawingTestRecorder.prototype.onToolEvent_ = function (evt, tool) {
     if (this.isRecording) {
       var recordEvent = {};
       recordEvent.type = 'tool-event';
@@ -92,7 +92,7 @@
     }
   };
 
-  ns.TestRecorder.prototype.onInstrumentedMethod_ = function (callee, methodName, args) {
+  ns.DrawingTestRecorder.prototype.onInstrumentedMethod_ = function (callee, methodName, args) {
     if (this.isRecording) {
       var recordEvent = {};
       recordEvent.type = 'instrumented-event';
@@ -102,7 +102,7 @@
     }
   };
 
-  ns.TestRecorder.prototype.recordMouseEvent_ = function (mouseEvent) {
+  ns.DrawingTestRecorder.prototype.recordMouseEvent_ = function (mouseEvent) {
     var coords = pskl.app.drawingController.getSpriteCoordinates(mouseEvent.clientX, mouseEvent.clientY);
     var recordEvent = new ns.MouseEvent(mouseEvent, coords);
     var lastEvent = this.events[this.events.length-1];

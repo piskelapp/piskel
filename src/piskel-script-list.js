@@ -25,6 +25,7 @@
   "js/utils/PiskelFileUtils.js",
   "js/utils/Template.js",
   "js/utils/UserSettings.js",
+  "js/utils/Xhr.js",
   "js/utils/serialization/Serializer.js",
   "js/utils/serialization/Deserializer.js",
   "js/utils/serialization/backward/Deserializer_v0.js",
@@ -139,11 +140,14 @@
   "js/drawingtools/ColorSwap.js",
 
   // Devtools
-  "js/devtools/MouseEvent.js",
-  "js/devtools/TestRecorder.js",
-  "js/devtools/TestRecordPlayer.js",
-  "js/devtools/TestRecordController.js",
+  "js/devtools/DrawingTestPlayer.js",
+  "js/devtools/DrawingTestRecorder.js",
   "js/devtools/DrawingTestRunner.js",
+  "js/devtools/DrawingTestSuiteController.js",
+  "js/devtools/DrawingTestSuiteRunner.js",
+  "js/devtools/MouseEvent.js",
+  "js/devtools/TestRecordController.js",
+  "js/devtools/init.js",
 
   // Application controller and initialization
   "js/app.js",

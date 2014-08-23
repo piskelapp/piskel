@@ -69,5 +69,8 @@ var Constants = {
   MOUSEMOVE_THROTTLING : 10,
 
   ABSTRACT_FUNCTION : function () {throw 'abstract method should be implemented';},
-  EMPTY_FUNCTION : function () {}
+  EMPTY_FUNCTION : function () {},
+
+  // TESTS
+  BASE_TEST_FOLDER : 'integration/casperjs/drawing-records'
 };

@@ -1,0 +1,5 @@
+{ "tests" : [
+  "SimplePenDrawing1.json",
+  "ComplexDrawing1.json",
+  "ComplexDrawing2.json"
+]}

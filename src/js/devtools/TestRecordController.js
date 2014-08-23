@@ -46,8 +46,8 @@
       var file =files[0];
       pskl.utils.FileUtils.readFile(file, function (content) {
         var testRecord = JSON.parse(window.atob(content.replace(/data\:.*?\;base64\,/,'')));
-        var testRecordPlayer = new ns.TestRecordPlayer(testRecord);
-        testRecordPlayer.start();
+        var testPlayer = new ns.DrawingTestPlayer(testRecord);
+        testPlayer.start();
       }.bind(this));
     }
   };
