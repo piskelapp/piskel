@@ -2,9 +2,9 @@
   var ns = $.namespace('pskl.service');
 
   ns.HistoryService = function (piskelController, shortcutService, deserializer) {
-    this.$piskelController = piskelController || pskl.app.piskelController;
-    this.$shortcutService = shortcutService || pskl.app.shortcutService;
-    this.$deserializer = deserializer || pskl.utils.serialization.Deserializer;
+    this.piskelController = piskelController || pskl.app.piskelController;
+    this.shortcutService = shortcutService || pskl.app.shortcutService;
+    this.deserializer = deserializer || pskl.utils.serialization.Deserializer;
 
     this.stateQueue = [];
     this.currentIndex = -1;
@@ -27,8 +27,8 @@
   ns.HistoryService.prototype.init = function () {
     $.subscribe(Events.PISKEL_SAVE_STATE, this.onSaveStateEvent.bind(this));
 
-    this.$shortcutService.addShortcut('ctrl+Z', this.undo.bind(this));
-    this.$shortcutService.addShortcut('ctrl+Y', this.redo.bind(this));
+    this.shortcutService.addShortcut('ctrl+Z', this.undo.bind(this));
+    this.shortcutService.addShortcut('ctrl+Y', this.redo.bind(this));
 
     this.saveState({
       type : ns.HistoryService.SNAPSHOT
@@ -45,8 +45,8 @@
 
     var state = {
       action : stateInfo,
-      frameIndex : this.$piskelController.currentFrameIndex,
-      layerIndex : this.$piskelController.currentLayerIndex
+      frameIndex : this.piskelController.currentFrameIndex,
+      layerIndex : this.piskelController.currentLayerIndex
     };
 
     var isSnapshot = stateInfo.type === ns.HistoryService.SNAPSHOT;
@@ -55,7 +55,7 @@
     if (isNoSnapshot && isAtAutoSnapshotInterval) {
       this.saveNextAsSnapshot = true;
     } else if (isSnapshot || isAtAutoSnapshotInterval) {
-      state.piskel = this.$piskelController.serialize(true);
+      state.piskel = this.piskelController.serialize(true);
       this.saveNextAsSnapshot = false;
     }
 
@@ -94,7 +94,7 @@
         }
         var serializedPiskel = this.getSnapshotFromState_(snapshotIndex);
         var onPiskelLoadedCb = this.onPiskelLoaded_.bind(this, index, snapshotIndex);
-        this.$deserializer.deserialize(serializedPiskel, onPiskelLoadedCb);
+        this.deserializer.deserialize(serializedPiskel, onPiskelLoadedCb);
       }
     } catch (e) {
       window.console.error("[CRITICAL ERROR] : Unable to load a history state.");
@@ -126,8 +126,8 @@
 
   ns.HistoryService.prototype.onPiskelLoaded_ = function (index, snapshotIndex, piskel) {
     var originalSize = this.getPiskelSize_();
-    piskel.setDescriptor(this.$piskelController.piskel.getDescriptor());
-    this.$piskelController.setPiskel(piskel);
+    piskel.setDescriptor(this.piskelController.piskel.getDescriptor());
+    this.piskelController.setPiskel(piskel);
 
     for (var i = snapshotIndex + 1 ; i <= index ; i++) {
       var state = this.stateQueue[i];
@@ -149,18 +149,18 @@
   };
 
   ns.HistoryService.prototype.getPiskelSize_ = function () {
-    return this.$piskelController.getWidth() + 'x' + this.$piskelController.getHeight();
+    return this.piskelController.getWidth() + 'x' + this.piskelController.getHeight();
   };
 
   ns.HistoryService.prototype.setupState = function (state) {
-    this.$piskelController.setCurrentFrameIndex(state.frameIndex);
-    this.$piskelController.setCurrentLayerIndex(state.layerIndex);
+    this.piskelController.setCurrentFrameIndex(state.frameIndex);
+    this.piskelController.setCurrentLayerIndex(state.layerIndex);
   };
 
   ns.HistoryService.prototype.replayState = function (state) {
     var action = state.action;
     var type = action.type;
-    var layer = this.$piskelController.getLayerAt(state.layerIndex);
+    var layer = this.piskelController.getLayerAt(state.layerIndex);
     var frame = layer.getFrameAt(state.frameIndex);
     action.scope.replay(frame, action.replay);
   };
