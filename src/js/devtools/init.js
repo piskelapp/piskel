@@ -6,7 +6,7 @@
     // test tools
     var testModeOn = href.indexOf('test=true') !== -1;
     if (testModeOn) {
-      this.testRecorder = new pskl.devtools.DrawingTestRecorder(this.piskelController);
+      this.testRecorder = new pskl.devtools.DrawingTestRecorder(pskl.app.piskelController);
       this.testRecorder.init();
 
       this.testRecordController = new pskl.devtools.TestRecordController(this.testRecorder);

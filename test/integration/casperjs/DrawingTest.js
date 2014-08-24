@@ -1,8 +1,14 @@
 (function () {
   var tests = [
-    'SimplePenDrawing1.json',
-    'ComplexDrawing1.json',
-    'ComplexDrawing2.json'
+    "pen.drawing.json",
+    "color.picker.json",
+    "frames.fun.json",
+    "layers.fun.json",
+    "move.json",
+    "pen.secondary.color.json",
+    "squares.circles.json",
+    "stroke.json",
+    "verticalpen.drawing.json"
   ];
 
   var baseUrl = casper.cli.get('baseUrl')+"?debug";
