@@ -31,7 +31,7 @@ module.exports = function(grunt) {
 
   var casperEnvironments = {
     'local' : {
-      suite : './test/integration/casperjs/TestSuite.js',
+      suite : './test/integration/casperjs/LocalTestSuite.js',
       delay : 50
     },
     'travis' : {
