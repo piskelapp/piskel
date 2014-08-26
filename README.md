@@ -38,6 +38,10 @@ Piskel supports the following browsers :
 
 We don't plan/want/could be forced into supporting older IEs. For Opera and Safari, we've never tested them but the gap shouldn't be huge.
 
+## Offline version (Windows and MacOS)
+
+Offline builds are available. More details in the [dedicated wiki page](https://github.com/juliandescottes/piskel/wiki/Desktop-applications).
+
 ## Built with
 
 The Piskel editor is purely built in **JavaScript, HTML and CSS**. It uses Canvas extensively for displaying all them pretty sprites.

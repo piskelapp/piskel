@@ -30,7 +30,8 @@
     for (var i = 0; i < this.piskelController.getFrameCount(); i++) {
       var frame = this.piskelController.getFrameAt(i);
       var canvas = this.getFrameAsCanvas_(frame);
-      var filename = "sprite_" + (i+1) + ".png";
+      var basename = document.getElementById("zip-file-name").value || "sprite_";
+      var filename =  basename + (i+1) + ".png";
       zip.file(filename, pskl.CanvasUtils.getBase64FromCanvas(canvas) + '\n', {base64: true});
     }
 

@@ -7,11 +7,16 @@
     <span class="settings-description">PNG with all frames side by side.</span>
     <button type="button" class="button button-primary png-download-button">Download PNG</button>
   </div>
+  <div class="settings-title">
+    Export as ZIP
+  </div>
   <div class="settings-item">
-    <span class="settings-description">ZIP with one PNG file per frame.</span>
-    <div>
-      <button type="button" class="button button-primary zip-generate-button"/>Download ZIP</button>
+    <span class="settings-description">ZIP with one PNG file per frame. Name will use the prefix above and append the frame index, ex: sprite_1.png</span>
+    <div class="settings-item">
+      <label for="zip-file-name">File prefix:</label>
+      <input id="zip-file-name" type="text" class="textfield" placeholder="sprite_">
     </div>
+    <button type="button" class="button button-primary zip-generate-button"/>Download ZIP</button>
   </div>
   <div class="settings-title">
     Export to Animated GIF
