@@ -8,7 +8,9 @@
   };
 
   ns.PngExportController.prototype.init = function () {
-    this.previewContainerEl = document.querySelectorAll(".png-export-preview")[0];
+    this.previewContainerEl = document.querySelector(".png-export-preview");
+    this.pngFilePrefixInput = document.getElementById('zip-prefix-name');
+    this.pngFilePrefixInput.value = 'sprite_';
 
     document.querySelector(".png-download-button").addEventListener('click', this.onPngDownloadButtonClick_.bind(this));
 
@@ -30,7 +32,7 @@
     for (var i = 0; i < this.piskelController.getFrameCount(); i++) {
       var frame = this.piskelController.getFrameAt(i);
       var canvas = this.getFrameAsCanvas_(frame);
-      var basename = document.getElementById("zip-file-name").value || "sprite_";
+      var basename = this.pngFilePrefixInput.value;
       var filename =  basename + (i+1) + ".png";
       zip.file(filename, pskl.CanvasUtils.getBase64FromCanvas(canvas) + '\n', {base64: true});
     }
