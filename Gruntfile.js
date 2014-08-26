@@ -26,16 +26,16 @@ module.exports = function(grunt) {
   var piskelStyles = require('./src/piskel-style-list.js').styles.map(mapToSrcFolder);
 
   var mapToCasperFolder = function (path) {
-    return "test/integration/casperjs/" + path;
+    return "test/casperjs/" + path;
   };
 
   var casperEnvironments = {
     'local' : {
-      suite : './test/integration/casperjs/LocalTestSuite.js',
+      suite : './test/casperjs/LocalTestSuite.js',
       delay : 50
     },
     'travis' : {
-      suite : './test/integration/casperjs/TravisTestSuite.js',
+      suite : './test/casperjs/TravisTestSuite.js',
       delay : 5000
     }
   };

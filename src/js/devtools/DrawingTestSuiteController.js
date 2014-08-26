@@ -3,7 +3,7 @@
 
   ns.DrawingTestSuiteController = function (suitePath) {
     if (suitePath.indexOf('/') === -1) {
-      suitePath = [Constants.BASE_TEST_FOLDER, suitePath].join('/');
+      suitePath = [Constants.DRAWING_TEST_FOLDER, suitePath].join('/');
     }
     this.suitePath = suitePath;
     this.testSuiteRunner = null;
@@ -41,7 +41,7 @@
   ns.DrawingTestSuiteController.prototype.onTestSuiteLoaded_ = function (response) {
     var testPaths = JSON.parse(response.responseText).tests;
     testPaths = testPaths.map(function (path) {
-      return this.suitePath.replace(/\/([^\/]+\.json)/i, '/' + path);
+      return [Constants.DRAWING_TEST_FOLDER, 'tests', path].join('/');
     }.bind(this));
     this.testSuiteRunner = new ns.DrawingTestSuiteRunner(testPaths);
     this.testSuiteRunner.start();

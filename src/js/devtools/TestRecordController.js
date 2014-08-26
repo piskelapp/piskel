@@ -70,7 +70,7 @@
   };
 
   ns.TestRecordController.prototype.onTestRecordEnd_  = function (evt, success) {
-    console.log('test finished : ', success);
+    window.alert('Test finished : ', success);
   };
 
 })();

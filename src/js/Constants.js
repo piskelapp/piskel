@@ -72,5 +72,5 @@ var Constants = {
   EMPTY_FUNCTION : function () {},
 
   // TESTS
-  BASE_TEST_FOLDER : 'integration/casperjs/drawing-records'
+  DRAWING_TEST_FOLDER : 'drawing'
 };

@@ -1,15 +1,5 @@
 (function () {
-  var tests = [
-    "pen.drawing.json",
-    "color.picker.json",
-    "frames.fun.json",
-    "layers.fun.json",
-    "move.json",
-    "pen.secondary.color.json",
-    "squares.circles.json",
-    "stroke.json",
-    "verticalpen.drawing.json"
-  ];
+  var tests = require('./test/drawing/DrawingTests.casper.js').tests;
 
   var baseUrl = casper.cli.get('baseUrl')+"?debug";
   var resultSelector = '#drawing-test-result';
@@ -17,7 +7,7 @@
   casper.start();
 
   var runTest = function (index) {
-    var test = 'integration/casperjs/drawing-records/' + tests[index];
+    var test = 'drawing/tests/' + tests[index];
 
     casper.open(baseUrl + "&test-run=" + test);
 
