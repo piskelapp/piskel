@@ -134,8 +134,9 @@
    * @private
    */
   ns.DrawingController.prototype.onMousedown_ = function (event) {
+    $.publish(Events.MOUSE_EVENT, [event, this]);
     var frame = this.piskelController.getCurrentFrame();
-    var coords = this.renderer.getCoordinates(event.clientX, event.clientY);
+    var coords = this.getSpriteCoordinates(event.clientX, event.clientY);
 
     if (event.button === Constants.MIDDLE_BUTTON) {
       if (frame.containsPixel(coords.x, coords.y)) {
@@ -204,10 +205,11 @@
   };
 
   ns.DrawingController.prototype.moveTool_ = function (x, y, event) {
-    var coords = this.renderer.getCoordinates(x, y);
+    var coords = this.getSpriteCoordinates(x, y);
     var currentFrame = this.piskelController.getCurrentFrame();
 
     if (this.isClicked) {
+      $.publish(Events.MOUSE_EVENT, [event, this]);
       // Warning : do not call setCurrentButton here
       // mousemove do not have the correct mouse button information on all browsers
       this.currentToolBehavior.moveToolAt(
@@ -248,6 +250,7 @@
    */
   ns.DrawingController.prototype.onMouseup_ = function (event) {
     if(this.isClicked) {
+      $.publish(Events.MOUSE_EVENT, [event, this]);
       // A mouse button was clicked on the drawing canvas before this mouseup event,
       // the user was probably drawing on the canvas.
       // Note: The mousemove movement (and the mouseup) may end up outside
@@ -256,7 +259,7 @@
       this.isClicked = false;
       this.setCurrentButton(event);
 
-      var coords = this.renderer.getCoordinates(event.clientX, event.clientY);
+      var coords = this.getSpriteCoordinates(event.clientX, event.clientY);
       this.currentToolBehavior.releaseToolAt(
         coords.x,
         coords.y,
@@ -278,6 +281,10 @@
    */
   ns.DrawingController.prototype.getSpriteCoordinates = function(screenX, screenY) {
     return this.renderer.getCoordinates(screenX, screenY);
+  };
+
+  ns.DrawingController.prototype.getScreenCoordinates = function(spriteX, spriteY) {
+    return this.renderer.reverseCoordinates(spriteX, spriteY);
   };
 
   ns.DrawingController.prototype.setCurrentButton = function (event) {

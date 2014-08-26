@@ -10,31 +10,69 @@
  *       If you run this task locally, it may require some env set up first.
  */
 
-var SOURCE_FOLDER = "src";
 
 module.exports = function(grunt) {
   var dateFormat = require('dateformat');
   var now = new Date();
   var version = '-' + dateFormat(now, "yyyy-mm-dd-hh-MM");
 
-  var mapToSrcFolder = function (path) {return [SOURCE_FOLDER, path].join('/');};
+  var mapToSrcFolder = function (path) {
+    return "src/" + path;
+  };
 
-  var piskelScripts = require('./src/piskel-script-list.js').scripts.map(mapToSrcFolder);
+  var piskelScripts = require('./src/piskel-script-list.js').scripts.map(mapToSrcFolder).filter(function (path) {
+    return path.indexOf('devtools') === -1;
+  });
   var piskelStyles = require('./src/piskel-style-list.js').styles.map(mapToSrcFolder);
 
-  var getGhostConfig = function (delay) {
+  var mapToCasperFolder = function (path) {
+    return "test/casperjs/" + path;
+  };
+
+  var casperEnvironments = {
+    'local' : {
+      suite : './test/casperjs/LocalTestSuite.js',
+      delay : 50
+    },
+    'travis' : {
+      suite : './test/casperjs/TravisTestSuite.js',
+      delay : 5000
+    }
+  };
+
+  var getCasperConfig = function (env) {
+    var conf = casperEnvironments[env];
+    var tests = require(conf.suite).tests.map(mapToCasperFolder);
     return {
-      filesSrc : ['test/integration/casperjs/*_test.js'],
+      filesSrc : tests,
       options : {
         args : {
-          baseUrl : 'http://localhost:' + '<%= connect.test.options.port %>/src/',
+          baseUrl : 'http://localhost:' + '<%= express.test.options.port %>/',
           mode : '?debug',
-          delay : delay
+          delay : conf.delay
         },
+        async : false,
         direct : false,
         logLevel : 'info',
         printCommand : false,
         printFilePaths : true
+      }
+    };
+  };
+
+  var getExpressConfig = function (source, port, host) {
+    var bases;
+    if (typeof source === 'string') {
+      bases = [source];
+    } else if (Array.isArray(source)) {
+      bases = source;
+    }
+
+    return {
+      options: {
+        port: port,
+        hostname : host || 'localhost',
+        bases: bases
       }
     };
   };
@@ -62,29 +100,10 @@ module.exports = function(grunt) {
         '!src/js/lib/**/*.js' // Exclude lib folder (note the leading !)
       ]
     },
-    connect : {
-      test : {
-        options : {
-          base : '.',
-          port : 4321
-        }
-      }
-    },
     express: {
-      regular: {
-        options: {
-          port: 9001,
-          hostname : 'localhost',
-          bases: ['dest']
-        }
-      },
-      debug: {
-        options: {
-          port: 9901,
-          hostname : 'localhost',
-          bases: ['src']
-        }
-      }
+      test: getExpressConfig(['src', 'test'], 9991),
+      regular: getExpressConfig('dest', 9001),
+      debug: getExpressConfig(['src', 'test'], 9901)
     },
     open : {
       regular : {
@@ -105,8 +124,8 @@ module.exports = function(grunt) {
       }
     },
     ghost : {
-      'default' : getGhostConfig(5000),
-      local : getGhostConfig(50)
+      'travis' : getCasperConfig('travis'),
+      'local' : getCasperConfig('local')
     },
     concat : {
       js : {
@@ -236,6 +255,11 @@ module.exports = function(grunt) {
         dest: 'build/closure/closure_compiled_binary.js'
       }
     },
+    karma: {
+      unit: {
+        configFile: 'karma.conf.js'
+      }
+    },
     nodewebkit: {
       options: {
         build_dir: './dest/desktop/', // destination folder of releases.
@@ -262,7 +286,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-closure-tools');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-concat');
-  grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-uglify');
@@ -271,6 +294,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-replace');
   grunt.loadNpmTasks('grunt-ghost');
   grunt.loadNpmTasks('grunt-open');
+  grunt.loadNpmTasks('grunt-karma');
   grunt.loadNpmTasks('grunt-leading-indent');
   grunt.loadNpmTasks('grunt-node-webkit-builder');
   grunt.loadNpmTasks('grunt-contrib-copy');
@@ -278,11 +302,17 @@ module.exports = function(grunt) {
   // Validate
   grunt.registerTask('lint', ['leadingIndent:jsFiles', 'leadingIndent:cssFiles', 'jshint']);
 
-  // Validate & Test
-  grunt.registerTask('test', ['lint', 'compile', 'connect:test', 'ghost:default']);
+  // karma/unit-tests task
+  grunt.registerTask('unit-test', ['karma']);
 
+  // Validate & Test
+  grunt.registerTask('test-travis', ['lint', 'compile', 'unit-test', 'express:test', 'ghost:travis']);
   // Validate & Test (faster version) will NOT work on travis !!
-  grunt.registerTask('precommit', ['lint', 'compile', 'connect:test', 'ghost:local']);
+  grunt.registerTask('test-local', ['lint', 'compile', 'unit-test', 'express:test', 'ghost:local']);
+
+  grunt.registerTask('test', ['test-travis']);
+  grunt.registerTask('precommit', ['test-local']);
+
 
   // Compile JS code (eg verify JSDoc annotation and types, no actual minified code generated).
   grunt.registerTask('compile', ['closureCompiler:compile', 'clean:after']);

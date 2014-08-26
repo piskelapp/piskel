@@ -29,8 +29,8 @@
 
       var layer = new pskl.model.Layer("Layer 1");
       var frame = new pskl.model.Frame(size.width, size.height);
-      layer.addFrame(frame);
 
+      layer.addFrame(frame);
       piskel.addLayer(layer);
 
       this.corePiskelController = new pskl.controller.piskel.PiskelController(piskel);
@@ -115,7 +115,6 @@
       }
       this.storageService.init();
 
-
       var drawingLoop = new pskl.rendering.DrawingLoop();
       drawingLoop.addCallback(this.render, this);
       drawingLoop.start();
@@ -125,6 +124,10 @@
       var piskelData = this.getPiskelInitData_();
       if (piskelData && piskelData.piskel) {
         this.loadPiskel_(piskelData.piskel, piskelData.descriptor, piskelData.fps);
+      }
+
+      if (pskl.devtools) {
+        pskl.devtools.init();
       }
     },
 

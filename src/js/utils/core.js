@@ -14,13 +14,26 @@ jQuery.namespace = function() {
 /**
  * Need a polyfill for PhantomJS
  */
-if (typeof Function.prototype.bind !== "function") {
-  Function.prototype.bind = function(scope) {
-    "use strict";
-    var _function = this;
-    return function() {
-      return _function.apply(scope, arguments);
-    };
+if (!Function.prototype.bind) {
+  Function.prototype.bind = function (oThis) {
+    if (typeof this !== "function") {
+      // closest thing possible to the ECMAScript 5
+      // internal IsCallable function
+      throw new TypeError("Function.prototype.bind - what is trying to be bound is not callable");
+    }
+
+    var bindArgs = Array.prototype.slice.call(arguments, 1),
+        fToBind = this,
+        fNOP = function () {},
+        fBound = function () {
+          var args = bindArgs.concat(Array.prototype.slice.call(arguments));
+          return fToBind.apply(this instanceof fNOP && oThis ? this : oThis, args);
+        };
+
+    fNOP.prototype = this.prototype;
+    fBound.prototype = new fNOP();
+
+    return fBound;
   };
 }
 
