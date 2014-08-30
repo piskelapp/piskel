@@ -15,6 +15,7 @@
   "css/dialogs-import-image.css",
   "css/dialogs-manage-palettes.css",
   "css/dialogs-browse-local.css",
+  "css/dialogs-create-palette.css",
   "css/toolbox.css",
   "css/toolbox-layers-list.css",
   "css/toolbox-palettes-list.css",

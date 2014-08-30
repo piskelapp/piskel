@@ -1,0 +1,21 @@
+#dialog-container.create-palette {
+  width: 500px;
+  height: 200px;
+  top : 50%;
+  left : 50%;
+  position : absolute;
+  margin-left: -250px;
+}
+
+.show #dialog-container.create-palette {
+  margin-top: -100px;
+}
+
+.create-palette-method-item {
+  line-height : 24px;
+}
+
+.create-palette-method-item label{
+  margin-top: 3px;
+  margin-left: 5px;
+}

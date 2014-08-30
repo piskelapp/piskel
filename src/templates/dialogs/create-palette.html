@@ -1,0 +1,30 @@
+<div class="dialog-wrapper">
+  <h3 class="dialog-head">
+    Create palette
+    <span class="palette-manager-close dialog-close">X</span>
+  </h3>
+  <div style="padding:10px 20px; font-size:1.3em">
+    Select your creation method : 
+    <form action="">
+      <ul style="margin:10px 0" class="create-palette-method-list">
+        <li class="create-palette-method-item"><input type="radio" name="palette-creation-mode" id="palette-creation-mode-manual" value="manual" checked="checked"><label for="palette-creation-mode-manual">Manual</label></li>
+        <li class="create-palette-method-item"><input type="radio" name="palette-creation-mode" id="palette-creation-mode-import" value="import"><label for="palette-creation-mode-import">Import from existing file or image</label><br></li>
+        <li class="create-palette-method-item"><input type="radio" name="palette-creation-mode" id="palette-creation-mode-clone" value="clone"><label for="palette-creation-mode-clone">Clone existing palette</label>
+          <select class="palettes-list-select" style="margin:3px 0;">
+            <option value="current-colors">Current colors</option>
+          </select>
+        </li>
+      </ul>
+      <button class="button button-primary" style="float:right">Continue</button>
+      <button class="button" style="float:right">Cancel</button>
+    </form>
+  </div>
+  <script type="text/template" id="local-storage-item-template">
+    <tr class="local-piskel-item">
+      <td class="local-piskel-name">{{name}}</td>
+      <td class="local-piskel-save-date">{{date}}</td>
+      <td><button type="button" data-action="load" data-name="{{name}}" class="button button-primary local-piskel-load-button">Load</button></td>
+      <td><button type="button" data-action="delete" data-name="{{name}}" class="button local-piskel-delete-button">Delete</button></td>
+    </tr>
+  </script>
+</div>

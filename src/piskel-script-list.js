@@ -100,8 +100,10 @@
   // Dialogs sub-controllers
   "js/controller/dialogs/AbstractDialogController.js",
   "js/controller/dialogs/PaletteManagerController.js",
+  "js/controller/dialogs/CreatePaletteController.js",
   "js/controller/dialogs/ImportImageController.js",
   "js/controller/dialogs/BrowseLocalController.js",
+
 
   // Dialogs controller
   "js/controller/dialogs/DialogsController.js",
