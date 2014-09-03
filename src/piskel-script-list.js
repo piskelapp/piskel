@@ -101,6 +101,7 @@
   "js/controller/dialogs/AbstractDialogController.js",
   "js/controller/dialogs/PaletteManagerController.js",
   "js/controller/dialogs/CreatePaletteController.js",
+  "js/controller/dialogs/CreatePaletteMethodController.js",
   "js/controller/dialogs/ImportImageController.js",
   "js/controller/dialogs/BrowseLocalController.js",
 

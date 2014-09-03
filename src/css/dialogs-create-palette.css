@@ -1,6 +1,6 @@
 #dialog-container.create-palette {
   width: 500px;
-  height: 200px;
+  height: 600px;
   top : 50%;
   left : 50%;
   position : absolute;
@@ -8,14 +8,55 @@
 }
 
 .show #dialog-container.create-palette {
-  margin-top: -100px;
+  margin-top: -300px;
 }
 
-.create-palette-method-item {
-  line-height : 24px;
+.create-palette-section {
+  position: absolute;
+  left: 10px;
+  top: 50px;
 }
 
-.create-palette-method-item label{
-  margin-top: 3px;
-  margin-left: 5px;
+.colors-container {
+  position: absolute;
+
+  left: 10px;
+  right: 10px;
+  top: 85px;
+
+  height: 460px;
+
+  border: 1px solid black;
+  background: #333;
+}
+
+.color-picker-container {
+  position:absolute;
+  left : 280px;
+  top:0;
+  bottom:0;
+  right:0;
+  background: #222;
+}
+
+.create-palette-submit {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+}
+
+.color-preview {
+  width: 170px;
+  height: 76px;
+  margin: 11px;
+}
+
+/*SPECTRUM OVERRIDES*/
+
+.create-palette .sp-container{
+  background-color: transparent;
+  border: none;
+  box-shadow : none;
+  border-radius:0;
+  padding:5px;
 }

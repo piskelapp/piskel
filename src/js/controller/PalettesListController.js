@@ -102,7 +102,7 @@
   };
 
   ns.PalettesListController.prototype.onCreatePaletteClick_ = function (evt) {
-    $.publish(Events.DIALOG_DISPLAY, 'create-palette');
+    $.publish(Events.DIALOG_DISPLAY, 'create-palette-method');
   };
 
   ns.PalettesListController.prototype.onColorContainerContextMenu = function (event) {

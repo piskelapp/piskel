@@ -129,6 +129,9 @@
       if (pskl.devtools) {
         pskl.devtools.init();
       }
+
+      // FIXME : remove
+      $.publish(Events.DIALOG_DISPLAY, 'create-palette');
     },
 
     loadPiskel_ : function (serializedPiskel, descriptor, fps) {

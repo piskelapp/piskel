@@ -6,6 +6,10 @@
       template : 'templates/dialogs/manage-palettes.html',
       controller : ns.PaletteManagerController
     },
+    'create-palette-method' : {
+      template : 'templates/dialogs/create-palette-method.html',
+      controller : ns.CreatePaletteMethodController
+    },
     'create-palette' : {
       template : 'templates/dialogs/create-palette.html',
       controller : ns.CreatePaletteController
@@ -46,8 +50,8 @@
     if (!this.isDisplayed()) {
       var config = dialogs[dialogId];
       if (config) {
-        this.dialogContainer_.innerHTML = pskl.utils.Template.get(config.template);
         this.dialogContainer_.classList.add(dialogId);
+        this.dialogContainer_.innerHTML = pskl.utils.Template.get(config.template);
 
         var controller = new config.controller(this.piskelController);
         controller.init(initArgs);
