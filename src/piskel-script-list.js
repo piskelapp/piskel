@@ -109,6 +109,9 @@
   // Dialogs controller
   "js/controller/dialogs/DialogsController.js",
 
+  // Widget controller
+  "js/controller/widgets/HslRgbColorPicker.js",
+
   // Services
   "js/service/LocalStorageService.js",
   "js/service/GithubStorageService.js",
