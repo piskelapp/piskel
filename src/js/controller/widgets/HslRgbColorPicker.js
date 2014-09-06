@@ -1,13 +1,16 @@
 (function () {
   var ns = $.namespace('pskl.controller.widgets');
+  var PICKER_INPUT_DELAY = 30;
 
   ns.HslRgbColorPicker = function (container, colorUpdatedCallback) {
     this.container = container;
     this.colorUpdatedCallback = colorUpdatedCallback;
+    this.lastInputTimestamp_ = 0;
   };
 
   ns.HslRgbColorPicker.prototype.init = function () {
     this.container.addEventListener('input', this.onPickerInput_.bind(this));
+    this.container.addEventListener('change', this.onPickerChange_.bind(this));
 
     this.spectrumEl = this.container.querySelector('.color-picker-spectrum');
 
@@ -24,6 +27,14 @@
 
 
   ns.HslRgbColorPicker.prototype.onPickerInput_ = function (evt) {
+    var now = Date.now();
+    if (now - this.lastInputTimestamp_ > PICKER_INPUT_DELAY) {
+      this.lastInputTimestamp_ = now;
+      this.onPickerChange_(evt);
+    }
+  };
+
+  ns.HslRgbColorPicker.prototype.onPickerChange_ = function (evt) {
     var target = evt.target;
 
     var model = target.dataset.model;
@@ -78,7 +89,7 @@
     var isHsvColor = ['h','s','v'].every(color.hasOwnProperty.bind(color));
     if (isHsvColor) {
       return {
-        h : Math.max(0, Math.min(255, color.h)),
+        h : Math.max(0, Math.min(359, color.h)),
         s : Math.max(0, Math.min(1, color.s)),
         v : Math.max(0, Math.min(1, color.v))
       };
