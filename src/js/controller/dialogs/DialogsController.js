@@ -2,14 +2,6 @@
   var ns = $.namespace('pskl.controller.dialogs');
 
   var dialogs = {
-    'manage-palettes' : {
-      template : 'templates/dialogs/manage-palettes.html',
-      controller : ns.PaletteManagerController
-    },
-    'create-palette-method' : {
-      template : 'templates/dialogs/create-palette-method.html',
-      controller : ns.CreatePaletteMethodController
-    },
     'create-palette' : {
       template : 'templates/dialogs/create-palette.html',
       controller : ns.CreatePaletteController
@@ -35,7 +27,7 @@
     $.subscribe(Events.DIALOG_DISPLAY, this.onDialogDisplayEvent_.bind(this));
     $.subscribe(Events.DIALOG_HIDE, this.onDialogHideEvent_.bind(this));
 
-    pskl.app.shortcutService.addShortcut('alt+P', this.onDialogDisplayEvent_.bind(this, null, 'manage-palettes'));
+    pskl.app.shortcutService.addShortcut('alt+P', this.onDialogDisplayEvent_.bind(this, null, 'create-palettes'));
     this.dialogWrapper_.classList.add('animated');
   };
 

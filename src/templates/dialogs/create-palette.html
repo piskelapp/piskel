@@ -4,12 +4,11 @@
     <span class="dialog-close">X</span>
   </h3>
   <div class="dialog-create-palette" style="font-size:1.3em">
-    <form action="" method="POST" name="create-palette-form">
       <div class="create-palette-section form-section">
-        <span class="dialog-create-palette-name">Name :</span><input type="text" class="textfield" name="palette-name" placeholder="New palette"/>
+        <span class="dialog-create-palette-name">Name :</span><input type="text" class="textfield" name="palette-name" placeholder="palette name ..."/>
       </div>
       <div class="colors-container">
-        <div class="colors-list"></div>
+        <ul class="colors-list"></ul>
         <div class="color-picker-container">
           <div class="color-picker-spectrum"></div>
           <div class="color-picker-slider">
@@ -46,8 +45,7 @@
           <div class="color-preview"></div>
         </div>
       </div>
-      <input type="submit" name="create-palette-submit" class="button button-primary create-palette-submit" value="Save" />
-    </form>
+      <button type="button" name="create-palette-submit" class="button button-primary create-palette-submit">Save</button>
   </div>
 
   <script type="text/template" id="color-picker-slider-template">
@@ -56,6 +54,16 @@
       <input type="range" data-model="{{model}}" data-dimension="{{dim}}" value="0" min="0" max="{{max}}"/>
       <input type="text"  data-model="{{model}}" data-dimension="{{dim}}" class="textfield" value="0"/>
     </div>
+  </script>
+
+  <script type="text/template" id="create-palette-color-template">
+    <li
+      class="create-palette-color {{:selected}} {{:light-color}}"
+      style="background:{{color}}"
+      data-palette-index="{{index}}"
+      data-palette-color="{{color}}">
+      <div class="create-palette-remove-color">X</div>
+    </li>
   </script>
 
 </div>

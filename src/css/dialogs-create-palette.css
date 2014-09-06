@@ -51,6 +51,84 @@
   margin: 11px;
 }
 
+.colors-list {
+  overflow : hidden;
+  width : 280px;
+}
+
+.create-palette-color, .create-palette-new-color, .colors-list-drop-proxy{
+  position:relative;
+  float : left;
+
+  width : 44px;
+  height : 44px;
+  margin : 10px 0 0 10px;
+
+  box-sizing : border-box;
+
+  cursor : pointer;
+}
+
+.create-palette-color {
+  border:1px solid #2c2c2c;
+  transition : border-color 0.2s;
+}
+.create-palette-color:hover {
+  border:1px solid gold;
+}
+
+.colors-list-drop-proxy {
+  border:2px dotted #eee;
+}
+
+.create-palette-new-color {
+  border:2px dotted gold;
+
+  border-radius: 2px;
+  line-height: 40px;
+  text-align: center;
+  font-size: 20px;
+  color: gold;
+}
+
+.create-palette-color.selected {
+  border:2px solid gold;
+}
+
+.create-palette-remove-color {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 2px 4px;
+  opacity : 0.2;
+
+  font-weight: bold;
+  color: rgb(255,255,255);
+  text-shadow : 0 0 1px rgb(0,0,0);
+
+  transition : opacity 0.3s, color 0.1s;
+}
+
+.light-color .create-palette-remove-color {
+  color: rgb(0,0,0);
+  text-shadow : 0 0 1px rgb(255,255,255);
+}
+
+.selected .create-palette-remove-color {
+  top: -1px;
+  right: -1px;
+}
+
+.create-palette-color:hover .create-palette-remove-color {
+  opacity: 0.6;
+}
+
+.create-palette-color .create-palette-remove-color:hover {
+  opacity: 1;
+  color: rgb(240,80,80);
+  text-shadow : 0 0 1px rgb(0,0,0);
+}
+
 /*SPECTRUM OVERRIDES*/
 
 .create-palette .sp-container{

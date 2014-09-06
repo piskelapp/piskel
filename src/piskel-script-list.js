@@ -25,6 +25,7 @@
   "js/utils/PiskelFileUtils.js",
   "js/utils/Template.js",
   "js/utils/UserSettings.js",
+  "js/utils/Uuid.js",
   "js/utils/Xhr.js",
   "js/utils/serialization/Serializer.js",
   "js/utils/serialization/Deserializer.js",
@@ -50,6 +51,7 @@
   "js/model/Layer.js",
   "js/model/piskel/Descriptor.js",
   "js/model/frame/CachedFrameProcessor.js",
+  "js/model/Palette.js",
   "js/model/Piskel.js",
 
   // Selection
@@ -99,9 +101,7 @@
 
   // Dialogs sub-controllers
   "js/controller/dialogs/AbstractDialogController.js",
-  "js/controller/dialogs/PaletteManagerController.js",
   "js/controller/dialogs/CreatePaletteController.js",
-  "js/controller/dialogs/CreatePaletteMethodController.js",
   "js/controller/dialogs/ImportImageController.js",
   "js/controller/dialogs/BrowseLocalController.js",
 
@@ -119,6 +119,7 @@
   "js/service/BackupService.js",
   "js/service/BeforeUnloadService.js",
   "js/service/HistoryService.js",
+  "js/service/PaletteService.js",
   "js/service/SavedStatusService.js",
   "js/service/keyboard/ShortcutService.js",
   "js/service/keyboard/KeycodeTranslator.js",

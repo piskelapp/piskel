@@ -39,6 +39,9 @@
       this.piskelController = new pskl.controller.piskel.PublicPiskelController(this.corePiskelController);
       this.piskelController.init();
 
+      this.paletteService = new pskl.service.PaletteService();
+      this.paletteService.init();
+
       this.paletteController = new pskl.controller.PaletteController();
       this.paletteController.init();
 
@@ -129,9 +132,6 @@
       if (pskl.devtools) {
         pskl.devtools.init();
       }
-
-      // FIXME : remove
-      $.publish(Events.DIALOG_DISPLAY, 'create-palette');
     },
 
     loadPiskel_ : function (serializedPiskel, descriptor, fps) {

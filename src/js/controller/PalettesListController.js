@@ -13,19 +13,26 @@
 
   ns.PalettesListController = function (paletteController, usedColorService) {
     this.usedColorService = usedColorService;
+    this.paletteService = pskl.app.paletteService;
     this.paletteController = paletteController;
   };
 
   ns.PalettesListController.prototype.init = function () {
     this.paletteColorTemplate_ = pskl.utils.Template.get('palette-color-template');
+
     this.colorListContainer_ = document.querySelector('.palettes-list-colors');
     this.colorPaletteSelect_ = document.querySelector('.palettes-list-select');
-    this.createPaletteButton_ = document.querySelector('.create-palette-button');
+
+    var createPaletteButton_ = document.querySelector('.create-palette-button');
+    var paletteActions = document.querySelector('.palette-actions');
 
     this.colorPaletteSelect_.addEventListener('change', this.onPaletteSelected_.bind(this));
     this.colorListContainer_.addEventListener('mouseup', this.onColorContainerMouseup.bind(this));
     this.colorListContainer_.addEventListener('contextmenu', this.onColorContainerContextMenu.bind(this));
-    this.createPaletteButton_.addEventListener('click', this.onCreatePaletteClick_.bind(this));
+
+    createPaletteButton_.addEventListener('click', this.onCreatePaletteClick_.bind(this));
+    paletteActions.addEventListener('click', this.onPaletteActionsClick_.bind(this));
+
 
     $.subscribe(Events.PALETTE_LIST_UPDATED, this.onPaletteListUpdated.bind(this));
     $.subscribe(Events.CURRENT_COLORS_UPDATED, this.fillColorListContainer.bind(this));
@@ -42,7 +49,7 @@
       id : Constants.CURRENT_COLORS_PALETTE_ID,
       name : 'Current colors'
     }];
-    palettes = palettes.concat(this.retrievePalettes());
+    palettes = palettes.concat(this.paletteService.getPalettes());
 
     var html = palettes.map(function (palette) {
       return pskl.utils.Template.replace('<option value="{{id}}">{{name}}</option>', palette);
@@ -74,7 +81,7 @@
     if (paletteId === Constants.CURRENT_COLORS_PALETTE_ID) {
       colors = this.usedColorService.getCurrentColors();
     } else {
-      var palette = this.getPaletteById(paletteId, this.retrievePalettes());
+      var palette = this.paletteService.getPaletteById(paletteId);
       if (palette) {
         colors = palette.colors;
       }
@@ -87,12 +94,12 @@
     return colors;
   };
 
-  ns.PalettesListController.prototype.selectPalette = function (paletteId) {
-    this.colorPaletteSelect_.value = paletteId;
-  };
-
   ns.PalettesListController.prototype.selectPaletteFromUserSettings = function () {
     this.selectPalette(pskl.UserSettings.get(pskl.UserSettings.SELECTED_PALETTE));
+  };
+
+  ns.PalettesListController.prototype.selectPalette = function (paletteId) {
+    this.colorPaletteSelect_.value = paletteId;
   };
 
   ns.PalettesListController.prototype.onPaletteSelected_ = function (evt) {
@@ -102,7 +109,39 @@
   };
 
   ns.PalettesListController.prototype.onCreatePaletteClick_ = function (evt) {
-    $.publish(Events.DIALOG_DISPLAY, 'create-palette-method');
+    $.publish(Events.DIALOG_DISPLAY, 'create-palette');
+  };
+
+  ns.PalettesListController.prototype.onPaletteActionsClick_ = function (evt) {
+    var classList = evt.target.classList;
+    if (classList.contains('palette-action-edit')) {
+      this.editSelectedPalette_();
+    } else if (classList.contains('palette-action-delete')) {
+      this.deleteSelectedPalette_();
+    } else if (classList.contains('palette-action-download')) {
+      this.downloadSelectedPalette_();
+    }
+  };
+
+  ns.PalettesListController.prototype.editSelectedPalette_ = function () {
+    var paletteId = this.colorPaletteSelect_.value;
+    $.publish(Events.DIALOG_DISPLAY, {
+      dialogId : 'create-palette',
+      initArgs : paletteId
+    });
+  };
+
+  ns.PalettesListController.prototype.deleteSelectedPalette_ = function () {
+    var paletteId = this.colorPaletteSelect_.value;
+    var palette = this.paletteService.getPaletteById(paletteId);
+    if (window.confirm('Are you sure you want to delete palette ' + palette.name)) {
+      this.paletteService.deletePaletteById(palette.id);
+      this.selectPalette(Constants.CURRENT_COLORS_PALETTE_ID);
+    }
+  };
+
+  ns.PalettesListController.prototype.downloadSelectedPalette_ = function () {
+    window.alert('not implemented yet');
   };
 
   ns.PalettesListController.prototype.onColorContainerContextMenu = function (event) {
@@ -154,22 +193,5 @@
     this.fillPaletteList();
     this.selectPaletteFromUserSettings();
     this.fillColorListContainer();
-  };
-
-  ns.PalettesListController.prototype.getPaletteById = function (paletteId, palettes) {
-    var match = null;
-
-    palettes.forEach(function (palette) {
-      if (palette.id === paletteId) {
-        match = palette;
-      }
-    });
-
-    return match;
-  };
-
-  ns.PalettesListController.prototype.retrievePalettes =  function () {
-    var palettesString = window.localStorage.getItem('piskel.palettes');
-    return JSON.parse(palettesString) || [];
   };
 })();

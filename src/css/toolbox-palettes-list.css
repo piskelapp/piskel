@@ -55,8 +55,28 @@
   border-right-color: transparent;
 }
 
-
 .palettes-list-secondary-color:before {
   right: 1px;
   border-left-color: transparent;
+}
+
+.palette-action {
+  width : 18px;
+  height : 18px;
+  line-height : 16px;
+
+  text-align:center;
+  float : right;
+  font-size : 12px;
+  border: 1px solid gold;
+  border-radius : 2px;
+  box-sizing : border-box;
+  margin : 3px 3px 3px 0;
+
+  cursor : pointer;
+  transition : color 0.3s;
+}
+
+.palette-action:hover {
+  color : gold;
 }

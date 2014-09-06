@@ -1,18 +1,30 @@
 <div class="toolbox-container palettes-list-container">
-  <h3 class="toolbox-title palettes-title" 
+  <h3 class="toolbox-title palettes-title"
       style="overflow: hidden;height: 36px;box-sizing: border-box;border-bottom: 1px solid #444;">
     <span style="line-height:20px ">Palettes</span>
-    <div 
-      class="button button-primary create-palette-button" 
+    <div
+      class="button button-primary create-palette-button"
       title="Create new palette"
       rel="tooltip"
       data-placement="top"
       style="width:20px; height:20px; float:right; font-size:1.1em">+</div>
   </h3>
-  <div 
-    class="palettes-actions" 
+  <div
+    class="palette-actions"
     style="background-color:#3f3f3f; border-bottom:#222; height:24px; padding:0 3px;">
     <select class="palettes-list-select" style="margin:3px 0;"></select>
+    <div class="palette-action palette-action-download"
+      title="Download palette"
+      rel="tooltip"
+      data-placement="top">dl</div>
+    <div class="palette-action palette-action-delete"
+      title="Delete palette"
+      rel="tooltip"
+      data-placement="top">d</div>
+    <div class="palette-action palette-action-edit"
+      title="Edit palette"
+      rel="tooltip"
+      data-placement="top">e</div>
   </div>
   <div class="palettes-list-colors"></div>
   <script type="text/template" id="palette-color-template">
