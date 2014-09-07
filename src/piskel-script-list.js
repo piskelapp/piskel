@@ -119,7 +119,7 @@
   "js/service/BackupService.js",
   "js/service/BeforeUnloadService.js",
   "js/service/HistoryService.js",
-  "js/service/PaletteService.js",
+  "js/service/palette/PaletteService.js",
   "js/service/SavedStatusService.js",
   "js/service/keyboard/ShortcutService.js",
   "js/service/keyboard/KeycodeTranslator.js",

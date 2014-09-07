@@ -38,7 +38,7 @@
       this.piskelController = new pskl.controller.piskel.PublicPiskelController(this.corePiskelController);
       this.piskelController.init();
 
-      this.paletteService = new pskl.service.PaletteService();
+      this.paletteService = new pskl.service.palette.PaletteService();
       this.paletteService.init();
 
       this.paletteController = new pskl.controller.PaletteController();
