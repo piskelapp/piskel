@@ -121,6 +121,7 @@
   "js/service/HistoryService.js",
   "js/service/palette/PaletteService.js",
   "js/service/palette/PaletteImportService.js",
+  "js/service/palette/PaletteGplReader.js",
   "js/service/palette/PaletteImageReader.js",
   "js/service/SavedStatusService.js",
   "js/service/keyboard/ShortcutService.js",

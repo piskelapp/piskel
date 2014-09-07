@@ -13,6 +13,10 @@
   }
 
   ns.Base64 = {
+    toText : function (base64) {
+      return window.atob(base64.replace(/data\:.*?\;base64\,/,''));
+    },
+
     decode : function(base64) {
       var outptr = 0;
       var last = [0, 0];
