@@ -28,7 +28,7 @@
     this.importImageForm = $('[name=import-image-form]');
     this.importImageForm.submit(this.onImportFormSubmit_.bind(this));
 
-    pskl.utils.FileUtils.readFile(this.file_, this.processImageSource_.bind(this));
+    pskl.utils.FileUtils.readImageFile(this.file_, this.onImageLoaded_.bind(this));
   };
 
   ns.ImportImageController.prototype.onImportFormSubmit_ = function (evt) {
@@ -55,18 +55,9 @@
     }
   };
 
-  /**
-   * Create an image from the given source (url or data-url), and onload forward to onImageLoaded
-   * TODO : should be a generic utility method, should take a callback
-   * @param  {String} imageSource url or data-url, will be used as src for the image
-   */
-  ns.ImportImageController.prototype.processImageSource_ = function (imageSource) {
-    this.importedImage_ = new Image();
-    this.importedImage_.onload = this.onImageLoaded_.bind(this);
-    this.importedImage_.src = imageSource;
-  };
+  ns.ImportImageController.prototype.onImageLoaded_ = function (image) {
+    this.importedImage_ = image;
 
-  ns.ImportImageController.prototype.onImageLoaded_ = function (evt) {
     var w = this.importedImage_.width,
         h = this.importedImage_.height;
 

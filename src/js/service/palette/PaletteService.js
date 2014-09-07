@@ -1,11 +1,10 @@
 (function () {
   var ns = $.namespace('pskl.service.palette');
+
   ns.PaletteService = function () {
     this.palettes = [];
     this.localStorageService = window.localStorage;
   };
-
-  ns.PaletteService.prototype.init = function () {};
 
   ns.PaletteService.prototype.getPalettes = function () {
     var palettesString = this.localStorageService.getItem('piskel.palettes');

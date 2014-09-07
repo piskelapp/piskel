@@ -37,7 +37,7 @@ describe("Palette Service", function() {
       }
     };
 
-    paletteService = new pskl.service.PaletteService();
+    paletteService = new pskl.service.palette.PaletteService();
     paletteService.localStorageService = localStorageService;
   });
 

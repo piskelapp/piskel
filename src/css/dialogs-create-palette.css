@@ -17,6 +17,10 @@
   top: 50px;
 }
 
+.create-palette-import-section {
+  display : inline-block;
+}
+
 .colors-container {
   position: absolute;
 

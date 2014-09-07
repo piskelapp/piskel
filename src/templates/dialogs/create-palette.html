@@ -5,7 +5,14 @@
   </h3>
   <div class="dialog-create-palette" style="font-size:1.3em">
       <div class="create-palette-section form-section">
-        <span class="dialog-create-palette-name">Name :</span><input type="text" class="textfield" name="palette-name" placeholder="palette name ..."/>
+        <span class="create-palette-name-label">Name</span>
+        <input type="text" class="textfield create-palette-name-input" name="palette-name" placeholder="palette name ..."/>
+        <div class="create-palette-import-section">
+          <button type="button" class="button  button-primary create-palette-import-button">Import from file</button>
+          <input style="display:none"
+            class="create-palette-import-input"
+            type="file" value="file" accept="*"/>
+        </div>
       </div>
       <div class="colors-container">
         <ul class="colors-list"></ul>
