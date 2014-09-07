@@ -12,6 +12,7 @@
   ns.AbstractDialogController.prototype.destroy = function () {};
 
   ns.AbstractDialogController.prototype.closeDialog = function () {
+    this.destroy();
     $.publish(Events.DIALOG_HIDE);
   };
 

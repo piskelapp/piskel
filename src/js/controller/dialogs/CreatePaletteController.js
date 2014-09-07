@@ -10,7 +10,7 @@
 
   ns.CreatePaletteController.prototype.init = function (paletteId) {
     this.superclass.init.call(this);
-    console.log(paletteId);
+
     if (paletteId) {
       var palette = this.paletteService.getPaletteById(paletteId);
       this.palette = pskl.model.Palette.fromObject(palette);
@@ -20,21 +20,30 @@
     }
 
     this.colorsList = document.querySelector('.colors-list');
-    this.colorPickerContainer = document.querySelector('.color-picker-container');
     this.colorPreviewEl = document.querySelector('.color-preview');
-
-    this.submitButton = document.querySelector('.create-palette-submit');
     this.nameInput = document.querySelector('input[name="palette-name"]');
-    this.nameInput.value = this.palette.name;
+    this.nameInput.value = pskl.utils.unescapeHtml(this.palette.name);
+
+    var submitButton = document.querySelector('.create-palette-submit');
+    var cancelButton = document.querySelector('.create-palette-cancel');
 
     this.colorsList.addEventListener('click', this.onColorContainerClick_.bind(this));
-    this.submitButton.addEventListener('click', this.onSubmitButtonClick_.bind(this));
     this.nameInput.addEventListener('input', this.onNameInputChange_.bind(this));
 
-    this.hslRgbColorPicker = new pskl.controller.widgets.HslRgbColorPicker(this.colorPickerContainer, this.onColorUpdated_.bind(this));
+    submitButton.addEventListener('click', this.onSubmitButtonClick_.bind(this));
+    cancelButton.addEventListener('click', this.closeDialog.bind(this));
+
+    var colorPickerContainer = document.querySelector('.color-picker-container');
+    this.hslRgbColorPicker = new pskl.controller.widgets.HslRgbColorPicker(colorPickerContainer, this.onColorUpdated_.bind(this));
     this.hslRgbColorPicker.init();
 
     this.refresh_();
+  };
+
+  ns.CreatePaletteController.prototype.destroy = function () {
+    this.colorsList = null;
+    this.colorPreviewEl = null;
+    this.nameInput = null;
   };
 
   ns.CreatePaletteController.prototype.onColorUpdated_ = function (color) {
@@ -92,7 +101,7 @@
   };
 
   ns.CreatePaletteController.prototype.onNameInputChange_ = function (evt) {
-    this.palette.name = this.nameInput.value;
+    this.palette.name = pskl.utils.escapeHtml(this.nameInput.value);
   };
 
   ns.CreatePaletteController.prototype.selectColor_ = function (index) {

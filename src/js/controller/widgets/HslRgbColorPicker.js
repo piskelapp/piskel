@@ -1,6 +1,5 @@
 (function () {
   var ns = $.namespace('pskl.controller.widgets');
-  var PICKER_INPUT_DELAY = 30;
 
   ns.HslRgbColorPicker = function (container, colorUpdatedCallback) {
     this.container = container;
@@ -9,8 +8,9 @@
   };
 
   ns.HslRgbColorPicker.prototype.init = function () {
-    this.container.addEventListener('input', this.onPickerInput_.bind(this));
-    this.container.addEventListener('change', this.onPickerChange_.bind(this));
+    var isChromeOrFirefox = pskl.utils.UserAgent.isChrome || pskl.utils.UserAgent.isFirefox;
+    var changeEvent = isChromeOrFirefox ? 'input' : 'change';
+    this.container.addEventListener(changeEvent, this.onPickerChange_.bind(this));
 
     this.spectrumEl = this.container.querySelector('.color-picker-spectrum');
 
@@ -25,14 +25,6 @@
     this.setColor("#000000");
   };
 
-
-  ns.HslRgbColorPicker.prototype.onPickerInput_ = function (evt) {
-    var now = Date.now();
-    if (now - this.lastInputTimestamp_ > PICKER_INPUT_DELAY) {
-      this.lastInputTimestamp_ = now;
-      this.onPickerChange_(evt);
-    }
-  };
 
   ns.HslRgbColorPicker.prototype.onPickerChange_ = function (evt) {
     var target = evt.target;
@@ -77,27 +69,6 @@
     }
   };
 
-  ns.HslRgbColorPicker.prototype.toTinyColor_ = function (color) {
-    if (typeof color == "object" && color.hasOwnProperty("_tc_id")) {
-      return color;
-    } else {
-      return window.tinycolor(JSON.parse(JSON.stringify(color)));
-    }
-  };
-
-  ns.HslRgbColorPicker.prototype.toHsvColor_ = function (color) {
-    var isHsvColor = ['h','s','v'].every(color.hasOwnProperty.bind(color));
-    if (isHsvColor) {
-      return {
-        h : Math.max(0, Math.min(359, color.h)),
-        s : Math.max(0, Math.min(1, color.s)),
-        v : Math.max(0, Math.min(1, color.v))
-      };
-    } else {
-      return this.toTinyColor_(color).toHsv();
-    }
-  };
-
   ns.HslRgbColorPicker.prototype.updateInputs = function () {
     var inputs = this.container.querySelectorAll('input');
     var rgb = this.tinyColor.toRgb();
@@ -131,22 +102,53 @@
     var start, end;
     var isHueSlider = dimension === 'h';
     if (!isHueSlider) {
-      if (model === 'hsv') {
-        start = JSON.parse(JSON.stringify(this.hsvColor));
-        start[dimension] = 0;
-
-        end = JSON.parse(JSON.stringify(this.hsvColor));
-        end[dimension] = 1;
-      } else {
-        start = this.tinyColor.toRgb();
-        start[dimension] = 0;
-
-        end = this.tinyColor.toRgb();
-        end[dimension] = 255;
-      }
-      var colorStart = window.tinycolor(start).toRgbString();
-      var colorEnd = window.tinycolor(end).toRgbString();
-      slider.style.backgroundImage = "linear-gradient(to right, " + colorStart + " 0, " + colorEnd + " 100%)";
+      var colors = this.getSliderBackgroundColors_(model, dimension);
+      slider.style.backgroundImage = "linear-gradient(to right, " + colors.start + " 0, " + colors.end + " 100%)";
     }
   };
+
+  ns.HslRgbColorPicker.prototype.getSliderBackgroundColors_ = function (model, dimension) {
+    var start, end;
+    if (model === 'hsv') {
+      start = JSON.parse(JSON.stringify(this.hsvColor));
+      start[dimension] = 0;
+
+      end = JSON.parse(JSON.stringify(this.hsvColor));
+      end[dimension] = 1;
+    } else {
+      start = this.tinyColor.toRgb();
+      start[dimension] = 0;
+
+      end = this.tinyColor.toRgb();
+      end[dimension] = 255;
+    }
+
+    return {
+      start : window.tinycolor(start).toRgbString(),
+      end : window.tinycolor(end).toRgbString()
+    };
+  };
+
+  ns.HslRgbColorPicker.prototype.toTinyColor_ = function (color) {
+    if (typeof color == "object" && color.hasOwnProperty("_tc_id")) {
+      return color;
+    } else {
+      return window.tinycolor(JSON.parse(JSON.stringify(color)));
+    }
+  };
+
+  ns.HslRgbColorPicker.prototype.toHsvColor_ = function (color) {
+    var isHsvColor = ['h','s','v'].every(color.hasOwnProperty.bind(color));
+    if (isHsvColor) {
+      return {
+        h : Math.max(0, Math.min(359, color.h)),
+        s : Math.max(0, Math.min(1, color.s)),
+        v : Math.max(0, Math.min(1, color.v))
+      };
+    } else {
+      return this.toTinyColor_(color).toHsv();
+    }
+  };
+
+
 })();

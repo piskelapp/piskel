@@ -76,5 +76,29 @@ if (!Function.prototype.bind) {
     }
   };
 
+  var entityMap = {
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': '&quot;',
+    "'": '&#39;',
+    "/": '&#x2F;'
+  };
+
+  ns.escapeHtml= function (string) {
+    return String(string).replace(/[&<>"'\/]/g, function (s) {
+      return entityMap[s];
+    });
+  };
+
+  var reEntityMap = {};
+  ns.unescapeHtml= function (string) {
+    Object.keys(entityMap).forEach(function(key) {
+      reEntityMap[key] = reEntityMap[key] || new RegExp(entityMap[key], "g");
+      string = string.replace(reEntityMap[key], key);
+    });
+    return string;
+  };
+
 })();
 

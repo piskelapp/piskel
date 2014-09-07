@@ -11,7 +11,6 @@
 
     init : function () {
       /**
-       * True when piskel is running in static mode (no back end needed).
        * When started from APP Engine, appEngineToken_ (Boolean) should be set on window.pskl
        */
       this.isAppEngineVersion = !!pskl.appEngineToken_;
