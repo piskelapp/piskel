@@ -1,0 +1,26 @@
+<div class="dialog-wrapper">
+  <h3 class="dialog-head">
+    Browse Local Piskels
+    <span class="dialog-close">X</span>
+  </h3>
+  <div style="padding:10px 20px; font-size:1.5em">
+    <table class="local-piskel-list">
+      <thead>
+        <tr class="local-piskel-list-head">
+          <td class="local-piskel-name">Name</td>
+          <td class="local-piskel-save-date">Date</td>
+          <td colspan=2>Actions</td>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+  <script type="text/template" id="local-storage-item-template">
+    <tr class="local-piskel-item">
+      <td class="local-piskel-name">{{name}}</td>
+      <td class="local-piskel-save-date">{{date}}</td>
+      <td><button type="button" data-action="load" data-name="{{name}}" class="button button-primary local-piskel-load-button">Load</button></td>
+      <td><button type="button" data-action="delete" data-name="{{name}}" class="button local-piskel-delete-button">Delete</button></td>
+    </tr>
+  </script>
+</div>

@@ -1,0 +1,46 @@
+<div class="settings-section">
+  <div class="settings-title">
+    Export Spritesheet
+  </div>
+  <div class="png-export-preview  settings-item"></div>
+  <div class="settings-item">
+    <span class="settings-description">PNG with all frames side by side.</span>
+    <button type="button" class="button button-primary png-download-button">Download PNG</button>
+  </div>
+  <div class="settings-title">
+    Export as ZIP
+  </div>
+  <div class="settings-item">
+    <span class="settings-description">ZIP with one PNG file per frame.</span>
+    <span class="settings-description" style="display:block">File names will start with the prefix below.</span>
+    <div class="settings-item">
+      <label for="zip-prefix-name">Prefix:</label>
+      <input id="zip-prefix-name" type="text" class="textfield" placeholder="PNG file prefix ...">
+    </div>
+    <button type="button" class="button button-primary zip-generate-button"/>Download ZIP</button>
+  </div>
+  <div class="settings-title">
+    Export to Animated GIF
+  </div>
+  <div class="settings-item">
+    <form action="" method="POST" class="gif-export-form">
+      <div class="settings-item">
+        <label>Select resolution:</label>
+        <select class="gif-export-select-resolution"></select>
+        <script type="text/template" id="gif-export-option-template">
+          <option value="{{value}}" {{selected}}>{{label}}</option>
+        </script>
+      </div>
+      <div class="settings-item">
+        <button type="button" class="button button-primary gif-download-button">Download GIF</button>
+        <button type="button" class="button button gif-upload-button">Get public URL</button>
+      </div>
+    </form>
+    <div class="gif-upload">
+      <div class="gif-export-preview"></div>
+      <div class="gif-upload-status"></div>
+    </div>
+    <span class="gif-export-progress-status"></span>
+    <div class="gif-export-progress-bar"></div>
+  </div>
+</div>
