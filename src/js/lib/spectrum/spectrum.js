@@ -504,8 +504,10 @@
 
             $(doc).bind("mousedown.spectrum", onMousedown);
 
-            // Piskel-specific : change the color as soon as the user does a mouseup
-            $(doc).bind("mouseup.spectrum", updateColor);
+            if (!flat) {
+                 // Piskel-specific : change the color as soon as the user does a mouseup
+                $(doc).bind("mouseup.spectrum", updateColor);
+            }
 
             $(window).bind("resize.spectrum", resize);
             replacer.addClass("sp-active");

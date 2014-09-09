@@ -1,10 +1,16 @@
 (function () {
   var ns = $.namespace('pskl.controller.dialogs');
 
+  var MODE = {
+    CREATE : 'CREATE',
+    EDIT : 'EDIT'
+  };
+
   ns.CreatePaletteController = function (piskelController) {
     this.paletteService = pskl.app.paletteService;
     this.paletteImportService = pskl.app.paletteImportService;
     this.selectedIndex = -1;
+    this.mode = null;
   };
 
   pskl.utils.inherit(ns.CreatePaletteController, ns.AbstractDialogController);
@@ -18,6 +24,7 @@
     this.nameInput = document.querySelector('input[name="palette-name"]');
 
     var submitButton = document.querySelector('.create-palette-submit');
+    var cloneButton = document.querySelector('.create-palette-clone');
     var cancelButton = document.querySelector('.create-palette-cancel');
     var importFileButton = document.querySelector('.create-palette-import-button');
 
@@ -26,6 +33,7 @@
     this.hiddenFileInput.addEventListener('change', this.onFileInputChange_.bind(this));
 
     submitButton.addEventListener('click', this.onSubmitButtonClick_.bind(this));
+    cloneButton.addEventListener('click', this.onCloneButtonClick_.bind(this));
     cancelButton.addEventListener('click', this.closeDialog.bind(this));
     importFileButton.addEventListener('click', this.onImportFileButtonClick_.bind(this));
 
@@ -37,8 +45,12 @@
     if (paletteId) {
       var paletteObject = this.paletteService.getPaletteById(paletteId);
       palette = pskl.model.Palette.fromObject(paletteObject);
+      importFileButton.style.display = 'none';
+      this.mode = MODE.EDIT;
     } else {
-      palette = new pskl.model.Palette(pskl.utils.Uuid.generate(), 'New palette', []);
+      palette = new pskl.model.Palette(pskl.utils.Uuid.generate(), 'New palette', ['#000000']);
+      cloneButton.style.display = 'none';
+      this.mode = MODE.CREATE;
     }
 
     this.setPalette_(palette);
@@ -47,6 +59,7 @@
   ns.CreatePaletteController.prototype.setPalette_ = function (palette) {
     this.palette = palette;
     this.nameInput.value = pskl.utils.unescapeHtml(this.palette.name);
+    this.selectColor_(0);
     this.refresh_();
   };
 
@@ -108,6 +121,12 @@
 
   ns.CreatePaletteController.prototype.onSubmitButtonClick_ = function (evt) {
     this.paletteService.savePalette(this.palette);
+    this.closeDialog();
+  };
+
+  ns.CreatePaletteController.prototype.onCloneButtonClick_ = function (evt) {
+    var palette = new pskl.model.Palette(pskl.utils.Uuid.generate(), this.palette.name, this.palette.colors);
+    this.paletteService.savePalette(palette);
     this.closeDialog();
   };
 

@@ -1,18 +1,15 @@
 (function () {
   var ns = $.namespace('pskl.service.palette');
 
-  var supportedFileFormats = ['gpl'];
+  var fileReaders = {
+    'gpl' : ns.PaletteGplReader,
+    'txt' : ns.PaletteTxtReader
+  };
 
   ns.PaletteImportService = function () {};
 
   ns.PaletteImportService.prototype.read = function (file, onSuccess, onError) {
-    var reader;
-    if (this.isImage_(file)){
-      reader = new ns.PaletteImageReader(file, onSuccess, onError);
-    } else if (this.isSupportedFormat_(file)) {
-      reader = this.getFileReader_(file, onSuccess, onError);
-    }
-
+    var reader = this.getFileReader_(file, onSuccess, onError);
     if (reader) {
       reader.read();
     } else {
@@ -25,19 +22,24 @@
   };
 
   ns.PaletteImportService.prototype.getFileReader_ = function (file, onSuccess, onError) {
-    var extension = this.getExtension_(file);
-    if (extension === 'gpl') {
-      return new ns.PaletteGplReader(file, onSuccess, onError);
+    var readerClass = this.getReaderClass_(file);
+
+    var reader = null;
+    if (readerClass) {
+      reader = new readerClass(file, onSuccess, onError);
     }
+
+    return reader;
   };
 
-  ns.PaletteImportService.prototype.isSupportedFormat_ = function (file) {
+  ns.PaletteImportService.prototype.getReaderClass_ = function (file) {
     var extension = this.getExtension_(file);
-    return supportedFileFormats.indexOf(extension) != -1;
+    return fileReaders[extension];
   };
 
   ns.PaletteImportService.prototype.getExtension_ = function (file) {
     var parts = file.name.split('.');
-    return parts[parts.length-1];
+    var extension = parts[parts.length-1];
+    return extension.toLowerCase();
   };
 })();

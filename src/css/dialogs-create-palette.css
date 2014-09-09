@@ -112,7 +112,7 @@
   position: absolute;
   top: 0;
   right: 0;
-  padding: 2px 4px;
+  padding: 2px 4px 0 0;
   opacity : 0.2;
 
   font-weight: bold;

@@ -36,7 +36,7 @@
 }
 .tooltip {
   position: absolute;
-  z-index: 1030;
+  z-index: 30000;
   display: block;
   visibility: visible;
   padding: 5px;

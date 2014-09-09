@@ -11,6 +11,7 @@
     var isChromeOrFirefox = pskl.utils.UserAgent.isChrome || pskl.utils.UserAgent.isFirefox;
     var changeEvent = isChromeOrFirefox ? 'input' : 'change';
     this.container.addEventListener(changeEvent, this.onPickerChange_.bind(this));
+    this.container.addEventListener('keydown', this.onKeydown_.bind(this));
 
     this.spectrumEl = this.container.querySelector('.color-picker-spectrum');
 
@@ -24,7 +25,6 @@
 
     this.setColor("#000000");
   };
-
 
   ns.HslRgbColorPicker.prototype.onPickerChange_ = function (evt) {
     var target = evt.target;
@@ -51,6 +51,27 @@
     }
 
     this.setColor(color);
+  };
+
+  ns.HslRgbColorPicker.prototype.onKeydown_ = function (evt) {
+    var target = evt.target;
+
+    if (target.getAttribute('type').toLowerCase() === 'text') {
+      var value = parseInt(target.value, 10);
+      var dimension = target.dataset.dimension;
+
+      var key = pskl.service.keyboard.KeycodeTranslator.toChar(evt.keyCode);
+      if (key === 'up') {
+        value = value + 1;
+      } else if (key === 'down') {
+        value = value - 1;
+      }
+
+      value = this.normalizeDimension_(value, dimension);
+
+      target.value = value;
+      this.onPickerChange_(evt);
+    }
   };
 
   ns.HslRgbColorPicker.prototype.setColor = function (inputColor) {
@@ -149,6 +170,19 @@
       return this.toTinyColor_(color).toHsv();
     }
   };
+
+  ns.HslRgbColorPicker.prototype.normalizeDimension_ = function (value, dimension) {
+    var ranges = {
+      'h' : [0, 359],
+      's' : [0, 100],
+      'v' : [0, 100],
+      'r' : [0, 255],
+      'g' : [0, 255],
+      'b' : [0, 255]
+    };
+    var range = ranges[dimension];
+    return Math.max(range[0], Math.min(range[1], value));
+  } ;
 
 
 })();
