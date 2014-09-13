@@ -8,3 +8,7 @@
 .action-icon.edit-icon {
   background-image: url('../img/tools/pen.png');
 }
+
+.action-icon.merge-icon {
+  background-image: url('../img/merge-icon.png');
+}

@@ -67,6 +67,9 @@
     } else if (el.classList.contains('edit-icon')) {
       index = el.parentNode.dataset.layerIndex;
       this.renameLayerAt_(index);
+    } else if (el.classList.contains('merge-icon')) {
+      index = el.parentNode.dataset.layerIndex;
+      this.mergeDownLayerAt_(index);
     }
   };
 
@@ -77,6 +80,11 @@
       this.piskelController.renameLayerAt(index, name);
       this.renderLayerList_();
     }
+  };
+
+  ns.LayersListController.prototype.mergeDownLayerAt_ = function (index) {
+    this.piskelController.mergeDownLayerAt(index);
+    this.renderLayerList_();
   };
 
   ns.LayersListController.prototype.onButtonClick_ = function (button) {

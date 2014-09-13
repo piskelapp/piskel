@@ -46,20 +46,32 @@
   cursor : pointer;
 }
 
-.layer-item .edit-icon {
+.layer-item .edit-icon, .layer-item .merge-icon {
   float: right;
-  width: 30px;
-  background-size: 12px;
   opacity: 0;
   transition : opacity 0.2s;
 }
 
-.layer-item:hover .edit-icon {
+.layer-item:hover .edit-icon, .layer-item:hover .merge-icon {
   opacity : 0.6;
 }
 
-.layer-item:hover .edit-icon:hover {
+.layer-item:hover .edit-icon:hover, .layer-item:hover .merge-icon:hover {
   opacity : 1;
+}
+
+.layer-item .edit-icon {
+  width: 25px;
+  background-size: 12px;
+}
+
+.layer-item .merge-icon {
+  width: 18px;
+  background-size: 16px;
+}
+
+.layer-item:last-child .merge-icon {
+  display : none;
 }
 
 .layer-item:hover {
