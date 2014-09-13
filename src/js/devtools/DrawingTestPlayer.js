@@ -101,6 +101,10 @@
     var screenCoordinates = pskl.app.drawingController.getScreenCoordinates(recordEvent.coords.x, recordEvent.coords.y);
     event.clientX = screenCoordinates.x;
     event.clientY = screenCoordinates.y;
+    if (pskl.utils.UserAgent.isMac && event.ctrlKey) {
+       event.metaKey = true;
+    }
+
     if (event.type == 'mousedown') {
       pskl.app.drawingController.onMousedown_(event);
     } else if (event.type == 'mouseup') {
