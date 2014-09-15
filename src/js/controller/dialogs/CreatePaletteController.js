@@ -120,14 +120,20 @@
   };
 
   ns.CreatePaletteController.prototype.onSubmitButtonClick_ = function (evt) {
-    this.paletteService.savePalette(this.palette);
+    this.saveAndSelectPalette_(this.palette);
     this.closeDialog();
   };
 
   ns.CreatePaletteController.prototype.onCloneButtonClick_ = function (evt) {
-    var palette = new pskl.model.Palette(pskl.utils.Uuid.generate(), this.palette.name, this.palette.colors);
-    this.paletteService.savePalette(palette);
+    var uuid = pskl.utils.Uuid.generate();
+    var palette = new pskl.model.Palette(uuid, this.palette.name, this.palette.colors);
+    this.saveAndSelectPalette_(palette);
     this.closeDialog();
+  };
+
+  ns.CreatePaletteController.prototype.saveAndSelectPalette_ = function (palette) {
+    this.paletteService.savePalette(palette);
+    pskl.UserSettings.set(pskl.UserSettings.SELECTED_PALETTE, palette.id);
   };
 
   ns.CreatePaletteController.prototype.onImportFileButtonClick_ = function () {

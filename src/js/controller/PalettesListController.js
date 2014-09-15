@@ -38,9 +38,10 @@
     $.subscribe(Events.CURRENT_COLORS_UPDATED, this.fillColorListContainer.bind(this));
     $.subscribe(Events.PRIMARY_COLOR_SELECTED, this.highlightSelectedColors.bind(this));
     $.subscribe(Events.SECONDARY_COLOR_SELECTED, this.highlightSelectedColors.bind(this));
+    $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
 
     this.fillPaletteList();
-    this.selectPaletteFromUserSettings();
+    this.updateFromUserSettings();
     this.fillColorListContainer();
   };
 
@@ -77,7 +78,7 @@
 
   ns.PalettesListController.prototype.getSelectedPaletteColors_ = function () {
     var colors = [];
-    var paletteId = this.colorPaletteSelect_.value;
+    var paletteId = pskl.UserSettings.get(pskl.UserSettings.SELECTED_PALETTE);
     if (paletteId === Constants.CURRENT_COLORS_PALETTE_ID) {
       colors = this.usedColorService.getCurrentColors();
     } else {
@@ -94,18 +95,25 @@
     return colors;
   };
 
-  ns.PalettesListController.prototype.selectPaletteFromUserSettings = function () {
-    this.selectPalette(pskl.UserSettings.get(pskl.UserSettings.SELECTED_PALETTE));
+  ns.PalettesListController.prototype.selectPalette = function (paletteId) {
+    pskl.UserSettings.set(pskl.UserSettings.SELECTED_PALETTE, paletteId);
   };
 
-  ns.PalettesListController.prototype.selectPalette = function (paletteId) {
+  ns.PalettesListController.prototype.onUserSettingsChange_ = function (evt, name, value) {
+    if (name == pskl.UserSettings.SELECTED_PALETTE) {
+      this.updateFromUserSettings();
+    }
+  };
+
+  ns.PalettesListController.prototype.updateFromUserSettings = function () {
+    var paletteId = pskl.UserSettings.get(pskl.UserSettings.SELECTED_PALETTE);
+    this.fillColorListContainer();
     this.colorPaletteSelect_.value = paletteId;
   };
 
   ns.PalettesListController.prototype.onPaletteSelected_ = function (evt) {
     var paletteId = this.colorPaletteSelect_.value;
-    pskl.UserSettings.set(pskl.UserSettings.SELECTED_PALETTE, paletteId);
-    this.fillColorListContainer();
+    this.selectPalette(paletteId);
   };
 
   ns.PalettesListController.prototype.onCreatePaletteClick_ = function (evt) {
@@ -191,7 +199,6 @@
 
   ns.PalettesListController.prototype.onPaletteListUpdated = function () {
     this.fillPaletteList();
-    this.selectPaletteFromUserSettings();
-    this.fillColorListContainer();
+    this.updateFromUserSettings();
   };
 })();

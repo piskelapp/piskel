@@ -65,7 +65,7 @@
 }
 
 .colors-list {
-  overflow : hidden;
+  overflow : auto;
   width : 280px;
 }
 

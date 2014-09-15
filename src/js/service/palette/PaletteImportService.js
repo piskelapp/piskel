@@ -9,7 +9,7 @@
   ns.PaletteImportService = function () {};
 
   ns.PaletteImportService.prototype.read = function (file, onSuccess, onError) {
-    var reader = this.getFileReader_(file, onSuccess, onError);
+    var reader = this.getReader_(file, onSuccess, onError);
     if (reader) {
       reader.read();
     } else {
@@ -21,20 +21,24 @@
     return file.type.indexOf('image') === 0;
   };
 
-  ns.PaletteImportService.prototype.getFileReader_ = function (file, onSuccess, onError) {
+  ns.PaletteImportService.prototype.getReader_ = function (file, onSuccess, onError) {
     var readerClass = this.getReaderClass_(file);
-
-    var reader = null;
     if (readerClass) {
-      reader = new readerClass(file, onSuccess, onError);
+      return new readerClass(file, onSuccess, onError);
+    } else {
+      return null;
     }
-
-    return reader;
   };
 
   ns.PaletteImportService.prototype.getReaderClass_ = function (file) {
-    var extension = this.getExtension_(file);
-    return fileReaders[extension];
+    var readerClass;
+    if (this.isImage_(file)) {
+      readerClass = ns.PaletteImageReader;
+    } else {
+      var extension = this.getExtension_(file);
+      readerClass = fileReaders[extension];
+    }
+    return readerClass;
   };
 
   ns.PaletteImportService.prototype.getExtension_ = function (file) {
