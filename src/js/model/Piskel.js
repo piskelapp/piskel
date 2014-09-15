@@ -73,6 +73,10 @@
     this.layers.push(layer);
   };
 
+  ns.Piskel.prototype.addLayerAt = function (layer, index) {
+    this.layers.splice(index, 0, layer);
+  };
+
   ns.Piskel.prototype.moveLayerUp = function (layer) {
     var index = this.layers.indexOf(layer);
     if (index > -1 && index < this.layers.length-1) {

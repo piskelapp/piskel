@@ -13,7 +13,8 @@
   </div>
   <script type="text/template" id="layer-item-template">
     <li class="layer-item {{isselected:current-layer-item}}" data-layer-index="{{layerindex}}">{{layername}}
-      <span class="action-icon edit-icon" title="edit name">&nbsp;</span>
+      <span class="action-icon edit-icon" title="Edit layer name" rel="tooltip" data-placement="top">&nbsp;</span>
+      <span class="action-icon merge-icon" title="Merge with layer below" rel="tooltip" data-placement="top">&nbsp;</span>
     </li>
   </script>
   <ul class="layers-list"></ul>

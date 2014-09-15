@@ -36,7 +36,7 @@ module.exports = function(grunt) {
     },
     'travis' : {
       suite : './test/casperjs/TravisTestSuite.js',
-      delay : 5000
+      delay : 10000
     }
   };
 

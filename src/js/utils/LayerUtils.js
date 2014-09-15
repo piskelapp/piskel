@@ -25,6 +25,18 @@
         frames.push(frame);
       }
       return frames;
+    },
+
+    mergeLayers : function (layerA, layerB) {
+      var framesA = layerA.getFrames();
+      var framesB = layerB.getFrames();
+      var mergedFrames = [];
+      framesA.forEach(function (frame, index) {
+        var otherFrame = framesB[index];
+        mergedFrames.push(pskl.utils.FrameUtils.merge([otherFrame, frame]));
+      });
+      var mergedLayer = pskl.model.Layer.fromFrames(layerA.getName(), mergedFrames);
+      return mergedLayer;
     }
   };
 

@@ -205,6 +205,18 @@
     }
   };
 
+  ns.PiskelController.prototype.mergeDownLayerAt = function (index) {
+    var layer = this.getLayerByIndex(index);
+    var downLayer = this.getLayerByIndex(index-1);
+    if (layer && downLayer) {
+      var mergedLayer = pskl.utils.LayerUtils.mergeLayers(layer, downLayer);
+      this.removeLayerAt(index);
+      this.piskel.addLayerAt(mergedLayer, index);
+      this.removeLayerAt(index-1);
+      this.selectLayer(mergedLayer);
+    }
+  };
+
   ns.PiskelController.prototype.generateLayerName_ = function () {
     var name = "Layer " + this.layerIdCounter;
     while (this.hasLayerForName_(name)) {
