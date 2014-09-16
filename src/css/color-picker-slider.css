@@ -82,7 +82,7 @@
   float:left;
   height : 10px;
   width : 100px;
-  margin: 7px 5px;
+  margin: 7px 1px 7px 8px;
 }
 
 .color-picker-slider input[type="text"]{

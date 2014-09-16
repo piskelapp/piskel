@@ -122,6 +122,7 @@
   "js/service/palette/PaletteService.js",
   "js/service/palette/PaletteTxtReader.js",
   "js/service/palette/PaletteGplReader.js",
+  "js/service/palette/PaletteGplWriter.js",
   "js/service/palette/PaletteImageReader.js",
   "js/service/palette/PaletteImportService.js",
   "js/service/SavedStatusService.js",

@@ -14,11 +14,25 @@
     pskl.app.shortcutService.addShortcut('shift+?', this.toggleCheatsheet_.bind(this));
     pskl.app.shortcutService.addShortcut('?', this.toggleCheatsheet_.bind(this));
 
+    document.body.addEventListener('click', this.onBodyClick_.bind(this));
+
     var link = $('.cheatsheet-link');
     link.click(this.toggleCheatsheet_.bind(this));
 
+
     $.subscribe(Events.TOGGLE_HELP, this.toggleCheatsheet_.bind(this));
     $.subscribe(Events.ESCAPE, this.onEscape_.bind(this));
+  };
+
+  ns.CheatsheetService.prototype.onBodyClick_ = function (event) {
+    if (this.isDisplayed_) {
+      var target = event.target;
+      var cheatsheetContainerEl = document.querySelector('.cheatsheet-container');
+      var isInCheatsheetContainer = pskl.utils.Dom.isParent(target, cheatsheetContainerEl);
+      if (!isInCheatsheetContainer) {
+        this.hideCheatsheet_();
+      }
+    }
   };
 
   ns.CheatsheetService.prototype.toggleCheatsheet_ = function () {

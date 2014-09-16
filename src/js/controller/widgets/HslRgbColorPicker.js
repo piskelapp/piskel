@@ -20,7 +20,8 @@
         showInput: true,
         showButtons: false,
         move : this.setColor.bind(this),
-        change : this.setColor.bind(this)
+        change : this.setColor.bind(this),
+        preferredFormat: 'hex'
     });
 
     this.setColor("#000000");

@@ -149,7 +149,16 @@
   };
 
   ns.PalettesListController.prototype.downloadSelectedPalette_ = function () {
-    window.alert('not implemented yet');
+    // getSelectedPalette
+    var paletteId = this.colorPaletteSelect_.value;
+    var palette = this.paletteService.getPaletteById(paletteId);
+
+    var paletteWriter = new pskl.service.palette.PaletteGplWriter(palette);
+    var paletteAsString = paletteWriter.write();
+
+    pskl.utils.BlobUtils.stringToBlob(paletteAsString, function(blob) {
+      pskl.utils.FileUtils.downloadAsFile(blob, palette.name + '.gpl');
+    }.bind(this), "application/json");
   };
 
   ns.PalettesListController.prototype.onColorContainerContextMenu = function (event) {
