@@ -110,6 +110,7 @@
   "js/controller/dialogs/DialogsController.js",
 
   // Widget controller
+  "js/controller/widgets/ColorsList.js",
   "js/controller/widgets/HslRgbColorPicker.js",
 
   // Services

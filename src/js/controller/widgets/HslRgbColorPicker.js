@@ -27,6 +27,11 @@
     this.setColor("#000000");
   };
 
+  ns.HslRgbColorPicker.prototype.destroy = function () {
+    this.container = null;
+    this.spectrumEl = null;
+  };
+
   ns.HslRgbColorPicker.prototype.onPickerChange_ = function (evt) {
     var target = evt.target;
 

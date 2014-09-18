@@ -16,6 +16,10 @@
     return this.colors;
   };
 
+  ns.Palette.prototype.setColors = function (colors) {
+    this.colors = colors;
+  };
+
   ns.Palette.prototype.get = function (index) {
     return this.colors[index];
   };

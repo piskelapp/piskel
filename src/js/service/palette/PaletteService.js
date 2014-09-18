@@ -52,8 +52,8 @@
 
   ns.PaletteService.prototype.savePalettes_ = function (palettes) {
     palettes = palettes.filter(function (palette) {
-      return palette instanceof pskl.model.Palette;
-    });
+      return this.dynamicPalettes.indexOf(palette) === -1;
+    }.bind(this));
     this.localStorageService.setItem('piskel.palettes', JSON.stringify(palettes));
     $.publish(Events.PALETTE_LIST_UPDATED);
   };
