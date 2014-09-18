@@ -73,7 +73,7 @@ describe("Palette Service", function() {
     expect(retrievedPalette.id).toBe(paletteId);
     expect(retrievedPalette.name).toBe(paletteName);
 
-    var colors = retrievedPalette.colors;
+    var colors = retrievedPalette.getColors();
     expect(Array.isArray(colors)).toBe(true);
     expect(colors.length).toBe(1);
 
@@ -97,7 +97,7 @@ describe("Palette Service", function() {
     expect(palettes.length).toBe(1);
 
     var retrievedPalette = paletteService.getPaletteById(paletteId);
-    var color = retrievedPalette.colors[0];
+    var color = retrievedPalette.get(0);
     expect(color).toBe(paletteColor2);
   });
 

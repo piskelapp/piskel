@@ -1,11 +1,6 @@
 (function () {
   var ns = $.namespace('pskl.controller.dialogs');
 
-  var MODE = {
-    CREATE : 'CREATE',
-    EDIT : 'EDIT'
-  };
-
   ns.CreatePaletteController = function (piskelController) {
     this.paletteService = pskl.app.paletteService;
     this.paletteImportService = pskl.app.paletteImportService;
@@ -23,34 +18,50 @@
     this.hiddenFileInput = document.querySelector('.create-palette-import-input');
     this.nameInput = document.querySelector('input[name="palette-name"]');
 
-    var submitButton = document.querySelector('.create-palette-submit');
-    var cloneButton = document.querySelector('.create-palette-clone');
-    var cancelButton = document.querySelector('.create-palette-cancel');
+    var buttonsContainer = document.querySelector('.create-palette-actions');
+    var deleteButton = document.querySelector('.create-palette-delete');
+    var downloadButton = document.querySelector('.create-palette-download-button');
     var importFileButton = document.querySelector('.create-palette-import-button');
 
     this.colorsList.addEventListener('click', this.onColorContainerClick_.bind(this));
     this.nameInput.addEventListener('input', this.onNameInputChange_.bind(this));
     this.hiddenFileInput.addEventListener('change', this.onFileInputChange_.bind(this));
 
-    submitButton.addEventListener('click', this.onSubmitButtonClick_.bind(this));
-    cloneButton.addEventListener('click', this.onCloneButtonClick_.bind(this));
-    cancelButton.addEventListener('click', this.closeDialog.bind(this));
+    buttonsContainer.addEventListener('click', this.onButtonClick_.bind(this));
+    downloadButton.addEventListener('click', this.onDownloadButtonClick_.bind(this));
     importFileButton.addEventListener('click', this.onImportFileButtonClick_.bind(this));
+
+    $('.colors-list').sortable({
+      placeholder: 'colors-list-drop-proxy',
+      update: this.onColorDrop_.bind(this),
+      items: '.create-palette-color'
+    });
 
     var colorPickerContainer = document.querySelector('.color-picker-container');
     this.hslRgbColorPicker = new pskl.controller.widgets.HslRgbColorPicker(colorPickerContainer, this.onColorUpdated_.bind(this));
     this.hslRgbColorPicker.init();
 
     var palette;
-    if (paletteId) {
+    var isCurrentColorsPalette = paletteId == Constants.CURRENT_COLORS_PALETTE_ID;
+    if (paletteId && !isCurrentColorsPalette) {
       var paletteObject = this.paletteService.getPaletteById(paletteId);
       palette = pskl.model.Palette.fromObject(paletteObject);
       importFileButton.style.display = 'none';
-      this.mode = MODE.EDIT;
+      this.setTitle('Edit Palette');
     } else {
-      palette = new pskl.model.Palette(pskl.utils.Uuid.generate(), 'New palette', ['#000000']);
-      cloneButton.style.display = 'none';
-      this.mode = MODE.CREATE;
+      if (isCurrentColorsPalette) {
+        var currentColorsPalette = this.paletteService.getPaletteById(Constants.CURRENT_COLORS_PALETTE_ID);
+        var colors = currentColorsPalette.getColors();
+        if (!colors.length) {
+          colors = ['#000000'];
+        }
+        palette = new pskl.model.Palette(pskl.utils.Uuid.generate(), 'Current colors clone', colors);
+      } else {
+        palette = new pskl.model.Palette(pskl.utils.Uuid.generate(), 'New palette', ['#000000']);
+      }
+      downloadButton.style.display = 'none';
+      deleteButton.style.display = 'none';
+      this.setTitle('Create Palette');
     }
 
     this.setPalette_(palette);
@@ -119,21 +130,34 @@
     this.selectColor_(this.palette.size()-1);
   };
 
-  ns.CreatePaletteController.prototype.onSubmitButtonClick_ = function (evt) {
-    this.saveAndSelectPalette_(this.palette);
-    this.closeDialog();
-  };
-
-  ns.CreatePaletteController.prototype.onCloneButtonClick_ = function (evt) {
-    var uuid = pskl.utils.Uuid.generate();
-    var palette = new pskl.model.Palette(uuid, this.palette.name, this.palette.colors);
-    this.saveAndSelectPalette_(palette);
-    this.closeDialog();
+  ns.CreatePaletteController.prototype.onButtonClick_ = function (evt) {
+    var target = evt.target;
+    if (target.dataset.action === 'submit') {
+      this.saveAndSelectPalette_(this.palette);
+      this.closeDialog();
+    } else if (target.dataset.action === 'cancel') {
+      this.closeDialog();
+    } else if (target.dataset.action === 'delete') {
+      if (window.confirm('Are you sure you want to delete palette ' + this.palette.name)) {
+        this.paletteService.deletePaletteById(this.palette.id);
+        pskl.UserSettings.set(pskl.UserSettings.SELECTED_PALETTE, Constants.CURRENT_COLORS_PALETTE_ID);
+        this.closeDialog();
+      }
+    }
   };
 
   ns.CreatePaletteController.prototype.saveAndSelectPalette_ = function (palette) {
     this.paletteService.savePalette(palette);
     pskl.UserSettings.set(pskl.UserSettings.SELECTED_PALETTE, palette.id);
+  };
+
+  ns.CreatePaletteController.prototype.onDownloadButtonClick_ = function () {
+    var paletteWriter = new pskl.service.palette.PaletteGplWriter(this.palette);
+    var paletteAsString = paletteWriter.write();
+
+    pskl.utils.BlobUtils.stringToBlob(paletteAsString, function(blob) {
+      pskl.utils.FileUtils.downloadAsFile(blob, this.palette.name + '.gpl');
+    }.bind(this), "application/json");
   };
 
   ns.CreatePaletteController.prototype.onImportFileButtonClick_ = function () {
@@ -164,13 +188,13 @@
   ns.CreatePaletteController.prototype.refresh_ = function () {
     var html = "";
     var tpl = pskl.utils.Template.get('create-palette-color-template');
-    var colors = this.palette.colors;
+    var colors = this.palette.getColors();
 
     colors.forEach(function (color, index) {
       var isSelected = (index === this.selectedIndex);
 
       html += pskl.utils.Template.replace(tpl, {
-        color:color, index:index,
+        'color':color, index:index,
         ':selected':isSelected,
         ':light-color':this.isLight_(color)
       });
@@ -179,12 +203,6 @@
     html += '<li class="create-palette-new-color">+</li>';
 
     this.colorsList.innerHTML = html;
-
-    $('.colors-list').sortable({
-      placeholder: 'colors-list-drop-proxy',
-      update: this.onDrop_.bind(this),
-      items: '.create-palette-color'
-    });
   };
 
   ns.CreatePaletteController.prototype.isLight_ = function (color) {
@@ -193,7 +211,7 @@
   };
 
 
-  ns.CreatePaletteController.prototype.onDrop_ = function (evt, drop) {
+  ns.CreatePaletteController.prototype.onColorDrop_ = function (evt, drop) {
     var colorElement = drop.item.get(0);
 
     var oldIndex = parseInt(colorElement.dataset.paletteIndex, 10);

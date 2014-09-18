@@ -1,7 +1,7 @@
 (function () {
   var ns = $.namespace('pskl.service.palette');
 
-  var RE_COLOR_LINE = /^(\d{1,3}\s+)(\d{1,3}\s+)(\d{1,3}\s+)/;
+  var RE_COLOR_LINE = /^(\s*\d{1,3})(\s*\d{1,3})(\s*\d{1,3})/;
   var RE_EXTRACT_NAME = /^name\s*\:\s*(.*)$/i;
 
   ns.PaletteGplReader = function (file, onSuccess, onError) {

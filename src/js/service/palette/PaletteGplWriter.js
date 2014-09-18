@@ -1,10 +1,8 @@
 (function () {
   var ns = $.namespace('pskl.service.palette');
 
-  ns.PaletteGplWriter = function (palette, onSuccess, onError) {
+  ns.PaletteGplWriter = function (palette) {
     this.palette = palette;
-    this.onSuccess = onSuccess;
-    this.onError = onError;
   };
 
   ns.PaletteGplWriter.prototype.write = function () {
@@ -13,7 +11,7 @@
     lines.push('Name: ' + this.palette.name);
     lines.push('Columns: 0');
     lines.push('#');
-    this.palette.colors.forEach(function (color) {
+    this.palette.getColors().forEach(function (color) {
       lines.push(this.writeColorLine(color));
     }.bind(this));
     lines.push('\r\n');
@@ -35,24 +33,8 @@
 
   ns.PaletteGplWriter.prototype.padString = function (str, size) {
     str = str.toString();
-    for (var i = 0 ; i < size-str.length ; i++) {
-      str = ' ' + str;
-    }
-    return str;
+    var pad = (new Array(1+size-str.length)).join(' ');
+    return pad + str;
   };
 
 })();
-
-// GIMP Palette
-// Name: Fabric_jeans
-// Columns: 0
-// #
-// 194 198 201 Untitled
-// 173 180 194 Untitled
-// 123 126 145 Untitled
-//  91 136 195 Untitled
-//  41  52  74 Untitled
-//  20  25  37 Untitled
-// 164 156 145 Untitled
-// 103  92  82 Untitled
-//  87  58 107 Untitled

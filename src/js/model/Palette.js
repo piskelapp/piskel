@@ -12,6 +12,10 @@
     return new ns.Palette(paletteObj.id, paletteObj.name, colors);
   };
 
+  ns.Palette.prototype.getColors = function () {
+    return this.colors;
+  };
+
   ns.Palette.prototype.get = function (index) {
     return this.colors[index];
   };

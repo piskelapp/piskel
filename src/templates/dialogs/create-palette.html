@@ -12,6 +12,10 @@
             type="button"
             rel="tooltip" data-placement="right" title="Import palette from an existing Image or from a palette file"
             class="button  button-primary create-palette-import-button">Import from file</button>
+          <button
+            type="button"
+            rel="tooltip" data-placement="right" title="Download the palette as a GPL file"
+            class="button  button-primary create-palette-download-button">Download as file</button>
           <input style="display:none"
             class="create-palette-import-input"
             type="file" value="file" accept="*"/>
@@ -56,9 +60,10 @@
         </div>
       </div>
       <div class="create-palette-actions">
-        <button type="button" name="create-palette-cancel" class="button create-palette-cancel">Cancel</button>
-        <button type="button" name="create-palette-clone" class="button button-primary create-palette-clone">Save as new</button>
-        <button type="button" name="create-palette-submit" class="button button-primary create-palette-submit">Save</button>
+        <button type="button" name="create-palette-cancel" data-action="cancel" class="button create-palette-cancel">Cancel</button>
+        <button type="button" name="create-palette-delete" data-action="delete" class="button button-primary create-palette-delete">Delete</button>
+        <!-- <button type="button" name="create-palette-clone" class="button button-primary create-palette-clone">Save as new</button> -->
+        <button type="button" name="create-palette-submit" data-action="submit" class="button button-primary create-palette-submit">Save</button>
       </div>
   </div>
 

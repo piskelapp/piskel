@@ -16,4 +16,11 @@
     $.publish(Events.DIALOG_HIDE);
   };
 
+  ns.AbstractDialogController.prototype.setTitle = function (title) {
+    var dialogHead = document.querySelector('.dialog-head');
+    if (dialogHead) {
+      dialogHead.innerText = title;
+    }
+  };
+
 })();

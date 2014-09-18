@@ -24,15 +24,14 @@
     this.colorPaletteSelect_ = document.querySelector('.palettes-list-select');
 
     var createPaletteButton_ = document.querySelector('.create-palette-button');
-    var paletteActions = document.querySelector('.palette-actions');
+    var editPaletteButton_ = document.querySelector('.edit-palette-button');
 
     this.colorPaletteSelect_.addEventListener('change', this.onPaletteSelected_.bind(this));
     this.colorListContainer_.addEventListener('mouseup', this.onColorContainerMouseup.bind(this));
     this.colorListContainer_.addEventListener('contextmenu', this.onColorContainerContextMenu.bind(this));
 
     createPaletteButton_.addEventListener('click', this.onCreatePaletteClick_.bind(this));
-    paletteActions.addEventListener('click', this.onPaletteActionsClick_.bind(this));
-
+    editPaletteButton_.addEventListener('click', this.onEditPaletteClick_.bind(this));
 
     $.subscribe(Events.PALETTE_LIST_UPDATED, this.onPaletteListUpdated.bind(this));
     $.subscribe(Events.CURRENT_COLORS_UPDATED, this.fillColorListContainer.bind(this));
@@ -46,11 +45,7 @@
   };
 
   ns.PalettesListController.prototype.fillPaletteList = function () {
-    var palettes = [{
-      id : Constants.CURRENT_COLORS_PALETTE_ID,
-      name : 'Current colors'
-    }];
-    palettes = palettes.concat(this.paletteService.getPalettes());
+    var palettes = this.paletteService.getPalettes();
 
     var html = palettes.map(function (palette) {
       return pskl.utils.Template.replace('<option value="{{id}}">{{name}}</option>', palette);
@@ -79,13 +74,9 @@
   ns.PalettesListController.prototype.getSelectedPaletteColors_ = function () {
     var colors = [];
     var paletteId = pskl.UserSettings.get(pskl.UserSettings.SELECTED_PALETTE);
-    if (paletteId === Constants.CURRENT_COLORS_PALETTE_ID) {
-      colors = this.usedColorService.getCurrentColors();
-    } else {
-      var palette = this.paletteService.getPaletteById(paletteId);
-      if (palette) {
-        colors = palette.colors;
-      }
+    var palette = this.paletteService.getPaletteById(paletteId);
+    if (palette) {
+      colors = palette.getColors();
     }
 
     if (colors.length > Constants.MAX_CURRENT_COLORS_DISPLAYED) {
@@ -120,45 +111,12 @@
     $.publish(Events.DIALOG_DISPLAY, 'create-palette');
   };
 
-  ns.PalettesListController.prototype.onPaletteActionsClick_ = function (evt) {
-    var classList = evt.target.classList;
-    if (classList.contains('palette-action-edit')) {
-      this.editSelectedPalette_();
-    } else if (classList.contains('palette-action-delete')) {
-      this.deleteSelectedPalette_();
-    } else if (classList.contains('palette-action-download')) {
-      this.downloadSelectedPalette_();
-    }
-  };
-
-  ns.PalettesListController.prototype.editSelectedPalette_ = function () {
+  ns.PalettesListController.prototype.onEditPaletteClick_ = function (evt) {
     var paletteId = this.colorPaletteSelect_.value;
     $.publish(Events.DIALOG_DISPLAY, {
       dialogId : 'create-palette',
       initArgs : paletteId
     });
-  };
-
-  ns.PalettesListController.prototype.deleteSelectedPalette_ = function () {
-    var paletteId = this.colorPaletteSelect_.value;
-    var palette = this.paletteService.getPaletteById(paletteId);
-    if (window.confirm('Are you sure you want to delete palette ' + palette.name)) {
-      this.paletteService.deletePaletteById(palette.id);
-      this.selectPalette(Constants.CURRENT_COLORS_PALETTE_ID);
-    }
-  };
-
-  ns.PalettesListController.prototype.downloadSelectedPalette_ = function () {
-    // getSelectedPalette
-    var paletteId = this.colorPaletteSelect_.value;
-    var palette = this.paletteService.getPaletteById(paletteId);
-
-    var paletteWriter = new pskl.service.palette.PaletteGplWriter(palette);
-    var paletteAsString = paletteWriter.write();
-
-    pskl.utils.BlobUtils.stringToBlob(paletteAsString, function(blob) {
-      pskl.utils.FileUtils.downloadAsFile(blob, palette.name + '.gpl');
-    }.bind(this), "application/json");
   };
 
   ns.PalettesListController.prototype.onColorContainerContextMenu = function (event) {

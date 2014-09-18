@@ -31,12 +31,25 @@
     for (var i = 0; i < files.length ; i++) {
       var file = files[i];
       var isImage = file.type.indexOf('image') === 0;
+      var isPiskel = /\.piskel$/i.test(file.name);
+      var isPalette = /\.(gpl|txt)$/i.test(file.name);
       if (isImage) {
         this.readImageFile_(file);
-      } else if (/\.piskel$/i.test(file.name)) {
+      } else if (isPiskel) {
         pskl.utils.PiskelFileUtils.loadFromFile(file, this.onPiskelFileLoaded_);
+      } else if (isPalette) {
+        pskl.app.paletteImportService.read(file, this.onPaletteLoaded_.bind(this));
       }
     }
+  };
+
+  ns.FileDropperService.prototype.readImageFile_ = function (imageFile) {
+    pskl.utils.FileUtils.readFile(imageFile, this.processImageSource_.bind(this));
+  };
+
+  ns.FileDropperService.prototype.onPaletteLoaded_ = function (palette) {
+    pskl.app.paletteService.savePalette(palette);
+    pskl.UserSettings.set(pskl.UserSettings.SELECTED_PALETTE, palette.id);
   };
 
   ns.FileDropperService.prototype.onPiskelFileLoaded_ = function (piskel, descriptor, fps) {
@@ -45,10 +58,6 @@
       pskl.app.piskelController.setPiskel(piskel);
       pskl.app.animationController.setFPS(fps);
     }
-  };
-
-  ns.FileDropperService.prototype.readImageFile_ = function (imageFile) {
-    pskl.utils.FileUtils.readFile(imageFile, this.processImageSource_.bind(this));
   };
 
   ns.FileDropperService.prototype.processImageSource_ = function (imageSource) {

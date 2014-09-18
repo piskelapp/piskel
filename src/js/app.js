@@ -40,6 +40,7 @@
 
       this.paletteImportService = new pskl.service.palette.PaletteImportService();
       this.paletteService = new pskl.service.palette.PaletteService();
+      this.paletteService.addDynamicPalette(new pskl.service.palette.CurrentColorsPalette());
 
       this.paletteController = new pskl.controller.PaletteController();
       this.paletteController.init();

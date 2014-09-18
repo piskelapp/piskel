@@ -5,10 +5,20 @@
   background-position: 50%;
 }
 
-.action-icon.edit-icon {
+.edit-icon {
   background-image: url('../img/tools/pen.png');
+  background-repeat: no-repeat;
 }
 
-.action-icon.merge-icon {
+.merge-icon {
   background-image: url('../img/merge-icon.png');
+  background-repeat: no-repeat;
+}
+
+.plus-icon {
+  font-size:15px;
+  text-align:center;
+}
+
+.delete-icon {
 }

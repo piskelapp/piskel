@@ -65,8 +65,11 @@
 }
 
 .colors-list {
-  overflow : auto;
-  width : 280px;
+  overflow: auto;
+  width: 280px;
+  box-sizing: border-box;
+  height: 100%;
+  padding-bottom: 10px;
 }
 
 .create-palette-color, .create-palette-new-color, .colors-list-drop-proxy{

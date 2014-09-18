@@ -60,23 +60,43 @@
   border-left-color: transparent;
 }
 
-.palette-action {
-  width : 18px;
-  height : 18px;
-  line-height : 16px;
-
-  text-align:center;
-  float : right;
-  font-size : 12px;
-  border: 1px solid gold;
-  border-radius : 2px;
-  box-sizing : border-box;
-  margin : 3px 3px 3px 0;
-
-  cursor : pointer;
-  transition : color 0.3s;
+.palettes-list-actions {
+  background-color: #3f3f3f;
+  border-bottom-color: #222;
+  height: 24px;
+  padding: 0;
+  overflow: hidden;
 }
 
-.palette-action:hover {
-  color : gold;
+.palettes-list-button {
+  margin: 0;
+  width: 36px;
+  float: left;
+}
+
+.palettes-list-select {
+  float: left;
+  width: 66.66667%;
+  height: 100%;
+
+  margin: 0;
+  padding: 0 5px 0 5px;
+
+  background: #3f3f3f;
+
+  border-style : solid;
+  border-top-color: #666;
+  border-bottom-color: #222;
+  border-width: 1px 0 1px 0;
+
+  color: white;
+}
+
+.palettes-list-select:focus {
+  outline:none;
+}
+
+.palettes-list-actions .edit-icon {
+  background-size : 15px;
+  background-position : 50%;
 }
