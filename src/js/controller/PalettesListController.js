@@ -54,20 +54,25 @@
   };
 
   ns.PalettesListController.prototype.fillColorListContainer = function () {
+
     var colors = this.getSelectedPaletteColors_();
 
-    var html = colors.map(function (color) {
-      return pskl.utils.Template.replace(this.paletteColorTemplate_, {color : color});
-    }.bind(this)).join('');
-    this.colorListContainer_.innerHTML = html;
+    if (colors.length > 0) {
+      var html = colors.map(function (color) {
+        return pskl.utils.Template.replace(this.paletteColorTemplate_, {color : color});
+      }.bind(this)).join('');
+      this.colorListContainer_.innerHTML = html;
 
-    this.highlightSelectedColors();
+      this.highlightSelectedColors();
 
-    var hasScrollbar = colors.length > NO_SCROLL_MAX_COLORS;
-    if (hasScrollbar && !pskl.utils.UserAgent.isChrome) {
-      this.colorListContainer_.classList.add(HAS_SCROLL_CLASSNAME);
+      var hasScrollbar = colors.length > NO_SCROLL_MAX_COLORS;
+      if (hasScrollbar && !pskl.utils.UserAgent.isChrome) {
+        this.colorListContainer_.classList.add(HAS_SCROLL_CLASSNAME);
+      } else {
+        this.colorListContainer_.classList.remove(HAS_SCROLL_CLASSNAME);
+      }
     } else {
-      this.colorListContainer_.classList.remove(HAS_SCROLL_CLASSNAME);
+      this.colorListContainer_.innerHTML = pskl.utils.Template.get('palettes-list-no-colors-partial');
     }
   };
 
@@ -105,6 +110,7 @@
   ns.PalettesListController.prototype.onPaletteSelected_ = function (evt) {
     var paletteId = this.colorPaletteSelect_.value;
     this.selectPalette(paletteId);
+    this.colorPaletteSelect_.blur();
   };
 
   ns.PalettesListController.prototype.onCreatePaletteClick_ = function (evt) {

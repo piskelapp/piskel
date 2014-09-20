@@ -77,11 +77,6 @@
   color: gold;
 }
 
-.layers-button-arrow {
-  font-family : 'Lucida Grande', Calibri;
-  padding : 2px 6px 0 6px;
-}
-
 .layers-button-container {
   overflow : hidden;
 }

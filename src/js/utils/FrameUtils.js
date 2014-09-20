@@ -108,15 +108,22 @@
     createFromImage : function (image) {
       var w = image.width,
         h = image.height;
+      var imgData = pskl.utils.FrameUtils.imageToImageData(image);
+      var grid = pskl.utils.FrameUtils.imageDataToGrid(imgData,w, h, Constants.TRANSPARENT_COLOR);
+      return pskl.model.Frame.fromGrid(grid);
+    },
+
+    imageToImageData : function (image) {
+      var w = image.width,
+        h = image.height;
       var canvas = pskl.CanvasUtils.createCanvas(w, h);
       var context = canvas.getContext('2d');
 
       context.drawImage(image, 0,0,w,h,0,0,w,h);
-      var imgData = context.getImageData(0,0,w,h).data;
-      return pskl.utils.FrameUtils.createFromImageData(imgData, w, h);
+      return context.getImageData(0,0,w,h).data;
     },
 
-    createFromImageData : function (imageData, width, height) {
+    imageDataToGrid : function (imageData, width, height, transparent) {
       // Draw the zoomed-up pixels to a different canvas context
       var grid = [];
       for (var x = 0 ; x < width ; x++){
@@ -129,13 +136,13 @@
           var b = imageData[i+2];
           var a = imageData[i+3];
           if (a < 125) {
-            grid[x][y] = Constants.TRANSPARENT_COLOR;
+            grid[x][y] = transparent;
           } else {
             grid[x][y] = pskl.utils.FrameUtils.rgbToHex(r,g,b);
           }
         }
       }
-      return pskl.model.Frame.fromPixelGrid(grid);
+      return grid;
     },
 
     /**

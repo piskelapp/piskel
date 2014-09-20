@@ -17,9 +17,9 @@
   };
 
   ns.AbstractDialogController.prototype.setTitle = function (title) {
-    var dialogHead = document.querySelector('.dialog-head');
-    if (dialogHead) {
-      dialogHead.innerText = title;
+    var dialogTitle = document.querySelector('.dialog-title');
+    if (dialogTitle) {
+      dialogTitle.innerText = title;
     }
   };
 

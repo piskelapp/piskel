@@ -5,11 +5,11 @@
   </h3>
   <div class="palettes-list-actions">
     <button
-      class="button palettes-list-button create-palette-button plus-icon" data-action="add"
-      title="Create a new palette" rel="tooltip" data-placement="top" >+</button>
-    <select class="palettes-list-select"></select>
+      class="button palettes-list-button create-palette-button piskel-icon-plus" data-action="add"
+      title="Create a new palette" rel="tooltip" data-placement="top" ></button>
+    <select class="button palettes-list-select"></select>
     <button
-      class="button palettes-list-button edit-palette-button edit-icon" data-action="edit"
+      class="button palettes-list-button edit-palette-button  piskel-icon-pencil" data-action="edit"
       title="Manage this palette" rel="tooltip" data-placement="top"></button>
   </div>
   <div class="palettes-list-colors"></div>
@@ -18,6 +18,13 @@
       <div data-color="{{color}}" style="background:{{color}}"></div>
     </div>
   </script>
+
+  <script type="text/template" id="palettes-list-no-colors-partial">
+    <div class="palettes-list-no-colors">
+      No color in the selected palette ...
+    </div>
+  </script>
+
 </div>
 
 

@@ -163,6 +163,9 @@
   "js/devtools/TestRecordController.js",
   "js/devtools/init.js",
 
+  // Workers
+  "js/worker/ImageProcessor.js",
+
   // Application controller and initialization
   "js/app.js",
   // Bonus features !!

@@ -111,8 +111,14 @@
   ns.CreatePaletteController.prototype.onFileInputChange_ = function (evt) {
     var files = this.hiddenFileInput.files;
     if (files.length == 1) {
-      this.paletteImportService.read(files[0], this.setPalette_.bind(this));
+      this.paletteImportService.read(files[0], this.setPalette_.bind(this), this.displayErrorMessage_.bind(this));
     }
+  };
+
+  ns.CreatePaletteController.prototype.displayErrorMessage_ = function (message) {
+    message = "Could not import palette : " + message;
+    $.publish(Events.SHOW_NOTIFICATION, [{"content": message}]);
+    window.setTimeout($.publish.bind($, Events.HIDE_NOTIFICATION), 2000);
   };
 
   ns.CreatePaletteController.prototype.onNameInputChange_ = function (evt) {
