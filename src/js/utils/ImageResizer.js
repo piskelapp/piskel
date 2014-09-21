@@ -3,12 +3,12 @@
 
   ns.ImageResizer = {
     resize : function (image, targetWidth, targetHeight, smoothingEnabled) {
-      var canvas = pskl.CanvasUtils.createCanvas(targetWidth, targetHeight);
+      var canvas = pskl.utils.CanvasUtils.createCanvas(targetWidth, targetHeight);
       var context = canvas.getContext('2d');
       context.save();
 
       if (!smoothingEnabled) {
-        pskl.CanvasUtils.disableImageSmoothing(canvas);
+        pskl.utils.CanvasUtils.disableImageSmoothing(canvas);
       }
 
       context.translate(canvas.width / 2, canvas.height / 2);
@@ -34,10 +34,10 @@
      */
     resizeNearestNeighbour : function (source, zoom, margin, marginColor) {
       margin = margin || 0;
-      var canvas = pskl.CanvasUtils.createCanvas(zoom*source.width, zoom*source.height);
+      var canvas = pskl.utils.CanvasUtils.createCanvas(zoom*source.width, zoom*source.height);
       var context = canvas.getContext('2d');
 
-      var imgData = pskl.CanvasUtils.getImageDataFromCanvas(source);
+      var imgData = pskl.utils.CanvasUtils.getImageDataFromCanvas(source);
 
       var yRanges = {},
         xOffset = 0,

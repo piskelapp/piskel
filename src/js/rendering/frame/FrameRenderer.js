@@ -70,8 +70,8 @@
   };
 
   ns.FrameRenderer.prototype.clear = function () {
-    pskl.CanvasUtils.clear(this.canvas);
-    pskl.CanvasUtils.clear(this.displayCanvas);
+    pskl.utils.CanvasUtils.clear(this.canvas);
+    pskl.utils.CanvasUtils.clear(this.displayCanvas);
   };
 
   ns.FrameRenderer.prototype.setZoom = function (zoom) {
@@ -153,8 +153,8 @@
     var height = this.displayHeight;
     var width = this.displayWidth;
 
-    this.displayCanvas = pskl.CanvasUtils.createCanvas(width, height, this.classes);
-    pskl.CanvasUtils.disableImageSmoothing(this.displayCanvas);
+    this.displayCanvas = pskl.utils.CanvasUtils.createCanvas(width, height, this.classes);
+    pskl.utils.CanvasUtils.disableImageSmoothing(this.displayCanvas);
     this.container.append(this.displayCanvas);
   };
 
@@ -223,7 +223,7 @@
    */
   ns.FrameRenderer.prototype.renderFrame_ = function (frame) {
     if (!this.canvas || frame.getWidth() != this.canvas.width || frame.getHeight() != this.canvas.height) {
-      this.canvas = pskl.CanvasUtils.createCanvas(frame.getWidth(), frame.getHeight());
+      this.canvas = pskl.utils.CanvasUtils.createCanvas(frame.getWidth(), frame.getHeight());
     }
 
     var context = this.canvas.getContext('2d');

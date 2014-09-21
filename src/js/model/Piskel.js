@@ -33,7 +33,7 @@
    */
   ns.Piskel.fromLayers = function (layers, descriptor) {
     var piskel = null;
-    if (layers.length > 0 && layers[0].length() > 0) {
+    if (layers.length > 0 && layers[0].size() > 0) {
       var sampleFrame = layers[0].getFrameAt(0);
       piskel = new pskl.model.Piskel(sampleFrame.getWidth(), sampleFrame.getHeight(), descriptor);
       layers.forEach(piskel.addLayer.bind(piskel));

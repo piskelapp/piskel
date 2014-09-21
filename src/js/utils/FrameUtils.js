@@ -2,6 +2,14 @@
   var ns = $.namespace('pskl.utils');
   var colorCache = {};
   ns.FrameUtils = {
+    toImage : function (frame, zoom, bgColor) {
+      zoom = zoom || 1;
+      bgColor = bgColor || Constants.TRANSPARENT_COLOR;
+      var canvasRenderer = new pskl.rendering.CanvasRenderer(frame, zoom);
+      canvasRenderer.drawTransparentAs(bgColor);
+      return canvasRenderer.render();
+    },
+
     merge : function (frames) {
       var merged = null;
       if (frames.length) {
@@ -28,6 +36,66 @@
       return pskl.utils.FrameUtils.createFromImage(resizedImage);
     },
 
+    /*
+     * Create a pskl.model.Frame from an Image object.
+     * Transparent pixels will either be converted to completely opaque or completely transparent pixels.
+     * @param  {Image} image source image
+     * @return {pskl.model.Frame} corresponding frame
+     */
+    createFromImage : function (image) {
+      var w = image.width,
+        h = image.height;
+      var canvas = pskl.utils.CanvasUtils.createCanvas(w, h);
+      var context = canvas.getContext('2d');
+
+      context.drawImage(image, 0,0,w,h,0,0,w,h);
+      var imgData = context.getImageData(0,0,w,h).data;
+      return pskl.utils.FrameUtils.createFromImageData_(imgData, w, h);
+    },
+
+    createFromImageData_ : function (imageData, width, height) {
+      // Draw the zoomed-up pixels to a different canvas context
+      var grid = [];
+      for (var x = 0 ; x < width ; x++){
+        grid[x] = [];
+        for (var y = 0 ; y < height ; y++){
+          // Find the starting index in the one-dimensional image data
+          var i = (y * width + x)*4;
+          var r = imageData[i  ];
+          var g = imageData[i+1];
+          var b = imageData[i+2];
+          var a = imageData[i+3];
+          if (a < 125) {
+            grid[x][y] = Constants.TRANSPARENT_COLOR;
+          } else {
+            grid[x][y] = pskl.utils.FrameUtils.rgbToHex_(r,g,b);
+          }
+        }
+      }
+      return pskl.model.Frame.fromPixelGrid(grid);
+    },
+
+    /**
+     * Convert a rgb(Number, Number, Number) color to hexadecimal representation
+     * @param  {Number} r red value, between 0 and 255
+     * @param  {Number} g green value, between 0 and 255
+     * @param  {Number} b blue value, between 0 and 255
+     * @return {String} hex representation of the color '#ABCDEF'
+     */
+    rgbToHex_ : function (r, g, b) {
+      return "#" + this.componentToHex_(r) + this.componentToHex_(g) + this.componentToHex_(b);
+    },
+
+    /**
+     * Convert a color component (as a Number between 0 and 255) to its string hexa representation
+     * @param  {Number} c component value, between 0 and 255
+     * @return {String} eg. '0A'
+     */
+    componentToHex_ : function (c) {
+      var hex = c.toString(16);
+      return hex.length == 1 ? "0" + hex : hex;
+    },
+
     /**
      * Alpha compositing using porter duff algorithm :
      * http://en.wikipedia.org/wiki/Alpha_compositing
@@ -36,9 +104,9 @@
      * @param  {String} strColor2 color under
      * @return {String} the composite color
      */
-    mergePixels : function (strColor1, strColor2, globalOpacity1) {
-      var col1 = pskl.utils.FrameUtils.toRgba(strColor1);
-      var col2 = pskl.utils.FrameUtils.toRgba(strColor2);
+    mergePixels_ : function (strColor1, strColor2, globalOpacity1) {
+      var col1 = pskl.utils.FrameUtils.toRgba_(strColor1);
+      var col2 = pskl.utils.FrameUtils.toRgba_(strColor2);
       if (typeof globalOpacity1 == 'number') {
         col1 = JSON.parse(JSON.stringify(col1));
         col1.a = globalOpacity1 * col1.a;
@@ -58,7 +126,7 @@
      * @param  {String} c color as a string
      * @return {Object} {r:Number,g:Number,b:Number,a:Number}
      */
-    toRgba : function (c) {
+    toRgba_ : function (c) {
       if (colorCache[c]) {
         return colorCache[c];
       }
@@ -97,81 +165,6 @@
       }
       colorCache[c] = color;
       return color;
-    },
-
-    /*
-     * Create a pskl.model.Frame from an Image object.
-     * Transparent pixels will either be converted to completely opaque or completely transparent pixels.
-     * @param  {Image} image source image
-     * @return {pskl.model.Frame} corresponding frame
-     */
-    createFromImage : function (image) {
-      var w = image.width,
-        h = image.height;
-      var imgData = pskl.utils.FrameUtils.imageToImageData(image);
-      var grid = pskl.utils.FrameUtils.imageDataToGrid(imgData,w, h, Constants.TRANSPARENT_COLOR);
-      return pskl.model.Frame.fromGrid(grid);
-    },
-
-    imageToImageData : function (image) {
-      var w = image.width,
-        h = image.height;
-      var canvas = pskl.CanvasUtils.createCanvas(w, h);
-      var context = canvas.getContext('2d');
-
-      context.drawImage(image, 0,0,w,h,0,0,w,h);
-      return context.getImageData(0,0,w,h).data;
-    },
-
-    imageDataToGrid : function (imageData, width, height, transparent) {
-      // Draw the zoomed-up pixels to a different canvas context
-      var grid = [];
-      for (var x = 0 ; x < width ; x++){
-        grid[x] = [];
-        for (var y = 0 ; y < height ; y++){
-          // Find the starting index in the one-dimensional image data
-          var i = (y * width + x)*4;
-          var r = imageData[i  ];
-          var g = imageData[i+1];
-          var b = imageData[i+2];
-          var a = imageData[i+3];
-          if (a < 125) {
-            grid[x][y] = transparent;
-          } else {
-            grid[x][y] = pskl.utils.FrameUtils.rgbToHex(r,g,b);
-          }
-        }
-      }
-      return grid;
-    },
-
-    /**
-     * Convert a rgb(Number, Number, Number) color to hexadecimal representation
-     * @param  {Number} r red value, between 0 and 255
-     * @param  {Number} g green value, between 0 and 255
-     * @param  {Number} b blue value, between 0 and 255
-     * @return {String} hex representation of the color '#ABCDEF'
-     */
-    rgbToHex : function (r, g, b) {
-      return "#" + this.componentToHex(r) + this.componentToHex(g) + this.componentToHex(b);
-    },
-
-    /**
-     * Convert a color component (as a Number between 0 and 255) to its string hexa representation
-     * @param  {Number} c component value, between 0 and 255
-     * @return {String} eg. '0A'
-     */
-    componentToHex : function (c) {
-      var hex = c.toString(16);
-      return hex.length == 1 ? "0" + hex : hex;
-    },
-
-    toImage : function (frame, zoom, bgColor) {
-      zoom = zoom || 1;
-      bgColor = bgColor || Constants.TRANSPARENT_COLOR;
-      var canvasRenderer = new pskl.rendering.CanvasRenderer(frame, zoom);
-      canvasRenderer.drawTransparentAs(bgColor);
-      return canvasRenderer.render();
     }
   };
 })();

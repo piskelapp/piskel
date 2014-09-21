@@ -1,13 +1,13 @@
 (function () {
-  var ns = $.namespace("pskl");
+  var ns = $.namespace('pskl.utils');
 
   ns.CanvasUtils = {
     createCanvas : function (width, height, classList) {
-      var canvas = document.createElement("canvas");
-      canvas.setAttribute("width", width);
-      canvas.setAttribute("height", height);
+      var canvas = document.createElement('canvas');
+      canvas.setAttribute('width', width);
+      canvas.setAttribute('height', height);
 
-      if (typeof classList == "string") {
+      if (typeof classList == 'string') {
         classList = [classList];
       }
       if (Array.isArray(classList)) {
@@ -20,14 +20,14 @@
     },
 
     createFromImageData : function (imageData) {
-      var canvas = pskl.CanvasUtils.createCanvas(imageData.width, imageData.height);
+      var canvas = pskl.utils.CanvasUtils.createCanvas(imageData.width, imageData.height);
       var context = canvas.getContext('2d');
       context.putImageData(imageData, 0, 0);
       return canvas;
     },
 
     createFromImage : function (image) {
-      var canvas = pskl.CanvasUtils.createCanvas(image.width, image.height);
+      var canvas = pskl.utils.CanvasUtils.createCanvas(image.width, image.height);
       var context = canvas.getContext('2d');
       context.drawImage(image, 0, 0);
       return canvas;
@@ -51,12 +51,12 @@
 
     clear : function (canvas) {
       if (canvas) {
-        canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
+        canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
       }
     },
 
     clone : function (canvas) {
-      var clone = pskl.CanvasUtils.createCanvas(canvas.width, canvas.height);
+      var clone = pskl.utils.CanvasUtils.createCanvas(canvas.width, canvas.height);
 
       //apply the old canvas to the new one
       clone.getContext('2d').drawImage(canvas, 0, 0);
@@ -71,8 +71,8 @@
     },
 
     getBase64FromCanvas : function (canvas, format) {
-      format = format || "png";
-      var data = canvas.toDataURL("image/" + format);
+      format = format || 'png';
+      var data = canvas.toDataURL('image/' + format);
       return data.substr(data.indexOf(',')+1);
     }
   };

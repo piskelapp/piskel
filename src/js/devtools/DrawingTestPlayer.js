@@ -47,7 +47,7 @@
     var then = function () {};
 
     image.onload = function () {
-      this.referencePng = pskl.CanvasUtils.createFromImage(image).toDataURL();
+      this.referencePng = pskl.utils.CanvasUtils.createFromImage(image).toDataURL();
       then();
     }.bind(this);
     image.src = this.referencePng;

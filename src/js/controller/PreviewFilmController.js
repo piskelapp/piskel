@@ -218,7 +218,7 @@
   };
 
   ns.PreviewFilmController.prototype.clonePreviewCanvas_ = function (canvas) {
-    var clone = pskl.CanvasUtils.clone(canvas);
+    var clone = pskl.utils.CanvasUtils.clone(canvas);
     clone.classList.add('tile-view', 'canvas');
     return clone;
   };

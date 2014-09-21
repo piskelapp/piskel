@@ -56,7 +56,7 @@
     if (this.frames[index]) {
       this.frames.splice(index, 1);
     } else {
-      throw 'Invalid index in removeFrameAt : ' + index + ' (size : ' + this.length() + ')';
+      throw 'Invalid index in removeFrameAt : ' + index + ' (size : ' + this.size() + ')';
     }
   };
 
@@ -93,7 +93,7 @@
     }
   };
 
-  ns.Layer.prototype.length = function () {
+  ns.Layer.prototype.size = function () {
     return this.frames.length;
   };
 

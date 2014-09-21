@@ -25,7 +25,7 @@
 
     var scaledCanvas = this.createCanvas_(this.zoom);
     var scaledContext = scaledCanvas.getContext('2d');
-    pskl.CanvasUtils.disableImageSmoothing(scaledCanvas);
+    pskl.utils.CanvasUtils.disableImageSmoothing(scaledCanvas);
     scaledContext.scale(this.zoom, this.zoom);
     scaledContext.drawImage(canvas, 0, 0);
 
@@ -44,6 +44,6 @@
     zoom = zoom || 1;
     var width = this.frame.getWidth() * zoom;
     var height = this.frame.getHeight() * zoom;
-    return pskl.CanvasUtils.createCanvas(width, height);
+    return pskl.utils.CanvasUtils.createCanvas(width, height);
   };
 })();

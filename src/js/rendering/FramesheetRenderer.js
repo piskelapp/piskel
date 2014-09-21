@@ -37,7 +37,7 @@
     var count = this.frames.length;
     var width = count * sampleFrame.getWidth();
     var height = sampleFrame.getHeight();
-    return pskl.CanvasUtils.createCanvas(width, height);
+    return pskl.utils.CanvasUtils.createCanvas(width, height);
   };
 
 })();

@@ -106,7 +106,7 @@
         gifLoader.load({
           success : function(){
             var images = gifLoader.getFrames().map(function (frame) {
-              return pskl.CanvasUtils.createFromImageData(frame.data);
+              return pskl.utils.CanvasUtils.createFromImageData(frame.data);
             });
             this.createPiskelFromImages_(images);
             this.closeDialog();

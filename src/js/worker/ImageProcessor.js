@@ -11,6 +11,10 @@
       });
     };
 
+    var rgbToHex = function(r, g, b) {
+      return '#' + ((r << 16) | (g << 8) | b).toString(16);
+    };
+
     var imageDataToGrid = function (imageData, width, height, transparent) {
       // Draw the zoomed-up pixels to a different canvas context
       var grid = [];
@@ -27,7 +31,7 @@
           if (a < 125) {
             grid[x][y] = transparent;
           } else {
-            grid[x][y] = pskl.utils.FrameUtils.rgbToHex(r,g,b);
+            grid[x][y] = rgbToHex(r,g,b);
           }
         }
       }
@@ -94,10 +98,8 @@
   };
 
   ns.ImageProcessor.prototype.process = function () {
-    this.importAll(pskl.utils.FrameUtils, 'pskl.utils.FrameUtils');
-    this.importAll(pskl.utils.CanvasUtils, 'pskl.utils.CanvasUtils');
-
-    var imageData = pskl.utils.FrameUtils.imageToImageData(this.image);
+    var canvas = pskl.utils.CanvasUtils.createFromImage(this.image);
+    var imageData = pskl.utils.CanvasUtils.getImageDataFromCanvas(canvas);
     this.worker.postMessage({
       imageData : imageData,
       width : this.image.width,
@@ -125,31 +127,6 @@
     this.runScript(script);
   };
 
-  ns.ImageProcessor.prototype.importAll = function (classToImport, classpath) {
-    this.createNamespace('pskl.utils.FrameUtils');
-    for (var key in classToImport) {
-      if (classToImport.hasOwnProperty(key)) {
-        this.addMethod(classToImport[key], classpath + '.' + key);
-      }
-    }
-  };
-
-  ns.ImageProcessor.prototype.addMethod = function (method, name) {
-    this.runScript(name  + "=" + method);
-  };
-
-  ns.ImageProcessor.prototype.runScript = function (script) {
-    this.worker.postMessage({
-      type : 'RUN_SCRIPT',
-      script : this.getScriptAsUrl(script)
-    });
-  };
-
-  ns.ImageProcessor.prototype.getScriptAsUrl = function (script) {
-    var blob = new Blob([script], {type: "application/javascript"}); // pass a useful mime type here
-    return window.URL.createObjectURL(blob);
-  };
-
   ns.ImageProcessor.prototype.onWorkerMessage = function (event) {
     if (event.data.type === 'STEP') {
       this.onStep(event);
@@ -160,6 +137,31 @@
       this.onError(event);
       this.worker.terminate();
     }
+  };
+
+  ns.ImageProcessor.prototype.importAll__ = function (classToImport, classpath) {
+    this.createNamespace(classpath);
+    for (var key in classToImport) {
+      if (classToImport.hasOwnProperty(key)) {
+        this.addMethod(classToImport[key], classpath + '.' + key);
+      }
+    }
+  };
+
+  ns.ImageProcessor.prototype.addMethod__ = function (method, name) {
+    this.runScript(name  + "=" + method);
+  };
+
+  ns.ImageProcessor.prototype.runScript__ = function (script) {
+    this.worker.postMessage({
+      type : 'RUN_SCRIPT',
+      script : this.getScriptAsUrl(script)
+    });
+  };
+
+  ns.ImageProcessor.prototype.getScriptAsUrl__ = function (script) {
+    var blob = new Blob([script], {type: "application/javascript"}); // pass a useful mime type here
+    return window.URL.createObjectURL(blob);
   };
 })();
 
