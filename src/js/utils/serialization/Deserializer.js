@@ -47,7 +47,7 @@
     // 2 - attach the onload callback that will be triggered asynchronously
     image.onload = function () {
       // 5 - extract the frames from the loaded image
-      var frames = pskl.utils.LayerUtils.createFromImage(image, layerData.frameCount);
+      var frames = pskl.utils.LayerUtils.createLayerFromSpritesheet(image, layerData.frameCount);
       // 6 - add each image to the layer
       this.addFramesToLayer(frames, layer);
     }.bind(this);
