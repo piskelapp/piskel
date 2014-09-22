@@ -16,6 +16,10 @@
       this.onWorkerSuccess_.bind(this),
       this.onWorkerStep_.bind(this),
       this.onWorkerError_.bind(this));
+
+
+    $.publish(Events.SHOW_PROGRESS, [{"name": 'Processing image colors ...'}]);
+
     imageProcessor.process();
   };
 
@@ -33,20 +37,16 @@
 
       this.onSuccess(palette);
     }
+    $.publish(Events.HIDE_PROGRESS);
   };
+
   ns.PaletteImageReader.prototype.onWorkerStep_ = function (event) {
-    var data = event.data;
-    var step = data.step;
-    var total = data.total;
-
-    var progress = ((step/total)*100).toFixed(1);
-
-    if (this.currentProgress !== progress) {
-      this.currentProgress = progress;
-      console.log("Image processing completed at : " + progress + "%");
-    }
+    var progress = event.data.progress;
+    $.publish(Events.UPDATE_PROGRESS, [{"progress": progress}]);
   };
+
   ns.PaletteImageReader.prototype.onWorkerError_ = function (event) {
+    $.publish(Events.HIDE_PROGRESS);
     this.onError('Unable to process the image : ' + event.data.message);
   };
 })();

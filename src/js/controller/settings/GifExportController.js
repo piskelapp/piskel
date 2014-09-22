@@ -36,9 +36,6 @@
     this.downloadButton = $(".gif-download-button");
     this.downloadButton.click(this.onDownloadButtonClick_.bind(this));
 
-    this.exportProgressStatusEl = document.querySelector('.gif-export-progress-status');
-    this.exportProgressBarEl = document.querySelector('.gif-export-progress-bar');
-
     this.createOptionElements_();
   };
 
@@ -123,27 +120,17 @@
       });
     }
 
+    $.publish(Events.SHOW_PROGRESS, [{"name": 'Building animated GIF ...'}]);
     gif.on('progress', function(percentage) {
-      this.updateProgressStatus_((percentage*100).toFixed(2));
+      $.publish(Events.UPDATE_PROGRESS, [{"progress": (percentage*100).toFixed(1)}]);
     }.bind(this));
 
     gif.on('finished', function(blob) {
-      this.hideProgressStatus_();
+      $.publish(Events.HIDE_PROGRESS);
       pskl.utils.FileUtils.readFile(blob, cb);
     }.bind(this));
 
     gif.render();
-  };
-
-  ns.GifExportController.prototype.updateProgressStatus_ = function (percentage) {
-    this.exportProgressStatusEl.innerHTML = percentage + '%';
-    this.exportProgressBarEl.style.width = percentage + "%";
-
-  };
-
-  ns.GifExportController.prototype.hideProgressStatus_ = function () {
-    this.exportProgressStatusEl.innerHTML = '';
-    this.exportProgressBarEl.style.width = "0";
   };
 
   // FIXME : HORRIBLE COPY/PASTA

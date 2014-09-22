@@ -87,6 +87,9 @@
       this.notificationController = new pskl.controller.NotificationController();
       this.notificationController.init();
 
+      this.progressBarController = new pskl.controller.ProgressBarController();
+      this.progressBarController.init();
+
       this.canvasBackgroundController = new pskl.controller.CanvasBackgroundController();
       this.canvasBackgroundController.init();
 

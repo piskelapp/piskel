@@ -84,6 +84,7 @@
   "js/controller/ToolController.js",
   "js/controller/PaletteController.js",
   "js/controller/PalettesListController.js",
+  "js/controller/ProgressBarController.js",
   "js/controller/NotificationController.js",
   "js/controller/CanvasBackgroundController.js",
 
