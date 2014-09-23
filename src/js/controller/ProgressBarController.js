@@ -39,7 +39,7 @@
       var width = this.progressBar.offsetWidth;
       var progressWidth = width - ((progress * width) / 100);
       this.progressBar.style.backgroundPosition = (-progressWidth) + 'px 0';
-      this.progressBarStatus.innerText = progress + '%';
+      this.progressBarStatus.innerHTML = progress + '%';
     }
   };
 

@@ -85,6 +85,19 @@
   cursor : pointer;
 }
 
+@-moz-document url-prefix() {
+  .create-palette-color, .create-palette-new-color, .colors-list-drop-proxy{
+    margin : 7px 0 0 7px;
+  }
+}
+
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+  .create-palette-color, .create-palette-new-color, .colors-list-drop-proxy{
+    margin : 7px 0 0 7px;
+  }
+}
+
+
 .create-palette-color {
   border:1px solid #2c2c2c;
   transition : border-color 0.2s;
