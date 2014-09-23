@@ -5,7 +5,7 @@
     this.piskelController = piskelController;
     this.currentColors = [];
     this.cachedFrameProcessor = new pskl.model.frame.CachedFrameProcessor();
-    this.cachedFrameProcessor.setFrameProcessor(this.frameToColors_.bind(this));
+    this.cachedFrameProcessor.setFrameProcessor(this.getFrameColors_.bind(this));
 
     this.framesColorsCache_ = {};
   };
@@ -19,11 +19,12 @@
     return this.currentColors;
   };
 
-  ns.CurrentColorsService.prototype.frameToColors_ = function (frame) {
+  ns.CurrentColorsService.prototype.getFrameColors_ = function (frame) {
     var frameColors = {};
     frame.forEachPixel(function (color, x, y) {
-      frameColors[color] = (frameColors[color] || 0) + 1;
-    });
+      var hexColor = this.toHexColor_(color);
+      frameColors[hexColor] = true;
+    }.bind(this));
     return frameColors;
   };
 
@@ -35,7 +36,7 @@
     frames.forEach(function (f) {
       var frameColors = this.cachedFrameProcessor.get(f);
       Object.keys(frameColors).slice(0, Constants.MAX_CURRENT_COLORS_DISPLAYED).forEach(function (color) {
-        colors[color] = (colors[color] || 0) + frameColors[color];
+        colors[color] = true;
       });
     }.bind(this));
 
@@ -45,12 +46,68 @@
     // limit the array to the max colors to display
     this.currentColors = Object.keys(colors).slice(0, Constants.MAX_CURRENT_COLORS_DISPLAYED);
 
+    this.colorsHslMap = {};
+
+    this.currentColors.forEach(function (color) {
+      this.colorsHslMap[color] = window.tinycolor(color).toHsl();
+    }.bind(this));
+
     // sort by most frequent color
-    this.currentColors = this.currentColors.sort(function (c1, c2) {
-      return colors[c2] - colors[c1];
-    });
+    this.currentColors = this.currentColors.sort();
+    this.currentColors = this.currentColors.sort(this.sortColors_.bind(this));
 
     // TODO : only fire if there was a change
-    $.publish(Events.CURRENT_COLORS_UPDATED, colors);
+    $.publish(Events.CURRENT_COLORS_UPDATED);
+  };
+
+  ns.CurrentColorsService.prototype.sortColors_ = function (c1, c2) {
+    var hsl1 = this.colorsHslMap[c1];
+    var hsl2 = this.colorsHslMap[c2];
+
+    if (hsl1.l < 0.1 || hsl2.l < 0.1) {
+      return this.compareValues_(hsl1.l, hsl2.l);
+    } else if (hsl1.l > 0.9 || hsl2.l > 0.9) {
+      return this.compareValues_(hsl2.l, hsl1.l);
+    } else {
+      var hDiff = Math.abs(hsl1.h - hsl2.h);
+      var sDiff = Math.abs(hsl1.s - hsl2.s);
+      var lDiff = Math.abs(hsl1.l - hsl2.l);
+      if (hDiff < 10) {
+        if (sDiff > lDiff) {
+          return this.compareValues_(hsl1.s, hsl2.s);
+        } else {
+          return this.compareValues_(hsl1.l, hsl2.l);
+        }
+      } else {
+        return this.compareValues_(hsl1.h, hsl2.h);
+      }
+    }
+  };
+
+  ns.CurrentColorsService.prototype.compareValues_ = function (v1, v2) {
+    if (v1 > v2) {
+      return 1;
+    } else if (v1 < v2) {
+      return -1;
+    }
+    return 0;
+  };
+
+  ns.CurrentColorsService.prototype.toHexColor_ = function (color) {
+    if (color === Constants.TRANSPARENT_COLOR) {
+      return color;
+    } else {
+      color = color.replace(/\s/g, '');
+      var hexRe = (/^#([a-f0-9]{3}){1,2}$/i);
+      var rgbRe = (/^rgb\((\d{1,3}),(\d{1,3}),(\d{1,3})\)$/i);
+      if (hexRe.test(color)) {
+        return color.toUpperCase();
+      } else if (rgbRe.test(color)) {
+        var exec = rgbRe.exec(color);
+        return pskl.utils.rgbToHex(exec[1] * 1, exec[2] * 1, exec[3] * 1);
+      } else {
+        console.error('Could not convert color to hex : ', color);
+      }
+    }
   };
 })();
