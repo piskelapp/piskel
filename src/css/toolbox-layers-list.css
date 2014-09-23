@@ -49,24 +49,6 @@
   cursor : pointer;
 }
 
-.layer-item .edit-icon, .layer-item .merge-icon {
-  float: right;
-  opacity: 0;
-  transition : opacity 0.2s;
-}
-
-.layer-item:hover .edit-icon, .layer-item:hover .merge-icon {
-  opacity : 0.6;
-}
-
-.layer-item:hover .edit-icon:hover, .layer-item:hover .merge-icon:hover {
-  opacity : 1;
-}
-
-.layer-item:last-child .merge-icon {
-  display : none;
-}
-
 .layer-item:hover {
   background : #222;
 }
@@ -94,10 +76,4 @@
 
 .layers-button:last-child {
   border-right-width: 0;
-}
-
-.layers-button-container .merge-icon,
-.layers-button-container .edit-icon {
-  background-size : 15px;
-  background-position : 50%;
 }
