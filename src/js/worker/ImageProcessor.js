@@ -1,9 +1,9 @@
 (function () {
   var ns = $.namespace('pskl.worker');
 
-  var worker = function () {
-
+  var imageProcessorWorker = function () {
     var currentStep, currentProgress, currentTotal;
+
     var initStepCounter_ = function (total) {
       currentStep = 0;
       currentProgress = 0;
@@ -88,15 +88,6 @@
     };
   };
 
-  try {
-    // create worker from blob
-    var typedArray = [(worker+"").replace(/function \(\) \{/,"").replace(/\}[^}]*$/, "")];
-    var blob = new Blob(typedArray, {type: "application/javascript"}); // pass a useful mime type here
-    var blobUrl = window.URL.createObjectURL(blob);
-  } catch (e) {
-    console.error("Could not create worker", e.message);
-  }
-
   ns.ImageProcessor = function (image, onSuccess, onStep, onError) {
     this.image = image;
 
@@ -104,7 +95,8 @@
     this.onSuccess = onSuccess;
     this.onError = onError;
 
-    this.worker = new Worker(blobUrl);
+    // var worker = pskl.utils.WorkerUtils.addPartialWorker(imageProcessorWorker, 'step-counter');
+    this.worker = pskl.utils.WorkerUtils.createWorker(worker, 'image-colors-processor');
     this.worker.onmessage = this.onWorkerMessage.bind(this);
   };
 

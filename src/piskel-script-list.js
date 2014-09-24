@@ -26,6 +26,7 @@
   "js/utils/Template.js",
   "js/utils/UserSettings.js",
   "js/utils/Uuid.js",
+  "js/utils/WorkerUtils.js",
   "js/utils/Xhr.js",
   "js/utils/serialization/Serializer.js",
   "js/utils/serialization/Deserializer.js",
