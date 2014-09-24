@@ -23,9 +23,14 @@
         });
       }
     };
+    
+    var rgbToHex = function (r, g, b) {
+      return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+    };
 
-    var rgbToHex = function(r, g, b) {
-      return '#' + ((r << 16) | (g << 8) | b).toString(16);
+    var componentToHex = function (c) {
+      var hex = c.toString(16);
+      return hex.length == 1 ? "0" + hex : hex;
     };
 
     var imageDataToGrid = function (imageData, width, height, transparent) {
@@ -96,7 +101,7 @@
     this.onError = onError;
 
     // var worker = pskl.utils.WorkerUtils.addPartialWorker(imageProcessorWorker, 'step-counter');
-    this.worker = pskl.utils.WorkerUtils.createWorker(worker, 'image-colors-processor');
+    this.worker = pskl.utils.WorkerUtils.createWorker(imageProcessorWorker, 'image-colors-processor');
     this.worker.onmessage = this.onWorkerMessage.bind(this);
   };
 
