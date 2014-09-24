@@ -60,14 +60,19 @@
     $.publish(Events.CURRENT_COLORS_UPDATED);
   };
 
+  var LOW_SAT = 0.1;
+  var LOW_LUM = 0.1;
+  var HI_LUM = 0.9;
   ns.CurrentColorsService.prototype.sortColors_ = function (c1, c2) {
     var hsl1 = this.colorsHslMap[c1];
     var hsl2 = this.colorsHslMap[c2];
 
-    if (hsl1.l < 0.1 || hsl2.l < 0.1) {
+    if (hsl1.l < LOW_LUM || hsl2.l < LOW_LUM) {
       return this.compareValues_(hsl1.l, hsl2.l);
-    } else if (hsl1.l > 0.9 || hsl2.l > 0.9) {
+    } else if (hsl1.l > HI_LUM || hsl2.l > HI_LUM) {
       return this.compareValues_(hsl2.l, hsl1.l);
+    } else if (hsl1.s < LOW_SAT || hsl2.s < LOW_SAT) {
+      return this.compareValues_(hsl1.s, hsl2.s);
     } else {
       var hDiff = Math.abs(hsl1.h - hsl2.h);
       var sDiff = Math.abs(hsl1.s - hsl2.s);

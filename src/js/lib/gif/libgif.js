@@ -624,6 +624,7 @@ var SuperGif = function ( opts ) {
   };
 
   var load_callback = false;
+  var step_callback = false;
   var error_callback = false;
   var tmpCanvas = document.createElement('canvas');
 
@@ -632,6 +633,7 @@ var SuperGif = function ( opts ) {
     load: function (callback) {
 
       load_callback = callback.success;
+      step_callback = callback.step;
       error_callback = callback.error;
 
       loading = true;
