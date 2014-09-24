@@ -122,6 +122,7 @@
   "js/service/BackupService.js",
   "js/service/BeforeUnloadService.js",
   "js/service/HistoryService.js",
+  "js/service/color/ColorSorter.js",
   "js/service/palette/CurrentColorsPalette.js",
   "js/service/palette/PaletteService.js",
   "js/service/palette/PaletteTxtReader.js",
