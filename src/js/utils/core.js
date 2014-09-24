@@ -46,12 +46,25 @@ if (!Function.prototype.bind) {
 
   var ns = $.namespace("pskl.utils");
 
-  ns.rgbToHex = function(r, g, b) {
-    if (r > 255 || g > 255 || b > 255) {
-      throw "Invalid color component";
-    }
+  /**
+   * Convert a rgb(Number, Number, Number) color to hexadecimal representation
+   * @param  {Number} r red value, between 0 and 255
+   * @param  {Number} g green value, between 0 and 255
+   * @param  {Number} b blue value, between 0 and 255
+   * @return {String} hex representation of the color '#ABCDEF'
+   */
+  ns.rgbToHex = function (r, g, b) {
+    return "#" + pskl.utils.componentToHex(r) + pskl.utils.componentToHex(g) + pskl.utils.componentToHex(b);
+  };
 
-    return ((r << 16) | (g << 8) | b).toString(16);
+  /**
+   * Convert a color component (as a Number between 0 and 255) to its string hexa representation
+   * @param  {Number} c component value, between 0 and 255
+   * @return {String} eg. '0A'
+   */
+  ns.componentToHex = function (c) {
+    var hex = c.toString(16);
+    return hex.length == 1 ? "0" + hex : hex;
   };
 
   ns.normalize = function (value, def) {
