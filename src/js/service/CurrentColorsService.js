@@ -15,6 +15,8 @@
   ns.CurrentColorsService.prototype.init = function () {
     $.subscribe(Events.PISKEL_RESET, this.onPiskelUpdated_.bind(this));
     $.subscribe(Events.TOOL_RELEASED, this.onPiskelUpdated_.bind(this));
+
+    // this.updateTimer = window.setInterval(this.updateCurrentColors_.bind(this));
   };
 
   ns.CurrentColorsService.prototype.getCurrentColors = function () {
@@ -34,7 +36,7 @@
     var layers = this.piskelController.getLayers();
     var frames = layers.map(function (l) {return l.getFrames();}).reduce(function (p, n) {return p.concat(n);});
     var colors = {};
-    
+
     frames.forEach(function (f) {
       var frameColors = this.cachedFrameProcessor.get(f);
       Object.keys(frameColors).slice(0, Constants.MAX_CURRENT_COLORS_DISPLAYED).forEach(function (color) {

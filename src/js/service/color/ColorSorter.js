@@ -1,7 +1,7 @@
 (function () {
   var ns = $.namespace('pskl.service.color');
 
-  var LOW_SAT = 0.3;
+  var LOW_SAT = 0.1;
   var LOW_LUM = 0.1;
   var HI_LUM = 0.9;
 
@@ -36,6 +36,8 @@
     }.bind(this));
 
     var desaturatedColors = colors.filter(function (c) {
+      return brightColors.indexOf(c) === -1 && darkColors.indexOf(c) === -1;
+    }).filter(function (c) {
       var hsl = this.colorsHslMap_[c];
       return hsl.s <= LOW_SAT;
     }.bind(this));
@@ -44,22 +46,20 @@
     brightColors = this.sortOnHslProperty_(brightColors, 'l');
     desaturatedColors = this.sortOnHslProperty_(desaturatedColors, 'h');
 
-    var sortedColors = darkColors.concat(brightColors).concat(desaturatedColors);
-    
+    var sortedColors = darkColors.concat(brightColors, desaturatedColors);
+
     var regularColors = colors.filter(function (c) {
       return sortedColors.indexOf(c) === -1;
     });
 
-    var regularColorsBags = [];
-    for (var i = 0 ; i < HUE_BOUNDS.length ; i++) {
-      var hue = HUE_BOUNDS[i];
+    var regularColorsBags = HUE_BOUNDS.map(function (hue) {
       var bagColors = regularColors.filter(function (color) {
         var hsl = this.colorsHslMap_[color];
         return (hsl.h >= hue && hsl.h < hue + HUE_STEP);
       }.bind(this));
 
-      regularColorsBags[i] = this.sortRegularColors_(bagColors);
-    }
+      return this.sortRegularColors_(bagColors);
+    }.bind(this));
 
     return Array.prototype.concat.apply(sortedColors, regularColorsBags);
   };
