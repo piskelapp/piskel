@@ -5,6 +5,8 @@
     this.file = file;
     this.onSuccess = onSuccess;
     this.onError = onError;
+
+    this.colorSorter_ = new pskl.service.color.ColorSorter();
   };
 
   ns.PaletteImageReader.prototype.read = function () {
@@ -33,7 +35,8 @@
       this.onError('Too many colors : ' + colors.length);
     } else {
       var uuid = pskl.utils.Uuid.generate();
-      var palette = new pskl.model.Palette(uuid, this.file.name + ' palette', colors);
+      var sortedColors = this.colorSorter_.sort(colors);
+      var palette = new pskl.model.Palette(uuid, this.file.name + ' palette', sortedColors);
 
       this.onSuccess(palette);
     }
