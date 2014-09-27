@@ -14,6 +14,14 @@
       reader.readAsDataURL(file);
     },
 
+    readImageFile : function (file, callback) {
+      ns.FileUtils.readFile(file, function (content) {
+        var image = new Image();
+        image.onload = callback.bind(null, image);
+        image.src = content;
+      });
+    },
+
     downloadAsFile : function (content, filename) {
       var saveAs = window.saveAs || (navigator.msSaveBlob && navigator.msSaveBlob.bind(navigator));
       if (saveAs) {

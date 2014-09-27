@@ -1,6 +1,8 @@
 (function () {
   var ns = $.namespace('pskl.utils');
 
+
+
   var BASE64_REGEX = /\s*;\s*base64\s*(?:;|$)/i;
 
   ns.BlobUtils = {

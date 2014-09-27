@@ -504,8 +504,10 @@
 
             $(doc).bind("mousedown.spectrum", onMousedown);
 
-            // Piskel-specific : change the color as soon as the user does a mouseup
-            $(doc).bind("mouseup.spectrum", updateColor);
+            if (!flat) {
+                 // Piskel-specific : change the color as soon as the user does a mouseup
+                $(doc).bind("mouseup.spectrum", updateColor);
+            }
 
             $(window).bind("resize.spectrum", resize);
             replacer.addClass("sp-active");
@@ -667,10 +669,9 @@
                 }
             }
 
-
             // Update the text entry input as it changes happen
             if (opts.showInput) {
-                textInput.val(realColor.toString(Constants.PREFERRED_COLOR_FORMAT || format));
+                textInput.val(realColor.toString(format));
             }
 
             if (opts.showPalette) {

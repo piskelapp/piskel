@@ -11,11 +11,11 @@
       throw 'cheatsheetEl_ DOM element could not be retrieved';
     }
     this.initMarkup_();
-    pskl.app.shortcutService.addShortcut('shift+?', this.toggleCheatsheet_.bind(this));
-    pskl.app.shortcutService.addShortcut('?', this.toggleCheatsheet_.bind(this));
+    pskl.app.shortcutService.addShortcuts(['?', 'shift+?'], this.toggleCheatsheet_.bind(this));
 
     var link = $('.cheatsheet-link');
     link.click(this.toggleCheatsheet_.bind(this));
+
 
     $.subscribe(Events.TOGGLE_HELP, this.toggleCheatsheet_.bind(this));
     $.subscribe(Events.ESCAPE, this.onEscape_.bind(this));
@@ -106,7 +106,8 @@
       this.toDescriptor_('N', 'Create new frame'),
       this.toDescriptor_('shift + N', 'Duplicate selected frame'),
       this.toDescriptor_('shift + ?', 'Open/Close this popup'),
-      this.toDescriptor_('alt + P', 'Open the Palette Manager'),
+      this.toDescriptor_('alt + P', 'Create a Palette'),
+      this.toDescriptor_('&lt;/&gt;', 'Select previous/next palette color'),
       this.toDescriptor_('alt + O', 'Toggle Onion Skin'),
       this.toDescriptor_('alt + L', 'Toggle Layer Preview')
     ];

@@ -158,7 +158,7 @@
 
   ns.PiskelController.prototype.getFrameCount = function () {
     var layer = this.piskel.getLayerAt(0);
-    return layer.length();
+    return layer.size();
   };
 
   ns.PiskelController.prototype.setCurrentFrameIndex = function (index) {
@@ -202,6 +202,18 @@
     var layer = this.getLayerByIndex(index);
     if (layer) {
       layer.setName(name);
+    }
+  };
+
+  ns.PiskelController.prototype.mergeDownLayerAt = function (index) {
+    var layer = this.getLayerByIndex(index);
+    var downLayer = this.getLayerByIndex(index-1);
+    if (layer && downLayer) {
+      var mergedLayer = pskl.utils.LayerUtils.mergeLayers(layer, downLayer);
+      this.removeLayerAt(index);
+      this.piskel.addLayerAt(mergedLayer, index);
+      this.removeLayerAt(index-1);
+      this.selectLayer(mergedLayer);
     }
   };
 

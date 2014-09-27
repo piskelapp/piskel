@@ -34,7 +34,7 @@
       var canvas = this.getFrameAsCanvas_(frame);
       var basename = this.pngFilePrefixInput.value;
       var filename =  basename + (i+1) + ".png";
-      zip.file(filename, pskl.CanvasUtils.getBase64FromCanvas(canvas) + '\n', {base64: true});
+      zip.file(filename, pskl.utils.CanvasUtils.getBase64FromCanvas(canvas) + '\n', {base64: true});
     }
 
     var fileName = this.getPiskelName_() + '.zip';

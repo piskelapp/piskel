@@ -7,7 +7,9 @@
     40 : "down",
     46 : "del",
     189 : "-",
-    187 : "+"
+    187 : "+",
+    188 : "<",
+    190 : ">"
   };
 
   var ns = $.namespace('pskl.service.keyboard');

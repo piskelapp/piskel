@@ -52,14 +52,3 @@
   background: rgba(0,0,0,0.5);
   color: white;
 }
-
-.gif-export-progress-status {
-  margin-left: 5px;
-}
-
-.gif-export-progress-bar {
-  margin-top:5px;
-  height:3px;
-  width: 0;
-  background:gold;
-}

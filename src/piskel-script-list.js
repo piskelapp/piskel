@@ -25,6 +25,8 @@
   "js/utils/PiskelFileUtils.js",
   "js/utils/Template.js",
   "js/utils/UserSettings.js",
+  "js/utils/Uuid.js",
+  "js/utils/WorkerUtils.js",
   "js/utils/Xhr.js",
   "js/utils/serialization/Serializer.js",
   "js/utils/serialization/Deserializer.js",
@@ -50,6 +52,7 @@
   "js/model/Layer.js",
   "js/model/piskel/Descriptor.js",
   "js/model/frame/CachedFrameProcessor.js",
+  "js/model/Palette.js",
   "js/model/Piskel.js",
 
   // Selection
@@ -82,6 +85,7 @@
   "js/controller/ToolController.js",
   "js/controller/PaletteController.js",
   "js/controller/PalettesListController.js",
+  "js/controller/ProgressBarController.js",
   "js/controller/NotificationController.js",
   "js/controller/CanvasBackgroundController.js",
 
@@ -99,12 +103,17 @@
 
   // Dialogs sub-controllers
   "js/controller/dialogs/AbstractDialogController.js",
-  "js/controller/dialogs/PaletteManagerController.js",
+  "js/controller/dialogs/CreatePaletteController.js",
   "js/controller/dialogs/ImportImageController.js",
   "js/controller/dialogs/BrowseLocalController.js",
 
+
   // Dialogs controller
   "js/controller/dialogs/DialogsController.js",
+
+  // Widget controller
+  "js/controller/widgets/ColorsList.js",
+  "js/controller/widgets/HslRgbColorPicker.js",
 
   // Services
   "js/service/LocalStorageService.js",
@@ -113,6 +122,14 @@
   "js/service/BackupService.js",
   "js/service/BeforeUnloadService.js",
   "js/service/HistoryService.js",
+  "js/service/color/ColorSorter.js",
+  "js/service/palette/CurrentColorsPalette.js",
+  "js/service/palette/PaletteService.js",
+  "js/service/palette/PaletteTxtReader.js",
+  "js/service/palette/PaletteGplReader.js",
+  "js/service/palette/PaletteGplWriter.js",
+  "js/service/palette/PaletteImageReader.js",
+  "js/service/palette/PaletteImportService.js",
   "js/service/SavedStatusService.js",
   "js/service/keyboard/ShortcutService.js",
   "js/service/keyboard/KeycodeTranslator.js",
@@ -148,6 +165,9 @@
   "js/devtools/MouseEvent.js",
   "js/devtools/TestRecordController.js",
   "js/devtools/init.js",
+
+  // Workers
+  "js/worker/ImageProcessor.js",
 
   // Application controller and initialization
   "js/app.js",

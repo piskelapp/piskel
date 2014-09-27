@@ -2,9 +2,9 @@
   var ns = $.namespace('pskl.controller.dialogs');
 
   var dialogs = {
-    'manage-palettes' : {
-      template : 'templates/dialogs/manage-palettes.html',
-      controller : ns.PaletteManagerController
+    'create-palette' : {
+      template : 'templates/dialogs/create-palette.html',
+      controller : ns.CreatePaletteController
     },
     'browse-local' : {
       template : 'templates/dialogs/browse-local.html',
@@ -27,7 +27,8 @@
     $.subscribe(Events.DIALOG_DISPLAY, this.onDialogDisplayEvent_.bind(this));
     $.subscribe(Events.DIALOG_HIDE, this.onDialogHideEvent_.bind(this));
 
-    pskl.app.shortcutService.addShortcut('alt+P', this.onDialogDisplayEvent_.bind(this, null, 'manage-palettes'));
+    pskl.app.shortcutService.addShortcut('alt+P', this.onDialogDisplayEvent_.bind(this, null, 'create-palette'));
+
     this.dialogWrapper_.classList.add('animated');
   };
 
@@ -42,8 +43,8 @@
     if (!this.isDisplayed()) {
       var config = dialogs[dialogId];
       if (config) {
-        this.dialogContainer_.innerHTML = pskl.utils.Template.get(config.template);
         this.dialogContainer_.classList.add(dialogId);
+        this.dialogContainer_.innerHTML = pskl.utils.Template.get(config.template);
 
         var controller = new config.controller(this.piskelController);
         controller.init(initArgs);

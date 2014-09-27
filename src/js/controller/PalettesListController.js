@@ -13,70 +13,82 @@
 
   ns.PalettesListController = function (paletteController, usedColorService) {
     this.usedColorService = usedColorService;
+    this.paletteService = pskl.app.paletteService;
     this.paletteController = paletteController;
   };
 
   ns.PalettesListController.prototype.init = function () {
     this.paletteColorTemplate_ = pskl.utils.Template.get('palette-color-template');
+
     this.colorListContainer_ = document.querySelector('.palettes-list-colors');
     this.colorPaletteSelect_ = document.querySelector('.palettes-list-select');
-    this.paletteListOptGroup_ = document.querySelector('.palettes-list-select-group');
+
+    var createPaletteButton_ = document.querySelector('.create-palette-button');
+    var editPaletteButton_ = document.querySelector('.edit-palette-button');
 
     this.colorPaletteSelect_.addEventListener('change', this.onPaletteSelected_.bind(this));
     this.colorListContainer_.addEventListener('mouseup', this.onColorContainerMouseup.bind(this));
     this.colorListContainer_.addEventListener('contextmenu', this.onColorContainerContextMenu.bind(this));
 
+    createPaletteButton_.addEventListener('click', this.onCreatePaletteClick_.bind(this));
+    editPaletteButton_.addEventListener('click', this.onEditPaletteClick_.bind(this));
+
     $.subscribe(Events.PALETTE_LIST_UPDATED, this.onPaletteListUpdated.bind(this));
     $.subscribe(Events.CURRENT_COLORS_UPDATED, this.fillColorListContainer.bind(this));
     $.subscribe(Events.PRIMARY_COLOR_SELECTED, this.highlightSelectedColors.bind(this));
     $.subscribe(Events.SECONDARY_COLOR_SELECTED, this.highlightSelectedColors.bind(this));
+    $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
+
+
+    pskl.app.shortcutService.addShortcuts(['>', 'shift+>'], this.selectNextColor_.bind(this));
+    pskl.app.shortcutService.addShortcut('<', this.selectPreviousColor_.bind(this));
 
     this.fillPaletteList();
-    this.selectPaletteFromUserSettings();
+    this.updateFromUserSettings();
     this.fillColorListContainer();
   };
 
   ns.PalettesListController.prototype.fillPaletteList = function () {
-    var palettes = [{
-      id : Constants.NO_PALETTE_ID,
-      name : 'No palette'
-    }];
-    palettes = palettes.concat(this.retrievePalettes());
+    var palettes = this.paletteService.getPalettes();
 
     var html = palettes.map(function (palette) {
       return pskl.utils.Template.replace('<option value="{{id}}">{{name}}</option>', palette);
     }).join('');
-    this.paletteListOptGroup_.innerHTML = html;
+    this.colorPaletteSelect_.innerHTML = html;
   };
 
   ns.PalettesListController.prototype.fillColorListContainer = function () {
+
     var colors = this.getSelectedPaletteColors_();
 
-    var html = colors.map(function (color) {
-      return pskl.utils.Template.replace(this.paletteColorTemplate_, {color : color});
-    }.bind(this)).join('');
-    this.colorListContainer_.innerHTML = html;
+    if (colors.length > 0) {
+      var html = colors.map(function (color, index) {
+        return pskl.utils.Template.replace(this.paletteColorTemplate_, {color : color, index : index});
+      }.bind(this)).join('');
+      this.colorListContainer_.innerHTML = html;
 
-    this.highlightSelectedColors();
+      this.highlightSelectedColors();
 
-    var hasScrollbar = colors.length > NO_SCROLL_MAX_COLORS;
-    if (hasScrollbar && !pskl.utils.UserAgent.isChrome) {
-      this.colorListContainer_.classList.add(HAS_SCROLL_CLASSNAME);
+      var hasScrollbar = colors.length > NO_SCROLL_MAX_COLORS;
+      if (hasScrollbar && !pskl.utils.UserAgent.isChrome) {
+        this.colorListContainer_.classList.add(HAS_SCROLL_CLASSNAME);
+      } else {
+        this.colorListContainer_.classList.remove(HAS_SCROLL_CLASSNAME);
+      }
     } else {
-      this.colorListContainer_.classList.remove(HAS_SCROLL_CLASSNAME);
+      this.colorListContainer_.innerHTML = pskl.utils.Template.get('palettes-list-no-colors-partial');
     }
+  };
+
+  ns.PalettesListController.prototype.selectPalette = function (paletteId) {
+    pskl.UserSettings.set(pskl.UserSettings.SELECTED_PALETTE, paletteId);
   };
 
   ns.PalettesListController.prototype.getSelectedPaletteColors_ = function () {
     var colors = [];
-    var paletteId = this.colorPaletteSelect_.value;
-    if (paletteId === Constants.CURRENT_COLORS_PALETTE_ID) {
-      colors = this.usedColorService.getCurrentColors();
-    } else {
-      var palette = this.getPaletteById(paletteId, this.retrievePalettes());
-      if (palette) {
-        colors = palette.colors;
-      }
+    var palette = this.getSelectedPalette_();
+    if (palette) {
+      colors = palette.getColors();
     }
 
     if (colors.length > Constants.MAX_CURRENT_COLORS_DISPLAYED) {
@@ -86,27 +98,65 @@
     return colors;
   };
 
-  ns.PalettesListController.prototype.selectPalette = function (paletteId) {
-    this.colorPaletteSelect_.value = paletteId;
+  ns.PalettesListController.prototype.getSelectedPalette_ = function () {
+    var paletteId = pskl.UserSettings.get(pskl.UserSettings.SELECTED_PALETTE);
+    return this.paletteService.getPaletteById(paletteId);
   };
 
-  ns.PalettesListController.prototype.selectPaletteFromUserSettings = function () {
-    this.selectPalette(pskl.UserSettings.get(pskl.UserSettings.SELECTED_PALETTE));
+  ns.PalettesListController.prototype.selectNextColor_ = function () {
+    this.selectColor_(this.getCurrentColorIndex_() + 1);
+  };
+
+  ns.PalettesListController.prototype.selectPreviousColor_ = function () {
+    this.selectColor_(this.getCurrentColorIndex_() - 1);
+  };
+
+  ns.PalettesListController.prototype.getCurrentColorIndex_ = function () {
+    var currentIndex = 0;
+    var selectedColor = document.querySelector('.' + PRIMARY_COLOR_CLASSNAME);
+    if (selectedColor) {
+      currentIndex = parseInt(selectedColor.dataset.colorIndex, 10);
+    }
+    return currentIndex;
+  };
+
+  ns.PalettesListController.prototype.selectColor_ = function (index) {
+    var colors = this.getSelectedPaletteColors_();
+    var color = colors[index];
+    if (color) {
+      $.publish(Events.SELECT_PRIMARY_COLOR, [color]);
+    }
+  };
+
+  ns.PalettesListController.prototype.onUserSettingsChange_ = function (evt, name, value) {
+    if (name == pskl.UserSettings.SELECTED_PALETTE) {
+      this.updateFromUserSettings();
+    }
+  };
+
+  ns.PalettesListController.prototype.updateFromUserSettings = function () {
+    var paletteId = pskl.UserSettings.get(pskl.UserSettings.SELECTED_PALETTE);
+    this.fillColorListContainer();
+    this.colorPaletteSelect_.value = paletteId;
   };
 
   ns.PalettesListController.prototype.onPaletteSelected_ = function (evt) {
     var paletteId = this.colorPaletteSelect_.value;
-    if (paletteId === Constants.MANAGE_PALETTE_ID) {
-      $.publish(Events.DIALOG_DISPLAY, 'manage-palettes');
-      this.selectPaletteFromUserSettings();
-    } else {
-      pskl.UserSettings.set(pskl.UserSettings.SELECTED_PALETTE, paletteId);
-    }
-
-    this.fillColorListContainer();
+    this.selectPalette(paletteId);
+    this.colorPaletteSelect_.blur();
   };
 
+  ns.PalettesListController.prototype.onCreatePaletteClick_ = function (evt) {
+    $.publish(Events.DIALOG_DISPLAY, 'create-palette');
+  };
 
+  ns.PalettesListController.prototype.onEditPaletteClick_ = function (evt) {
+    var paletteId = this.colorPaletteSelect_.value;
+    $.publish(Events.DIALOG_DISPLAY, {
+      dialogId : 'create-palette',
+      initArgs : paletteId
+    });
+  };
 
   ns.PalettesListController.prototype.onColorContainerContextMenu = function (event) {
     event.preventDefault();
@@ -155,24 +205,6 @@
 
   ns.PalettesListController.prototype.onPaletteListUpdated = function () {
     this.fillPaletteList();
-    this.selectPaletteFromUserSettings();
-    this.fillColorListContainer();
-  };
-
-  ns.PalettesListController.prototype.getPaletteById = function (paletteId, palettes) {
-    var match = null;
-
-    palettes.forEach(function (palette) {
-      if (palette.id === paletteId) {
-        match = palette;
-      }
-    });
-
-    return match;
-  };
-
-  ns.PalettesListController.prototype.retrievePalettes =  function () {
-    var palettesString = window.localStorage.getItem('piskel.palettes');
-    return JSON.parse(palettesString) || [];
+    this.updateFromUserSettings();
   };
 })();

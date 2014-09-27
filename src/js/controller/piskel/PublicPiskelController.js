@@ -99,6 +99,12 @@
     $.publish(Events.PISKEL_RESET);
   };
 
+  ns.PublicPiskelController.prototype.mergeDownLayerAt = function (index) {
+    this.raiseSaveStateEvent_(this.piskelController.mergeDownLayerAt, [index]);
+    this.piskelController.mergeDownLayerAt(index);
+    $.publish(Events.PISKEL_RESET);
+  };
+
   ns.PublicPiskelController.prototype.moveLayerUp = function () {
     this.raiseSaveStateEvent_(this.piskelController.moveLayerUp, []);
     this.piskelController.moveLayerUp();

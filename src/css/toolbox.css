@@ -15,22 +15,3 @@
   font-size: 15px;
   background: #222;
 }
-
-.toolbox-button-container {
-  overflow : hidden;
-}
-
-.toolbox-button {
-  margin: 0;
-  width: 25%;
-  float : left;
-}
-
-/* @override */
-.button.toolbox-button {
-  border-left-width: 0;
-}
-
-.toolbox-button:last-child {
-  border-right-width: 0;
-}

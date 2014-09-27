@@ -12,7 +12,7 @@
      */
     loadFromFile : function (file, onSuccess, onError) {
       pskl.utils.FileUtils.readFile(file, function (content) {
-        var rawPiskel = window.atob(content.replace(/data\:.*?\;base64\,/,''));
+        var rawPiskel = pskl.utils.Base64.toText(content);
         var serializedPiskel = JSON.parse(rawPiskel);
         var fps = serializedPiskel.piskel.fps;
         var descriptor = new pskl.model.piskel.Descriptor(serializedPiskel.piskel.name, serializedPiskel.piskel.description, true);

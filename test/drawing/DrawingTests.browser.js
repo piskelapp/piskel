@@ -4,6 +4,7 @@
   "color.picker.json",
   "frames.fun.json",
   "layers.fun.json",
+  "layers.merge.json",
   "lighten.darken.json",
   "move.json",
   "pen.secondary.color.json",

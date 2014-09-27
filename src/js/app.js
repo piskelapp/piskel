@@ -11,7 +11,6 @@
 
     init : function () {
       /**
-       * True when piskel is running in static mode (no back end needed).
        * When started from APP Engine, appEngineToken_ (Boolean) should be set on window.pskl
        */
       this.isAppEngineVersion = !!pskl.appEngineToken_;
@@ -38,6 +37,10 @@
 
       this.piskelController = new pskl.controller.piskel.PublicPiskelController(this.corePiskelController);
       this.piskelController.init();
+
+      this.paletteImportService = new pskl.service.palette.PaletteImportService();
+      this.paletteService = new pskl.service.palette.PaletteService();
+      this.paletteService.addDynamicPalette(new pskl.service.palette.CurrentColorsPalette());
 
       this.paletteController = new pskl.controller.PaletteController();
       this.paletteController.init();
@@ -83,6 +86,9 @@
 
       this.notificationController = new pskl.controller.NotificationController();
       this.notificationController.init();
+
+      this.progressBarController = new pskl.controller.ProgressBarController();
+      this.progressBarController.init();
 
       this.canvasBackgroundController = new pskl.controller.CanvasBackgroundController();
       this.canvasBackgroundController.init();

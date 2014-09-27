@@ -27,7 +27,6 @@ var Constants = {
 
   NO_PALETTE_ID : '__no-palette',
   CURRENT_COLORS_PALETTE_ID : '__current-colors',
-  MANAGE_PALETTE_ID : '__manage-palettes',
 
   // Used for Spectrum input
   PREFERRED_COLOR_FORMAT : 'rgb',
