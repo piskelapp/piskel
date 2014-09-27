@@ -39,6 +39,10 @@
     $.subscribe(Events.SECONDARY_COLOR_SELECTED, this.highlightSelectedColors.bind(this));
     $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
 
+
+    pskl.app.shortcutService.addShortcuts(['>', 'shift+>'], this.selectNextColor_.bind(this));
+    pskl.app.shortcutService.addShortcut('<', this.selectPreviousColor_.bind(this));
+
     this.fillPaletteList();
     this.updateFromUserSettings();
     this.fillColorListContainer();
@@ -58,8 +62,8 @@
     var colors = this.getSelectedPaletteColors_();
 
     if (colors.length > 0) {
-      var html = colors.map(function (color) {
-        return pskl.utils.Template.replace(this.paletteColorTemplate_, {color : color});
+      var html = colors.map(function (color, index) {
+        return pskl.utils.Template.replace(this.paletteColorTemplate_, {color : color, index : index});
       }.bind(this)).join('');
       this.colorListContainer_.innerHTML = html;
 
@@ -76,10 +80,13 @@
     }
   };
 
+  ns.PalettesListController.prototype.selectPalette = function (paletteId) {
+    pskl.UserSettings.set(pskl.UserSettings.SELECTED_PALETTE, paletteId);
+  };
+
   ns.PalettesListController.prototype.getSelectedPaletteColors_ = function () {
     var colors = [];
-    var paletteId = pskl.UserSettings.get(pskl.UserSettings.SELECTED_PALETTE);
-    var palette = this.paletteService.getPaletteById(paletteId);
+    var palette = this.getSelectedPalette_();
     if (palette) {
       colors = palette.getColors();
     }
@@ -91,8 +98,34 @@
     return colors;
   };
 
-  ns.PalettesListController.prototype.selectPalette = function (paletteId) {
-    pskl.UserSettings.set(pskl.UserSettings.SELECTED_PALETTE, paletteId);
+  ns.PalettesListController.prototype.getSelectedPalette_ = function () {
+    var paletteId = pskl.UserSettings.get(pskl.UserSettings.SELECTED_PALETTE);
+    return this.paletteService.getPaletteById(paletteId);
+  };
+
+  ns.PalettesListController.prototype.selectNextColor_ = function () {
+    this.selectColor_(this.getCurrentColorIndex_() + 1);
+  };
+
+  ns.PalettesListController.prototype.selectPreviousColor_ = function () {
+    this.selectColor_(this.getCurrentColorIndex_() - 1);
+  };
+
+  ns.PalettesListController.prototype.getCurrentColorIndex_ = function () {
+    var currentIndex = 0;
+    var selectedColor = document.querySelector('.' + PRIMARY_COLOR_CLASSNAME);
+    if (selectedColor) {
+      currentIndex = parseInt(selectedColor.dataset.colorIndex, 10);
+    }
+    return currentIndex;
+  };
+
+  ns.PalettesListController.prototype.selectColor_ = function (index) {
+    var colors = this.getSelectedPaletteColors_();
+    var color = colors[index];
+    if (color) {
+      $.publish(Events.SELECT_PRIMARY_COLOR, [color]);
+    }
   };
 
   ns.PalettesListController.prototype.onUserSettingsChange_ = function (evt, name, value) {

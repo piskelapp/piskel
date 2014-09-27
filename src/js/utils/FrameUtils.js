@@ -83,9 +83,9 @@
      * @param  {String} strColor2 color under
      * @return {String} the composite color
      */
-    mergePixels_ : function (strColor1, strColor2, globalOpacity1) {
-      var col1 = pskl.utils.FrameUtils.toRgba_(strColor1);
-      var col2 = pskl.utils.FrameUtils.toRgba_(strColor2);
+    mergePixels__ : function (strColor1, strColor2, globalOpacity1) {
+      var col1 = pskl.utils.FrameUtils.toRgba__(strColor1);
+      var col2 = pskl.utils.FrameUtils.toRgba__(strColor2);
       if (typeof globalOpacity1 == 'number') {
         col1 = JSON.parse(JSON.stringify(col1));
         col1.a = globalOpacity1 * col1.a;
@@ -105,7 +105,7 @@
      * @param  {String} c color as a string
      * @return {Object} {r:Number,g:Number,b:Number,a:Number}
      */
-    toRgba_ : function (c) {
+    toRgba__ : function (c) {
       if (colorCache[c]) {
         return colorCache[c];
       }

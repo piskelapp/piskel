@@ -35,6 +35,12 @@
     }
   };
 
+  ns.ShortcutService.prototype.addShortcuts = function (keys, callback) {
+    keys.forEach(function (key) {
+      this.addShortcut(key, callback);
+    }.bind(this));
+  };
+
   ns.ShortcutService.prototype.removeShortcut = function (rawKey) {
     var parsedKey = this.parseKey_(rawKey.toLowerCase());
 

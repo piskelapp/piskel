@@ -9,21 +9,23 @@
 
     this.colorSorter = new pskl.service.color.ColorSorter();
     this.paletteService = pskl.app.paletteService;
-
-    this.framesColorsCache_ = {};
   };
 
   ns.CurrentColorsService.prototype.init = function () {
     $.subscribe(Events.PISKEL_RESET, this.onPiskelUpdated_.bind(this));
     $.subscribe(Events.TOOL_RELEASED, this.onPiskelUpdated_.bind(this));
-    $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
+    $.subscribe(Events.USER_SETTINGS_CHANGED, this.onUserSettingsChange_.bind(this));
   };
 
-  ns.CurrentColorsService.prototype.isCurrentColorsPaletteSelected_ = function () {
-    var paletteId = pskl.UserSettings.get(pskl.UserSettings.SELECTED_PALETTE);
-    var palette = this.paletteService.getPaletteById(paletteId);
+  ns.CurrentColorsService.prototype.getCurrentColors = function () {
+    return this.currentColors;
+  };
 
-    return palette.id === Constants.CURRENT_COLORS_PALETTE_ID;
+  ns.CurrentColorsService.prototype.setCurrentColors = function (colors) {
+    if (colors.join('') !== this.currentColors.join('')) {
+      this.currentColors = colors;
+      $.publish(Events.CURRENT_COLORS_UPDATED);
+    }
   };
 
   ns.CurrentColorsService.prototype.onUserSettingsChange_ = function (evt, name, value) {
@@ -34,14 +36,17 @@
     }
   };
 
-  ns.CurrentColorsService.prototype.getCurrentColors = function () {
-    return this.currentColors;
-  };
-
   ns.CurrentColorsService.prototype.onPiskelUpdated_ = function (evt) {
     if (this.isCurrentColorsPaletteSelected_()) {
       this.updateCurrentColors_();
     }
+  };
+
+  ns.CurrentColorsService.prototype.isCurrentColorsPaletteSelected_ = function () {
+    var paletteId = pskl.UserSettings.get(pskl.UserSettings.SELECTED_PALETTE);
+    var palette = this.paletteService.getPaletteById(paletteId);
+
+    return palette.id === Constants.CURRENT_COLORS_PALETTE_ID;
   };
 
   ns.CurrentColorsService.prototype.updateCurrentColors_ = function () {
@@ -61,22 +66,21 @@
 
     // limit the array to the max colors to display
     var colorsArray = Object.keys(colors).slice(0, Constants.MAX_CURRENT_COLORS_DISPLAYED);
-    this.currentColors = this.colorSorter.sort(colorsArray);
+    var currentColors = this.colorSorter.sort(colorsArray);
 
-    // TODO : only fire if there was a change
-    $.publish(Events.CURRENT_COLORS_UPDATED);
+    this.setCurrentColors(currentColors);
   };
 
   ns.CurrentColorsService.prototype.getFrameColors_ = function (frame) {
     var frameColors = {};
     frame.forEachPixel(function (color, x, y) {
-      var hexColor = this.toHexColor_(color);
+      var hexColor = this.toHexString_(color);
       frameColors[hexColor] = true;
     }.bind(this));
     return frameColors;
   };
 
-  ns.CurrentColorsService.prototype.toHexColor_ = function (color) {
+  ns.CurrentColorsService.prototype.toHexString_ = function (color) {
     if (color === Constants.TRANSPARENT_COLOR) {
       return color;
     } else {
