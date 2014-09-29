@@ -32,7 +32,7 @@
       var file = files[i];
       var isImage = file.type.indexOf('image') === 0;
       var isPiskel = /\.piskel$/i.test(file.name);
-      var isPalette = /\.(gpl|txt)$/i.test(file.name);
+      var isPalette = /\.(gpl|txt|pal)$/i.test(file.name);
       if (isImage) {
         this.readImageFile_(file);
       } else if (isPiskel) {

@@ -1,5 +1,5 @@
 (function () {
-  var ns = $.namespace('pskl.service.palette');
+  var ns = $.namespace('pskl.service.palette.reader');
 
   ns.PaletteImageReader = function (file, onSuccess, onError) {
     this.file = file;
@@ -18,7 +18,6 @@
       this.onWorkerSuccess_.bind(this),
       this.onWorkerStep_.bind(this),
       this.onWorkerError_.bind(this));
-
 
     $.publish(Events.SHOW_PROGRESS, [{"name": 'Processing image colors ...'}]);
 

@@ -2,8 +2,10 @@
   var ns = $.namespace('pskl.service.palette');
 
   var fileReaders = {
-    'gpl' : ns.PaletteGplReader,
-    'txt' : ns.PaletteTxtReader
+    'gpl' : ns.reader.PaletteGplReader,
+    'pal' : ns.reader.PalettePalReader,
+    'txt' : ns.reader.PaletteTxtReader,
+    'img' : ns.reader.PaletteImageReader
   };
 
   ns.PaletteImportService = function () {};
@@ -33,7 +35,7 @@
   ns.PaletteImportService.prototype.getReaderClass_ = function (file) {
     var readerClass;
     if (this.isImage_(file)) {
-      readerClass = ns.PaletteImageReader;
+      readerClass = fileReaders.img;
     } else {
       var extension = this.getExtension_(file);
       readerClass = fileReaders[extension];
