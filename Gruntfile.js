@@ -161,7 +161,7 @@ module.exports = function(grunt) {
           ]
         },
         files: [
-          {expand: true, flatten: true, src: ['src/piskel-boot-0.1.0.js'], dest: 'dest/'}
+          {src: ['src/piskel-boot.js'], dest: 'dest/piskel-boot.js'}
         ]
       },
       editor: {
@@ -170,6 +170,9 @@ module.exports = function(grunt) {
             {
               match: /templates\//g,
               replacement: "../templates"+version+"/"
+            },{
+              match: /piskel-boot.js/g,
+              replacement: "../piskel-boot"+version+".js"
             },{
               match: /^(.|[\r\n])*<!--body-main-start-->/,
               replacement: "",
@@ -194,6 +197,7 @@ module.exports = function(grunt) {
       main: {
         files: [
           {src: ['dest/js/piskel-packaged-min.js'], dest: 'dest/js/piskel-packaged-min' + version + '.js'},
+          {src: ['dest/piskel-boot.js'], dest: 'dest/piskel-boot' + version + '.js'},
           {src: ['src/logo.png'], dest: 'dest/logo.png'},
           {src: ['src/js/lib/iframeLoader-0.1.0.js'], dest: 'dest/js/lib/iframeLoader-0.1.0.js'},
           {src: ['src/js/lib/gif/gif.ie.worker.js'], dest: 'dest/js/lib/gif/gif.ie.worker.js'},
@@ -246,7 +250,7 @@ module.exports = function(grunt) {
         },
         src: [
           'src/js/**/*.js',
-          'src/piskel-boot-0.1.0.js',
+          'src/piskel-boot.js',
           'src/piskel-script-list.js',
           '!src/js/lib/**/*.js'
         ],
