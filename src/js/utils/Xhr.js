@@ -37,7 +37,7 @@
       };
 
       xhr.onerror = function(e) {
-        error(e);
+        error(e, this);
       };
 
       return xhr;

@@ -23,9 +23,14 @@
     message.innerHTML = messageInfo.content;
     message.innerHTML = message.innerHTML + "<div title='Close message' class='close'>x</div>";
     document.body.appendChild(message);
-    $(message).find(".close").click($.proxy(this.removeMessage_, this));
-    if(messageInfo.behavior) {
+
+    message.querySelector('.close').addEventListener('click', this.removeMessage_.bind(this));
+    if (messageInfo.behavior) {
       messageInfo.behavior(message);
+    }
+
+    if (messageInfo.hideDelay) {
+      window.setTimeout(this.removeMessage_.bind(this), messageInfo.hideDelay);
     }
   };
 

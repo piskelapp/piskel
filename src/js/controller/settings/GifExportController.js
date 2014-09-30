@@ -44,31 +44,45 @@
     var zoom = this.getSelectedZoom_(),
         fps = this.piskelController.getFPS();
 
-    this.renderAsImageDataAnimatedGIF(zoom, fps, this.onGifRenderingCompleted_.bind(this));
+    this.renderAsImageDataAnimatedGIF(zoom, fps, this.uploadImageData_.bind(this));
   };
 
   ns.GifExportController.prototype.onDownloadButtonClick_ = function (evt) {
-    var fileName = this.piskelController.getPiskel().getDescriptor().name + '.gif';
     var zoom = this.getSelectedZoom_(),
         fps = this.piskelController.getFPS();
 
-    this.renderAsImageDataAnimatedGIF(zoom, fps, function (imageData) {
-      pskl.utils.BlobUtils.dataToBlob(imageData, "image/gif", function(blob) {
-        pskl.utils.FileUtils.downloadAsFile(blob, fileName);
-      });
-    }.bind(this));
+    this.renderAsImageDataAnimatedGIF(zoom, fps, this.downloadImageData_.bind(this));
   };
 
-  ns.GifExportController.prototype.onGifRenderingCompleted_ = function (imageData) {
+  ns.GifExportController.prototype.downloadImageData_ = function (imageData) {
+    var fileName = this.piskelController.getPiskel().getDescriptor().name + '.gif';
+    pskl.utils.BlobUtils.dataToBlob(imageData, "image/gif", function(blob) {
+      pskl.utils.FileUtils.downloadAsFile(blob, fileName);
+    });
+  };
+
+  ns.GifExportController.prototype.uploadImageData_ = function (imageData) {
     this.updatePreview_(imageData);
     this.previewContainerEl.classList.add("preview-upload-ongoing");
-    pskl.app.imageUploadService.upload(imageData, this.onImageUploadCompleted_.bind(this));
+
+    console.log(imageData.length);
+
+    pskl.app.imageUploadService.upload(imageData, this.onImageUploadCompleted_.bind(this), this.onImageUploadFailed_.bind(this));
   };
 
   ns.GifExportController.prototype.onImageUploadCompleted_ = function (imageUrl) {
     this.updatePreview_(imageUrl);
     this.updateStatus_(imageUrl);
     this.previewContainerEl.classList.remove("preview-upload-ongoing");
+  };
+
+  ns.GifExportController.prototype.onImageUploadFailed_ = function (event, xhr) {
+    if (xhr.status === 500) {
+      $.publish(Events.SHOW_NOTIFICATION, [{
+        "content": "Upload failed : " + xhr.responseText,
+        "hideDelay" : 5000
+      }]);
+    }
   };
 
   ns.GifExportController.prototype.updatePreview_ = function (src) {
@@ -104,10 +118,10 @@
     var colorCount = pskl.app.currentColorsService.getCurrentColors().length;
     var preserveColors = colorCount < MAX_GIF_COLORS;
     var gif = new window.GIF({
-      workers: 2,
+      workers: 5,
       quality: 1,
-      width: this.piskelController.getWidth()*zoom,
-      height: this.piskelController.getHeight()*zoom,
+      width: this.piskelController.getWidth() * zoom,
+      height: this.piskelController.getHeight() * zoom,
       preserveColors : preserveColors
     });
 
