@@ -236,7 +236,8 @@
 
   ns.DrawingController.prototype.onMousewheel_ = function (jQueryEvent) {
     var event = jQueryEvent.originalEvent;
-    var delta = event.wheelDeltaY || (-2 * event.deltaY);
+    // Ratio between wheelDeltaY (mousewheel event) and deltaY (wheel event) is -40
+    var delta = event.wheelDeltaY || (-40 * event.deltaY);
     var modifier = Math.abs(delta/120);
     if (delta > 0) {
       this.increaseZoom_(modifier);
