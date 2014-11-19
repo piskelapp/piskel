@@ -34,12 +34,12 @@
   <!-- Templates -->
 
   <!-- Drawing tool icon-button -->
-  <script type="text/template" id="drawing-tool-item-template">
+  <script type="text/template" id="drawingTool-item-template">
     <li rel="tooltip" data-placement="right" class="{{cssclass}}" data-tool-id="{{toolid}}" title="{{title}}"></li>
   </script>
 
   <!-- Drawing tool tooltip container -->
-  <script type="text/template" id="drawing-tool-tooltip-container-template">
+  <script type="text/template" id="drawingTool-tooltipContainer-template">
     <div class='tools-tooltip-container'>
       <div>{{helptext}} <span class='tools-tooltip-shortcut'>({{shortcut}})</span></div>
       {{descriptors}}
@@ -47,7 +47,7 @@
   </script>
 
   <!-- Drawing tool tooltip line for modifier -->
-  <script type="text/template" id="drawing-tool-tooltip-descriptor-template">
+  <script type="text/template" id="drawingTool-tooltipDescriptor-template">
     <div class='tools-tooltip-descriptor'>
       <span class='tools-tooltip-descriptor-button'>{{key}}</span>
       {{description}}
@@ -55,7 +55,7 @@
   </script>
 
   <!-- Drawing tool tooltip line -->
-  <script type="text/template" id="drawing-tool-tooltip-descriptor-simple-template">
+  <script type="text/template" id="drawingTool-simpleTooltipDescriptor-template">
     <div class='tools-tooltip-descriptor'>
       {{description}}
     </div>

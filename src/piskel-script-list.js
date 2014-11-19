@@ -87,6 +87,7 @@
   "js/controller/PalettesListController.js",
   "js/controller/ProgressBarController.js",
   "js/controller/NotificationController.js",
+  "js/controller/TransformationsController.js",
   "js/controller/CanvasBackgroundController.js",
 
   // Settings sub-controllers

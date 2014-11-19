@@ -3,6 +3,7 @@
 (typeof exports != "undefined" ? exports : pskl_exports).styles = [
   "css/reset.css",
   "css/style.css",
+  "css/layout.css",
   "css/font-icon.css",
   "css/forms.css",
   "css/settings.css",
@@ -21,6 +22,7 @@
   "css/toolbox-layers-list.css",
   "css/toolbox-palettes-list.css",
   "css/toolbox-animated-preview.css",
+  "css/transformations.css",
   "css/spectrum/spectrum.css",
   "css/spectrum/spectrum-overrides.css",
   "css/bootstrap/bootstrap.css",

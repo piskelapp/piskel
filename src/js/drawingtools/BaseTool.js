@@ -63,7 +63,7 @@
   };
 
   ns.BaseTool.prototype.getTooltipText = function(shortcut) {
-    var tpl = pskl.utils.Template.get('drawing-tool-tooltip-container-template');
+    var tpl = pskl.utils.Template.get('drawingTool-tooltipContainer-template');
 
     var descriptors = "";
     if (Array.isArray(this.tooltipDescriptors)) {
@@ -82,13 +82,13 @@
   ns.BaseTool.prototype.getTooltipDescription = function(descriptor) {
     var tpl;
     if (descriptor.key) {
-      tpl = pskl.utils.Template.get('drawing-tool-tooltip-descriptor-template');
+      tpl = pskl.utils.Template.get('drawingTool-tooltipDescriptor-template');
       descriptor.key = descriptor.key.toUpperCase();
       if (pskl.utils.UserAgent.isMac) {
         descriptor.key = descriptor.key.replace('CTRL', 'CMD');
       }
     } else {
-      tpl = pskl.utils.Template.get('drawing-tool-tooltip-descriptor-simple-template');
+      tpl = pskl.utils.Template.get('drawingTool-simpleTooltipDescriptor-template');
     }
     return pskl.utils.Template.replace(tpl, descriptor);
   };

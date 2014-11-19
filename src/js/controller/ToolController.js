@@ -136,7 +136,7 @@
       classList.push('selected');
     }
 
-    var tpl = pskl.utils.Template.get('drawing-tool-item-template');
+    var tpl = pskl.utils.Template.get('drawingTool-item-template');
     return pskl.utils.Template.replace(tpl, {
       cssclass : classList.join(' '),
       toolid : toolId,
