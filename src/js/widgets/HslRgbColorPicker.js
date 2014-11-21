@@ -1,5 +1,5 @@
 (function () {
-  var ns = $.namespace('pskl.controller.widgets');
+  var ns = $.namespace('pskl.widgets');
 
   ns.HslRgbColorPicker = function (container, colorUpdatedCallback) {
     this.container = container;

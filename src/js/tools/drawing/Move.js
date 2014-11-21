@@ -1,10 +1,10 @@
 /**
- * @provide pskl.drawingtools.Move
+ * @provide pskl.tools.drawing.Move
  *
  * @require pskl.utils
  */
 (function() {
-  var ns = $.namespace("pskl.drawingtools");
+  var ns = $.namespace("pskl.tools.drawing");
 
   ns.Move = function() {
     this.toolId = ns.Move.TOOL_ID;

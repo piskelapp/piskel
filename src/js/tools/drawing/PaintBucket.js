@@ -1,10 +1,10 @@
 /**
- * @provide pskl.drawingtools.PaintBucket
+ * @provide pskl.tools.drawing.PaintBucket
  *
  * @require pskl.utils
  */
 (function() {
-  var ns = $.namespace("pskl.drawingtools");
+  var ns = $.namespace("pskl.tools.drawing");
 
   ns.PaintBucket = function() {
     this.toolId = "tool-paint-bucket";

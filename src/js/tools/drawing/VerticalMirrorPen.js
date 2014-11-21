@@ -1,5 +1,5 @@
 (function() {
-  var ns = $.namespace("pskl.drawingtools");
+  var ns = $.namespace("pskl.tools.drawing");
 
   ns.VerticalMirrorPen = function() {
     this.superclass.constructor.call(this);

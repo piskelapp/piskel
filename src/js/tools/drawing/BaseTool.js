@@ -1,14 +1,17 @@
 /**
- * @provide pskl.drawingtools.BaseTool
+ * @provide pskl.tools.drawing.BaseTool
  *
  * @require pskl.utils
  */
 (function() {
-  var ns = $.namespace("pskl.drawingtools");
+  var ns = $.namespace("pskl.tools.drawing");
 
   ns.BaseTool = function() {
+    pskl.tool.Tool.call(this);
     this.toolId = "tool-base";
   };
+
+  pskl.utils.inherit(ns.BaseTool, pskl.tools.Tool);
 
   ns.BaseTool.prototype.applyToolAt = function(col, row, color, frame, overlay, event) {};
 
@@ -56,41 +59,6 @@
       scope : this,
       replay : replayData
     });
-  };
-
-  ns.BaseTool.prototype.getHelpText = function() {
-    return this.shortHelpText || this.helpText;
-  };
-
-  ns.BaseTool.prototype.getTooltipText = function(shortcut) {
-    var tpl = pskl.utils.Template.get('drawingTool-tooltipContainer-template');
-
-    var descriptors = "";
-    if (Array.isArray(this.tooltipDescriptors)) {
-      this.tooltipDescriptors.forEach(function (descriptor) {
-        descriptors += this.getTooltipDescription(descriptor);
-      }.bind(this));
-    }
-
-    return pskl.utils.Template.replace(tpl, {
-      helptext : this.getHelpText(),
-      shortcut : shortcut,
-      descriptors : descriptors
-    });
-  };
-
-  ns.BaseTool.prototype.getTooltipDescription = function(descriptor) {
-    var tpl;
-    if (descriptor.key) {
-      tpl = pskl.utils.Template.get('drawingTool-tooltipDescriptor-template');
-      descriptor.key = descriptor.key.toUpperCase();
-      if (pskl.utils.UserAgent.isMac) {
-        descriptor.key = descriptor.key.replace('CTRL', 'CMD');
-      }
-    } else {
-      tpl = pskl.utils.Template.get('drawingTool-simpleTooltipDescriptor-template');
-    }
-    return pskl.utils.Template.replace(tpl, descriptor);
   };
 
   ns.BaseTool.prototype.releaseToolAt = function(col, row, color, frame, overlay, event) {};

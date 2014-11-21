@@ -1,17 +1,17 @@
 /**
- * @provide pskl.drawingtools.Rectangle
+ * @provide pskl.tools.drawing.Rectangle
  *
  * @require pskl.utils
  */
 (function() {
-  var ns = $.namespace("pskl.drawingtools");
+  var ns = $.namespace("pskl.tools.drawing");
 
   ns.Rectangle = function() {
     ns.ShapeTool.call(this);
 
     this.toolId = "tool-rectangle";
 
-    this.shortHelpText = "Rectangle tool";
+    this.helpText = "Rectangle tool";
   };
 
   pskl.utils.inherit(ns.Rectangle, ns.ShapeTool);

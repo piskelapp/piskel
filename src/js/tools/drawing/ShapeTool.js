@@ -1,5 +1,5 @@
 (function () {
-  var ns = $.namespace('pskl.drawingtools');
+  var ns = $.namespace('pskl.tools.drawing');
   /**
    * Abstract shape tool class, parent to all shape tools (rectangle, circle).
    * Shape tools should override only the draw_ method

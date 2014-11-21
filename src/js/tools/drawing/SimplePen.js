@@ -1,10 +1,10 @@
 /**
- * @provide pskl.drawingtools.SimplePen
+ * @provide pskl.tools.drawing.SimplePen
  *
  * @require pskl.utils
  */
 (function() {
-  var ns = $.namespace("pskl.drawingtools");
+  var ns = $.namespace("pskl.tools.drawing");
 
   ns.SimplePen = function() {
     this.toolId = "tool-pen";

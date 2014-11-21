@@ -1,11 +1,11 @@
 /**
- * @provide pskl.drawingtools.Eraser
+ * @provide pskl.tools.drawing.Eraser
  *
  * @require Constants
  * @require pskl.utils
  */
 (function() {
-  var ns = $.namespace("pskl.drawingtools");
+  var ns = $.namespace("pskl.tools.drawing");
 
   ns.Eraser = function() {
     this.superclass.constructor.call(this);

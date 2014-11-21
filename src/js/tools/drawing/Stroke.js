@@ -1,10 +1,10 @@
 /**
- * @provide pskl.drawingtools.Stroke
+ * @provide pskl.tools.drawing.Stroke
  *
  * @require pskl.utils
  */
 (function() {
-  var ns = $.namespace("pskl.drawingtools");
+  var ns = $.namespace("pskl.tools.drawing");
 
   ns.Stroke = function() {
     this.toolId = "tool-stroke";

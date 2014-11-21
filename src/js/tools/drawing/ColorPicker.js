@@ -1,10 +1,10 @@
 /**
- * @provide pskl.drawingtools.ColorPicker
+ * @provide pskl.tools.drawing.ColorPicker
  *
  * @require pskl.utils
  */
 (function() {
-  var ns = $.namespace("pskl.drawingtools");
+  var ns = $.namespace("pskl.tools.drawing");
 
   ns.ColorPicker = function() {
     this.toolId = "tool-colorpicker";

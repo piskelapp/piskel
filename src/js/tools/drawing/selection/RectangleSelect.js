@@ -1,10 +1,10 @@
 /**
- * @provide pskl.drawingtools.RectangleSelect
+ * @provide pskl.tools.drawing.RectangleSelect
  *
  * @require pskl.utils
  */
 (function() {
-  var ns = $.namespace("pskl.drawingtools");
+  var ns = $.namespace("pskl.tools.drawing");
 
   ns.RectangleSelect = function() {
     this.toolId = "tool-rectangle-select";

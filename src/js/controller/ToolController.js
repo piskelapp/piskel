@@ -7,23 +7,22 @@
     };
 
     this.tools = [
-      toDescriptor('simplePen', 'P', new pskl.drawingtools.SimplePen()),
-      toDescriptor('verticalMirrorPen', 'V', new pskl.drawingtools.VerticalMirrorPen()),
-      toDescriptor('paintBucket', 'B', new pskl.drawingtools.PaintBucket()),
-      toDescriptor('colorSwap', 'A', new pskl.drawingtools.ColorSwap()),
-      toDescriptor('eraser', 'E', new pskl.drawingtools.Eraser()),
-      toDescriptor('stroke', 'L', new pskl.drawingtools.Stroke()),
-      toDescriptor('rectangle', 'R', new pskl.drawingtools.Rectangle()),
-      toDescriptor('circle', 'C', new pskl.drawingtools.Circle()),
-      toDescriptor('move', 'M', new pskl.drawingtools.Move()),
-      toDescriptor('rectangleSelect', 'S', new pskl.drawingtools.RectangleSelect()),
-      toDescriptor('shapeSelect', 'Z', new pskl.drawingtools.ShapeSelect()),
-      toDescriptor('lighten', 'U', new pskl.drawingtools.Lighten()),
-      toDescriptor('colorPicker', 'O', new pskl.drawingtools.ColorPicker())
+      toDescriptor('simplePen', 'P', new pskl.tools.drawing.SimplePen()),
+      toDescriptor('verticalMirrorPen', 'V', new pskl.tools.drawing.VerticalMirrorPen()),
+      toDescriptor('paintBucket', 'B', new pskl.tools.drawing.PaintBucket()),
+      toDescriptor('colorSwap', 'A', new pskl.tools.drawing.ColorSwap()),
+      toDescriptor('eraser', 'E', new pskl.tools.drawing.Eraser()),
+      toDescriptor('stroke', 'L', new pskl.tools.drawing.Stroke()),
+      toDescriptor('rectangle', 'R', new pskl.tools.drawing.Rectangle()),
+      toDescriptor('circle', 'C', new pskl.tools.drawing.Circle()),
+      toDescriptor('move', 'M', new pskl.tools.drawing.Move()),
+      toDescriptor('rectangleSelect', 'S', new pskl.tools.drawing.RectangleSelect()),
+      toDescriptor('shapeSelect', 'Z', new pskl.tools.drawing.ShapeSelect()),
+      toDescriptor('lighten', 'U', new pskl.tools.drawing.Lighten()),
+      toDescriptor('colorPicker', 'O', new pskl.tools.drawing.ColorPicker())
     ];
 
-    this.currentSelectedTool = this.tools[0];
-    this.previousSelectedTool = this.tools[0];
+    this.toolIconRenderer = new pskl.tools.IconMarkupRenderer();
   };
 
   /**
@@ -50,7 +49,7 @@
     var previousSelectedToolClass = stage.data("selected-tool-class");
     if(previousSelectedToolClass) {
       stage.removeClass(previousSelectedToolClass);
-      stage.removeClass(pskl.drawingtools.Move.TOOL_ID);
+      stage.removeClass(pskl.tools.drawing.Move.TOOL_ID);
     }
     stage.addClass(tool.instance.toolId);
     stage.data("selected-tool-class", tool.instance.toolId);
@@ -105,43 +104,21 @@
   };
 
   ns.ToolController.prototype.getToolById_ = function (toolId) {
-    for(var i = 0 ; i < this.tools.length ; i++) {
-      var tool = this.tools[i];
-      if (tool.instance.toolId == toolId) {
-        return tool;
-      }
-    }
-    return null;
+    return pskl.utils.Array.find(this.tools, function (tool) {
+      return tool.instance.toolId == toolId;
+    });
   };
 
   /**
    * @private
    */
   ns.ToolController.prototype.createToolsDom_ = function() {
-    var toolMarkup = '';
+    var html = '';
     for(var i = 0 ; i < this.tools.length ; i++) {
-      toolMarkup += this.getToolMarkup_(this.tools[i]);
+      var tool = this.tools[i];
+      html += this.toolIconRenderer.render(tool.instance, tool.shortcut);
     }
-    $('#tools-container').html(toolMarkup);
-  };
-
-  /**
-   * @private
-   */
-  ns.ToolController.prototype.getToolMarkup_ = function(tool) {
-    var toolId = tool.instance.toolId;
-
-    var classList = ['tool-icon', toolId];
-    if (this.currentSelectedTool == tool) {
-      classList.push('selected');
-    }
-
-    var tpl = pskl.utils.Template.get('drawingTool-item-template');
-    return pskl.utils.Template.replace(tpl, {
-      cssclass : classList.join(' '),
-      toolid : toolId,
-      title : tool.instance.getTooltipText(tool.shortcut)
-    });
+    $('#tools-container').html(html);
   };
 
   ns.ToolController.prototype.addKeyboardShortcuts_ = function () {

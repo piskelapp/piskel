@@ -1,11 +1,11 @@
 /**
- * @provide pskl.drawingtools.Eraser
+ * @provide pskl.tools.drawing.Eraser
  *
  * @require Constants
  * @require pskl.utils
  */
 (function() {
-  var ns = $.namespace("pskl.drawingtools");
+  var ns = $.namespace("pskl.tools.drawing");
   var DEFAULT_STEP = 3;
 
   ns.Lighten = function() {

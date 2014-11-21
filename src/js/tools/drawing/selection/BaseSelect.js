@@ -1,13 +1,13 @@
 /**
- * @provide pskl.drawingtools.BaseSelect
+ * @provide pskl.tools.drawing.BaseSelect
  *
  * @require pskl.utils
  */
 (function() {
-  var ns = $.namespace("pskl.drawingtools");
+  var ns = $.namespace("pskl.tools.drawing");
 
   ns.BaseSelect = function() {
-    this.secondaryToolId = pskl.drawingtools.Move.TOOL_ID;
+    this.secondaryToolId = pskl.tools.drawing.Move.TOOL_ID;
     this.BodyRoot = $('body');
 
     // Select's first point coordinates (set in applyToolAt)

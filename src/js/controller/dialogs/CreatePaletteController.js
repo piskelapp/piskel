@@ -27,7 +27,7 @@
     importFileButton.addEventListener('click', this.onImportFileButtonClick_.bind(this));
 
     var colorsListContainer = document.querySelector('.colors-container');
-    this.colorsListWidget = new pskl.controller.widgets.ColorsList(colorsListContainer);
+    this.colorsListWidget = new pskl.widgets.ColorsList(colorsListContainer);
 
     var palette;
     var isCurrentColorsPalette = paletteId == Constants.CURRENT_COLORS_PALETTE_ID;

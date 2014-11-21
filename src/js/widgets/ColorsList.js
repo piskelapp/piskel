@@ -1,5 +1,5 @@
 (function () {
-  var ns = $.namespace('pskl.controller.widgets');
+  var ns = $.namespace('pskl.widgets');
 
   var DEFAULT_COLOR = '#000000';
 
@@ -20,7 +20,7 @@
     this.colorsList.addEventListener('click', this.onColorContainerClick_.bind(this));
 
     var colorPickerContainer = container.querySelector('.color-picker-container');
-    this.hslRgbColorPicker = new pskl.controller.widgets.HslRgbColorPicker(colorPickerContainer, this.onColorUpdated_.bind(this));
+    this.hslRgbColorPicker = new pskl.widgets.HslRgbColorPicker(colorPickerContainer, this.onColorUpdated_.bind(this));
     this.hslRgbColorPicker.init();
   };
 

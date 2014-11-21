@@ -11,6 +11,7 @@
   // Libraries
   "js/utils/core.js",
   "js/utils/UserAgent.js",
+  "js/utils/Array.js",
   "js/utils/Base64.js",
   "js/utils/BlobUtils.js",
   "js/utils/CanvasUtils.js",
@@ -24,6 +25,7 @@
   "js/utils/PixelUtils.js",
   "js/utils/PiskelFileUtils.js",
   "js/utils/Template.js",
+  "js/utils/TooltipFormatter.js",
   "js/utils/UserSettings.js",
   "js/utils/Uuid.js",
   "js/utils/WorkerUtils.js",
@@ -112,9 +114,9 @@
   // Dialogs controller
   "js/controller/dialogs/DialogsController.js",
 
-  // Widget controller
-  "js/controller/widgets/ColorsList.js",
-  "js/controller/widgets/HslRgbColorPicker.js",
+  // Widgets
+  "js/widgets/ColorsList.js",
+  "js/widgets/HslRgbColorPicker.js",
 
   // Services
   "js/service/LocalStorageService.js",
@@ -142,22 +144,25 @@
   "js/service/FileDropperService.js",
 
   // Tools
-  "js/drawingtools/BaseTool.js",
-  "js/drawingtools/ShapeTool.js",
-  "js/drawingtools/SimplePen.js",
-  "js/drawingtools/Lighten.js",
-  "js/drawingtools/VerticalMirrorPen.js",
-  "js/drawingtools/Eraser.js",
-  "js/drawingtools/Stroke.js",
-  "js/drawingtools/PaintBucket.js",
-  "js/drawingtools/Rectangle.js",
-  "js/drawingtools/Circle.js",
-  "js/drawingtools/Move.js",
-  "js/drawingtools/selectiontools/BaseSelect.js",
-  "js/drawingtools/selectiontools/RectangleSelect.js",
-  "js/drawingtools/selectiontools/ShapeSelect.js",
-  "js/drawingtools/ColorPicker.js",
-  "js/drawingtools/ColorSwap.js",
+  "js/tools/Tool.js",
+  "js/tools/IconMarkupRenderer.js",
+  "js/tools/drawing/BaseTool.js",
+  "js/tools/drawing/ShapeTool.js",
+  "js/tools/drawing/SimplePen.js",
+  "js/tools/drawing/Lighten.js",
+  "js/tools/drawing/VerticalMirrorPen.js",
+  "js/tools/drawing/Eraser.js",
+  "js/tools/drawing/Stroke.js",
+  "js/tools/drawing/PaintBucket.js",
+  "js/tools/drawing/Rectangle.js",
+  "js/tools/drawing/Circle.js",
+  "js/tools/drawing/Move.js",
+  "js/tools/drawing/selection/BaseSelect.js",
+  "js/tools/drawing/selection/RectangleSelect.js",
+  "js/tools/drawing/selection/ShapeSelect.js",
+  "js/tools/drawing/ColorPicker.js",
+  "js/tools/drawing/ColorSwap.js",
+  "js/tools/transform/Flip.js",
 
   // Devtools
   "js/devtools/DrawingTestPlayer.js",

@@ -1,9 +1,9 @@
 /**
- * @provide pskl.drawingtools.ColorSwap
+ * @provide pskl.tools.drawing.ColorSwap
  *
  */
 (function() {
-  var ns = $.namespace("pskl.drawingtools");
+  var ns = $.namespace("pskl.tools.drawing");
 
   ns.ColorSwap = function() {
     this.toolId = "tool-colorswap";
