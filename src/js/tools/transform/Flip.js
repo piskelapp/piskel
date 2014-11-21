@@ -7,46 +7,23 @@
     this.tooltipDescriptors = [];
   };
 
-  pskl.utils.inherit(ns.Flip, pskl.tools.Tool);
+  pskl.utils.inherit(ns.Flip, ns.Transform);
 
-  ns.Flip.prototype.apply = function (evt) {
-    var allFrames = evt.shiftKey;
-    var allLayers = evt.ctrlKey;
-    if (evt.altKey) {
-      this.flip('vertical', allFrames, allLayers);
-    } else {
-      this.flip('horizontal', allFrames, allLayers);
-    }
-  };
-
-  ns.Flip.prototype.flipFrame_ = function (frame, axis) {
+  ns.Flip.prototype.applyToolOnFrame_ = function (frame, altKey) {
     var clone = frame.clone();
     var w = frame.getWidth();
     var h = frame.getHeight();
+
+    var isVertical = !altKey;
     clone.forEachPixel(function (color, x, y) {
-      if (axis === 'horizontal') {
+      if (isVertical) {
         x = w-x-1;
-      } else if (axis === 'vertical') {
+      } else {
         y = h-y-1;
       }
       frame.pixels[x][y] = color;
     });
     frame.version++;
-  };
-
-  ns.Flip.prototype.flip = function (axis, allFrames, allLayers) {
-    var currentFrameIndex = pskl.app.piskelController.getCurrentFrameIndex();
-    var layers = allLayers ? pskl.app.piskelController.getLayers(): [pskl.app.piskelController.getCurrentLayer()];
-    layers.forEach(function (layer) {
-      var frames = allFrames ? layer.getFrames(): [layer.getFrameAt(currentFrameIndex)];
-      frames.forEach(function (frame) {
-        this.flipFrame_(frame, axis);
-      }.bind(this));
-    }.bind(this));
-    $.publish(Events.PISKEL_RESET);
-    $.publish(Events.PISKEL_SAVE_STATE, {
-      type : pskl.service.HistoryService.SNAPSHOT
-    });
   };
 
 })();

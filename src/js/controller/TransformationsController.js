@@ -8,7 +8,8 @@
     };
 
     this.tools = [
-      toDescriptor('flip', 'F', new pskl.tools.transform.Flip())
+      toDescriptor('flip', 'F', new pskl.tools.transform.Flip()),
+      toDescriptor('rotate', 'V', new pskl.tools.transform.Rotate())
     ];
 
     this.toolIconRenderer = new pskl.tools.IconMarkupRenderer();
@@ -24,23 +25,17 @@
 
   ns.TransformationsController.prototype.onTransformationClick = function (evt) {
     var toolId = evt.target.dataset.toolId;
-    var tool = pskl.utils.Array.find(this.tools, function (tool) {
-      return tool.id === toolId;
-    });
-    if (tool) {
-      tool.instance.apply(evt);
-    }
+    this.tools.forEach(function (tool) {
+      if (tool.instance.toolId === toolId) {
+        tool.instance.apply(evt);
+      }
+    }.bind(this));
   };
 
-  /**
-   * @private
-   */
   ns.TransformationsController.prototype.createToolsDom_ = function() {
-    var html = '';
-    for(var i = 0 ; i < this.tools.length ; i++) {
-      var tool = this.tools[i];
-      html += this.toolIconRenderer.render(tool.instance, tool.shortcut);
-    }
+    var html = this.tools.reduce(function (p, tool) {
+      return p + this.toolIconRenderer.render(tool.instance, tool.shortcut);
+    }.bind(this), '');
     this.toolsContainer.innerHTML = html;
   };
 })();
