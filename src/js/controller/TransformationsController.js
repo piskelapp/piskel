@@ -8,8 +8,9 @@
     };
 
     this.tools = [
-      toDescriptor('flip', 'F', new pskl.tools.transform.Flip()),
-      toDescriptor('rotate', 'V', new pskl.tools.transform.Rotate())
+      toDescriptor('flip', '', new pskl.tools.transform.Flip()),
+      toDescriptor('rotate', '', new pskl.tools.transform.Rotate()),
+      toDescriptor('clone', '', new pskl.tools.transform.Clone())
     ];
 
     this.toolIconRenderer = new pskl.tools.IconMarkupRenderer();

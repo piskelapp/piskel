@@ -164,6 +164,7 @@
   "js/tools/drawing/ColorPicker.js",
   "js/tools/drawing/ColorSwap.js",
   "js/tools/transform/Transform.js",
+  "js/tools/transform/Clone.js",
   "js/tools/transform/Flip.js",
   "js/tools/transform/Rotate.js",
 

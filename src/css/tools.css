@@ -108,6 +108,12 @@
   background-size: 26px;
 }
 
+.tool-icon.tool-clone {
+  background-image: url(../img/tools/clone.png);
+  background-position: 9px 15px;
+  background-size: 30px;
+}
+
 /*
  * Tool cursors:
  */

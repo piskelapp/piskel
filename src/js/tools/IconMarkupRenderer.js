@@ -5,6 +5,7 @@
 
   ns.IconMarkupRenderer.prototype.render = function (tool, shortcut, tooltipPosition) {
     tooltipPosition = tooltipPosition || 'right';
+    shortcut = shortcut ?  '(' + shortcut + ')' : '';
     var tpl = pskl.utils.Template.get('drawingTool-item-template');
     return pskl.utils.Template.replace(tpl, {
       cssclass : ['tool-icon', tool.toolId].join(' '),
