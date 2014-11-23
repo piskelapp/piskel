@@ -52,6 +52,7 @@
     if (this.isClicked) {
       if (this.getDrawingAreaZoomRatio_() > 1) {
         var coords = this.getCoordinatesCenteredAround_(evt.clientX, evt.clientY);
+        console.log(coords);
         this.drawingController.setOffset(coords.x, coords.y);
       }
     }

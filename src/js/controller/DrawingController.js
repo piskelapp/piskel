@@ -10,6 +10,8 @@
 
     this.paletteController = paletteController;
 
+    this.dragHandler = new ns.drawing.DragHandler(this);
+
     /**
      * @public
      */
@@ -138,13 +140,12 @@
     var frame = this.piskelController.getCurrentFrame();
     var coords = this.getSpriteCoordinates(event.clientX, event.clientY);
 
+    this.isClicked = true;
+    this.setCurrentButton(event);
+
     if (event.button === Constants.MIDDLE_BUTTON) {
-      if (frame.containsPixel(coords.x, coords.y)) {
-        $.publish(Events.SELECT_PRIMARY_COLOR, [frame.getPixel(coords.x, coords.y)]);
-      }
+      this.dragHandler.startDrag(event.clientX, event.clientY);
     } else {
-      this.isClicked = true;
-      this.setCurrentButton(event);
       this.currentToolBehavior.hideHighlightedPixel(this.overlayFrame);
 
       this.currentToolBehavior.applyToolAt(
@@ -174,29 +175,6 @@
     }
   };
 
-  ns.DrawingController.prototype.resetZoom_ = function () {
-    this.setZoom_(this.calculateZoom_());
-  };
-
-  ns.DrawingController.prototype.increaseZoom_ = function (zoomMultiplier) {
-    var step = (zoomMultiplier || 1) * this.getZoomStep_();
-    this.setZoom_(this.renderer.getZoom() + step);
-  };
-
-  ns.DrawingController.prototype.decreaseZoom_ = function (zoomMultiplier) {
-    var step = (zoomMultiplier || 1) * this.getZoomStep_();
-    this.setZoom_(this.renderer.getZoom() - step);
-  };
-
-  ns.DrawingController.prototype.getZoomStep_ = function () {
-    return this.calculateZoom_() / 10;
-  };
-
-  ns.DrawingController.prototype.setZoom_ = function (zoom) {
-    this.compositeRenderer.setZoom(zoom);
-    $.publish(Events.ZOOM_CHANGED);
-  };
-
   /**
    * @private
    */
@@ -209,19 +187,22 @@
     var currentFrame = this.piskelController.getCurrentFrame();
 
     if (this.isClicked) {
-      $.publish(Events.MOUSE_EVENT, [event, this]);
-      // Warning : do not call setCurrentButton here
-      // mousemove do not have the correct mouse button information on all browsers
-      this.currentToolBehavior.moveToolAt(
-        coords.x | 0,
-        coords.y | 0,
-        this.getCurrentColor_(),
-        currentFrame,
-        this.overlayFrame,
-        event
-      );
+      if(this.currentMouseButton_ == Constants.MIDDLE_BUTTON) {
+        this.dragHandler.updateDrag(x, y);
+      } else {
+        $.publish(Events.MOUSE_EVENT, [event, this]);
+        // Warning : do not call setCurrentButton here
+        // mousemove do not have the correct mouse button information on all browsers
+        this.currentToolBehavior.moveToolAt(
+          coords.x | 0,
+          coords.y | 0,
+          this.getCurrentColor_(),
+          currentFrame,
+          this.overlayFrame,
+          event
+        );
+      }
     } else {
-
       this.currentToolBehavior.moveUnactiveToolAt(
         coords.x,
         coords.y,
@@ -250,6 +231,8 @@
    * @private
    */
   ns.DrawingController.prototype.onMouseup_ = function (event) {
+    var frame = this.piskelController.getCurrentFrame();
+    var coords = this.getSpriteCoordinates(event.clientX, event.clientY);
     if(this.isClicked) {
       $.publish(Events.MOUSE_EVENT, [event, this]);
       // A mouse button was clicked on the drawing canvas before this mouseup event,
@@ -260,17 +243,24 @@
       this.isClicked = false;
       this.setCurrentButton(event);
 
-      var coords = this.getSpriteCoordinates(event.clientX, event.clientY);
-      this.currentToolBehavior.releaseToolAt(
-        coords.x,
-        coords.y,
-        this.getCurrentColor_(),
-        this.piskelController.getCurrentFrame(),
-        this.overlayFrame,
-        event
-      );
+      if (event.button === Constants.MIDDLE_BUTTON) {
+        if (this.dragHandler.isDragging()) {
+          this.dragHandler.stopDrag();
+        } else if (frame.containsPixel(coords.x, coords.y)) {
+          $.publish(Events.SELECT_PRIMARY_COLOR, [frame.getPixel(coords.x, coords.y)]);
+        }
+      } else {
+        this.currentToolBehavior.releaseToolAt(
+          coords.x,
+          coords.y,
+          this.getCurrentColor_(),
+          this.piskelController.getCurrentFrame(),
+          this.overlayFrame,
+          event
+        );
 
-      $.publish(Events.TOOL_RELEASED);
+        $.publish(Events.TOOL_RELEASED);
+      }
     }
   };
 
@@ -390,8 +380,36 @@
     return this.compositeRenderer;
   };
 
+  ns.DrawingController.prototype.getOffset = function () {
+    return this.compositeRenderer.getOffset();
+  };
+
   ns.DrawingController.prototype.setOffset = function (x, y) {
     this.compositeRenderer.setOffset(x, y);
     $.publish(Events.ZOOM_CHANGED);
   };
+
+  ns.DrawingController.prototype.resetZoom_ = function () {
+    this.setZoom_(this.calculateZoom_());
+  };
+
+  ns.DrawingController.prototype.increaseZoom_ = function (zoomMultiplier) {
+    var step = (zoomMultiplier || 1) * this.getZoomStep_();
+    this.setZoom_(this.renderer.getZoom() + step);
+  };
+
+  ns.DrawingController.prototype.decreaseZoom_ = function (zoomMultiplier) {
+    var step = (zoomMultiplier || 1) * this.getZoomStep_();
+    this.setZoom_(this.renderer.getZoom() - step);
+  };
+
+  ns.DrawingController.prototype.getZoomStep_ = function () {
+    return this.calculateZoom_() / 10;
+  };
+
+  ns.DrawingController.prototype.setZoom_ = function (zoom) {
+    this.compositeRenderer.setZoom(zoom);
+    $.publish(Events.ZOOM_CHANGED);
+  };
+
 })();
