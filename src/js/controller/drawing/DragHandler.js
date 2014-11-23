@@ -2,6 +2,12 @@
   var ns = $.namespace('pskl.controller.drawing');
 
   /**
+   * Multiplier applied between the mouse movement and viewport movement
+   * @type {Number}
+   */
+  var MULTIPLIER = 2;
+
+  /**
    * Dedicated handler to drag the drawing canvas using the mouse
    * Will store the initial coordinates as well as the status of the drag
    * @param {DrawingController} drawingController
@@ -63,8 +69,8 @@
     var currentOffset = this.drawingController.getOffset();
 
     var offset = {
-      x : currentOffset.x - (coords.x - this.origin.x),
-      y : currentOffset.y - (coords.y - this.origin.y)
+      x : currentOffset.x - MULTIPLIER * (coords.x - this.origin.x),
+      y : currentOffset.y - MULTIPLIER * (coords.y - this.origin.y)
     };
 
     return offset;
