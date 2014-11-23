@@ -81,6 +81,7 @@
   "js/controller/piskel/PublicPiskelController.js",
   "js/controller/CursorCoordinatesController.js",
   "js/controller/DrawingController.js",
+  "js/controller/drawing/DragHandler.js",
   "js/controller/PreviewFilmController.js",
   "js/controller/LayersListController.js",
   "js/controller/AnimatedPreviewController.js",
