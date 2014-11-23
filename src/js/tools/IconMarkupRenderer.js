@@ -3,12 +3,14 @@
 
   ns.IconMarkupRenderer = function () {};
 
-  ns.IconMarkupRenderer.prototype.render = function (tool, shortcut) {
+  ns.IconMarkupRenderer.prototype.render = function (tool, shortcut, tooltipPosition) {
+    tooltipPosition = tooltipPosition || 'right';
     var tpl = pskl.utils.Template.get('drawingTool-item-template');
     return pskl.utils.Template.replace(tpl, {
       cssclass : ['tool-icon', tool.toolId].join(' '),
       toolid : tool.toolId,
-      title : this.getTooltipText(tool, shortcut)
+      title : this.getTooltipText(tool, shortcut),
+      tooltipposition : tooltipPosition
     });
   };
 

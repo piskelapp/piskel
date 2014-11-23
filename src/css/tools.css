@@ -98,8 +98,14 @@
 
 .tool-icon.tool-flip {
   background-image: url(../img/tools/flip.png);
-  background-position: 7px 10px;
+  background-position: 7px 11px;
   background-size: 32px;
+}
+
+.tool-icon.tool-rotate {
+  background-image: url(../img/tools/rotate.png);
+  background-position: 10px 9px;
+  background-size: 26px;
 }
 
 /*

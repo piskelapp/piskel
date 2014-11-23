@@ -34,7 +34,7 @@
 
   ns.TransformationsController.prototype.createToolsDom_ = function() {
     var html = this.tools.reduce(function (p, tool) {
-      return p + this.toolIconRenderer.render(tool.instance, tool.shortcut);
+      return p + this.toolIconRenderer.render(tool.instance, tool.shortcut, 'left');
     }.bind(this), '');
     this.toolsContainer.innerHTML = html;
   };

@@ -3,27 +3,26 @@
 
   ns.Flip = function () {
     this.toolId = "tool-flip";
-    this.helpText = "Flip tool";
-    this.tooltipDescriptors = [];
+    this.helpText = "Flip vertically";
+    this.tooltipDescriptors = [
+      {key : 'alt', description : 'Flip horizontally'},
+      {key : 'ctrl', description : 'Apply to all layers'},
+      {key : 'shift', description : 'Apply to all frames'}
+    ];
   };
 
   pskl.utils.inherit(ns.Flip, ns.Transform);
 
   ns.Flip.prototype.applyToolOnFrame_ = function (frame, altKey) {
-    var clone = frame.clone();
-    var w = frame.getWidth();
-    var h = frame.getHeight();
+    var axis;
 
-    var isVertical = !altKey;
-    clone.forEachPixel(function (color, x, y) {
-      if (isVertical) {
-        x = w-x-1;
-      } else {
-        y = h-y-1;
-      }
-      frame.pixels[x][y] = color;
-    });
-    frame.version++;
+    if (altKey) {
+      axis = pskl.utils.FrameTransform.HORIZONTAL;
+    } else {
+      axis = pskl.utils.FrameTransform.VERTICAL;
+    }
+
+    pskl.utils.FrameTransform.flip(frame, axis);
   };
 
 })();

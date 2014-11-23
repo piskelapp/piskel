@@ -19,6 +19,7 @@
   "js/utils/Dom.js",
   "js/utils/Math.js",
   "js/utils/FileUtils.js",
+  "js/utils/FrameTransform.js",
   "js/utils/FrameUtils.js",
   "js/utils/LayerUtils.js",
   "js/utils/ImageResizer.js",
