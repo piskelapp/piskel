@@ -2,11 +2,17 @@
   var ns = $.namespace('pskl.utils');
   var colorCache = {};
   ns.FrameUtils = {
-    toImage : function (frame, zoom, bgColor) {
+    /**
+     * Render a Frame object as an image.
+     * Can optionally scale it (zoom)
+     * @param  {Frame} frame
+     * @param  {Number} zoom
+     * @return {Image}
+     */
+    toImage : function (frame, zoom) {
       zoom = zoom || 1;
-      bgColor = bgColor || Constants.TRANSPARENT_COLOR;
       var canvasRenderer = new pskl.rendering.CanvasRenderer(frame, zoom);
-      canvasRenderer.drawTransparentAs(bgColor);
+      canvasRenderer.drawTransparentAs(Constants.TRANSPARENT_COLOR);
       return canvasRenderer.render();
     },
 
@@ -23,9 +29,9 @@
     },
 
     mergeFrames_ : function (frameA, frameB) {
-      frameB.forEachPixel(function (p, col, row) {
-        if (p != Constants.TRANSPARENT_COLOR) {
-          frameA.setPixel(col, row, p);
+      frameB.forEachPixel(function (color, col, row) {
+        if (color != Constants.TRANSPARENT_COLOR) {
+          frameA.setPixel(col, row, color);
         }
       });
     },

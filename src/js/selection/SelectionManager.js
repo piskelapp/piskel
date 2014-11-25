@@ -41,7 +41,7 @@
    * @private
    */
   ns.SelectionManager.prototype.onToolSelected_ = function(evt, tool) {
-    var isSelectionTool = tool instanceof pskl.drawingtools.BaseSelect;
+    var isSelectionTool = tool instanceof pskl.tools.drawing.BaseSelect;
     if(!isSelectionTool) {
       this.cleanSelection_();
     }

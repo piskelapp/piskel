@@ -1,0 +1,154 @@
+/**
+ * Application layout
+ */
+
+.main-wrapper {
+  position: absolute;
+  top: 5px;
+  right: 0;
+  bottom: 5px;
+  left: 0;
+}
+
+.column-wrapper {
+  text-align: center;
+  font-size: 0;
+  position: absolute;
+  left: 100px; /* Reserve room for tools on the left edge of the screen. */
+  top: 0;
+  right: 50px; /* Reserve room for actions on the right edge of the screen. */
+  bottom: 0;
+}
+
+.column {
+  display: inline-block;
+}
+
+.left-column {
+  vertical-align: top;
+  height: 100%;
+  margin-right: 7px;
+}
+
+.main-column {
+  height: 100%;
+  position: relative;
+}
+
+.right-column {
+  vertical-align: top;
+  margin-left: 10px;
+  height: 100%;
+  position: relative;
+}
+
+.drawing-canvas-container {
+  font-size: 0;
+}
+
+.sticky-section {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  z-index: 1000;
+}
+
+.sticky-section .sticky-section-wrap {
+  display: table;
+  height: 100%;
+}
+
+.sticky-section .vertical-centerer {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.left-sticky-section.sticky-section {
+  left: 0;
+  max-width: 100px;
+}
+
+.left-sticky-section .tool-icon {
+  float: left;
+}
+
+.cursor-coordinates {
+  color:#888;
+  font-size:12px;
+  font-weight:bold;
+  font-family:Courier;
+}
+
+/**
+ * Canvases layout
+ */
+
+.canvas {
+  position: relative;
+  z-index: 1;
+}
+
+.canvas-container {
+  position: relative;
+  display: block;
+}
+
+.canvas-container .canvas-background {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.light-picker-background,
+.light-canvas-background .canvas-background {
+  background: url(../img/canvas_background/light_canvas_background.png) repeat;
+}
+
+.medium-picker-background,
+.medium-canvas-background .canvas-background {
+  background: url(../img/canvas_background/medium_canvas_background.png) repeat;
+}
+
+.lowcont-medium-picker-background,
+.lowcont-medium-canvas-background .canvas-background {
+  background: url(../img/canvas_background/lowcont_medium_canvas_background.png) repeat;
+}
+
+.lowcont-dark-picker-background,
+.lowcont-dark-canvas-background .canvas-background {
+  background: url(../img/canvas_background/lowcont_dark_canvas_background.png) repeat;
+}
+
+.layers-canvas,
+.canvas.onion-skin-canvas {
+  opacity: 0.2;
+}
+
+.canvas.canvas-overlay,
+.canvas.layers-canvas,
+.canvas.onion-skin-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.tools-wrapper,
+.options-wrapper,
+.palette-wrapper {
+  float : left;
+}
+
+/**
+ * Z-indexes should match the drawing area canvas superposition order :
+ * - 1 : draw layers below current layer
+ * - 2 : draw current layer
+ * - 3 : draw layers above current layer
+ * - 4 : draw the tools overlay
+ */
+.canvas.layers-below-canvas  {z-index:  7;}
+.canvas.drawing-canvas       {z-index:  8;}
+.canvas.canvas-overlay       {z-index:  9;}
+.canvas.onion-skin-canvas    {z-index:  10;}
+.canvas.layers-above-canvas  {z-index:  11;}
