@@ -32,7 +32,7 @@ Integrated in **[piskelapp.com](http://piskelapp.com)**, you can share everythin
 Piskel supports the following browsers :
 * **Chrome** (latest)
 * **Firefox** (latest)
-* **Internet Explorer** 10+
+* **Internet Explorer** 11+
 
 ... and a fairly recent computer.
 
