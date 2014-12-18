@@ -5,7 +5,7 @@
     this.piskelController = piskelController;
     this.animationController = animationController;
     this.drawingController = drawingController;
-    this.container = container.parent();
+    this.container = container;
 
     this.isClicked = false;
   };
@@ -27,8 +27,6 @@
 
   ns.MinimapController.prototype.renderMinimap_ = function () {
     var zoomRatio = this.getDrawingAreaZoomRatio_();
-    console.log('zoomRatio', zoomRatio);
-    console.log('this.animationController.getZoom()', this.animationController.getZoom());
     if (zoomRatio > 1) {
       this.displayCropFrame_(zoomRatio, this.drawingController.getRenderer().getOffset());
     } else {
