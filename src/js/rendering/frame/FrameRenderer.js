@@ -164,13 +164,6 @@
     }
   };
 
-  ns.FrameRenderer.prototype.renderPixel_ = function (color, x, y, context) {
-    if(color != Constants.TRANSPARENT_COLOR) {
-      context.fillStyle = color;
-      context.fillRect(x, y, 1, 1);
-    }
-  };
-
   /**
    * Transform a screen pixel-based coordinate (relative to the top-left corner of the rendered
    * frame) into a sprite coordinate in column and row.
@@ -263,5 +256,12 @@
       displayContext.drawImage(this.canvas, 0, 0);
     }
     displayContext.restore();
+  };
+
+  ns.FrameRenderer.prototype.renderPixel_ = function (color, x, y, context) {
+    if(color != Constants.TRANSPARENT_COLOR) {
+      context.fillStyle = color;
+      context.fillRect(x, y, 1, 1);
+    }
   };
 })();

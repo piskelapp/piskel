@@ -89,6 +89,18 @@ if (!Function.prototype.bind) {
     }
   };
 
+  ns.hashCode = function(str) {
+    var hash = 0;
+    if (str.length !== 0) {
+      for (var i = 0, l = str.length; i < l; i++) {
+        var chr = str.charCodeAt(i);
+        hash  = ((hash << 5) - hash) + chr;
+        hash |= 0; // Convert to 32bit integer
+      }
+    }
+    return hash;
+  };
+
   var entityMap = {
     "&": "&amp;",
     "<": "&lt;",
@@ -97,7 +109,6 @@ if (!Function.prototype.bind) {
     "'": '&#39;',
     "/": '&#x2F;'
   };
-
   ns.escapeHtml= function (string) {
     return String(string).replace(/[&<>"'\/]/g, function (s) {
       return entityMap[s];
