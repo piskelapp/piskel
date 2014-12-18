@@ -35,6 +35,7 @@
 
     this.updateZoom_();
     this.updateOnionSkinPreview_();
+    this.updateContainerDimensions_();
   };
 
   ns.AnimatedPreviewController.prototype.onUserSettingsChange_ = function (evt, name, value) {
@@ -140,10 +141,14 @@
 
     containerEl.style.height = height + "px";
     containerEl.style.width = width + "px";
-    containerEl.style.marginTop = ((PREVIEW_SIZE - height) / 2) + "px";
-    containerEl.style.marginBottom = ((PREVIEW_SIZE - height) / 2) + "px";
-    containerEl.style.marginLeft = ((PREVIEW_SIZE - width) / 2) + "px";
-    containerEl.style.marginRight = ((PREVIEW_SIZE - width) / 2) + "px";
+
+    var horizontalPadding = (PREVIEW_SIZE - height) / 2;
+    containerEl.style.marginTop = horizontalPadding + "px";
+    containerEl.style.marginBottom = horizontalPadding + "px";
+
+    var verticalPadding = (PREVIEW_SIZE - width) / 2;
+    containerEl.style.marginLeft = verticalPadding + "px";
+    containerEl.style.marginRight = verticalPadding + "px";
   };
 
   ns.AnimatedPreviewController.prototype.toggleOnionSkin_ = function () {

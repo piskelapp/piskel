@@ -22,7 +22,6 @@
      */
     this.container = container;
 
-    // TODO(vincz): Store user prefs in a localstorage string ?
     var renderingOptions = {
       "zoom": this.calculateZoom_(),
       "supportGridRendering" : true,
@@ -31,6 +30,8 @@
       "xOffset" : 0,
       "yOffset" : 0
     };
+
+    console.log('DrawingController:getContainerWidth_', this.getContainerWidth_());
 
     this.overlayRenderer = new pskl.rendering.frame.CachedFrameRenderer(this.container, renderingOptions, ["canvas-overlay"]);
     this.renderer = new pskl.rendering.frame.CachedFrameRenderer(this.container, renderingOptions, ["drawing-canvas"]);
@@ -70,7 +71,10 @@
     pskl.app.shortcutService.addShortcut('+', this.increaseZoom_.bind(this, 1));
     pskl.app.shortcutService.addShortcut('-', this.decreaseZoom_.bind(this, 1));
 
-    window.setTimeout(this.afterWindowResize_.bind(this), 100);
+    window.setTimeout(function () {
+      this.afterWindowResize_();
+      this.resetZoom_();
+    }.bind(this), 100);
   };
 
   ns.DrawingController.prototype.initMouseBehavior = function() {
@@ -89,6 +93,7 @@
 
     // Deactivate right click:
     body.contextmenu(this.onCanvasContextMenu_);
+
   };
 
   ns.DrawingController.prototype.startResizeTimer_ = function () {
@@ -100,6 +105,7 @@
 
   ns.DrawingController.prototype.afterWindowResize_ = function () {
     var initialWidth = this.compositeRenderer.getDisplaySize().width;
+
     this.compositeRenderer.setDisplaySize(this.getContainerWidth_(), this.getContainerHeight_());
     this.centerColumnWrapperHorizontally_();
     var ratio = this.compositeRenderer.getDisplaySize().width / initialWidth;
@@ -358,11 +364,11 @@
   };
 
   ns.DrawingController.prototype.getContainerHeight_ = function () {
-    return this.calculateZoom_() * this.piskelController.getCurrentFrame().getHeight();
+    return this.getAvailableHeight_();
   };
 
   ns.DrawingController.prototype.getContainerWidth_ = function () {
-    return this.calculateZoom_() * this.piskelController.getCurrentFrame().getWidth();
+    return this.getAvailableWidth_();
   };
 
   /**

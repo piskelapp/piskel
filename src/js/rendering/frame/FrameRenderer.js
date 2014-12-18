@@ -239,7 +239,7 @@
     var displayContext = this.displayCanvas.getContext('2d');
     displayContext.save();
 
-    if (this.canvas.width*this.zoom < this.displayCanvas.width) {
+    if (this.canvas.width*this.zoom < this.displayCanvas.width || this.canvas.height*this.zoom < this.displayCanvas.height) {
       displayContext.fillStyle = Constants.ZOOMED_OUT_BACKGROUND_COLOR;
       displayContext.fillRect(0,0,this.displayCanvas.width, this.displayCanvas.height);
     }

@@ -5,7 +5,7 @@
     this.piskelController = piskelController;
     this.animationController = animationController;
     this.drawingController = drawingController;
-    this.container = container;
+    this.container = container.parent();
 
     this.isClicked = false;
   };
@@ -27,6 +27,8 @@
 
   ns.MinimapController.prototype.renderMinimap_ = function () {
     var zoomRatio = this.getDrawingAreaZoomRatio_();
+    console.log('zoomRatio', zoomRatio);
+    console.log('this.animationController.getZoom()', this.animationController.getZoom());
     if (zoomRatio > 1) {
       this.displayCropFrame_(zoomRatio, this.drawingController.getRenderer().getOffset());
     } else {
@@ -36,11 +38,33 @@
 
   ns.MinimapController.prototype.displayCropFrame_ = function (ratio, offset) {
     this.cropFrame.style.display = 'block';
-    this.cropFrame.style.top = (offset.y * this.animationController.getZoom()) +  'px';
-    this.cropFrame.style.left = (offset.x * this.animationController.getZoom()) +  'px';
-    var zoomRatio = this.getDrawingAreaZoomRatio_();
-    this.cropFrame.style.width = (this.container.width() / zoomRatio) +  'px';
-    this.cropFrame.style.height = (this.container.height() / zoomRatio) +  'px';
+
+    var containerHeight = this.container.height();
+    var containerWidth = this.container.width();
+    var displaySize = this.drawingController.getRenderer().getDisplaySize();
+    var width  = displaySize.width / ratio;
+    var height = displaySize.height / ratio;
+    this.cropFrame.style.width = Math.min(width, containerWidth) + 'px';
+    this.cropFrame.style.height = Math.min(height, containerHeight) + 'px';
+
+
+    var containerSize = Math.max(containerHeight, containerWidth);
+    var margin = this.drawingController.renderer.margin;
+
+    var frame = this.piskelController.getCurrentFrame();
+    var framePreviewWidth = frame.getWidth() * this.animationController.getZoom();
+    var framePreviewHeight = frame.getHeight() * this.animationController.getZoom();
+
+    var left = (containerSize - Math.max(width, framePreviewWidth))/2;
+    left += offset.x * this.animationController.getZoom();
+    left = Math.max(0, left);
+    this.cropFrame.style.left = left +  'px';
+
+    var top = (containerSize - Math.max(height, framePreviewHeight))/2;
+    top += offset.y * this.animationController.getZoom();
+    top = Math.max(0, top);
+    this.cropFrame.style.top = top +  'px';
+
 
   };
 
@@ -82,8 +106,16 @@
 
   ns.MinimapController.prototype.getDrawingAreaZoomRatio_ = function () {
     var drawingAreaZoom = this.drawingController.getRenderer().getZoom();
-    var drawingAreaFullHeight = this.piskelController.getCurrentFrame().getHeight() * drawingAreaZoom;
-    var zoomRatio = drawingAreaFullHeight / this.drawingController.getRenderer().getDisplaySize().height;
+    var frame = this.piskelController.getCurrentFrame();
+    var dim = Math.max(frame.getHeight(), frame.getWidth());
+    var drawingAreaSize = dim * drawingAreaZoom;
+
+    var containerHeight = this.container.height();
+    var containerWidth = this.container.width();
+
+    var containerSize = Math.max(containerHeight, containerWidth);
+
+    var zoomRatio = drawingAreaSize / containerSize;
 
     return zoomRatio;
   };
