@@ -178,7 +178,6 @@
   };
 
   ns.AnimatedPreviewController.prototype.setRenderFlag_ = function (bool) {
-    console.log('setRenderFlag_', bool);
     this.renderFlag = bool;
   };
 
