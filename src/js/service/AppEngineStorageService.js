@@ -35,6 +35,6 @@
       callbacks.after();
     };
 
-    pskl.utils.Xhr.post(Constants.APPENGINE.URL.SAVE, data, success, error);
+    pskl.utils.Xhr.post(Constants.APPENGINE_SAVE_URL, data, success, error);
   };
 })();
