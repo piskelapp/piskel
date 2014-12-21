@@ -168,13 +168,13 @@
     containerEl.style.height = height + 'px';
     containerEl.style.width = width + 'px';
 
-    var horizontalPadding = (PREVIEW_SIZE - height) / 2;
-    containerEl.style.marginTop = horizontalPadding + 'px';
-    containerEl.style.marginBottom = horizontalPadding + 'px';
+    var horizontalMargin = (PREVIEW_SIZE - height) / 2;
+    containerEl.style.marginTop = horizontalMargin + 'px';
+    containerEl.style.marginBottom = horizontalMargin + 'px';
 
-    var verticalPadding = (PREVIEW_SIZE - width) / 2;
-    containerEl.style.marginLeft = verticalPadding + 'px';
-    containerEl.style.marginRight = verticalPadding + 'px';
+    var verticalMargin = (PREVIEW_SIZE - width) / 2;
+    containerEl.style.marginLeft = verticalMargin + 'px';
+    containerEl.style.marginRight = verticalMargin + 'px';
   };
 
   ns.AnimatedPreviewController.prototype.setRenderFlag_ = function (bool) {
