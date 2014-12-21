@@ -50,10 +50,11 @@
   };
 
   ns.CanvasRenderer.prototype.renderLine_ = function (color, x, y, width, context) {
-    if(color != Constants.TRANSPARENT_COLOR) {
-      context.fillStyle = color;
-      context.fillRect(x, y, 1, width);
+    if(color == Constants.TRANSPARENT_COLOR) {
+      color = this.transparentColor_;
     }
+    context.fillStyle = color;
+    context.fillRect(x, y, 1, width);
   };
 
   ns.CanvasRenderer.prototype.createCanvas_ = function (zoom) {
