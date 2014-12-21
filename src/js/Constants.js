@@ -21,15 +21,7 @@ var Constants = {
   DEFAULT_PEN_COLOR : '#000000',
   TRANSPARENT_COLOR : 'rgba(0, 0, 0, 0)',
 
-  OVERLAY_ONION_SKIN : 'onion-skin',
-  OVERLAY_LAYER_PREVIEW : 'layer-preview',
-  OVERLAY_DISABLED : 'no-overlay',
-
-  NO_PALETTE_ID : '__no-palette',
   CURRENT_COLORS_PALETTE_ID : '__current-colors',
-
-  // Used for Spectrum input
-  PREFERRED_COLOR_FORMAT : 'rgb',
 
   /*
    * Fake semi-transparent color used to highlight transparent
@@ -43,22 +35,6 @@ var Constants = {
    */
   TOOL_TARGET_HIGHLIGHT_COLOR: 'rgba(255, 255, 255, 0.2)',
 
-  /*
-   * Default entry point for piskel web service:
-   */
-  STATIC : {
-    URL : {
-      SAVE : 'http://3.piskel-app.appspot.com/store',
-      GET : 'http://3.piskel-app.appspot.com/get'
-    }
-  },
-  APPENGINE : {
-    URL : {
-      SAVE : 'save'
-    }
-  },
-  IMAGE_SERVICE_UPLOAD_URL : 'http://piskel-imgstore-a.appspot.com/__/upload',
-  IMAGE_SERVICE_GET_URL : 'http://piskel-imgstore-a.appspot.com/img/',
 
   ZOOMED_OUT_BACKGROUND_COLOR : '#A0A0A0',
 
@@ -71,5 +47,10 @@ var Constants = {
   EMPTY_FUNCTION : function () {},
 
   // TESTS
-  DRAWING_TEST_FOLDER : 'drawing'
+  DRAWING_TEST_FOLDER : 'drawing',
+
+  // SERVICE URLS
+  APPENGINE_SAVE_URL : 'save',
+  IMAGE_SERVICE_UPLOAD_URL : 'http://piskel-imgstore-b.appspot.com/__/upload',
+  IMAGE_SERVICE_GET_URL : 'http://piskel-imgstore-b.appspot.com/img/'
 };

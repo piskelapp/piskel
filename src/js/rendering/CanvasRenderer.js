@@ -19,9 +19,18 @@
   ns.CanvasRenderer.prototype.render = function  () {
     var canvas = this.createCanvas_();
     var context = canvas.getContext('2d');
-    this.frame.forEachPixel(function (color, x, y) {
-      this.renderPixel_(color, x, y, context);
-    }.bind(this));
+
+    for(var x = 0, width = this.frame.getWidth(); x < width; x++) {
+      for(var y = 0, height = this.frame.getHeight(); y < height; y++) {
+        var color = this.frame.getPixel(x, y);
+        var w = 1;
+        while (color === this.frame.getPixel(x, y+w)) {
+          w++;
+        }
+        this.renderLine_(color, x, y, w, context);
+        y = y + w - 1;
+      }
+    }
 
     var scaledCanvas = this.createCanvas_(this.zoom);
     var scaledContext = scaledCanvas.getContext('2d');
@@ -38,6 +47,14 @@
     }
     context.fillStyle = color;
     context.fillRect(x, y, 1, 1);
+  };
+
+  ns.CanvasRenderer.prototype.renderLine_ = function (color, x, y, width, context) {
+    if(color == Constants.TRANSPARENT_COLOR) {
+      color = this.transparentColor_;
+    }
+    context.fillStyle = color;
+    context.fillRect(x, y, 1, width);
   };
 
   ns.CanvasRenderer.prototype.createCanvas_ = function (zoom) {

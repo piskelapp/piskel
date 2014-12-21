@@ -20,5 +20,8 @@ diff.txt
 dest
 build/closure/closure_compiled_binary.js
 
+# plato report directory
+report
+
 # marked as private
 *.private.*

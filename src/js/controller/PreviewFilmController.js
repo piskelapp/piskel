@@ -162,6 +162,14 @@
     var canvasContainer = document.createElement("div");
     canvasContainer.classList.add("canvas-container", pskl.UserSettings.get(pskl.UserSettings.CANVAS_BACKGROUND));
 
+    var height = this.zoom * this.piskelController.getCurrentFrame().getHeight();
+    var horizontalMargin = (Constants.PREVIEW_FILM_SIZE - height) / 2;
+    canvasContainer.style.marginTop = horizontalMargin + 'px';
+
+    var width = this.zoom * this.piskelController.getCurrentFrame().getWidth();
+    var verticalMargin = (Constants.PREVIEW_FILM_SIZE - width) / 2;
+    canvasContainer.style.marginLeft = verticalMargin + 'px';
+
 
     var canvasBackground = document.createElement("div");
     canvasBackground.className = "canvas-background";
@@ -227,10 +235,9 @@
    * Calculate the preview zoom depending on the piskel size
    */
   ns.PreviewFilmController.prototype.calculateZoom_ = function () {
-    var curFrame = this.piskelController.getCurrentFrame(),
-      frameHeight = curFrame.getHeight(),
-      frameWidth = curFrame.getWidth();
+    var frame = this.piskelController.getCurrentFrame();
+    var frameSize = Math.max(frame.getHeight(), frame.getWidth());
 
-    return Math.min(Constants.PREVIEW_FILM_SIZE/frameHeight, Constants.PREVIEW_FILM_SIZE/frameWidth);
+    return Constants.PREVIEW_FILM_SIZE/frameSize;
   };
 })();
