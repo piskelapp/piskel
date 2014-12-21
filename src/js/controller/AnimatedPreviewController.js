@@ -1,5 +1,5 @@
 (function () {
-  var ns = $.namespace("pskl.controller");
+  var ns = $.namespace('pskl.controller');
 
   // Preview is a square of PREVIEW_SIZE x PREVIEW_SIZE
   var PREVIEW_SIZE = 200;
@@ -10,6 +10,11 @@
 
     this.elapsedTime = 0;
     this.currentIndex = 0;
+
+    this.renderFlag = true;
+
+    this.fpsRangeInput = $('#preview-fps');
+    this.fpsCounterDisplay = $('#display-fps');
 
     this.setFPS(Constants.DEFAULT.FPS);
 
@@ -22,16 +27,19 @@
     // the oninput event won't work on IE10 unfortunately, but at least will provide a
     // consistent behavior across all other browsers that support the input type range
     // see https://bugzilla.mozilla.org/show_bug.cgi?id=853670
-    $("#preview-fps").on('input change', this.onFPSSliderChange.bind(this));
-    document.querySelector(".right-column").style.width = Constants.ANIMATED_PREVIEW_WIDTH + 'px';
+    this.fpsRangeInput.on('input change', this.onFPSSliderChange.bind(this));
+    document.querySelector('.right-column').style.width = Constants.ANIMATED_PREVIEW_WIDTH + 'px';
 
-    this.toggleOnionSkinEl = document.querySelector(".preview-toggle-onion-skin");
+    this.toggleOnionSkinEl = document.querySelector('.preview-toggle-onion-skin');
     this.toggleOnionSkinEl.addEventListener('click', this.toggleOnionSkin_.bind(this));
 
     pskl.app.shortcutService.addShortcut('alt+O', this.toggleOnionSkin_.bind(this));
 
     $.subscribe(Events.FRAME_SIZE_CHANGED, this.onFrameSizeChange_.bind(this));
     $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
+
+    $.subscribe(Events.TOOL_RELEASED, this.setRenderFlag_.bind(this, true));
+    $.subscribe(Events.TOOL_PRESSED, this.setRenderFlag_.bind(this, false));
 
     this.updateZoom_();
     this.updateOnionSkinPreview_();
@@ -78,14 +86,16 @@
   };
 
   ns.AnimatedPreviewController.prototype.onFPSSliderChange = function (evt) {
-    this.setFPS(parseInt($("#preview-fps")[0].value, 10));
+    this.setFPS(parseInt(this.fpsRangeInput[0].value, 10));
+
   };
 
   ns.AnimatedPreviewController.prototype.setFPS = function (fps) {
-    if (fps) {
+    if (typeof fps === 'number') {
       this.fps = fps;
-      $("#preview-fps").val(this.fps);
-      $("#display-fps").html(this.fps + " FPS");
+      this.fpsRangeInput.val(this.fps);
+      this.fpsRangeInput.blur();
+      this.fpsCounterDisplay.html(this.fps + ' FPS');
     }
   };
 
@@ -94,7 +104,24 @@
   };
 
   ns.AnimatedPreviewController.prototype.render = function (delta) {
-    this.elapsedTime += delta;
+    if (this.renderFlag) {
+      this.elapsedTime += delta;
+      if (this.fps === 0) {
+        this._renderSelectedFrame();
+      } else {
+        this._renderCurrentAnimationFrame();
+      }
+    }
+  };
+
+  ns.AnimatedPreviewController.prototype._renderSelectedFrame = function (delta) {
+    // the selected frame is the currentFrame from the PiskelController perspective
+    var selectedFrameIndex = this.piskelController.getCurrentFrameIndex();
+    var selectedFrame = this.piskelController.getFrameAt(selectedFrameIndex);
+    this.renderer.render(selectedFrame);
+  };
+
+  ns.AnimatedPreviewController.prototype._renderCurrentAnimationFrame = function (delta) {
     var index = Math.floor(this.elapsedTime / (1000/this.fps));
     if (index != this.currentIndex) {
       this.currentIndex = index;
@@ -112,9 +139,8 @@
    */
   ns.AnimatedPreviewController.prototype.calculateZoom_ = function () {
     var frame = this.piskelController.getCurrentFrame();
-    var previewSize = 200,
-      hZoom = previewSize / frame.getHeight(),
-      wZoom = previewSize / frame.getWidth();
+    var hZoom = PREVIEW_SIZE / frame.getHeight(),
+        wZoom = PREVIEW_SIZE / frame.getWidth();
 
     return Math.min(hZoom, wZoom);
   };
@@ -139,16 +165,20 @@
       width = frame.getWidth() * zoom;
     }
 
-    containerEl.style.height = height + "px";
-    containerEl.style.width = width + "px";
+    containerEl.style.height = height + 'px';
+    containerEl.style.width = width + 'px';
 
     var horizontalPadding = (PREVIEW_SIZE - height) / 2;
-    containerEl.style.marginTop = horizontalPadding + "px";
-    containerEl.style.marginBottom = horizontalPadding + "px";
+    containerEl.style.marginTop = horizontalPadding + 'px';
+    containerEl.style.marginBottom = horizontalPadding + 'px';
 
     var verticalPadding = (PREVIEW_SIZE - width) / 2;
-    containerEl.style.marginLeft = verticalPadding + "px";
-    containerEl.style.marginRight = verticalPadding + "px";
+    containerEl.style.marginLeft = verticalPadding + 'px';
+    containerEl.style.marginRight = verticalPadding + 'px';
+  };
+
+  ns.AnimatedPreviewController.prototype.setRenderFlag_ = function (bool) {
+    this.renderFlag = bool;
   };
 
   ns.AnimatedPreviewController.prototype.toggleOnionSkin_ = function () {

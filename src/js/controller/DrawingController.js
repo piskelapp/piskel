@@ -31,8 +31,6 @@
       "yOffset" : 0
     };
 
-    console.log('DrawingController:getContainerWidth_', this.getContainerWidth_());
-
     this.overlayRenderer = new pskl.rendering.frame.CachedFrameRenderer(this.container, renderingOptions, ["canvas-overlay"]);
     this.renderer = new pskl.rendering.frame.CachedFrameRenderer(this.container, renderingOptions, ["drawing-canvas"]);
     this.onionSkinRenderer = new pskl.rendering.OnionSkinRenderer(this.container, renderingOptions, piskelController);
@@ -153,7 +151,7 @@
       this.dragHandler.startDrag(event.clientX, event.clientY);
     } else {
       this.currentToolBehavior.hideHighlightedPixel(this.overlayFrame);
-
+      $.publish(Events.TOOL_PRESSED);
       this.currentToolBehavior.applyToolAt(
         coords.x,
         coords.y,
