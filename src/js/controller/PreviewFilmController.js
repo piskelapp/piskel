@@ -169,6 +169,7 @@
     var width = this.zoom * this.piskelController.getCurrentFrame().getWidth();
     var verticalMargin = (Constants.PREVIEW_FILM_SIZE - width) / 2;
     canvasContainer.style.marginLeft = verticalMargin + 'px';
+    canvasContainer.style.marginRight = verticalMargin + 'px';
 
 
     var canvasBackground = document.createElement("div");

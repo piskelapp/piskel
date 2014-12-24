@@ -49,10 +49,10 @@
     var coords = this.getCoordinates_(col, row, event);
     this.draw_(coords.col, coords.row, color, frame);
 
-    $.publish(Events.DRAG_END, [col, row]);
+    $.publish(Events.DRAG_END, [coords.col, coords.row]);
     this.raiseSaveStateEvent({
-      col : col,
-      row : row,
+      col : coords.col,
+      row : coords.row,
       startCol : this.startCol,
       startRow : this.startRow,
       color : color
