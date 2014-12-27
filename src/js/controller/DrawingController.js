@@ -33,7 +33,7 @@
 
     this.overlayRenderer = new pskl.rendering.frame.CachedFrameRenderer(this.container, renderingOptions, ["canvas-overlay"]);
     this.renderer = new pskl.rendering.frame.CachedFrameRenderer(this.container, renderingOptions, ["drawing-canvas"]);
-    this.onionSkinRenderer = new pskl.rendering.OnionSkinRenderer(this.container, renderingOptions, piskelController);
+    this.onionSkinRenderer = pskl.rendering.OnionSkinRenderer.createInContainer(this.container, renderingOptions, piskelController);
     this.layersRenderer = new pskl.rendering.layer.LayersRenderer(this.container, renderingOptions, piskelController);
 
     this.compositeRenderer = new pskl.rendering.CompositeRenderer();

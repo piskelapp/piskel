@@ -5,9 +5,9 @@
    * FrameRenderer will display a given frame inside a canvas element.
    * @param {HtmlElement} container HtmlElement to use as parentNode of the Frame
    * @param {Object} renderingOptions
-   * @param {Array} classes array of strings to use for css classes
+   * @param {Array} classList array of strings to use for css classList
    */
-  ns.FrameRenderer = function (container, renderingOptions, classes) {
+  ns.FrameRenderer = function (container, renderingOptions, classList) {
     this.defaultRenderingOptions = {
       'supportGridRendering' : false,
       'zoom' : 1
@@ -39,8 +39,8 @@
 
     this.supportGridRendering = renderingOptions.supportGridRendering;
 
-    this.classes = classes || [];
-    this.classes.push('canvas');
+    this.classList = classList || [];
+    this.classList.push('canvas');
 
     /**
      * Off dom canvas, will be used to draw the frame at 1:1 ratio
@@ -153,7 +153,7 @@
     var height = this.displayHeight;
     var width = this.displayWidth;
 
-    this.displayCanvas = pskl.utils.CanvasUtils.createCanvas(width, height, this.classes);
+    this.displayCanvas = pskl.utils.CanvasUtils.createCanvas(width, height, this.classList);
     pskl.utils.CanvasUtils.disableImageSmoothing(this.displayCanvas);
     this.container.append(this.displayCanvas);
   };

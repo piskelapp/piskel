@@ -5,10 +5,10 @@
    * FrameRenderer implementation that prevents unnecessary redraws.
    * @param {HtmlElement} container HtmlElement to use as parentNode of the Frame
    * @param {Object} renderingOptions
-   * @param {Array} classes array of strings to use for css classes
+   * @param {Array} classList array of strings to use for css classes
    */
-  ns.CachedFrameRenderer = function (container, renderingOptions, classes) {
-    pskl.rendering.frame.FrameRenderer.call(this, container, renderingOptions, classes);
+  ns.CachedFrameRenderer = function (container, renderingOptions, classList) {
+    pskl.rendering.frame.FrameRenderer.call(this, container, renderingOptions, classList);
     this.serializedFrame = '';
   };
 
