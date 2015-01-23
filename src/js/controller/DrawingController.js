@@ -79,7 +79,7 @@
     var body = $('body');
     this.container.mousedown($.proxy(this.onMousedown_, this));
 
-    if (pskl.utils.UserAgent.isChrome) {
+    if (pskl.utils.UserAgent.isChrome || pskl.utils.UserAgent.isIE11) {
       this.container.on('mousewheel', $.proxy(this.onMousewheel_, this));
     } else {
       this.container.on('wheel', $.proxy(this.onMousewheel_, this));
@@ -222,13 +222,30 @@
   ns.DrawingController.prototype.onMousewheel_ = function (jQueryEvent) {
     var event = jQueryEvent.originalEvent;
     // Ratio between wheelDeltaY (mousewheel event) and deltaY (wheel event) is -40
-    var delta = event.wheelDeltaY || (-40 * event.deltaY);
+    var delta;
+    if (pskl.utils.UserAgent.isChrome) {
+      delta = event.wheelDeltaY;
+    } else if (pskl.utils.UserAgent.isIE11) {
+      delta = event.wheelDelta;
+    } else if (pskl.utils.UserAgent.isFirefox) {
+      delta = -40 * event.deltaY;
+    }
     var modifier = Math.abs(delta/120);
     if (delta > 0) {
       this.increaseZoom_(modifier);
     } else if (delta < 0) {
       this.decreaseZoom_(modifier);
     }
+  };
+
+  ns.DrawingController.prototype.increaseZoom_ = function (zoomMultiplier) {
+    var step = (zoomMultiplier || 1) * this.getZoomStep_();
+    this.setZoom_(this.renderer.getZoom() + step);
+  };
+
+  ns.DrawingController.prototype.decreaseZoom_ = function (zoomMultiplier) {
+    var step = (zoomMultiplier || 1) * this.getZoomStep_();
+    this.setZoom_(this.renderer.getZoom() - step);
   };
 
   /**
@@ -395,16 +412,6 @@
 
   ns.DrawingController.prototype.resetZoom_ = function () {
     this.setZoom_(this.calculateZoom_());
-  };
-
-  ns.DrawingController.prototype.increaseZoom_ = function (zoomMultiplier) {
-    var step = (zoomMultiplier || 1) * this.getZoomStep_();
-    this.setZoom_(this.renderer.getZoom() + step);
-  };
-
-  ns.DrawingController.prototype.decreaseZoom_ = function (zoomMultiplier) {
-    var step = (zoomMultiplier || 1) * this.getZoomStep_();
-    this.setZoom_(this.renderer.getZoom() - step);
   };
 
   ns.DrawingController.prototype.getZoomStep_ = function () {
