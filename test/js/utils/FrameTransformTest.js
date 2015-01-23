@@ -9,29 +9,9 @@ describe("FrameTransform suite", function() {
   var CLOCKWISE = pskl.utils.FrameTransform.CLOCKWISE;
   var COUNTERCLOCKWISE = pskl.utils.FrameTransform.COUNTERCLOCKWISE;
 
-  /**
-   * Check a frame has the pixels as a given grid
-   * @param  {Frame} frame [description]
-   * @param  {Array<Array<String|Color>>} grid
-   */
-  var frameEqualsGrid = function (frame, grid) {
-    frame.forEachPixel(function (color, col, row) {
-      expect(color).toBe(grid[row][col]);
-    });
-  };
-
-  var toFrameGrid = function (normalGrid) {
-    var frameGrid = [];
-    var w = normalGrid[0].length;
-    var h = normalGrid.length;
-    for (var x = 0 ; x < w ; x++) {
-      frameGrid[x] = [];
-      for (var y = 0 ; y < h ; y++) {
-        frameGrid[x][y] = normalGrid[y][x];
-      }
-    }
-    return frameGrid;
-  };
+  // shortcuts
+  var frameEqualsGrid = test.testutils.frameEqualsGrid;
+  var toFrameGrid = test.testutils.toFrameGrid;
 
   /*******************************/
   /************ FLIP *************/

@@ -3,25 +3,12 @@ describe("Canvas Renderer test", function() {
   var WHITE = '#ffffff';
   var TRANS = Constants.TRANSPARENT_COLOR;
 
-  var toFrameGrid = function (normalGrid) {
-    var frameGrid = [];
-    var w = normalGrid[0].length;
-    var h = normalGrid.length;
-    for (var x = 0 ; x < w ; x++) {
-      frameGrid[x] = [];
-      for (var y = 0 ; y < h ; y++) {
-        frameGrid[x][y] = normalGrid[y][x];
-      }
-    }
-    return frameGrid;
-  };
-
   beforeEach(function() {});
   afterEach(function() {});
 
   it("draws transparent as white by default", function() {
     // create frame
-    var frame = pskl.model.Frame.fromPixelGrid(toFrameGrid([
+    var frame = pskl.model.Frame.fromPixelGrid(test.testutils.toFrameGrid([
       [BLACK, TRANS],
       [TRANS, BLACK]
     ]));
