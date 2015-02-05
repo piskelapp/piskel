@@ -1,5 +1,7 @@
 (function () {
   var ns = $.namespace('pskl.service');
+
+  // 1 minute = 1000 * 60
   var BACKUP_INTERVAL = 1000 * 60;
 
   ns.BackupService = function (piskelController) {
@@ -11,9 +13,9 @@
     var previousPiskel = window.localStorage.getItem('bkp.next.piskel');
     var previousInfo = window.localStorage.getItem('bkp.next.info');
     if (previousPiskel && previousInfo) {
-      window.localStorage.setItem('bkp.prev.piskel', previousPiskel);
-      window.localStorage.setItem('bkp.prev.info', previousInfo);
+      this.savePiskel_('prev', previousPiskel, previousInfo);
     }
+
     window.setInterval(this.backup.bind(this), BACKUP_INTERVAL);
   };
 
@@ -32,8 +34,7 @@
     // Do not save an unchanged piskel
     if (hash !== this.lastHash) {
       this.lastHash = hash;
-      window.localStorage.setItem('bkp.next.piskel', this.piskelController.serialize());
-      window.localStorage.setItem('bkp.next.info', JSON.stringify(info));
+      this.savePiskel_('next', this.piskelController.serialize(), JSON.stringify(info));
     }
   };
 
@@ -44,11 +45,11 @@
     }
   };
 
-
   ns.BackupService.prototype.load = function() {
 
     var previousPiskel = window.localStorage.getItem('bkp.prev.piskel');
     var previousInfo = window.localStorage.getItem('bkp.prev.info');
+
     previousPiskel = JSON.parse(previousPiskel);
     previousInfo = JSON.parse(previousInfo);
 
@@ -58,4 +59,17 @@
       pskl.app.animationController.setFPS(previousInfo.fps);
     });
   };
+
+  ns.BackupService.prototype.savePiskel_ = function (type, piskel, info) {
+    try {
+      window.localStorage.setItem('bkp.' + type +'.piskel', piskel);
+      window.localStorage.setItem('bkp.' + type +'.info', info);
+    } catch (e) {
+      console.error('Could not save piskel backup in localStorage.', e);
+    }
+  };
 })();
+
+
+
+
