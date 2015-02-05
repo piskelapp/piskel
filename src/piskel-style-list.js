@@ -9,6 +9,7 @@
   "css/settings.css",
   "css/settings-export.css",
   "css/settings-import.css",
+  "css/settings-resize.css",
   "css/tools.css",
   "css/icons.css",
   "css/cheatsheet.css",

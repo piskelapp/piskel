@@ -5,12 +5,17 @@
   <div class="settings-item">
     <form action="" method="POST" name="resize-form">
       <div class="resize-section">
-        <span class="resize-section-title  resize-section-title-small">Size :</span>
-        <input type="text" class="textfield resize-size-field" name="resize-width"/>x
-        <input type="text" class="textfield resize-size-field" name="resize-height"/>
+        <span  class="resize-section-title">Width</span>
+        <input type="text" class="textfield resize-size-field" name="resize-width"/>
+        <span>px</span>
       </div>
       <div class="resize-section">
-        <span class="resize-section-title  resize-section-title-small">Resize canvas content : </span>
+        <span  class="resize-section-title">Height</span>
+        <input type="text" class="textfield resize-size-field" name="resize-height"/>
+        <span>px</span>
+      </div>
+      <div class="resize-section">
+        <span  class="resize-section-title">Resize</span>
         <input type="checkbox" class="resize-content-checkbox" name="resize-content-checkbox" value="true"/>
       </div>
       <input type="submit" class="button button-primary resize-button" value="Resize" />
