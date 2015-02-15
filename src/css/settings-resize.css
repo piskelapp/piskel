@@ -6,3 +6,28 @@
 .resize-content-checkbox {
   margin-left: 0;
 }
+
+.resize-origin-container {
+  overflow: hidden;
+  position: relative;
+  width: 150px;
+  margin-top: 5px;
+}
+
+.resize-origin-option {
+  float: left;
+  box-sizing: border-box;
+  margin: 0 5px 5px 0;
+  padding-top:16px;
+  width: 45px;
+  height: 45px;
+  border : 1px solid #888;
+  text-align: center;
+  cursor: pointer;
+}
+
+.resize-origin-option.selected {
+  border-color: gold;
+  padding-top:14px;
+  border-width: 3px;
+}
