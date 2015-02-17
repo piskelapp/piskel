@@ -1,5 +1,5 @@
 (function () {
-  var ns = $.namespace("pskl.controller.settings");
+  var ns = $.namespace("pskl.controller.settings.exportimage");
 
   var URL_MAX_LENGTH = 30;
   var MAX_GIF_COLORS = 256;
@@ -64,8 +64,6 @@
   ns.GifExportController.prototype.uploadImageData_ = function (imageData) {
     this.updatePreview_(imageData);
     this.previewContainerEl.classList.add("preview-upload-ongoing");
-
-    console.log(imageData.length);
 
     pskl.app.imageUploadService.upload(imageData, this.onImageUploadCompleted_.bind(this), this.onImageUploadFailed_.bind(this));
   };

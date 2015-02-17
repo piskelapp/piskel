@@ -63,7 +63,7 @@
     $(window).resize($.proxy(this.startResizeTimer_, this));
 
     $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
-    $.subscribe(Events.FRAME_SIZE_CHANGED, $.proxy(this.onFrameSizeChanged_, this));
+    $.subscribe(Events.FRAME_SIZE_CHANGED, $.proxy(this.onFrameSizeChange_, this));
 
     pskl.app.shortcutService.addShortcut('0', this.resetZoom_.bind(this));
     pskl.app.shortcutService.addShortcut('+', this.increaseZoom_.bind(this, 1));
@@ -128,7 +128,7 @@
     }
   };
 
-  ns.DrawingController.prototype.onFrameSizeChanged_ = function () {
+  ns.DrawingController.prototype.onFrameSizeChange_ = function () {
     this.compositeRenderer.setDisplaySize(this.getContainerWidth_(), this.getContainerHeight_());
     this.centerColumnWrapperHorizontally_();
     this.compositeRenderer.setZoom(this.calculateZoom_());

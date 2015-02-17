@@ -1,5 +1,5 @@
 (function () {
-  var ns = $.namespace("pskl.controller.settings");
+  var ns = $.namespace("pskl.controller.settings.exportimage");
 
   var URL_MAX_LENGTH = 60;
 
