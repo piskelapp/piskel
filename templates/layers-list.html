@@ -2,19 +2,39 @@
   <h3 class="toolbox-title layers-title">Layers
     <div title="Toggle layer preview (alt+L)"
          rel="tooltip"
-         data-placement="top"
+         data-placement="left"
          class="layers-toggle-preview piskel-icon-eye"></div>
   </h3>
-  <div class="toolbox-button-container layers-button-container">
-    <button class="button toolbox-button" data-action="add"  >Add</button>
-    <button class="button toolbox-button" data-action="delete"  >Delete</button>
-    <button class="button toolbox-button layers-button-arrow" data-action="up"   >&#8593;</button>
-    <button class="button toolbox-button layers-button-arrow" data-action="down" >&#8595;</button>
+  <div class="layers-button-container">
+    <button data-action="add"
+      class="button layers-button piskel-icon-plus"
+      title="Create a new layer" rel="tooltip" data-placement="top" ></button>
+
+    <button data-action="up"
+      class="button layers-button piskel-icon-arrow-up-fat"
+      title="Move layer up" rel="tooltip" data-placement="top" ></button>
+
+    <button data-action="down"
+      class="button layers-button piskel-icon-arrow-down-fat"
+      title="Move layer down" rel="tooltip" data-placement="top" ></button>
+
+    <button data-action="edit"
+      class="button layers-button piskel-icon-pencil"
+      title="Edit layer name" rel="tooltip" data-placement="top"></button>
+
+    <button data-action="merge"
+      class="button layers-button piskel-icon-merge"
+      title="Merge with layer below" rel="tooltip" data-placement="top" ></button>
+
+    <button data-action="delete"
+      class="button layers-button piskel-icon-close"
+      title="Delete selected layer" rel="tooltip" data-placement="top" ></button>
+
   </div>
-  <script type="text/template" id="layer-item-template">
-    <li class="layer-item {{isselected:current-layer-item}}" data-layer-index="{{layerindex}}">{{layername}}
-      <span class="action-icon edit-icon" title="edit name">&nbsp;</span>
-    </li>
-  </script>
+
   <ul class="layers-list"></ul>
+
+  <script type="text/template" id="layer-item-template">
+    <li class="layer-item {{isselected:current-layer-item}}" data-layer-index="{{layerindex}}">{{layername}}</li>
+  </script>
 </div>

@@ -1,17 +1,66 @@
 <div class="settings-section">
+  <!-- RESIZE DRAWING AREA -->
   <div class="settings-title">
-    Resize drawing area
+    Canvas size
   </div>
-  <div class="settings-item">
-    <form action="" method="POST" name="resize-form">
+  <div class="settings-item  resize-canvas">
+    <form action="" method="POST" name="resize-canvas-form">
       <div class="resize-section">
-        <span class="resize-section-title  resize-section-title-small">Size :</span>
-        <input type="text" class="textfield resize-size-field" name="resize-width"/>x
-        <input type="text" class="textfield resize-size-field" name="resize-height"/>
+        <span  class="resize-section-title">Width</span>
+        <input type="text" class="textfield resize-size-field" name="resize-width"/>
+        <span>px</span>
       </div>
       <div class="resize-section">
-        <span class="resize-section-title  resize-section-title-small">Resize canvas content : </span>
-        <input type="checkbox" class="resize-content-checkbox" name="resize-content-checkbox" value="true"/>
+        <span  class="resize-section-title">Height</span>
+        <input type="text" class="textfield resize-size-field" name="resize-height"/>
+        <span>px</span>
+      </div>
+      <div class="resize-section">
+        <label>
+          <input type="checkbox" class="resize-ratio-checkbox" value="true"/>
+          <span>Maintain aspect ratio</span>
+        </label>
+      </div>
+      <div class="resize-section">
+        <span  class="resize-section-title">Anchor</span>
+        <div class="resize-origin-container">
+          <div class="resize-origin-option"  title="top left"     rel="tooltip"  data-placement="top"     data-origin="TOPLEFT"></div>
+          <div class="resize-origin-option"  title="top"          rel="tooltip"  data-placement="top"     data-origin="TOP"></div>
+          <div class="resize-origin-option"  title="top right"    rel="tooltip"  data-placement="top"     data-origin="TOPRIGHT"></div>
+          <div class="resize-origin-option"  title="middle left"  rel="tooltip"  data-placement="left"    data-origin="MIDDLELEFT"></div>
+          <div class="resize-origin-option"  title="middle"                                               data-origin="MIDDLE" data-neighbor="bottom"></div>
+          <div class="resize-origin-option"  title="middle right" rel="tooltip"  data-placement="right"   data-origin="MIDDLERIGHT"></div>
+          <div class="resize-origin-option"  title="bottom left"  rel="tooltip"  data-placement="bottom"  data-origin="BOTTOMLEFT"></div>
+          <div class="resize-origin-option"  title="bottom"       rel="tooltip"  data-placement="bottom"  data-origin="BOTTOM"></div>
+          <div class="resize-origin-option"  title="bottom right" rel="tooltip"  data-placement="bottom"  data-origin="BOTTOMRIGHT"></div>
+        </div>
+      </div>
+      <input type="submit" class="button button-primary resize-button" value="Resize" />
+      <input type="button" class="button resize-cancel-button" value="Cancel" />
+    </form>
+  </div>
+
+  <!-- RESIZE CONTENT -->
+  <div class="settings-title">
+    Image size
+  </div>
+  <div class="settings-item  resize-content">
+    <form action="" method="POST" name="resize-content-form">
+      <div class="resize-section">
+        <span  class="resize-section-title">Width</span>
+        <input type="text" class="textfield resize-size-field" name="resize-width"/>
+        <span>px</span>
+      </div>
+      <div class="resize-section">
+        <span  class="resize-section-title">Height</span>
+        <input type="text" class="textfield resize-size-field" name="resize-height"/>
+        <span>px</span>
+      </div>
+      <div class="resize-section">
+        <label>
+          <input type="checkbox" class="resize-ratio-checkbox" value="true"/>
+          <span>Maintain aspect ratio</span>
+        </label>
       </div>
       <input type="submit" class="button button-primary resize-button" value="Resize" />
       <input type="button" class="button resize-cancel-button" value="Cancel" />
