@@ -101,6 +101,7 @@
   "js/controller/settings/exportimage/PngExportController.js",
   "js/controller/settings/resize/ResizeController.js",
   "js/controller/settings/resize/AbstractResizeController.js",
+  "js/controller/settings/resize/AnchorWidget.js",
   "js/controller/settings/resize/ResizeCanvasController.js",
   "js/controller/settings/resize/ResizeContentController.js",
   "js/controller/settings/SaveController.js",
