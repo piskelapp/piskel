@@ -3,38 +3,42 @@
 
   ns.ApplicationSettingsController = function () {};
 
-  /**
-   * @public
-   */
   ns.ApplicationSettingsController.prototype.init = function() {
-    // Highlight selected background picker:
-    var backgroundClass = pskl.UserSettings.get(pskl.UserSettings.CANVAS_BACKGROUND);
-    $('#background-picker-wrapper')
-      .find('.background-picker[data-background-class=' + backgroundClass + ']')
-      .addClass('selected');
+    this.backgroundContainer = document.querySelector('.background-picker-wrapper');
+    this.backgroundContainer.addEventListener('click', this.onBackgroundClick_.bind(this));
+
+    // Highlight selected background :
+    var background = pskl.UserSettings.get(pskl.UserSettings.CANVAS_BACKGROUND);
+    var selectedBackground = this.backgroundContainer.querySelector('[data-background=' + background + ']');
+    if (selectedBackground) {
+      selectedBackground.classList.add('selected');
+    }
 
     // Grid display and size
     var gridWidth = pskl.UserSettings.get(pskl.UserSettings.GRID_WIDTH);
-    $('#grid-width').val(gridWidth);
-    $('#grid-width').change(this.onGridWidthChange.bind(this));
-
-    // Handle canvas background changes:
-    $('#background-picker-wrapper').click(this.onBackgroundClick.bind(this));
+    var gridSelect = document.querySelector('.grid-width-select');
+    var selectedOption = gridSelect.querySelector('option[value="'+gridWidth+'"]');
+    if (selectedOption) {
+      selectedOption.setAttribute('selected', 'selected');
+    }
+    gridSelect.addEventListener('change', this.onGridWidthChange_.bind(this));
   };
 
-  ns.ApplicationSettingsController.prototype.onGridWidthChange = function (evt) {
+  ns.ApplicationSettingsController.prototype.onGridWidthChange_ = function (evt) {
     var width = $('#grid-width').val();
     pskl.UserSettings.set(pskl.UserSettings.GRID_WIDTH, parseInt(width, 10));
   };
 
-  ns.ApplicationSettingsController.prototype.onBackgroundClick = function (evt) {
-    var target = $(evt.target).closest('.background-picker');
-    if (target.length) {
-      var backgroundClass = target.data('background-class');
-      pskl.UserSettings.set(pskl.UserSettings.CANVAS_BACKGROUND, backgroundClass);
-
-      $('.background-picker').removeClass('selected');
-      target.addClass('selected');
+  ns.ApplicationSettingsController.prototype.onBackgroundClick_ = function (evt) {
+    var target = evt.target;
+    var background = target.dataset.background;
+    if (background) {
+      pskl.UserSettings.set(pskl.UserSettings.CANVAS_BACKGROUND, background);
+      var selected = this.backgroundContainer.querySelector('.selected');
+      if (selected) {
+        selected.classList.remove('selected');
+      }
+      target.classList.add('selected');
     }
   };
 
