@@ -5,7 +5,7 @@
 
   ns.ApplicationSettingsController.prototype.init = function() {
     this.backgroundContainer = document.querySelector('.background-picker-wrapper');
-    this.backgroundContainer.addEventListener('click', this.onBackgroundClick_.bind(this));
+    pskl.utils.Event.addEventListener(this.backgroundContainer, 'click', this.onBackgroundClick_, this);
 
     // Highlight selected background :
     var background = pskl.UserSettings.get(pskl.UserSettings.CANVAS_BACKGROUND);
@@ -21,12 +21,35 @@
     if (selectedOption) {
       selectedOption.setAttribute('selected', 'selected');
     }
-    gridSelect.addEventListener('change', this.onGridWidthChange_.bind(this));
+
+    pskl.utils.Event.addEventListener(gridSelect, 'change', this.onGridWidthChange_, this);
+
+    // Tiled preview
+    var tiledPreview = pskl.UserSettings.get(pskl.UserSettings.TILED_PREVIEW);
+    var tiledPreviewCheckbox = document.querySelector('.tiled-preview-checkbox');
+    if (tiledPreview) {
+      tiledPreviewCheckbox.setAttribute('checked', true);
+    }
+    pskl.utils.Event.addEventListener(tiledPreviewCheckbox, 'change', this.onTiledPreviewChange_, this);
+
+    // Max FPS 
+    var maxFpsInput = document.querySelector('.max-fps-input');
+    maxFpsInput.value = pskl.UserSettings.get(pskl.UserSettings.MAX_FPS);
+    pskl.utils.Event.addEventListener(maxFpsInput, 'change', this.onMaxFpsChange_, this);
+  };
+
+  ns.ApplicationSettingsController.prototype.destroy = function () {
+    pskl.utils.Event.removeAllEventListeners(this);
+    this.backgroundContainer = null;
   };
 
   ns.ApplicationSettingsController.prototype.onGridWidthChange_ = function (evt) {
     var width = parseInt(evt.target.value, 10);
     pskl.UserSettings.set(pskl.UserSettings.GRID_WIDTH, width);
+  };
+
+  ns.ApplicationSettingsController.prototype.onTiledPreviewChange_ = function (evt) {
+    pskl.UserSettings.set(pskl.UserSettings.TILED_PREVIEW, evt.currentTarget.checked);
   };
 
   ns.ApplicationSettingsController.prototype.onBackgroundClick_ = function (evt) {
@@ -39,6 +62,16 @@
         selected.classList.remove('selected');
       }
       target.classList.add('selected');
+    }
+  };
+
+  ns.ApplicationSettingsController.prototype.onMaxFpsChange_ = function (evt) {
+    var target = evt.target;
+    var fps = parseInt(target.value, 10);
+    if (fps && !isNaN(fps)) {
+      pskl.UserSettings.set(pskl.UserSettings.MAX_FPS, fps);
+    } else {
+      target.value = pskl.UserSettings.get(pskl.UserSettings.MAX_FPS);
     }
   };
 
