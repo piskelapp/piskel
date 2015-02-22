@@ -25,8 +25,8 @@
   };
 
   ns.ApplicationSettingsController.prototype.onGridWidthChange_ = function (evt) {
-    var width = $('#grid-width').val();
-    pskl.UserSettings.set(pskl.UserSettings.GRID_WIDTH, parseInt(width, 10));
+    var width = parseInt(evt.target.value, 10);
+    pskl.UserSettings.set(pskl.UserSettings.GRID_WIDTH, width);
   };
 
   ns.ApplicationSettingsController.prototype.onBackgroundClick_ = function (evt) {
