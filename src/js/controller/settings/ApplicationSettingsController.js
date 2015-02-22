@@ -3,38 +3,75 @@
 
   ns.ApplicationSettingsController = function () {};
 
-  /**
-   * @public
-   */
   ns.ApplicationSettingsController.prototype.init = function() {
-    // Highlight selected background picker:
-    var backgroundClass = pskl.UserSettings.get(pskl.UserSettings.CANVAS_BACKGROUND);
-    $('#background-picker-wrapper')
-      .find('.background-picker[data-background-class=' + backgroundClass + ']')
-      .addClass('selected');
+    this.backgroundContainer = document.querySelector('.background-picker-wrapper');
+    pskl.utils.Event.addEventListener(this.backgroundContainer, 'click', this.onBackgroundClick_, this);
+
+    // Highlight selected background :
+    var background = pskl.UserSettings.get(pskl.UserSettings.CANVAS_BACKGROUND);
+    var selectedBackground = this.backgroundContainer.querySelector('[data-background=' + background + ']');
+    if (selectedBackground) {
+      selectedBackground.classList.add('selected');
+    }
 
     // Grid display and size
     var gridWidth = pskl.UserSettings.get(pskl.UserSettings.GRID_WIDTH);
-    $('#grid-width').val(gridWidth);
-    $('#grid-width').change(this.onGridWidthChange.bind(this));
+    var gridSelect = document.querySelector('.grid-width-select');
+    var selectedOption = gridSelect.querySelector('option[value="'+gridWidth+'"]');
+    if (selectedOption) {
+      selectedOption.setAttribute('selected', 'selected');
+    }
 
-    // Handle canvas background changes:
-    $('#background-picker-wrapper').click(this.onBackgroundClick.bind(this));
+    pskl.utils.Event.addEventListener(gridSelect, 'change', this.onGridWidthChange_, this);
+
+    // Tiled preview
+    var tiledPreview = pskl.UserSettings.get(pskl.UserSettings.TILED_PREVIEW);
+    var tiledPreviewCheckbox = document.querySelector('.tiled-preview-checkbox');
+    if (tiledPreview) {
+      tiledPreviewCheckbox.setAttribute('checked', true);
+    }
+    pskl.utils.Event.addEventListener(tiledPreviewCheckbox, 'change', this.onTiledPreviewChange_, this);
+
+    // Max FPS 
+    var maxFpsInput = document.querySelector('.max-fps-input');
+    maxFpsInput.value = pskl.UserSettings.get(pskl.UserSettings.MAX_FPS);
+    pskl.utils.Event.addEventListener(maxFpsInput, 'change', this.onMaxFpsChange_, this);
   };
 
-  ns.ApplicationSettingsController.prototype.onGridWidthChange = function (evt) {
-    var width = $('#grid-width').val();
-    pskl.UserSettings.set(pskl.UserSettings.GRID_WIDTH, parseInt(width, 10));
+  ns.ApplicationSettingsController.prototype.destroy = function () {
+    pskl.utils.Event.removeAllEventListeners(this);
+    this.backgroundContainer = null;
   };
 
-  ns.ApplicationSettingsController.prototype.onBackgroundClick = function (evt) {
-    var target = $(evt.target).closest('.background-picker');
-    if (target.length) {
-      var backgroundClass = target.data('background-class');
-      pskl.UserSettings.set(pskl.UserSettings.CANVAS_BACKGROUND, backgroundClass);
+  ns.ApplicationSettingsController.prototype.onGridWidthChange_ = function (evt) {
+    var width = parseInt(evt.target.value, 10);
+    pskl.UserSettings.set(pskl.UserSettings.GRID_WIDTH, width);
+  };
 
-      $('.background-picker').removeClass('selected');
-      target.addClass('selected');
+  ns.ApplicationSettingsController.prototype.onTiledPreviewChange_ = function (evt) {
+    pskl.UserSettings.set(pskl.UserSettings.TILED_PREVIEW, evt.currentTarget.checked);
+  };
+
+  ns.ApplicationSettingsController.prototype.onBackgroundClick_ = function (evt) {
+    var target = evt.target;
+    var background = target.dataset.background;
+    if (background) {
+      pskl.UserSettings.set(pskl.UserSettings.CANVAS_BACKGROUND, background);
+      var selected = this.backgroundContainer.querySelector('.selected');
+      if (selected) {
+        selected.classList.remove('selected');
+      }
+      target.classList.add('selected');
+    }
+  };
+
+  ns.ApplicationSettingsController.prototype.onMaxFpsChange_ = function (evt) {
+    var target = evt.target;
+    var fps = parseInt(target.value, 10);
+    if (fps && !isNaN(fps)) {
+      pskl.UserSettings.set(pskl.UserSettings.MAX_FPS, fps);
+    } else {
+      target.value = pskl.UserSettings.get(pskl.UserSettings.MAX_FPS);
     }
   };
 

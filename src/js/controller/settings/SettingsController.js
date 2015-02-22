@@ -73,8 +73,15 @@
   };
 
   ns.SettingsController.prototype.loadSetting = function (setting) {
+    if (this.currentController && this.currentController.destroy) {
+      this.currentController.destroy();
+    }
+
     this.drawerContainer.innerHTML = pskl.utils.Template.get(settings[setting].template);
-    (new settings[setting].controller(this.piskelController)).init();
+    
+    this.currentSetting = setting;
+    this.currentController = new settings[setting].controller(this.piskelController);
+    this.currentController.init();
 
     this.settingsContainer.addClass(EXP_DRAWER_CLS);
 
@@ -82,7 +89,6 @@
     $('[data-setting='+setting+']').addClass(SEL_SETTING_CLS);
 
     this.isExpanded = true;
-    this.currentSetting = setting;
   };
 
   ns.SettingsController.prototype.closeDrawer = function () {
