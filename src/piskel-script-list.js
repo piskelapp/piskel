@@ -17,6 +17,7 @@
   "js/utils/CanvasUtils.js",
   "js/utils/DateUtils.js",
   "js/utils/Dom.js",
+  "js/utils/Event.js",
   "js/utils/Math.js",
   "js/utils/FileUtils.js",
   "js/utils/FrameTransform.js",

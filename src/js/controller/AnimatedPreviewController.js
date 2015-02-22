@@ -27,6 +27,7 @@
     // the oninput event won't work on IE10 unfortunately, but at least will provide a
     // consistent behavior across all other browsers that support the input type range
     // see https://bugzilla.mozilla.org/show_bug.cgi?id=853670
+
     this.fpsRangeInput.on('input change', this.onFPSSliderChange.bind(this));
     document.querySelector('.right-column').style.width = Constants.ANIMATED_PREVIEW_WIDTH + 'px';
 
@@ -43,12 +44,15 @@
 
     this.updateZoom_();
     this.updateOnionSkinPreview_();
+    this.updateMaxFPS_();
     this.updateContainerDimensions_();
   };
 
   ns.AnimatedPreviewController.prototype.onUserSettingsChange_ = function (evt, name, value) {
     if (name == pskl.UserSettings.ONION_SKIN) {
       this.updateOnionSkinPreview_();
+    } else if (name == pskl.UserSettings.MAX_FPS) {
+      this.updateMaxFPS_();
     } else {
       this.updateZoom_();
       this.updateContainerDimensions_();
@@ -62,6 +66,12 @@
     } else {
       this.toggleOnionSkinEl.classList.remove(enabledClassname);
     }
+  };
+
+  ns.AnimatedPreviewController.prototype.updateMaxFPS_ = function () {
+    var maxFps = pskl.UserSettings.get(pskl.UserSettings.MAX_FPS);
+    this.fpsRangeInput.get(0).setAttribute('max', maxFps);
+    this.setFPS(Math.min(this.fps, maxFps));
   };
 
   ns.AnimatedPreviewController.prototype.updateZoom_ = function () {
@@ -93,7 +103,10 @@
   ns.AnimatedPreviewController.prototype.setFPS = function (fps) {
     if (typeof fps === 'number') {
       this.fps = fps;
-      this.fpsRangeInput.val(this.fps);
+      // reset
+      this.fpsRangeInput.get(0).value = 0;
+      // set proper value
+      this.fpsRangeInput.get(0).value = this.fps;
       this.fpsRangeInput.blur();
       this.fpsCounterDisplay.html(this.fps + ' FPS');
     }
