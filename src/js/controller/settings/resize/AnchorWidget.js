@@ -4,7 +4,8 @@
   var OPTION_CLASSNAME = 'resize-origin-option';
 
   ns.AnchorWidget = function (container) {
-    container.addEventListener('click', this.onResizeOriginClick_.bind(this));
+    this.container = container;
+    this.container.addEventListener('click', this.onResizeOriginClick_.bind(this));
   };
 
   ns.AnchorWidget.ORIGIN = {
@@ -42,6 +43,18 @@
 
   ns.AnchorWidget.prototype.getOrigin = function () {
     return this.origin;
+  };
+
+  ns.AnchorWidget.prototype.disable = function () {
+    this.disabled = true;
+    this.container.classList.add('transition');
+    this.container.classList.add('disabled');
+  };
+
+  ns.AnchorWidget.prototype.enable = function () {
+    this.disabled = false;
+    this.container.classList.remove('disabled');
+    window.setTimeout(this.container.classList.remove.bind(this.container.classList, 'transition'), 250);
   };
 
   ns.AnchorWidget.prototype.refreshNeighbors_ = function (selected) {

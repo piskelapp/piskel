@@ -9,6 +9,17 @@
   margin-left: 0;
 }
 
+.resize-ratio-checkbox,
+.resize-smooth-checkbox {
+  vertical-align: -2px;
+  margin-left: 0;
+}
+
+
+/*****************/
+/* ANCHOR WIDGET */
+/*****************/
+
 .resize-origin-container {
   overflow: hidden;
   position: relative;
@@ -17,17 +28,31 @@
   display: inline-block;
 }
 
+.transition .resize-origin-option,
+.transition .resize-origin-option:before {
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
 .resize-origin-option {
   float: left;
-  box-sizing: border-box;
   position: relative;
+
+  box-sizing: border-box;
   margin: 0 1px 1px 0;
   width: 20px;
   height: 20px;
+
   background : #888;
+
   font-size: 8px;
   text-align: center;
   cursor: pointer;
+}
+
+.disabled .resize-origin-option {
+  cursor: default;
+  background : #555;
+  border-color: #555 !important;
 }
 
 .resize-origin-option.selected {
@@ -48,6 +73,14 @@
   width: 4px;
   height: 4px;
   background: gold;
+}
+
+.disabled .resize-origin-option.selected:before {
+  background: #555;
+}
+
+.disabled .resize-origin-option[data-neighbor]:before {
+  border-color: #555 !important;
 }
 
 .resize-origin-option[data-neighbor]:before {
@@ -78,10 +111,4 @@
 .resize-origin-option[data-neighbor="right"]:before {
   border-left-color: gold;
   margin-top: -4px;
-}
-
-.resize-ratio-checkbox,
-.resize-smooth-checkbox {
-  vertical-align: -2px;
-  margin-left: 0;
 }

@@ -22,6 +22,12 @@
         </label>
       </div>
       <div class="resize-section">
+        <label>
+          <input type="checkbox" class="resize-content-checkbox" value="true"/>
+          <span>Resize canvas content</span>
+        </label>
+      </div>
+      <div class="resize-section">
         <span  class="resize-section-title">Anchor</span>
         <div class="resize-origin-container">
           <div class="resize-origin-option"  title="top left"      data-origin="TOPLEFT"></div>
@@ -34,33 +40,6 @@
           <div class="resize-origin-option"  title="bottom"        data-origin="BOTTOM"></div>
           <div class="resize-origin-option"  title="bottom right"  data-origin="BOTTOMRIGHT"></div>
         </div>
-      </div>
-      <input type="submit" class="button button-primary resize-button" value="Resize" />
-      <input type="button" class="button resize-cancel-button" value="Cancel" />
-    </form>
-  </div>
-
-  <!-- RESIZE CONTENT -->
-  <div class="settings-title">
-    Image size
-  </div>
-  <div class="settings-item  resize-content">
-    <form action="" method="POST" name="resize-content-form">
-      <div class="resize-section">
-        <span  class="resize-section-title">Width</span>
-        <input type="text" class="textfield resize-size-field" name="resize-width"/>
-        <span>px</span>
-      </div>
-      <div class="resize-section">
-        <span  class="resize-section-title">Height</span>
-        <input type="text" class="textfield resize-size-field" name="resize-height"/>
-        <span>px</span>
-      </div>
-      <div class="resize-section">
-        <label>
-          <input type="checkbox" class="resize-ratio-checkbox" value="true"/>
-          <span>Maintain aspect ratio</span>
-        </label>
       </div>
       <input type="submit" class="button button-primary resize-button" value="Resize" />
       <input type="button" class="button resize-cancel-button" value="Cancel" />
