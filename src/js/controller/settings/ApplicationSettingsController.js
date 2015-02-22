@@ -38,6 +38,10 @@
     var maxFpsInput = document.querySelector('.max-fps-input');
     maxFpsInput.value = pskl.UserSettings.get(pskl.UserSettings.MAX_FPS);
     this.addEventListener(maxFpsInput, 'change', this.onMaxFpsChange_);
+
+    // Form
+    this.applicationSettingsForm = document.querySelector('[name="application-settings-form"]');
+    this.addEventListener(this.applicationSettingsForm, 'submit', this.onFormSubmit_);
   };
 
   ns.ApplicationSettingsController.prototype.onGridWidthChange_ = function (evt) {
@@ -70,6 +74,11 @@
     } else {
       target.value = pskl.UserSettings.get(pskl.UserSettings.MAX_FPS);
     }
+  };
+
+  ns.ApplicationSettingsController.prototype.onFormSubmit_ = function (evt) {
+    evt.preventDefault();
+    $.publish(Events.CLOSE_SETTINGS_DRAWER);
   };
 
 })();
