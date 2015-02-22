@@ -3,9 +3,11 @@
 
   ns.ApplicationSettingsController = function () {};
 
+  pskl.utils.inherit(ns.ApplicationSettingsController, pskl.controller.settings.AbstractSettingController);
+
   ns.ApplicationSettingsController.prototype.init = function() {
     this.backgroundContainer = document.querySelector('.background-picker-wrapper');
-    pskl.utils.Event.addEventListener(this.backgroundContainer, 'click', this.onBackgroundClick_, this);
+    this.addEventListener(this.backgroundContainer, 'click', this.onBackgroundClick_);
 
     // Highlight selected background :
     var background = pskl.UserSettings.get(pskl.UserSettings.CANVAS_BACKGROUND);
@@ -22,7 +24,7 @@
       selectedOption.setAttribute('selected', 'selected');
     }
 
-    pskl.utils.Event.addEventListener(gridSelect, 'change', this.onGridWidthChange_, this);
+    this.addEventListener(gridSelect, 'change', this.onGridWidthChange_);
 
     // Tiled preview
     var tiledPreview = pskl.UserSettings.get(pskl.UserSettings.TILED_PREVIEW);
@@ -30,17 +32,12 @@
     if (tiledPreview) {
       tiledPreviewCheckbox.setAttribute('checked', true);
     }
-    pskl.utils.Event.addEventListener(tiledPreviewCheckbox, 'change', this.onTiledPreviewChange_, this);
+    this.addEventListener(tiledPreviewCheckbox, 'change', this.onTiledPreviewChange_);
 
-    // Max FPS 
+    // Max FPS
     var maxFpsInput = document.querySelector('.max-fps-input');
     maxFpsInput.value = pskl.UserSettings.get(pskl.UserSettings.MAX_FPS);
-    pskl.utils.Event.addEventListener(maxFpsInput, 'change', this.onMaxFpsChange_, this);
-  };
-
-  ns.ApplicationSettingsController.prototype.destroy = function () {
-    pskl.utils.Event.removeAllEventListeners(this);
-    this.backgroundContainer = null;
+    this.addEventListener(maxFpsInput, 'change', this.onMaxFpsChange_);
   };
 
   ns.ApplicationSettingsController.prototype.onGridWidthChange_ = function (evt) {

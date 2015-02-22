@@ -20,9 +20,10 @@
     if (scope && scope.__pskl_listeners) {
       var listeners = scope.__pskl_listeners;
       for (var i = 0 ; i < listeners.length ; i++) {
-        if (listeners[i].callback === callback) {
+        var listener = listeners[i];
+        if (listener.callback === callback && listener.el === el  && listener.type === type) {
           el.removeEventListener(type, listeners[i].handler);
-          listeners.slice(i, 1);
+          listeners.splice(i, 1);
           break;
         }
       }

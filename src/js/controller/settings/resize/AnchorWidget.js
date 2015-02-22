@@ -5,7 +5,8 @@
 
   ns.AnchorWidget = function (container) {
     this.container = container;
-    this.container.addEventListener('click', this.onResizeOriginClick_.bind(this));
+    this.disabled = false;
+    pskl.utils.Event.addEventListener(this.container, 'click', this.onResizeOriginClick_, this);
   };
 
   ns.AnchorWidget.ORIGIN = {
@@ -20,9 +21,14 @@
     BOTTOMRIGHT : 'BOTTOMRIGHT'
   };
 
+  ns.AnchorWidget.prototype.destroy = function (evt) {
+    pskl.utils.Event.removeAllEventListeners(this);
+    this.container = null;
+  };
+
   ns.AnchorWidget.prototype.onResizeOriginClick_ = function (evt) {
     var origin = evt.target.dataset.origin;
-    if (origin && ns.AnchorWidget.ORIGIN[origin]) {
+    if (origin && ns.AnchorWidget.ORIGIN[origin] && !this.disabled) {
       this.setOrigin(origin);
     }
   };

@@ -96,6 +96,7 @@
   "js/controller/CanvasBackgroundController.js",
 
   // Settings sub-controllers
+  "js/controller/settings/AbstractSettingController.js",
   "js/controller/settings/ApplicationSettingsController.js",
   "js/controller/settings/exportimage/ImageExportController.js",
   "js/controller/settings/exportimage/GifExportController.js",

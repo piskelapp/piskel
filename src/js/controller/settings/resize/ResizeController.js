@@ -10,6 +10,8 @@
     this.anchorWidget = new ns.AnchorWidget(anchorWidgetContainer);
   };
 
+  pskl.utils.inherit(ns.ResizeController, pskl.controller.settings.AbstractSettingController);
+
   ns.ResizeController.prototype.init = function () {
     this.widthInput = this.container.querySelector('[name="resize-width"]');
     this.heightInput = this.container.querySelector('[name="resize-height"]');
@@ -17,23 +19,25 @@
     this.widthInput.value = this.piskelController.getWidth();
     this.heightInput.value = this.piskelController.getHeight();
 
-    this.widthInput.addEventListener('keyup', this.onSizeInputKeyUp_.bind(this));
-    this.heightInput.addEventListener('keyup', this.onSizeInputKeyUp_.bind(this));
-
-    this.cancelButton = this.container.querySelector('.resize-cancel-button');
-    this.cancelButton.addEventListener('click', this.onCancelButtonClicked_.bind(this));
+    this.addEventListener(this.widthInput, 'keyup', this.onSizeInputKeyUp_);
+    this.addEventListener(this.heightInput, 'keyup', this.onSizeInputKeyUp_);
 
     this.resizeForm = this.container.querySelector('form');
-    this.resizeForm.addEventListener('submit', this.onResizeFormSubmit_.bind(this));
+    this.addEventListener(this.resizeForm, 'submit', this.onResizeFormSubmit_);
 
     this.resizeContentCheckbox = this.container.querySelector('.resize-content-checkbox');
-    this.resizeContentCheckbox.addEventListener('change', this.onResizeContentChange_.bind(this));
+    this.addEventListener(this.resizeContentCheckbox, 'change', this.onResizeContentChange_);
 
     this.maintainRatioCheckbox = this.container.querySelector('.resize-ratio-checkbox');
-    this.maintainRatioCheckbox.addEventListener('change', this.onMaintainRatioChange_.bind(this));
+    this.addEventListener(this.maintainRatioCheckbox, 'change', this.onMaintainRatioChange_);
 
     this.anchorWidget.setOrigin(ns.AnchorWidget.ORIGIN.TOPLEFT);
     this.lastInput = this.widthInput;
+  };
+
+  ns.ResizeController.prototype.destroy = function () {
+    this.anchorWidget.destroy();
+    this.superclass.destroy.call(this);
   };
 
   ns.ResizeController.prototype.onResizeFormSubmit_ = function (evt) {
@@ -51,10 +55,6 @@
   ns.ResizeController.prototype.resizeLayer_ = function (layer) {
     var resizedFrames = layer.getFrames().map(this.resizeFrame_.bind(this));
     return pskl.model.Layer.fromFrames(layer.getName(), resizedFrames);
-  };
-
-  ns.ResizeController.prototype.onCancelButtonClicked_ = function () {
-    $.publish(Events.CLOSE_SETTINGS_DRAWER);
   };
 
   ns.ResizeController.prototype.onResizeContentChange_ = function (evt) {
@@ -103,7 +103,7 @@
   };
 
   /***********************/
-  /* RESIZE CANVAS LOGIC */
+  /* RESIZE LOGIC */
   /***********************/
 
   ns.ResizeController.prototype.resizeFrame_ = function (frame) {
