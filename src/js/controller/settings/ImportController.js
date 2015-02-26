@@ -3,42 +3,38 @@
 
   ns.ImportController = function (piskelController) {
     this.piskelController = piskelController;
-    this.importedImage_ = null;
   };
 
   pskl.utils.inherit(ns.ImportController, pskl.controller.settings.AbstractSettingController);
 
   ns.ImportController.prototype.init = function () {
-    this.hiddenFileInput = document.querySelector('[name=file-upload-input]');
+    this.hiddenFileInput = document.querySelector('[name="file-upload-input"]');
     this.addEventListener(this.hiddenFileInput, 'change', this.onFileUploadChange_);
 
-    this.hiddenOpenPiskelInput = document.querySelector('[name=open-piskel-input]');
+    this.hiddenOpenPiskelInput = document.querySelector('[name="open-piskel-input"]');
     this.addEventListener(this.hiddenOpenPiskelInput, 'change', this.onOpenPiskelChange_);
 
     this.addEventListener('.browse-local-button', 'click', this.onBrowseLocalClick_);
     this.addEventListener('.file-input-button', 'click', this.onFileInputClick_);
     this.addEventListener('.open-piskel-button', 'click', this.onOpenPiskelClick_);
 
-
-    this.previousSessionTemplate_ = pskl.utils.Template.get("previous-session-info-template");
-    this.fillRestoreSession_();
+    this.initRestoreSession_();
   };
 
   ns.ImportController.prototype.initRestoreSession_ = function () {
-    var html = '';
+    var previousSessionContainer = document.querySelector('.previous-session');
     var previousInfo = pskl.app.backupService.getPreviousPiskelInfo();
     if (previousInfo) {
-      var previousSessionTemplate_ = pskl.utils.Template.get("previous-session-info-template");
-      var date = pskl.utils.DateUtils.format(previousInfo.date, "{{H}}:{{m}} - {{Y}}/{{M}}/{{D}}");
-      html = pskl.utils.Template.replace(previousSessionTemplate_, {
+      var previousSessionTemplate_ = pskl.utils.Template.get('previous-session-info-template');
+      var date = pskl.utils.DateUtils.format(previousInfo.date, '{{H}}:{{m}} - {{Y}}/{{M}}/{{D}}');
+      previousSessionContainer.innerHTML = pskl.utils.Template.replace(previousSessionTemplate_, {
         name : previousInfo.name,
         date : date
       });
       this.addEventListener('.restore-session-button', 'click', this.onRestorePreviousSessionClick_);
     } else {
-      html = "No piskel backup was found on this browser.";
+      previousSessionContainer.innerHTML = 'No piskel backup was found on this browser.';
     }
-    document.querySelector('.previous-session').innerHTML = html;
   };
 
   ns.ImportController.prototype.closeDrawer_ = function () {
