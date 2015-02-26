@@ -6,25 +6,39 @@
     this.importedImage_ = null;
   };
 
+  pskl.utils.inherit(ns.ImportController, pskl.controller.settings.AbstractSettingController);
+
   ns.ImportController.prototype.init = function () {
-    this.browseLocalButton = document.querySelector('.browse-local-button');
-    this.browseLocalButton.addEventListener('click', this.onBrowseLocalClick_.bind(this));
+    this.hiddenFileInput = document.querySelector('[name=file-upload-input]');
+    this.addEventListener(this.hiddenFileInput, 'change', this.onFileUploadChange_);
 
-    this.hiddenFileInput = $('[name=file-upload-input]');
-    this.hiddenFileInput.change(this.onFileUploadChange_.bind(this));
+    this.hiddenOpenPiskelInput = document.querySelector('[name=open-piskel-input]');
+    this.addEventListener(this.hiddenOpenPiskelInput, 'change', this.onOpenPiskelChange_);
 
-    this.fileInputButton = $('.file-input-button');
-    this.fileInputButton.click(this.onFileInputClick_.bind(this));
+    this.addEventListener('.browse-local-button', 'click', this.onBrowseLocalClick_);
+    this.addEventListener('.file-input-button', 'click', this.onFileInputClick_);
+    this.addEventListener('.open-piskel-button', 'click', this.onOpenPiskelClick_);
 
-    this.hiddenOpenPiskelInput = $('[name=open-piskel-input]');
-    this.hiddenOpenPiskelInput.change(this.onOpenPiskelChange_.bind(this));
 
-    this.openPiskelInputButton = $('.open-piskel-button');
-    this.openPiskelInputButton.click(this.onOpenPiskelClick_.bind(this));
-
-    this.prevSessionContainer = $('.previous-session');
     this.previousSessionTemplate_ = pskl.utils.Template.get("previous-session-info-template");
     this.fillRestoreSession_();
+  };
+
+  ns.ImportController.prototype.initRestoreSession_ = function () {
+    var html = '';
+    var previousInfo = pskl.app.backupService.getPreviousPiskelInfo();
+    if (previousInfo) {
+      var previousSessionTemplate_ = pskl.utils.Template.get("previous-session-info-template");
+      var date = pskl.utils.DateUtils.format(previousInfo.date, "{{H}}:{{m}} - {{Y}}/{{M}}/{{D}}");
+      html = pskl.utils.Template.replace(previousSessionTemplate_, {
+        name : previousInfo.name,
+        date : date
+      });
+      this.addEventListener('.restore-session-button', 'click', this.onRestorePreviousSessionClick_);
+    } else {
+      html = "No piskel backup was found on this browser.";
+    }
+    document.querySelector('.previous-session').innerHTML = html;
   };
 
   ns.ImportController.prototype.closeDrawer_ = function () {
@@ -39,7 +53,7 @@
   };
 
   ns.ImportController.prototype.onOpenPiskelChange_ = function (evt) {
-    var files = this.hiddenOpenPiskelInput.get(0).files;
+    var files = this.hiddenOpenPiskelInput.files;
     if (files.length == 1) {
       this.openPiskelFile_(files[0]);
     }
@@ -66,7 +80,7 @@
   };
 
   ns.ImportController.prototype.importPictureFromFile_ = function () {
-    var files = this.hiddenFileInput.get(0).files;
+    var files = this.hiddenFileInput.files;
     if (files.length == 1) {
       var file = files[0];
       if (this.isImage_(file)) {
@@ -88,21 +102,6 @@
 
   ns.ImportController.prototype.isPiskel_ = function (file) {
     return (/\.piskel$/).test(file.name);
-  };
-
-  ns.ImportController.prototype.fillRestoreSession_ = function () {
-    var previousInfo = pskl.app.backupService.getPreviousPiskelInfo();
-    if (previousInfo) {
-      var info = {
-        name : previousInfo.name,
-        date : pskl.utils.DateUtils.format(previousInfo.date, "{{H}}:{{m}} - {{Y}}/{{M}}/{{D}}")
-      };
-
-      this.prevSessionContainer.html(pskl.utils.Template.replace(this.previousSessionTemplate_, info));
-      $(".restore-session-button").click(this.onRestorePreviousSessionClick_.bind(this));
-    } else {
-      this.prevSessionContainer.html("No piskel backup was found on this browser.");
-    }
   };
 
   ns.ImportController.prototype.onRestorePreviousSessionClick_ = function () {

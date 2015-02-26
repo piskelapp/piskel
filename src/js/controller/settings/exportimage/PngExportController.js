@@ -7,14 +7,18 @@
     this.piskelController = piskelController;
   };
 
+  pskl.utils.inherit(ns.PngExportController, pskl.controller.settings.AbstractSettingController);
+
   ns.PngExportController.prototype.init = function () {
-    this.previewContainerEl = document.querySelector(".png-export-preview");
+    this.previewContainerEl = document.querySelector('.png-export-preview');
     this.pngFilePrefixInput = document.getElementById('zip-prefix-name');
     this.pngFilePrefixInput.value = 'sprite_';
 
-    document.querySelector(".png-download-button").addEventListener('click', this.onPngDownloadButtonClick_.bind(this));
+    var downloadButton = document.querySelector(".png-download-button");
+    this.addEventListener(downloadButton, 'click', this.onPngDownloadButtonClick_);
 
-    document.querySelector(".zip-generate-button").addEventListener('click', this.onZipButtonClick_.bind(this));
+    var zipButton = document.querySelector(".zip-generate-button");
+    this.addEventListener(zipButton, 'click', this.onZipButtonClick_);
 
     this.updatePreview_(this.getFramesheetAsCanvas().toDataURL("image/png"));
   };
@@ -29,7 +33,7 @@
   ns.PngExportController.prototype.onZipButtonClick_ = function () {
     var zip = new window.JSZip();
 
-    for (var i = 0; i < this.piskelController.getFrameCount(); i++) {
+    for (var i = 0 ; i < this.piskelController.getFrameCount() ; i++) {
       var frame = this.piskelController.getFrameAt(i);
       var canvas = this.getFrameAsCanvas_(frame);
       var basename = this.pngFilePrefixInput.value;

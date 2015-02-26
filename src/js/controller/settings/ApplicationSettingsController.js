@@ -30,7 +30,7 @@
     var tiledPreview = pskl.UserSettings.get(pskl.UserSettings.TILED_PREVIEW);
     var tiledPreviewCheckbox = document.querySelector('.tiled-preview-checkbox');
     if (tiledPreview) {
-      tiledPreviewCheckbox.setAttribute('checked', true);
+      tiledPreviewCheckbox.setAttribute('checked', tiledPreview);
     }
     this.addEventListener(tiledPreviewCheckbox, 'change', this.onTiledPreviewChange_);
 

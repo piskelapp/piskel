@@ -10,6 +10,8 @@
     this.piskelController = piskelController;
   };
 
+  pskl.utils.inherit(ns.GifExportController, pskl.controller.settings.AbstractSettingController);
+
   /**
    * List of Resolutions applicable for Gif export
    * @static
@@ -30,17 +32,17 @@
     this.previewContainerEl = document.querySelector(".gif-export-preview");
     this.selectResolutionEl = document.querySelector(".gif-export-select-resolution");
 
-    this.uploadButton = $(".gif-upload-button");
-    this.uploadButton.click(this.onUploadButtonClick_.bind(this));
+    this.uploadButton = document.querySelector(".gif-upload-button");
+    this.addEventListener(this.uploadButton, 'click', this.onUploadButtonClick_);
 
-    this.downloadButton = $(".gif-download-button");
-    this.downloadButton.click(this.onDownloadButtonClick_.bind(this));
+    this.downloadButton = document.querySelector(".gif-download-button");
+    this.addEventListener(this.downloadButton, 'click', this.onDownloadButtonClick_);
 
     this.createOptionElements_();
   };
 
   ns.GifExportController.prototype.onUploadButtonClick_ = function (evt) {
-    evt.originalEvent.preventDefault();
+    evt.preventDefault();
     var zoom = this.getSelectedZoom_(),
         fps = this.piskelController.getFPS();
 
