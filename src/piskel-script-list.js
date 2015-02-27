@@ -85,6 +85,7 @@
   "js/controller/drawing/DragHandler.js",
   "js/controller/PreviewFilmController.js",
   "js/controller/LayersListController.js",
+  "js/controller/PopupPreviewController.js",
   "js/controller/AnimatedPreviewController.js",
   "js/controller/MinimapController.js",
   "js/controller/ToolController.js",

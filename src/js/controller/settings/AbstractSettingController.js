@@ -3,9 +3,6 @@
   ns.AbstractSettingController = function () {};
 
   ns.AbstractSettingController.prototype.addEventListener = function (el, type, callback) {
-    if (typeof el === 'string') {
-      el = document.querySelector(el);
-    }
     pskl.utils.Event.addEventListener(el, type, callback, this);
   };
 

@@ -10,19 +10,19 @@
     this.currentIndex = -1;
 
     this.lastLoadState = -1;
-
-    this.saveNextAsSnapshot = false;
   };
 
+  // Force to save a state as a SNAPSHOT
   ns.HistoryService.SNAPSHOT = 'SNAPSHOT';
+
+  // Default save state
   ns.HistoryService.REPLAY = 'REPLAY';
+
+  // Period (in number of state saved) between two snapshots
   ns.HistoryService.SNAPSHOT_PERIOD = 50;
+
+  // Interval/buffer (in milliseconds) between two state load (ctrl+z/y spamming)
   ns.HistoryService.LOAD_STATE_INTERVAL = 50;
-  /**
-   * This event alters the state (frames, layers) of the piskel. The event is triggered before the execution of associated command.
-   * Don't store snapshots for such events.
-   */
-  ns.HistoryService.REPLAY_NO_SNAPSHOT = 'REPLAY_NO_SNAPSHOT';
 
   ns.HistoryService.prototype.init = function () {
     $.subscribe(Events.PISKEL_SAVE_STATE, this.onSaveStateEvent.bind(this));
@@ -35,31 +35,28 @@
     });
   };
 
-  ns.HistoryService.prototype.onSaveStateEvent = function (evt, stateInfo) {
-    this.saveState(stateInfo);
+  ns.HistoryService.prototype.onSaveStateEvent = function (evt, action) {
+    this.saveState(action);
   };
 
-  ns.HistoryService.prototype.saveState = function (stateInfo) {
+  ns.HistoryService.prototype.saveState = function (action) {
     this.stateQueue = this.stateQueue.slice(0, this.currentIndex + 1);
     this.currentIndex = this.currentIndex + 1;
 
     var state = {
-      action : stateInfo,
-      frameIndex : this.piskelController.currentFrameIndex,
-      layerIndex : this.piskelController.currentLayerIndex
+      action : action,
+      frameIndex : action.state ? action.state.frameIndex : this.piskelController.currentFrameIndex,
+      layerIndex : action.state ? action.state.layerIndex : this.piskelController.currentLayerIndex
     };
 
-    var isSnapshot = stateInfo.type === ns.HistoryService.SNAPSHOT;
-    var isNoSnapshot = stateInfo.type === ns.HistoryService.REPLAY_NO_SNAPSHOT;
-    var isAtAutoSnapshotInterval = this.currentIndex % ns.HistoryService.SNAPSHOT_PERIOD === 0 || this.saveNextAsSnapshot;
-    if (isNoSnapshot && isAtAutoSnapshotInterval) {
-      this.saveNextAsSnapshot = true;
-    } else if (isSnapshot || isAtAutoSnapshotInterval) {
+    var isSnapshot = action.type === ns.HistoryService.SNAPSHOT;
+    var isAtAutoSnapshotInterval = this.currentIndex % ns.HistoryService.SNAPSHOT_PERIOD === 0;
+    if (isSnapshot || isAtAutoSnapshotInterval) {
       state.piskel = this.piskelController.serialize(true);
-      this.saveNextAsSnapshot = false;
     }
 
     this.stateQueue.push(state);
+    $.publish(Events.HISTORY_STATE_SAVED);
   };
 
   ns.HistoryService.prototype.undo = function () {
@@ -143,6 +140,7 @@
 
     this.currentIndex = index;
     $.publish(Events.PISKEL_RESET);
+    $.publish(Events.HISTORY_STATE_LOADED);
     if (originalSize !== this.getPiskelSize_()) {
       $.publish(Events.FRAME_SIZE_CHANGED);
     }

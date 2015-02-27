@@ -21,13 +21,13 @@
     var frame = this.piskelController.getCurrentFrame();
 
     this.renderer = new pskl.rendering.frame.TiledFrameRenderer(this.container);
+    this.popupPreviewController = new pskl.controller.PopupPreviewController();
   };
 
   ns.AnimatedPreviewController.prototype.init = function () {
     // the oninput event won't work on IE10 unfortunately, but at least will provide a
     // consistent behavior across all other browsers that support the input type range
     // see https://bugzilla.mozilla.org/show_bug.cgi?id=853670
-
     this.fpsRangeInput.on('input change', this.onFPSSliderChange.bind(this));
     document.querySelector('.right-column').style.width = Constants.ANIMATED_PREVIEW_WIDTH + 'px';
 
@@ -39,8 +39,10 @@
     $.subscribe(Events.FRAME_SIZE_CHANGED, this.onFrameSizeChange_.bind(this));
     $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
 
-    $.subscribe(Events.TOOL_RELEASED, this.setRenderFlag_.bind(this, true));
-    $.subscribe(Events.TOOL_PRESSED, this.setRenderFlag_.bind(this, false));
+    $.subscribe(Events.PISKEL_SAVE_STATE, this.setRenderFlag_.bind(this, true));
+    $.subscribe(Events.PISKEL_RESET, this.setRenderFlag_.bind(this, true));
+
+    this.popupPreviewController.init();
 
     this.updateZoom_();
     this.updateOnionSkinPreview_();
@@ -117,33 +119,27 @@
   };
 
   ns.AnimatedPreviewController.prototype.render = function (delta) {
-    if (this.renderFlag) {
-      this.elapsedTime += delta;
-      if (this.fps === 0) {
-        this._renderSelectedFrame();
-      } else {
-        this._renderCurrentAnimationFrame();
-      }
+    this.elapsedTime += delta;
+    var index = this.getNextIndex_(delta);
+    if (this.renderFlag || this.currentIndex != index) {
+      this.currentIndex = index;
+      var frame = this.piskelController.getFrameAt(this.currentIndex);
+      this.renderer.render(frame);
+      this.popupPreviewController.render(frame);
+      this.renderFlag = false;
     }
   };
 
-  ns.AnimatedPreviewController.prototype._renderSelectedFrame = function (delta) {
-    // the selected frame is the currentFrame from the PiskelController perspective
-    var selectedFrameIndex = this.piskelController.getCurrentFrameIndex();
-    var selectedFrame = this.piskelController.getFrameAt(selectedFrameIndex);
-    this.renderer.render(selectedFrame);
-  };
-
-  ns.AnimatedPreviewController.prototype._renderCurrentAnimationFrame = function (delta) {
-    var index = Math.floor(this.elapsedTime / (1000/this.fps));
-    if (index != this.currentIndex) {
-      this.currentIndex = index;
-      if (!this.piskelController.hasFrameAt(this.currentIndex)) {
-        this.currentIndex = 0;
+  ns.AnimatedPreviewController.prototype.getNextIndex_ = function (delta) {
+    if (this.fps === 0) {
+      return this.piskelController.getCurrentFrameIndex();
+    } else {
+      var index = Math.floor(this.elapsedTime / (1000/this.fps));
+      if (!this.piskelController.hasFrameAt(index)) {
         this.elapsedTime = 0;
+        index = 0;
       }
-      var frame = this.piskelController.getFrameAt(this.currentIndex);
-      this.renderer.render(frame);
+      return index;
     }
   };
 

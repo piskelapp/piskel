@@ -4,6 +4,10 @@
   ns.Event = {};
 
   ns.Event.addEventListener = function (el, type, callback, scope, args) {
+    if (typeof el === 'string') {
+      el = document.querySelector(el);
+    }
+
     var listener = {
       el : el,
       type : type,

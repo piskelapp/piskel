@@ -3,7 +3,10 @@
 
   ns.CurrentColorsService = function (piskelController) {
     this.piskelController = piskelController;
+    // cache of current colors by history state
+    this.cache = {};
     this.currentColors = [];
+
     this.cachedFrameProcessor = new pskl.model.frame.CachedFrameProcessor();
     this.cachedFrameProcessor.setFrameProcessor(this.getFrameColors_.bind(this));
 
@@ -12,9 +15,8 @@
   };
 
   ns.CurrentColorsService.prototype.init = function () {
-    $.subscribe(Events.PISKEL_RESET, this.onPiskelUpdated_.bind(this));
-    $.subscribe(Events.TOOL_RELEASED, this.onPiskelUpdated_.bind(this));
-    $.subscribe(Events.USER_SETTINGS_CHANGED, this.onUserSettingsChange_.bind(this));
+    $.subscribe(Events.HISTORY_STATE_SAVED, this.updateCurrentColors_.bind(this));
+    $.subscribe(Events.HISTORY_STATE_LOADED, this.loadColorsFromCache_.bind(this));
   };
 
   ns.CurrentColorsService.prototype.getCurrentColors = function () {
@@ -22,23 +24,11 @@
   };
 
   ns.CurrentColorsService.prototype.setCurrentColors = function (colors) {
+    var historyIndex = pskl.app.historyService.currentIndex;
+    this.cache[historyIndex] = colors;
     if (colors.join('') !== this.currentColors.join('')) {
       this.currentColors = colors;
       $.publish(Events.CURRENT_COLORS_UPDATED);
-    }
-  };
-
-  ns.CurrentColorsService.prototype.onUserSettingsChange_ = function (evt, name, value) {
-    if (name == pskl.UserSettings.SELECTED_PALETTE) {
-      if (this.isCurrentColorsPaletteSelected_()) {
-        this.updateCurrentColors_();
-      }
-    }
-  };
-
-  ns.CurrentColorsService.prototype.onPiskelUpdated_ = function (evt) {
-    if (this.isCurrentColorsPaletteSelected_()) {
-      this.updateCurrentColors_();
     }
   };
 
@@ -47,6 +37,14 @@
     var palette = this.paletteService.getPaletteById(paletteId);
 
     return palette.id === Constants.CURRENT_COLORS_PALETTE_ID;
+  };
+
+  ns.CurrentColorsService.prototype.loadColorsFromCache_ = function () {
+    var historyIndex = pskl.app.historyService.currentIndex;
+    var colors = this.cache[historyIndex];
+    if (colors) {
+      this.setCurrentColors(colors);
+    }
   };
 
   ns.CurrentColorsService.prototype.updateCurrentColors_ = function () {

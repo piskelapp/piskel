@@ -7,6 +7,29 @@
   };
 
   ns.PublicPiskelController.prototype.init = function () {
+    // DECORATED WITH RESET
+    this.resetWrap_('setCurrentFrameIndex');
+    this.resetWrap_('selectNextFrame');
+    this.resetWrap_('selectPreviousFrame');
+    this.resetWrap_('setCurrentLayerIndex');
+    this.resetWrap_('selectLayer');
+    // DECORATED WITH SAVE, NO RESET
+    this.saveWrap_('renameLayerAt', false);
+    // DECORATED WITH SAVE, WITH RESET
+    this.saveWrap_('removeCurrentLayer', true);
+    this.saveWrap_('addFrame', true);
+    this.saveWrap_('addFrameAtCurrentIndex', true);
+    this.saveWrap_('addFrameAt', true);
+    this.saveWrap_('removeFrameAt', true);
+    this.saveWrap_('duplicateCurrentFrame', true);
+    this.saveWrap_('duplicateFrameAt', true);
+    this.saveWrap_('moveFrame', true);
+    this.saveWrap_('createLayer', true);
+    this.saveWrap_('mergeDownLayerAt', true);
+    this.saveWrap_('moveLayerUp', true);
+    this.saveWrap_('moveLayerDown', true);
+    this.saveWrap_('removeCurrentLayer', true);
+
     pskl.app.shortcutService.addShortcut('up', this.selectPreviousFrame.bind(this));
     pskl.app.shortcutService.addShortcut('down', this.selectNextFrame.bind(this));
     pskl.app.shortcutService.addShortcut('n', this.addFrameAtCurrentIndex.bind(this));
@@ -23,128 +46,47 @@
     });
   };
 
-  ns.PublicPiskelController.prototype.addFrame = function () {
-    this.addFrameAt(this.getFrameCount());
+  ns.PublicPiskelController.prototype.resetWrap_ = function (methodName) {
+    this[methodName] = function () {
+      this.piskelController[methodName].apply(this.piskelController, arguments);
+      $.publish(Events.PISKEL_RESET);
+    };
   };
 
-  ns.PublicPiskelController.prototype.addFrameAtCurrentIndex = function () {
-    this.addFrameAt(this.getCurrentFrameIndex());
+  ns.PublicPiskelController.prototype.saveWrap_ = function (methodName, reset) {
+    this[methodName] = reset ? function () {
+      var stateInfo = this.getStateInfo_();
+      this.piskelController[methodName].apply(this.piskelController, arguments);
+      this.raiseSaveStateEvent_(this.piskelController[methodName], arguments, stateInfo);
+      $.publish(Events.PISKEL_RESET);
+    } : function () {
+      var stateInfo = this.getStateInfo_();
+      this.piskelController[methodName].apply(this.piskelController, arguments);
+      this.raiseSaveStateEvent_(this.piskelController[methodName], arguments, stateInfo);
+    };
   };
 
-  ns.PublicPiskelController.prototype.addFrameAt = function (index) {
-    this.raiseSaveStateEvent_(this.piskelController.addFrameAt, [index]);
-    this.piskelController.addFrameAt(index);
-    $.publish(Events.PISKEL_RESET);
+  ns.PublicPiskelController.prototype.getStateInfo_ = function () {
+    var stateInfo = {
+      frameIndex : this.piskelController.currentFrameIndex,
+      layerIndex : this.piskelController.currentLayerIndex
+    };
+    return stateInfo;
   };
 
-  ns.PublicPiskelController.prototype.removeFrameAt = function (index) {
-    this.raiseSaveStateEvent_(this.piskelController.removeFrameAt, [index]);
-    this.piskelController.removeFrameAt(index);
-    $.publish(Events.PISKEL_RESET);
-  };
-
-  ns.PublicPiskelController.prototype.duplicateCurrentFrame = function () {
-    this.duplicateFrameAt(this.getCurrentFrameIndex());
+  ns.PublicPiskelController.prototype.raiseSaveStateEvent_ = function (fn, args, stateInfo) {
+    $.publish(Events.PISKEL_SAVE_STATE, {
+      type : pskl.service.HistoryService.REPLAY,
+      scope : this,
+      replay : {
+        fn : fn,
+        args : args
+      },
+      state : stateInfo
+    });
   };
 
   ns.PublicPiskelController.prototype.replay = function (frame, replayData) {
     replayData.fn.apply(this.piskelController, replayData.args);
   };
-
-  ns.PublicPiskelController.prototype.duplicateFrameAt = function (index) {
-    this.raiseSaveStateEvent_(this.piskelController.duplicateFrameAt, [index]);
-    this.piskelController.duplicateFrameAt(index);
-    $.publish(Events.PISKEL_RESET);
-  };
-
-  ns.PublicPiskelController.prototype.moveFrame = function (fromIndex, toIndex) {
-    this.raiseSaveStateEvent_(this.piskelController.moveFrame, [fromIndex, toIndex]);
-    this.piskelController.moveFrame(fromIndex, toIndex);
-    $.publish(Events.PISKEL_RESET);
-  };
-
-  ns.PublicPiskelController.prototype.setCurrentFrameIndex = function (index) {
-    this.piskelController.setCurrentFrameIndex(index);
-    $.publish(Events.PISKEL_RESET);
-  };
-
-  ns.PublicPiskelController.prototype.selectNextFrame = function () {
-    this.piskelController.selectNextFrame();
-    $.publish(Events.PISKEL_RESET);
-  };
-
-  ns.PublicPiskelController.prototype.selectPreviousFrame = function () {
-    this.piskelController.selectPreviousFrame();
-    $.publish(Events.PISKEL_RESET);
-  };
-
-  ns.PublicPiskelController.prototype.setCurrentLayerIndex = function (index) {
-    this.piskelController.setCurrentLayerIndex(index);
-    $.publish(Events.PISKEL_RESET);
-  };
-
-  ns.PublicPiskelController.prototype.selectLayer = function (layer) {
-    this.piskelController.selectLayer(layer);
-    $.publish(Events.PISKEL_RESET);
-  };
-
-  ns.PublicPiskelController.prototype.renameLayerAt = function (index, name) {
-    this.raiseSaveStateEvent_(this.piskelController.renameLayerAt, [index, name]);
-    this.piskelController.renameLayerAt(index, name);
-  };
-
-  ns.PublicPiskelController.prototype.createLayer = function (name) {
-    this.raiseSaveStateEvent_(this.piskelController.createLayer, [name]);
-    this.piskelController.createLayer(name);
-    $.publish(Events.PISKEL_RESET);
-  };
-
-  ns.PublicPiskelController.prototype.mergeDownLayerAt = function (index) {
-    this.raiseSaveStateEvent_(this.piskelController.mergeDownLayerAt, [index]);
-    this.piskelController.mergeDownLayerAt(index);
-    $.publish(Events.PISKEL_RESET);
-  };
-
-  ns.PublicPiskelController.prototype.moveLayerUp = function () {
-    this.raiseSaveStateEvent_(this.piskelController.moveLayerUp, []);
-    this.piskelController.moveLayerUp();
-    $.publish(Events.PISKEL_RESET);
-  };
-
-  ns.PublicPiskelController.prototype.moveLayerDown = function () {
-    this.raiseSaveStateEvent_(this.piskelController.moveLayerDown, []);
-    this.piskelController.moveLayerDown();
-    $.publish(Events.PISKEL_RESET);
-  };
-
-  ns.PublicPiskelController.prototype.removeCurrentLayer = function () {
-    var currentLayerIndex = this.getCurrentLayerIndex();
-    this.raiseSaveStateEvent_(this.piskelController.removeLayerAt, [currentLayerIndex]);
-    this.piskelController.removeLayerAt(currentLayerIndex);
-    $.publish(Events.PISKEL_RESET);
-  };
-
-  ns.PublicPiskelController.prototype.getCurrentLayerIndex = function () {
-    return this.piskelController.getCurrentLayerIndex();
-  };
-
-  ns.PublicPiskelController.prototype.getCurrentFrameIndex = function () {
-    return this.piskelController.currentFrameIndex;
-  };
-
-  ns.PublicPiskelController.prototype.getPiskel = function () {
-    return this.piskelController.piskel;
-  };
-
-  ns.PublicPiskelController.prototype.raiseSaveStateEvent_ = function (fn, args) {
-    $.publish(Events.PISKEL_SAVE_STATE, {
-      type : pskl.service.HistoryService.REPLAY_NO_SNAPSHOT,
-      scope : this,
-      replay : {
-        fn : fn,
-        args : args
-      }
-    });
-  };
-
 })();

@@ -259,6 +259,11 @@
     this.selectLayer(layer);
   };
 
+  ns.PiskelController.prototype.removeCurrentLayer = function () {
+    var currentLayerIndex = this.getCurrentLayerIndex();
+    this.removeLayerAt(currentLayerIndex);
+  };
+
   ns.PiskelController.prototype.removeLayerAt = function (index) {
     if (this.getLayers().length > 1) {
       var layer = this.getLayerAt(index);
