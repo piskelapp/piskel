@@ -140,6 +140,6 @@
     var piskel = pskl.model.Piskel.fromLayers([layer], descriptor);
 
     pskl.app.piskelController.setPiskel(piskel);
-    pskl.app.animationController.setFPS(Constants.DEFAULT.FPS);
+    pskl.app.previewController.setFPS(Constants.DEFAULT.FPS);
   };
 })();

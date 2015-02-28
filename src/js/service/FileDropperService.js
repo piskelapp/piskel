@@ -56,7 +56,7 @@
     if (window.confirm('This will replace your current animation')) {
       piskel.setDescriptor(descriptor);
       pskl.app.piskelController.setPiskel(piskel);
-      pskl.app.animationController.setFPS(fps);
+      pskl.app.previewController.setFPS(fps);
     }
   };
 

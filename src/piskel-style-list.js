@@ -29,6 +29,6 @@
   "css/spectrum/spectrum-overrides.css",
   "css/bootstrap/bootstrap.css",
   "css/bootstrap/bootstrap-tooltip-custom.css",
-  "css/preview-film-section.css",
+  "css/frames-list.css",
   "css/minimap.css"
 ];

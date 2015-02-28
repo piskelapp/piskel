@@ -8,7 +8,7 @@
     NEW_FRAME : 'newframe'
   };
 
-  ns.PreviewFilmController = function (piskelController, container) {
+  ns.FramesListController = function (piskelController, container) {
 
     this.piskelController = piskelController;
     this.container = container;
@@ -21,7 +21,7 @@
     this.cachedFrameProcessor.setOutputCloner(this.clonePreviewCanvas_.bind(this));
   };
 
-  ns.PreviewFilmController.prototype.init = function() {
+  ns.FramesListController.prototype.init = function() {
     $.subscribe(Events.TOOL_RELEASED, this.flagForRedraw_.bind(this));
     $.subscribe(Events.PISKEL_RESET, this.flagForRedraw_.bind(this));
     $.subscribe(Events.USER_SETTINGS_CHANGED, this.flagForRedraw_.bind(this));
@@ -33,22 +33,22 @@
     this.updateScrollerOverflows();
   };
 
-  ns.PreviewFilmController.prototype.flagForRedraw_ = function () {
+  ns.FramesListController.prototype.flagForRedraw_ = function () {
     this.redrawFlag = true;
   };
 
-  ns.PreviewFilmController.prototype.refreshZoom_ = function () {
+  ns.FramesListController.prototype.refreshZoom_ = function () {
     this.zoom = this.calculateZoom_();
   };
 
-  ns.PreviewFilmController.prototype.render = function () {
+  ns.FramesListController.prototype.render = function () {
     if (this.redrawFlag) {
       this.createPreviews_();
       this.redrawFlag = false;
     }
   };
 
-  ns.PreviewFilmController.prototype.updateScrollerOverflows = function () {
+  ns.FramesListController.prototype.updateScrollerOverflows = function () {
     var scroller = $('#preview-list-scroller');
     var scrollerHeight = scroller.height();
     var scrollTop = scroller.scrollTop();
@@ -70,7 +70,7 @@
     wrapper.toggleClass('bottom-overflow-visible', overflowBottom);
   };
 
-  ns.PreviewFilmController.prototype.onContainerClick_ = function (event) {
+  ns.FramesListController.prototype.onContainerClick_ = function (event) {
     var target = pskl.utils.Dom.getParentWithData(event.target, 'tileAction');
     if (!target) {
       return;
@@ -92,7 +92,7 @@
     }
   };
 
-  ns.PreviewFilmController.prototype.createPreviews_ = function () {
+  ns.FramesListController.prototype.createPreviews_ = function () {
 
     this.container.html("");
     // Manually remove tooltips since mouseout events were shortcut by the DOM refresh:
@@ -122,7 +122,7 @@
   /**
    * @private
    */
-  ns.PreviewFilmController.prototype.initDragndropBehavior_ = function () {
+  ns.FramesListController.prototype.initDragndropBehavior_ = function () {
 
     $("#preview-list").sortable({
       placeholder: "preview-tile-drop-proxy",
@@ -135,7 +135,7 @@
   /**
    * @private
    */
-  ns.PreviewFilmController.prototype.onUpdate_ = function( event, ui ) {
+  ns.FramesListController.prototype.onUpdate_ = function( event, ui ) {
     var originFrameId = parseInt(ui.item.data("tile-number"), 10);
     var targetInsertionId = $('.preview-tile').index(ui.item);
 
@@ -148,7 +148,7 @@
    * @private
    * TODO(vincz): clean this giant rendering function & remove listeners.
    */
-  ns.PreviewFilmController.prototype.createPreviewTile_ = function(tileNumber) {
+  ns.FramesListController.prototype.createPreviewTile_ = function(tileNumber) {
     var currentFrame = this.piskelController.getCurrentLayer().getFrameAt(tileNumber);
 
     var previewTileRoot = document.createElement("li");
@@ -213,12 +213,12 @@
     return previewTileRoot;
   };
 
-  ns.PreviewFilmController.prototype.getCanvasForFrame = function (frame) {
+  ns.FramesListController.prototype.getCanvasForFrame = function (frame) {
     var canvas = this.cachedFrameProcessor.get(frame, this.zoom);
     return canvas;
   };
 
-  ns.PreviewFilmController.prototype.frameToPreviewCanvas_ = function (frame) {
+  ns.FramesListController.prototype.frameToPreviewCanvas_ = function (frame) {
     var canvasRenderer = new pskl.rendering.CanvasRenderer(frame, this.zoom);
     canvasRenderer.drawTransparentAs(Constants.TRANSPARENT_COLOR);
     var canvas = canvasRenderer.render();
@@ -226,7 +226,7 @@
     return canvas;
   };
 
-  ns.PreviewFilmController.prototype.clonePreviewCanvas_ = function (canvas) {
+  ns.FramesListController.prototype.clonePreviewCanvas_ = function (canvas) {
     var clone = pskl.utils.CanvasUtils.clone(canvas);
     clone.classList.add('tile-view', 'canvas');
     return clone;
@@ -235,7 +235,7 @@
   /**
    * Calculate the preview zoom depending on the piskel size
    */
-  ns.PreviewFilmController.prototype.calculateZoom_ = function () {
+  ns.FramesListController.prototype.calculateZoom_ = function () {
     var frame = this.piskelController.getCurrentFrame();
     var frameSize = Math.max(frame.getHeight(), frame.getWidth());
 
