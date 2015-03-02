@@ -1,38 +1,55 @@
-<div class="settings-section">
-  <div class="settings-title">
-    Preferences:
-  </div>
-  <div class="settings-item">
-    <label>Background:</label>
-    <div id="background-picker-wrapper" class="background-picker-wrapper">
-      <div class="background-picker light-picker-background" data-background-class="light-canvas-background"
-            rel="tooltip" data-placement="bottom" title="light / high contrast">
-      </div>
-      <div class="background-picker medium-picker-background" data-background-class="medium-canvas-background"
-            rel="tooltip" data-placement="bottom" title="medium / high contrast">
-      </div>
-      <div class="background-picker lowcont-medium-picker-background" data-background-class="lowcont-medium-canvas-background"
-            rel="tooltip" data-placement="bottom" title="medium / low contrast">
-      </div>
-      <div class="background-picker lowcont-dark-picker-background" data-background-class="lowcont-dark-canvas-background"
-            rel="tooltip" data-placement="bottom" title="dark / low contrast">
+<form action="" method="POST" name="application-settings-form">
+  <div class="settings-section">
+    <div class="settings-title">
+      General
+    </div>
+    <div class="settings-item">
+      <label>Background:</label>
+      <div class="background-picker-wrapper">
+        <div class="background-picker light-picker-background" data-background="light-canvas-background"
+              rel="tooltip" data-placement="bottom" title="light / high contrast">
+        </div>
+        <div class="background-picker medium-picker-background" data-background="medium-canvas-background"
+              rel="tooltip" data-placement="bottom" title="medium / high contrast">
+        </div>
+        <div class="background-picker lowcont-medium-picker-background" data-background="lowcont-medium-canvas-background"
+              rel="tooltip" data-placement="bottom" title="medium / low contrast">
+        </div>
+        <div class="background-picker lowcont-dark-picker-background" data-background="lowcont-dark-canvas-background"
+              rel="tooltip" data-placement="bottom" title="dark / low contrast">
+        </div>
       </div>
     </div>
-  </div>
-  <div class="settings-item">
-    <label for="grid-width">Grid :</label>
-    <select id="grid-width">
-      <option value="0">Disabled</option>
-      <option value="1">Enabled - 1px wide</option>
-      <option value="2">Enabled - 2px wide</option>
-      <option value="3">Enabled - 3px wide</option>
-      <option value="4">Enabled - 4px wide</option>
-    </select>
+    <div class="settings-item">
+      <label for="grid-width">Grid :</label>
+      <select id="grid-width" class="grid-width-select">
+        <option value="0">Disabled</option>
+        <option value="1">1px</option>
+        <option value="2">2px</option>
+        <option value="3">3px</option>
+        <option value="4">4px</option>
+      </select>
+    </div>
   </div>
 
-  <!-- <div class="settings-item">
-    <label for="tiled-preview">Display tiled preview :</label>
-    <input type="checkbox" value="1" id="tiled-preview" name="tiled-preview-checkbox"/>
-  </div> -->
-</div>
+  <div class="settings-section">
+    <div class="settings-title">
+      Preview
+    </div>
+
+    <div class="settings-item">
+      <label>
+        <input type="checkbox" value="1" class="tiled-preview-checkbox" name="tiled-preview-checkbox"/>
+        Repeated preview
+      </label>
+    </div>
+
+    <div class="settings-item">
+      <label for="tiled-preview">Maximum FPS </label>
+          <input type="text" class="textfield  textfield-small  max-fps-input" name="max-fps"/>
+    </div>
+
+    <input type="submit" class="button button-primary" value="Save" />
+  </div>
+</form>
 
