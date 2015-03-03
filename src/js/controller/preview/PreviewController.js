@@ -86,6 +86,7 @@
     var isTiled = pskl.UserSettings.get(pskl.UserSettings.TILED_PREVIEW);
     var zoom = isTiled ? 1 : this.calculateZoom_();
     this.renderer.setZoom(zoom);
+    this.setRenderFlag_(true);
   };
 
   ns.PreviewController.prototype.getZoom = function () {

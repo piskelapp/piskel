@@ -1,6 +1,8 @@
 (function () {
   var ns = $.namespace('pskl.controller.preview');
 
+  var POPUP_TITLE = 'Piskel - preview';
+
   ns.PopupPreviewController = function (piskelController) {
     this.piskelController = piskelController;
     this.popup = null;
@@ -25,6 +27,7 @@
   };
 
   ns.PopupPreviewController.prototype.onPopupLoaded = function () {
+    this.popup.document.title = POPUP_TITLE;
     pskl.utils.Event.addEventListener(this.popup, 'resize', this.onWindowResize_, this);
     pskl.utils.Event.addEventListener(this.popup, 'unload', this.onPopupClosed_, this);
     var container = this.popup.document.querySelector('.preview-container');
