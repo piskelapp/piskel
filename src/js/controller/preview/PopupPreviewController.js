@@ -18,7 +18,9 @@
 
   ns.PopupPreviewController.prototype.open = function () {
     if (!this.isOpen()) {
-      this.popup = window.open('/popup-preview.html', '', 'width=320,height=320');
+      this.popup = window.open('about:blank', '', 'width=320,height=320');
+      this.popup.document.body.innerHTML = pskl.utils.Template.get('popup-preview-partial');
+      window.setTimeout(this.onPopupLoaded.bind(this), 500);
     }
   };
 
