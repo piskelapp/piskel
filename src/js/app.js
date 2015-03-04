@@ -18,11 +18,7 @@
       this.shortcutService = new pskl.service.keyboard.ShortcutService();
       this.shortcutService.init();
 
-      var size = {
-        height : Constants.DEFAULT.HEIGHT,
-        width : Constants.DEFAULT.WIDTH
-      };
-
+      var size = pskl.UserSettings.get(pskl.UserSettings.DEFAULT_SIZE);
       var descriptor = new pskl.model.piskel.Descriptor('New Piskel', '');
       var piskel = new pskl.model.Piskel(size.width, size.height, descriptor);
 

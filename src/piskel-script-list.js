@@ -104,6 +104,7 @@
   "js/controller/settings/exportimage/PngExportController.js",
   "js/controller/settings/resize/AnchorWidget.js",
   "js/controller/settings/resize/ResizeController.js",
+  "js/controller/settings/resize/DefaultSizeController.js",
   "js/controller/settings/SaveController.js",
   "js/controller/settings/ImportController.js",
 

@@ -8,6 +8,7 @@
 
     var anchorWidgetContainer = this.container.querySelector('.resize-origin-container');
     this.anchorWidget = new ns.AnchorWidget(anchorWidgetContainer);
+    this.defaultSizeController = new ns.DefaultSizeController(piskelController);
   };
 
   pskl.utils.inherit(ns.ResizeController, pskl.controller.settings.AbstractSettingController);
@@ -33,6 +34,8 @@
 
     this.anchorWidget.setOrigin(ns.AnchorWidget.ORIGIN.TOPLEFT);
     this.lastInput = this.widthInput;
+
+    this.defaultSizeController.init();
   };
 
   ns.ResizeController.prototype.destroy = function () {

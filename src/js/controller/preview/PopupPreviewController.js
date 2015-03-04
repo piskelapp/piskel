@@ -75,7 +75,6 @@
 
   ns.PopupPreviewController.prototype.onPopupClosed_ = function () {
     var popup = this.popup;
-    console.log(popup);
     this.popup = null;
   };
 
