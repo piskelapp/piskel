@@ -65,7 +65,8 @@
     if (cache[cacheKey]) {
       processedFrame = cache[cacheKey];
     } else {
-      var frameAsString = pskl.utils.hashCode(JSON.stringify(frame.getPixels()));
+      var framePixels = JSON.stringify(frame.getPixels());
+      var frameAsString = pskl.utils.hashCode(framePixels);
       if (cache[frameAsString]) {
         processedFrame = this.outputCloner(cache[frameAsString], frame);
       } else {
