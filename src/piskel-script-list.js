@@ -22,6 +22,7 @@
   "js/utils/FileUtils.js",
   "js/utils/FrameTransform.js",
   "js/utils/FrameUtils.js",
+  "js/utils/Environment.js",
   "js/utils/LayerUtils.js",
   "js/utils/ImageResizer.js",
   "js/utils/PixelUtils.js",
