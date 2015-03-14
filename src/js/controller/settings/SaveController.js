@@ -25,8 +25,26 @@
     this.isPublicCheckbox = $('input[name=save-public-checkbox]');
     this.isPublicCheckbox.prop('checked', descriptor.isPublic);
 
-    this.saveFileButton = $('#save-file-button');
-    this.saveFileButton.click(this.saveFile_.bind(this));
+
+    // prevent default behaviour of ctrl-s is there a way to do this
+    // with the pre-existing system? Should I use alt-s instead?
+    $(document).bind('keydown', 'ctrl+s', function(e) {
+      e.preventDefault();
+      return false;
+    });
+
+    //Environment dependent configuration:
+    if (pskl.utils.Environment.detectNodeWebkit()) {
+      // running in Node-Webkit...
+      pskl.app.shortcutService.addShortcut('ctrl+s', this.saveFileDesktop_.bind(this));
+      this.saveFileButton = $('#save-file-button');
+      this.saveFileButton.click(this.saveFileDesktop_.bind(this));
+    } else {
+      // running in browser...
+      pskl.app.shortcutService.addShortcut('ctrl+s', this.saveFileBrowser_.bind(this));
+      this.saveFileButton = $('#save-file-button');
+      this.saveFileButton.click(this.saveFileBrowser_.bind(this));
+    }
 
     this.saveLocalButton = $('#save-browser-button');
     this.saveLocalButton.click(this.saveLocal_.bind(this));
@@ -122,7 +140,20 @@
     }
   };
 
+  /**
+   * @deprecated - renamed "saveFileBrowser_"
+   * @private
+   */
   ns.SaveController.prototype.saveFile_ = function () {
+    // detect if this is running in NodeWebkit
+    if (pskl.utils.Environment.detectNodeWebkit()) {
+      this.saveFileDesktop_();
+    } else {
+      this.saveFileBrowser_();
+    }
+  };
+
+  ns.SaveController.prototype.saveFileBrowser_ = function () {
     this.beforeSaving_();
     pskl.utils.BlobUtils.stringToBlob(pskl.app.piskelController.serialize(), function(blob) {
       pskl.utils.FileUtils.downloadAsFile(blob, this.getLocalFilename_());
@@ -130,6 +161,20 @@
       this.afterSaving_();
     }.bind(this), "application/piskel+json");
   };
+
+  ns.SaveController.prototype.saveFileDesktop_ = function () {
+    this.beforeSaving_();
+    var serialized = pskl.app.piskelController.serialize();
+    // TODO: hold on to the full path to the file:
+    var fullSavePath = null;
+    // TODO: if we already have a filename (and we are sure this is the same document!!!)
+    // then save over the old file without opening a save dialog (using nodejs 'fs' api)
+    pskl.utils.FileUtils.desktopSaveAs(serialized, null, function (filename) {
+      this.onSaveSuccess_();
+      this.afterSaving_();
+      fullSavePath = filename;
+    }.bind(this));
+  }
 
   ns.SaveController.prototype.getName = function () {
     return this.nameInput.val();
