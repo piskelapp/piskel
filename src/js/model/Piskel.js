@@ -20,6 +20,10 @@
       this.height = height;
 
       this.descriptor = descriptor;
+
+      /** @type {String} */
+      this.savePath = null;
+
     } else {
       throw 'Missing arguments in Piskel constructor : ' + Array.prototype.join.call(arguments, ",");
     }

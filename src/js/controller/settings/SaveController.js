@@ -165,15 +165,21 @@
   ns.SaveController.prototype.saveFileDesktop_ = function () {
     this.beforeSaving_();
     var serialized = pskl.app.piskelController.serialize();
-    // TODO: hold on to the full path to the file:
-    var fullSavePath = null;
-    // TODO: if we already have a filename (and we are sure this is the same document!!!)
-    // then save over the old file without opening a save dialog (using nodejs 'fs' api)
-    pskl.utils.FileUtils.desktopSaveAs(serialized, null, function (filename) {
-      this.onSaveSuccess_();
-      this.afterSaving_();
-      fullSavePath = filename;
-    }.bind(this));
+    var savePath = pskl.app.piskelController.getSavePath();
+    // if we already have a filename, just save the file (using nodejs 'fs' api)
+    if (savePath !== null) {
+      pskl.utils.FileUtils.desktopSaveToFile(serialized, savePath, function () {
+        this.onSaveSuccess_();
+        this.afterSaving_();
+      }.bind(this));
+    } else {
+      // "save as" = open a save dialog, and store the returned save path
+      pskl.utils.FileUtils.desktopSaveAs(serialized, null, function (selectedSavePath) {
+        this.onSaveSuccess_();
+        this.afterSaving_();
+        pskl.app.piskelController.setSavePath(selectedSavePath);
+      }.bind(this));
+    }
   }
 
   ns.SaveController.prototype.getName = function () {
