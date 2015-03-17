@@ -13,13 +13,18 @@
     loadFromFile : function (file, onSuccess, onError) {
       pskl.utils.FileUtils.readFile(file, function (content) {
         var rawPiskel = pskl.utils.Base64.toText(content);
-        var serializedPiskel = JSON.parse(rawPiskel);
-        var fps = serializedPiskel.piskel.fps;
-        var descriptor = new pskl.model.piskel.Descriptor(serializedPiskel.piskel.name, serializedPiskel.piskel.description, true);
-        pskl.utils.serialization.Deserializer.deserialize(serializedPiskel, function (piskel) {
-          onSuccess(piskel, descriptor, fps);
-        });
+        ns.PiskelFileUtils.decodePiskelFile(rawPiskel, onSuccess, onError);
+      });
+    },
+
+    decodePiskelFile : function (rawPiskel, onSuccess, onError) {
+      var serializedPiskel = JSON.parse(rawPiskel);
+      var fps = serializedPiskel.piskel.fps;
+      var descriptor = new pskl.model.piskel.Descriptor(serializedPiskel.piskel.name, serializedPiskel.piskel.description, true);
+      pskl.utils.serialization.Deserializer.deserialize(serializedPiskel, function (piskel) {
+        onSuccess(piskel, descriptor, fps);
       });
     }
+
   };
 })();

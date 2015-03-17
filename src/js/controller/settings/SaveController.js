@@ -167,14 +167,14 @@
     var serialized = pskl.app.piskelController.serialize();
     var savePath = pskl.app.piskelController.getSavePath();
     // if we already have a filename, just save the file (using nodejs 'fs' api)
-    if (savePath !== null) {
-      pskl.utils.FileUtils.desktopSaveToFile(serialized, savePath, function () {
+    if (savePath) {
+      pskl.utils.FileUtilsDesktop.saveToFile(serialized, savePath, function () {
         this.onSaveSuccess_();
         this.afterSaving_();
       }.bind(this));
     } else {
       // "save as" = open a save dialog, and store the returned save path
-      pskl.utils.FileUtils.desktopSaveAs(serialized, null, function (selectedSavePath) {
+      pskl.utils.FileUtilsDesktop.saveAs(serialized, null, function (selectedSavePath) {
         this.onSaveSuccess_();
         this.afterSaving_();
         pskl.app.piskelController.setSavePath(selectedSavePath);

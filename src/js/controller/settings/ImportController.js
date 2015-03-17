@@ -17,10 +17,15 @@
     this.fileInputButton.click(this.onFileInputClick_.bind(this));
 
     this.hiddenOpenPiskelInput = $('[name=open-piskel-input]');
-    this.hiddenOpenPiskelInput.change(this.onOpenPiskelChange_.bind(this));
-
     this.openPiskelInputButton = $('.open-piskel-button');
-    this.openPiskelInputButton.click(this.onOpenPiskelClick_.bind(this));
+
+    // different handlers, depending on the Environment
+    if (pskl.utils.Environment.detectNodeWebkit()) {
+      this.openPiskelInputButton.click(this.openPiskelDesktop_.bind(this));
+    } else {
+      this.hiddenOpenPiskelInput.change(this.onOpenPiskelChange_.bind(this));
+      this.openPiskelInputButton.click(this.onOpenPiskelClick_.bind(this));
+    }
 
     this.prevSessionContainer = $('.previous-session');
     this.previousSessionTemplate_ = pskl.utils.Template.get("previous-session-info-template");
@@ -43,6 +48,22 @@
     if (files.length == 1) {
       this.openPiskelFile_(files[0]);
     }
+  };
+
+  ns.ImportController.prototype.openPiskelDesktop_ = function (evt) {
+    this.closeDrawer_();
+    pskl.utils.FileUtilsDesktop.chooseFileDialog(function(filename){
+      var chosenFilename = filename;
+      pskl.utils.FileUtilsDesktop.readFile(chosenFilename, function(content){
+        pskl.utils.PiskelFileUtils.decodePiskelFile(content, function (piskel, descriptor, fps) {
+          piskel.setDescriptor(descriptor);
+          // store save path so we can resave without opening the save dialog
+          piskel.savePath = chosenFilename;
+          pskl.app.piskelController.setPiskel(piskel);
+          pskl.app.animationController.setFPS(fps);
+        });
+      });
+    });
   };
 
   ns.ImportController.prototype.onOpenPiskelClick_ = function (evt) {

@@ -127,6 +127,8 @@
   ns.HistoryService.prototype.onPiskelLoaded_ = function (index, snapshotIndex, piskel) {
     var originalSize = this.getPiskelSize_();
     piskel.setDescriptor(this.piskelController.piskel.getDescriptor());
+    // propagate save path to the new piskel instance
+    piskel.savePath = this.piskelController.piskel.savePath;
     this.piskelController.setPiskel(piskel);
 
     for (var i = snapshotIndex + 1 ; i <= index ; i++) {
