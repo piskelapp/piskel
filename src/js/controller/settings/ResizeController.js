@@ -31,7 +31,8 @@
     var resizedLayers = this.piskelController.getLayers().map(this.resizeLayer_.bind(this));
 
     var piskel = pskl.model.Piskel.fromLayers(resizedLayers, this.piskelController.getPiskel().getDescriptor());
-
+    // propagate savepath to new Piskel
+    piskel.savePath = pskl.app.piskelController.getSavePath();
     pskl.app.piskelController.setPiskel(piskel, true);
     $.publish(Events.CLOSE_SETTINGS_DRAWER);
   };

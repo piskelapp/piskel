@@ -52,18 +52,7 @@
 
   ns.ImportController.prototype.openPiskelDesktop_ = function (evt) {
     this.closeDrawer_();
-    pskl.utils.FileUtilsDesktop.chooseFileDialog(function(filename){
-      var chosenFilename = filename;
-      pskl.utils.FileUtilsDesktop.readFile(chosenFilename, function(content){
-        pskl.utils.PiskelFileUtils.decodePiskelFile(content, function (piskel, descriptor, fps) {
-          piskel.setDescriptor(descriptor);
-          // store save path so we can resave without opening the save dialog
-          piskel.savePath = chosenFilename;
-          pskl.app.piskelController.setPiskel(piskel);
-          pskl.app.animationController.setFPS(fps);
-        });
-      });
-    });
+    pskl.app.desktopStorageService.openPiskel();
   };
 
   ns.ImportController.prototype.onOpenPiskelClick_ = function (evt) {

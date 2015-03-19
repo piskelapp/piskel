@@ -25,24 +25,14 @@
     this.isPublicCheckbox = $('input[name=save-public-checkbox]');
     this.isPublicCheckbox.prop('checked', descriptor.isPublic);
 
-
-    // prevent default behaviour of ctrl-s is there a way to do this
-    // with the pre-existing system? Should I use alt-s instead?
-    $(document).bind('keydown', 'ctrl+s', function(e) {
-      e.preventDefault();
-      return false;
-    });
+    this.saveFileButton = $('#save-file-button');
 
     //Environment dependent configuration:
     if (pskl.utils.Environment.detectNodeWebkit()) {
       // running in Node-Webkit...
-      pskl.app.shortcutService.addShortcut('ctrl+s', this.saveFileDesktop_.bind(this));
-      this.saveFileButton = $('#save-file-button');
       this.saveFileButton.click(this.saveFileDesktop_.bind(this));
     } else {
       // running in browser...
-      pskl.app.shortcutService.addShortcut('ctrl+s', this.saveFileBrowser_.bind(this));
-      this.saveFileButton = $('#save-file-button');
       this.saveFileButton.click(this.saveFileBrowser_.bind(this));
     }
 
@@ -163,23 +153,7 @@
   };
 
   ns.SaveController.prototype.saveFileDesktop_ = function () {
-    this.beforeSaving_();
-    var serialized = pskl.app.piskelController.serialize();
-    var savePath = pskl.app.piskelController.getSavePath();
-    // if we already have a filename, just save the file (using nodejs 'fs' api)
-    if (savePath) {
-      pskl.utils.FileUtilsDesktop.saveToFile(serialized, savePath, function () {
-        this.onSaveSuccess_();
-        this.afterSaving_();
-      }.bind(this));
-    } else {
-      // "save as" = open a save dialog, and store the returned save path
-      pskl.utils.FileUtilsDesktop.saveAs(serialized, null, function (selectedSavePath) {
-        this.onSaveSuccess_();
-        this.afterSaving_();
-        pskl.app.piskelController.setSavePath(selectedSavePath);
-      }.bind(this));
-    }
+    pskl.app.desktopStorageService.saveFile();
   }
 
   ns.SaveController.prototype.getName = function () {

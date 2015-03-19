@@ -20,10 +20,13 @@
     /**
      *
      * @param content
-     * @param defaultFileName
+     * @param defaultFileName - file name to pre-populate the dialog
+     * @param extension - if supplied, the selected extension will guaranteed to be on the filename -
+     * NOTE: there is a possible danger here... If the extension is added to a fileName, but there
+     * is already another file of the same name *with* the extension, it will get overwritten.
      * @param callback
      */
-    saveAs: function (content, defaultFileName, callback) {
+    saveAs: function (content, defaultFileName, extension, callback) {
       // NodeWebkit has no js api for opening the save dialog.
       // Instead, it adds two new attributes to the anchor tag: nwdirectory and nwsaveas
       // (see: https://github.com/nwjs/nw.js/wiki/File-dialogs )
@@ -31,7 +34,16 @@
       var tagString = '<input type="file" nwsaveas="'+ defaultFileName +'" nwworkingdir=""/>';
       var $chooser = $(tagString);
       $chooser.change(function(e) {
-        var filename =  $(this).val();
+        var filename = $(this).val();
+        if (typeof extension == 'string') {
+          if (extension[0] !== '.') {
+            extension = "." + extension;
+          }
+          var hasExtension = (filename.substring(filename.length - extension.length) === extension);
+          if (!hasExtension) {
+            filename += extension;
+          }
+        }
         pskl.utils.FileUtilsDesktop.saveToFile(content, filename, function(){
           callback(filename);
         });

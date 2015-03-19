@@ -127,6 +127,7 @@
   "js/service/LocalStorageService.js",
   "js/service/GithubStorageService.js",
   "js/service/AppEngineStorageService.js",
+  "js/service/DesktopStorageService.js",
   "js/service/BackupService.js",
   "js/service/BeforeUnloadService.js",
   "js/service/HistoryService.js",
