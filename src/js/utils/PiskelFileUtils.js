@@ -13,7 +13,18 @@
     loadFromFile : function (file, onSuccess, onError) {
       pskl.utils.FileUtils.readFile(file, function (content) {
         var rawPiskel = pskl.utils.Base64.toText(content);
-        ns.PiskelFileUtils.decodePiskelFile(rawPiskel, onSuccess, onError);
+        ns.PiskelFileUtils.decodePiskelFile(
+          rawPiskel,
+          function (piskel, descriptor, fps) {
+            // if using Node-Webkit, store the savePath on load
+            // Note: the 'path' property is unique to Node-Webkit, and holds the full path
+            if (pskl.utils.Environment.detectNodeWebkit()) {
+              piskel.savePath = file.path;
+            }
+            onSuccess(piskel, descriptor, fps);
+          },
+          onError
+        );
       });
     },
 

@@ -34,12 +34,12 @@
 
   ns.DesktopStorageService.prototype.openPiskel = function () {
     pskl.utils.FileUtilsDesktop.chooseFileDialog(function(filename){
-      var chosenFilename = filename;
-      pskl.utils.FileUtilsDesktop.readFile(chosenFilename, function(content){
+      var savePath = filename;
+      pskl.utils.FileUtilsDesktop.readFile(savePath, function(content){
         pskl.utils.PiskelFileUtils.decodePiskelFile(content, function (piskel, descriptor, fps) {
           piskel.setDescriptor(descriptor);
           // store save path so we can re-save without opening the save dialog
-          piskel.savePath = chosenFilename;
+          piskel.savePath = savePath;
           pskl.app.piskelController.setPiskel(piskel);
           pskl.app.animationController.setFPS(fps);
         });

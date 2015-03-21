@@ -8,7 +8,6 @@
 
     this.stateQueue = [];
     this.currentIndex = -1;
-
     this.lastLoadState = -1;
 
     this.saveNextAsSnapshot = false;
