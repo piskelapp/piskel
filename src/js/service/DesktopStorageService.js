@@ -55,7 +55,7 @@
       this.onSaveSuccess_();
       this.piskelController.setSavePath(selectedSavePath);
     }.bind(this));
-  }
+  };
 
   ns.DesktopStorageService.prototype.onSaveSuccess_ = function () {
     $.publish(Events.CLOSE_SETTINGS_DRAWER);

@@ -48,7 +48,6 @@
     return this.getSampleRenderer_().getOffset();
   };
 
-
   ns.CompositeRenderer.prototype.setGridWidth = function (b) {
     this.renderers.forEach(function (renderer) {
       renderer.setGridWidth(b);

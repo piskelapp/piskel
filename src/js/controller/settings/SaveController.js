@@ -153,8 +153,8 @@
   };
 
   ns.SaveController.prototype.saveFileDesktop_ = function () {
-    pskl.app.desktopStorageService.saveFile();
-  }
+    pskl.app.desktopStorageService.save();
+  };
 
   ns.SaveController.prototype.getName = function () {
     return this.nameInput.val();
