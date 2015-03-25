@@ -59,7 +59,7 @@
      * @callback callback
      */
     saveToFile : function(content, filename, callback) {
-      var fs = require('fs');
+      var fs = window.require('fs');
       fs.writeFile(filename, content, function(err){
         if (err) {
           //throw err;
@@ -70,7 +70,7 @@
     },
 
     readFile : function(filename, callback) {
-      var fs = require('fs');
+      var fs = window.require('fs');
       // NOTE: currently loading everything as utf8, which may not be desirable in future
       fs.readFile(filename, 'utf8', function(err, data){
         if (err) {
