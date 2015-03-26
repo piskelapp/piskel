@@ -185,7 +185,10 @@
   "js/devtools/init.js",
 
   // Workers
-  "js/worker/ImageProcessor.js",
+  "js/worker/hash/HashWorker.js",
+  "js/worker/hash/Hash.js",
+  "js/worker/imageprocessor/ImageProcessorWorker.js",
+  "js/worker/imageprocessor/ImageProcessor.js",
 
   // Application controller and initialization
   "js/app.js",
