@@ -31,6 +31,8 @@
     if (pskl.utils.Environment.detectNodeWebkit()) {
       // running in Node-Webkit...
       this.saveFileButton.click(this.saveFileDesktop_.bind(this));
+      // hide the "save in browser" part of the gui
+      $('#save-in-browser').css('display', 'none');
     } else {
       // running in browser...
       this.saveFileButton.click(this.saveFileBrowser_.bind(this));
@@ -61,9 +63,18 @@
   };
 
   ns.SaveController.prototype.updateLocalStatusFilename_ = function () {
-    this.saveFileStatus.html(pskl.utils.Template.getAndReplace('save-file-status-template', {
-      name : this.getLocalFilename_()
-    }));
+    if (pskl.utils.Environment.detectNodeWebkit()) {
+      var fileName = this.piskelController.getSavePath();
+      if (fileName !== null) {
+        this.saveFileStatus.html(pskl.utils.Template.getAndReplace('save-file-status-desktop-template', {
+          name : this.piskelController.getSavePath()
+        }));
+      }
+    } else {
+      this.saveFileStatus.html(pskl.utils.Template.getAndReplace('save-file-status-template', {
+        name : this.getLocalFilename_()
+      }));
+    }
   };
 
   ns.SaveController.prototype.getLocalFilename_ = function () {

@@ -58,13 +58,14 @@
   };
 
   ns.DesktopStorageService.prototype.onSaveSuccess_ = function () {
+    var savePath = this.piskelController.getSavePath();
     $.publish(Events.CLOSE_SETTINGS_DRAWER);
-    $.publish(Events.SHOW_NOTIFICATION, [{"content": "Successfully saved !"}]);
+    $.publish(Events.SHOW_NOTIFICATION, [{"content": "Successfully saved: " + savePath}]);
     $.publish(Events.PISKEL_SAVED);
     // clear the old time out, if any.
     window.clearTimeout(this.hideNotificationTimeoutID);
     this.hideNotificationTimeoutID =
-      window.setTimeout($.publish.bind($, Events.HIDE_NOTIFICATION), 2000);
+      window.setTimeout($.publish.bind($, Events.HIDE_NOTIFICATION), 3000);
   };
 
 })();
