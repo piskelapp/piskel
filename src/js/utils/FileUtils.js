@@ -38,5 +38,6 @@
         document.body.removeChild(downloadLink);
       }
     }
+
   };
 })();

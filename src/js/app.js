@@ -99,6 +99,9 @@
       this.localStorageService = new pskl.service.LocalStorageService(this.piskelController);
       this.localStorageService.init();
 
+      this.desktopStorageService = new pskl.service.DesktopStorageService(this.piskelController);
+      this.desktopStorageService.init();
+
       this.imageUploadService = new pskl.service.ImageUploadService();
       this.imageUploadService.init();
 

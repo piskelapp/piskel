@@ -136,6 +136,14 @@
     return this.piskelController.piskel;
   };
 
+  ns.PublicPiskelController.prototype.setSavePath = function (savePath) {
+    this.piskelController.piskel.savePath = savePath;
+  };
+
+  ns.PublicPiskelController.prototype.getSavePath = function () {
+    return this.piskelController.piskel.savePath;
+  };
+
   ns.PublicPiskelController.prototype.raiseSaveStateEvent_ = function (fn, args) {
     $.publish(Events.PISKEL_SAVE_STATE, {
       type : pskl.service.HistoryService.REPLAY_NO_SNAPSHOT,

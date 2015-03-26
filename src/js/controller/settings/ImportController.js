@@ -17,10 +17,15 @@
     this.fileInputButton.click(this.onFileInputClick_.bind(this));
 
     this.hiddenOpenPiskelInput = $('[name=open-piskel-input]');
-    this.hiddenOpenPiskelInput.change(this.onOpenPiskelChange_.bind(this));
-
     this.openPiskelInputButton = $('.open-piskel-button');
-    this.openPiskelInputButton.click(this.onOpenPiskelClick_.bind(this));
+
+    // different handlers, depending on the Environment
+    if (pskl.utils.Environment.detectNodeWebkit()) {
+      this.openPiskelInputButton.click(this.openPiskelDesktop_.bind(this));
+    } else {
+      this.hiddenOpenPiskelInput.change(this.onOpenPiskelChange_.bind(this));
+      this.openPiskelInputButton.click(this.onOpenPiskelClick_.bind(this));
+    }
 
     this.prevSessionContainer = $('.previous-session');
     this.previousSessionTemplate_ = pskl.utils.Template.get("previous-session-info-template");
@@ -43,6 +48,11 @@
     if (files.length == 1) {
       this.openPiskelFile_(files[0]);
     }
+  };
+
+  ns.ImportController.prototype.openPiskelDesktop_ = function (evt) {
+    this.closeDrawer_();
+    pskl.app.desktopStorageService.openPiskel();
   };
 
   ns.ImportController.prototype.onOpenPiskelClick_ = function (evt) {
