@@ -29,17 +29,13 @@
       this.isPublicCheckbox.setAttribute('checked', true);
     }
 
-    //Environment dependent configuration:
     if (pskl.utils.Environment.detectNodeWebkit()) {
-      // running in Node-Webkit...
-      this.addEventListener('#save-file-button', 'click', this.saveFileDesktop);
-      // hide the "save in browser" part of the gui
+      // hide "save in browser"
       var saveInBrowserSection = document.querySelector('#save-in-browser');
       saveInBrowserSection.style.display = 'none';
-    } else {
-      // running in browser...
-      this.addEventListener('#save-file-button', 'click', this.saveFileBrowser_);
     }
+
+    this.addEventListener('#save-file-button', 'click', this.saveFile_);
 
     this.addEventListener('#save-browser-button', 'click', this.saveLocal_);
 
@@ -142,10 +138,6 @@
     }
   };
 
-  /**
-   * @deprecated - renamed "saveFileBrowser_"
-   * @private
-   */
   ns.SaveController.prototype.saveFile_ = function () {
     // detect if this is running in NodeWebkit
     if (pskl.utils.Environment.detectNodeWebkit()) {
