@@ -41,7 +41,7 @@
           // store save path so we can re-save without opening the save dialog
           piskel.savePath = savePath;
           pskl.app.piskelController.setPiskel(piskel);
-          pskl.app.animationController.setFPS(fps);
+          pskl.app.previewController.setFPS(fps);
         });
       });
     });
