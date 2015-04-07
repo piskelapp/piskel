@@ -20,10 +20,12 @@
       <input type="button" class="button button-primary" id="save-online-button" value="Save to your gallery" />
       <div id="save-online-status" class="save-status"></div>
     </div>
-    <div class="settings-title">Save offline in Browser</div>
-    <div class="settings-item">
-      <input type="button" class="button button-primary" id="save-browser-button" value="Save in Browser" />
-      <div id="save-browser-status" class="save-status">Your piskel will be saved locally and will only be accessible from this browser.</div>
+    <div id="save-in-browser">
+        <div class="settings-title">Save offline in Browser</div>
+        <div class="settings-item">
+          <input type="button" class="button button-primary" id="save-browser-button" value="Save in Browser" />
+          <div id="save-browser-status" class="save-status">Your piskel will be saved locally and will only be accessible from this browser.</div>
+        </div>
     </div>
     <div class="settings-title">Save offline as File</div>
     <div class="settings-item">
@@ -41,6 +43,10 @@
   </script>
 
   <script type="text/template" id="save-file-status-template">
-    <span>Your piskel will be downloaded as <span class="save-file-name">{{name}}<span></span>
+    <span>Your piskel will be downloaded as: <span class="save-file-name">{{name}}<span></span>
+  </script>
+
+  <script type="text/template" id="save-file-status-desktop-template">
+    <span>Saving as: <span class="save-desktop-file-name">{{name}}<span></span>
   </script>
 </div>

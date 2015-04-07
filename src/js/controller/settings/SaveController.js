@@ -29,7 +29,18 @@
       this.isPublicCheckbox.setAttribute('checked', true);
     }
 
-    this.addEventListener('#save-file-button', 'click', this.saveFile_);
+    //Environment dependent configuration:
+    if (pskl.utils.Environment.detectNodeWebkit()) {
+      // running in Node-Webkit...
+      this.addEventListener('#save-file-button', 'click', this.saveFileDesktop);
+      // hide the "save in browser" part of the gui
+      var saveInBrowserSection = document.querySelector('#save-in-browser');
+      saveInBrowserSection.style.display = 'none';
+    } else {
+      // running in browser...
+      this.addEventListener('#save-file-button', 'click', this.saveFileBrowser_);
+    }
+
     this.addEventListener('#save-browser-button', 'click', this.saveLocal_);
 
     this.saveOnlineButton = document.querySelector('#save-online-button');
@@ -53,9 +64,18 @@
   };
 
   ns.SaveController.prototype.updateLocalStatusFilename_ = function () {
-    this.saveFileStatus.innerHTML = pskl.utils.Template.getAndReplace('save-file-status-template', {
-      name : this.getLocalFilename_()
-    });
+    if (pskl.utils.Environment.detectNodeWebkit()) {
+      var fileName = this.piskelController.getSavePath();
+      if (fileName !== null) {
+        this.saveFileStatus.innerHTML = pskl.utils.Template.getAndReplace('save-file-status-desktop-template', {
+          name : this.piskelController.getSavePath()
+        });
+      }
+    } else {
+      this.saveFileStatus.innerHTML = pskl.utils.Template.getAndReplace('save-file-status-template', {
+        name : this.getLocalFilename_()
+      });
+    }
   };
 
   ns.SaveController.prototype.getLocalFilename_ = function () {
@@ -122,13 +142,30 @@
     }
   };
 
+  /**
+   * @deprecated - renamed "saveFileBrowser_"
+   * @private
+   */
   ns.SaveController.prototype.saveFile_ = function () {
+    // detect if this is running in NodeWebkit
+    if (pskl.utils.Environment.detectNodeWebkit()) {
+      this.saveFileDesktop_();
+    } else {
+      this.saveFileBrowser_();
+    }
+  };
+
+  ns.SaveController.prototype.saveFileBrowser_ = function () {
     this.beforeSaving_();
     pskl.utils.BlobUtils.stringToBlob(pskl.app.piskelController.serialize(), function(blob) {
       pskl.utils.FileUtils.downloadAsFile(blob, this.getLocalFilename_());
       this.onSaveSuccess_();
       this.afterSaving_();
     }.bind(this), "application/piskel+json");
+  };
+
+  ns.SaveController.prototype.saveFileDesktop_ = function () {
+    pskl.app.desktopStorageService.save();
   };
 
   ns.SaveController.prototype.getName = function () {

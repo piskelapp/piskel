@@ -86,6 +86,14 @@
     });
   };
 
+  ns.PublicPiskelController.prototype.setSavePath = function (savePath) {
+    this.piskelController.piskel.savePath = savePath;
+  };
+
+  ns.PublicPiskelController.prototype.getSavePath = function () {
+    return this.piskelController.piskel.savePath;
+  };
+
   ns.PublicPiskelController.prototype.replay = function (frame, replayData) {
     replayData.fn.apply(this.piskelController, replayData.args);
   };
