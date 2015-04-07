@@ -5,7 +5,9 @@
     this.container = container;
     this.setZoom(zoom);
 
-    this.displayContainer = document.createElement('div');
+    var containerEl = container.get(0);
+    var containerDocument = containerEl.ownerDocument;
+    this.displayContainer = containerDocument.createElement('div');
     this.displayContainer.classList.add('tiled-frame-container');
     container.get(0).appendChild(this.displayContainer);
 

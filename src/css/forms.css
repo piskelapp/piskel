@@ -3,14 +3,13 @@
 }
 
 .textfield {
+  box-sizing:border-box;
+
   background : black;
   border : 1px solid #888;
   border-radius : 2px;
   padding : 3px 10px;
   color : white;
-
-  box-sizing:border-box;
-  -moz-box-sizing:border-box;
 }
 
 .textfield[disabled=disabled] {
@@ -22,8 +21,8 @@
 }
 
 .button {
-  height: 24px;
   box-sizing: border-box;
+  height: 24px;
 
   background-color: #3f3f3f;
   border: 1px solid #333;
@@ -34,7 +33,7 @@
   text-decoration: none;
 
   color: white;
-  text-shadow: 0px -1px 0 black;
+  text-shadow: 0 -1px 0 black;
   font-weight: bold;
   font-size: 1rem;
   text-align: center;
@@ -56,7 +55,7 @@
   border-bottom-color: rgb(151, 133, 0);
 
   color: black;
-  text-shadow: 0px 1px 0 #fff;
+  text-shadow: 0 1px 0 #fff;
 }
 
 .button-primary:hover {
@@ -69,7 +68,7 @@
   cursor:default;
   background-color: #aaa;
   color: #777;
-  text-shadow: 0px 1px 0 #bbb;
+  text-shadow: 0 1px 0 #bbb;
   border-color: #666;
   border-top-color: #999;
   border-bottom-color: #555;

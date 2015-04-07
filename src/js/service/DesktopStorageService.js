@@ -52,8 +52,8 @@
     // TODO: if there is already a file path, use it for the dialog's
     // working directory and filename
     pskl.utils.FileUtilsDesktop.saveAs(serialized, null, 'piskel', function (selectedSavePath) {
-      this.onSaveSuccess_();
       this.piskelController.setSavePath(selectedSavePath);
+      this.onSaveSuccess_();
     }.bind(this));
   };
 

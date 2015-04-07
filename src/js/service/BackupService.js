@@ -56,7 +56,7 @@
     pskl.utils.serialization.Deserializer.deserialize(previousPiskel, function (piskel) {
       piskel.setDescriptor(new pskl.model.piskel.Descriptor(previousInfo.name, previousInfo.description, true));
       pskl.app.piskelController.setPiskel(piskel);
-      pskl.app.animationController.setFPS(previousInfo.fps);
+      pskl.app.previewController.setFPS(previousInfo.fps);
     });
   };
 

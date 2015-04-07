@@ -101,6 +101,10 @@ if (!Function.prototype.bind) {
     return hash;
   };
 
+  ns.copy = function (object) {
+    return JSON.parse(JSON.stringify(object));
+  };
+
   var entityMap = {
     "&": "&amp;",
     "<": "&lt;",

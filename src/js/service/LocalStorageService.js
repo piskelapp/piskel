@@ -29,7 +29,7 @@
     pskl.utils.serialization.Deserializer.deserialize(serializedPiskel, function (piskel) {
       piskel.setDescriptor(new pskl.model.piskel.Descriptor(name, description, true));
       pskl.app.piskelController.setPiskel(piskel);
-      pskl.app.animationController.setFPS(fps);
+      pskl.app.previewController.setFPS(fps);
     });
   };
 

@@ -1,5 +1,5 @@
 (function () {
-  var ns = $.namespace("pskl.controller.settings");
+  var ns = $.namespace("pskl.controller.settings.exportimage");
 
   ns.ImageExportController = function (piskelController) {
     this.piskelController = piskelController;

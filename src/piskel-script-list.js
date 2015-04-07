@@ -85,9 +85,10 @@
   "js/controller/CursorCoordinatesController.js",
   "js/controller/DrawingController.js",
   "js/controller/drawing/DragHandler.js",
-  "js/controller/PreviewFilmController.js",
+  "js/controller/FramesListController.js",
   "js/controller/LayersListController.js",
-  "js/controller/AnimatedPreviewController.js",
+  "js/controller/preview/PopupPreviewController.js",
+  "js/controller/preview/PreviewController.js",
   "js/controller/MinimapController.js",
   "js/controller/ToolController.js",
   "js/controller/PaletteController.js",
@@ -98,11 +99,14 @@
   "js/controller/CanvasBackgroundController.js",
 
   // Settings sub-controllers
+  "js/controller/settings/AbstractSettingController.js",
   "js/controller/settings/ApplicationSettingsController.js",
-  "js/controller/settings/ResizeController.js",
-  "js/controller/settings/ImageExportController.js",
-  "js/controller/settings/GifExportController.js",
-  "js/controller/settings/PngExportController.js",
+  "js/controller/settings/exportimage/ImageExportController.js",
+  "js/controller/settings/exportimage/GifExportController.js",
+  "js/controller/settings/exportimage/PngExportController.js",
+  "js/controller/settings/resize/AnchorWidget.js",
+  "js/controller/settings/resize/ResizeController.js",
+  "js/controller/settings/resize/DefaultSizeController.js",
   "js/controller/settings/SaveController.js",
   "js/controller/settings/ImportController.js",
 
@@ -184,7 +188,10 @@
   "js/devtools/init.js",
 
   // Workers
-  "js/worker/ImageProcessor.js",
+  "js/worker/hash/HashWorker.js",
+  "js/worker/hash/Hash.js",
+  "js/worker/imageprocessor/ImageProcessorWorker.js",
+  "js/worker/imageprocessor/ImageProcessor.js",
 
   // Application controller and initialization
   "js/app.js",

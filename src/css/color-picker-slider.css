@@ -66,7 +66,8 @@
   display: none;
 }
 
-.color-picker-slider {
+.color-picker-slider,
+.color-picker-input {
   padding: 0 10px;
   height : 25px;
   overflow: hidden;
@@ -89,6 +90,14 @@
   float:left;
   width : 47px;
   margin-left: 5px;
+}
+
+.color-picker-input {
+  margin-bottom: 10px;
+}
+
+.color-picker-input .textfield{
+  width:100%;
 }
 
 .color-picker-slider input[type="range"][data-dimension="h"] {

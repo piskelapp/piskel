@@ -5,58 +5,55 @@
     this.piskelController = piskelController;
   };
 
+  pskl.utils.inherit(ns.SaveController, pskl.controller.settings.AbstractSettingController);
+
   /**
    * @public
    */
   ns.SaveController.prototype.init = function () {
-
-    // Only available in app-engine mode ...
-    this.piskelName = document.querySelector('.piskel-name');
-
-    this.saveOnlineStatus = $('#save-online-status');
-
-    this.saveFileStatus = $('#save-file-status');
+    // timestamp used to generate unique name when saving as .piskel
     this.timestamp = new Date();
 
+    // Only available in app-engine mode
+    this.piskelName = document.querySelector('.piskel-name');
+
+    this.saveOnlineStatus = document.querySelector('#save-online-status');
+    this.saveFileStatus = document.querySelector('#save-file-status');
+
     var descriptor = this.piskelController.getPiskel().getDescriptor();
-    this.descriptionInput = $('#save-description');
-    this.descriptionInput.val(descriptor.description);
+    this.descriptionInput = document.querySelector('#save-description');
+    this.descriptionInput.value = descriptor.description;
 
-    this.isPublicCheckbox = $('input[name=save-public-checkbox]');
-    this.isPublicCheckbox.prop('checked', descriptor.isPublic);
-
-    this.saveFileButton = $('#save-file-button');
-
-    //Environment dependent configuration:
-    if (pskl.utils.Environment.detectNodeWebkit()) {
-      // running in Node-Webkit...
-      this.saveFileButton.click(this.saveFileDesktop_.bind(this));
-      // hide the "save in browser" part of the gui
-      $('#save-in-browser').css('display', 'none');
-    } else {
-      // running in browser...
-      this.saveFileButton.click(this.saveFileBrowser_.bind(this));
+    this.isPublicCheckbox = document.querySelector('input[name=save-public-checkbox]');
+    if (descriptor.isPublic) {
+      this.isPublicCheckbox.setAttribute('checked', true);
     }
 
-    this.saveLocalButton = $('#save-browser-button');
-    this.saveLocalButton.click(this.saveLocal_.bind(this));
+    if (pskl.utils.Environment.detectNodeWebkit()) {
+      // hide "save in browser"
+      var saveInBrowserSection = document.querySelector('#save-in-browser');
+      saveInBrowserSection.style.display = 'none';
+    }
 
-    this.saveOnlineButton = $('#save-online-button');
-    this.saveOnlineButton.click(this.saveOnline_.bind(this));
+    this.addEventListener('#save-file-button', 'click', this.saveFile_);
 
-    this.saveForm = $('form[name=save-form]');
-    this.saveForm.submit(this.onSaveFormSubmit_.bind(this));
+    this.addEventListener('#save-browser-button', 'click', this.saveLocal_);
 
-    this.nameInput =  $('#save-name');
-    this.nameInput.val(descriptor.name);
-    this.nameInput.keyup(this.updateLocalStatusFilename_.bind(this));
+    this.saveOnlineButton = document.querySelector('#save-online-button');
+    this.addEventListener(this.saveOnlineButton, 'click', this.saveOnline_);
 
-    if (!pskl.app.isLoggedIn()) {
-      this.saveOnlineButton.hide();
-      $('.save-public-section').hide();
-      this.saveOnlineStatus.html(pskl.utils.Template.get('save-please-login-partial'));
+    this.addEventListener('form[name=save-form]', 'submit', this.onSaveFormSubmit_);
+
+    this.nameInput =  document.querySelector('#save-name');
+    this.nameInput.value = descriptor.name;
+    this.addEventListener(this.nameInput, 'keyup', this.updateLocalStatusFilename_);
+
+    if (pskl.app.isLoggedIn()) {
+      this.saveOnlineStatus.innerHTML = pskl.utils.Template.get('save-online-status-partial');
     } else {
-      this.saveOnlineStatus.html(pskl.utils.Template.get('save-online-status-partial'));
+      this.saveOnlineStatus.innerHTML = pskl.utils.Template.get('save-please-login-partial');
+      var container = document.querySelector('.setting-save-section');
+      container.classList.add('anonymous');
     }
 
     this.updateLocalStatusFilename_();
@@ -66,14 +63,14 @@
     if (pskl.utils.Environment.detectNodeWebkit()) {
       var fileName = this.piskelController.getSavePath();
       if (fileName !== null) {
-        this.saveFileStatus.html(pskl.utils.Template.getAndReplace('save-file-status-desktop-template', {
+        this.saveFileStatus.innerHTML = pskl.utils.Template.getAndReplace('save-file-status-desktop-template', {
           name : this.piskelController.getSavePath()
-        }));
+        });
       }
     } else {
-      this.saveFileStatus.html(pskl.utils.Template.getAndReplace('save-file-status-template', {
+      this.saveFileStatus.innerHTML = pskl.utils.Template.getAndReplace('save-file-status-template', {
         name : this.getLocalFilename_()
-      }));
+      });
     }
   };
 
@@ -104,7 +101,7 @@
 
     if (name) {
       var description = this.getDescription();
-      var isPublic = !!this.isPublicCheckbox.prop('checked');
+      var isPublic = this.isPublic_();
 
       var descriptor = new pskl.model.piskel.Descriptor(name, description, isPublic);
       this.piskelController.getPiskel().setDescriptor(descriptor);
@@ -112,7 +109,7 @@
       this.beforeSaving_();
 
       this.saveOnlineButton.attr('disabled', true);
-      this.saveOnlineStatus.html('Saving ...');
+      this.saveOnlineStatus.innerHTML = 'Saving ...';
 
       pskl.app.storageService.store({
         success : this.onSaveSuccess_.bind(this),
@@ -141,10 +138,6 @@
     }
   };
 
-  /**
-   * @deprecated - renamed "saveFileBrowser_"
-   * @private
-   */
   ns.SaveController.prototype.saveFile_ = function () {
     // detect if this is running in NodeWebkit
     if (pskl.utils.Environment.detectNodeWebkit()) {
@@ -168,11 +161,15 @@
   };
 
   ns.SaveController.prototype.getName = function () {
-    return this.nameInput.val();
+    return this.nameInput.value;
   };
 
   ns.SaveController.prototype.getDescription = function () {
-    return this.descriptionInput.val();
+    return this.descriptionInput.value;
+  };
+
+  ns.SaveController.prototype.isPublic_ = function () {
+    return !!this.isPublicCheckbox.checked;
   };
 
   ns.SaveController.prototype.beforeSaving_ = function () {
@@ -186,7 +183,7 @@
   ns.SaveController.prototype.updatePiskelDescriptor_ = function () {
     var name = this.getName();
     var description = this.getDescription();
-    var isPublic = !!this.isPublicCheckbox.prop('checked');
+    var isPublic = this.isPublic_();
 
     var descriptor = new pskl.model.piskel.Descriptor(name, description, isPublic);
     this.piskelController.getPiskel().setDescriptor(descriptor);
@@ -204,7 +201,7 @@
 
   ns.SaveController.prototype.afterOnlineSaving_ = function () {
     this.saveOnlineButton.attr('disabled', false);
-    this.saveOnlineStatus.html('');
+    this.saveOnlineStatus.innerHTML = '';
     this.afterSaving_();
   };
 

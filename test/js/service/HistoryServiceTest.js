@@ -69,11 +69,6 @@ describe("History Service suite", function() {
     expect(getLastState().piskel).toBe(SERIALIZED_PISKEL);
 
     sendSaveEvents(pskl.service.HistoryService.REPLAY).times(4);
-
-    sendSaveEvents(pskl.service.HistoryService.REPLAY_NO_SNAPSHOT).once();
-    expect(getLastState().piskel).toBeUndefined();
-
-    sendSaveEvents(pskl.service.HistoryService.REPLAY_NO_SNAPSHOT).once();
     expect(getLastState().piskel).toBeUndefined();
 
     sendSaveEvents(pskl.service.HistoryService.REPLAY).once();
@@ -82,5 +77,5 @@ describe("History Service suite", function() {
     // AFTER
     pskl.service.HistoryService.SNAPSHOT_PERIOD = SNAPSHOT_PERIOD_BACKUP;
 
-  })
+  });
 });

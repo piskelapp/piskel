@@ -80,3 +80,27 @@
 .preview-toggle-onion-skin-enabled:hover {
   color : gold;
 }
+
+.open-popup-preview-button {
+  position : absolute;
+  z-index: 500;
+  right : 10px;
+  top : 10px;
+  width : 24px;
+  height: 18px;
+
+  border : 2px solid white;
+  background : rgba(0,0,0,0.3);
+  cursor : pointer;
+
+  opacity: 0;
+  transition: 0.3s opacity, 0.3s border-color;
+}
+
+.minimap-container:hover .open-popup-preview-button {
+  opacity: 1;
+}
+
+.open-popup-preview-button:hover {
+  border-color: gold;
+}

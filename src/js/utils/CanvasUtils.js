@@ -41,12 +41,20 @@
      * @param  {Canvas} canvas
      */
     disableImageSmoothing : function (canvas) {
+      pskl.utils.CanvasUtils.setImageSmoothing(canvas, false);
+    },
+
+    enableImageSmoothing : function (canvas) {
+      pskl.utils.CanvasUtils.setImageSmoothing(canvas, true);
+    },
+
+    setImageSmoothing : function (canvas, smoothing) {
       var context = canvas.getContext('2d');
-      context.imageSmoothingEnabled = false;
-      context.mozImageSmoothingEnabled = false;
-      context.oImageSmoothingEnabled = false;
-      context.webkitImageSmoothingEnabled = false;
-      context.msImageSmoothingEnabled = false;
+      context.imageSmoothingEnabled = smoothing;
+      context.mozImageSmoothingEnabled = smoothing;
+      context.oImageSmoothingEnabled = smoothing;
+      context.webkitImageSmoothingEnabled = smoothing;
+      context.msImageSmoothingEnabled = smoothing;
     },
 
     clear : function (canvas) {

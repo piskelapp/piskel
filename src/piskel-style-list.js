@@ -7,6 +7,7 @@
   "css/font-icon.css",
   "css/forms.css",
   "css/settings.css",
+  "css/settings-application.css",
   "css/settings-export.css",
   "css/settings-import.css",
   "css/settings-resize.css",
@@ -28,6 +29,6 @@
   "css/spectrum/spectrum-overrides.css",
   "css/bootstrap/bootstrap.css",
   "css/bootstrap/bootstrap-tooltip-custom.css",
-  "css/preview-film-section.css",
+  "css/frames-list.css",
   "css/minimap.css"
 ];

@@ -8,11 +8,11 @@
     },
     'resize' : {
       template : 'templates/settings/resize.html',
-      controller : ns.ResizeController
+      controller : ns.resize.ResizeController
     },
     'export' : {
       template : 'templates/settings/export.html',
-      controller : ns.ImageExportController
+      controller : ns.exportimage.ImageExportController
     },
     'import' : {
       template : 'templates/settings/import.html',

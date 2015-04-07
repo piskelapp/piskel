@@ -18,11 +18,7 @@
       this.shortcutService = new pskl.service.keyboard.ShortcutService();
       this.shortcutService.init();
 
-      var size = {
-        height : Constants.DEFAULT.HEIGHT,
-        width : Constants.DEFAULT.WIDTH
-      };
-
+      var size = pskl.UserSettings.get(pskl.UserSettings.DEFAULT_SIZE);
       var descriptor = new pskl.model.piskel.Descriptor('New Piskel', '');
       var piskel = new pskl.model.Piskel(size.width, size.height, descriptor);
 
@@ -57,14 +53,14 @@
       this.drawingController = new pskl.controller.DrawingController(this.piskelController, this.paletteController, $('#drawing-canvas-container'));
       this.drawingController.init();
 
-      this.animationController = new pskl.controller.AnimatedPreviewController(this.piskelController, $('#animated-preview-canvas-container'));
-      this.animationController.init();
+      this.previewController = new pskl.controller.preview.PreviewController(this.piskelController, $('#animated-preview-canvas-container'));
+      this.previewController.init();
 
-      this.minimapController = new pskl.controller.MinimapController(this.piskelController, this.animationController, this.drawingController, $('.minimap-container'));
+      this.minimapController = new pskl.controller.MinimapController(this.piskelController, this.previewController, this.drawingController, $('.minimap-container'));
       this.minimapController.init();
 
-      this.previewFilmController = new pskl.controller.PreviewFilmController(this.piskelController, $('#preview-list'));
-      this.previewFilmController.init();
+      this.framesListController = new pskl.controller.FramesListController(this.piskelController, $('#preview-list'));
+      this.framesListController.init();
 
       this.layersListController = new pskl.controller.LayersListController(this.piskelController);
       this.layersListController.init();
@@ -147,7 +143,7 @@
       pskl.utils.serialization.Deserializer.deserialize(serializedPiskel, function (piskel) {
         piskel.setDescriptor(descriptor);
         pskl.app.piskelController.setPiskel(piskel);
-        pskl.app.animationController.setFPS(fps);
+        pskl.app.previewController.setFPS(fps);
       });
     },
 
@@ -168,8 +164,8 @@
 
     render : function (delta) {
       this.drawingController.render(delta);
-      this.animationController.render(delta);
-      this.previewFilmController.render(delta);
+      this.previewController.render(delta);
+      this.framesListController.render(delta);
     },
 
     getFirstFrameAsPng : function () {

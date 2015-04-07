@@ -1,10 +1,10 @@
 (function () {
-  var ns = $.namespace('pskl.controller');
+  var ns = $.namespace('pskl.controller.preview');
 
   // Preview is a square of PREVIEW_SIZE x PREVIEW_SIZE
   var PREVIEW_SIZE = 200;
 
-  ns.AnimatedPreviewController = function (piskelController, container) {
+  ns.PreviewController = function (piskelController, container) {
     this.piskelController = piskelController;
     this.container = container;
 
@@ -21,26 +21,30 @@
     var frame = this.piskelController.getCurrentFrame();
 
     this.renderer = new pskl.rendering.frame.TiledFrameRenderer(this.container);
+    this.popupPreviewController = new ns.PopupPreviewController(piskelController);
   };
 
-  ns.AnimatedPreviewController.prototype.init = function () {
+  ns.PreviewController.prototype.init = function () {
     // the oninput event won't work on IE10 unfortunately, but at least will provide a
     // consistent behavior across all other browsers that support the input type range
     // see https://bugzilla.mozilla.org/show_bug.cgi?id=853670
-
     this.fpsRangeInput.on('input change', this.onFPSSliderChange.bind(this));
     document.querySelector('.right-column').style.width = Constants.ANIMATED_PREVIEW_WIDTH + 'px';
 
     this.toggleOnionSkinEl = document.querySelector('.preview-toggle-onion-skin');
     this.toggleOnionSkinEl.addEventListener('click', this.toggleOnionSkin_.bind(this));
 
+    pskl.utils.Event.addEventListener('.open-popup-preview-button', 'click', this.onOpenPopupPreviewClick_, this);
+
     pskl.app.shortcutService.addShortcut('alt+O', this.toggleOnionSkin_.bind(this));
 
     $.subscribe(Events.FRAME_SIZE_CHANGED, this.onFrameSizeChange_.bind(this));
     $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
 
-    $.subscribe(Events.TOOL_RELEASED, this.setRenderFlag_.bind(this, true));
-    $.subscribe(Events.TOOL_PRESSED, this.setRenderFlag_.bind(this, false));
+    $.subscribe(Events.PISKEL_SAVE_STATE, this.setRenderFlag_.bind(this, true));
+    $.subscribe(Events.PISKEL_RESET, this.setRenderFlag_.bind(this, true));
+
+    this.popupPreviewController.init();
 
     this.updateZoom_();
     this.updateOnionSkinPreview_();
@@ -48,7 +52,11 @@
     this.updateContainerDimensions_();
   };
 
-  ns.AnimatedPreviewController.prototype.onUserSettingsChange_ = function (evt, name, value) {
+  ns.PreviewController.prototype.onOpenPopupPreviewClick_ = function () {
+    this.popupPreviewController.open();
+  };
+
+  ns.PreviewController.prototype.onUserSettingsChange_ = function (evt, name, value) {
     if (name == pskl.UserSettings.ONION_SKIN) {
       this.updateOnionSkinPreview_();
     } else if (name == pskl.UserSettings.MAX_FPS) {
@@ -59,7 +67,7 @@
     }
   };
 
-  ns.AnimatedPreviewController.prototype.updateOnionSkinPreview_ = function () {
+  ns.PreviewController.prototype.updateOnionSkinPreview_ = function () {
     var enabledClassname = 'preview-toggle-onion-skin-enabled';
     if (pskl.UserSettings.get(pskl.UserSettings.ONION_SKIN)) {
       this.toggleOnionSkinEl.classList.add(enabledClassname);
@@ -68,23 +76,24 @@
     }
   };
 
-  ns.AnimatedPreviewController.prototype.updateMaxFPS_ = function () {
+  ns.PreviewController.prototype.updateMaxFPS_ = function () {
     var maxFps = pskl.UserSettings.get(pskl.UserSettings.MAX_FPS);
     this.fpsRangeInput.get(0).setAttribute('max', maxFps);
     this.setFPS(Math.min(this.fps, maxFps));
   };
 
-  ns.AnimatedPreviewController.prototype.updateZoom_ = function () {
+  ns.PreviewController.prototype.updateZoom_ = function () {
     var isTiled = pskl.UserSettings.get(pskl.UserSettings.TILED_PREVIEW);
     var zoom = isTiled ? 1 : this.calculateZoom_();
     this.renderer.setZoom(zoom);
+    this.setRenderFlag_(true);
   };
 
-  ns.AnimatedPreviewController.prototype.getZoom = function () {
+  ns.PreviewController.prototype.getZoom = function () {
     return this.calculateZoom_();
   };
 
-  ns.AnimatedPreviewController.prototype.getCoordinates = function(x, y) {
+  ns.PreviewController.prototype.getCoordinates = function(x, y) {
     var containerOffset = this.container.offset();
     x = x - containerOffset.left;
     y = y - containerOffset.top;
@@ -95,12 +104,12 @@
     };
   };
 
-  ns.AnimatedPreviewController.prototype.onFPSSliderChange = function (evt) {
+  ns.PreviewController.prototype.onFPSSliderChange = function (evt) {
     this.setFPS(parseInt(this.fpsRangeInput[0].value, 10));
 
   };
 
-  ns.AnimatedPreviewController.prototype.setFPS = function (fps) {
+  ns.PreviewController.prototype.setFPS = function (fps) {
     if (typeof fps === 'number') {
       this.fps = fps;
       // reset
@@ -112,45 +121,40 @@
     }
   };
 
-  ns.AnimatedPreviewController.prototype.getFPS = function () {
+  ns.PreviewController.prototype.getFPS = function () {
     return this.fps;
   };
 
-  ns.AnimatedPreviewController.prototype.render = function (delta) {
-    if (this.renderFlag) {
-      this.elapsedTime += delta;
-      if (this.fps === 0) {
-        this._renderSelectedFrame();
-      } else {
-        this._renderCurrentAnimationFrame();
-      }
+  ns.PreviewController.prototype.render = function (delta) {
+    this.elapsedTime += delta;
+    var index = this.getNextIndex_(delta);
+    if (this.shoudlRender_() || this.currentIndex != index) {
+      this.currentIndex = index;
+      var frame = this.piskelController.getFrameAt(this.currentIndex);
+      this.renderer.render(frame);
+      this.renderFlag = false;
+
+      this.popupPreviewController.render(frame);
     }
   };
 
-  ns.AnimatedPreviewController.prototype._renderSelectedFrame = function (delta) {
-    // the selected frame is the currentFrame from the PiskelController perspective
-    var selectedFrameIndex = this.piskelController.getCurrentFrameIndex();
-    var selectedFrame = this.piskelController.getFrameAt(selectedFrameIndex);
-    this.renderer.render(selectedFrame);
-  };
-
-  ns.AnimatedPreviewController.prototype._renderCurrentAnimationFrame = function (delta) {
-    var index = Math.floor(this.elapsedTime / (1000/this.fps));
-    if (index != this.currentIndex) {
-      this.currentIndex = index;
-      if (!this.piskelController.hasFrameAt(this.currentIndex)) {
-        this.currentIndex = 0;
+  ns.PreviewController.prototype.getNextIndex_ = function (delta) {
+    if (this.fps === 0) {
+      return this.piskelController.getCurrentFrameIndex();
+    } else {
+      var index = Math.floor(this.elapsedTime / (1000/this.fps));
+      if (!this.piskelController.hasFrameAt(index)) {
         this.elapsedTime = 0;
+        index = 0;
       }
-      var frame = this.piskelController.getFrameAt(this.currentIndex);
-      this.renderer.render(frame);
+      return index;
     }
   };
 
   /**
    * Calculate the preview zoom depending on the framesheet size
    */
-  ns.AnimatedPreviewController.prototype.calculateZoom_ = function () {
+  ns.PreviewController.prototype.calculateZoom_ = function () {
     var frame = this.piskelController.getCurrentFrame();
     var hZoom = PREVIEW_SIZE / frame.getHeight(),
         wZoom = PREVIEW_SIZE / frame.getWidth();
@@ -158,12 +162,12 @@
     return Math.min(hZoom, wZoom);
   };
 
-  ns.AnimatedPreviewController.prototype.onFrameSizeChange_ = function () {
+  ns.PreviewController.prototype.onFrameSizeChange_ = function () {
     this.updateZoom_();
     this.updateContainerDimensions_();
   };
 
-  ns.AnimatedPreviewController.prototype.updateContainerDimensions_ = function () {
+  ns.PreviewController.prototype.updateContainerDimensions_ = function () {
     var containerEl = this.container.get(0);
     var isTiled = pskl.UserSettings.get(pskl.UserSettings.TILED_PREVIEW);
     var height, width;
@@ -190,11 +194,15 @@
     containerEl.style.marginRight = verticalMargin + 'px';
   };
 
-  ns.AnimatedPreviewController.prototype.setRenderFlag_ = function (bool) {
+  ns.PreviewController.prototype.setRenderFlag_ = function (bool) {
     this.renderFlag = bool;
   };
 
-  ns.AnimatedPreviewController.prototype.toggleOnionSkin_ = function () {
+  ns.PreviewController.prototype.shoudlRender_ = function () {
+    return this.renderFlag || this.popupPreviewController.renderFlag;
+  };
+
+  ns.PreviewController.prototype.toggleOnionSkin_ = function () {
     var currentValue = pskl.UserSettings.get(pskl.UserSettings.ONION_SKIN);
     pskl.UserSettings.set(pskl.UserSettings.ONION_SKIN, !currentValue);
   };

@@ -4,6 +4,7 @@
   ns.UserSettings = {
     GRID_WIDTH : 'GRID_WIDTH',
     MAX_FPS : 'MAX_FPS',
+    DEFAULT_SIZE : 'DEFAULT_SIZE',
     CANVAS_BACKGROUND : 'CANVAS_BACKGROUND',
     SELECTED_PALETTE : 'SELECTED_PALETTE',
     TILED_PREVIEW : 'TILED_PREVIEW',
@@ -13,6 +14,10 @@
     KEY_TO_DEFAULT_VALUE_MAP_ : {
       'GRID_WIDTH' : 0,
       'MAX_FPS' : 24,
+      'DEFAULT_SIZE' : {
+        width : Constants.DEFAULT.WIDTH,
+        height : Constants.DEFAULT.HEIGHT
+      },
       'CANVAS_BACKGROUND' : 'lowcont-dark-canvas-background',
       'SELECTED_PALETTE' : Constants.CURRENT_COLORS_PALETTE_ID,
       'TILED_PREVIEW' : false,

@@ -1,0 +1,64 @@
+<div style="display:none">
+  <script type="text/template" id="popup-preview-partial">
+    <style>
+      body,
+      .popup-container ,
+      .preview-container,
+      .tiled-frame-container {
+        width : 100%;
+        height : 100%;
+      }
+
+      body {
+        margin: 0;
+      }
+
+      .popup-container {
+        position: absolute;
+        background : #333;
+      }
+
+      .preview-container {
+        position: relative;
+      }
+
+      .tiled-frame-container {
+        position: relative;
+        background-repeat : no-repeat;
+      }
+
+      .canvas-container .canvas-background {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+      }
+
+      .light-picker-background,
+      .light-canvas-background .canvas-background {
+        background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB8AAAAgCAMAAADdXFNzAAAABlBMVEXf39////8zI3BgAAAAHUlEQVR4AWNghAAGKGBE4w93eXTxkcYf2fE/Gv8A3C0B8ZfvECMAAAAASUVORK5CYII=) repeat;
+      }
+
+      .medium-picker-background,
+      .medium-canvas-background .canvas-background {
+        background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAF0AAABhCAMAAACDF10nAAAABlBMVEW6urr///82MBGFAAAAVElEQVR42u3UIRIAMAgEsfL/T9eAqajBnAiOgYncM1M9z7470+lhen3/lmc6PUtXArq+KwFd33WGru86Q9d3naHrO52u73S6vtPp+k6n6zudntD3CycwEZ5PT1TIAAAAAElFTkSuQmCC) repeat;
+      }
+
+      .lowcont-medium-picker-background,
+      .lowcont-medium-canvas-background .canvas-background {
+        background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC8AAAAwCAMAAAC2edPQAAAACVBMVEXV1dXb29v///8dwgMCAAAAMElEQVR4AWNghAAGKGBE46Nzqap+VD0hdYzoXOqqH1U/MtPnaPofVT+a/kfT/6h6AMwdBGmkql8KAAAAAElFTkSuQmCC) repeat;
+      }
+
+      .lowcont-dark-picker-background,
+      .lowcont-dark-canvas-background .canvas-background {
+        background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAF0AAABhCAMAAACDF10nAAAACVBMVEVMTExVVVX///8WgdEBAAAAVElEQVR42u3UIRIAMAgEsfL/T9eAqajBnAiOgYncM1M9z7470+lhen3/lmc6PUtXArq+KwFd33WGru86Q9d3naHrO52u73S6vtPp+k6n6zudntD3CycwEZ5PT1TIAAAAAElFTkSuQmCC) repeat;
+      }
+    </style>
+    <div class="popup-container  lowcont-dark-canvas-background ">
+      <div class="preview-container  canvas-container">
+        <div class="canvas-background"></div>
+      </div>
+    </div>
+  </script>
+</div>

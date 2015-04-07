@@ -1,9 +1,9 @@
 (function () {
   var ns = $.namespace('pskl.controller');
 
-  ns.MinimapController = function (piskelController, animationController, drawingController, container) {
+  ns.MinimapController = function (piskelController, previewController, drawingController, container) {
     this.piskelController = piskelController;
-    this.animationController = animationController;
+    this.previewController = previewController;
     this.drawingController = drawingController;
     this.container = container;
 
@@ -50,11 +50,11 @@
     // if the sprite is not a square, a margin is needed on the appropriate coordinate
     // before adding the offset coming from the drawing area
     var leftMargin = (containerWidth - Math.max(minimapSize.width, previewSize.width))/2;
-    var leftOffset = offset.x * this.animationController.getZoom();
+    var leftOffset = offset.x * this.previewController.getZoom();
     var left = leftMargin + leftOffset;
 
     var topMargin = (containerHeight - Math.max(minimapSize.height, previewSize.height))/2;
-    var topOffset = offset.y * this.animationController.getZoom();
+    var topOffset = offset.y * this.previewController.getZoom();
     var top = topMargin + topOffset;
 
     this.minimapEl.style.display = 'block';
@@ -69,7 +69,7 @@
   ns.MinimapController.prototype.getMinimapSize_ = function () {
     // Calculate the ratio to translate drawing area sizes to animated preview sizes
     var drawingAreaZoom = this.drawingController.getRenderer().getZoom();
-    var animatedPreviewZoom = this.animationController.getZoom();
+    var animatedPreviewZoom = this.previewController.getZoom();
     var ratio = drawingAreaZoom / animatedPreviewZoom;
 
     var displaySize = this.drawingController.getRenderer().getDisplaySize();
@@ -84,8 +84,8 @@
 
   ns.MinimapController.prototype.getPreviewSize_ = function () {
     var frame = this.piskelController.getCurrentFrame();
-    var previewWidth = frame.getWidth() * this.animationController.getZoom();
-    var previewHeight = frame.getHeight() * this.animationController.getZoom();
+    var previewWidth = frame.getWidth() * this.previewController.getZoom();
+    var previewHeight = frame.getHeight() * this.previewController.getZoom();
 
     return {
       width : previewWidth,
@@ -114,7 +114,7 @@
   };
 
   ns.MinimapController.prototype.getCoordinatesCenteredAround_ = function (x, y) {
-    var frameCoords = this.animationController.getCoordinates(x, y);
+    var frameCoords = this.previewController.getCoordinates(x, y);
 
     var frameWidth = this.piskelController.getCurrentFrame().getWidth();
     var frameHeight = this.piskelController.getCurrentFrame().getHeight();
