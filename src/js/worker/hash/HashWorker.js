@@ -1,7 +1,7 @@
 (function () {
-  var ns = $.namespace('pskl.worker');
+  var ns = $.namespace('pskl.worker.hash');
 
-  ns.HashBuilder = function () {
+  ns.HashWorker = function () {
     var hashCode = function(str) {
       var hash = 0;
       if (str.length !== 0) {

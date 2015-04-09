@@ -7,7 +7,7 @@
     this.cache = {};
     this.currentColors = [];
 
-    this.cachedFrameProcessor = new pskl.model.frame.CachedFrameProcessor();
+    this.cachedFrameProcessor = new pskl.model.frame.AsyncCachedFrameProcessor();
     this.cachedFrameProcessor.setFrameProcessor(this.getFrameColors_.bind(this));
 
     this.colorSorter = new pskl.service.color.ColorSorter();
@@ -44,20 +44,37 @@
     var colors = this.cache[historyIndex];
     if (colors) {
       this.setCurrentColors(colors);
+    } else {
+      this.updateCurrentColors_();
     }
   };
 
   ns.CurrentColorsService.prototype.updateCurrentColors_ = function () {
     var layers = this.piskelController.getLayers();
     var frames = layers.map(function (l) {return l.getFrames();}).reduce(function (p, n) {return p.concat(n);});
-    var colors = {};
 
-    frames.forEach(function (f) {
-      var frameColors = this.cachedFrameProcessor.get(f);
-      Object.keys(frameColors).slice(0, Constants.MAX_CURRENT_COLORS_DISPLAYED).forEach(function (color) {
-        colors[color] = true;
-      });
-    }.bind(this));
+    this.currentJob = new pskl.utils.Job({
+      items : frames,
+      args : {
+        colors : {}
+      },
+      process : function (frame, callback) {
+        return this.cachedFrameProcessor.get(frame, callback);
+      }.bind(this),
+      onProcessEnd : function (frameColors) {
+        var colors = this.args.colors;
+        Object.keys(frameColors).slice(0, Constants.MAX_CURRENT_COLORS_DISPLAYED).forEach(function (color) {
+          colors[color] = true;
+        });
+      },
+      onComplete : this.updateCurrentColorsReady_.bind(this)
+    });
+
+    this.currentJob.start();
+  };
+
+  ns.CurrentColorsService.prototype.updateCurrentColorsReady_ = function (args) {
+    var colors = args.colors;
 
     // Remove transparent color from used colors
     delete colors[Constants.TRANSPARENT_COLOR];
@@ -69,30 +86,13 @@
     this.setCurrentColors(currentColors);
   };
 
-  ns.CurrentColorsService.prototype.getFrameColors_ = function (frame) {
-    var frameColors = {};
-    frame.forEachPixel(function (color, x, y) {
-      var hexColor = this.toHexString_(color);
-      frameColors[hexColor] = true;
-    }.bind(this));
-    return frameColors;
-  };
+  ns.CurrentColorsService.prototype.getFrameColors_ = function (frame, processorCallback) {
+    var frameColorsWorker = new pskl.worker.framecolors.FrameColors(frame,
+      function (event) {processorCallback(event.data.colors);},
+      function () {},
+      function (event) {processorCallback({});}
+    );
 
-  ns.CurrentColorsService.prototype.toHexString_ = function (color) {
-    if (color === Constants.TRANSPARENT_COLOR) {
-      return color;
-    } else {
-      color = color.replace(/\s/g, '');
-      var hexRe = (/^#([a-f0-9]{3}){1,2}$/i);
-      var rgbRe = (/^rgb\((\d{1,3}),(\d{1,3}),(\d{1,3})\)$/i);
-      if (hexRe.test(color)) {
-        return color.toUpperCase();
-      } else if (rgbRe.test(color)) {
-        var exec = rgbRe.exec(color);
-        return pskl.utils.rgbToHex(exec[1] * 1, exec[2] * 1, exec[3] * 1);
-      } else {
-        console.error('Could not convert color to hex : ', color);
-      }
-    }
+    frameColorsWorker.process();
   };
 })();

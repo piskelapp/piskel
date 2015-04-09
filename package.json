@@ -33,7 +33,7 @@
     "karma": "0.12.17",
     "karma-chrome-launcher": "^0.1.4",
     "karma-phantomjs-launcher": "^0.1.4",
-    "karma-jasmine": "^0.2.0",
+    "karma-jasmine": "^0.3.5",
     "nodewebkit": "~0.10.1"
   },
   "window": {

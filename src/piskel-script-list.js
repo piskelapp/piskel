@@ -24,6 +24,7 @@
   "js/utils/FileUtilsDesktop.js",
   "js/utils/FrameTransform.js",
   "js/utils/FrameUtils.js",
+  "js/utils/Job.js",
   "js/utils/LayerUtils.js",
   "js/utils/ImageResizer.js",
   "js/utils/PixelUtils.js",
@@ -58,6 +59,7 @@
   "js/model/Layer.js",
   "js/model/piskel/Descriptor.js",
   "js/model/frame/CachedFrameProcessor.js",
+  "js/model/frame/AsyncCachedFrameProcessor.js",
   "js/model/Palette.js",
   "js/model/Piskel.js",
 
@@ -188,6 +190,8 @@
   "js/devtools/init.js",
 
   // Workers
+  "js/worker/framecolors/FrameColorsWorker.js",
+  "js/worker/framecolors/FrameColors.js",
   "js/worker/hash/HashWorker.js",
   "js/worker/hash/Hash.js",
   "js/worker/imageprocessor/ImageProcessorWorker.js",
@@ -195,6 +199,7 @@
 
   // Application controller and initialization
   "js/app.js",
+
   // Bonus features !!
   "js/snippets.js"
 ];

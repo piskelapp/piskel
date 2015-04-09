@@ -17,6 +17,7 @@
     this.cacheResetInterval = cacheResetInterval || DEFAULT_CLEAR_INTERVAL;
     this.frameProcessor = DEFAULT_FRAME_PROCESSOR;
     this.outputCloner = DEFAULT_OUTPUT_CLONER;
+    this.defaultNamespace = DEFAULT_NAMESPACE;
 
     window.setInterval(this.clear.bind(this), this.cacheResetInterval);
   };

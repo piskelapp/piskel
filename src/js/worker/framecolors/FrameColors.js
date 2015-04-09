@@ -1,24 +1,24 @@
 (function () {
-  var ns = $.namespace('pskl.worker.hash');
+  var ns = $.namespace('pskl.worker.framecolors');
 
-  ns.Hash = function (str, onSuccess, onStep, onError) {
-    this.str = str;
+  ns.FrameColors = function (frame, onSuccess, onStep, onError) {
+    this.serializedFrame = JSON.stringify(frame.pixels);
 
     this.onStep = onStep;
     this.onSuccess = onSuccess;
     this.onError = onError;
 
-    this.worker = pskl.utils.WorkerUtils.createWorker(ns.HashWorker, 'hash');
+    this.worker = pskl.utils.WorkerUtils.createWorker(ns.FrameColorsWorker, 'frame-colors');
     this.worker.onmessage = this.onWorkerMessage.bind(this);
   };
 
-  ns.Hash.prototype.process = function () {
+  ns.FrameColors.prototype.process = function () {
     this.worker.postMessage({
-      str : this.str
+      serializedFrame : this.serializedFrame
     });
   };
 
-  ns.Hash.prototype.onWorkerMessage = function (event) {
+  ns.FrameColors.prototype.onWorkerMessage = function (event) {
     if (event.data.type === 'STEP') {
       this.onStep(event);
     } else if (event.data.type === 'SUCCESS') {

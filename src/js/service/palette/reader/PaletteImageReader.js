@@ -14,7 +14,7 @@
   };
 
   ns.PaletteImageReader.prototype.onImageLoaded_ = function (image) {
-    var imageProcessor = new pskl.worker.ImageProcessor(image,
+    var imageProcessor = new pskl.worker.imageprocessor.ImageProcessor(image,
       this.onWorkerSuccess_.bind(this),
       this.onWorkerStep_.bind(this),
       this.onWorkerError_.bind(this));
