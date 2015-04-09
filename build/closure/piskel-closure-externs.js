@@ -16,3 +16,4 @@ var define;
 var jQuery;
 var getComputedStyle;
 var URL;
+var Q;

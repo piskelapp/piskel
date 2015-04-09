@@ -63,9 +63,9 @@
         Object.keys(result).forEach(function (color) {
           colors[color] = true;
         });
-      })
+      });
       this.updateCurrentColorsReady_(colors);
-    }.bind(this))
+    }.bind(this));
   };
 
   ns.CurrentColorsService.prototype.updateCurrentColorsReady_ = function (colors) {

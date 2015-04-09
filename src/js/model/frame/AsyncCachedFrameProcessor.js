@@ -52,5 +52,5 @@
     cache[secondCacheKey] = processedFrame;
     cache[firstCacheKey] = processedFrame;
     deferred.resolve(processedFrame);
-  }
+  };
 })();
