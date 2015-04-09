@@ -53,29 +53,24 @@
     var layers = this.piskelController.getLayers();
     var frames = layers.map(function (l) {return l.getFrames();}).reduce(function (p, n) {return p.concat(n);});
 
-    this.currentJob = new pskl.utils.Job({
-      items : frames,
-      args : {
-        colors : {}
-      },
-      process : function (frame, callback) {
-        return this.cachedFrameProcessor.get(frame, callback);
-      }.bind(this),
-      onProcessEnd : function (frameColors) {
-        var colors = this.args.colors;
-        Object.keys(frameColors).slice(0, Constants.MAX_CURRENT_COLORS_DISPLAYED).forEach(function (color) {
+    Q.all(
+      frames.map(function (frame) {
+        return this.cachedFrameProcessor.get(frame);
+      }.bind(this))
+    ).done(function (results) {
+      console.log('ALL DONE');
+
+      var colors = {};
+      results.forEach(function (result) {
+        Object.keys(result).forEach(function (color) {
           colors[color] = true;
         });
-      },
-      onComplete : this.updateCurrentColorsReady_.bind(this)
-    });
-
-    this.currentJob.start();
+      })
+      this.updateCurrentColorsReady_(colors);
+    }.bind(this))
   };
 
-  ns.CurrentColorsService.prototype.updateCurrentColorsReady_ = function (args) {
-    var colors = args.colors;
-
+  ns.CurrentColorsService.prototype.updateCurrentColorsReady_ = function (colors) {
     // Remove transparent color from used colors
     delete colors[Constants.TRANSPARENT_COLOR];
 

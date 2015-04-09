@@ -15,7 +15,7 @@
    * @param  {String} namespace
    * @return {Object} the processed frame
    */
-  ns.AsyncCachedFrameProcessor.prototype.get = function (frame, callback, namespace) {
+  ns.AsyncCachedFrameProcessor.prototype.get = function (frame, namespace) {
     var processedFrame = null;
     namespace = namespace || this.defaultNamespace;
 
@@ -35,18 +35,21 @@
         processedFrame = this.outputCloner(cache[secondCacheKey], frame);
         cache[firstCacheKey] = processedFrame;
       } else {
-        this.frameProcessor(frame, this.onFrameProcessorComplete.bind(this, callback, cache, firstCacheKey, secondCacheKey));
+        var deferred = Q.defer();
+        this.frameProcessor(frame, this.onFrameProcessorComplete.bind(this, deferred, cache, firstCacheKey, secondCacheKey));
+        return deferred.promise;
       }
     }
 
     if (processedFrame) {
-      callback(processedFrame);
+      return Q.fcall(processedFrame);
     }
   };
 
-  ns.AsyncCachedFrameProcessor.prototype.onFrameProcessorComplete = function (callback, cache, firstCacheKey, secondCacheKey, processedFrame) {
+  ns.AsyncCachedFrameProcessor.prototype.onFrameProcessorComplete = function (deferred, cache, firstCacheKey, secondCacheKey, processedFrame) {
     cache[secondCacheKey] = processedFrame;
     cache[firstCacheKey] = processedFrame;
-    callback(processedFrame);
+    console.log('RESOLVING');
+    deferred.resolve(processedFrame);
   }
 })();
