@@ -24,7 +24,6 @@
   "js/utils/FileUtilsDesktop.js",
   "js/utils/FrameTransform.js",
   "js/utils/FrameUtils.js",
-  "js/utils/Job.js",
   "js/utils/LayerUtils.js",
   "js/utils/ImageResizer.js",
   "js/utils/PixelUtils.js",
