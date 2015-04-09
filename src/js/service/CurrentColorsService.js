@@ -58,8 +58,6 @@
         return this.cachedFrameProcessor.get(frame);
       }.bind(this))
     ).done(function (results) {
-      console.log('ALL DONE');
-
       var colors = {};
       results.forEach(function (result) {
         Object.keys(result).forEach(function (color) {

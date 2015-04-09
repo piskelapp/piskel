@@ -23,6 +23,8 @@
       this.cache_[namespace] = {};
     }
 
+    var deferred = Q.defer();
+
     var cache = this.cache_[namespace];
 
     var firstCacheKey = frame.getHash();
@@ -35,21 +37,20 @@
         processedFrame = this.outputCloner(cache[secondCacheKey], frame);
         cache[firstCacheKey] = processedFrame;
       } else {
-        var deferred = Q.defer();
         this.frameProcessor(frame, this.onFrameProcessorComplete.bind(this, deferred, cache, firstCacheKey, secondCacheKey));
-        return deferred.promise;
       }
     }
 
     if (processedFrame) {
-      return Q.fcall(processedFrame);
+      deferred.resolve(processedFrame);
     }
+    
+    return deferred.promise;
   };
 
   ns.AsyncCachedFrameProcessor.prototype.onFrameProcessorComplete = function (deferred, cache, firstCacheKey, secondCacheKey, processedFrame) {
     cache[secondCacheKey] = processedFrame;
     cache[firstCacheKey] = processedFrame;
-    console.log('RESOLVING');
     deferred.resolve(processedFrame);
   }
 })();
