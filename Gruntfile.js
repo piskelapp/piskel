@@ -1,16 +1,3 @@
-/**
- * How to run grunt tasks:
- *   - At project root, run 'npm install' - It will install nodedependencies declared in package,json in <root>/.node_modules
- *   - install grunt CLI tools globally, run 'npm install -g grunt-cli'
- *   - run a grunt target defined in Gruntfiles.js, ex: 'grunt lint'
- *
- * Note: The 'ghost' grunt task have special deps on CasperJS and phantomjs.
- *       For now, It's configured to run only on TravisCI where these deps are
- *       correctly defined.
- *       If you run this task locally, it may require some env set up first.
- */
-
-
 module.exports = function(grunt) {
   var dateFormat = require('dateformat');
   var now = new Date();
@@ -77,10 +64,12 @@ module.exports = function(grunt) {
     };
   };
 
+  // load all grunt tasks
+  require('load-grunt-tasks')(grunt);
+
   grunt.initConfig({
     clean: {
-      before: ['dest'],
-      after: ['build/closure/closure_compiled_binary.js']
+      before: ['dest']
     },
     jshint: {
       options: {
@@ -144,7 +133,7 @@ module.exports = function(grunt) {
       options : {
         mangle : true
       },
-      my_target : {
+      js : {
         files : {
           'dest/js/piskel-packaged-min.js' : ['dest/js/piskel-packaged' + version + '.js']
         }
@@ -207,58 +196,6 @@ module.exports = function(grunt) {
         ]
       }
     },
-    closureCompiler:  {
-      options: {
-        // [REQUIRED] Path to closure compiler
-        compilerFile: 'build/closure/closure_compiler_20130823.jar',
-
-        // [OPTIONAL] set to true if you want to check if files were modified
-        // before starting compilation (can save some time in large sourcebases)
-        //checkModified: true,
-
-        // [OPTIONAL] Set Closure Compiler Directives here
-        compilerOpts: {
-          /**
-           * Keys will be used as directives for the compiler
-           * values can be strings or arrays.
-           * If no value is required use null
-           */
-          //compilation_level: 'ADVANCED_OPTIMIZATIONS',
-          compilation_level: 'SIMPLE_OPTIMIZATIONS',
-          externs: ['build/closure/piskel-closure-externs.js'],
-          // Inject some constants in JS code, could we use that for appengine wiring ?
-          //define: ["'goog.DEBUG=false'"],
-          warning_level: 'verbose',
-          jscomp_off: ['checkTypes', 'fileoverviewTags'],
-          summary_detail_level: 1,
-          language_in: 'ECMASCRIPT3'
-          //output_wrapper: '"(function(){%output%}).call(this);"'
-        },
-        execOpts: { // [OPTIONAL] Set exec method options
-          maxBuffer: 999999 * 1024
-        }
-
-      },
-      compile: {
-
-        /**
-         *[OPTIONAL] Here you can add new or override previous option of the Closure Compiler Directives.
-         * IMPORTANT! The feature is enabled as a temporary solution to [#738](https://github.com/gruntjs/grunt/issues/738).
-         * As soon as issue will be fixed this feature will be removed.
-         */
-        TEMPcompilerOpts: {
-        },
-        src: [
-          'src/js/**/*.js',
-          'src/piskel-boot.js',
-          'src/piskel-script-list.js',
-          '!src/js/lib/**/*.js'
-        ],
-
-        // This generated JS binary is currently not used and even excluded from source control using .gitignore.
-        dest: 'build/closure/closure_compiled_binary.js'
-      }
-    },
     karma: {
       unit: {
         configFile: 'karma.conf.js'
@@ -287,22 +224,6 @@ module.exports = function(grunt) {
     src: ['src/css/**/*.css']
   });
 
-  grunt.loadNpmTasks('grunt-closure-tools');
-  grunt.loadNpmTasks('grunt-contrib-clean');
-  grunt.loadNpmTasks('grunt-contrib-concat');
-  grunt.loadNpmTasks('grunt-contrib-copy');
-  grunt.loadNpmTasks('grunt-contrib-jshint');
-  grunt.loadNpmTasks('grunt-contrib-uglify');
-  grunt.loadNpmTasks('grunt-contrib-watch');
-  grunt.loadNpmTasks('grunt-express');
-  grunt.loadNpmTasks('grunt-replace');
-  grunt.loadNpmTasks('grunt-ghost');
-  grunt.loadNpmTasks('grunt-open');
-  grunt.loadNpmTasks('grunt-karma');
-  grunt.loadNpmTasks('grunt-leading-indent');
-  grunt.loadNpmTasks('grunt-node-webkit-builder');
-  grunt.loadNpmTasks('grunt-contrib-copy');
-
   // Validate
   grunt.registerTask('lint', ['leadingIndent:jsFiles', 'leadingIndent:cssFiles', 'jshint']);
 
@@ -310,32 +231,24 @@ module.exports = function(grunt) {
   grunt.registerTask('unit-test', ['karma']);
 
   // Validate & Test
-  grunt.registerTask('test-travis', ['lint', 'compile', 'unit-test', 'express:test', 'ghost:travis']);
+  grunt.registerTask('test-travis', ['lint', 'unit-test', 'express:test', 'ghost:travis']);
   // Validate & Test (faster version) will NOT work on travis !!
-  grunt.registerTask('test-local', ['lint', 'compile', 'unit-test', 'express:test', 'ghost:local']);
+  grunt.registerTask('test-local', ['lint', 'unit-test', 'express:test', 'ghost:local']);
 
   grunt.registerTask('test', ['test-travis']);
   grunt.registerTask('precommit', ['test-local']);
 
-
-  // Compile JS code (eg verify JSDoc annotation and types, no actual minified code generated).
-  grunt.registerTask('compile', ['closureCompiler:compile', 'clean:after']);
-
-  grunt.registerTask('rep', ['replace:main', 'replace:editor']);
-
-  grunt.registerTask('merge',  ['concat:js', 'concat:css', 'uglify', 'rep', 'copy']);
+  grunt.registerTask('build',  ['concat:js', 'concat:css', 'uglify', 'replace:main', 'replace:editor', 'copy']);
 
   // Validate & Build
-  grunt.registerTask('default', ['clean:before', 'lint', 'compile', 'merge']);
+  grunt.registerTask('default', ['clean:before', 'lint', 'build']);
 
   // Build stand alone app with nodewebkit
   grunt.registerTask('desktop', ['default', 'nodewebkit']);
 
-  grunt.registerTask('server', ['merge', 'express:regular', 'open:regular', 'express-keepalive']);
-
   // Start webserver and watch for changes
-  grunt.registerTask('server:watch', ['server', 'watch']);
+  grunt.registerTask('serve', ['build', 'express:regular', 'open:regular', 'express-keepalive', 'watch']);
 
   // Start webserver on src folder, in debug mode
-  grunt.registerTask('server:debug', ['express:debug', 'open:debug', 'express-keepalive']);
+  grunt.registerTask('serve-debug', ['express:debug', 'open:debug', 'express-keepalive']);
 };
