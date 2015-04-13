@@ -15,7 +15,7 @@
     if (reader) {
       reader.read();
     } else {
-      throw 'Could not find reader for file : ' + file.name;
+      console.error('Could not find reader for file : %s', file.name);
     }
   };
 

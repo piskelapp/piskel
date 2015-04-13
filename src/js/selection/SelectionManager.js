@@ -85,9 +85,6 @@
       this.currentSelection.fillSelectionFromFrame(this.piskelController.getCurrentFrame());
       this.erase();
     }
-    else {
-      throw "Bad state for CUT callback in SelectionManager";
-    }
   };
 
   ns.SelectionManager.prototype.paste = function() {
@@ -128,8 +125,6 @@
   ns.SelectionManager.prototype.copy = function() {
     if(this.currentSelection && this.piskelController.getCurrentFrame()) {
       this.currentSelection.fillSelectionFromFrame(this.piskelController.getCurrentFrame());
-    } else {
-      throw "Bad state for CUT callback in SelectionManager";
     }
   };
 
@@ -140,7 +135,7 @@
     if(selection) {
       this.currentSelection = selection;
     } else {
-      throw "No selection set in SelectionManager";
+      console.error("No selection provided to SelectionManager");
     }
   };
 
@@ -150,9 +145,8 @@
   ns.SelectionManager.prototype.onSelectionMoved_ = function(evt, colDiff, rowDiff) {
     if(this.currentSelection) {
       this.currentSelection.move(colDiff, rowDiff);
-    }
-    else {
-      throw "Bad state: No currentSelection set when trying to move it in SelectionManager";
+    } else {
+      console.error("Bad state: No currentSelection set when trying to move it in SelectionManager");
     }
   };
 })();

@@ -87,7 +87,7 @@
     checkKeyValidity_ : function(key) {
       if(!(key in this.KEY_TO_DEFAULT_VALUE_MAP_)) {
         // TODO(grosbouddha): Define error catching strategy and throw exception from here.
-        console.log("UserSettings key <"+ key +"> not find in supported keys.");
+        console.error("UserSettings key <"+ key +"> not found in supported keys.");
       }
     }
   };
