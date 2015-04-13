@@ -52,7 +52,7 @@
     if (max) {
       colorsArray = colorsArray.slice(0, Constants.MAX_CURRENT_COLORS_DISPLAYED);
     }
-    
+
     return this.colorSorter.sort(colorsArray);
   };
 
@@ -60,7 +60,7 @@
     var paletteId = pskl.UserSettings.get(pskl.UserSettings.SELECTED_PALETTE);
     var palette = this.paletteService.getPaletteById(paletteId);
 
-    return palette.id === Constants.CURRENT_COLORS_PALETTE_ID;
+    return palette && palette.id === Constants.CURRENT_COLORS_PALETTE_ID;
   };
 
   ns.CurrentColorsService.prototype.loadColorsFromCache_ = function () {
