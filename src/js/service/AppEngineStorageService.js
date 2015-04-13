@@ -22,7 +22,7 @@
     };
 
     if (descriptor.isPublic) {
-      data['public'] = true;
+      data.public = true;
     }
 
     var success = function () {
