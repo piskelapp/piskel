@@ -117,10 +117,10 @@
 
   ns.GifExportController.prototype.renderAsImageDataAnimatedGIF = function(zoom, fps, cb) {
     var currentColors = pskl.app.currentColorsService.computeCurrentColors();
-    
+
     var preserveColors = currentColors.length < MAX_GIF_COLORS;
     var transparentColor = this.getTransparentColor(currentColors);
-    
+
     var gif = new window.GIF({
       workers: 5,
       quality: 1,
@@ -155,17 +155,16 @@
 
   ns.GifExportController.prototype.getTransparentColor = function(currentColors) {
     var transparentColor = pskl.utils.ColorUtils.getUnusedColor(currentColors);
+
     if (!transparentColor) {
       console.error('Unable to find unused color to use as transparent color in the current sprite');
       transparentColor = MAGIC_PINK;
-    } else {
-      transparentColor = window.tinycolor(transparentColor).toHexString();
     }
+
     return transparentColor;
   };
 
-  // FIXME : HORRIBLE COPY/PASTA
-
+  // FIXME : JD : HORRIBLE COPY/PASTA (JD later : where???)
   ns.GifExportController.prototype.updateStatus_ = function (imageUrl, error) {
     if (imageUrl) {
       var linkTpl = "<a class='image-link' href='{{link}}' target='_blank'>{{shortLink}}</a>";

@@ -3,25 +3,25 @@
 
   ns.ColorUtils = {
     getUnusedColor : function (usedColors) {
-      // start with white
-      var color = {
-        r : 255,
-        g : 255,
-        b : 255
-      };
-
+      usedColors = usedColors || [];
       // create check map
       var colorMap = {};
       usedColors.forEach(function (color) {
         colorMap[color.toUpperCase()] = true;
       });
 
+      // start with white
+      var color = {
+        r : 255,
+        g : 255,
+        b : 255
+      };
       var match = null;
         while (true) {
           var hex = tinycolor(color).toHexString().toUpperCase();
 
         if (!colorMap[hex]) {
-          match = color;
+          match = hex;
           break;
         } else {
           // pick a non null component to decrease its value
