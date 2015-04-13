@@ -5,6 +5,7 @@
   var MAX_GIF_COLORS = 256;
   var MAX_EXPORT_ZOOM = 20;
   var DEFAULT_EXPORT_ZOOM = 10;
+  var MAGIC_PINK = '#FF00FF';
 
   ns.GifExportController = function (piskelController) {
     this.piskelController = piskelController;
@@ -115,19 +116,24 @@
   };
 
   ns.GifExportController.prototype.renderAsImageDataAnimatedGIF = function(zoom, fps, cb) {
-    var colorCount = pskl.app.currentColorsService.getCurrentColors().length;
-    var preserveColors = colorCount < MAX_GIF_COLORS;
+    var currentColors = pskl.app.currentColorsService.computeCurrentColors();
+    
+    var preserveColors = currentColors.length < MAX_GIF_COLORS;
+    var transparentColor = this.getTransparentColor(currentColors);
+    
     var gif = new window.GIF({
       workers: 5,
       quality: 1,
       width: this.piskelController.getWidth() * zoom,
       height: this.piskelController.getHeight() * zoom,
-      preserveColors : preserveColors
+      preserveColors : preserveColors,
+      transparent : parseInt(transparentColor, 16)
     });
 
     for (var i = 0; i < this.piskelController.getFrameCount(); i++) {
       var frame = this.piskelController.getFrameAt(i);
       var canvasRenderer = new pskl.rendering.CanvasRenderer(frame, zoom);
+      canvasRenderer.drawTransparentAs(transparentColor);
       var canvas = canvasRenderer.render();
       gif.addFrame(canvas.getContext('2d'), {
         delay: 1000 / fps
@@ -145,6 +151,17 @@
     }.bind(this));
 
     gif.render();
+  };
+
+  ns.GifExportController.prototype.getTransparentColor = function(currentColors) {
+    var transparentColor = pskl.utils.ColorUtils.getUnusedColor(currentColors);
+    if (!transparentColor) {
+      console.error('Unable to find unused color to use as transparent color in the current sprite');
+      transparentColor = MAGIC_PINK;
+    } else {
+      transparentColor = window.tinycolor(transparentColor).toHexString();
+    }
+    return transparentColor;
   };
 
   // FIXME : HORRIBLE COPY/PASTA

@@ -32,6 +32,30 @@
     }
   };
 
+  ns.CurrentColorsService.prototype.computeCurrentColors = function (max) {
+    var layers = this.piskelController.getLayers();
+    var frames = layers.map(function (l) {return l.getFrames();}).reduce(function (p, n) {return p.concat(n);});
+    var colors = {};
+
+    frames.forEach(function (f) {
+      var frameColors = this.cachedFrameProcessor.get(f);
+      Object.keys(frameColors).slice(0, Constants.MAX_CURRENT_COLORS_DISPLAYED).forEach(function (color) {
+        colors[color] = true;
+      });
+    }.bind(this));
+
+    // Remove transparent color from used colors
+    delete colors[Constants.TRANSPARENT_COLOR];
+
+    var colorsArray = Object.keys(colors);
+    // limit the array to the max colors to display
+    if (max) {
+      colorsArray = colorsArray.slice(0, Constants.MAX_CURRENT_COLORS_DISPLAYED);
+    }
+    
+    return this.colorSorter.sort(colorsArray);
+  };
+
   ns.CurrentColorsService.prototype.isCurrentColorsPaletteSelected_ = function () {
     var paletteId = pskl.UserSettings.get(pskl.UserSettings.SELECTED_PALETTE);
     var palette = this.paletteService.getPaletteById(paletteId);
@@ -48,24 +72,7 @@
   };
 
   ns.CurrentColorsService.prototype.updateCurrentColors_ = function () {
-    var layers = this.piskelController.getLayers();
-    var frames = layers.map(function (l) {return l.getFrames();}).reduce(function (p, n) {return p.concat(n);});
-    var colors = {};
-
-    frames.forEach(function (f) {
-      var frameColors = this.cachedFrameProcessor.get(f);
-      Object.keys(frameColors).slice(0, Constants.MAX_CURRENT_COLORS_DISPLAYED).forEach(function (color) {
-        colors[color] = true;
-      });
-    }.bind(this));
-
-    // Remove transparent color from used colors
-    delete colors[Constants.TRANSPARENT_COLOR];
-
-    // limit the array to the max colors to display
-    var colorsArray = Object.keys(colors).slice(0, Constants.MAX_CURRENT_COLORS_DISPLAYED);
-    var currentColors = this.colorSorter.sort(colorsArray);
-
+    var currentColors = this.computeCurrentColors(Constants.MAX_CURRENT_COLORS_DISPLAYED);
     this.setCurrentColors(currentColors);
   };
 
