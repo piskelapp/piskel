@@ -127,7 +127,7 @@
       width: this.piskelController.getWidth() * zoom,
       height: this.piskelController.getHeight() * zoom,
       preserveColors : preserveColors,
-      transparent : parseInt(transparentColor, 16)
+      transparent : parseInt(transparentColor.substring(1), 16)
     });
 
     for (var i = 0; i < this.piskelController.getFrameCount(); i++) {
