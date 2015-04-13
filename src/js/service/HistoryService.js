@@ -92,16 +92,20 @@
         var onPiskelLoadedCb = this.onPiskelLoaded_.bind(this, index, snapshotIndex);
         this.deserializer.deserialize(serializedPiskel, onPiskelLoadedCb);
       }
-    } catch (e) {
-      window.console.error("[CRITICAL ERROR] : Unable to load a history state.");
-      if (typeof e === "string") {
-        window.console.error(e);
-      } else {
-        window.console.error(e.message);
-        window.console.error(e.stack);
-      }
+    } catch (error) {
+      console.error("[CRITICAL ERROR] : Unable to load a history state.");
+      this.logError_(error);
       this.stateQueue = [];
       this.currentIndex = -1;
+    }
+  };
+
+  ns.HistoryService.prototype.logError_ = function (error) {
+    if (typeof error === "string") {
+      console.error(error);
+    } else {
+      console.error(error.message);
+      console.error(error.stack);
     }
   };
 
