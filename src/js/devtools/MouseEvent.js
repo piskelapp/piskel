@@ -22,5 +22,4 @@
       return false;
     }
   };
-
 })();

@@ -23,6 +23,10 @@
   float: left;
 }
 
+.png-export-preview .light-picker-background {
+  max-width:240px;
+}
+
 .gif-upload-status {
   width: 180px;
   margin-left: 5px;

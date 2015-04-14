@@ -1,5 +1,5 @@
 (function () {
-  var ns = $.namespace("pskl.controller");
+  var ns = $.namespace('pskl.controller');
 
   ns.PaletteController = function () {
     this.primaryColor =  Constants.DEFAULT_PEN_COLOR;
@@ -50,7 +50,7 @@
    */
   ns.PaletteController.prototype.onPickerChange_ = function(evt, isPrimary) {
     var inputPicker = $(evt.target);
-    if(evt.data.isPrimary) {
+    if (evt.data.isPrimary) {
       this.setPrimaryColor(inputPicker.val());
     } else {
       this.setSecondaryColor(inputPicker.val());
@@ -62,7 +62,7 @@
    */
   ns.PaletteController.prototype.onColorSelected_ = function(args, evt, color) {
     var inputPicker = $(evt.target);
-    if(args.isPrimary) {
+    if (args.isPrimary) {
       this.setPrimaryColor(color);
     } else {
       this.setSecondaryColor(color);
@@ -114,10 +114,10 @@
       // The colorpicker can't be set to a transparent state.
       // We set its background to white and insert the
       // string "TRANSPARENT" to mimic this state:
-      colorPicker.spectrum("set", Constants.TRANSPARENT_COLOR);
+      colorPicker.spectrum('set', Constants.TRANSPARENT_COLOR);
       colorPicker.val(Constants.TRANSPARENT_COLOR);
     } else {
-      colorPicker.spectrum("set", color);
+      colorPicker.spectrum('set', color);
     }
     this.setTitleOnPicker_(color, colorPicker);
   };
@@ -127,6 +127,3 @@
     colorPicker.next(spectrumInputSelector).attr('title', title);
   };
 })();
-
-
-

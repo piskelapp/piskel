@@ -3,7 +3,6 @@
 
   ns.TooltipFormatter = {};
 
-
   ns.TooltipFormatter.formatForTool = function(shortcut, descriptors, helpText) {
     var tpl = pskl.utils.Template.get('drawingTool-tooltipContainer-template');
     return pskl.utils.Template.replace(tpl, {
@@ -12,7 +11,6 @@
       descriptors : this.formatToolDescriptors_(descriptors)
     });
   };
-
 
   ns.TooltipFormatter.formatToolDescriptors_ = function(descriptors) {
     descriptors = descriptors || [];

@@ -35,12 +35,12 @@
 
   ns.AnchorWidget.prototype.setOrigin = function (origin) {
     this.origin = origin;
-    var previous = document.querySelector('.'+OPTION_CLASSNAME+'.selected');
+    var previous = document.querySelector('.' + OPTION_CLASSNAME + '.selected');
     if (previous) {
       previous.classList.remove('selected');
     }
 
-    var selected = document.querySelector('.'+OPTION_CLASSNAME+'[data-origin="' + origin + '"]');
+    var selected = document.querySelector('.' + OPTION_CLASSNAME + '[data-origin="' + origin + '"]');
     if (selected) {
       selected.classList.add('selected');
       this.refreshNeighbors_(selected);
@@ -64,7 +64,7 @@
   };
 
   ns.AnchorWidget.prototype.refreshNeighbors_ = function (selected) {
-    var options = document.querySelectorAll('.'+OPTION_CLASSNAME);
+    var options = document.querySelectorAll('.' + OPTION_CLASSNAME);
     for (var i = 0 ; i < options.length ; i++) {
       options[i].removeAttribute('data-neighbor');
     }

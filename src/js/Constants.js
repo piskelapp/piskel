@@ -35,7 +35,6 @@ var Constants = {
    */
   TOOL_TARGET_HIGHLIGHT_COLOR: 'rgba(255, 255, 255, 0.2)',
 
-
   ZOOMED_OUT_BACKGROUND_COLOR : '#A0A0A0',
 
   LEFT_BUTTON : 0,

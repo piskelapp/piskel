@@ -22,13 +22,13 @@
     },
 
     xhr_ : function (url, method, success, error) {
-      success = success || function (){};
-      error = error || function (){};
+      success = success || function () {};
+      error = error || function () {};
 
       var xhr = new XMLHttpRequest();
       xhr.open(method, url, true);
 
-      xhr.onload = function(e) {
+      xhr.onload = function (e) {
         if (this.status == 200) {
           success(this);
         } else {
@@ -36,7 +36,7 @@
         }
       };
 
-      xhr.onerror = function(e) {
+      xhr.onerror = function (e) {
         error(e, this);
       };
 

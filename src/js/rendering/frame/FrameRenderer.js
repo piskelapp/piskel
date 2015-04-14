@@ -1,5 +1,5 @@
 (function () {
-  var ns = $.namespace("pskl.rendering.frame");
+  var ns = $.namespace('pskl.rendering.frame');
 
   /**
    * FrameRenderer will display a given frame inside a canvas element.
@@ -15,11 +15,11 @@
 
     renderingOptions = $.extend(true, {}, this.defaultRenderingOptions, renderingOptions);
 
-    if(container === undefined) {
+    if (container === undefined) {
       throw 'Bad FrameRenderer initialization. <container> undefined.';
     }
 
-    if(isNaN(renderingOptions.zoom)) {
+    if (isNaN(renderingOptions.zoom)) {
       throw 'Bad FrameRenderer initialization. <zoom> not well defined.';
     }
 
@@ -77,14 +77,14 @@
   ns.FrameRenderer.prototype.setZoom = function (zoom) {
     if (zoom > Constants.MINIMUM_ZOOM) {
       // back up center coordinates
-      var centerX = this.offset.x + (this.displayWidth/(2*this.zoom));
-      var centerY = this.offset.y + (this.displayHeight/(2*this.zoom));
+      var centerX = this.offset.x + (this.displayWidth / (2 * this.zoom));
+      var centerY = this.offset.y + (this.displayHeight / (2 * this.zoom));
 
       this.zoom = zoom;
       // recenter
       this.setOffset(
-        centerX - (this.displayWidth/(2*this.zoom)),
-        centerY - (this.displayHeight/(2*this.zoom))
+        centerX - (this.displayWidth / (2 * this.zoom)),
+        centerY - (this.displayHeight / (2 * this.zoom))
       );
     }
   };
@@ -120,9 +120,9 @@
   ns.FrameRenderer.prototype.setOffset = function (x, y) {
     var width = pskl.app.piskelController.getWidth();
     var height = pskl.app.piskelController.getHeight();
-    var maxX = width - (this.displayWidth/this.zoom);
+    var maxX = width - (this.displayWidth / this.zoom);
     x = pskl.utils.Math.minmax(x, 0, maxX);
-    var maxY = height - (this.displayHeight/this.zoom);
+    var maxY = height - (this.displayHeight / this.zoom);
     y = pskl.utils.Math.minmax(y, 0, maxY);
 
     this.offset.x = x;
@@ -206,8 +206,8 @@
     y = y + containerOffset.top;
 
     return {
-      x : x + (cellSize/2),
-      y : y + (cellSize/2)
+      x : x + (cellSize / 2),
+      y : y + (cellSize / 2)
     };
   };
 
@@ -220,11 +220,11 @@
     }
 
     var context = this.canvas.getContext('2d');
-    for(var x = 0, width = frame.getWidth(); x < width; x++) {
-      for(var y = 0, height = frame.getHeight(); y < height; y++) {
+    for (var x = 0, width = frame.getWidth() ; x < width ; x++) {
+      for (var y = 0, height = frame.getHeight() ; y < height ; y++) {
         var color = frame.getPixel(x, y);
         var w = 1;
-        while (color === frame.getPixel(x, y+w)) {
+        while (color === frame.getPixel(x, y + w)) {
           w++;
         }
         this.renderLine_(color, x, y, w, context);
@@ -237,17 +237,19 @@
     var displayContext = this.displayCanvas.getContext('2d');
     displayContext.save();
 
-    if (this.canvas.width*this.zoom < this.displayCanvas.width || this.canvas.height*this.zoom < this.displayCanvas.height) {
+    var smallerHeight = this.canvas.height * this.zoom < this.displayCanvas.height;
+    var smallerWidth = this.canvas.width * this.zoom < this.displayCanvas.width;
+    if (smallerHeight || smallerWidth) {
       displayContext.fillStyle = Constants.ZOOMED_OUT_BACKGROUND_COLOR;
-      displayContext.fillRect(0,0,this.displayCanvas.width - 1, this.displayCanvas.height - 1);
+      displayContext.fillRect(0, 0, this.displayCanvas.width - 1, this.displayCanvas.height - 1);
     }
 
     displayContext.translate(
-      this.margin.x-this.offset.x*this.zoom,
-      this.margin.y-this.offset.y*this.zoom
+      this.margin.x - this.offset.x * this.zoom,
+      this.margin.y - this.offset.y * this.zoom
     );
 
-    displayContext.clearRect(0, 0, this.canvas.width*this.zoom, this.canvas.height*this.zoom);
+    displayContext.clearRect(0, 0, this.canvas.width * this.zoom, this.canvas.height * this.zoom);
 
     var isIE10 = pskl.utils.UserAgent.isIE && pskl.utils.UserAgent.version === 10;
 
@@ -264,14 +266,14 @@
   };
 
   ns.FrameRenderer.prototype.renderPixel_ = function (color, x, y, context) {
-    if(color != Constants.TRANSPARENT_COLOR) {
+    if (color != Constants.TRANSPARENT_COLOR) {
       context.fillStyle = color;
       context.fillRect(x, y, 1, 1);
     }
   };
 
   ns.FrameRenderer.prototype.renderLine_ = function (color, x, y, width, context) {
-    if(color != Constants.TRANSPARENT_COLOR) {
+    if (color != Constants.TRANSPARENT_COLOR) {
       context.fillStyle = color;
       context.fillRect(x, y, 1, width);
     }

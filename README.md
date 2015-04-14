@@ -49,6 +49,7 @@ The Piskel editor is purely built in **JavaScript, HTML and CSS**. It uses Canva
 We also use the following **libraries** :
 * [spectrum](https://github.com/bgrins/spectrum) : awesome standalone colorpicker
 * [gifjs](http://jnordberg.github.io/gif.js/) : generate animated GIFs in javascript, using webworkers
+* [supergif](https://github.com/buzzfeed/libgif-js) : modified version of SuperGif to parse and import GIFs
 * [jszip](https://github.com/Stuk/jszip) : create, read and edit .zip files with Javascript
 * [canvas-toBlob](https://github.com/eligrey/canvas-toBlob.js/) : shim for canvas toBlob
 * [jquery](http://jquery.com/) : used sporadically in the application

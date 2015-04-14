@@ -12,7 +12,7 @@
 
     var postStep_ = function () {
       currentStep = currentStep + 1;
-      var progress = ((currentStep / currentTotal) *100).toFixed(1);
+      var progress = ((currentStep / currentTotal) * 100).toFixed(1);
       if (progress != currentProgress) {
         currentProgress = progress;
         this.postMessage({
@@ -23,33 +23,33 @@
         });
       }
     };
-    
+
     var rgbToHex = function (r, g, b) {
-      return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+      return '#' + componentToHex(r) + componentToHex(g) + componentToHex(b);
     };
 
     var componentToHex = function (c) {
       var hex = c.toString(16);
-      return hex.length == 1 ? "0" + hex : hex;
+      return hex.length == 1 ? '0' + hex : hex;
     };
 
     var imageDataToGrid = function (imageData, width, height, transparent) {
       // Draw the zoomed-up pixels to a different canvas context
       var grid = [];
-      for (var x = 0 ; x < width ; x++){
+      for (var x = 0 ; x < width ; x++) {
         grid[x] = [];
         postStep_();
-        for (var y = 0 ; y < height ; y++){
+        for (var y = 0 ; y < height ; y++) {
           // Find the starting index in the one-dimensional image data
-          var i = (y * width + x)*4;
-          var r = imageData[i  ];
-          var g = imageData[i+1];
-          var b = imageData[i+2];
-          var a = imageData[i+3];
+          var i = (y * width + x) * 4;
+          var r = imageData[i];
+          var g = imageData[i + 1];
+          var b = imageData[i + 2];
+          var a = imageData[i + 3];
           if (a < 125) {
             grid[x][y] = transparent;
           } else {
-            grid[x][y] = rgbToHex(r,g,b);
+            grid[x][y] = rgbToHex(r, g, b);
           }
         }
       }
@@ -93,6 +93,3 @@
     };
   };
 })();
-
-
-

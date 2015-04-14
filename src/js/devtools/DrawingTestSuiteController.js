@@ -60,7 +60,7 @@
   ns.DrawingTestSuiteController.prototype.onTestSuiteEnd_ = function (evt, status) {
     console.log('on test suite end');
     var elapsed = Date.now() - this.startTime_;
-    elapsed = (elapsed/1000).toFixed(4);
+    elapsed = (elapsed / 1000).toFixed(4);
 
     var testSuiteStatus = document.createElement('li');
     testSuiteStatus.innerHTML = pskl.utils.Template.replace(

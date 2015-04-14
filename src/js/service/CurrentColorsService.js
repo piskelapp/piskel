@@ -32,22 +32,7 @@
     }
   };
 
-  ns.CurrentColorsService.prototype.isCurrentColorsPaletteSelected_ = function () {
-    var paletteId = pskl.UserSettings.get(pskl.UserSettings.SELECTED_PALETTE);
-    var palette = this.paletteService.getPaletteById(paletteId);
-
-    return palette.id === Constants.CURRENT_COLORS_PALETTE_ID;
-  };
-
-  ns.CurrentColorsService.prototype.loadColorsFromCache_ = function () {
-    var historyIndex = pskl.app.historyService.currentIndex;
-    var colors = this.cache[historyIndex];
-    if (colors) {
-      this.setCurrentColors(colors);
-    }
-  };
-
-  ns.CurrentColorsService.prototype.updateCurrentColors_ = function () {
+  ns.CurrentColorsService.prototype.computeCurrentColors = function (max) {
     var layers = this.piskelController.getLayers();
     var frames = layers.map(function (l) {return l.getFrames();}).reduce(function (p, n) {return p.concat(n);});
     var colors = {};
@@ -62,10 +47,32 @@
     // Remove transparent color from used colors
     delete colors[Constants.TRANSPARENT_COLOR];
 
+    var colorsArray = Object.keys(colors);
     // limit the array to the max colors to display
-    var colorsArray = Object.keys(colors).slice(0, Constants.MAX_CURRENT_COLORS_DISPLAYED);
-    var currentColors = this.colorSorter.sort(colorsArray);
+    if (max) {
+      colorsArray = colorsArray.slice(0, Constants.MAX_CURRENT_COLORS_DISPLAYED);
+    }
 
+    return this.colorSorter.sort(colorsArray);
+  };
+
+  ns.CurrentColorsService.prototype.isCurrentColorsPaletteSelected_ = function () {
+    var paletteId = pskl.UserSettings.get(pskl.UserSettings.SELECTED_PALETTE);
+    var palette = this.paletteService.getPaletteById(paletteId);
+
+    return palette && palette.id === Constants.CURRENT_COLORS_PALETTE_ID;
+  };
+
+  ns.CurrentColorsService.prototype.loadColorsFromCache_ = function () {
+    var historyIndex = pskl.app.historyService.currentIndex;
+    var colors = this.cache[historyIndex];
+    if (colors) {
+      this.setCurrentColors(colors);
+    }
+  };
+
+  ns.CurrentColorsService.prototype.updateCurrentColors_ = function () {
+    var currentColors = this.computeCurrentColors(Constants.MAX_CURRENT_COLORS_DISPLAYED);
     this.setCurrentColors(currentColors);
   };
 

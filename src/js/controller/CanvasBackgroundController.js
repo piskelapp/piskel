@@ -10,7 +10,6 @@
     this.updateBackgroundClass_(pskl.UserSettings.get(pskl.UserSettings.CANVAS_BACKGROUND));
   };
 
-
   ns.CanvasBackgroundController.prototype.onUserSettingsChange_ = function (evt, settingName, settingValue) {
     if (settingName == pskl.UserSettings.CANVAS_BACKGROUND) {
       this.updateBackgroundClass_(settingValue);

@@ -4,8 +4,10 @@
   ns.CursorCoordinatesController = function (piskelController) {
     this.piskelController = piskelController;
     this.origin = null;
-    this.coordinates = {x:-1,y:-1};
-
+    this.coordinates = {
+      x : -1,
+      y : -1
+    };
   };
 
   ns.CursorCoordinatesController.prototype.init = function () {
@@ -31,9 +33,9 @@
     if (currentFrame.containsPixel(x, y)) {
       html += x + ':' + y;
       if (this.origin) {
-        var dX = Math.abs(x-this.origin.x) + 1;
-        var dY = Math.abs(y-this.origin.y) + 1;
-        html += ' (' + dX + 'x' + dY +')';
+        var dX = Math.abs(x - this.origin.x) + 1;
+        var dY = Math.abs(y - this.origin.y) + 1;
+        html += ' (' + dX + 'x' + dY + ')';
       }
     }
 
@@ -43,7 +45,7 @@
   ns.CursorCoordinatesController.prototype.getFrameSizeHTML_ = function () {
     var w = this.piskelController.getWidth();
     var h = this.piskelController.getHeight();
-    return '['+w+'x'+h+'] ';
+    return '[' + w + 'x' + h + '] ';
   };
 
   ns.CursorCoordinatesController.prototype.onCursorMoved_ = function (event, x, y) {
@@ -60,5 +62,4 @@
     this.origin = null;
     this.redraw();
   };
-
 })();

@@ -56,7 +56,7 @@
     if (this.frames[index]) {
       this.frames.splice(index, 1);
     } else {
-      throw 'Invalid index in removeFrameAt : ' + index + ' (size : ' + this.size() + ')';
+      console.error('Invalid index in removeFrameAt : %s (size : %s)', index, this.size());
     }
   };
 
@@ -72,9 +72,7 @@
       this.frames[toIndex] = fromFrame;
       this.frames[fromIndex] = toFrame;
     } else {
-      console.log('frames', this.frames);
-      console.log('fromIndex', fromIndex, 'toIndex', toIndex);
-      throw 'Frame not found in moveFrameAt';
+      console.error('Frame not found in moveFrameAt (from %s, to %s)', fromIndex, toIndex);
     }
   };
 
@@ -89,7 +87,7 @@
       var clone = frame.clone();
       this.addFrameAt(clone, index);
     } else {
-      throw 'Frame not found in duplicateFrameAt';
+      console.error('Frame not found in duplicateFrameAt (at %s)', index);
     }
   };
 

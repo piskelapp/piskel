@@ -30,7 +30,7 @@
     }
 
     if (pskl.utils.Environment.detectNodeWebkit()) {
-      // hide "save in browser"
+      // hide 'save in browser'
       var saveInBrowserSection = document.querySelector('#save-in-browser');
       saveInBrowserSection.style.display = 'none';
     }
@@ -76,8 +76,8 @@
 
   ns.SaveController.prototype.getLocalFilename_ = function () {
     var piskelName = this.getName();
-    var timestamp = pskl.utils.DateUtils.format(this.timestamp, "{{Y}}{{M}}{{D}}-{{H}}{{m}}{{s}}");
-    return piskelName + "-" + timestamp + ".piskel";
+    var timestamp = pskl.utils.DateUtils.format(this.timestamp, '{{Y}}{{M}}{{D}}-{{H}}{{m}}{{s}}');
+    return piskelName + '-' + timestamp + '.piskel';
   };
 
   ns.SaveController.prototype.onSaveFormSubmit_ = function (evt) {
@@ -153,7 +153,7 @@
       pskl.utils.FileUtils.downloadAsFile(blob, this.getLocalFilename_());
       this.onSaveSuccess_();
       this.afterSaving_();
-    }.bind(this), "application/piskel+json");
+    }.bind(this), 'application/piskel+json');
   };
 
   ns.SaveController.prototype.saveFileDesktop_ = function () {
@@ -191,12 +191,12 @@
 
   ns.SaveController.prototype.onSaveSuccess_ = function () {
     $.publish(Events.CLOSE_SETTINGS_DRAWER);
-    $.publish(Events.SHOW_NOTIFICATION, [{"content": "Successfully saved !"}]);
+    $.publish(Events.SHOW_NOTIFICATION, [{'content': 'Successfully saved !'}]);
     $.publish(Events.PISKEL_SAVED);
   };
 
   ns.SaveController.prototype.onSaveError_ = function (status) {
-    $.publish(Events.SHOW_NOTIFICATION, [{"content": "Saving failed ("+status+")"}]);
+    $.publish(Events.SHOW_NOTIFICATION, [{'content': 'Saving failed (' + status + ')'}]);
   };
 
   ns.SaveController.prototype.afterOnlineSaving_ = function () {

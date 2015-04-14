@@ -49,11 +49,11 @@
     // the preview is centered in a square container
     // if the sprite is not a square, a margin is needed on the appropriate coordinate
     // before adding the offset coming from the drawing area
-    var leftMargin = (containerWidth - Math.max(minimapSize.width, previewSize.width))/2;
+    var leftMargin = (containerWidth - Math.max(minimapSize.width, previewSize.width)) / 2;
     var leftOffset = offset.x * this.previewController.getZoom();
     var left = leftMargin + leftOffset;
 
-    var topMargin = (containerHeight - Math.max(minimapSize.height, previewSize.height))/2;
+    var topMargin = (containerHeight - Math.max(minimapSize.height, previewSize.height)) / 2;
     var topOffset = offset.y * this.previewController.getZoom();
     var top = topMargin + topOffset;
 
@@ -123,8 +123,8 @@
     var height = frameHeight / this.getVerticalRatio_();
 
     return {
-      x : frameCoords.x - (width/2),
-      y : frameCoords.y - (height/2)
+      x : frameCoords.x - (width / 2),
+      y : frameCoords.y - (height / 2)
     };
   };
 

@@ -25,7 +25,7 @@
   ns.FramesheetRenderer.prototype.drawFrameInCanvas_ = function (frame, canvas, offsetWidth, offsetHeight) {
     var context = canvas.getContext('2d');
     frame.forEachPixel(function (color, x, y) {
-      if(color != Constants.TRANSPARENT_COLOR) {
+      if (color != Constants.TRANSPARENT_COLOR) {
         context.fillStyle = color;
         context.fillRect(x + offsetWidth, y + offsetHeight, 1, 1);
       }
@@ -39,5 +39,4 @@
     var height = sampleFrame.getHeight();
     return pskl.utils.CanvasUtils.createCanvas(width, height);
   };
-
 })();

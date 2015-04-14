@@ -23,7 +23,6 @@
     this.createToolsDom_();
   };
 
-
   ns.TransformationsController.prototype.onTransformationClick = function (evt) {
     var toolId = evt.target.dataset.toolId;
     this.tools.forEach(function (tool) {

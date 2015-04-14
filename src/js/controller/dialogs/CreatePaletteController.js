@@ -101,7 +101,7 @@
 
     pskl.utils.BlobUtils.stringToBlob(paletteAsString, function(blob) {
       pskl.utils.FileUtils.downloadAsFile(blob, this.palette.name + '.gpl');
-    }.bind(this), "application/json");
+    }.bind(this), 'application/json');
   };
 
   ns.CreatePaletteController.prototype.onImportFileButtonClick_ = function () {
@@ -116,8 +116,10 @@
   };
 
   ns.CreatePaletteController.prototype.displayErrorMessage_ = function (message) {
-    message = "Could not import palette : " + message;
-    $.publish(Events.SHOW_NOTIFICATION, [{"content": message}]);
+    message = 'Could not import palette : ' + message;
+    $.publish(Events.SHOW_NOTIFICATION, [{
+      'content' : message
+    }]);
     window.setTimeout($.publish.bind($, Events.HIDE_NOTIFICATION), 2000);
   };
 

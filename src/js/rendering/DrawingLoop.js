@@ -1,5 +1,5 @@
 (function () {
-  var ns = $.namespace("pskl.rendering");
+  var ns = $.namespace('pskl.rendering');
 
   ns.DrawingLoop = function () {
     this.requestAnimationFrame = this.getRequestAnimationFrameShim_();
@@ -54,7 +54,7 @@
                   window.mozRequestAnimationFrame ||
                   window.webkitRequestAnimationFrame ||
                   window.msRequestAnimationFrame ||
-                  function (callback) { window.setTimeout(callback, 1000/60); };
+                  function (callback) { window.setTimeout(callback, 1000 / 60); };
 
     return requestAnimationFrame;
   };

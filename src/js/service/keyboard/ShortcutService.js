@@ -22,8 +22,8 @@
   ns.ShortcutService.prototype.addShortcut = function (rawKey, callback) {
     var parsedKey = this.parseKey_(rawKey.toLowerCase());
 
-    var key = parsedKey.key,
-      meta = parsedKey.meta;
+    var key = parsedKey.key;
+    var meta = parsedKey.meta;
 
     this.shortcuts_[key] = this.shortcuts_[key] || {};
 
@@ -43,9 +43,8 @@
 
   ns.ShortcutService.prototype.removeShortcut = function (rawKey) {
     var parsedKey = this.parseKey_(rawKey.toLowerCase());
-
-    var key = parsedKey.key,
-      meta = parsedKey.meta;
+    var key = parsedKey.key;
+    var meta = parsedKey.meta;
 
     this.shortcuts_[key] = this.shortcuts_[key] || {};
 
@@ -60,7 +59,7 @@
     });
 
     var parts = key.split(/\+(?!$)/);
-    key = parts[parts.length-1];
+    key = parts[parts.length - 1];
     return {meta : meta, key : key};
   };
 
@@ -89,7 +88,7 @@
       var charkey = pskl.service.keyboard.KeycodeTranslator.toChar(keycode);
 
       var keyShortcuts = this.shortcuts_[charkey];
-      if(keyShortcuts) {
+      if (keyShortcuts) {
         var meta = this.getMetaKey_({
           alt : this.isAltKeyPressed_(evt),
           shift : this.isShiftKeyPressed_(evt),
@@ -97,7 +96,7 @@
         });
         var cb = keyShortcuts[meta];
 
-        if(cb) {
+        if (cb) {
           var bubble = cb(charkey);
           if (bubble !== true) {
             evt.preventDefault();

@@ -4,18 +4,18 @@
  * @require pskl.utils
  */
 (function() {
-  var ns = $.namespace("pskl.tools.drawing");
+  var ns = $.namespace('pskl.tools.drawing');
 
   ns.Move = function() {
     this.toolId = ns.Move.TOOL_ID;
-    this.helpText = "Move tool";
+    this.helpText = 'Move tool';
 
     // Stroke's first point coordinates (set in applyToolAt)
     this.startCol = null;
     this.startRow = null;
   };
 
-  ns.Move.TOOL_ID = "tool-move";
+  ns.Move.TOOL_ID = 'tool-move';
 
   pskl.utils.inherit(ns.Move, ns.BaseTool);
 
@@ -29,7 +29,8 @@
   };
 
   ns.Move.prototype.moveToolAt = function(col, row, color, frame, overlay, event) {
-    var colDiff = col - this.startCol, rowDiff = row - this.startRow;
+    var colDiff = col - this.startCol;
+    var rowDiff = row - this.startRow;
     this.shiftFrame(colDiff, rowDiff, frame, this.frameClone, event);
   };
 

@@ -4,7 +4,7 @@
  * @require pskl.utils
  */
 (function() {
-  var ns = $.namespace("pskl.tools.drawing");
+  var ns = $.namespace('pskl.tools.drawing');
 
   ns.BaseSelect = function() {
     this.secondaryToolId = pskl.tools.drawing.Move.TOOL_ID;
@@ -17,7 +17,7 @@
     this.selection = null;
 
     this.tooltipDescriptors = [
-      {description : "Drag the selection to move it. You may switch to other layers and frames."},
+      {description : 'Drag the selection to move it. You may switch to other layers and frames.'},
       {key : 'ctrl+c', description : 'Copy the selected area'},
       {key : 'ctrl+v', description : 'Paste the copied area'}
     ];
@@ -36,16 +36,15 @@
     this.lastRow = row;
 
     // The select tool can be in two different state.
-    // If the inital click of the tool is not on a selection, we go in "select"
+    // If the inital click of the tool is not on a selection, we go in 'select'
     // mode to create a selection.
-    // If the initial click is on a previous selection, we go in "moveSelection"
+    // If the initial click is on a previous selection, we go in 'moveSelection'
     // mode to allow to move the selection by drag'n dropping it.
-    if(this.isInSelection(col, row)) {
-      this.mode = "moveSelection";
+    if (this.isInSelection(col, row)) {
+      this.mode = 'moveSelection';
       this.onSelectionDragStart_(col, row, color, frame, overlay);
-    }
-    else {
-      this.mode = "select";
+    } else {
+      this.mode = 'select';
       this.onSelectStart_(col, row, color, frame, overlay);
     }
   };
@@ -54,9 +53,9 @@
    * @override
    */
   ns.BaseSelect.prototype.moveToolAt = function(col, row, color, frame, overlay, event) {
-    if(this.mode == "select") {
+    if (this.mode == 'select') {
       this.onSelect_(col, row, color, frame, overlay);
-    } else if(this.mode == "moveSelection") {
+    } else if (this.mode == 'moveSelection') {
       this.onSelectionDrag_(col, row, color, frame, overlay);
     }
   };
@@ -65,9 +64,9 @@
    * @override
    */
   ns.BaseSelect.prototype.releaseToolAt = function(col, row, color, frame, overlay, event) {
-    if(this.mode == "select") {
+    if (this.mode == 'select') {
       this.onSelectEnd_(col, row, color, frame, overlay);
-    } else if(this.mode == "moveSelection") {
+    } else if (this.mode == 'moveSelection') {
 
       this.onSelectionDragEnd_(col, row, color, frame, overlay);
     }
@@ -80,7 +79,7 @@
    */
   ns.BaseSelect.prototype.moveUnactiveToolAt = function(col, row, color, frame, overlay, event) {
     if (overlay.containsPixel(col, row)) {
-      if(this.isInSelection(col, row)) {
+      if (this.isInSelection(col, row)) {
         // We're hovering the selection, show the move tool:
         this.BodyRoot.addClass(this.secondaryToolId);
         this.BodyRoot.removeClass(this.toolId);
@@ -108,7 +107,7 @@
    */
   ns.BaseSelect.prototype.drawSelectionOnOverlay_ = function (overlay) {
     var pixels = this.selection.pixels;
-    for(var i=0, l=pixels.length; i<l; i++) {
+    for (var i = 0, l = pixels.length; i < l ; i++) {
       var pixel = pixels[i];
       var hasColor = pixel.color && pixel.color !== Constants.TRANSPARENT_COLOR ;
       var color = hasColor ? this.getTransparentVariant(pixel.color) : Constants.SELECTION_TRANSPARENT_COLOR;
@@ -132,7 +131,6 @@
   /** @protected */
   ns.BaseSelect.prototype.onSelectEnd_ = function (col, row, color, frame, overlay) {};
 
-
   // The list of callbacks that define the drag'n drop behavior of the selection.
   /** @private */
   ns.BaseSelect.prototype.onSelectionDragStart_ = function (col, row, color, frame, overlay) {
@@ -143,7 +141,8 @@
     var deltaCol = col - this.lastCol;
     var deltaRow = row - this.lastRow;
 
-    var colDiff = col - this.startCol, rowDiff = row - this.startRow;
+    var colDiff = col - this.startCol;
+    var rowDiff = row - this.startRow;
 
     this.selection.move(deltaCol, deltaRow);
 

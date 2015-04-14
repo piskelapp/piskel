@@ -1,5 +1,5 @@
 (function () {
-  var ns = $.namespace("pskl.controller");
+  var ns = $.namespace('pskl.controller');
 
   ns.NotificationController = function () {};
 
@@ -18,10 +18,10 @@
     this.removeMessage_();
 
     var message = document.createElement('div');
-    message.id = "user-message";
-    message.className = "user-message";
+    message.id = 'user-message';
+    message.className = 'user-message';
     message.innerHTML = messageInfo.content;
-    message.innerHTML = message.innerHTML + "<div title='Close message' class='close'>x</div>";
+    message.innerHTML = message.innerHTML + '<div title="Close message" class="close">x</div>';
     document.body.appendChild(message);
 
     message.querySelector('.close').addEventListener('click', this.removeMessage_.bind(this));
@@ -38,7 +38,7 @@
    * @private
    */
   ns.NotificationController.prototype.removeMessage_ = function (evt) {
-    var message = $("#user-message");
+    var message = $('#user-message');
     if (message.length) {
       message.remove();
     }

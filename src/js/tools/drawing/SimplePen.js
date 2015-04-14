@@ -4,11 +4,11 @@
  * @require pskl.utils
  */
 (function() {
-  var ns = $.namespace("pskl.tools.drawing");
+  var ns = $.namespace('pskl.tools.drawing');
 
   ns.SimplePen = function() {
-    this.toolId = "tool-pen";
-    this.helpText = "Pen tool";
+    this.toolId = 'tool-pen';
+    this.helpText = 'Pen tool';
 
     this.previousCol = null;
     this.previousRow = null;
@@ -41,24 +41,22 @@
    * @override
    */
   ns.SimplePen.prototype.moveToolAt = function(col, row, color, frame, overlay, event) {
-    if((Math.abs(col - this.previousCol) > 1) || (Math.abs(row - this.previousRow) > 1)) {
+    if ((Math.abs(col - this.previousCol) > 1) || (Math.abs(row - this.previousRow) > 1)) {
       // The pen movement is too fast for the mousemove frequency, there is a gap between the
       // current point and the previously drawn one.
       // We fill the gap by calculating missing dots (simple linear interpolation) and draw them.
       var interpolatedPixels = this.getLinePixels_(col, this.previousCol, row, this.previousRow);
-      for(var i=0, l=interpolatedPixels.length; i<l; i++) {
+      for (var i = 0, l = interpolatedPixels.length ; i < l ; i++) {
         var coords = interpolatedPixels[i];
         this.applyToolAt(coords.col, coords.row, color, frame, overlay, event);
       }
-    }
-    else {
+    } else {
       this.applyToolAt(col, row, color, frame, overlay, event);
     }
 
     this.previousCol = col;
     this.previousRow = row;
   };
-
 
   ns.SimplePen.prototype.releaseToolAt = function(col, row, color, frame, overlay, event) {
     // apply on real frame

@@ -105,7 +105,7 @@
   ns.DrawingTestRecorder.prototype.recordMouseEvent_ = function (mouseEvent) {
     var coords = pskl.app.drawingController.getSpriteCoordinates(mouseEvent.clientX, mouseEvent.clientY);
     var recordEvent = new ns.MouseEvent(mouseEvent, coords);
-    var lastEvent = this.events[this.events.length-1];
+    var lastEvent = this.events[this.events.length - 1];
 
     if (!recordEvent.equals(lastEvent)) {
       this.events.push(recordEvent);

@@ -2,8 +2,8 @@
   var ns = $.namespace('pskl.tools.transform');
 
   ns.Flip = function () {
-    this.toolId = "tool-flip";
-    this.helpText = "Flip vertically";
+    this.toolId = 'tool-flip';
+    this.helpText = 'Flip vertically';
     this.tooltipDescriptors = [
       {key : 'alt', description : 'Flip horizontally'},
       {key : 'ctrl', description : 'Apply to all layers'},
