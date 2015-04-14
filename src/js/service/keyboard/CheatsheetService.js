@@ -2,27 +2,37 @@
   var ns = $.namespace('pskl.service.keyboard');
 
   ns.CheatsheetService = function () {
-    this.isDisplayed_ = false;
+    this.isDisplayed = false;
   };
 
   ns.CheatsheetService.prototype.init = function () {
-    this.cheatsheetEl_ = document.getElementById('cheatsheet-wrapper');
-    if (!this.cheatsheetEl_) {
-      throw 'cheatsheetEl_ DOM element could not be retrieved';
+    this.cheatsheetLinkEl = document.querySelector('.cheatsheet-link');
+    this.cheatsheetEl = document.getElementById('cheatsheet-wrapper');
+    if (!this.cheatsheetEl) {
+      throw 'cheatsheetEl DOM element could not be retrieved';
     }
+
     this.initMarkup_();
     pskl.app.shortcutService.addShortcuts(['?', 'shift+?'], this.toggleCheatsheet_.bind(this));
 
-    var link = $('.cheatsheet-link');
-    link.click(this.toggleCheatsheet_.bind(this));
-
+    pskl.utils.Event.addEventListener(document.body, 'click', this.onBodyClick_, this);
 
     $.subscribe(Events.TOGGLE_HELP, this.toggleCheatsheet_.bind(this));
     $.subscribe(Events.ESCAPE, this.onEscape_.bind(this));
   };
 
+  ns.CheatsheetService.prototype.onBodyClick_ = function (evt) {
+    var isOnCheatsheet = this.cheatsheetEl.contains(evt.target);
+    var isOnLink = this.cheatsheetLinkEl.contains(evt.target);
+    if (isOnLink) {
+      this.toggleCheatsheet_();
+    } else if (!isOnCheatsheet) {
+      this.hideCheatsheet_();
+    }
+  };
+
   ns.CheatsheetService.prototype.toggleCheatsheet_ = function () {
-    if (this.isDisplayed_) {
+    if (this.isDisplayed) {
       this.hideCheatsheet_();
     } else {
       this.showCheatsheet_();
@@ -30,22 +40,21 @@
   };
 
   ns.CheatsheetService.prototype.onEscape_ = function () {
-    if (this.isDisplayed_) {
+    if (this.isDisplayed) {
       this.hideCheatsheet_();
     }
   };
 
   ns.CheatsheetService.prototype.showCheatsheet_ = function () {
     pskl.app.shortcutService.addShortcut('ESC', this.hideCheatsheet_.bind(this));
-    this.cheatsheetEl_.style.display = 'block';
-    this.isDisplayed_ = true;
+    this.cheatsheetEl.style.display = 'block';
+    this.isDisplayed = true;
   };
-
 
   ns.CheatsheetService.prototype.hideCheatsheet_ = function () {
     pskl.app.shortcutService.removeShortcut('ESC');
-    this.cheatsheetEl_.style.display = 'none';
-    this.isDisplayed_ = false;
+    this.cheatsheetEl.style.display = 'none';
+    this.isDisplayed = false;
   };
 
   ns.CheatsheetService.prototype.initMarkup_ = function () {
@@ -54,43 +63,13 @@
     this.initMarkupForSelection_();
   };
 
-  ns.CheatsheetService.prototype.toDescriptor_ = function (shortcut, description, icon) {
-    if (pskl.utils.UserAgent.isMac) {
-      shortcut = shortcut.replace('ctrl', 'cmd');
-    }
-    return {
-      'shortcut' : shortcut,
-      'description' : description,
-      'icon' : icon
-    };
-  };
-
-  ns.CheatsheetService.prototype.getDomFromDescriptor_ = function (descriptor) {
-    var shortcutTemplate = pskl.utils.Template.get('cheatsheet-shortcut-template');
-    var markup = pskl.utils.Template.replace(shortcutTemplate, {
-      shortcutIcon : descriptor.icon,
-      shortcutDescription : descriptor.description,
-      shortcutKey : descriptor.shortcut
-    });
-
-    return pskl.utils.Template.createFromHTML(markup);
-  };
-
-  ns.CheatsheetService.prototype.initMarkupAbstract_ = function (descriptors, containerSelector) {
-    var container = $(containerSelector, this.cheatsheetEl_).get(0);
-    for (var i = 0 ; i < descriptors.length ; i++) {
-      var descriptor = descriptors[i];
-      var shortcutEl = this.getDomFromDescriptor_(descriptor);
-      container.appendChild(shortcutEl);
-    }
-  };
-
   ns.CheatsheetService.prototype.initMarkupForTools_ = function () {
     var descriptors = pskl.app.toolController.tools.map(function (tool) {
       return this.toDescriptor_(tool.shortcut, tool.instance.getHelpText(), 'tool-icon ' + tool.instance.toolId);
     }.bind(this));
 
-    this.initMarkupAbstract_(descriptors, '.cheatsheet-tool-shortcuts');
+    var container = this.cheatsheetEl.querySelector('.cheatsheet-tool-shortcuts');
+    this.initMarkupForDescriptors_(descriptors, container);
   };
 
   ns.CheatsheetService.prototype.initMarkupForMisc_ = function () {
@@ -112,7 +91,8 @@
       this.toDescriptor_('alt + L', 'Toggle Layer Preview')
     ];
 
-    this.initMarkupAbstract_(descriptors, '.cheatsheet-misc-shortcuts');
+    var container = this.cheatsheetEl.querySelector('.cheatsheet-misc-shortcuts');
+    this.initMarkupForDescriptors_(descriptors, container);
   };
 
   ns.CheatsheetService.prototype.initMarkupForSelection_ = function () {
@@ -123,7 +103,37 @@
       this.toDescriptor_('del', 'Delete selection')
     ];
 
-    this.initMarkupAbstract_(descriptors, '.cheatsheet-selection-shortcuts');
+    var container = this.cheatsheetEl.querySelector('.cheatsheet-selection-shortcuts');
+    this.initMarkupForDescriptors_(descriptors, container);
+  };
+
+  ns.CheatsheetService.prototype.toDescriptor_ = function (shortcut, description, icon) {
+    if (pskl.utils.UserAgent.isMac) {
+      shortcut = shortcut.replace('ctrl', 'cmd');
+    }
+    return {
+      'shortcut' : shortcut,
+      'description' : description,
+      'icon' : icon
+    };
+  };
+
+  ns.CheatsheetService.prototype.initMarkupForDescriptors_ = function (descriptors, container) {
+    descriptors.forEach(function (descriptor) {
+      var shortcut = this.getDomFromDescriptor_(descriptor);
+      container.appendChild(shortcut);
+    }.bind(this));
+  };
+
+  ns.CheatsheetService.prototype.getDomFromDescriptor_ = function (descriptor) {
+    var shortcutTemplate = pskl.utils.Template.get('cheatsheet-shortcut-template');
+    var markup = pskl.utils.Template.replace(shortcutTemplate, {
+      shortcutIcon : descriptor.icon,
+      shortcutDescription : descriptor.description,
+      shortcutKey : descriptor.shortcut
+    });
+
+    return pskl.utils.Template.createFromHTML(markup);
   };
 
 })();

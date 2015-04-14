@@ -3,7 +3,6 @@
 
   ns.AbstractDialogController = function () {};
 
-
   ns.AbstractDialogController.prototype.init = function () {
     this.closeButton = document.querySelector('.dialog-close');
     this.closeButton.addEventListener('click', this.closeDialog.bind(this));
@@ -22,5 +21,4 @@
       dialogTitle.innerText = title;
     }
   };
-
 })();

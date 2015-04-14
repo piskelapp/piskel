@@ -22,13 +22,13 @@
     this.spectrumEl = this.container.querySelector('.color-picker-spectrum');
 
     $(this.spectrumEl).spectrum({
-        flat: true,
-        showButtons: false,
-        move : this.setColor.bind(this),
-        change : this.setColor.bind(this)
+      flat: true,
+      showButtons: false,
+      move : this.setColor.bind(this),
+      change : this.setColor.bind(this)
     });
 
-    this.setColor("#000000");
+    this.setColor('#000000');
   };
 
   ns.HslRgbColorPicker.prototype.destroy = function () {
@@ -90,7 +90,7 @@
         this.setColor(color);
       }
     } else if (model === 'hex') {
-      if (/^#([a-f0-9]{3}){1,2}$/i.test(value)) {
+      if (/^#([a-f0-9]{3}) {1,2}$/i.test(value)) {
         this.setColor(value);
       }
     }
@@ -116,7 +116,7 @@
       this.rgbColor = this.tinyColor.toRgb();
 
       this.updateInputs();
-      $(".color-picker-spectrum").spectrum("set", this.tinyColor);
+      $('.color-picker-spectrum').spectrum('set', this.tinyColor);
 
       this.colorUpdatedCallback(this.tinyColor);
 
@@ -166,7 +166,7 @@
     if (model === 'rgb' || model === 'hsv') {
       modelValue = parseInt(value, 10);
       if (dimension === 'v' || dimension === 's') {
-        modelValue = modelValue/100;
+        modelValue = modelValue / 100;
       }
     } else if (model === 'hex') {
       modelValue = value;
@@ -185,7 +185,7 @@
   };
 
   ns.HslRgbColorPicker.prototype.toHsvColor_ = function (color) {
-    var isHsvColor = ['h','s','v'].every(color.hasOwnProperty.bind(color));
+    var isHsvColor = ['h', 's', 'v'].every(color.hasOwnProperty.bind(color));
     if (isHsvColor) {
       return {
         h : this.normalizeDimension_(color.h, 'h'),
@@ -213,7 +213,7 @@
     var isHueSlider = dimension === 'h';
     if (!isHueSlider) {
       var colors = this.getSliderBackgroundColors_(model, dimension);
-      slider.style.backgroundImage = "linear-gradient(to right, " + colors.start + " 0, " + colors.end + " 100%)";
+      slider.style.backgroundImage = 'linear-gradient(to right, ' + colors.start + ' 0, ' + colors.end + ' 100%)';
     }
   };
 
@@ -246,7 +246,7 @@
     var color;
     if (model === 'hsv') {
       color = this.hsvColor;
-    } else if (model === 'rgb'){
+    } else if (model === 'rgb') {
       color = this.rgbColor;
     }
     return color;

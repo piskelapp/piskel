@@ -47,7 +47,8 @@
     if (isNaN(value)) {
       value = 0;
     }
-    var height = this.importedImage_.height, width = this.importedImage_.width;
+    var height = this.importedImage_.height;
+    var width = this.importedImage_.width;
     if (from === 'width') {
       this.resizeHeight.val(Math.round(value * height / width));
     } else {
@@ -58,8 +59,8 @@
   ns.ImportImageController.prototype.onImageLoaded_ = function (image) {
     this.importedImage_ = image;
 
-    var w = this.importedImage_.width,
-        h = this.importedImage_.height;
+    var w = this.importedImage_.width;
+    var h = this.importedImage_.height;
 
     // FIXME : We remove the onload callback here because JsGif will insert
     // the image again and we want to avoid retriggering the image onload
@@ -92,7 +93,7 @@
     } else {
       parts = [path];
     }
-    return parts[parts.length-1];
+    return parts[parts.length - 1];
   };
 
   ns.ImportImageController.prototype.importImageToPiskel_ = function () {
@@ -104,7 +105,7 @@
         });
 
         gifLoader.load({
-          success : function(){
+          success : function () {
             var images = gifLoader.getFrames().map(function (frame) {
               return pskl.utils.CanvasUtils.createFromImageData(frame.data);
             });

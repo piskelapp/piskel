@@ -2,8 +2,8 @@
   var ns = $.namespace('pskl.tools.transform');
 
   ns.Transform = function () {
-    this.toolId = "tool-transform";
-    this.helpText = "Transform tool";
+    this.toolId = 'tool-transform';
+    this.helpText = 'Transform tool';
     this.tooltipDescriptors = [];
   };
 
@@ -17,9 +17,9 @@
 
   ns.Transform.prototype.applyTool_ = function (altKey, allFrames, allLayers) {
     var currentFrameIndex = pskl.app.piskelController.getCurrentFrameIndex();
-    var layers = allLayers ? pskl.app.piskelController.getLayers(): [pskl.app.piskelController.getCurrentLayer()];
+    var layers = allLayers ? pskl.app.piskelController.getLayers() : [pskl.app.piskelController.getCurrentLayer()];
     layers.forEach(function (layer) {
-      var frames = allFrames ? layer.getFrames(): [layer.getFrameAt(currentFrameIndex)];
+      var frames = allFrames ? layer.getFrames() : [layer.getFrameAt(currentFrameIndex)];
       frames.forEach(function (frame) {
         this.applyToolOnFrame_(frame, altKey);
       }.bind(this));

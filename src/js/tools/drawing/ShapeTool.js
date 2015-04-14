@@ -33,7 +33,7 @@
     $.publish(Events.CURSOR_MOVED, [coords.col, coords.row]);
 
     overlay.clear();
-    if(color == Constants.TRANSPARENT_COLOR) {
+    if (color == Constants.TRANSPARENT_COLOR) {
       color = Constants.SELECTION_TRANSPARENT_COLOR;
     }
 
@@ -97,8 +97,8 @@
     var absY = Math.abs(dY);
 
     var delta = Math.min(absX, absY);
-    row = this.startRow - ((dY/absY)*delta);
-    col = this.startCol - ((dX/absX)*delta);
+    row = this.startRow - ((dY / absY) * delta);
+    col = this.startCol - ((dX / absX) * delta);
 
     return {
       col : col,

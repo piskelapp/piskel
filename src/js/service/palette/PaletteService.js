@@ -33,7 +33,7 @@
 
     this.savePalettes_(palettes);
 
-    $.publish(Events.SHOW_NOTIFICATION, [{"content": "Palette " + palette.name + " successfully saved !"}]);
+    $.publish(Events.SHOW_NOTIFICATION, [{'content': 'Palette ' + palette.name + ' successfully saved !'}]);
     window.setTimeout($.publish.bind($, Events.HIDE_NOTIFICATION), 2000);
   };
 

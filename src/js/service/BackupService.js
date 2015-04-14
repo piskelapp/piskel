@@ -62,14 +62,10 @@
 
   ns.BackupService.prototype.savePiskel_ = function (type, piskel, info) {
     try {
-      window.localStorage.setItem('bkp.' + type +'.piskel', piskel);
-      window.localStorage.setItem('bkp.' + type +'.info', info);
+      window.localStorage.setItem('bkp.' + type + '.piskel', piskel);
+      window.localStorage.setItem('bkp.' + type + '.info', info);
     } catch (e) {
       console.error('Could not save piskel backup in localStorage.', e);
     }
   };
 })();
-
-
-
-

@@ -5,12 +5,12 @@
     ns.CachedFrameProcessor.call(this, cacheResetInterval);
   };
 
-
   pskl.utils.inherit(ns.AsyncCachedFrameProcessor, ns.CachedFrameProcessor);
 
   /**
    * Retrieve the processed frame from the cache, in the (optional) namespace
-   * If the first level cache is empty, attempt to clone it from 2nd level cache. If second level cache is empty process the frame.
+   * If the first level cache is empty, attempt to clone it from 2nd level cache.
+   * If second level cache is empty process the frame.
    * @param  {pskl.model.Frame} frame
    * @param  {String} namespace
    * @return {Object} the processed frame
@@ -27,30 +27,31 @@
 
     var cache = this.cache_[namespace];
 
-    var firstCacheKey = frame.getHash();
-    if (cache[firstCacheKey]) {
-      processedFrame = cache[firstCacheKey];
+    var key1 = frame.getHash();
+    if (cache[key1]) {
+      processedFrame = cache[key1];
     } else {
       var framePixels = JSON.stringify(frame.getPixels());
-      var secondCacheKey = pskl.utils.hashCode(framePixels);
-      if (cache[secondCacheKey]) {
-        processedFrame = this.outputCloner(cache[secondCacheKey], frame);
-        cache[firstCacheKey] = processedFrame;
+      var key2 = pskl.utils.hashCode(framePixels);
+      if (cache[key2]) {
+        processedFrame = this.outputCloner(cache[key2], frame);
+        cache[key1] = processedFrame;
       } else {
-        this.frameProcessor(frame, this.onFrameProcessorComplete.bind(this, deferred, cache, firstCacheKey, secondCacheKey));
+        var callback = this.onProcessorComplete_.bind(this, deferred, cache, key1, key2);
+        this.frameProcessor(frame, callback);
       }
     }
 
     if (processedFrame) {
       deferred.resolve(processedFrame);
     }
-    
+
     return deferred.promise;
   };
 
-  ns.AsyncCachedFrameProcessor.prototype.onFrameProcessorComplete = function (deferred, cache, firstCacheKey, secondCacheKey, processedFrame) {
-    cache[secondCacheKey] = processedFrame;
-    cache[firstCacheKey] = processedFrame;
-    deferred.resolve(processedFrame);
+  ns.AsyncCachedFrameProcessor.prototype.onProcessorComplete_ = function (deferred, cache, key1, key2, result) {
+    cache[key1] = result;
+    cache[key2] = result;
+    deferred.resolve(result);
   };
 })();

@@ -11,7 +11,7 @@ var Constants = {
   MAX_HEIGHT : 1024,
   MAX_WIDTH : 1024,
 
-  MAX_CURRENT_COLORS_DISPLAYED : 100,
+  MAX_PALETTE_COLORS : 100,
 
   MINIMUM_ZOOM : 1,
 
@@ -34,7 +34,6 @@ var Constants = {
    * pixel target with this color:
    */
   TOOL_TARGET_HIGHLIGHT_COLOR: 'rgba(255, 255, 255, 0.2)',
-
 
   ZOOMED_OUT_BACKGROUND_COLOR : '#A0A0A0',
 

@@ -19,7 +19,7 @@
       this.onWorkerStep_.bind(this),
       this.onWorkerError_.bind(this));
 
-    $.publish(Events.SHOW_PROGRESS, [{"name": 'Processing image colors ...'}]);
+    $.publish(Events.SHOW_PROGRESS, [{'name': 'Processing image colors ...'}]);
 
     imageProcessor.process();
   };
@@ -30,7 +30,7 @@
 
     var colors = Object.keys(colorsMap);
 
-    if (colors.length > 200) {
+    if (colors.length > Constants.MAX_PALETTE_COLORS) {
       this.onError('Too many colors : ' + colors.length);
     } else {
       var uuid = pskl.utils.Uuid.generate();
@@ -44,7 +44,7 @@
 
   ns.PaletteImageReader.prototype.onWorkerStep_ = function (event) {
     var progress = event.data.progress;
-    $.publish(Events.UPDATE_PROGRESS, [{"progress": progress}]);
+    $.publish(Events.UPDATE_PROGRESS, [{'progress': progress}]);
   };
 
   ns.PaletteImageReader.prototype.onWorkerError_ = function (event) {

@@ -1,5 +1,5 @@
 (function () {
-  var ns = $.namespace("pskl.utils");
+  var ns = $.namespace('pskl.utils');
   var templates = {};
 
   ns.Template = {
@@ -9,20 +9,20 @@
         if (template) {
           templates[templateId] = template.innerHTML;
         } else {
-          console.error("Could not find template for id :", templateId);
+          console.error('Could not find template for id :', templateId);
         }
       }
       return templates[templateId];
     },
 
     createFromHTML : function (html) {
-      var dummyEl = document.createElement("div");
+      var dummyEl = document.createElement('div');
       dummyEl.innerHTML = html;
       return dummyEl.children[0];
     },
 
     getAndReplace : function (templateId, dict) {
-      var result = "";
+      var result = '';
       var tpl = pskl.utils.Template.get(templateId);
       if (tpl) {
         result = pskl.utils.Template.replace(tpl, dict);
@@ -44,7 +44,7 @@
               value = '';
             }
           }
-          template = template.replace(new RegExp('\\{\\{'+key+'\\}\\}', 'g'), value);
+          template = template.replace(new RegExp('\\{\\{' + key + '\\}\\}', 'g'), value);
         }
       }
       return template;

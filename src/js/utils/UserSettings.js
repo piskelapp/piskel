@@ -1,5 +1,5 @@
 (function () {
-  var ns = $.namespace("pskl");
+  var ns = $.namespace('pskl');
 
   ns.UserSettings = {
     GRID_WIDTH : 'GRID_WIDTH',
@@ -60,7 +60,7 @@
      */
     readFromLocalStorage_ : function(key) {
       var value = window.localStorage[key];
-      if (typeof value != "undefined") {
+      if (typeof value != 'undefined') {
         value = JSON.parse(value);
       }
       return value;
@@ -85,9 +85,9 @@
      * @private
      */
     checkKeyValidity_ : function(key) {
-      if(!(key in this.KEY_TO_DEFAULT_VALUE_MAP_)) {
-        // TODO(grosbouddha): Define error catching strategy and throw exception from here.
-        console.log("UserSettings key <"+ key +"> not find in supported keys.");
+      var isValidKey = key in this.KEY_TO_DEFAULT_VALUE_MAP_;
+      if (!isValidKey) {
+        console.error('UserSettings key <' + key + '> not found in supported keys.');
       }
     }
   };

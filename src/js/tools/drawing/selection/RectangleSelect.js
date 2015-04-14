@@ -4,19 +4,18 @@
  * @require pskl.utils
  */
 (function() {
-  var ns = $.namespace("pskl.tools.drawing");
+  var ns = $.namespace('pskl.tools.drawing');
 
   ns.RectangleSelect = function() {
-    this.toolId = "tool-rectangle-select";
+    this.toolId = 'tool-rectangle-select';
 
-    this.helpText = "Rectangle selection";
+    this.helpText = 'Rectangle selection';
 
     ns.BaseSelect.call(this);
     this.hasSelection = false;
   };
 
   pskl.utils.inherit(ns.RectangleSelect, ns.BaseSelect);
-
 
   /**
    * @override

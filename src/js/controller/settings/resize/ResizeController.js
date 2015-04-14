@@ -53,10 +53,9 @@
     // propagate savepath to new Piskel
     piskel.savePath = pskl.app.piskelController.getSavePath();
     pskl.app.piskelController.setPiskel(piskel, true);
-    
+
     $.publish(Events.CLOSE_SETTINGS_DRAWER);
   };
-
 
   ns.ResizeController.prototype.resizeLayer_ = function (layer) {
     var resizedFrames = layer.getFrames().map(this.resizeFrame_.bind(this));
@@ -98,13 +97,13 @@
       value = 0;
     }
 
-    var height = this.piskelController.getHeight(),
-        width = this.piskelController.getWidth();
+    var height = this.piskelController.getHeight();
+    var width = this.piskelController.getWidth();
 
     if (sizeInput === this.widthInput) {
-      this.heightInput.value = Math.round(value * height/width);
+      this.heightInput.value = Math.round(value * height / width);
     } else if (sizeInput === this.heightInput) {
-      this.widthInput.value = Math.round(value * width/height);
+      this.widthInput.value = Math.round(value * width / height);
     }
   };
 
@@ -144,7 +143,7 @@
     } else if (origin.indexOf('RIGHT') != -1) {
       return x - (width - resizedWidth);
     } else {
-      return x - Math.round((width - resizedWidth)/2);
+      return x - Math.round((width - resizedWidth) / 2);
     }
   };
 
@@ -155,7 +154,7 @@
     } else if (origin.indexOf('BOTTOM') != -1) {
       return y - (height - resizedHeight);
     } else {
-      return y - Math.round((height - resizedHeight)/2);
+      return y - Math.round((height - resizedHeight) / 2);
     }
   };
 })();

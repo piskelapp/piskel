@@ -1,5 +1,5 @@
 (function () {
-  var ns = $.namespace("pskl.controller");
+  var ns = $.namespace('pskl.controller');
 
   var ACTION = {
     SELECT : 'select',
@@ -9,7 +9,6 @@
   };
 
   ns.FramesListController = function (piskelController, container) {
-
     this.piskelController = piskelController;
     this.container = container;
     this.refreshZoom_();
@@ -54,8 +53,9 @@
     var scrollTop = scroller.scrollTop();
     var scrollerContentHeight = $('#preview-list').height();
     var treshold = $('.top-overflow').height();
-    var overflowTop = false,
-      overflowBottom = false;
+    var overflowTop = false;
+    var overflowBottom = false;
+
     if (scrollerHeight < scrollerContentHeight) {
       if (scrollTop > treshold) {
         overflowTop = true;
@@ -93,56 +93,53 @@
   };
 
   ns.FramesListController.prototype.createPreviews_ = function () {
-
-    this.container.html("");
+    this.container.html('');
     // Manually remove tooltips since mouseout events were shortcut by the DOM refresh:
-    $(".tooltip").remove();
+    $('.tooltip').remove();
 
     var frameCount = this.piskelController.getFrameCount();
 
-    for (var i = 0, l = frameCount; i < l ; i++) {
+    for (var i = 0 ; i < frameCount ; i++) {
       this.container.append(this.createPreviewTile_(i));
     }
     // Append 'new empty frame' button
-    var newFrameButton = document.createElement("div");
-    newFrameButton.id = "add-frame-action";
-    newFrameButton.className = "add-frame-action";
+    var newFrameButton = document.createElement('div');
+    newFrameButton.id = 'add-frame-action';
+    newFrameButton.className = 'add-frame-action';
     newFrameButton.setAttribute('data-tile-action', ACTION.NEW_FRAME);
-    newFrameButton.innerHTML = "<p class='label'>Add new frame</p>";
+    newFrameButton.innerHTML = '<p class="label">Add new frame</p>';
     this.container.append(newFrameButton);
 
     var needDragndropBehavior = (frameCount > 1);
-    if(needDragndropBehavior) {
+    if (needDragndropBehavior) {
       this.initDragndropBehavior_();
     }
     this.updateScrollerOverflows();
   };
-
 
   /**
    * @private
    */
   ns.FramesListController.prototype.initDragndropBehavior_ = function () {
 
-    $("#preview-list").sortable({
-      placeholder: "preview-tile-drop-proxy",
+    $('#preview-list').sortable({
+      placeholder: 'preview-tile-drop-proxy',
       update: $.proxy(this.onUpdate_, this),
-      items: ".preview-tile"
+      items: '.preview-tile'
     });
-    $("#preview-list").disableSelection();
+    $('#preview-list').disableSelection();
   };
 
   /**
    * @private
    */
-  ns.FramesListController.prototype.onUpdate_ = function( event, ui ) {
-    var originFrameId = parseInt(ui.item.data("tile-number"), 10);
+  ns.FramesListController.prototype.onUpdate_ = function (event, ui) {
+    var originFrameId = parseInt(ui.item.data('tile-number'), 10);
     var targetInsertionId = $('.preview-tile').index(ui.item);
 
     this.piskelController.moveFrame(originFrameId, targetInsertionId);
     this.piskelController.setCurrentFrameIndex(targetInsertionId);
   };
-
 
   /**
    * @private
@@ -151,16 +148,16 @@
   ns.FramesListController.prototype.createPreviewTile_ = function(tileNumber) {
     var currentFrame = this.piskelController.getCurrentLayer().getFrameAt(tileNumber);
 
-    var previewTileRoot = document.createElement("li");
-    previewTileRoot.setAttribute("data-tile-number", tileNumber);
+    var previewTileRoot = document.createElement('li');
+    previewTileRoot.setAttribute('data-tile-number', tileNumber);
     previewTileRoot.setAttribute('data-tile-action', ACTION.SELECT);
-    previewTileRoot.classList.add("preview-tile");
+    previewTileRoot.classList.add('preview-tile');
     if (this.piskelController.getCurrentFrame() == currentFrame) {
-      previewTileRoot.classList.add("selected");
+      previewTileRoot.classList.add('selected');
     }
 
-    var canvasContainer = document.createElement("div");
-    canvasContainer.classList.add("canvas-container", pskl.UserSettings.get(pskl.UserSettings.CANVAS_BACKGROUND));
+    var canvasContainer = document.createElement('div');
+    canvasContainer.classList.add('canvas-container', pskl.UserSettings.get(pskl.UserSettings.CANVAS_BACKGROUND));
 
     var height = this.zoom * this.piskelController.getCurrentFrame().getHeight();
     var horizontalMargin = (Constants.PREVIEW_FILM_SIZE - height) / 2;
@@ -171,42 +168,40 @@
     canvasContainer.style.marginLeft = verticalMargin + 'px';
     canvasContainer.style.marginRight = verticalMargin + 'px';
 
-
-    var canvasBackground = document.createElement("div");
-    canvasBackground.className = "canvas-background";
+    var canvasBackground = document.createElement('div');
+    canvasBackground.className = 'canvas-background';
     canvasContainer.appendChild(canvasBackground);
 
-    var cloneFrameButton = document.createElement("button");
+    var cloneFrameButton = document.createElement('button');
     cloneFrameButton.setAttribute('rel', 'tooltip');
     cloneFrameButton.setAttribute('data-placement', 'right');
     cloneFrameButton.setAttribute('data-tile-number', tileNumber);
     cloneFrameButton.setAttribute('data-tile-action', ACTION.CLONE);
     cloneFrameButton.setAttribute('title', 'Duplicate this frame');
-    cloneFrameButton.className = "tile-overlay duplicate-frame-action";
+    cloneFrameButton.className = 'tile-overlay duplicate-frame-action';
     previewTileRoot.appendChild(cloneFrameButton);
-
 
     canvasContainer.appendChild(this.getCanvasForFrame(currentFrame));
     previewTileRoot.appendChild(canvasContainer);
 
-    if(tileNumber > 0 || this.piskelController.getFrameCount() > 1) {
+    if (tileNumber > 0 || this.piskelController.getFrameCount() > 1) {
       // Add 'remove frame' button.
-      var deleteButton = document.createElement("button");
+      var deleteButton = document.createElement('button');
       deleteButton.setAttribute('rel', 'tooltip');
       deleteButton.setAttribute('data-placement', 'right');
       deleteButton.setAttribute('title', 'Delete this frame');
       deleteButton.setAttribute('data-tile-number', tileNumber);
       deleteButton.setAttribute('data-tile-action', ACTION.DELETE);
-      deleteButton.className = "tile-overlay delete-frame-action";
+      deleteButton.className = 'tile-overlay delete-frame-action';
       previewTileRoot.appendChild(deleteButton);
 
       // Add 'dragndrop handle'.
-      var dndHandle = document.createElement("div");
-      dndHandle.className = "tile-overlay dnd-action";
+      var dndHandle = document.createElement('div');
+      dndHandle.className = 'tile-overlay dnd-action';
       previewTileRoot.appendChild(dndHandle);
     }
-    var tileCount = document.createElement("div");
-    tileCount.className = "tile-overlay tile-count";
+    var tileCount = document.createElement('div');
+    tileCount.className = 'tile-overlay tile-count';
     tileCount.innerHTML = tileNumber + 1;
     previewTileRoot.appendChild(tileCount);
 
@@ -239,6 +234,6 @@
     var frame = this.piskelController.getCurrentFrame();
     var frameSize = Math.max(frame.getHeight(), frame.getWidth());
 
-    return Constants.PREVIEW_FILM_SIZE/frameSize;
+    return Constants.PREVIEW_FILM_SIZE / frameSize;
   };
 })();

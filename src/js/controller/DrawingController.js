@@ -1,6 +1,6 @@
 (function () {
 
-  var ns = $.namespace("pskl.controller");
+  var ns = $.namespace('pskl.controller');
 
   ns.DrawingController = function (piskelController, paletteController, container) {
     /**
@@ -22,19 +22,19 @@
      */
     this.container = container;
 
-    var renderingOptions = {
-      "zoom": this.calculateZoom_(),
-      "supportGridRendering" : true,
-      "height" : this.getContainerHeight_(),
-      "width" : this.getContainerWidth_(),
-      "xOffset" : 0,
-      "yOffset" : 0
+    var cfg = {
+      'zoom': this.calculateZoom_(),
+      'supportGridRendering' : true,
+      'height' : this.getContainerHeight_(),
+      'width' : this.getContainerWidth_(),
+      'xOffset' : 0,
+      'yOffset' : 0
     };
 
-    this.overlayRenderer = new pskl.rendering.frame.CachedFrameRenderer(this.container, renderingOptions, ["canvas-overlay"]);
-    this.renderer = new pskl.rendering.frame.CachedFrameRenderer(this.container, renderingOptions, ["drawing-canvas"]);
-    this.onionSkinRenderer = pskl.rendering.OnionSkinRenderer.createInContainer(this.container, renderingOptions, piskelController);
-    this.layersRenderer = new pskl.rendering.layer.LayersRenderer(this.container, renderingOptions, piskelController);
+    this.overlayRenderer = new pskl.rendering.frame.CachedFrameRenderer(this.container, cfg, ['canvas-overlay']);
+    this.renderer = new pskl.rendering.frame.CachedFrameRenderer(this.container, cfg, ['drawing-canvas']);
+    this.onionSkinRenderer = pskl.rendering.OnionSkinRenderer.createInContainer(this.container, cfg, piskelController);
+    this.layersRenderer = new pskl.rendering.layer.LayersRenderer(this.container, cfg, piskelController);
 
     this.compositeRenderer = new pskl.rendering.CompositeRenderer();
     this.compositeRenderer
@@ -117,7 +117,7 @@
    * @private
    */
   ns.DrawingController.prototype.onUserSettingsChange_ = function (evt, settingsName, settingsValue) {
-    if(settingsName == pskl.UserSettings.SHOW_GRID) {
+    if (settingsName == pskl.UserSettings.SHOW_GRID) {
       console.warn('DrawingController:onUserSettingsChange_ not implemented !');
     } else if (settingsName == pskl.UserSettings.ONION_SKIN || settingsName == pskl.UserSettings.LAYER_PREVIEW) {
       this.onionSkinRenderer.clear();
@@ -173,7 +173,7 @@
     var currentTime = new Date().getTime();
     // Throttling of the mousemove event:
 
-    if ((currentTime - this.previousMousemoveTime) > Constants.MOUSEMOVE_THROTTLING ) {
+    if ((currentTime - this.previousMousemoveTime) > Constants.MOUSEMOVE_THROTTLING) {
       this.moveTool_(this._clientX, this._clientY, event);
       this.previousMousemoveTime = currentTime;
     }
@@ -191,7 +191,7 @@
     var currentFrame = this.piskelController.getCurrentFrame();
 
     if (this.isClicked) {
-      if(this.currentMouseButton_ == Constants.MIDDLE_BUTTON) {
+      if (this.currentMouseButton_ == Constants.MIDDLE_BUTTON) {
         this.dragHandler.updateDrag(x, y);
       } else {
         $.publish(Events.MOUSE_EVENT, [event, this]);
@@ -230,7 +230,7 @@
     } else if (pskl.utils.UserAgent.isFirefox) {
       delta = -40 * event.deltaY;
     }
-    var modifier = Math.abs(delta/120);
+    var modifier = Math.abs(delta / 120);
     if (delta > 0) {
       this.increaseZoom_(modifier);
     } else if (delta < 0) {
@@ -254,7 +254,7 @@
   ns.DrawingController.prototype.onMouseup_ = function (event) {
     var frame = this.piskelController.getCurrentFrame();
     var coords = this.getSpriteCoordinates(event.clientX, event.clientY);
-    if(this.isClicked) {
+    if (this.isClicked) {
       $.publish(Events.MOUSE_EVENT, [event, this]);
       // A mouse button was clicked on the drawing canvas before this mouseup event,
       // the user was probably drawing on the canvas.
@@ -313,9 +313,9 @@
     // on a mouse move event
     // This always matches a LEFT mouse button which is __really__ not helpful
 
-    if(this.currentMouseButton_ == Constants.RIGHT_BUTTON) {
+    if (this.currentMouseButton_ == Constants.RIGHT_BUTTON) {
       return this.paletteController.getSecondaryColor();
-    } else if(this.currentMouseButton_ == Constants.LEFT_BUTTON) {
+    } else if (this.currentMouseButton_ == Constants.LEFT_BUTTON) {
       return this.paletteController.getPrimaryColor();
     } else {
       return Constants.DEFAULT_PEN_COLOR;
@@ -357,10 +357,10 @@
    * @private
    */
   ns.DrawingController.prototype.calculateZoom_ = function() {
-    var frameHeight = this.piskelController.getCurrentFrame().getHeight(),
-        frameWidth = this.piskelController.getCurrentFrame().getWidth();
+    var frameHeight = this.piskelController.getCurrentFrame().getHeight();
+    var frameWidth = this.piskelController.getCurrentFrame().getWidth();
 
-    return Math.min(this.getAvailableWidth_()/frameWidth, this.getAvailableHeight_()/frameHeight);
+    return Math.min(this.getAvailableWidth_() / frameWidth, this.getAvailableHeight_() / frameHeight);
   };
 
   ns.DrawingController.prototype.getAvailableHeight_ = function () {
@@ -368,11 +368,13 @@
   };
 
   ns.DrawingController.prototype.getAvailableWidth_ = function () {
-    var leftSectionWidth = $('.left-column').outerWidth(true),
-    rightSectionWidth = $('.right-column').outerWidth(true),
-    toolsContainerWidth = $('#tool-section').outerWidth(true),
-    settingsContainerWidth = $('#application-action-section').outerWidth(true),
-    availableWidth = $('#main-wrapper').width() - leftSectionWidth - rightSectionWidth - toolsContainerWidth - settingsContainerWidth;
+    var leftSectionWidth = $('.left-column').outerWidth(true);
+    var rightSectionWidth = $('.right-column').outerWidth(true);
+    var toolsContainerWidth = $('#tool-section').outerWidth(true);
+    var settingsContainerWidth = $('#application-action-section').outerWidth(true);
+
+    var usedWidth = leftSectionWidth + rightSectionWidth + toolsContainerWidth + settingsContainerWidth;
+    var availableWidth = $('#main-wrapper').width() - usedWidth;
 
     var comfortMargin = 10;
     return availableWidth - comfortMargin;

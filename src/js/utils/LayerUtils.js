@@ -9,9 +9,9 @@
      * @return {pskl.model.Frame} corresponding frame
      */
     createLayerFromSpritesheet : function (image, frameCount) {
-      var width = image.width,
-        height = image.height,
-        frameWidth = width / frameCount;
+      var width = image.width;
+      var height = image.height;
+      var frameWidth = width / frameCount;
 
       var canvas = pskl.utils.CanvasUtils.createCanvas(frameWidth, height);
       var context = canvas.getContext('2d');

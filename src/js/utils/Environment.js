@@ -9,11 +9,11 @@
 
   ns.Environment = {
     detectNodeWebkit : function () {
-      var isNode = (typeof window.process !== "undefined" && typeof window.require !== "undefined");
+      var isNode = (typeof window.process !== 'undefined' && typeof window.require !== 'undefined');
       var isNodeWebkit = false;
       if (isNode) {
         try {
-          isNodeWebkit = (typeof window.require('nw.gui') !== "undefined");
+          isNodeWebkit = (typeof window.require('nw.gui') !== 'undefined');
         } catch (e) {
           isNodeWebkit = false;
         }

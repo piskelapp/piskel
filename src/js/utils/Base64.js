@@ -1,9 +1,9 @@
 (function () {
   var ns = $.namespace('pskl.utils');
 
-  var base64_ranks;
+  var base64Ranks;
   if (Uint8Array) {
-    base64_ranks = new Uint8Array([
+    base64Ranks = new Uint8Array([
       62, -1, -1, -1, 63, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, -1,
       -1, -1,  0, -1, -1, -1,  0,  1,  2,  3,  4,  5,  6,  7,  8,  9,
       10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
@@ -14,7 +14,7 @@
 
   ns.Base64 = {
     toText : function (base64) {
-      return window.atob(base64.replace(/data\:.*?\;base64\,/,''));
+      return window.atob(base64.replace(/data\:.*?\;base64\,/, ''));
     },
 
     decode : function(base64) {
@@ -24,11 +24,12 @@
       var save = 0;
 
       var undef;
-      var len = base64.length, i = 0;
+      var len = base64.length;
+      var i = 0;
       var buffer = new Uint8Array(len / 4 * 3 | 0);
       while (len--) {
         var code = base64.charCodeAt(i++);
-        var rank = base64_ranks[code-43];
+        var rank = base64Ranks[code - 43];
         if (rank !== 255 && rank !== undef) {
           last[1] = last[0];
           last[0] = code;

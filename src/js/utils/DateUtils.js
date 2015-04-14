@@ -3,9 +3,9 @@
 
   var pad = function (num) {
     if (num < 10) {
-      return "0" + num;
+      return '0' + num;
     } else {
-      return "" + num;
+      return '' + num;
     }
   };
 

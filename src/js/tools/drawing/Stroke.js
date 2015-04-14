@@ -4,11 +4,11 @@
  * @require pskl.utils
  */
 (function() {
-  var ns = $.namespace("pskl.tools.drawing");
+  var ns = $.namespace('pskl.tools.drawing');
 
   ns.Stroke = function() {
-    this.toolId = "tool-stroke";
-    this.helpText = "Stroke tool";
+    this.toolId = 'tool-stroke';
+    this.helpText = 'Stroke tool';
 
     // Stroke's first point coordinates (set in applyToolAt)
     this.startCol = null;
@@ -44,9 +44,9 @@
     var strokePoints = this.getLinePixels_(this.startCol, col, this.startRow, row);
 
     // Drawing current stroke:
-    for(var i = 0; i< strokePoints.length; i++) {
+    for (var i = 0; i < strokePoints.length; i++) {
 
-      if(color == Constants.TRANSPARENT_COLOR) {
+      if (color == Constants.TRANSPARENT_COLOR) {
         // When mousemoving the stroke tool, we draw in the canvas overlay above the drawing canvas.
         // If the stroke color is transparent, we won't be
         // able to see it during the movement.
@@ -66,7 +66,7 @@
     // The user released the tool to draw a line. We will compute the pixel coordinate, impact
     // the model and draw them in the drawing canvas (not the fake overlay anymore)
     var strokePoints = this.getLinePixels_(this.startCol, col, this.startRow, row);
-    for(var i = 0; i< strokePoints.length; i++) {
+    for (var i = 0; i < strokePoints.length; i++) {
       // Change model:
       frame.setPixel(strokePoints[i].col, strokePoints[i].row, color);
     }

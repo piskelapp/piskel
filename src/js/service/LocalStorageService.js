@@ -1,10 +1,9 @@
 (function () {
-  var ns = $.namespace("pskl.service");
+  var ns = $.namespace('pskl.service');
 
   ns.LocalStorageService = function (piskelController) {
-
-    if(piskelController === undefined) {
-      throw "Bad LocalStorageService initialization: <undefined piskelController>";
+    if (piskelController === undefined) {
+      throw 'Bad LocalStorageService initialization: <undefined piskelController>';
     }
     this.piskelController = piskelController;
   };

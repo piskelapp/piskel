@@ -6,7 +6,6 @@
     pskl.utils.Event.addEventListener(el, type, callback, this);
   };
 
-
   ns.AbstractSettingController.prototype.destroy = function () {
     pskl.utils.Event.removeAllEventListeners(this);
     this.nullifyDomReferences_();
@@ -22,5 +21,4 @@
       }
     }
   };
-
 })();

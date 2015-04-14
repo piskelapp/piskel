@@ -14,8 +14,8 @@
 
     createWorkerURL : function (worker) {
       // remove "function () {" at the start of the worker string and the last "}" before the end
-      var typedArray = [(worker+"").replace(/function\s*\(\)\s*\{/,"").replace(/\}[^}]*$/, "")];
-      var blob = new Blob(typedArray, {type: "application/javascript"});
+      var typedArray = [(worker + '').replace(/function\s*\(\)\s*\{/, '').replace(/\}[^}]*$/, '')];
+      var blob = new Blob(typedArray, {type: 'application/javascript'});
       return window.URL.createObjectURL(blob);
     }
   };

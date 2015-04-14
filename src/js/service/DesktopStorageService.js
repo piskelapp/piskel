@@ -6,7 +6,7 @@
     this.hideNotificationTimeoutID = 0;
   };
 
-  ns.DesktopStorageService.prototype.init = function (){
+  ns.DesktopStorageService.prototype.init = function () {
     // activate keyboard shortcuts if this is the desktop version
     if (pskl.utils.Environment.detectNodeWebkit()) {
       pskl.app.shortcutService.addShortcut('ctrl+o', this.openPiskel.bind(this));
@@ -33,9 +33,9 @@
   };
 
   ns.DesktopStorageService.prototype.openPiskel = function () {
-    pskl.utils.FileUtilsDesktop.chooseFileDialog(function(filename){
+    pskl.utils.FileUtilsDesktop.chooseFileDialog(function (filename) {
       var savePath = filename;
-      pskl.utils.FileUtilsDesktop.readFile(savePath, function(content){
+      pskl.utils.FileUtilsDesktop.readFile(savePath, function (content) {
         pskl.utils.PiskelFileUtils.decodePiskelFile(content, function (piskel, descriptor, fps) {
           piskel.setDescriptor(descriptor);
           // store save path so we can re-save without opening the save dialog
@@ -60,12 +60,11 @@
   ns.DesktopStorageService.prototype.onSaveSuccess_ = function () {
     var savePath = this.piskelController.getSavePath();
     $.publish(Events.CLOSE_SETTINGS_DRAWER);
-    $.publish(Events.SHOW_NOTIFICATION, [{"content": "Successfully saved: " + savePath}]);
+    $.publish(Events.SHOW_NOTIFICATION, [{'content': 'Successfully saved: ' + savePath}]);
     $.publish(Events.PISKEL_SAVED);
     // clear the old time out, if any.
     window.clearTimeout(this.hideNotificationTimeoutID);
-    this.hideNotificationTimeoutID =
-      window.setTimeout($.publish.bind($, Events.HIDE_NOTIFICATION), 3000);
+    this.hideNotificationTimeoutID = window.setTimeout($.publish.bind($, Events.HIDE_NOTIFICATION), 3000);
   };
 
 })();

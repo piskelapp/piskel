@@ -15,6 +15,7 @@
   "js/utils/Base64.js",
   "js/utils/BlobUtils.js",
   "js/utils/CanvasUtils.js",
+  "js/utils/ColorUtils.js",
   "js/utils/DateUtils.js",
   "js/utils/Dom.js",
   "js/utils/Event.js",

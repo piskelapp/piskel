@@ -1,5 +1,5 @@
 (function () {
-  var ns = $.namespace("pskl.controller.settings");
+  var ns = $.namespace('pskl.controller.settings');
 
   ns.ApplicationSettingsController = function () {};
 
@@ -19,7 +19,7 @@
     // Grid display and size
     var gridWidth = pskl.UserSettings.get(pskl.UserSettings.GRID_WIDTH);
     var gridSelect = document.querySelector('.grid-width-select');
-    var selectedOption = gridSelect.querySelector('option[value="'+gridWidth+'"]');
+    var selectedOption = gridSelect.querySelector('option[value="' + gridWidth + '"]');
     if (selectedOption) {
       selectedOption.setAttribute('selected', 'selected');
     }
@@ -80,5 +80,4 @@
     evt.preventDefault();
     $.publish(Events.CLOSE_SETTINGS_DRAWER);
   };
-
 })();

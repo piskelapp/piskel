@@ -10,7 +10,7 @@
     var TRANSPARENT_COLOR = 'rgba(0, 0, 0, 0)';
 
     var toHexString_ = function(color) {
-       if (color === TRANSPARENT_COLOR) {
+      if (color === TRANSPARENT_COLOR) {
         return color;
       } else {
         color = color.replace(/\s/g, '');
@@ -24,19 +24,19 @@
         }
       }
     };
-    
+
     var rgbToHex = function (r, g, b) {
-      return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+      return '#' + componentToHex(r) + componentToHex(g) + componentToHex(b);
     };
 
     var componentToHex = function (c) {
       var hex = c.toString(16);
-      return hex.length == 1 ? "0" + hex : hex;
+      return hex.length == 1 ? '0' + hex : hex;
     };
 
     var getFrameColors = function (frame) {
       var frameColors = {};
-      for (var x = 0 ; x < frame.length ; x ++) {
+      for (var x = 0 ; x < frame.length ; x++) {
         for (var y = 0 ; y < frame[x].length ; y++) {
           var color = frame[x][y];
           var hexColor = toHexString_(color);

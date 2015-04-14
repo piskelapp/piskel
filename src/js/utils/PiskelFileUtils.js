@@ -31,7 +31,8 @@
     decodePiskelFile : function (rawPiskel, onSuccess, onError) {
       var serializedPiskel = JSON.parse(rawPiskel);
       var fps = serializedPiskel.piskel.fps;
-      var descriptor = new pskl.model.piskel.Descriptor(serializedPiskel.piskel.name, serializedPiskel.piskel.description, true);
+      var piskel = serializedPiskel.piskel;
+      var descriptor = new pskl.model.piskel.Descriptor(piskel.name, piskel.description, true);
       pskl.utils.serialization.Deserializer.deserialize(serializedPiskel, function (piskel) {
         onSuccess(piskel, descriptor, fps);
       });

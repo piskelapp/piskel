@@ -73,7 +73,7 @@
     var dropCoordinates = this.adjustDropPosition_(this.dropPosition_, droppedFrame);
 
     currentFrame.forEachPixel(function (color, x, y) {
-      var fColor = droppedFrame.getPixel(x-dropCoordinates.x, y-dropCoordinates.y);
+      var fColor = droppedFrame.getPixel(x - dropCoordinates.x, y - dropCoordinates.y);
       if (fColor && fColor != Constants.TRANSPARENT_COLOR) {
         currentFrame.setPixel(x, y, fColor);
       }
@@ -88,8 +88,8 @@
   ns.FileDropperService.prototype.adjustDropPosition_ = function (position, droppedFrame) {
     var framePosition = pskl.app.drawingController.getSpriteCoordinates(position.x, position.y);
 
-    var xCoord = framePosition.x - Math.floor(droppedFrame.width/2);
-    var yCoord = framePosition.y - Math.floor(droppedFrame.height/2);
+    var xCoord = framePosition.x - Math.floor(droppedFrame.width / 2);
+    var yCoord = framePosition.y - Math.floor(droppedFrame.height / 2);
 
     xCoord = Math.max(0, xCoord);
     yCoord = Math.max(0, yCoord);

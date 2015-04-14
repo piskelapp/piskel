@@ -4,11 +4,11 @@
  * @require pskl.utils
  */
 (function() {
-  var ns = $.namespace("pskl.tools.drawing");
+  var ns = $.namespace('pskl.tools.drawing');
 
   ns.BaseTool = function() {
     pskl.tool.Tool.call(this);
-    this.toolId = "tool-base";
+    this.toolId = 'tool-base';
   };
 
   pskl.utils.inherit(ns.BaseTool, pskl.tools.Tool);
@@ -77,22 +77,22 @@
     y1 = pskl.utils.normalize(y1, 0);
 
     var pixels = [];
-    var dx = Math.abs(x1-x0);
-    var dy = Math.abs(y1-y0);
+    var dx = Math.abs(x1 - x0);
+    var dy = Math.abs(y1 - y0);
     var sx = (x0 < x1) ? 1 : -1;
     var sy = (y0 < y1) ? 1 : -1;
-    var err = dx-dy;
-    while(true){
+    var err = dx - dy;
+    while (true) {
 
       // Do what you need to for this
-      pixels.push({"col": x0, "row": y0});
+      pixels.push({'col': x0, 'row': y0});
 
-      if ((x0==x1) && (y0==y1)) {
+      if ((x0 == x1) && (y0 == y1)) {
         break;
       }
 
-      var e2 = 2*err;
-      if (e2>-dy){
+      var e2 = 2 * err;
+      if (e2 > -dy) {
         err -= dy;
         x0  += sx;
       }

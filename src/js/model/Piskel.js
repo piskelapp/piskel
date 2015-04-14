@@ -25,7 +25,7 @@
       this.savePath = null;
 
     } else {
-      throw 'Missing arguments in Piskel constructor : ' + Array.prototype.join.call(arguments, ",");
+      throw 'Missing arguments in Piskel constructor : ' + Array.prototype.join.call(arguments, ',');
     }
   };
 
@@ -83,17 +83,17 @@
 
   ns.Piskel.prototype.moveLayerUp = function (layer) {
     var index = this.layers.indexOf(layer);
-    if (index > -1 && index < this.layers.length-1) {
-      this.layers[index] = this.layers[index+1];
-      this.layers[index+1] = layer;
+    if (index > -1 && index < this.layers.length - 1) {
+      this.layers[index] = this.layers[index + 1];
+      this.layers[index + 1] = layer;
     }
   };
 
   ns.Piskel.prototype.moveLayerDown = function (layer) {
     var index = this.layers.indexOf(layer);
     if (index > 0) {
-      this.layers[index] = this.layers[index-1];
-      this.layers[index-1] = layer;
+      this.layers[index] = this.layers[index - 1];
+      this.layers[index - 1] = layer;
     }
   };
 

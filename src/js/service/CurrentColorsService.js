@@ -10,7 +10,6 @@
     this.cachedFrameProcessor = new pskl.model.frame.AsyncCachedFrameProcessor();
     this.cachedFrameProcessor.setFrameProcessor(this.getFrameColors_.bind(this));
 
-    this.colorSorter = new pskl.service.color.ColorSorter();
     this.paletteService = pskl.app.paletteService;
   };
 
@@ -64,19 +63,25 @@
           colors[color] = true;
         });
       });
-      this.updateCurrentColorsReady_(colors);
+      // Remove transparent color from used colors
+      delete colors[Constants.TRANSPARENT_COLOR];
+      this.setCurrentColors(Object.keys(colors));
     }.bind(this));
   };
 
-  ns.CurrentColorsService.prototype.updateCurrentColorsReady_ = function (colors) {
-    // Remove transparent color from used colors
-    delete colors[Constants.TRANSPARENT_COLOR];
+  ns.CurrentColorsService.prototype.isCurrentColorsPaletteSelected_ = function () {
+    var paletteId = pskl.UserSettings.get(pskl.UserSettings.SELECTED_PALETTE);
+    var palette = this.paletteService.getPaletteById(paletteId);
 
-    // limit the array to the max colors to display
-    var colorsArray = Object.keys(colors).slice(0, Constants.MAX_CURRENT_COLORS_DISPLAYED);
-    var currentColors = this.colorSorter.sort(colorsArray);
+    return palette && palette.id === Constants.CURRENT_COLORS_PALETTE_ID;
+  };
 
-    this.setCurrentColors(currentColors);
+  ns.CurrentColorsService.prototype.loadColorsFromCache_ = function () {
+    var historyIndex = pskl.app.historyService.currentIndex;
+    var colors = this.cache[historyIndex];
+    if (colors) {
+      this.setCurrentColors(colors);
+    }
   };
 
   ns.CurrentColorsService.prototype.getFrameColors_ = function (frame, processorCallback) {

@@ -1,5 +1,5 @@
 (function () {
-  var ns = $.namespace("pskl.controller");
+  var ns = $.namespace('pskl.controller');
 
   ns.ToolController = function () {
     var toDescriptor = function (id, shortcut, instance) {
@@ -36,7 +36,7 @@
     // Set SimplePen as default selected tool:
     this.selectTool_(this.tools[0]);
     // Activate listener on tool panel:
-    $("#tool-section").mousedown($.proxy(this.onToolIconClicked_, this));
+    $('#tool-section').mousedown($.proxy(this.onToolIconClicked_, this));
 
     $.subscribe(Events.SELECT_TOOL, this.onSelectToolEvent_.bind(this));
   };
@@ -45,14 +45,14 @@
    * @private
    */
   ns.ToolController.prototype.activateToolOnStage_ = function(tool) {
-    var stage = $("body");
-    var previousSelectedToolClass = stage.data("selected-tool-class");
-    if(previousSelectedToolClass) {
+    var stage = $('body');
+    var previousSelectedToolClass = stage.data('selected-tool-class');
+    if (previousSelectedToolClass) {
       stage.removeClass(previousSelectedToolClass);
       stage.removeClass(pskl.tools.drawing.Move.TOOL_ID);
     }
     stage.addClass(tool.instance.toolId);
-    stage.data("selected-tool-class", tool.instance.toolId);
+    stage.data('selected-tool-class', tool.instance.toolId);
   };
 
   ns.ToolController.prototype.onSelectToolEvent_ = function(event, toolId) {
@@ -83,9 +83,9 @@
    */
   ns.ToolController.prototype.onToolIconClicked_ = function(evt) {
     var target = $(evt.target);
-    var clickedTool = target.closest(".tool-icon");
+    var clickedTool = target.closest('.tool-icon');
 
-    if(clickedTool.length) {
+    if (clickedTool.length) {
       var toolId = clickedTool.data().toolId;
       var tool = this.getToolById_(toolId);
       if (tool) {
@@ -114,7 +114,7 @@
    */
   ns.ToolController.prototype.createToolsDom_ = function() {
     var html = '';
-    for(var i = 0 ; i < this.tools.length ; i++) {
+    for (var i = 0 ; i < this.tools.length ; i++) {
       var tool = this.tools[i];
       html += this.toolIconRenderer.render(tool.instance, tool.shortcut);
     }
@@ -122,7 +122,7 @@
   };
 
   ns.ToolController.prototype.addKeyboardShortcuts_ = function () {
-    for(var i = 0 ; i < this.tools.length ; i++) {
+    for (var i = 0 ; i < this.tools.length ; i++) {
       pskl.app.shortcutService.addShortcut(this.tools[i].shortcut, this.onKeyboardShortcut_.bind(this));
     }
   };

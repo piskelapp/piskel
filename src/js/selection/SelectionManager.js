@@ -1,5 +1,5 @@
 (function () {
-  var ns = $.namespace("pskl.selection");
+  var ns = $.namespace('pskl.selection');
 
   var SELECTION_REPLAY = {
     PASTE : 'REPLAY_PASTE',
@@ -31,7 +31,7 @@
    * @private
    */
   ns.SelectionManager.prototype.cleanSelection_ = function() {
-    if(this.currentSelection) {
+    if (this.currentSelection) {
       this.currentSelection.reset();
       this.currentSelection = null;
     }
@@ -42,7 +42,7 @@
    */
   ns.SelectionManager.prototype.onToolSelected_ = function(evt, tool) {
     var isSelectionTool = tool instanceof pskl.tools.drawing.BaseSelect;
-    if(!isSelectionTool) {
+    if (!isSelectionTool) {
       this.cleanSelection_();
     }
   };
@@ -65,7 +65,7 @@
   ns.SelectionManager.prototype.erase = function () {
     var pixels = this.currentSelection.pixels;
     var currentFrame = this.piskelController.getCurrentFrame();
-    for(var i=0, l=pixels.length; i<l; i++) {
+    for (var i = 0, l = pixels.length ; i < l ; i++) {
       currentFrame.setPixel(pixels[i].col, pixels[i].row, Constants.TRANSPARENT_COLOR);
     }
 
@@ -80,18 +80,15 @@
   };
 
   ns.SelectionManager.prototype.cut = function() {
-    if(this.currentSelection) {
+    if (this.currentSelection) {
       // Put cut target into the selection:
       this.currentSelection.fillSelectionFromFrame(this.piskelController.getCurrentFrame());
       this.erase();
     }
-    else {
-      throw "Bad state for CUT callback in SelectionManager";
-    }
   };
 
   ns.SelectionManager.prototype.paste = function() {
-    if(this.currentSelection && this.currentSelection.hasPastedContent) {
+    if (this.currentSelection && this.currentSelection.hasPastedContent) {
       var pixels = this.currentSelection.pixels;
       var opaquePixels = pixels.filter(function (p) {
         return p.color !== Constants.TRANSPARENT_COLOR;
@@ -104,7 +101,7 @@
     var currentFrame = this.piskelController.getCurrentFrame();
 
     pixels.forEach(function (pixel) {
-      currentFrame.setPixel(pixel.col,pixel.row,pixel.color);
+      currentFrame.setPixel(pixel.col, pixel.row, pixel.color);
     });
 
     $.publish(Events.PISKEL_SAVE_STATE, {
@@ -126,10 +123,8 @@
   };
 
   ns.SelectionManager.prototype.copy = function() {
-    if(this.currentSelection && this.piskelController.getCurrentFrame()) {
+    if (this.currentSelection && this.piskelController.getCurrentFrame()) {
       this.currentSelection.fillSelectionFromFrame(this.piskelController.getCurrentFrame());
-    } else {
-      throw "Bad state for CUT callback in SelectionManager";
     }
   };
 
@@ -137,10 +132,10 @@
    * @private
    */
   ns.SelectionManager.prototype.onSelectionCreated_ = function(evt, selection) {
-    if(selection) {
+    if (selection) {
       this.currentSelection = selection;
     } else {
-      throw "No selection set in SelectionManager";
+      console.error('No selection provided to SelectionManager');
     }
   };
 
@@ -148,11 +143,10 @@
    * @private
    */
   ns.SelectionManager.prototype.onSelectionMoved_ = function(evt, colDiff, rowDiff) {
-    if(this.currentSelection) {
+    if (this.currentSelection) {
       this.currentSelection.move(colDiff, rowDiff);
-    }
-    else {
-      throw "Bad state: No currentSelection set when trying to move it in SelectionManager";
+    } else {
+      console.error('Bad state: No currentSelection set when trying to move it in SelectionManager');
     }
   };
 })();

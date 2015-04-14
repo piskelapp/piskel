@@ -15,7 +15,7 @@
 
     this.addEventListener('.browse-local-button', 'click', this.onBrowseLocalClick_);
     this.addEventListener('.file-input-button', 'click', this.onFileInputClick_);
-    
+
     // different handlers, depending on the Environment
     if (pskl.utils.Environment.detectNodeWebkit()) {
       this.addEventListener('.open-piskel-button', 'click', this.openPiskelDesktop_);
@@ -76,7 +76,7 @@
   };
 
   ns.ImportController.prototype.openPiskelFile_ = function (file) {
-    if (this.isPiskel_(file)){
+    if (this.isPiskel_(file)) {
       pskl.utils.PiskelFileUtils.loadFromFile(file, function (piskel, descriptor, fps) {
         piskel.setDescriptor(descriptor);
         pskl.app.piskelController.setPiskel(piskel);
@@ -98,7 +98,7 @@
         this.closeDrawer_();
       } else {
         this.closeDrawer_();
-        throw 'File is not an image : ' + file.type;
+        console.error('File is not an image : ' + file.type);
       }
     }
   };
@@ -117,5 +117,4 @@
       $.publish(Events.CLOSE_SETTINGS_DRAWER);
     }
   };
-
 })();

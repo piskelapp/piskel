@@ -78,7 +78,7 @@
     }
 
     this.drawerContainer.innerHTML = pskl.utils.Template.get(settings[setting].template);
-    
+
     this.currentSetting = setting;
     this.currentController = new settings[setting].controller(this.piskelController);
     this.currentController.init();
@@ -86,7 +86,7 @@
     this.settingsContainer.addClass(EXP_DRAWER_CLS);
 
     $('.' + SEL_SETTING_CLS).removeClass(SEL_SETTING_CLS);
-    $('[data-setting='+setting+']').addClass(SEL_SETTING_CLS);
+    $('[data-setting=' + setting + ']').addClass(SEL_SETTING_CLS);
 
     this.isExpanded = true;
   };
@@ -100,5 +100,4 @@
 
     document.activeElement.blur();
   };
-
 })();

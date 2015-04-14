@@ -10,7 +10,6 @@
   // I apologize to my future self for this one.
   var NO_SCROLL_MAX_COLORS = 20;
 
-
   ns.PalettesListController = function (paletteController, usedColorService) {
     this.usedColorService = usedColorService;
     this.paletteService = pskl.app.paletteService;
@@ -38,7 +37,6 @@
     $.subscribe(Events.PRIMARY_COLOR_SELECTED, this.highlightSelectedColors.bind(this));
     $.subscribe(Events.SECONDARY_COLOR_SELECTED, this.highlightSelectedColors.bind(this));
     $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
-
 
     pskl.app.shortcutService.addShortcuts(['>', 'shift+>'], this.selectNextColor_.bind(this));
     pskl.app.shortcutService.addShortcut('<', this.selectPreviousColor_.bind(this));
@@ -91,8 +89,8 @@
       colors = palette.getColors();
     }
 
-    if (colors.length > Constants.MAX_CURRENT_COLORS_DISPLAYED) {
-      colors = colors.slice(0, Constants.MAX_CURRENT_COLORS_DISPLAYED);
+    if (colors.length > Constants.MAX_PALETTE_COLORS) {
+      colors = colors.slice(0, Constants.MAX_PALETTE_COLORS);
     }
 
     return colors;
@@ -193,7 +191,7 @@
   };
 
   ns.PalettesListController.prototype.getColorContainer_ = function (color) {
-    return this.colorListContainer_.querySelector('.palettes-list-color[data-color="'+color+'"]');
+    return this.colorListContainer_.querySelector('.palettes-list-color[data-color="' + color + '"]');
   };
 
   ns.PalettesListController.prototype.removeClass_ = function (cssClass) {

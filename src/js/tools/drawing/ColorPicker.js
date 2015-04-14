@@ -4,15 +4,14 @@
  * @require pskl.utils
  */
 (function() {
-  var ns = $.namespace("pskl.tools.drawing");
+  var ns = $.namespace('pskl.tools.drawing');
 
   ns.ColorPicker = function() {
-    this.toolId = "tool-colorpicker";
-    this.helpText = "Color picker";
+    this.toolId = 'tool-colorpicker';
+    this.helpText = 'Color picker';
   };
 
   pskl.utils.inherit(ns.ColorPicker, ns.BaseTool);
-
 
   /**
    * @override

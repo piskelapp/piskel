@@ -38,7 +38,7 @@ Piskel supports the following browsers :
 
 We don't plan/want/could be forced into supporting older IEs. For Opera and Safari, we've never tested them but the gap shouldn't be huge.
 
-## Offline version (Windows and MacOS)
+## Offline version
 
 Offline builds are available. More details in the [dedicated wiki page](https://github.com/juliandescottes/piskel/wiki/Desktop-applications).
 
@@ -49,6 +49,7 @@ The Piskel editor is purely built in **JavaScript, HTML and CSS**. It uses Canva
 We also use the following **libraries** :
 * [spectrum](https://github.com/bgrins/spectrum) : awesome standalone colorpicker
 * [gifjs](http://jnordberg.github.io/gif.js/) : generate animated GIFs in javascript, using webworkers
+* [supergif](https://github.com/buzzfeed/libgif-js) : modified version of SuperGif to parse and import GIFs
 * [jszip](https://github.com/Stuk/jszip) : create, read and edit .zip files with Javascript
 * [canvas-toBlob](https://github.com/eligrey/canvas-toBlob.js/) : shim for canvas toBlob
 * [jquery](http://jquery.com/) : used sporadically in the application
