@@ -33,7 +33,7 @@
   ns.DrawingTestPlayer.prototype.createPiskel_ = function (width, height) {
     var descriptor = new pskl.model.piskel.Descriptor('TestPiskel', '');
     var piskel = new pskl.model.Piskel(width, height, descriptor);
-    var layer = new pskl.model.Layer("Layer 1");
+    var layer = new pskl.model.Layer('Layer 1');
     var frame = new pskl.model.Frame(width, height);
 
     layer.addFrame(frame);
@@ -88,8 +88,8 @@
         this.playInstrumentedEvent_(recordEvent);
       }
 
-      if (this.events[index+1]) {
-        this.playEvent_(index+1);
+      if (this.events[index + 1]) {
+        this.playEvent_(index + 1);
       } else {
         this.onTestEnd_();
       }
@@ -102,7 +102,7 @@
     event.clientX = screenCoordinates.x;
     event.clientY = screenCoordinates.y;
     if (pskl.utils.UserAgent.isMac && event.ctrlKey) {
-       event.metaKey = true;
+      event.metaKey = true;
     }
 
     if (event.type == 'mousedown') {

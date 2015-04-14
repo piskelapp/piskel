@@ -1,6 +1,6 @@
 (function () {
 
-  var ns = $.namespace("pskl.rendering");
+  var ns = $.namespace('pskl.rendering');
 
   ns.PiskelRenderer = function (piskelController) {
     var frames = [];

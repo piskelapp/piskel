@@ -78,7 +78,6 @@
     return layer.getFrameAt(this.currentFrameIndex);
   };
 
-
   ns.PiskelController.prototype.getCurrentLayerIndex = function () {
     return this.currentLayerIndex;
   };
@@ -125,7 +124,8 @@
   };
 
   ns.PiskelController.prototype.createEmptyFrame_ = function () {
-    var w = this.piskel.getWidth(), h = this.piskel.getHeight();
+    var w = this.piskel.getWidth();
+    var h = this.piskel.getHeight();
     return new pskl.model.Frame(w, h);
   };
 
@@ -147,7 +147,7 @@
     this.getLayers().forEach(function (l) {
       l.duplicateFrameAt(index);
     });
-    this.setCurrentFrameIndex(index+1);
+    this.setCurrentFrameIndex(index + 1);
   };
 
   ns.PiskelController.prototype.moveFrame = function (fromIndex, toIndex) {
@@ -207,21 +207,21 @@
 
   ns.PiskelController.prototype.mergeDownLayerAt = function (index) {
     var layer = this.getLayerByIndex(index);
-    var downLayer = this.getLayerByIndex(index-1);
+    var downLayer = this.getLayerByIndex(index - 1);
     if (layer && downLayer) {
       var mergedLayer = pskl.utils.LayerUtils.mergeLayers(layer, downLayer);
       this.removeLayerAt(index);
       this.piskel.addLayerAt(mergedLayer, index);
-      this.removeLayerAt(index-1);
+      this.removeLayerAt(index - 1);
       this.selectLayer(mergedLayer);
     }
   };
 
   ns.PiskelController.prototype.generateLayerName_ = function () {
-    var name = "Layer " + this.layerIdCounter;
+    var name = 'Layer ' + this.layerIdCounter;
     while (this.hasLayerForName_(name)) {
       this.layerIdCounter++;
-      name = "Layer " + this.layerIdCounter;
+      name = 'Layer ' + this.layerIdCounter;
     }
     return name;
   };

@@ -17,8 +17,8 @@
         b : 255
       };
       var match = null;
-        while (true) {
-          var hex = window.tinycolor(color).toHexString().toUpperCase();
+      while (true) {
+        var hex = window.tinycolor(color).toHexString().toUpperCase();
 
         if (!colorMap[hex]) {
           match = hex;

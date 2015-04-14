@@ -1,6 +1,6 @@
 (function () {
 
-  var ns = $.namespace("pskl.rendering");
+  var ns = $.namespace('pskl.rendering');
   ns.CanvasRenderer = function (frame, zoom) {
     this.frame = frame;
     this.zoom = zoom;
@@ -20,11 +20,11 @@
     var canvas = this.createCanvas_();
     var context = canvas.getContext('2d');
 
-    for(var x = 0, width = this.frame.getWidth(); x < width; x++) {
-      for(var y = 0, height = this.frame.getHeight(); y < height; y++) {
+    for (var x = 0, width = this.frame.getWidth(); x < width; x++) {
+      for (var y = 0, height = this.frame.getHeight(); y < height; y++) {
         var color = this.frame.getPixel(x, y);
         var w = 1;
-        while (color === this.frame.getPixel(x, y+w)) {
+        while (color === this.frame.getPixel(x, y + w)) {
           w++;
         }
         this.renderLine_(color, x, y, w, context);
@@ -42,7 +42,7 @@
   };
 
   ns.CanvasRenderer.prototype.renderPixel_ = function (color, x, y, context) {
-    if(color == Constants.TRANSPARENT_COLOR) {
+    if (color == Constants.TRANSPARENT_COLOR) {
       color = this.transparentColor_;
     }
     context.fillStyle = color;
@@ -50,7 +50,7 @@
   };
 
   ns.CanvasRenderer.prototype.renderLine_ = function (color, x, y, width, context) {
-    if(color == Constants.TRANSPARENT_COLOR) {
+    if (color == Constants.TRANSPARENT_COLOR) {
       color = this.transparentColor_;
     }
     context.fillStyle = color;

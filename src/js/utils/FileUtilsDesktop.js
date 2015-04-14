@@ -10,7 +10,7 @@
     chooseFileDialog: function (callback) {
       var tagString = '<input type="file" nwworkingdir=""/>';
       var $chooser = $(tagString);
-      $chooser.change(function(e) {
+      $chooser.change(function (e) {
         var filename = $(this).val();
         callback(filename);
       });
@@ -30,21 +30,21 @@
       // NodeWebkit has no js api for opening the save dialog.
       // Instead, it adds two new attributes to the anchor tag: nwdirectory and nwsaveas
       // (see: https://github.com/nwjs/nw.js/wiki/File-dialogs )
-      defaultFileName = defaultFileName || "";
-      var tagString = '<input type="file" nwsaveas="'+ defaultFileName +'" nwworkingdir=""/>';
+      defaultFileName = defaultFileName || '';
+      var tagString = '<input type="file" nwsaveas="' + defaultFileName + '" nwworkingdir=""/>';
       var $chooser = $(tagString);
-      $chooser.change(function(e) {
+      $chooser.change(function (e) {
         var filename = $(this).val();
         if (typeof extension == 'string') {
           if (extension[0] !== '.') {
-            extension = "." + extension;
+            extension = '.' + extension;
           }
           var hasExtension = (filename.substring(filename.length - extension.length) === extension);
           if (!hasExtension) {
             filename += extension;
           }
         }
-        pskl.utils.FileUtilsDesktop.saveToFile(content, filename, function(){
+        pskl.utils.FileUtilsDesktop.saveToFile(content, filename, function () {
           callback(filename);
         });
       });
@@ -60,7 +60,7 @@
      */
     saveToFile : function(content, filename, callback) {
       var fs = window.require('fs');
-      fs.writeFile(filename, content, function(err){
+      fs.writeFile(filename, content, function (err) {
         if (err) {
           //throw err;
           console.log('FileUtilsDesktop::savetoFile() - error saving file:', filename, 'Error:', err);
@@ -72,7 +72,7 @@
     readFile : function(filename, callback) {
       var fs = window.require('fs');
       // NOTE: currently loading everything as utf8, which may not be desirable in future
-      fs.readFile(filename, 'utf8', function(err, data){
+      fs.readFile(filename, 'utf8', function (err, data) {
         if (err) {
           console.log('FileUtilsDesktop::readFile() - error reading file:', filename, 'Error:', err);
         }

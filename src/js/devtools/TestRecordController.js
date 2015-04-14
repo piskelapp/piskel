@@ -27,7 +27,7 @@
     var stopInput = document.createElement('button');
     stopInput.innerHTML = 'Stop record';
     stopInput.addEventListener('click', this.onStopInputClick_.bind(this));
-    stopInput.setAttribute('disabled','disabled');
+    stopInput.setAttribute('disabled', 'disabled');
 
     this.container = container;
     this.fileInput = this.container.appendChild(fileInput);
@@ -43,9 +43,9 @@
   ns.TestRecordController.prototype.onFileInputChange_  = function () {
     var files = this.fileInput.files;
     if (files.length == 1) {
-      var file =files[0];
+      var file = files[0];
       pskl.utils.FileUtils.readFile(file, function (content) {
-        var testRecord = JSON.parse(window.atob(content.replace(/data\:.*?\;base64\,/,'')));
+        var testRecord = JSON.parse(window.atob(content.replace(/data\:.*?\;base64\,/, '')));
         var testPlayer = new ns.DrawingTestPlayer(testRecord);
         testPlayer.start();
       }.bind(this));
@@ -54,7 +54,7 @@
 
   ns.TestRecordController.prototype.onStartInputClick_  = function () {
     this.testRecorder.startRecord();
-    this.startInput.setAttribute('disabled','disabled');
+    this.startInput.setAttribute('disabled', 'disabled');
     this.stopInput.removeAttribute('disabled');
   };
 
@@ -63,10 +63,10 @@
 
     pskl.utils.BlobUtils.stringToBlob(testRecord, function(blob) {
       pskl.utils.FileUtils.downloadAsFile(blob, 'record_piskel.json');
-    }.bind(this), "application/json");
+    }.bind(this), 'application/json');
 
     this.startInput.removeAttribute('disabled');
-    this.stopInput.setAttribute('disabled','disabled');
+    this.stopInput.setAttribute('disabled', 'disabled');
   };
 
   ns.TestRecordController.prototype.onTestRecordEnd_  = function (evt, success) {

@@ -47,7 +47,7 @@
   };
 
   ns.LayersListController.prototype.toggleButtonDisabledState_ = function (buttonAction, isDisabled) {
-    var button = document.querySelector('.layers-button[data-action="'+buttonAction+'"]');
+    var button = document.querySelector('.layers-button[data-action="' + buttonAction + '"]');
     if (isDisabled) {
       button.setAttribute('disabled', 'disabled');
     } else {
@@ -94,7 +94,7 @@
 
   ns.LayersListController.prototype.renameCurrentLayer_ = function () {
     var layer = this.piskelController.getCurrentLayer();
-    var name = window.prompt("Please enter the layer name", layer.getName());
+    var name = window.prompt('Please enter the layer name', layer.getName());
     if (name) {
       var index = this.piskelController.getCurrentLayerIndex();
       this.piskelController.renameLayerAt(index, name);

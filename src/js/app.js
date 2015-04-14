@@ -3,7 +3,7 @@
  * @require Events
  */
 (function () {
-  var ns = $.namespace("pskl");
+  var ns = $.namespace('pskl');
   /**
    * Main application controller
    */
@@ -22,7 +22,7 @@
       var descriptor = new pskl.model.piskel.Descriptor('New Piskel', '');
       var piskel = new pskl.model.Piskel(size.width, size.height, descriptor);
 
-      var layer = new pskl.model.Layer("Layer 1");
+      var layer = new pskl.model.Layer('Layer 1');
       var frame = new pskl.model.Frame(size.width, size.height);
 
       layer.addFrame(frame);
@@ -44,22 +44,35 @@
       this.currentColorsService = new pskl.service.CurrentColorsService(this.piskelController);
       this.currentColorsService.init();
 
-      this.palettesListController = new pskl.controller.PalettesListController(this.paletteController, this.currentColorsService);
+      this.palettesListController = new pskl.controller.PalettesListController(
+        this.paletteController,
+        this.currentColorsService);
       this.palettesListController.init();
 
       this.cursorCoordinatesController = new pskl.controller.CursorCoordinatesController(this.piskelController);
       this.cursorCoordinatesController.init();
 
-      this.drawingController = new pskl.controller.DrawingController(this.piskelController, this.paletteController, $('#drawing-canvas-container'));
+      this.drawingController = new pskl.controller.DrawingController(
+        this.piskelController,
+        this.paletteController,
+        $('#drawing-canvas-container'));
       this.drawingController.init();
 
-      this.previewController = new pskl.controller.preview.PreviewController(this.piskelController, $('#animated-preview-canvas-container'));
+      this.previewController = new pskl.controller.preview.PreviewController(
+        this.piskelController,
+        $('#animated-preview-canvas-container'));
       this.previewController.init();
 
-      this.minimapController = new pskl.controller.MinimapController(this.piskelController, this.previewController, this.drawingController, $('.minimap-container'));
+      this.minimapController = new pskl.controller.MinimapController(
+        this.piskelController,
+        this.previewController,
+        this.drawingController,
+        $('.minimap-container'));
       this.minimapController.init();
 
-      this.framesListController = new pskl.controller.FramesListController(this.piskelController, $('#preview-list'));
+      this.framesListController = new pskl.controller.FramesListController(
+        this.piskelController,
+        $('#preview-list'));
       this.framesListController.init();
 
       this.layersListController = new pskl.controller.LayersListController(this.piskelController);
@@ -113,7 +126,9 @@
       this.beforeUnloadService = new pskl.service.BeforeUnloadService(this.piskelController);
       this.beforeUnloadService.init();
 
-      this.fileDropperService = new pskl.service.FileDropperService(this.piskelController, $('#drawing-canvas-container').get(0));
+      this.fileDropperService = new pskl.service.FileDropperService(
+        this.piskelController,
+        document.querySelector('#drawing-canvas-container'));
       this.fileDropperService.init();
 
       if (this.isAppEngineVersion) {
@@ -173,13 +188,13 @@
       var canvasRenderer = new pskl.rendering.CanvasRenderer(firstFrame, 1);
       canvasRenderer.drawTransparentAs('rgba(0,0,0,0)');
       var firstFrameCanvas = canvasRenderer.render();
-      return firstFrameCanvas.toDataURL("image/png");
+      return firstFrameCanvas.toDataURL('image/png');
     },
 
     getFramesheetAsPng : function () {
       var renderer = new pskl.rendering.PiskelRenderer(this.piskelController);
       var framesheetCanvas = renderer.renderAsCanvas();
-      return framesheetCanvas.toDataURL("image/png");
+      return framesheetCanvas.toDataURL('image/png');
     }
   };
 })();

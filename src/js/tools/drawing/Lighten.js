@@ -5,14 +5,14 @@
  * @require pskl.utils
  */
 (function() {
-  var ns = $.namespace("pskl.tools.drawing");
+  var ns = $.namespace('pskl.tools.drawing');
   var DEFAULT_STEP = 3;
 
   ns.Lighten = function() {
     this.superclass.constructor.call(this);
-    this.toolId = "tool-lighten";
+    this.toolId = 'tool-lighten';
 
-    this.helpText = "Lighten";
+    this.helpText = 'Lighten';
 
     this.tooltipDescriptors = [
       {key : 'ctrl', description : 'Darken'},
@@ -51,7 +51,7 @@
 
     var isTransparent = pixelColor === Constants.TRANSPARENT_COLOR;
     var usedPixels = isDarken ? this.usedPixels_.darken : this.usedPixels_.lighten;
-    var key = col+'-'+row;
+    var key = col + '-' + row;
 
     var doNotModify = isTransparent || (isSinglePass && usedPixels[key]);
     if (doNotModify) {
@@ -68,6 +68,6 @@
       usedPixels[key] = true;
       this.superclass.applyToolAt.call(this, col, row, color.toRgbString(), frame, overlay, event);
     }
-
   };
+
 })();

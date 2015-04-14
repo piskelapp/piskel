@@ -1,11 +1,11 @@
 (function() {
-  var ns = $.namespace("pskl.tools.drawing");
+  var ns = $.namespace('pskl.tools.drawing');
 
   ns.VerticalMirrorPen = function() {
     this.superclass.constructor.call(this);
 
-    this.toolId = "tool-vertical-mirror-pen";
-    this.helpText = "Vertical Mirror pen";
+    this.toolId = 'tool-vertical-mirror-pen';
+    this.helpText = 'Vertical Mirror pen';
 
     this.tooltipDescriptors = [
       {key : 'ctrl', description : 'Use horizontal axis'},
@@ -47,7 +47,6 @@
     if (event.shiftKey) {
       this.superclass.applyToolAt.call(this, mirroredCol, mirroredRow, color, frame, overlay);
     }
-
 
     this.restorePreviousPositions_();
   };

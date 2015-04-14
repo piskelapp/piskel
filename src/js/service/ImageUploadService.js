@@ -1,10 +1,11 @@
 (function () {
-  var ns = $.namespace("pskl.service");
+  var ns = $.namespace('pskl.service');
   ns.ImageUploadService = function () {};
   ns.ImageUploadService.prototype.init = function () {};
 
   /**
-   * Upload a base64 image data to distant service. If successful, will call provided callback with the image URL as first argument;
+   * Upload a base64 image data to distant service.
+   * If successful, will call provided callback with the image URL as first argument;
    * @param {String} imageData base64 image data (such as the return value of canvas.toDataUrl())
    * @param {Function} success success callback. 1st argument will be the uploaded image URL
    * @param {Function} error error callback

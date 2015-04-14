@@ -20,7 +20,6 @@
       var merged = null;
       if (frames.length) {
         merged = frames[0].clone();
-        var w = merged.getWidth(), h = merged.getHeight();
         for (var i = 1 ; i < frames.length ; i++) {
           pskl.utils.FrameUtils.mergeFrames_(merged, frames[i]);
         }
@@ -49,32 +48,32 @@
      * @return {pskl.model.Frame} corresponding frame
      */
     createFromImage : function (image) {
-      var w = image.width,
-        h = image.height;
+      var w = image.width;
+      var h = image.height;
       var canvas = pskl.utils.CanvasUtils.createCanvas(w, h);
       var context = canvas.getContext('2d');
 
-      context.drawImage(image, 0,0,w,h,0,0,w,h);
-      var imgData = context.getImageData(0,0,w,h).data;
+      context.drawImage(image, 0, 0, w, h, 0, 0, w, h);
+      var imgData = context.getImageData(0, 0, w, h).data;
       return pskl.utils.FrameUtils.createFromImageData_(imgData, w, h);
     },
 
     createFromImageData_ : function (imageData, width, height) {
       // Draw the zoomed-up pixels to a different canvas context
       var grid = [];
-      for (var x = 0 ; x < width ; x++){
+      for (var x = 0 ; x < width ; x++) {
         grid[x] = [];
-        for (var y = 0 ; y < height ; y++){
+        for (var y = 0 ; y < height ; y++) {
           // Find the starting index in the one-dimensional image data
-          var i = (y * width + x)*4;
+          var i = (y * width + x) * 4;
           var r = imageData[i  ];
-          var g = imageData[i+1];
-          var b = imageData[i+2];
-          var a = imageData[i+3];
+          var g = imageData[i + 1];
+          var b = imageData[i + 2];
+          var a = imageData[i + 3];
           if (a < 125) {
             grid[x][y] = Constants.TRANSPARENT_COLOR;
           } else {
-            grid[x][y] = pskl.utils.rgbToHex(r,g,b);
+            grid[x][y] = pskl.utils.rgbToHex(r, g, b);
           }
         }
       }
@@ -98,11 +97,11 @@
       }
       var a = col1.a + col2.a * (1 - col1.a);
 
-      var r = ((col1.r * col1.a + col2.r * col2.a * (1 - col1.a)) / a)|0;
-      var g = ((col1.g * col1.a + col2.g * col2.a * (1 - col1.a)) / a)|0;
-      var b = ((col1.b * col1.a + col2.b * col2.a * (1 - col1.a)) / a)|0;
+      var r = ((col1.r * col1.a + col2.r * col2.a * (1 - col1.a)) / a) | 0;
+      var g = ((col1.g * col1.a + col2.g * col2.a * (1 - col1.a)) / a) | 0;
+      var b = ((col1.b * col1.a + col2.b * col2.a * (1 - col1.a)) / a) | 0;
 
-      return 'rgba('+r+','+g+','+b+','+a+')';
+      return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
     },
 
     /**
@@ -126,17 +125,17 @@
       } else if (c.indexOf('rgba(') != -1) {
         matches = /rgba\((\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(1|0\.\d+)\s*\)/.exec(c);
         color = {
-          r : parseInt(matches[1],10),
-          g : parseInt(matches[2],10),
-          b : parseInt(matches[3],10),
+          r : parseInt(matches[1], 10),
+          g : parseInt(matches[2], 10),
+          b : parseInt(matches[3], 10),
           a : parseFloat(matches[4])
         };
       } else if (c.indexOf('rgb(') != -1) {
         matches = /rgb\((\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/.exec(c);
         color = {
-          r : parseInt(matches[1],10),
-          g : parseInt(matches[2],10),
-          b : parseInt(matches[3],10),
+          r : parseInt(matches[1], 10),
+          g : parseInt(matches[2], 10),
+          b : parseInt(matches[3], 10),
           a : 1
         };
       } else {

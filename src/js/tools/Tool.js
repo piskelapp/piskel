@@ -2,8 +2,8 @@
   var ns = $.namespace('pskl.tools');
 
   ns.Tool = function () {
-    this.toolId = "tool";
-    this.helpText = "Abstract tool";
+    this.toolId = 'tool';
+    this.helpText = 'Abstract tool';
     this.tooltipDescriptors = [];
   };
 

@@ -81,7 +81,7 @@
     getBase64FromCanvas : function (canvas, format) {
       format = format || 'png';
       var data = canvas.toDataURL('image/' + format);
-      return data.substr(data.indexOf(',')+1);
+      return data.substr(data.indexOf(',') + 1);
     }
   };
 })();

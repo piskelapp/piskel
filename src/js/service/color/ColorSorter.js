@@ -5,7 +5,6 @@
   var LOW_LUM = 0.1;
   var HI_LUM = 0.9;
 
-
   var HUE_STEP = 36;
   var HUE_BAGS = 10;
   var HUE_BOUNDS = [];

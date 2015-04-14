@@ -93,7 +93,7 @@
         this.deserializer.deserialize(serializedPiskel, onPiskelLoadedCb);
       }
     } catch (error) {
-      console.error("[CRITICAL ERROR] : Unable to load a history state.");
+      console.error('[CRITICAL ERROR] : Unable to load a history state.');
       this.logError_(error);
       this.stateQueue = [];
       this.currentIndex = -1;
@@ -101,7 +101,7 @@
   };
 
   ns.HistoryService.prototype.logError_ = function (error) {
-    if (typeof error === "string") {
+    if (typeof error === 'string') {
       console.error(error);
     } else {
       console.error(error.message);
@@ -116,7 +116,7 @@
     // If the snapshot is stringified, parse it and backup the result for faster access next time
     // FIXME : Memory consumption might go crazy if we keep unpacking big piskels indefinitely
     // ==> should ensure I remove some of them :)
-    if (typeof piskelSnapshot === "string") {
+    if (typeof piskelSnapshot === 'string') {
       piskelSnapshot = JSON.parse(piskelSnapshot);
       state.piskel = piskelSnapshot;
     }
@@ -138,7 +138,7 @@
     }
 
     // Should only do this when going backwards
-    var lastState = this.stateQueue[index+1];
+    var lastState = this.stateQueue[index + 1];
     if (lastState) {
       this.setupState(lastState);
     }

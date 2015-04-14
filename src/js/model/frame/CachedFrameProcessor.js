@@ -1,8 +1,8 @@
 (function () {
   var ns = $.namespace('pskl.model.frame');
 
-
-  var DEFAULT_CLEAR_INTERVAL = 10 * 60 *1000;
+  // 10 * 60 * 1000 = 10 minutes
+  var DEFAULT_CLEAR_INTERVAL = 10 * 60 * 1000;
 
   var DEFAULT_FRAME_PROCESSOR = function (frame) {
     return pskl.utils.FrameUtils.toImage(frame);
@@ -46,7 +46,8 @@
 
   /**
    * Retrieve the processed frame from the cache, in the (optional) namespace
-   * If the first level cache is empty, attempt to clone it from 2nd level cache. If second level cache is empty process the frame.
+   * If the first level cache is empty, attempt to clone it from 2nd level cache.
+   * If second level cache is empty process the frame.
    * @param  {pskl.model.Frame} frame
    * @param  {String} namespace
    * @return {Object} the processed frame

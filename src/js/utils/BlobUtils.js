@@ -1,21 +1,19 @@
 (function () {
   var ns = $.namespace('pskl.utils');
 
-
-
   var BASE64_REGEX = /\s*;\s*base64\s*(?:;|$)/i;
 
   ns.BlobUtils = {
     dataToBlob : function(dataURI, type, callback) {
-      var header_end = dataURI.indexOf(","),
-          data = dataURI.substring(header_end + 1),
-          isBase64 = BASE64_REGEX.test(dataURI.substring(0, header_end)),
-          blob;
+      var headerEnd = dataURI.indexOf(',');
+      var data = dataURI.substring(headerEnd + 1);
+      var isBase64 = BASE64_REGEX.test(dataURI.substring(0, headerEnd));
+      var blob;
 
       if (Blob.fake) {
         // no reason to decode a data: URI that's just going to become a data URI again
         blob = new Blob();
-        blob.encoding = isBase64 ? "base64" : "URI";
+        blob.encoding = isBase64 ? 'base64' : 'URI';
         blob.data = data;
         blob.size = data.length;
       } else if (Uint8Array) {
@@ -25,11 +23,11 @@
       callback(blob);
     },
 
-    canvasToBlob : function(canvas, callback, type /*, ...args*/) {
-      type = type || "image/png";
+    canvasToBlob : function (canvas, callback, type /*, ...args*/) {
+      type = type || 'image/png';
 
       if (canvas.mozGetAsFile) {
-        callback(canvas.mozGetAsFile("canvas", type));
+        callback(canvas.mozGetAsFile('canvas', type));
       } else {
         var args = Array.prototype.slice.call(arguments, 2);
         var dataURI = canvas.toDataURL.apply(canvas, args);
@@ -38,8 +36,8 @@
     },
 
     stringToBlob : function (string, callback, type) {
-      type = type || "text/plain";
-      pskl.utils.BlobUtils.dataToBlob('data:'+type+',' + string, type, callback);
+      type = type || 'text/plain';
+      pskl.utils.BlobUtils.dataToBlob('data:' + type + ',' + string, type, callback);
     }
   };
 })();

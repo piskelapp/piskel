@@ -3,12 +3,12 @@
  *
  */
 (function() {
-  var ns = $.namespace("pskl.tools.drawing");
+  var ns = $.namespace('pskl.tools.drawing');
 
   ns.ColorSwap = function() {
-    this.toolId = "tool-colorswap";
+    this.toolId = 'tool-colorswap';
 
-    this.helpText = "Paint all pixels of the same color";
+    this.helpText = 'Paint all pixels of the same color';
 
     this.tooltipDescriptors = [
       {key : 'ctrl', description : 'Apply to all layers'},
@@ -37,7 +37,7 @@
   };
 
   ns.ColorSwap.prototype.swapColors = function(oldColor, newColor, allLayers, allFrames) {
-    var swapPixelColor = function (pixelColor,x,y,frame) {
+    var swapPixelColor = function (pixelColor, x, y, frame) {
       if (pixelColor == oldColor) {
         frame.pixels[x][y] = newColor;
       }

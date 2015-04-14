@@ -1,5 +1,5 @@
 (function () {
-  var ns = $.namespace("pskl.model");
+  var ns = $.namespace('pskl.model');
   var __idCounter = 0;
   ns.Frame = function (width, height) {
     if (width && height) {
@@ -16,7 +16,8 @@
 
   ns.Frame.fromPixelGrid = function (pixels) {
     if (pixels.length && pixels[0].length) {
-      var w = pixels.length, h = pixels[0].length;
+      var w = pixels.length;
+      var h = pixels[0].length;
       var frame = new pskl.model.Frame(w, h);
       frame.setPixels(pixels);
       return frame;
@@ -26,10 +27,10 @@
   };
 
   ns.Frame.createEmptyPixelGrid_ = function (width, height) {
-    var pixels = []; //new Array(width);
-    for (var columnIndex=0; columnIndex < width; columnIndex++) {
+    var pixels = [];
+    for (var columnIndex = 0 ; columnIndex < width ; columnIndex++) {
       var columnArray = [];
-      for(var heightIndex = 0; heightIndex < height; heightIndex++) {
+      for (var heightIndex = 0 ; heightIndex < height ; heightIndex++) {
         columnArray.push(Constants.TRANSPARENT_COLOR);
       }
       pixels[columnIndex] = columnArray;

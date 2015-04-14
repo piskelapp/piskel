@@ -5,10 +5,10 @@
     var h = frame.getHeight();
     clone.forEachPixel(function (color, x, y) {
       if (horizontal) {
-        x = w-x-1;
+        x = w - x - 1;
       }
       if (vertical) {
-        y = h-y-1;
+        y = h - y - 1;
       }
       frame.pixels[x][y] = color;
     });

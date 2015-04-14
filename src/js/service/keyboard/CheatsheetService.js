@@ -51,7 +51,6 @@
     this.isDisplayed = true;
   };
 
-
   ns.CheatsheetService.prototype.hideCheatsheet_ = function () {
     pskl.app.shortcutService.removeShortcut('ESC');
     this.cheatsheetEl.style.display = 'none';
@@ -64,43 +63,13 @@
     this.initMarkupForSelection_();
   };
 
-  ns.CheatsheetService.prototype.toDescriptor_ = function (shortcut, description, icon) {
-    if (pskl.utils.UserAgent.isMac) {
-      shortcut = shortcut.replace('ctrl', 'cmd');
-    }
-    return {
-      'shortcut' : shortcut,
-      'description' : description,
-      'icon' : icon
-    };
-  };
-
-  ns.CheatsheetService.prototype.getDomFromDescriptor_ = function (descriptor) {
-    var shortcutTemplate = pskl.utils.Template.get('cheatsheet-shortcut-template');
-    var markup = pskl.utils.Template.replace(shortcutTemplate, {
-      shortcutIcon : descriptor.icon,
-      shortcutDescription : descriptor.description,
-      shortcutKey : descriptor.shortcut
-    });
-
-    return pskl.utils.Template.createFromHTML(markup);
-  };
-
-  ns.CheatsheetService.prototype.initMarkupAbstract_ = function (descriptors, containerSelector) {
-    var container = $(containerSelector, this.cheatsheetEl).get(0);
-    for (var i = 0 ; i < descriptors.length ; i++) {
-      var descriptor = descriptors[i];
-      var shortcutEl = this.getDomFromDescriptor_(descriptor);
-      container.appendChild(shortcutEl);
-    }
-  };
-
   ns.CheatsheetService.prototype.initMarkupForTools_ = function () {
     var descriptors = pskl.app.toolController.tools.map(function (tool) {
       return this.toDescriptor_(tool.shortcut, tool.instance.getHelpText(), 'tool-icon ' + tool.instance.toolId);
     }.bind(this));
 
-    this.initMarkupAbstract_(descriptors, '.cheatsheet-tool-shortcuts');
+    var container = this.cheatsheetEl.querySelector('.cheatsheet-tool-shortcuts');
+    this.initMarkupForDescriptors_(descriptors, container);
   };
 
   ns.CheatsheetService.prototype.initMarkupForMisc_ = function () {
@@ -122,7 +91,8 @@
       this.toDescriptor_('alt + L', 'Toggle Layer Preview')
     ];
 
-    this.initMarkupAbstract_(descriptors, '.cheatsheet-misc-shortcuts');
+    var container = this.cheatsheetEl.querySelector('.cheatsheet-misc-shortcuts');
+    this.initMarkupForDescriptors_(descriptors, container);
   };
 
   ns.CheatsheetService.prototype.initMarkupForSelection_ = function () {
@@ -133,7 +103,37 @@
       this.toDescriptor_('del', 'Delete selection')
     ];
 
-    this.initMarkupAbstract_(descriptors, '.cheatsheet-selection-shortcuts');
+    var container = this.cheatsheetEl.querySelector('.cheatsheet-selection-shortcuts');
+    this.initMarkupForDescriptors_(descriptors, container);
+  };
+
+  ns.CheatsheetService.prototype.toDescriptor_ = function (shortcut, description, icon) {
+    if (pskl.utils.UserAgent.isMac) {
+      shortcut = shortcut.replace('ctrl', 'cmd');
+    }
+    return {
+      'shortcut' : shortcut,
+      'description' : description,
+      'icon' : icon
+    };
+  };
+
+  ns.CheatsheetService.prototype.initMarkupForDescriptors_ = function (descriptors, container) {
+    descriptors.forEach(function (descriptor) {
+      var shortcut = this.getDomFromDescriptor_(descriptor);
+      container.appendChild(shortcut);
+    }.bind(this));
+  };
+
+  ns.CheatsheetService.prototype.getDomFromDescriptor_ = function (descriptor) {
+    var shortcutTemplate = pskl.utils.Template.get('cheatsheet-shortcut-template');
+    var markup = pskl.utils.Template.replace(shortcutTemplate, {
+      shortcutIcon : descriptor.icon,
+      shortcutDescription : descriptor.description,
+      shortcutKey : descriptor.shortcut
+    });
+
+    return pskl.utils.Template.createFromHTML(markup);
   };
 
 })();

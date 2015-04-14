@@ -76,7 +76,7 @@
   };
 
   ns.ImportController.prototype.openPiskelFile_ = function (file) {
-    if (this.isPiskel_(file)){
+    if (this.isPiskel_(file)) {
       pskl.utils.PiskelFileUtils.loadFromFile(file, function (piskel, descriptor, fps) {
         piskel.setDescriptor(descriptor);
         pskl.app.piskelController.setPiskel(piskel);
@@ -117,5 +117,4 @@
       $.publish(Events.CLOSE_SETTINGS_DRAWER);
     }
   };
-
 })();

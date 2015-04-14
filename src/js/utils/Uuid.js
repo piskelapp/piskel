@@ -1,4 +1,4 @@
-(function(){
+(function () {
   var ns = $.namespace('pskl.utils');
 
   var s4 = function () {

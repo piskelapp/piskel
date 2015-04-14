@@ -73,7 +73,6 @@ module.exports = function(grunt) {
     },
     jshint: {
       options: {
-        indent:2,
         undef : true,
         latedef : true,
         browser : true,
@@ -209,22 +208,28 @@ module.exports = function(grunt) {
         linux64: true
       },
       src: ['./dest/**/*', "./package.json", "!./dest/desktop/"]
+    },
+    leadingIndent : {
+      options: {
+        indentation : "spaces"
+      },
+      css : ['src/css/**/*.css']
+    },
+    jscs : {
+      options : {
+        "preset": "google",
+        "maximumLineLength": 120,
+        "requireCamelCaseOrUpperCaseIdentifiers": "ignoreProperties",
+        "validateQuoteMarks": { "mark": "'", "escape": true },
+        "disallowMultipleVarDecl": "exceptUndefined",
+        "disallowSpacesInAnonymousFunctionExpression": null
+      },
+      js : [ 'src/js/**/*.js' , '!src/js/lib/**/*.js' ]
     }
   });
 
-  grunt.config.set('leadingIndent.indentation', 'spaces');
-  grunt.config.set('leadingIndent.jsFiles', {
-    src: [
-      'src/js/**/*.js',
-      '!src/js/lib/**/*.js'
-    ]
-  });
-  grunt.config.set('leadingIndent.cssFiles', {
-    src: ['src/css/**/*.css']
-  });
-
   // Validate
-  grunt.registerTask('lint', ['leadingIndent:jsFiles', 'leadingIndent:cssFiles', 'jshint']);
+  grunt.registerTask('lint', ['jscs:js', 'leadingIndent:css', 'jshint']);
 
   // karma/unit-tests task
   grunt.registerTask('unit-test', ['karma']);

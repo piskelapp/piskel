@@ -36,7 +36,6 @@
     this.renderFlag = true;
   };
 
-
   ns.PopupPreviewController.prototype.render = function (frame) {
     if (this.isOpen() && this.renderer) {
       this.renderer.render(frame);

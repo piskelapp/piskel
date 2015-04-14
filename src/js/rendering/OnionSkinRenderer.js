@@ -34,7 +34,7 @@
 
   ns.OnionSkinRenderer.prototype.getOnionFrames_ = function () {
     var frames = [];
-    
+
     var currentFrameIndex = this.piskelController.getCurrentFrameIndex();
     var layer = this.piskelController.getCurrentLayer();
 

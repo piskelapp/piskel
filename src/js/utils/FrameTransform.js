@@ -11,9 +11,9 @@
 
       clone.forEachPixel(function (color, x, y) {
         if (axis === ns.FrameTransform.VERTICAL) {
-          x = w-x-1;
+          x = w - x - 1;
         } else if (axis === ns.FrameTransform.HORIZONTAL) {
-          y = h-y-1;
+          y = h - y - 1;
         }
         frame.pixels[x][y] = color;
       });
@@ -29,18 +29,20 @@
       var h = frame.getHeight();
 
       var max =  Math.max(w, h);
-      var xDelta = Math.ceil((max - w)/2);
-      var yDelta = Math.ceil((max - h)/2);
+      var xDelta = Math.ceil((max - w) / 2);
+      var yDelta = Math.ceil((max - h) / 2);
 
       frame.forEachPixel(function (color, x, y) {
-        var _x = x, _y = y;
+        var _x = x;
+        var _y = y;
 
         // Convert to square coords
         x = x + xDelta;
         y = y + yDelta;
 
         // Perform the rotation
-        var tmpX = x, tmpY = y;
+        var tmpX = x;
+        var tmpY = y;
         if (direction === ns.FrameTransform.CLOCKWISE) {
           x = tmpY;
           y = max - 1 - tmpX;

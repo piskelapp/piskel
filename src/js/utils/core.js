@@ -1,11 +1,12 @@
 jQuery.namespace = function() {
-  var a=arguments, o=null, i, j, d;
-  for (i=0; i<a.length; i=i+1) {
-    d=a[i].split(".");
-    o=window;
-    for (j=0; j<d.length; j=j+1) {
-      o[d[j]]=o[d[j]] || {};
-      o=o[d[j]];
+  var a = arguments;
+  var o = null;
+  for (var i = 0; i < a.length ; i++) {
+    var d = a[i].split('.');
+    o = window;
+    for (var j = 0 ; j < d.length ; j++) {
+      o[d[j]] = o[d[j]] || {};
+      o = o[d[j]];
     }
   }
   return o;
@@ -16,19 +17,19 @@ jQuery.namespace = function() {
  */
 if (!Function.prototype.bind) {
   Function.prototype.bind = function (oThis) {
-    if (typeof this !== "function") {
+    if (typeof this !== 'function') {
       // closest thing possible to the ECMAScript 5
       // internal IsCallable function
-      throw new TypeError("Function.prototype.bind - what is trying to be bound is not callable");
+      throw new TypeError('Function.prototype.bind - what is trying to be bound is not callable');
     }
 
-    var bindArgs = Array.prototype.slice.call(arguments, 1),
-        fToBind = this,
-        fNOP = function () {},
-        fBound = function () {
-          var args = bindArgs.concat(Array.prototype.slice.call(arguments));
-          return fToBind.apply(this instanceof fNOP && oThis ? this : oThis, args);
-        };
+    var bindArgs = Array.prototype.slice.call(arguments, 1);
+    var fToBind = this;
+    var fNOP = function () {};
+    var fBound = function () {
+      var args = bindArgs.concat(Array.prototype.slice.call(arguments));
+      return fToBind.apply(this instanceof fNOP && oThis ? this : oThis, args);
+    };
 
     fNOP.prototype = this.prototype;
     fBound.prototype = new fNOP();
@@ -44,7 +45,7 @@ if (!Function.prototype.bind) {
  */
 (function() { // namespace: pskl.utils
 
-  var ns = $.namespace("pskl.utils");
+  var ns = $.namespace('pskl.utils');
 
   /**
    * Convert a rgb(Number, Number, Number) color to hexadecimal representation
@@ -54,7 +55,7 @@ if (!Function.prototype.bind) {
    * @return {String} hex representation of the color '#ABCDEF'
    */
   ns.rgbToHex = function (r, g, b) {
-    return "#" + pskl.utils.componentToHex(r) + pskl.utils.componentToHex(g) + pskl.utils.componentToHex(b);
+    return '#' + pskl.utils.componentToHex(r) + pskl.utils.componentToHex(g) + pskl.utils.componentToHex(b);
   };
 
   /**
@@ -64,7 +65,7 @@ if (!Function.prototype.bind) {
    */
   ns.componentToHex = function (c) {
     var hex = c.toString(16);
-    return hex.length == 1 ? "0" + hex : hex;
+    return hex.length == 1 ? '0' + hex : hex;
   };
 
   ns.normalize = function (value, def) {
@@ -106,27 +107,26 @@ if (!Function.prototype.bind) {
   };
 
   var entityMap = {
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': '&quot;',
-    "'": '&#39;',
-    "/": '&#x2F;'
+    '&' : '&amp;',
+    '<' : '&lt;',
+    '>' : '&gt;',
+    '"' : '&quot;',
+    '\'': '&#39;',
+    '/' : '&#x2F;'
   };
-  ns.escapeHtml= function (string) {
+  ns.escapeHtml = function (string) {
     return String(string).replace(/[&<>"'\/]/g, function (s) {
       return entityMap[s];
     });
   };
 
   var reEntityMap = {};
-  ns.unescapeHtml= function (string) {
+  ns.unescapeHtml = function (string) {
     Object.keys(entityMap).forEach(function(key) {
-      reEntityMap[key] = reEntityMap[key] || new RegExp(entityMap[key], "g");
+      reEntityMap[key] = reEntityMap[key] || new RegExp(entityMap[key], 'g');
       string = string.replace(reEntityMap[key], key);
     });
     return string;
   };
 
 })();
-

@@ -142,7 +142,7 @@
     if (this.fps === 0) {
       return this.piskelController.getCurrentFrameIndex();
     } else {
-      var index = Math.floor(this.elapsedTime / (1000/this.fps));
+      var index = Math.floor(this.elapsedTime / (1000 / this.fps));
       if (!this.piskelController.hasFrameAt(index)) {
         this.elapsedTime = 0;
         index = 0;
@@ -156,8 +156,8 @@
    */
   ns.PreviewController.prototype.calculateZoom_ = function () {
     var frame = this.piskelController.getCurrentFrame();
-    var hZoom = PREVIEW_SIZE / frame.getHeight(),
-        wZoom = PREVIEW_SIZE / frame.getWidth();
+    var hZoom = PREVIEW_SIZE / frame.getHeight();
+    var wZoom = PREVIEW_SIZE / frame.getWidth();
 
     return Math.min(hZoom, wZoom);
   };

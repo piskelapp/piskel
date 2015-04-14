@@ -45,7 +45,7 @@
 
   ns.PaletteImportService.prototype.getExtension_ = function (file) {
     var parts = file.name.split('.');
-    var extension = parts[parts.length-1];
+    var extension = parts[parts.length - 1];
     return extension.toLowerCase();
   };
 })();

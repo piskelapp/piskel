@@ -1,5 +1,5 @@
 (function () {
-  var ns = $.namespace("pskl");
+  var ns = $.namespace('pskl');
 
   ns.PixelUtils = {
 
@@ -7,9 +7,9 @@
       var rectangle = this.getOrderedRectangleCoordinates(x0, y0, x1, y1);
       var pixels = [];
 
-      for(var x = rectangle.x0; x <= rectangle.x1; x++) {
-        for(var y = rectangle.y0; y <= rectangle.y1; y++) {
-          pixels.push({"col": x, "row": y});
+      for (var x = rectangle.x0 ; x <= rectangle.x1 ; x++) {
+        for (var y = rectangle.y0 ; y <= rectangle.y1 ; y++) {
+          pixels.push({'col': x, 'row': y});
         }
       }
 
@@ -20,15 +20,15 @@
       var rectangle = this.getOrderedRectangleCoordinates(x0, y0, x1, y1);
       var pixels = [];
       // Creating horizontal sides of the rectangle:
-      for(var x = rectangle.x0; x <= rectangle.x1; x++) {
-        pixels.push({"col": x, "row": rectangle.y0});
-        pixels.push({"col": x, "row": rectangle.y1});
+      for (var x = rectangle.x0; x <= rectangle.x1; x++) {
+        pixels.push({'col': x, 'row': rectangle.y0});
+        pixels.push({'col': x, 'row': rectangle.y1});
       }
 
       // Creating vertical sides of the rectangle:
-      for(var y = rectangle.y0; y <= rectangle.y1; y++) {
-        pixels.push({"col": rectangle.x0, "row": y});
-        pixels.push({"col": rectangle.x1, "row": y});
+      for (var y = rectangle.y0; y <= rectangle.y1; y++) {
+        pixels.push({'col': rectangle.x0, 'row': y});
+        pixels.push({'col': rectangle.x1, 'row': y});
       }
 
       return pixels;
@@ -64,7 +64,7 @@
       // in a fake cloned frame. The returned pixels by the paintbucket algo are the painted pixels
       // and are as well connected.
       var fakeFrame = frame.clone(); // We just want to
-      var fakeFillColor = "sdfsdfsdf"; // A fake color that will never match a real color.
+      var fakeFillColor = 'sdfsdfsdf'; // A fake color that will never match a real color.
       var paintedPixels = this.paintSimilarConnectedPixelsFromFrame(fakeFrame, col, row, fakeFillColor);
 
       return paintedPixels;
@@ -106,40 +106,39 @@
       var targetColor;
       try {
         targetColor = frame.getPixel(col, row);
-      } catch(e) {
+      } catch (e) {
         // Frame out of bound exception.
       }
 
-      if(targetColor == replacementColor) {
+      if (targetColor == replacementColor) {
         return;
       }
 
-
-      queue.push({"col": col, "row": row});
+      queue.push({'col': col, 'row': row});
       var loopCount = 0;
       var cellCount = frame.getWidth() * frame.getHeight();
-      while(queue.length > 0) {
+      while (queue.length > 0) {
         loopCount ++;
 
         var currentItem = queue.pop();
         frame.setPixel(currentItem.col, currentItem.row, replacementColor);
-        paintedPixels.push({"col": currentItem.col, "row": currentItem.row });
+        paintedPixels.push({'col': currentItem.col, 'row': currentItem.row});
 
         for (var i = 0; i < 4; i++) {
           var nextCol = currentItem.col + dx[i];
           var nextRow = currentItem.row + dy[i];
           try {
             if (frame.containsPixel(nextCol, nextRow)  && frame.getPixel(nextCol, nextRow) == targetColor) {
-              queue.push({"col": nextCol, "row": nextRow });
+              queue.push({'col': nextCol, 'row': nextRow});
             }
-          } catch(e) {
+          } catch (e) {
             // Frame out of bound exception.
           }
         }
 
         // Security loop breaker:
-        if(loopCount > 10 * cellCount) {
-          console.log("loop breaker called");
+        if (loopCount > 10 * cellCount) {
+          console.log('loop breaker called');
           break;
         }
       }

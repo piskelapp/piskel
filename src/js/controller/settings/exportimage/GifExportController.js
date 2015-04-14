@@ -1,5 +1,5 @@
 (function () {
-  var ns = $.namespace("pskl.controller.settings.exportimage");
+  var ns = $.namespace('pskl.controller.settings.exportimage');
 
   var URL_MAX_LENGTH = 30;
   var MAX_GIF_COLORS = 256;
@@ -26,17 +26,17 @@
   }
 
   ns.GifExportController.prototype.init = function () {
-    this.optionTemplate_ = pskl.utils.Template.get("gif-export-option-template");
+    this.optionTemplate_ = pskl.utils.Template.get('gif-export-option-template');
 
-    this.uploadStatusContainerEl = document.querySelector(".gif-upload-status");
+    this.uploadStatusContainerEl = document.querySelector('.gif-upload-status');
 
-    this.previewContainerEl = document.querySelector(".gif-export-preview");
-    this.selectResolutionEl = document.querySelector(".gif-export-select-resolution");
+    this.previewContainerEl = document.querySelector('.gif-export-preview');
+    this.selectResolutionEl = document.querySelector('.gif-export-select-resolution');
 
-    this.uploadButton = document.querySelector(".gif-upload-button");
+    this.uploadButton = document.querySelector('.gif-upload-button');
     this.addEventListener(this.uploadButton, 'click', this.onUploadButtonClick_);
 
-    this.downloadButton = document.querySelector(".gif-download-button");
+    this.downloadButton = document.querySelector('.gif-download-button');
     this.addEventListener(this.downloadButton, 'click', this.onDownloadButtonClick_);
 
     this.createOptionElements_();
@@ -44,50 +44,52 @@
 
   ns.GifExportController.prototype.onUploadButtonClick_ = function (evt) {
     evt.preventDefault();
-    var zoom = this.getSelectedZoom_(),
-        fps = this.piskelController.getFPS();
+    var zoom = this.getSelectedZoom_();
+    var fps = this.piskelController.getFPS();
 
     this.renderAsImageDataAnimatedGIF(zoom, fps, this.uploadImageData_.bind(this));
   };
 
   ns.GifExportController.prototype.onDownloadButtonClick_ = function (evt) {
-    var zoom = this.getSelectedZoom_(),
-        fps = this.piskelController.getFPS();
+    var zoom = this.getSelectedZoom_();
+    var fps = this.piskelController.getFPS();
 
     this.renderAsImageDataAnimatedGIF(zoom, fps, this.downloadImageData_.bind(this));
   };
 
   ns.GifExportController.prototype.downloadImageData_ = function (imageData) {
     var fileName = this.piskelController.getPiskel().getDescriptor().name + '.gif';
-    pskl.utils.BlobUtils.dataToBlob(imageData, "image/gif", function(blob) {
+    pskl.utils.BlobUtils.dataToBlob(imageData, 'image/gif', function(blob) {
       pskl.utils.FileUtils.downloadAsFile(blob, fileName);
     });
   };
 
   ns.GifExportController.prototype.uploadImageData_ = function (imageData) {
     this.updatePreview_(imageData);
-    this.previewContainerEl.classList.add("preview-upload-ongoing");
+    this.previewContainerEl.classList.add('preview-upload-ongoing');
 
-    pskl.app.imageUploadService.upload(imageData, this.onImageUploadCompleted_.bind(this), this.onImageUploadFailed_.bind(this));
+    pskl.app.imageUploadService.upload(imageData,
+      this.onImageUploadCompleted_.bind(this),
+      this.onImageUploadFailed_.bind(this));
   };
 
   ns.GifExportController.prototype.onImageUploadCompleted_ = function (imageUrl) {
     this.updatePreview_(imageUrl);
     this.updateStatus_(imageUrl);
-    this.previewContainerEl.classList.remove("preview-upload-ongoing");
+    this.previewContainerEl.classList.remove('preview-upload-ongoing');
   };
 
   ns.GifExportController.prototype.onImageUploadFailed_ = function (event, xhr) {
     if (xhr.status === 500) {
       $.publish(Events.SHOW_NOTIFICATION, [{
-        "content": "Upload failed : " + xhr.responseText,
-        "hideDelay" : 5000
+        'content': 'Upload failed : ' + xhr.responseText,
+        'hideDelay' : 5000
       }]);
     }
   };
 
   ns.GifExportController.prototype.updatePreview_ = function (src) {
-    this.previewContainerEl.innerHTML = "<div><img style='max-width:32px;' src='"+src+"'/></div>";
+    this.previewContainerEl.innerHTML = '<div><img style="max-width:32px;"src="' + src + '"/></div>';
   };
 
   ns.GifExportController.prototype.getSelectedZoom_ = function () {
@@ -104,15 +106,17 @@
 
   ns.GifExportController.prototype.createOptionForResolution_ = function (resolution) {
     var zoom = resolution.zoom;
-    var label = zoom*this.piskelController.getWidth() + "x" + zoom*this.piskelController.getHeight();
-    var value = zoom;
+    var label = zoom * this.piskelController.getWidth() + 'x' + zoom * this.piskelController.getHeight();
 
     var isSelected = zoom === DEFAULT_EXPORT_ZOOM;
     var selected = isSelected ? 'selected' : '';
-    var optionHTML = pskl.utils.Template.replace(this.optionTemplate_, {value : value, label : label, selected : selected});
-    var optionEl = pskl.utils.Template.createFromHTML(optionHTML);
+    var optionHTML = pskl.utils.Template.replace(this.optionTemplate_, {
+      'value' : zoom,
+      'label' : label,
+      'selected' : selected
+    });
 
-    return optionEl;
+    return pskl.utils.Template.createFromHTML(optionHTML);
   };
 
   ns.GifExportController.prototype.renderAsImageDataAnimatedGIF = function(zoom, fps, cb) {
@@ -130,7 +134,7 @@
       transparent : parseInt(transparentColor.substring(1), 16)
     });
 
-    for (var i = 0; i < this.piskelController.getFrameCount(); i++) {
+    for (var i = 0 ; i < this.piskelController.getFrameCount() ; i++) {
       var frame = this.piskelController.getFrameAt(i);
       var canvasRenderer = new pskl.rendering.CanvasRenderer(frame, zoom);
       canvasRenderer.drawTransparentAs(transparentColor);
@@ -140,9 +144,9 @@
       });
     }
 
-    $.publish(Events.SHOW_PROGRESS, [{"name": 'Building animated GIF ...'}]);
+    $.publish(Events.SHOW_PROGRESS, [{'name': 'Building animated GIF ...'}]);
     gif.on('progress', function(percentage) {
-      $.publish(Events.UPDATE_PROGRESS, [{"progress": (percentage*100).toFixed(1)}]);
+      $.publish(Events.UPDATE_PROGRESS, [{'progress': (percentage * 100).toFixed(1)}]);
     }.bind(this));
 
     gif.on('finished', function(blob) {
@@ -167,7 +171,7 @@
   // FIXME : JD : HORRIBLE COPY/PASTA (JD later : where???)
   ns.GifExportController.prototype.updateStatus_ = function (imageUrl, error) {
     if (imageUrl) {
-      var linkTpl = "<a class='image-link' href='{{link}}' target='_blank'>{{shortLink}}</a>";
+      var linkTpl = '<a class="image-link" href="{{link}}" target="_blank">{{shortLink}}</a>';
       var linkHtml = pskl.utils.Template.replace(linkTpl, {
         link : imageUrl,
         shortLink : this.shorten_(imageUrl, URL_MAX_LENGTH, '...')
@@ -180,7 +184,7 @@
 
   ns.GifExportController.prototype.shorten_ = function (url, maxLength, suffix) {
     if (url.length > maxLength) {
-      var index = Math.round((maxLength-suffix.length) / 2);
+      var index = Math.round((maxLength - suffix.length) / 2);
       var part1 = url.substring(0, index);
       var part2 = url.substring(url.length - index, url.length);
       url = part1 + suffix + part2;
