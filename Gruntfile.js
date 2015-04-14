@@ -71,6 +71,23 @@ module.exports = function(grunt) {
     clean: {
       before: ['dest']
     },
+    leadingIndent : {
+      options: {
+        indentation : "spaces"
+      },
+      css : ['src/css/**/*.css']
+    },
+    jscs : {
+      options : {
+        "preset": "google",
+        "maximumLineLength": 120,
+        "requireCamelCaseOrUpperCaseIdentifiers": "ignoreProperties",
+        "validateQuoteMarks": { "mark": "'", "escape": true },
+        "disallowMultipleVarDecl": "exceptUndefined",
+        "disallowSpacesInAnonymousFunctionExpression": null
+      },
+      js : [ 'src/js/**/*.js' , '!src/js/**/lib/**/*.js' ]
+    },
     jshint: {
       options: {
         undef : true,
@@ -84,7 +101,7 @@ module.exports = function(grunt) {
         'Gruntfile.js',
         'package.json',
         'src/js/**/*.js',
-        '!src/js/lib/**/*.js' // Exclude lib folder (note the leading !)
+        '!src/js/**/lib/**/*.js' // Exclude lib folder (note the leading !)
       ]
     },
     express: {
@@ -208,23 +225,6 @@ module.exports = function(grunt) {
         linux64: true
       },
       src: ['./dest/**/*', "./package.json", "!./dest/desktop/"]
-    },
-    leadingIndent : {
-      options: {
-        indentation : "spaces"
-      },
-      css : ['src/css/**/*.css']
-    },
-    jscs : {
-      options : {
-        "preset": "google",
-        "maximumLineLength": 120,
-        "requireCamelCaseOrUpperCaseIdentifiers": "ignoreProperties",
-        "validateQuoteMarks": { "mark": "'", "escape": true },
-        "disallowMultipleVarDecl": "exceptUndefined",
-        "disallowSpacesInAnonymousFunctionExpression": null
-      },
-      js : [ 'src/js/**/*.js' , '!src/js/lib/**/*.js' ]
     }
   });
 
@@ -238,6 +238,7 @@ module.exports = function(grunt) {
   grunt.registerTask('test-travis', ['lint', 'unit-test', 'express:test', 'ghost:travis']);
   // Validate & Test (faster version) will NOT work on travis !!
   grunt.registerTask('test-local', ['lint', 'unit-test', 'express:test', 'ghost:local']);
+  grunt.registerTask('test-local-nolint', ['unit-test', 'express:test', 'ghost:local']);
 
   grunt.registerTask('test', ['test-travis']);
   grunt.registerTask('precommit', ['test-local']);
