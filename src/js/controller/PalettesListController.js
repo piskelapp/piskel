@@ -89,8 +89,8 @@
       colors = palette.getColors();
     }
 
-    if (colors.length > Constants.MAX_CURRENT_COLORS_DISPLAYED) {
-      colors = colors.slice(0, Constants.MAX_CURRENT_COLORS_DISPLAYED);
+    if (colors.length > Constants.MAX_PALETTE_COLORS) {
+      colors = colors.slice(0, Constants.MAX_PALETTE_COLORS);
     }
 
     return colors;

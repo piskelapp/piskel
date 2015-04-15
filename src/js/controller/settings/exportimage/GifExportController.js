@@ -120,7 +120,7 @@
   };
 
   ns.GifExportController.prototype.renderAsImageDataAnimatedGIF = function(zoom, fps, cb) {
-    var currentColors = pskl.app.currentColorsService.computeCurrentColors();
+    var currentColors = pskl.app.currentColorsService.getCurrentColors();
 
     var preserveColors = currentColors.length < MAX_GIF_COLORS;
     var transparentColor = this.getTransparentColor(currentColors);

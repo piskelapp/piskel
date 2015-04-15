@@ -14,7 +14,7 @@
   };
 
   ns.PaletteImageReader.prototype.onImageLoaded_ = function (image) {
-    var imageProcessor = new pskl.worker.ImageProcessor(image,
+    var imageProcessor = new pskl.worker.imageprocessor.ImageProcessor(image,
       this.onWorkerSuccess_.bind(this),
       this.onWorkerStep_.bind(this),
       this.onWorkerError_.bind(this));
@@ -30,7 +30,7 @@
 
     var colors = Object.keys(colorsMap);
 
-    if (colors.length > 200) {
+    if (colors.length > Constants.MAX_PALETTE_COLORS) {
       this.onError('Too many colors : ' + colors.length);
     } else {
       var uuid = pskl.utils.Uuid.generate();

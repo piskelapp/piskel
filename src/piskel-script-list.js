@@ -4,6 +4,8 @@
   // Core libraries
   "js/lib/jquery-1.8.0.js","js/lib/jquery-ui-1.10.3.custom.js","js/lib/pubsub.js","js/lib/bootstrap/bootstrap.js",
 
+
+
   // Application wide configuration
   "js/Constants.js",
   "js/Events.js",
@@ -51,6 +53,9 @@
   // Spectrum color-picker library
   "js/lib/spectrum/spectrum.js",
 
+  // Promises
+  "js/lib/q.js",
+
   // Application libraries-->
   "js/rendering/DrawingLoop.js",
 
@@ -59,6 +64,7 @@
   "js/model/Layer.js",
   "js/model/piskel/Descriptor.js",
   "js/model/frame/CachedFrameProcessor.js",
+  "js/model/frame/AsyncCachedFrameProcessor.js",
   "js/model/Palette.js",
   "js/model/Piskel.js",
 
@@ -187,8 +193,11 @@
   "js/devtools/MouseEvent.js",
   "js/devtools/TestRecordController.js",
   "js/devtools/init.js",
+  "js/devtools/lib/Blob.js",
 
   // Workers
+  "js/worker/framecolors/FrameColorsWorker.js",
+  "js/worker/framecolors/FrameColors.js",
   "js/worker/hash/HashWorker.js",
   "js/worker/hash/Hash.js",
   "js/worker/imageprocessor/ImageProcessorWorker.js",
@@ -196,6 +205,7 @@
 
   // Application controller and initialization
   "js/app.js",
+
   // Bonus features !!
   "js/snippets.js"
 ];
