@@ -21,7 +21,7 @@
     if (savePath) {
       this.savePiskel(savePath);
     } else {
-      this.savePiskelAs(savePath);
+      this.savePiskelAs();
     }
   };
 
@@ -47,14 +47,30 @@
     });
   };
 
-  ns.DesktopStorageService.prototype.savePiskelAs = function (savePath) {
+  ns.DesktopStorageService.prototype.savePiskelAs = function () {
     var serialized = this.piskelController.serialize();
+    var name = this.piskelController.getPiskel().getDescriptor().name;
     // TODO: if there is already a file path, use it for the dialog's
     // working directory and filename
-    pskl.utils.FileUtilsDesktop.saveAs(serialized, null, 'piskel', function (selectedSavePath) {
+    pskl.utils.FileUtilsDesktop.saveAs(serialized, name, 'piskel', function (selectedSavePath) {
       this.piskelController.setSavePath(selectedSavePath);
+
+      var filename = this.extractFilename_(selectedSavePath);
+      if (filename) {
+        var descriptor = this.piskelController.getPiskel().getDescriptor();
+        descriptor.name = filename;
+        this.piskelController.getPiskel().setDescriptor(descriptor);
+      }
+
       this.onSaveSuccess_();
     }.bind(this));
+  };
+
+  ns.DesktopStorageService.prototype.extractFilename_ = function (savePath) {
+    var matches = (/[\/\\]([^\/\\]*)\.piskel$/gi).exec(savePath);
+    if (matches && matches[1]) {
+      return matches[1];
+    }
   };
 
   ns.DesktopStorageService.prototype.onSaveSuccess_ = function () {

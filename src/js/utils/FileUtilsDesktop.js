@@ -5,6 +5,8 @@
     e.stopPropagation();
   };
 
+  var CONFIRM_OVERRIDE = 'File already exists, do you want to override it ?';
+
   ns.FileUtilsDesktop = {
 
     chooseFileDialog: function (callback) {
@@ -17,37 +19,44 @@
       $chooser.trigger('click');
     },
 
+    addExtensionIfNeeded : function (filename, extension) {
+      if (typeof extension == 'string') {
+        if (extension[0] !== '.') {
+          extension = '.' + extension;
+        }
+        var hasExtension = (filename.substring(filename.length - extension.length) === extension);
+        if (!hasExtension) {
+          filename += extension;
+        }
+      }
+      return filename;
+    },
+
     /**
      *
      * @param content
-     * @param defaultFileName - file name to pre-populate the dialog
+     * @param defaultFilename - file name to pre-populate the dialog
      * @param extension - if supplied, the selected extension will guaranteed to be on the filename -
      * NOTE: there is a possible danger here... If the extension is added to a fileName, but there
      * is already another file of the same name *with* the extension, it will get overwritten.
      * @param callback
      */
-    saveAs: function (content, defaultFileName, extension, callback) {
+    saveAs: function (content, defaultFilename, extension, callback) {
       // NodeWebkit has no js api for opening the save dialog.
       // Instead, it adds two new attributes to the anchor tag: nwdirectory and nwsaveas
       // (see: https://github.com/nwjs/nw.js/wiki/File-dialogs )
-      defaultFileName = defaultFileName || '';
-      var tagString = '<input type="file" nwsaveas="' + defaultFileName + '" nwworkingdir=""/>';
+      defaultFilename = defaultFilename || 'New Piskel';
+      defaultFilename = pskl.utils.FileUtilsDesktop.addExtensionIfNeeded(defaultFilename, extension);
+      var tagString = '<input type="file" accept=".piskel" nwsaveas="' + defaultFilename + '" nwworkingdir=""/>';
       var $chooser = $(tagString);
       $chooser.change(function (e) {
         var filename = $(this).val();
-        if (typeof extension == 'string') {
-          if (extension[0] !== '.') {
-            extension = '.' + extension;
-          }
-          var hasExtension = (filename.substring(filename.length - extension.length) === extension);
-          if (!hasExtension) {
-            filename += extension;
-          }
-        }
+        filename = pskl.utils.FileUtilsDesktop.addExtensionIfNeeded(filename, extension);
         pskl.utils.FileUtilsDesktop.saveToFile(content, filename, function () {
           callback(filename);
         });
       });
+
       $chooser.trigger('click');
     },
 

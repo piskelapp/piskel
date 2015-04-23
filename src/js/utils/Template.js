@@ -21,6 +21,11 @@
       return dummyEl.children[0];
     },
 
+    insert : function (parent, position, templateId, dict) {
+      var html = pskl.utils.Template.getAndReplace(templateId, dict);
+      parent.insertAdjacentHTML(position, html);
+    },
+
     getAndReplace : function (templateId, dict) {
       var result = '';
       var tpl = pskl.utils.Template.get(templateId);

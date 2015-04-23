@@ -14,64 +14,69 @@
     // timestamp used to generate unique name when saving as .piskel
     this.timestamp = new Date();
 
+    this.insertPartials_();
+
     // Only available in app-engine mode
     this.piskelName = document.querySelector('.piskel-name');
-
     this.saveOnlineStatus = document.querySelector('#save-online-status');
     this.saveFileStatus = document.querySelector('#save-file-status');
+    this.descriptionInput = document.querySelector('#save-description');
+    this.nameInput =  document.querySelector('#save-name');
+    this.saveOnlineButton = document.querySelector('#save-online-button');
+    this.isPublicCheckbox = document.querySelector('input[name=save-public-checkbox]');
 
     var descriptor = this.piskelController.getPiskel().getDescriptor();
-    this.descriptionInput = document.querySelector('#save-description');
     this.descriptionInput.value = descriptor.description;
-
-    this.isPublicCheckbox = document.querySelector('input[name=save-public-checkbox]');
+    this.nameInput.value = descriptor.name;
     if (descriptor.isPublic) {
       this.isPublicCheckbox.setAttribute('checked', true);
     }
 
     if (pskl.utils.Environment.detectNodeWebkit()) {
-      // hide 'save in browser'
-      var saveInBrowserSection = document.querySelector('#save-in-browser');
-      saveInBrowserSection.style.display = 'none';
+      this.addEventListener('#save-as-button', 'click', this.saveAs_);
     }
 
     this.addEventListener('#save-file-button', 'click', this.saveFile_);
-
     this.addEventListener('#save-browser-button', 'click', this.saveLocal_);
-
-    this.saveOnlineButton = document.querySelector('#save-online-button');
     this.addEventListener(this.saveOnlineButton, 'click', this.saveOnline_);
-
     this.addEventListener('form[name=save-form]', 'submit', this.onSaveFormSubmit_);
 
-    this.nameInput =  document.querySelector('#save-name');
-    this.nameInput.value = descriptor.name;
-    this.addEventListener(this.nameInput, 'keyup', this.updateLocalStatusFilename_);
-
     if (pskl.app.isLoggedIn()) {
-      this.saveOnlineStatus.innerHTML = pskl.utils.Template.get('save-online-status-partial');
+      pskl.utils.Template.insert(this.saveOnlineStatus, 'beforeend', 'save-online-status-partial');
     } else {
-      this.saveOnlineStatus.innerHTML = pskl.utils.Template.get('save-please-login-partial');
+      pskl.utils.Template.insert(this.saveOnlineStatus, 'beforeend', 'save-please-login-partial');
       var container = document.querySelector('.setting-save-section');
       container.classList.add('anonymous');
     }
-
-    this.updateLocalStatusFilename_();
   };
 
-  ns.SaveController.prototype.updateLocalStatusFilename_ = function () {
+  ns.SaveController.prototype.insertPartials_ = function () {
+    var partials = [];
     if (pskl.utils.Environment.detectNodeWebkit()) {
-      var fileName = this.piskelController.getSavePath();
-      if (fileName !== null) {
-        this.saveFileStatus.innerHTML = pskl.utils.Template.getAndReplace('save-file-status-desktop-template', {
-          name : this.piskelController.getSavePath()
-        });
-      }
+      partials = [
+        'save-file-nw-partial',
+        'save-localstorage-partial',
+        'save-online-partial'
+      ];
+    } else if (pskl.app.isLoggedIn()) {
+      partials = [
+        'save-online-partial',
+        'save-localstorage-partial',
+        'save-file-partial'
+      ];
     } else {
-      this.saveFileStatus.innerHTML = pskl.utils.Template.getAndReplace('save-file-status-template', {
-        name : this.getLocalFilename_()
-      });
+      partials = [
+        'save-file-partial',
+        'save-localstorage-partial',
+        'save-online-partial'
+      ];
     }
+
+    var container = document.querySelector('.save-form');
+    partials.forEach(function (partial) {
+      pskl.utils.Template.insert(container, 'beforeend', partial);
+    });
+
   };
 
   ns.SaveController.prototype.getLocalFilename_ = function () {
@@ -141,10 +146,14 @@
   ns.SaveController.prototype.saveFile_ = function () {
     // detect if this is running in NodeWebkit
     if (pskl.utils.Environment.detectNodeWebkit()) {
-      this.saveFileDesktop_();
+      pskl.app.desktopStorageService.save();
     } else {
       this.saveFileBrowser_();
     }
+  };
+
+  ns.SaveController.prototype.saveAs_ = function () {
+    pskl.app.desktopStorageService.savePiskelAs();
   };
 
   ns.SaveController.prototype.saveFileBrowser_ = function () {
@@ -154,10 +163,6 @@
       this.onSaveSuccess_();
       this.afterSaving_();
     }.bind(this), 'application/piskel+json');
-  };
-
-  ns.SaveController.prototype.saveFileDesktop_ = function () {
-    pskl.app.desktopStorageService.save();
   };
 
   ns.SaveController.prototype.getName = function () {
