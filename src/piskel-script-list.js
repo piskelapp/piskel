@@ -133,6 +133,7 @@
   // Widgets
   "js/widgets/ColorsList.js",
   "js/widgets/HslRgbColorPicker.js",
+  "js/widgets/SizeInput.js",
 
   // Services
   "js/service/LocalStorageService.js",

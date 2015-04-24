@@ -11,4 +11,9 @@
     this.pngExportController.init();
     this.gifExportController.init();
   };
+
+  ns.ImageExportController.prototype.destroy = function () {
+    this.pngExportController.destroy();
+    this.gifExportController.destroy();
+  };
 })();

@@ -10,7 +10,6 @@
   pskl.utils.inherit(ns.PngExportController, pskl.controller.settings.AbstractSettingController);
 
   ns.PngExportController.prototype.init = function () {
-    this.previewContainerEl = document.querySelector('.png-export-preview');
     this.pngFilePrefixInput = document.getElementById('zip-prefix-name');
     this.pngFilePrefixInput.value = 'sprite_';
 
@@ -19,8 +18,6 @@
 
     var zipButton = document.querySelector('.zip-generate-button');
     this.addEventListener(zipButton, 'click', this.onZipButtonClick_);
-
-    this.updatePreview_(this.getFramesheetAsCanvas().toDataURL('image/png'));
   };
 
   ns.PngExportController.prototype.onPngDownloadButtonClick_ = function (evt) {
@@ -65,12 +62,6 @@
     return renderer.renderAsCanvas();
   };
 
-  ns.PngExportController.prototype.onImageUploadCompleted_ = function (imageUrl) {
-    this.updatePreview_(imageUrl);
-    this.updateStatus_(imageUrl);
-    this.previewContainerEl.classList.remove('preview-upload-ongoing');
-  };
-
   ns.PngExportController.prototype.updateStatus_ = function (imageUrl, error) {
     if (imageUrl) {
       var linkTpl = '<a class="image-link" href="{{link}}" target="_blank">{{shortLink}}</a>';
@@ -82,10 +73,6 @@
     } else {
       // FIXME : Should display error message instead
     }
-  };
-
-  ns.PngExportController.prototype.updatePreview_ = function (src) {
-    this.previewContainerEl.innerHTML = '<img class="light-picker-background" src="' + src + '"/>';
   };
 
   ns.PngExportController.prototype.shorten_ = function (url, maxLength, suffix) {
