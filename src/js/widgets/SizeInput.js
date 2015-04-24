@@ -57,5 +57,4 @@
       this.widthInput.value = Math.round(value * this.initWidth / this.initHeight);
     }
   };
-
 })();

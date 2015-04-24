@@ -30,7 +30,6 @@
     this.addEventListener(this.resizeContentCheckbox, 'change', this.onResizeContentChange_);
     this.addEventListener(this.maintainRatioCheckbox, 'change', this.onMaintainRatioChange_);
 
-
     this.defaultSizeController.init();
   };
 

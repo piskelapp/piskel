@@ -30,12 +30,14 @@
 
     this.uploadStatusContainerEl = document.querySelector('.gif-upload-status');
     this.previewContainerEl = document.querySelector('.gif-export-preview');
-    this.widthInput= document.querySelector('.export-gif-resize-width');
-    this.heightInput= document.querySelector('.export-gif-resize-height');
+    this.widthInput = document.querySelector('.export-gif-resize-width');
+    this.heightInput = document.querySelector('.export-gif-resize-height');
     this.uploadButton = document.querySelector('.gif-upload-button');
     this.downloadButton = document.querySelector('.gif-download-button');
 
-    this.sizeInputWidget = new pskl.widgets.SizeInput(this.widthInput, this.heightInput, this.piskelController.getWidth(), this.piskelController.getHeight());
+    this.sizeInputWidget = new pskl.widgets.SizeInput(
+      this.widthInput, this.heightInput,
+      this.piskelController.getWidth(), this.piskelController.getHeight());
 
     this.addEventListener(this.uploadButton, 'click', this.onUploadButtonClick_);
     this.addEventListener(this.downloadButton, 'click', this.onDownloadButtonClick_);
