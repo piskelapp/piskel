@@ -218,6 +218,7 @@ module.exports = function(grunt) {
     },
     nodewebkit: {
       options: {
+        version : "0.11.5",
         build_dir: './dest/desktop/', // destination folder of releases.
         mac: true,
         win: true,
@@ -256,4 +257,5 @@ module.exports = function(grunt) {
 
   // Start webserver on src folder, in debug mode
   grunt.registerTask('serve-debug', ['express:debug', 'open:debug', 'express-keepalive']);
+  grunt.registerTask('play', ['serve-debug']);
 };
