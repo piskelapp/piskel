@@ -113,7 +113,7 @@
 
       this.beforeSaving_();
 
-      this.saveOnlineButton.attr('disabled', true);
+      this.saveOnlineButton.setAttribute('disabled', true);
       this.saveOnlineStatus.innerHTML = 'Saving ...';
 
       pskl.app.storageService.store({
@@ -205,7 +205,7 @@
   };
 
   ns.SaveController.prototype.afterOnlineSaving_ = function () {
-    this.saveOnlineButton.attr('disabled', false);
+    this.saveOnlineButton.setAttribute('disabled', false);
     this.saveOnlineStatus.innerHTML = '';
     this.afterSaving_();
   };
