@@ -73,3 +73,11 @@
   border-top-color: #999;
   border-bottom-color: #555;
 }
+
+.import-size-field,
+.resize-size-field,
+.export-size-field  {
+  width: 50px;
+  margin-right: 8px;
+  text-align: right;
+}

@@ -29,29 +29,35 @@
     this.optionTemplate_ = pskl.utils.Template.get('gif-export-option-template');
 
     this.uploadStatusContainerEl = document.querySelector('.gif-upload-status');
-
     this.previewContainerEl = document.querySelector('.gif-export-preview');
-    this.selectResolutionEl = document.querySelector('.gif-export-select-resolution');
-
+    this.widthInput = document.querySelector('.export-gif-resize-width');
+    this.heightInput = document.querySelector('.export-gif-resize-height');
     this.uploadButton = document.querySelector('.gif-upload-button');
-    this.addEventListener(this.uploadButton, 'click', this.onUploadButtonClick_);
-
     this.downloadButton = document.querySelector('.gif-download-button');
-    this.addEventListener(this.downloadButton, 'click', this.onDownloadButtonClick_);
 
-    this.createOptionElements_();
+    this.sizeInputWidget = new pskl.widgets.SizeInput(
+      this.widthInput, this.heightInput,
+      this.piskelController.getWidth(), this.piskelController.getHeight());
+
+    this.addEventListener(this.uploadButton, 'click', this.onUploadButtonClick_);
+    this.addEventListener(this.downloadButton, 'click', this.onDownloadButtonClick_);
+  };
+
+  ns.GifExportController.prototype.destroy = function () {
+    this.sizeInputWidget.destroy();
+    this.superclass.destroy.call(this);
   };
 
   ns.GifExportController.prototype.onUploadButtonClick_ = function (evt) {
     evt.preventDefault();
-    var zoom = this.getSelectedZoom_();
+    var zoom = this.getZoom_();
     var fps = this.piskelController.getFPS();
 
     this.renderAsImageDataAnimatedGIF(zoom, fps, this.uploadImageData_.bind(this));
   };
 
   ns.GifExportController.prototype.onDownloadButtonClick_ = function (evt) {
-    var zoom = this.getSelectedZoom_();
+    var zoom = this.getZoom_();
     var fps = this.piskelController.getFPS();
 
     this.renderAsImageDataAnimatedGIF(zoom, fps, this.downloadImageData_.bind(this));
@@ -92,31 +98,8 @@
     this.previewContainerEl.innerHTML = '<div><img style="max-width:32px;"src="' + src + '"/></div>';
   };
 
-  ns.GifExportController.prototype.getSelectedZoom_ = function () {
-    return this.selectResolutionEl.value;
-  };
-
-  ns.GifExportController.prototype.createOptionElements_ = function () {
-    var resolutions = ns.GifExportController.RESOLUTIONS;
-    for (var i = 0 ; i < resolutions.length ; i++) {
-      var option = this.createOptionForResolution_(resolutions[i]);
-      this.selectResolutionEl.appendChild(option);
-    }
-  };
-
-  ns.GifExportController.prototype.createOptionForResolution_ = function (resolution) {
-    var zoom = resolution.zoom;
-    var label = zoom * this.piskelController.getWidth() + 'x' + zoom * this.piskelController.getHeight();
-
-    var isSelected = zoom === DEFAULT_EXPORT_ZOOM;
-    var selected = isSelected ? 'selected' : '';
-    var optionHTML = pskl.utils.Template.replace(this.optionTemplate_, {
-      'value' : zoom,
-      'label' : label,
-      'selected' : selected
-    });
-
-    return pskl.utils.Template.createFromHTML(optionHTML);
+  ns.GifExportController.prototype.getZoom_ = function () {
+    return parseInt(this.widthInput.value, 10) / this.piskelController.getWidth();
   };
 
   ns.GifExportController.prototype.renderAsImageDataAnimatedGIF = function(zoom, fps, cb) {

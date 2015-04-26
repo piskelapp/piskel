@@ -6,7 +6,7 @@
   display : inline-block;
   height : 60px;
   width: 60px;
-  border : 1px dashed #999;
+  border: 1px dashed #999;
   border-radius: 3px;
 }
 
@@ -15,15 +15,7 @@
   width: 55px;
 }
 
-.import-size-field,
-.resize-size-field {
-  width: 50px;
-  margin-right: 8px;
-  text-align: right;
-}
-
-.import-size-field:nth-of-type(2),
-.resize-size-field:nth-of-type(2) {
+.import-size-field:nth-of-type(2) {
   margin-left: 5px;
 }
 

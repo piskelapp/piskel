@@ -16,30 +16,26 @@
   ns.ResizeController.prototype.init = function () {
     this.widthInput = this.container.querySelector('[name="resize-width"]');
     this.heightInput = this.container.querySelector('[name="resize-height"]');
-
-    this.widthInput.value = this.piskelController.getWidth();
-    this.heightInput.value = this.piskelController.getHeight();
-
-    this.addEventListener(this.widthInput, 'keyup', this.onSizeInputKeyUp_);
-    this.addEventListener(this.heightInput, 'keyup', this.onSizeInputKeyUp_);
-
     this.resizeForm = this.container.querySelector('form');
-    this.addEventListener(this.resizeForm, 'submit', this.onResizeFormSubmit_);
-
     this.resizeContentCheckbox = this.container.querySelector('.resize-content-checkbox');
-    this.addEventListener(this.resizeContentCheckbox, 'change', this.onResizeContentChange_);
-
     this.maintainRatioCheckbox = this.container.querySelector('.resize-ratio-checkbox');
-    this.addEventListener(this.maintainRatioCheckbox, 'change', this.onMaintainRatioChange_);
+
+    var initWidth = this.piskelController.getWidth();
+    var initHeight = this.piskelController.getHeight();
+    this.sizeInputWidget = new pskl.widgets.SizeInput(this.widthInput, this.heightInput, initWidth, initHeight);
 
     this.anchorWidget.setOrigin(ns.AnchorWidget.ORIGIN.TOPLEFT);
-    this.lastInput = this.widthInput;
+
+    this.addEventListener(this.resizeForm, 'submit', this.onResizeFormSubmit_);
+    this.addEventListener(this.resizeContentCheckbox, 'change', this.onResizeContentChange_);
+    this.addEventListener(this.maintainRatioCheckbox, 'change', this.onMaintainRatioChange_);
 
     this.defaultSizeController.init();
   };
 
   ns.ResizeController.prototype.destroy = function () {
     this.anchorWidget.destroy();
+    this.sizeInputWidget.destroy();
     this.superclass.destroy.call(this);
   };
 
@@ -74,36 +70,9 @@
   ns.ResizeController.prototype.onMaintainRatioChange_ = function (evt) {
     var target = evt.target;
     if (target.checked) {
-      this.synchronizeSizeInputs_(this.lastInput);
-    }
-  };
-
-  ns.ResizeController.prototype.onSizeInputKeyUp_ = function (evt) {
-    var target = evt.target;
-    if (this.maintainRatioCheckbox.checked) {
-      this.synchronizeSizeInputs_(target);
-    }
-    this.lastInput = target;
-  };
-
-  /**
-   * Based on the value of the provided sizeInput (considered as emitter)
-   * update the value of the other sizeInput to match the current width/height ratio
-   * @param  {HTMLElement} origin either widthInput or heightInput
-   */
-  ns.ResizeController.prototype.synchronizeSizeInputs_ = function (sizeInput) {
-    var value = parseInt(sizeInput.value, 10);
-    if (isNaN(value)) {
-      value = 0;
-    }
-
-    var height = this.piskelController.getHeight();
-    var width = this.piskelController.getWidth();
-
-    if (sizeInput === this.widthInput) {
-      this.heightInput.value = Math.round(value * height / width);
-    } else if (sizeInput === this.heightInput) {
-      this.widthInput.value = Math.round(value * width / height);
+      this.sizeInputWidget.enableSync();
+    } else {
+      this.sizeInputWidget.disableSync();
     }
   };
 
