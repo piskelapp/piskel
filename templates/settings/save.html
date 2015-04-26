@@ -1,13 +1,14 @@
 <div class="settings-section  setting-save-section">
-  <form action="" method="POST" name="save-form">
+  <form action="" method="POST" class="save-form" name="save-form">
     <div class="settings-title">Describe your piskel</div>
     <div class="settings-item">
       <div class="settings-form-section" style="overflow:hidden">
-        <label class="row" style="float:left;line-height:28px;">Title : </label>
-        <input id="save-name" type="text" class="save-field textfield" style="float:left;width:198px;margin-left:10px;"/>
+        <label class="row" style="line-height:20px;">Title : </label>
+        <input id="save-name" type="text" class="save-field textfield"/>
       </div>
       <div class="settings-form-section">
-        <textarea id="save-description" class="save-field textfield" placeholder="Description ..."></textarea>
+        <label class="row" style="line-height:20px;">Description : </label>
+        <textarea id="save-description" class="save-field textfield"></textarea>
       </div>
       <div class="settings-form-section  save-public-section">
         <label class="row">
@@ -15,22 +16,47 @@
         </label>
       </div>
     </div>
+  </form>
+
+  <!-- PARTIALS -->
+
+  <!-- save-online-partial -->
+  <script type="text/template" id="save-online-partial">
     <div class="settings-title">Save online</div>
     <div class="settings-item">
       <input type="button" class="button button-primary" id="save-online-button" value="Save to your gallery" />
       <div id="save-online-status" class="save-status"></div>
     </div>
-    <div class="settings-title">Save offline in Browser</div>
-    <div class="settings-item">
-      <input type="button" class="button button-primary" id="save-browser-button" value="Save in Browser" />
-      <div id="save-browser-status" class="save-status">Your piskel will be saved locally and will only be accessible from this browser.</div>
+  </script>
+
+  <!-- save-localstorage-partial -->
+  <script type="text/template" id="save-localstorage-partial">
+    <div id="save-in-browser">
+      <div class="settings-title">Save offline in Browser</div>
+      <div class="settings-item">
+        <input type="button" class="button button-primary" id="save-browser-button" value="Save in Browser" />
+        <div id="save-browser-status" class="save-status">Your piskel will be saved locally and will only be accessible from this browser.</div>
+      </div>
     </div>
+  </script>
+
+  <!-- save-file-partial -->
+  <script type="text/template" id="save-file-nw-partial">
+    <div class="settings-title">Save as File</div>
+    <div class="settings-item">
+      <input type="button" class="button button-primary" id="save-file-button" value="Save" />
+      <input type="button" class="button button-primary" id="save-as-button" value="Save as ..." />
+      <div id="save-file-status" class="save-status">Your sprite will be saved as a .piskel file.</div>
+    </div>
+  </script>
+
+  <script type="text/template" id="save-file-partial">
     <div class="settings-title">Save offline as File</div>
     <div class="settings-item">
-      <input type="button" class="button button-primary" id="save-file-button" value="Save as File" />
-      <div id="save-file-status" class="save-status"></div>
+      <input type="button" class="button button-primary" id="save-file-button" value="Save as .piskel" />
+      <div id="save-file-status" class="save-status">Your sprite will be downloaded as a .piskel file.</div>
     </div>
-  </form>
+  </script>
 
   <script type="text/template" id="save-please-login-partial">
     <span>Login to <a href="http://piskelapp.com" target="_blank">piskelapp.com</a> to save and share your sprites online !</span>
@@ -41,6 +67,10 @@
   </script>
 
   <script type="text/template" id="save-file-status-template">
-    <span>Your piskel will be downloaded as <span class="save-file-name">{{name}}<span></span>
+    <span>Your piskel will be downloaded as: <span class="save-file-name">{{name}}<span></span>
+  </script>
+
+  <script type="text/template" id="save-file-status-desktop-template">
+    <span>Saving as: <span class="save-desktop-file-name">{{name}}<span></span>
   </script>
 </div>
