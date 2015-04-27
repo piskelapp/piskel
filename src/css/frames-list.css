@@ -23,8 +23,8 @@
   -o-transition: all 500ms ease-out;
   transition: all 500ms ease-out;
 
-  background-image: linear-gradient(45deg, rgba(0,0,0, 0.8) 25%, transparent 25%, transparent 75%, rgba(0,0,0, 0.8) 75%, rgba(0,0,0, 0.8)),
-                    linear-gradient(-45deg, rgba(0,0,0, 0.8) 25%, transparent 25%, transparent 75%, rgba(0,0,0, 0.8) 75%, rgba(0,0,0, 0.8));
+  background-image: linear-gradient(45deg, #1D1D1D 20%, transparent 25%, transparent 75%, #1D1D1D 80%, #1D1D1D),
+                    linear-gradient(-45deg, #1D1D1D 20%, transparent 25%, transparent 75%, #1D1D1D 80%, #1D1D1D);
   background-size: 29px 45px;
   background-repeat: repeat-x;
   background-position-x: 3px;
