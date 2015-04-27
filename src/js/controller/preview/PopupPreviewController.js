@@ -21,7 +21,6 @@
   ns.PopupPreviewController.prototype.open = function () {
     if (!this.isOpen()) {
       this.popup = window.open('about:blank', '', 'width=320,height=320');
-      this.popup.document.body.innerHTML = pskl.utils.Template.get('popup-preview-partial');
       window.setTimeout(this.onPopupLoaded.bind(this), 500);
     } else {
       this.popup.focus();
@@ -30,6 +29,7 @@
 
   ns.PopupPreviewController.prototype.onPopupLoaded = function () {
     this.popup.document.title = POPUP_TITLE;
+    this.popup.document.body.innerHTML = pskl.utils.Template.get('popup-preview-partial');
     pskl.utils.Event.addEventListener(this.popup, 'resize', this.onWindowResize_, this);
     pskl.utils.Event.addEventListener(this.popup, 'unload', this.onPopupClosed_, this);
     var container = this.popup.document.querySelector('.preview-container');
