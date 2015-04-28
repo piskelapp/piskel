@@ -2,9 +2,10 @@
 
 (typeof exports != "undefined" ? exports : pskl_exports).scripts = [
   // Core libraries
-  "js/lib/jquery-1.8.0.js","js/lib/jquery-ui-1.10.3.custom.js","js/lib/pubsub.js","js/lib/bootstrap/bootstrap.js",
-
-
+  "js/lib/jquery-1.8.0.js",
+  "js/lib/jquery-ui-1.10.3.custom.js",
+  "js/lib/pubsub.js",
+  "js/lib/bootstrap/bootstrap.js",
 
   // Application wide configuration
   "js/Constants.js",
@@ -125,7 +126,6 @@
   "js/controller/dialogs/CreatePaletteController.js",
   "js/controller/dialogs/ImportImageController.js",
   "js/controller/dialogs/BrowseLocalController.js",
-
 
   // Dialogs controller
   "js/controller/dialogs/DialogsController.js",

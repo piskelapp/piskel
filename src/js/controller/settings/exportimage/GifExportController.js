@@ -26,7 +26,6 @@
   }
 
   ns.GifExportController.prototype.init = function () {
-    this.optionTemplate_ = pskl.utils.Template.get('gif-export-option-template');
 
     this.uploadStatusContainerEl = document.querySelector('.gif-upload-status');
     this.previewContainerEl = document.querySelector('.gif-export-preview');

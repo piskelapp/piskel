@@ -28,7 +28,7 @@
     this.synchronize_(this.lastInput);
   };
 
-  ns.SizeInput.prototype.enableSync = function () {
+  ns.SizeInput.prototype.disableSync = function () {
     this.syncEnabled = false;
   };
 
