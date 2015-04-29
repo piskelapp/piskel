@@ -48,15 +48,32 @@
     }
   };
 
+  var batchAll = function (frames, job) {
+    var batches = [];
+    frames = frames.slice(0);
+    while (frames.length) {
+      batches.push(frames.splice(0, 10));
+    }
+    var result = Q([]);
+    batches.forEach(function (batch) {
+      result = result.then(function (results) {
+        return Q.all(batch.map(job)).then(function (partials) {
+          return results.concat(partials);
+        });
+      });
+    });
+    return result;
+  };
+
   ns.CurrentColorsService.prototype.updateCurrentColors_ = function () {
     var layers = this.piskelController.getLayers();
     var frames = layers.map(function (l) {return l.getFrames();}).reduce(function (p, n) {return p.concat(n);});
 
-    Q.all(
-      frames.map(function (frame) {
-        return this.cachedFrameProcessor.get(frame);
-      }.bind(this))
-    ).done(function (results) {
+    var job = function (frame) {
+      return this.cachedFrameProcessor.get(frame);
+    }.bind(this);
+
+    batchAll(frames, job).then(function (results) {
       var colors = {};
       results.forEach(function (result) {
         Object.keys(result).forEach(function (color) {
