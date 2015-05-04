@@ -13,6 +13,8 @@
     this.pngFilePrefixInput = document.getElementById('zip-prefix-name');
     this.pngFilePrefixInput.value = 'sprite_';
 
+    this.splitByLayersCheckbox = document.getElementById('zip-split-by-layers');
+
     var downloadButton = document.querySelector('.png-download-button');
     this.addEventListener(downloadButton, 'click', this.onPngDownloadButtonClick_);
 
@@ -30,12 +32,10 @@
   ns.PngExportController.prototype.onZipButtonClick_ = function () {
     var zip = new window.JSZip();
 
-    for (var i = 0 ; i < this.piskelController.getFrameCount() ; i++) {
-      var frame = this.piskelController.getFrameAt(i);
-      var canvas = this.getFrameAsCanvas_(frame);
-      var basename = this.pngFilePrefixInput.value;
-      var filename =  basename + (i + 1) + '.png';
-      zip.file(filename, pskl.utils.CanvasUtils.getBase64FromCanvas(canvas) + '\n', {base64: true});
+    if (this.splitByLayersCheckbox.checked) {
+      this.splittedExport_(zip);
+    } else {
+      this.mergedExport_(zip);
     }
 
     var fileName = this.getPiskelName_() + '.zip';
@@ -45,6 +45,30 @@
     });
 
     pskl.utils.FileUtils.downloadAsFile(blob, fileName);
+  };
+
+  ns.PngExportController.prototype.mergedExport_ = function (zip) {
+    for (var i = 0; i < this.piskelController.getFrameCount(); i++) {
+      var frame = this.piskelController.getFrameAt(i);
+      var canvas = this.getFrameAsCanvas_(frame);
+      var basename = this.pngFilePrefixInput.value;
+      var filename = basename + (i + 1) + '.png';
+      zip.file(filename, pskl.utils.CanvasUtils.getBase64FromCanvas(canvas) + '\n', {base64: true});
+    }
+  };
+
+  ns.PngExportController.prototype.splittedExport_ = function (zip) {
+    var layers = this.piskelController.getLayers();
+    for (var j = 0; this.piskelController.hasLayerAt(j); j++) {
+      var layer = this.piskelController.getLayerAt(j);
+      for (var i = 0; i < this.piskelController.getFrameCount(); i++) {
+        var frame = layer.getFrameAt(i);
+        var canvas = this.getFrameAsCanvas_(frame);
+        var basename = this.pngFilePrefixInput.value;
+        var filename = 'l' + j + '_' + basename + (i + 1) + '.png';
+        zip.file(filename, pskl.utils.CanvasUtils.getBase64FromCanvas(canvas) + '\n', {base64: true});
+      }
+    }
   };
 
   ns.PngExportController.prototype.getFrameAsCanvas_ = function (frame) {
