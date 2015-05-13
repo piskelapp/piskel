@@ -7,7 +7,15 @@
     40 : 'down',
     46 : 'del',
     189 : '-',
+    // 109 for numpad -
+    109 : '-',
+    // 173 on Firefox for minus key
+    173 : '-',
     187 : '+',
+    // 107 for numpad +
+    107 : '+',
+    // 61 on Firefox for =/+ key
+    61 : '+',
     188 : '<',
     190 : '>'
   };
