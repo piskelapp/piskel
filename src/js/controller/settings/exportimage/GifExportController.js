@@ -94,7 +94,7 @@
   };
 
   ns.GifExportController.prototype.updatePreview_ = function (src) {
-    this.previewContainerEl.innerHTML = '<div><img style="max-width:32px;" src="' + src + '"/></div>';
+    this.previewContainerEl.innerHTML = '<div><img style="max-width:32px;"src="' + src + '"/></div>';
   };
 
   ns.GifExportController.prototype.getZoom_ = function () {
