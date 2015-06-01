@@ -55,12 +55,14 @@
     var height = this.importedImage_.height;
     var width = this.importedImage_.width;
 
+    // Parse the X frame count
     var frameCountX = parseInt(this.frameCountX.val(), 10);
     if (frameCountX <= 0 || isNaN(frameCountX)) {
       this.frameCountX.val(1);
       frameCountX = 1;
     }
 
+    // Parse the Y frame count
     var frameCountY = parseInt(this.frameCountY.val(), 10);
     if (frameCountY <= 0 || isNaN(frameCountY)) {
       this.frameCountY.val(1);
@@ -178,8 +180,8 @@
     var countX = this.frameCountX.val();
     var countY = this.frameCountY.val();
     if (countX > 1 || countY > 1) {
-      var width = this.importedImage_.width;
-      var height = this.importedImage_.height;
+      var width = this.importPreview.width();
+      var height = this.importPreview.height();
       var frameW = width / countX;
       var frameH = height / countY;
 
