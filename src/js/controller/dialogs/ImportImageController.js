@@ -1,6 +1,6 @@
 (function () {
   var ns = $.namespace('pskl.controller.dialogs');
-  var PREVIEW_HEIGHT = 60;
+  var PREVIEW_HEIGHT  = 60;
 
   ns.ImportImageController = function (piskelController) {
     this.importedImage_ = null;
@@ -20,7 +20,7 @@
 
     this.resizeWidth = $('[name=resize-width]');
     this.resizeHeight = $('[name=resize-height]');
-    this.smoothResize = $('[name=smooth-resize-checkbox]');
+    this.smoothResize =  $('[name=smooth-resize-checkbox]');
 
     this.frameCountX = $('[name=frame-count-x]');
     this.frameCountY = $('[name=frame-count-y]');
@@ -86,7 +86,7 @@
 
     // FIXME : We remove the onload callback here because JsGif will insert
     // the image again and we want to avoid retriggering the image onload
-    this.importedImage_.onload = function () { };
+    this.importedImage_.onload = function () {};
 
     var fileName = this.extractFileNameFromPath_(this.file_.name);
     this.fileNameContainer.html(fileName);
@@ -126,18 +126,18 @@
     if (image) {
       if (window.confirm('You are about to create a new Piskel, unsaved changes will be lost.')) {
         var gifLoader = new window.SuperGif({
-          gif: image
+          gif : image
         });
 
         gifLoader.load({
-          success: function () {
+          success : function () {
             var images = gifLoader.getFrames().map(function (frame) {
               return pskl.utils.CanvasUtils.createFromImageData(frame.data);
             });
             this.createPiskelFromImages_(images);
             this.closeDialog();
           }.bind(this),
-          error: function () {
+          error : function () {
             var images = pskl.utils.CanvasUtils.createFramesFromImage(
               image,
               this.frameCountX.val(),
