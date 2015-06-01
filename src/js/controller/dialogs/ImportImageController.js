@@ -1,6 +1,6 @@
 (function () {
   var ns = $.namespace('pskl.controller.dialogs');
-  var PREVIEW_HEIGHT  = 60;
+  var PREVIEW_HEIGHT = 60;
 
   ns.ImportImageController = function (piskelController) {
     this.importedImage_ = null;
@@ -20,10 +20,15 @@
 
     this.resizeWidth = $('[name=resize-width]');
     this.resizeHeight = $('[name=resize-height]');
-    this.smoothResize =  $('[name=smooth-resize-checkbox]');
+    this.smoothResize = $('[name=smooth-resize-checkbox]');
+
+    this.frameCountX = $('[name=frame-count-x]');
+    this.frameCountY = $('[name=frame-count-y]');
 
     this.resizeWidth.keyup(this.onResizeInputKeyUp_.bind(this, 'width'));
     this.resizeHeight.keyup(this.onResizeInputKeyUp_.bind(this, 'height'));
+    this.frameCountX.keyup(this.onResizeInputKeyUp_.bind(this, 'frameCountX'));
+    this.frameCountY.keyup(this.onResizeInputKeyUp_.bind(this, 'frameCountY'));
 
     this.importImageForm = $('[name=import-image-form]');
     this.importImageForm.submit(this.onImportFormSubmit_.bind(this));
@@ -49,7 +54,24 @@
     }
     var height = this.importedImage_.height;
     var width = this.importedImage_.width;
-    if (from === 'width') {
+
+    var frameCountX = parseInt(this.frameCountX.val(), 10);
+    if (frameCountX <= 0 || isNaN(frameCountX)) {
+      this.frameCountX.val(1);
+      frameCountX = 1;
+    }
+
+    var frameCountY = parseInt(this.frameCountY.val(), 10);
+    if (frameCountY <= 0 || isNaN(frameCountY)) {
+      this.frameCountY.val(1);
+      frameCountY = 1;
+    }
+
+    if (from === 'frameCountX' || from === 'frameCountY') {
+      this.resizeWidth.val(Math.round(width / frameCountX));
+      this.resizeHeight.val(Math.round(height / frameCountY));
+      this.drawFramesGrid_();
+    } else if (from === 'width') {
       this.resizeHeight.val(Math.round(value * height / width));
     } else {
       this.resizeWidth.val(Math.round(value * width / height));
@@ -64,13 +86,16 @@
 
     // FIXME : We remove the onload callback here because JsGif will insert
     // the image again and we want to avoid retriggering the image onload
-    this.importedImage_.onload = function () {};
+    this.importedImage_.onload = function () { };
 
     var fileName = this.extractFileNameFromPath_(this.file_.name);
     this.fileNameContainer.html(fileName);
 
     this.resizeWidth.val(w);
     this.resizeHeight.val(h);
+
+    this.frameCountX.val(1);
+    this.frameCountY.val(1);
 
     this.importPreview.width('auto');
     this.importPreview.html('');
@@ -101,19 +126,23 @@
     if (image) {
       if (window.confirm('You are about to create a new Piskel, unsaved changes will be lost.')) {
         var gifLoader = new window.SuperGif({
-          gif : image
+          gif: image
         });
 
         gifLoader.load({
-          success : function () {
+          success: function () {
             var images = gifLoader.getFrames().map(function (frame) {
               return pskl.utils.CanvasUtils.createFromImageData(frame.data);
             });
             this.createPiskelFromImages_(images);
             this.closeDialog();
           }.bind(this),
-          error : function () {
-            this.createPiskelFromImages_([image]);
+          error: function () {
+            var images = pskl.utils.CanvasUtils.createFramesFromImage(
+              image,
+              this.frameCountX.val(),
+              this.frameCountY.val());
+            this.createPiskelFromImages_(images);
             this.closeDialog();
           }.bind(this)
         });
@@ -142,5 +171,55 @@
 
     pskl.app.piskelController.setPiskel(piskel);
     pskl.app.previewController.setFPS(Constants.DEFAULT.FPS);
+  };
+
+  ns.ImportImageController.prototype.drawFramesGrid_ = function () {
+    var canvasWrapper = this.importPreview.children('canvas');
+    var countX = this.frameCountX.val();
+    var countY = this.frameCountY.val();
+    if (countX > 1 || countY > 1) {
+      var width = this.importedImage_.width;
+      var height = this.importedImage_.height;
+      var frameW = width / countX;
+      var frameH = height / countY;
+
+      var canvas = canvasWrapper.get(0);
+      if (!canvasWrapper.length) {
+        // Create a new canvas for the grid
+        canvas = pskl.utils.CanvasUtils.createCanvas(width + 1, height + 1);
+        this.importPreview.append(canvas);
+        canvasWrapper = $(canvas);
+      }
+
+      var context = canvas.getContext('2d');
+      context.clearRect(0, 0, canvas.width, canvas.height);
+      context.beginPath();
+
+      // Draw the vertical lines
+      for (var x = 0.5; x < width + 1; x += frameW) {
+        context.moveTo(x, 0);
+        context.lineTo(x, height);
+      }
+
+      // Draw the horizontal lines
+      for (var y = 0.5; y < height + 1; y += frameH) {
+        context.moveTo(0, y);
+        context.lineTo(width, y);
+      }
+
+      // Set the line style to dashed
+      context.lineWidth = 1;
+      context.setLineDash([2, 1]);
+      context.strokeStyle = '#000000';
+      context.stroke();
+
+      // Resize the canvas so that it matches the preview height and stretches correctly
+      canvasWrapper.height(PREVIEW_HEIGHT + 1);
+      canvasWrapper.show();
+      this.importPreview.addClass('no-border');
+    } else {
+      canvasWrapper.hide();
+      this.importPreview.removeClass('no-border');
+    }
   };
 })();

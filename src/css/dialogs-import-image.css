@@ -3,16 +3,27 @@
 /************************************************************************************************/
 
 .import-section-preview {
-  display : inline-block;
-  height : 60px;
+  position: relative;
+  display: inline-block;
+  height: 60px;
   width: 60px;
   border: 1px dashed #999;
   border-radius: 3px;
 }
 
+.import-section-preview.no-border {
+    border-color: transparent;
+}
+
+.import-section-preview canvas {
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
 .dialog-section-title {
   display : inline-block;
-  width: 55px;
+  width: 70px;
 }
 
 .import-size-field:nth-of-type(2) {

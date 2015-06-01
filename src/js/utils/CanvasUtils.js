@@ -34,6 +34,43 @@
     },
 
     /**
+     * Splits the specified image into several new canvas elements based on the
+     * supplied horizontal (x) and vertical (y) counts.
+     * @param image The source image that will be split
+     * @param {Number} frameCountX The number of frames in the horizontal axis
+     * @param {Number} frameCountY The number of frames in the vertical axis
+     * @returns {Array} An array of canvas elements that contain the split frames
+     */
+    createFramesFromImage : function (image, frameCountX, frameCountY) {
+      var canvasArray = [];
+      var frameWidth = image.width / frameCountX;
+      var frameHeight = image.height / frameCountY;
+
+      // Loop through the frames prioritizing the spritesheet as horizonal strips
+      for (var y = 0; y < frameCountY; y++) {
+        for (var x = 0; x < frameCountX; x++) {
+          var canvas = pskl.utils.CanvasUtils.createCanvas(frameWidth, frameHeight);
+          var context = canvas.getContext('2d');
+
+          // Blit the correct part of the source image into the new canvas
+          context.drawImage(
+            image,
+            x * frameWidth,
+            y * frameHeight,
+            frameWidth,
+            image.height,
+            0,
+            0,
+            frameWidth,
+            image.height);
+
+          canvasArray.push(canvas);
+        }
+      }
+      return canvasArray;
+    },
+
+    /**
      * By default, all scaling operations on a Canvas 2D Context are performed using antialiasing.
      * Resizing a 32x32 image to 320x320 will lead to a blurry output.
      * On Chrome, FF and IE>=11, this can be disabled by setting a property on the Canvas 2D Context.
