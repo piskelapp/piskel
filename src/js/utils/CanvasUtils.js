@@ -35,38 +35,61 @@
 
     /**
      * Splits the specified image into several new canvas elements based on the
-     * supplied horizontal (x) and vertical (y) counts.
+     * supplied offset and frame sizes
      * @param image The source image that will be split
-     * @param {Number} frameCountX The number of frames in the horizontal axis
-     * @param {Number} frameCountY The number of frames in the vertical axis
+     * @param {Number} offsetX The padding from the left side of the source image
+     * @param {Number} offsetY The padding from the top side of the source image
+     * @param {Number} width The width of an individual frame
+     * @param {Number} height The height of an individual frame
+     * @param {Boolean} useHorizonalStrips True if the frames should be layed out from left to
+     * right, False if it should use top to bottom
+     * @param {Boolean} ignoreEmptyFrames True to ignore empty frames, false to keep them
      * @returns {Array} An array of canvas elements that contain the split frames
      */
-    createFramesFromImage : function (image, frameCountX, frameCountY) {
+    createFramesFromImage : function (image, offsetX, offsetY, width, height, useHorizonalStrips, ignoreEmptyFrames) {
       var canvasArray = [];
-      var frameWidth = image.width / frameCountX;
-      var frameHeight = image.height / frameCountY;
+      var x = offsetX;
+      var y = offsetY;
+      var blankData = pskl.utils.CanvasUtils.createCanvas(width, height).toDataURL();
 
-      // Loop through the frames prioritizing the spritesheet as horizonal strips
-      for (var y = 0; y < frameCountY; y++) {
-        for (var x = 0; x < frameCountX; x++) {
-          var canvas = pskl.utils.CanvasUtils.createCanvas(frameWidth, frameHeight);
-          var context = canvas.getContext('2d');
+      while (x < image.width && y < image.height) {
+        // Create a new canvas element
+        var canvas = pskl.utils.CanvasUtils.createCanvas(width, height);
+        var context = canvas.getContext('2d');
 
-          // Blit the correct part of the source image into the new canvas
-          context.drawImage(
-            image,
-            x * frameWidth,
-            y * frameHeight,
-            frameWidth,
-            image.height,
-            0,
-            0,
-            frameWidth,
-            image.height);
+        // Blit the correct part of the source image into the new canvas
+        context.drawImage(
+          image,
+          x,
+          y,
+          width,
+          height,
+          0,
+          0,
+          width,
+          height);
 
+        if (!ignoreEmptyFrames || canvas.toDataURL() !== blankData) {
           canvasArray.push(canvas);
         }
+
+        if (useHorizonalStrips) {
+          // Move from left to right
+          x += width;
+          if (x + width > image.width) {
+            x = offsetX;
+            y += height;
+          }
+        } else {
+          // Move from top to bottom
+          y += height;
+          if (y + height > image.height) {
+            x += width;
+            y = offsetY;
+          }
+        }
       }
+
       return canvasArray;
     },
 
