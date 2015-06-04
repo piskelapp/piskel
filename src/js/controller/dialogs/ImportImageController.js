@@ -185,7 +185,14 @@
             var images = gifLoader.getFrames().map(function (frame) {
               return pskl.utils.CanvasUtils.createFromImageData(frame.data);
             });
-            this.createPiskelFromImages_(images, resizeW, resizeH);
+
+            if (this.getImportType_() === 'single' || images.length > 1) {
+              // Single image import or animated gif
+              this.createPiskelFromImages_(images, resizeW, resizeH);
+            } else {
+              // Spritesheet
+              this.createImagesFromSheet_(images[0]);
+            }
             this.closeDialog();
           }.bind(this),
           error: function () {
@@ -194,19 +201,7 @@
               this.createPiskelFromImages_([image], resizeW, resizeH);
             } else {
               // Spritesheet
-              var x = this.sanitizeInputValue_(this.frameOffsetX, 0);
-              var y = this.sanitizeInputValue_(this.frameOffsetY, 0);
-              var w = this.sanitizeInputValue_(this.frameSizeX, 1);
-              var h = this.sanitizeInputValue_(this.frameSizeY, 1);
-              var images = pskl.utils.CanvasUtils.createFramesFromImage(
-                image,
-                x,
-                y,
-                w,
-                h,
-                /*useHorizonalStrips=*/ true,
-                /*ignoreEmptyFrames=*/ true);
-              this.createPiskelFromImages_(images, w, h);
+              this.createImagesFromSheet_(image);
             }
             this.closeDialog();
           }.bind(this)
@@ -214,6 +209,23 @@
 
       }
     }
+  };
+
+  ns.ImportImageController.prototype.createImagesFromSheet_ = function (image) {
+    var x = this.sanitizeInputValue_(this.frameOffsetX, 0);
+    var y = this.sanitizeInputValue_(this.frameOffsetY, 0);
+    var w = this.sanitizeInputValue_(this.frameSizeX, 1);
+    var h = this.sanitizeInputValue_(this.frameSizeY, 1);
+
+    var images = pskl.utils.CanvasUtils.createFramesFromImage(
+      image,
+      x,
+      y,
+      w,
+      h,
+      /*useHorizonalStrips=*/ true,
+      /*ignoreEmptyFrames=*/ true);
+    this.createPiskelFromImages_(images, w, h);
   };
 
   ns.ImportImageController.prototype.createFramesFromImages_ = function (images, w, h) {

@@ -52,7 +52,7 @@
       var y = offsetY;
       var blankData = pskl.utils.CanvasUtils.createCanvas(width, height).toDataURL();
 
-      while (x < image.width && y < image.height) {
+      while (x + width <= image.width && y + height <= image.height) {
         // Create a new canvas element
         var canvas = pskl.utils.CanvasUtils.createCanvas(width, height);
         var context = canvas.getContext('2d');
