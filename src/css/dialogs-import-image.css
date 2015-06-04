@@ -2,17 +2,51 @@
 /* Import dialog                                                                                 */
 /************************************************************************************************/
 
+.import-subsection {
+  margin-left: 25px;
+}
+
+.import-section:not(.import-subsection) > .dialog-section-title {
+  width: 50px;
+}
+
+.import-section-preview-title {
+  position: absolute;
+  margin-left: 50%;
+  margin-top: -28px;
+}
+
 .import-section-preview {
-  display : inline-block;
-  height : 60px;
-  width: 60px;
+  position: absolute;
+  display: inline-block;
   border: 1px dashed #999;
   border-radius: 3px;
+  margin-left: 50%;
+}
+
+.import-section-preview img {
+  max-width: 220px;
+  max-height: 220px;
+}
+
+.import-section-preview.no-border {
+  border-color: transparent;
+}
+
+.import-section-preview canvas {
+  position: absolute;
+  left: 0;
+  top: 0;
 }
 
 .dialog-section-title {
   display : inline-block;
-  width: 55px;
+  width: 80px;
+}
+
+.dialog-section-radio {
+  margin-top: 15px;
+  vertical-align: sub;
 }
 
 .import-size-field:nth-of-type(2) {
@@ -23,12 +57,14 @@
   display: inline-block;
   overflow: hidden;
 
-  height: 2rem;
   word-break : break-all;
   vertical-align: middle;
   font-style: italic;
   font-weight: normal;
   text-shadow: none;
+  width: 200px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 [name=smooth-resize-checkbox] {
@@ -37,11 +73,12 @@
 
 .dialog-import-body {
   padding:10px 20px;
-  font-size:1.5em
+  font-size:1.3em
 }
 
 .import-button {
   font-size: 1em;
   height: auto;
   padding: 5px 10px;
+  margin-top: 15px;
 }

@@ -34,6 +34,66 @@
     },
 
     /**
+     * Splits the specified image into several new canvas elements based on the
+     * supplied offset and frame sizes
+     * @param image The source image that will be split
+     * @param {Number} offsetX The padding from the left side of the source image
+     * @param {Number} offsetY The padding from the top side of the source image
+     * @param {Number} width The width of an individual frame
+     * @param {Number} height The height of an individual frame
+     * @param {Boolean} useHorizonalStrips True if the frames should be layed out from left to
+     * right, False if it should use top to bottom
+     * @param {Boolean} ignoreEmptyFrames True to ignore empty frames, false to keep them
+     * @returns {Array} An array of canvas elements that contain the split frames
+     */
+    createFramesFromImage : function (image, offsetX, offsetY, width, height, useHorizonalStrips, ignoreEmptyFrames) {
+      var canvasArray = [];
+      var x = offsetX;
+      var y = offsetY;
+      var blankData = pskl.utils.CanvasUtils.createCanvas(width, height).toDataURL();
+
+      while (x + width <= image.width && y + height <= image.height) {
+        // Create a new canvas element
+        var canvas = pskl.utils.CanvasUtils.createCanvas(width, height);
+        var context = canvas.getContext('2d');
+
+        // Blit the correct part of the source image into the new canvas
+        context.drawImage(
+          image,
+          x,
+          y,
+          width,
+          height,
+          0,
+          0,
+          width,
+          height);
+
+        if (!ignoreEmptyFrames || canvas.toDataURL() !== blankData) {
+          canvasArray.push(canvas);
+        }
+
+        if (useHorizonalStrips) {
+          // Move from left to right
+          x += width;
+          if (x + width > image.width) {
+            x = offsetX;
+            y += height;
+          }
+        } else {
+          // Move from top to bottom
+          y += height;
+          if (y + height > image.height) {
+            x += width;
+            y = offsetY;
+          }
+        }
+      }
+
+      return canvasArray;
+    },
+
+    /**
      * By default, all scaling operations on a Canvas 2D Context are performed using antialiasing.
      * Resizing a 32x32 image to 320x320 will lead to a blurry output.
      * On Chrome, FF and IE>=11, this can be disabled by setting a property on the Canvas 2D Context.
