@@ -20,6 +20,7 @@ ul, li {
 }
 
 /** Firefox overrides this with -moz-use-system-font */
+button,
 input,
 input[type="submit"] {
   font-family: Arial;
