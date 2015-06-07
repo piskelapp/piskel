@@ -136,6 +136,7 @@
 
     var fileName = this.extractFileNameFromPath_(this.file_.name);
     this.fileNameContainer.html(fileName);
+    this.fileNameContainer.attr('title', fileName);
 
     this.resizeWidth.val(w);
     this.resizeHeight.val(h);

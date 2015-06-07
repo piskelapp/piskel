@@ -50,3 +50,8 @@ body {
 .uppercase {
   text-transform: uppercase;
 }
+
+.checkbox-fix {
+  vertical-align: -2px;
+  margin-left: 0;
+}

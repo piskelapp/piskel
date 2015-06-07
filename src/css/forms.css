@@ -10,6 +10,8 @@
   border-radius : 2px;
   padding : 3px 10px;
   color : white;
+
+  height: 23px;
 }
 
 .textfield[disabled=disabled] {

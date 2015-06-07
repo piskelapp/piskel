@@ -2,6 +2,19 @@
 /* Import dialog                                                                                 */
 /************************************************************************************************/
 
+#dialog-container.import-image {
+  width: 550px;
+  height: 360px;
+  top : 50%;
+  left : 50%;
+  position : absolute;
+  margin-left: -250px;
+}
+
+.show #dialog-container.import-image {
+  margin-top: -150px;
+}
+
 .import-subsection {
   margin-left: 25px;
 }
@@ -57,14 +70,17 @@
   display: inline-block;
   overflow: hidden;
 
-  word-break : break-all;
+  width: 200px;
   vertical-align: middle;
+
+  word-break : break-all;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+
   font-style: italic;
   font-weight: normal;
   text-shadow: none;
-  width: 200px;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+  color: gold;
 }
 
 [name=smooth-resize-checkbox] {
@@ -72,13 +88,13 @@
 }
 
 .dialog-import-body {
-  padding:10px 20px;
+  padding: 10px 20px;
   font-size:1.3em
 }
 
 .import-button {
   font-size: 1em;
-  height: auto;
-  padding: 5px 10px;
+  height: 28px;
+  padding: 0px 10px;
   margin-top: 15px;
 }

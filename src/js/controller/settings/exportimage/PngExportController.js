@@ -10,10 +10,10 @@
   pskl.utils.inherit(ns.PngExportController, pskl.controller.settings.AbstractSettingController);
 
   ns.PngExportController.prototype.init = function () {
-    this.pngFilePrefixInput = document.getElementById('zip-prefix-name');
+    this.pngFilePrefixInput = document.querySelector('.zip-prefix-name');
     this.pngFilePrefixInput.value = 'sprite_';
 
-    this.splitByLayersCheckbox = document.getElementById('zip-split-by-layers');
+    this.splitByLayersCheckbox =  document.querySelector('.zip-split-layers-checkbox');
 
     var downloadButton = document.querySelector('.png-download-button');
     this.addEventListener(downloadButton, 'click', this.onPngDownloadButtonClick_);

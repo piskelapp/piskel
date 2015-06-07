@@ -65,19 +65,6 @@
   margin-top: -250px;
 }
 
-#dialog-container.import-image {
-  width: 550px;
-  height: 350px;
-  top : 50%;
-  left : 50%;
-  position : absolute;
-  margin-left: -250px;
-}
-
-.show #dialog-container.import-image {
-  margin-top: -150px;
-}
-
 .dialog-wrapper {
   height: 100%;
   position : relative;

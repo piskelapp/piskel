@@ -3,7 +3,7 @@ html, body {
   margin : 0;
   overflow: hidden;
   cursor : default;
-  font-family: arial;
+  font-family: Arial;
   font-size: 11px;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -19,6 +19,11 @@ ul, li {
   list-style-type: none;
 }
 
+/** Firefox overrides this with -moz-use-system-font */
+input,
+input[type="submit"] {
+  font-family: Arial;
+}
 
 /* Force apparition of scrollbars on leopard */
 ::-webkit-scrollbar {
