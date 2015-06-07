@@ -40,6 +40,7 @@
 .import-section-preview img {
   max-width: 220px;
   max-height: 220px;
+  display: block;
 }
 
 .import-section-preview.no-border {
