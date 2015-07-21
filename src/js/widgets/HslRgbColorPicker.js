@@ -36,6 +36,9 @@
     this.spectrumEl = null;
   };
 
+  /**
+   * Handle change event on all color inputs
+   */
   ns.HslRgbColorPicker.prototype.onPickerChange_ = function (evt) {
     var target = evt.target;
     if (target.dataset.dimension) {
@@ -47,6 +50,9 @@
     }
   };
 
+  /**
+   * Handle up/down arrow keydown on text inputs
+   */
   ns.HslRgbColorPicker.prototype.onKeydown_ = function (evt) {
     var target = evt.target;
 
@@ -90,7 +96,7 @@
         this.setColor(color);
       }
     } else if (model === 'hex') {
-      if (/^#([a-f0-9]{3}) {1,2}$/i.test(value)) {
+      if (/^#([a-f0-9]{3}){1,2}$/i.test(value)) {
         this.setColor(value);
       }
     }
