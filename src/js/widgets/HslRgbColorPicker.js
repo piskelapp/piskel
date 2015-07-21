@@ -13,11 +13,13 @@
   };
 
   ns.HslRgbColorPicker.prototype.init = function () {
-    var isChromeOrFirefox = pskl.utils.UserAgent.isChrome || pskl.utils.UserAgent.isFirefox;
-    var changeEvent = isChromeOrFirefox ? 'input' : 'change';
+    var isFirefox = pskl.utils.UserAgent.isFirefox;
+    var isChrome = pskl.utils.UserAgent.isChrome;
+
+    var changeEvent = (isChrome || isFirefox) ? 'input' : 'change';
     this.container.addEventListener(changeEvent, this.onPickerChange_.bind(this));
     this.container.addEventListener('keydown', this.onKeydown_.bind(this));
-    this.container.addEventListener('focusout', this.onBlur_.bind(this));
+    this.container.addEventListener('blur', this.onBlur_.bind(this), true);
 
     this.spectrumEl = this.container.querySelector('.color-picker-spectrum');
 
