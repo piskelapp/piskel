@@ -27,6 +27,9 @@
       if (keycode >= 48 && keycode <= 57) {
         // key is 0-9
         return (keycode - 48) + '';
+      } else if (keycode >= 96 && keycode <= 105) {
+        // key is numpad 0-9
+        return (keycode - 96) + '';
       } else if (keycode >= 65 && keycode <= 90) {
         // key is a-z, use base 36 to get the string representation
         return (keycode - 65 + 10).toString(36);

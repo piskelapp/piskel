@@ -86,7 +86,8 @@
       this.toDescriptor_('shift + N', 'Duplicate selected frame'),
       this.toDescriptor_('shift + ?', 'Open/Close this popup'),
       this.toDescriptor_('alt + P', 'Create a Palette'),
-      this.toDescriptor_('&lt;/&gt;', 'Select previous/next palette color'),
+      this.toDescriptor_('&lt;/&gt;', 'Select prev/next palette color'),
+      this.toDescriptor_('1 to 9', 'Select palette color at index'),
       this.toDescriptor_('alt + O', 'Toggle Onion Skin'),
       this.toDescriptor_('alt + L', 'Toggle Layer Preview')
     ];

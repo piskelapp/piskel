@@ -40,6 +40,7 @@
 
     pskl.app.shortcutService.addShortcuts(['>', 'shift+>'], this.selectNextColor_.bind(this));
     pskl.app.shortcutService.addShortcut('<', this.selectPreviousColor_.bind(this));
+    pskl.app.shortcutService.addShortcuts('123465789'.split(''), this.selectColorForKey_.bind(this));
 
     this.fillPaletteList();
     this.updateFromUserSettings();
@@ -116,6 +117,12 @@
       currentIndex = parseInt(selectedColor.dataset.colorIndex, 10);
     }
     return currentIndex;
+  };
+
+  ns.PalettesListController.prototype.selectColorForKey_ = function (key) {
+    var index = parseInt(key, 10);
+    index = (index + 9) % 10;
+    this.selectColor_(index);
   };
 
   ns.PalettesListController.prototype.selectColor_ = function (index) {
