@@ -39,6 +39,12 @@
     maxFpsInput.value = pskl.UserSettings.get(pskl.UserSettings.MAX_FPS);
     this.addEventListener(maxFpsInput, 'change', this.onMaxFpsChange_);
 
+    // Layer preview opacity
+    var layerOpacityInput = document.querySelector('.layer-opacity-input');
+    layerOpacityInput.value = pskl.UserSettings.get(pskl.UserSettings.LAYER_OPACITY);
+    this.addEventListener(layerOpacityInput, 'change', this.onLayerOpacityChange_);
+    this.updateLayerOpacityText_(layerOpacityInput.value);
+
     // Form
     this.applicationSettingsForm = document.querySelector('[name="application-settings-form"]');
     this.addEventListener(this.applicationSettingsForm, 'submit', this.onFormSubmit_);
@@ -74,6 +80,23 @@
     } else {
       target.value = pskl.UserSettings.get(pskl.UserSettings.MAX_FPS);
     }
+  };
+
+  ns.ApplicationSettingsController.prototype.onLayerOpacityChange_ = function (evt) {
+    var target = evt.target;
+    var opacity = parseFloat(target.value);
+    if (!isNaN(opacity)) {
+      pskl.UserSettings.set(pskl.UserSettings.LAYER_OPACITY, opacity);
+      pskl.UserSettings.set(pskl.UserSettings.LAYER_PREVIEW, opacity !== 0);
+      this.updateLayerOpacityText_(opacity);
+    } else {
+      target.value = pskl.UserSettings.get(pskl.UserSettings.LAYER_OPACITY);
+    }
+  };
+
+  ns.ApplicationSettingsController.prototype.updateLayerOpacityText_ = function (opacity) {
+    var layerOpacityText = document.querySelector('.layer-opacity-text');
+    layerOpacityText.innerHTML = opacity;
   };
 
   ns.ApplicationSettingsController.prototype.onFormSubmit_ = function (evt) {

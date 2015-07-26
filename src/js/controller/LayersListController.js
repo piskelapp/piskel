@@ -127,6 +127,13 @@
 
   ns.LayersListController.prototype.toggleLayerPreview_ = function () {
     var currentValue = pskl.UserSettings.get(pskl.UserSettings.LAYER_PREVIEW);
-    pskl.UserSettings.set(pskl.UserSettings.LAYER_PREVIEW, !currentValue);
+    var currentLayerOpacity = pskl.UserSettings.get(pskl.UserSettings.LAYER_OPACITY);
+
+    var showLayerPreview = !currentValue;
+    pskl.UserSettings.set(pskl.UserSettings.LAYER_PREVIEW, showLayerPreview);
+
+    if (showLayerPreview && currentLayerOpacity === 0) {
+      pskl.UserSettings.set(pskl.UserSettings.LAYER_OPACITY, Constants.DEFAULT.LAYER_OPACITY);
+    }
   };
 })();

@@ -10,6 +10,7 @@
     TILED_PREVIEW : 'TILED_PREVIEW',
     ONION_SKIN : 'ONION_SKIN',
     LAYER_PREVIEW : 'LAYER_PREVIEW',
+    LAYER_OPACITY : 'LAYER_OPACITY',
 
     KEY_TO_DEFAULT_VALUE_MAP_ : {
       'GRID_WIDTH' : 0,
@@ -22,6 +23,7 @@
       'SELECTED_PALETTE' : Constants.CURRENT_COLORS_PALETTE_ID,
       'TILED_PREVIEW' : false,
       'ONION_SKIN' : false,
+      'LAYER_OPACITY' : 0.2,
       'LAYER_PREVIEW' : true
     },
 

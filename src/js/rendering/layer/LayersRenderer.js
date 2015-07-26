@@ -18,7 +18,12 @@
 
     this.serializedRendering = '';
 
+    this.stylesheet_ = document.createElement('style');
+    document.head.appendChild(this.stylesheet_);
+    this.updateLayersCanvasOpacity_(pskl.UserSettings.get(pskl.UserSettings.LAYER_OPACITY));
+
     $.subscribe(Events.PISKEL_RESET, this.flush.bind(this));
+    $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
   };
 
   pskl.utils.inherit(pskl.rendering.layer.LayersRenderer, pskl.rendering.CompositeRenderer);
@@ -30,8 +35,8 @@
     var currentFrameIndex = this.piskelController.getCurrentFrameIndex();
     var currentLayerIndex = this.piskelController.getCurrentLayerIndex();
 
-    var downLayers = layers.slice(0, currentLayerIndex);
-    var upLayers = layers.slice(currentLayerIndex + 1, layers.length);
+    var belowLayers = layers.slice(0, currentLayerIndex);
+    var aboveLayers = layers.slice(currentLayerIndex + 1, layers.length);
 
     var serializedRendering = [
       this.getZoom(),
@@ -40,8 +45,8 @@
       offset.y,
       size.width,
       size.height,
-      this.getHashForLayersAt_(currentFrameIndex, downLayers),
-      this.getHashForLayersAt_(currentFrameIndex, upLayers),
+      this.getHashForLayersAt_(currentFrameIndex, belowLayers),
+      this.getHashForLayersAt_(currentFrameIndex, aboveLayers),
       layers.length
     ].join('-');
 
@@ -50,14 +55,14 @@
 
       this.clear();
 
-      if (downLayers.length > 0) {
-        var downFrame = this.getFrameForLayersAt_(currentFrameIndex, downLayers);
-        this.belowRenderer.render(downFrame);
+      if (belowLayers.length > 0) {
+        var belowFrame = this.getFrameForLayersAt_(currentFrameIndex, belowLayers);
+        this.belowRenderer.render(belowFrame);
       }
 
-      if (upLayers.length > 0) {
-        var upFrame = this.getFrameForLayersAt_(currentFrameIndex, upLayers);
-        this.aboveRenderer.render(upFrame);
+      if (aboveLayers.length > 0) {
+        var aboveFrame = this.getFrameForLayersAt_(currentFrameIndex, aboveLayers);
+        this.aboveRenderer.render(aboveFrame);
       }
     }
   };
@@ -87,6 +92,16 @@
       return l.getFrameAt(frameIndex).getHash();
     });
     return hash.join('-');
+  };
+
+  ns.LayersRenderer.prototype.onUserSettingsChange_ = function (evt, settingsName, settingsValue) {
+    if (settingsName == pskl.UserSettings.LAYER_OPACITY) {
+      this.updateLayersCanvasOpacity_(settingsValue);
+    }
+  };
+
+  ns.LayersRenderer.prototype.updateLayersCanvasOpacity_ = function (opacity) {
+    this.stylesheet_.innerHTML = '.layers-canvas { opacity : ' + opacity + '}';
   };
 
   ns.LayersRenderer.prototype.flush = function () {

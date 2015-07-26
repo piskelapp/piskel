@@ -121,7 +121,6 @@
   background: url(../img/canvas_background/lowcont_dark_canvas_background.png) repeat;
 }
 
-.layers-canvas,
 .canvas.onion-skin-canvas {
   opacity: 0.2;
 }
