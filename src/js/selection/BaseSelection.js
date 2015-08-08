@@ -24,9 +24,15 @@
   };
 
   ns.BaseSelection.prototype.fillSelectionFromFrame = function (targetFrame) {
+    // on copy trim the selection if out of bounds
+    // this.pixels = this.pixels.filter(function (pixel) {
+    //   return targetFrame.containsPixel(pixel.col, pixel.row);
+    // });
+
     this.pixels.forEach(function (pixel) {
       pixel.color = targetFrame.getPixel(pixel.col, pixel.row);
     });
+
     this.hasPastedContent = true;
   };
 })();
