@@ -217,15 +217,24 @@ module.exports = function(grunt) {
       }
     },
     nodewebkit: {
-      options: {
-        version : "0.11.5",
-        build_dir: './dest/desktop/', // destination folder of releases.
-        mac: true,
-        win: true,
-        linux32: true,
-        linux64: true
+      windows : {
+        options: {
+          version : "0.11.5",
+          build_dir: './dest/desktop/', // destination folder of releases.
+          win: true,
+          linux32: true,
+          linux64: true
+        },
+        src: ['./dest/**/*', "./package.json", "!./dest/desktop/"]
       },
-      src: ['./dest/**/*', "./package.json", "!./dest/desktop/"]
+      macos : {
+        options: {
+          platforms : ['osx64'],
+          version : "0.10.5",
+          build_dir: './dest/desktop/'
+        },
+        src: ['./dest/**/*', "./package.json", "!./dest/desktop/"]
+      }
     }
   });
 
