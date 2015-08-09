@@ -88,7 +88,7 @@
     if (this.containsPixel(x, y)) {
       var p = this.pixels[x][y];
       if (p !== color) {
-        this.pixels[x][y] = color;
+        this.pixels[x][y] = color || Constants.TRANSPARENT_COLOR;
         this.version++;
       }
     }

@@ -18,19 +18,9 @@
 
   ns.CanvasRenderer.prototype.render = function  () {
     var canvas = this.createCanvas_();
-    var context = canvas.getContext('2d');
 
-    for (var x = 0, width = this.frame.getWidth(); x < width; x++) {
-      for (var y = 0, height = this.frame.getHeight(); y < height; y++) {
-        var color = this.frame.getPixel(x, y);
-        var w = 1;
-        while (color === this.frame.getPixel(x, y + w)) {
-          w++;
-        }
-        this.renderLine_(color, x, y, w, context);
-        y = y + w - 1;
-      }
-    }
+    // Draw in canvas
+    pskl.utils.FrameUtils.drawToCanvas(this.frame, canvas, this.transparentColor_);
 
     var scaledCanvas = this.createCanvas_(this.zoom);
     var scaledContext = scaledCanvas.getContext('2d');
@@ -39,22 +29,6 @@
     scaledContext.drawImage(canvas, 0, 0);
 
     return scaledCanvas;
-  };
-
-  ns.CanvasRenderer.prototype.renderPixel_ = function (color, x, y, context) {
-    if (color == Constants.TRANSPARENT_COLOR) {
-      color = this.transparentColor_;
-    }
-    context.fillStyle = color;
-    context.fillRect(x, y, 1, 1);
-  };
-
-  ns.CanvasRenderer.prototype.renderLine_ = function (color, x, y, width, context) {
-    if (color == Constants.TRANSPARENT_COLOR) {
-      color = this.transparentColor_;
-    }
-    context.fillStyle = color;
-    context.fillRect(x, y, 1, width);
   };
 
   ns.CanvasRenderer.prototype.createCanvas_ = function (zoom) {

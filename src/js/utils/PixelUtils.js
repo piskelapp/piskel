@@ -128,7 +128,7 @@
           var nextCol = currentItem.col + dx[i];
           var nextRow = currentItem.row + dy[i];
           try {
-            if (frame.containsPixel(nextCol, nextRow)  && frame.getPixel(nextCol, nextRow) == targetColor) {
+            if (frame.containsPixel(nextCol, nextRow) && frame.getPixel(nextCol, nextRow) == targetColor) {
               queue.push({'col': nextCol, 'row': nextRow});
             }
           } catch (e) {

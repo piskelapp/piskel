@@ -219,18 +219,8 @@
       this.canvas = pskl.utils.CanvasUtils.createCanvas(frame.getWidth(), frame.getHeight());
     }
 
-    var context = this.canvas.getContext('2d');
-    for (var x = 0, width = frame.getWidth() ; x < width ; x++) {
-      for (var y = 0, height = frame.getHeight() ; y < height ; y++) {
-        var color = frame.getPixel(x, y);
-        var w = 1;
-        while (color === frame.getPixel(x, y + w)) {
-          w++;
-        }
-        this.renderLine_(color, x, y, w, context);
-        y = y + w - 1;
-      }
-    }
+    // Draw in canvas
+    pskl.utils.FrameUtils.drawToCanvas(frame, this.canvas);
 
     this.updateMargins_(frame);
 
@@ -263,19 +253,5 @@
       displayContext.drawImage(this.canvas, 0, 0);
     }
     displayContext.restore();
-  };
-
-  ns.FrameRenderer.prototype.renderPixel_ = function (color, x, y, context) {
-    if (color != Constants.TRANSPARENT_COLOR) {
-      context.fillStyle = color;
-      context.fillRect(x, y, 1, 1);
-    }
-  };
-
-  ns.FrameRenderer.prototype.renderLine_ = function (color, x, y, width, context) {
-    if (color != Constants.TRANSPARENT_COLOR) {
-      context.fillStyle = color;
-      context.fillRect(x, y, 1, width);
-    }
   };
 })();

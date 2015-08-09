@@ -3,35 +3,41 @@ describe("FrameUtils suite", function() {
   var red = '#ff0000';
   var transparent = Constants.TRANSPARENT_COLOR;
 
+  // shortcuts
+  var toFrameGrid = test.testutils.toFrameGrid;
+  var frameEqualsGrid = test.testutils.frameEqualsGrid;
+
   it("merges 2 frames", function () {
+    var B = black, R = red, T = transparent;
     var frame1 = pskl.model.Frame.fromPixelGrid([
-      [black, transparent],
-      [transparent, black]
+      [B, T],
+      [T, B]
     ]);
 
     var frame2 = pskl.model.Frame.fromPixelGrid([
-      [transparent, red],
-      [red, transparent]
+      [T, R],
+      [R, T]
     ]);
 
     var mergedFrame = pskl.utils.FrameUtils.merge([frame1, frame2]);
-    expect(mergedFrame.getPixel(0,0)).toBe(black);
-    expect(mergedFrame.getPixel(0,1)).toBe(red);
-    expect(mergedFrame.getPixel(1,0)).toBe(red);
-    expect(mergedFrame.getPixel(1,1)).toBe(black);
+    frameEqualsGrid(mergedFrame, [
+      [B, R],
+      [R, B]
+    ]);
   });
 
   it("returns same frame when merging single frame", function () {
-    var frame1 = pskl.model.Frame.fromPixelGrid([
-      [black, transparent],
-      [transparent, black]
-    ]);
+    var B = black, T = transparent;
+    var frame1 = pskl.model.Frame.fromPixelGrid(toFrameGrid([
+      [B, T],
+      [B, T]
+    ]));
 
     var mergedFrame = pskl.utils.FrameUtils.merge([frame1]);
-    expect(mergedFrame.getPixel(0,0)).toBe(black);
-    expect(mergedFrame.getPixel(0,1)).toBe(transparent);
-    expect(mergedFrame.getPixel(1,0)).toBe(transparent);
-    expect(mergedFrame.getPixel(1,1)).toBe(black);
+    frameEqualsGrid(mergedFrame, [
+      [B, T],
+      [B, T]
+    ]);
   });
 
   var checkPixelsColor = function (frame, pixels, color) {
@@ -42,9 +48,10 @@ describe("FrameUtils suite", function() {
   };
 
   it ("converts an image to a frame", function () {
+    var B = black, T = transparent;
     var frame1 = pskl.model.Frame.fromPixelGrid([
-      [black, transparent],
-      [transparent, black]
+      [B, T],
+      [T, B]
     ]);
 
     var image = pskl.utils.FrameUtils.toImage(frame1);
@@ -57,48 +64,66 @@ describe("FrameUtils suite", function() {
 
     var biggerFrame = pskl.utils.FrameUtils.createFromImage(biggerImage);
 
-    checkPixelsColor(biggerFrame, [
-      [0,0],[0,1],[0,2],
-      [1,0],[1,1],[1,2],
-      [2,0],[2,1],[2,2],
-      [3,3],[3,4],[3,5],
-      [4,3],[4,4],[4,5],
-      [5,3],[5,4],[5,5]
-    ], black);
-
-    checkPixelsColor(biggerFrame, [
-      [0,3],[0,4],[0,5],
-      [1,3],[1,4],[1,5],
-      [2,3],[2,4],[2,5],
-      [3,0],[3,1],[3,2],
-      [4,0],[4,1],[4,2],
-      [5,0],[5,1],[5,2]
-    ], transparent);
+    frameEqualsGrid(biggerFrame, [
+      [B, B, B, T, T, T],
+      [B, B, B, T, T, T],
+      [B, B, B, T, T, T],
+      [T, T, T, B, B, B],
+      [T, T, T, B, B, B],
+      [T, T, T, B, B, B]
+    ]);
   });
 
   it ("[LayerUtils] creates a layer from a simple spritesheet", function () {
-    var frame = pskl.model.Frame.fromPixelGrid([
-      [black, red],
-      [red, black],
-      [black, black],
-      [red, red]
-    ]);
+    var B = black, R = red;
+
+    // original image in 4x2
+    var frame = pskl.model.Frame.fromPixelGrid(toFrameGrid([
+      [B, R, B, R],
+      [R, B, B, R]
+    ]));
+
     var spritesheet = pskl.utils.FrameUtils.toImage(frame);
 
+    // split the spritesheet by 4
     var frames = pskl.utils.LayerUtils.createLayerFromSpritesheet(spritesheet, 4);
+
+    // expect 4 frames of 1x2
     expect(frames.length).toBe(4);
 
-    expect(frames[0].getPixel(0,0)).toBe(black);
-    expect(frames[0].getPixel(0,1)).toBe(red);
+    // verify frame content
+    frameEqualsGrid(frames[0], [
+      [B],
+      [R]
+    ]);
+    frameEqualsGrid(frames[1], [
+      [R],
+      [B]
+    ]);
+    frameEqualsGrid(frames[2], [
+      [B],
+      [B]
+    ]);
+    frameEqualsGrid(frames[3], [
+      [R],
+      [R]
+    ]);
+  });
 
-    expect(frames[1].getPixel(0,0)).toBe(red);
-    expect(frames[1].getPixel(0,1)).toBe(black);
+  it ("supports null values in frame array", function () {
+    var B = black, T = transparent;
+    var frame = pskl.model.Frame.fromPixelGrid([
+      [B, null],
+      [null, B]
+    ]);
 
-    expect(frames[2].getPixel(0,0)).toBe(black);
-    expect(frames[2].getPixel(0,1)).toBe(black);
+    var image = pskl.utils.FrameUtils.toImage(frame);
 
-    expect(frames[3].getPixel(0,0)).toBe(red);
-    expect(frames[3].getPixel(0,1)).toBe(red);
-
+    // transform back to frame for ease of testing
+    var testFrame = pskl.utils.FrameUtils.createFromImage(image);
+    frameEqualsGrid(testFrame, [
+      [B, T],
+      [T, B]
+    ]);
   });
 });
