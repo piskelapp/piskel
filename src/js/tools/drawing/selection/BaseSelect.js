@@ -8,7 +8,7 @@
 
   ns.BaseSelect = function() {
     this.secondaryToolId = pskl.tools.drawing.Move.TOOL_ID;
-    this.BodyRoot = $('body');
+    this.bodyRoot = $('body');
 
     // Select's first point coordinates (set in applyToolAt)
     this.startCol = null;
@@ -81,12 +81,12 @@
     if (overlay.containsPixel(col, row)) {
       if (this.isInSelection(col, row)) {
         // We're hovering the selection, show the move tool:
-        this.BodyRoot.addClass(this.secondaryToolId);
-        this.BodyRoot.removeClass(this.toolId);
+        this.bodyRoot.addClass(this.secondaryToolId);
+        this.bodyRoot.removeClass(this.toolId);
       } else {
         // We're not hovering the selection, show create selection tool:
-        this.BodyRoot.addClass(this.toolId);
-        this.BodyRoot.removeClass(this.secondaryToolId);
+        this.bodyRoot.addClass(this.toolId);
+        this.bodyRoot.removeClass(this.secondaryToolId);
       }
     }
   };

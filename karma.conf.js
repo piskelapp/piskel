@@ -6,7 +6,9 @@ module.exports = function(config) {
   var mapToSrcFolder = function (path) {return ['src', path].join('/');};
 
   var piskelScripts = require('./src/piskel-script-list.js').scripts.map(mapToSrcFolder);
+  piskelScripts.push('test/js/testutils/**/*.js');
   piskelScripts.push('test/js/**/*.js');
+  
   config.set({
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
