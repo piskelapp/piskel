@@ -31,14 +31,6 @@
     return scaledCanvas;
   };
 
-  ns.CanvasRenderer.prototype.renderPixel_ = function (color, x, y, context) {
-    if (color == Constants.TRANSPARENT_COLOR) {
-      color = this.transparentColor_;
-    }
-    context.fillStyle = color;
-    context.fillRect(x, y, 1, 1);
-  };
-
   ns.CanvasRenderer.prototype.createCanvas_ = function (zoom) {
     zoom = zoom || 1;
     var width = this.frame.getWidth() * zoom;

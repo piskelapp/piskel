@@ -88,20 +88,18 @@
   };
 
   ns.SelectionManager.prototype.paste = function() {
-    if (this.currentSelection && this.currentSelection.hasPastedContent) {
-      var pixels = this.currentSelection.pixels;
-      var opaquePixels = pixels.filter(function (p) {
-        return p.color !== Constants.TRANSPARENT_COLOR;
-      });
-      this.pastePixels(opaquePixels);
+    if (!this.currentSelection || !this.currentSelection.hasPastedContent) {
+      return;
     }
-  };
 
-  ns.SelectionManager.prototype.pastePixels = function(pixels) {
-    var currentFrame = this.piskelController.getCurrentFrame();
+    var pixels = this.currentSelection.pixels;
+    var frame = this.piskelController.getCurrentFrame();
 
     pixels.forEach(function (pixel) {
-      currentFrame.setPixel(pixel.col, pixel.row, pixel.color);
+      if (pixel.color === Constants.TRANSPARENT_COLOR || pixel.color === null) {
+        return;
+      }
+      frame.setPixel(pixel.col, pixel.row, pixel.color);
     });
 
     $.publish(Events.PISKEL_SAVE_STATE, {
@@ -115,8 +113,7 @@
   };
 
   ns.SelectionManager.prototype.replay = function (frame, replayData) {
-    var pixels = replayData.pixels;
-    pixels.forEach(function (pixel) {
+    replayData.pixels.forEach(function (pixel) {
       var color = replayData.type === SELECTION_REPLAY.PASTE ? pixel.color : Constants.TRANSPARENT_COLOR;
       frame.setPixel(pixel.col, pixel.row, color);
     });

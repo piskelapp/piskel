@@ -5,8 +5,8 @@
     /**
      * Render a Frame object as an image.
      * Can optionally scale it (zoom)
-     * @param  {Frame} frame
-     * @param  {Number} zoom
+     * @param frame {Frame} frame
+     * @param zoom {Number} zoom
      * @return {Image}
      */
     toImage : function (frame, zoom) {
@@ -19,9 +19,9 @@
     /**
      * Draw the provided frame in a 2d canvas
      *
-     * @param  {pskl.model.Frame} frame the frame to draw
-     * @param  {Canvas} canvas the canvas target
-     * @param  {String} transparentColor (optional) color to use to represent transparent pixels.
+     * @param frame {pskl.model.Frame} frame the frame to draw
+     * @param canvas {Canvas} canvas the canvas target
+     * @param transparentColor {String} transparentColor (optional) color to use to represent transparent pixels.
      */
     drawToCanvas : function (frame, canvas, transparentColor) {
       var context = canvas.getContext('2d');
@@ -30,6 +30,9 @@
       for (var x = 0, width = frame.getWidth() ; x < width ; x++) {
         for (var y = 0, height = frame.getHeight() ; y < height ; y++) {
           var color = frame.getPixel(x, y);
+
+          // accumulate all the pixels of the same color to speed up rendering
+          // by reducting fillRect calls
           var w = 1;
           while (color === frame.getPixel(x, y + w) && (y + w) < height) {
             w++;
@@ -43,14 +46,23 @@
           y = y + w - 1;
         }
       }
-
     },
 
+    /**
+     * Render a line of a single color in a given canvas 2D context.
+     * 
+     * @param  color {String} color to draw
+     * @param  x {Number} x coordinate 
+     * @param  y {Number} y coordinate
+     * @param  width {Number} width of the line to draw, in pixels
+     * @param  context {CanvasRenderingContext2D} context of the canvas target
+     */
     renderLine_ : function (color, x, y, width, context) {
-      if (color != Constants.TRANSPARENT_COLOR) {
-        context.fillStyle = color;
-        context.fillRect(x, y, 1, width);
+      if (color === Constants.TRANSPARENT_COLOR || color === null) {
+        return;
       }
+      context.fillStyle = color;
+      context.fillRect(x, y, 1, width);
     },
 
     merge : function (frames) {

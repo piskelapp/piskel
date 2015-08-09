@@ -25,9 +25,6 @@
   };
 
   ns.PreviewController.prototype.init = function () {
-    // the oninput event won't work on IE10 unfortunately, but at least will provide a
-    // consistent behavior across all other browsers that support the input type range
-    // see https://bugzilla.mozilla.org/show_bug.cgi?id=853670
     this.fpsRangeInput.on('input change', this.onFPSSliderChange.bind(this));
     document.querySelector('.right-column').style.width = Constants.ANIMATED_PREVIEW_WIDTH + 'px';
 

@@ -1,6 +1,28 @@
 (function () {
   var ns = $.namespace('test.testutils');
 
+  /**
+   * Frame.createFromGrid accepts grids that are rotated by 90deg from
+   * the visual/usual way. (column-based grid)
+   *
+   * For testing, it's easier for be able to specify a row-based grid, because
+   * it visually matches what the image will look like.
+   *
+   * For instance :
+   *
+   * [[black, black, black],
+   *  [white, white, white]]
+   *
+   * we expect this to be a 3x2 image, one black line above a white line.
+   *
+   * However Frame.createFromGrid needs the following input to create such an image :
+   * 
+   * [[black, white],
+   *  [black, white],
+   *  [black, white]] 
+   *
+   * This helper will build the second array from the first array.
+   */
   ns.toFrameGrid = function (normalGrid) {
     var frameGrid = [];
     var w = normalGrid[0].length;
