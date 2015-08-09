@@ -50,9 +50,9 @@
 
     /**
      * Render a line of a single color in a given canvas 2D context.
-     * 
+     *
      * @param  color {String} color to draw
-     * @param  x {Number} x coordinate 
+     * @param  x {Number} x coordinate
      * @param  y {Number} y coordinate
      * @param  width {Number} width of the line to draw, in pixels
      * @param  context {CanvasRenderingContext2D} context of the canvas target
