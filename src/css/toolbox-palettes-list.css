@@ -20,11 +20,15 @@
     position: absolute;
     top: 0;
     right: 0;
-    background-color: #444;
-    color: white;
+
+    background-color: black;
+    color: gold;
+
+    font-family: Tahoma;
     font-size: 0.5em;
-    padding: 1px;
-    padding-left: 2px;
+    font-weight: bold;
+
+    padding: 2px 3px 2px 3px;
     border-radius: 0 0 0 2px;
 }
 
