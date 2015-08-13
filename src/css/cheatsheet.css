@@ -51,9 +51,13 @@
   overflow: auto;
 }
 
-.cheatsheet-container h3 {
+.cheatsheet-container .cheatsheet-title {
   font-size:24px;
   margin-top: 0;
+}
+
+.cheatsheet-container .cheatsheet-title:nth-of-type(2) {
+  margin-top: 30px;
 }
 
 .cheatsheet-section {

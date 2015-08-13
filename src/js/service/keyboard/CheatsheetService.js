@@ -60,6 +60,7 @@
   ns.CheatsheetService.prototype.initMarkup_ = function () {
     this.initMarkupForTools_();
     this.initMarkupForMisc_();
+    this.initMarkupForColors_();
     this.initMarkupForSelection_();
   };
 
@@ -76,8 +77,6 @@
     var descriptors = [
       this.toDescriptor_('0', 'Reset zoom level'),
       this.toDescriptor_('+/-', 'Zoom in/Zoom out'),
-      this.toDescriptor_('X', 'Swap primary/secondary colors'),
-      this.toDescriptor_('D', 'Reset default colors'),
       this.toDescriptor_('ctrl + Z', 'Undo'),
       this.toDescriptor_('ctrl + Y', 'Redo'),
       this.toDescriptor_('&#65514;', 'Select previous frame'), /* ASCII for up-arrow */
@@ -85,14 +84,24 @@
       this.toDescriptor_('N', 'Create new frame'),
       this.toDescriptor_('shift + N', 'Duplicate selected frame'),
       this.toDescriptor_('shift + ?', 'Open/Close this popup'),
-      this.toDescriptor_('alt + P', 'Create a Palette'),
-      this.toDescriptor_('&lt;/&gt;', 'Select prev/next palette color'),
-      this.toDescriptor_('1 to 9', 'Select palette color at index'),
       this.toDescriptor_('alt + O', 'Toggle Onion Skin'),
       this.toDescriptor_('alt + L', 'Toggle Layer Preview')
     ];
 
     var container = this.cheatsheetEl.querySelector('.cheatsheet-misc-shortcuts');
+    this.initMarkupForDescriptors_(descriptors, container);
+  };
+
+  ns.CheatsheetService.prototype.initMarkupForColors_ = function () {
+    var descriptors = [
+      this.toDescriptor_('X', 'Swap primary/secondary colors'),
+      this.toDescriptor_('D', 'Reset default colors'),
+      this.toDescriptor_('alt + P', 'Create a Palette'),
+      this.toDescriptor_('&lt;/&gt;', 'Select prev/next palette color'),
+      this.toDescriptor_('1 to 9', 'Select palette color at index')
+    ];
+
+    var container = this.cheatsheetEl.querySelector('.cheatsheet-colors-shortcuts');
     this.initMarkupForDescriptors_(descriptors, container);
   };
 
