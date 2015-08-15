@@ -95,12 +95,7 @@
     var pixels = this.currentSelection.pixels;
     var frame = this.piskelController.getCurrentFrame();
 
-    pixels.forEach(function (pixel) {
-      if (pixel.color === Constants.TRANSPARENT_COLOR || pixel.color === null) {
-        return;
-      }
-      frame.setPixel(pixel.col, pixel.row, pixel.color);
-    });
+    this.pastePixels_(frame, pixels);
 
     $.publish(Events.PISKEL_SAVE_STATE, {
       type : pskl.service.HistoryService.REPLAY,
@@ -113,9 +108,21 @@
   };
 
   ns.SelectionManager.prototype.replay = function (frame, replayData) {
-    replayData.pixels.forEach(function (pixel) {
-      var color = replayData.type === SELECTION_REPLAY.PASTE ? pixel.color : Constants.TRANSPARENT_COLOR;
-      frame.setPixel(pixel.col, pixel.row, color);
+    if (replayData.type === SELECTION_REPLAY.PASTE) {
+      this.pastePixels_(frame, replayData.pixels);
+    } else if (replayData.type === SELECTION_REPLAY.ERASE) {
+      replayData.pixels.forEach(function (pixel) {
+        frame.setPixel(pixel.col, pixel.row, Constants.TRANSPARENT_COLOR);
+      });
+    }
+  };
+
+  ns.SelectionManager.prototype.pastePixels_ = function(frame, pixels) {
+    pixels.forEach(function (pixel) {
+      if (pixel.color === Constants.TRANSPARENT_COLOR || pixel.color === null) {
+        return;
+      }
+      frame.setPixel(pixel.col, pixel.row, pixel.color);
     });
   };
 
