@@ -259,7 +259,8 @@ module.exports = function(grunt) {
   grunt.registerTask('default', ['clean:before', 'lint', 'build']);
 
   // Build stand alone app with nodewebkit
-  grunt.registerTask('desktop', ['default', 'nodewebkit']);
+  grunt.registerTask('desktop', ['default', 'nodewebkit:windows']);
+  grunt.registerTask('desktop-mac', ['default', 'nodewebkit:macos']);
 
   // Start webserver and watch for changes
   grunt.registerTask('serve', ['build', 'express:regular', 'open:regular', 'express-keepalive', 'watch']);
