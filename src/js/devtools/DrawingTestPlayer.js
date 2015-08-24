@@ -5,7 +5,7 @@
     this.initialState = testRecord.initialState;
     this.events = testRecord.events;
     this.referencePng = testRecord.png;
-    this.step = step || ns.DrawingTestPlayer.DEFAULT_STEP;
+    this.step = step || this.initialState.step || ns.DrawingTestPlayer.DEFAULT_STEP;
     this.callbacks = [];
     this.shim = null;
   };
@@ -81,6 +81,11 @@
     this.timer = window.setTimeout(function () {
       var recordEvent = this.events[index];
 
+      if (!recordEvent) {
+        this.onTestEnd_();
+        return;
+      }
+
       if (recordEvent.type === 'mouse-event') {
         this.playMouseEvent_(recordEvent);
       } else if (recordEvent.type === 'keyboard-event') {
@@ -93,11 +98,7 @@
         this.playInstrumentedEvent_(recordEvent);
       }
 
-      if (this.events[index + 1]) {
-        this.playEvent_(index + 1);
-      } else {
-        this.onTestEnd_();
-      }
+      this.playEvent_(index + 1);
     }.bind(this), this.step);
   };
 
