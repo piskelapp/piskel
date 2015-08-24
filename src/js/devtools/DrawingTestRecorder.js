@@ -9,6 +9,7 @@
 
   ns.DrawingTestRecorder.prototype.init = function () {
     $.subscribe(Events.MOUSE_EVENT, this.onMouseEvent_.bind(this));
+    $.subscribe(Events.KEYBOARD_EVENT, this.onKeyboardEvent_.bind(this));
     $.subscribe(Events.TOOL_SELECTED, this.onToolEvent_.bind(this));
     $.subscribe(Events.PRIMARY_COLOR_SELECTED, this.onColorEvent_.bind(this, true));
     $.subscribe(Events.SECONDARY_COLOR_SELECTED, this.onColorEvent_.bind(this, false));
@@ -70,6 +71,23 @@
   ns.DrawingTestRecorder.prototype.onMouseEvent_ = function (evt, mouseEvent, originator) {
     if (this.isRecording) {
       this.recordMouseEvent_(mouseEvent);
+    }
+  };
+
+  ns.DrawingTestRecorder.prototype.onKeyboardEvent_ = function (evt, keyboardEvent) {
+    if (this.isRecording) {
+      var recordEvent = {};
+      recordEvent.type = 'keyboard-event';
+      recordEvent.event = {
+        which : keyboardEvent.which,
+        shiftKey : keyboardEvent.shiftKey,
+        altKey : keyboardEvent.altKey,
+        ctrlKey : keyboardEvent.ctrlKey,
+        target : {
+          nodeName : keyboardEvent.target.nodeName
+        }
+      };
+      this.events.push(recordEvent);
     }
   };
 

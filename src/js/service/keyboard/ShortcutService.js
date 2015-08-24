@@ -77,6 +77,7 @@
       return 'normal';
     }
   };
+
   /**
    * @private
    */
@@ -84,7 +85,6 @@
     if (!this.isInInput_(evt)) {
       // jquery names FTW ...
       var keycode = evt.which;
-      var targetTagName = evt.target.nodeName.toUpperCase();
       var charkey = pskl.service.keyboard.KeycodeTranslator.toChar(keycode);
 
       var keyShortcuts = this.shortcuts_[charkey];
@@ -101,6 +101,7 @@
           if (bubble !== true) {
             evt.preventDefault();
           }
+          $.publish(Events.KEYBOARD_EVENT, [evt]);
         }
       }
     }

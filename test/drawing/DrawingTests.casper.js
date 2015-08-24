@@ -6,6 +6,7 @@
   "layers.merge.json",
   "move.json",
   "pen.secondary.color.json",
+  "selection.rectangular.json",
   "squares.circles.json",
   "stroke.json",
   "verticalpen.drawing.json"

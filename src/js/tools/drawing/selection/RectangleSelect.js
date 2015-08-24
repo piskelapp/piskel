@@ -13,6 +13,8 @@
 
     ns.BaseSelect.call(this);
     this.hasSelection = false;
+
+    this.selectionOrigin_ = null;
   };
 
   pskl.utils.inherit(ns.RectangleSelect, ns.BaseSelect);
@@ -21,16 +23,24 @@
    * @override
    */
   ns.RectangleSelect.prototype.onSelectStart_ = function (col, row, color, frame, overlay) {
+    this.selectionOrigin_ = {
+      col : col,
+      row : row
+    };
     if (this.hasSelection) {
       this.hasSelection = false;
       overlay.clear();
       $.publish(Events.SELECTION_DISMISSED);
     } else {
-      this.hasSelection = true;
-      $.publish(Events.DRAG_START, [col, row]);
-      // Drawing the first point of the rectangle in the fake overlay canvas:
+      this.startSelection_();
       overlay.setPixel(col, row, color);
     }
+  };
+
+  ns.RectangleSelect.prototype.startSelection_ = function (col, row, color) {
+    this.hasSelection = true;
+    $.publish(Events.DRAG_START, [col, row]);
+    // Drawing the first point of the rectangle in the fake overlay canvas:
   };
 
   /**
@@ -40,6 +50,10 @@
    * @override
    */
   ns.RectangleSelect.prototype.onSelect_ = function (col, row, color, frame, overlay) {
+    if (!this.hasSelection && (this.selectionOrigin_.col !== col || this.selectionOrigin_.row !== row)) {
+      this.startSelection_();
+    }
+
     if (this.hasSelection) {
       overlay.clear();
       this.selection = new pskl.selection.RectangularSelection(

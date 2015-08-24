@@ -133,8 +133,7 @@
 
   // The list of callbacks that define the drag'n drop behavior of the selection.
   /** @private */
-  ns.BaseSelect.prototype.onSelectionDragStart_ = function (col, row, color, frame, overlay) {
-  };
+  ns.BaseSelect.prototype.onSelectionDragStart_ = function (col, row, color, frame, overlay) {};
 
   /** @private */
   ns.BaseSelect.prototype.onSelectionDrag_ = function (col, row, color, frame, overlay) {

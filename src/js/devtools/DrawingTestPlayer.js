@@ -59,6 +59,9 @@
     };
   };
 
+  /**
+   * Catch all mouse events to avoid perturbations during the test
+   */
   ns.DrawingTestPlayer.prototype.createMouseShim_ = function () {
     this.shim = document.createElement('DIV');
     this.shim.style.cssText = 'position:fixed;top:0;left:0;right:0;left:0;bottom:0;z-index:15000';
@@ -80,6 +83,8 @@
 
       if (recordEvent.type === 'mouse-event') {
         this.playMouseEvent_(recordEvent);
+      } else if (recordEvent.type === 'keyboard-event') {
+        this.playKeyboardEvent_(recordEvent);
       } else if (recordEvent.type === 'color-event') {
         this.playColorEvent_(recordEvent);
       } else if (recordEvent.type === 'tool-event') {
@@ -112,6 +117,16 @@
     } else if (event.type == 'mousemove') {
       pskl.app.drawingController.onMousemove_(event);
     }
+  };
+
+  ns.DrawingTestPlayer.prototype.playKeyboardEvent_ = function (recordEvent) {
+    var event = recordEvent.event;
+    if (pskl.utils.UserAgent.isMac && event.ctrlKey) {
+      event.metaKey = true;
+    }
+
+    event.preventDefault = function () {};
+    pskl.app.shortcutService.onKeyUp_(event);
   };
 
   ns.DrawingTestPlayer.prototype.playColorEvent_ = function (recordEvent) {
