@@ -25,6 +25,8 @@
   ns.Move.prototype.applyToolAt = function(col, row, color, frame, overlay, event) {
     this.startCol = col;
     this.startRow = row;
+    this.selection = pskl.app.selectionManager.currentSelection;
+    this.moveSelection = this.selection.isInSelection(col, row);
     this.frameClone = frame.clone();
   };
 
@@ -46,10 +48,18 @@
           x = (x + w) % w;
           y = (y + h) % h;
         }
-        if (reference.containsPixel(x, y)) {
-          color = reference.getPixel(x, y);
+        if (this.selection.isInSelection(x, y) || !this.moveSelection) {
+          if (reference.containsPixel(x, y)) {
+            color = reference.getPixel(x, y);
+          } else {
+            color = Constants.TRANSPARENT_COLOR;
+          }
         } else {
-          color = Constants.TRANSPARENT_COLOR;
+          if (this.selection.isInSelection(col, row)) {
+            color = Constants.TRANSPARENT_COLOR;
+          } else {
+            color = reference.getPixel(col, row);
+          }
         }
         frame.setPixel(col, row, color);
       }
