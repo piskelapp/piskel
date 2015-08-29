@@ -31,8 +31,8 @@
 
     this.hasPastedContent = true;
   };
-  
-   ns.BaseSelection.prototype.isInSelection = function (col, row) {
+
+  ns.BaseSelection.prototype.isInSelection = function (col, row) {
     return this.pixels.some(function (pixel) {
       return pixel.col === col && pixel.row === row;
     });

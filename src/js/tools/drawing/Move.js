@@ -26,10 +26,10 @@
     this.startCol = col;
     this.startRow = row;
     this.selection = pskl.app.selectionManager.currentSelection;
-    this.moveSelection = this.selection.isInSelection(col,row);
+    this.moveSelection = this.selection.isInSelection(col, row);
     this.frameClone = frame.clone();
   };
-  
+
   ns.Move.prototype.moveToolAt = function(col, row, color, frame, overlay, event) {
     var colDiff = col - this.startCol;
     var rowDiff = row - this.startRow;
@@ -48,14 +48,14 @@
           x = (x + w) % w;
           y = (y + h) % h;
         }
-        if(this.selection.isInSelection(x,y)||!this.moveSelection){
+        if (this.selection.isInSelection(x, y) || !this.moveSelection) {
           if (reference.containsPixel(x, y)) {
             color = reference.getPixel(x, y);
           } else {
             color = Constants.TRANSPARENT_COLOR;
           }
-        }else{
-          if (this.selection.isInSelection(col,row)) {
+        } else {
+          if (this.selection.isInSelection(col, row)) {
             color = Constants.TRANSPARENT_COLOR;
           } else {
             color = reference.getPixel(col, row);
