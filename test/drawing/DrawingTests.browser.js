@@ -8,6 +8,7 @@
   "layers.merge.json",
   "lighten.darken.json",
   "move.json",
+  "move-alllayers-allframes.json",
   "pen.secondary.color.json",
   "selection.rectangular.json",
   "squares.circles.json",

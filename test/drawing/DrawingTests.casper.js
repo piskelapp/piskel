@@ -6,6 +6,7 @@
   "layers.fun.json",
   "layers.merge.json",
   "move.json",
+  "move-alllayers-allframes.json",
   "pen.secondary.color.json",
   "selection.rectangular.json",
   "squares.circles.json",

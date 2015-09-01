@@ -38,7 +38,7 @@
   ns.DrawingTestSuiteRunner.prototype.onTestLoaded_ = function (response) {
     var testRecord = JSON.parse(response.responseText);
 
-    var testPlayer = new ns.DrawingTestPlayer(testRecord, 50);
+    var testPlayer = new ns.DrawingTestPlayer(testRecord);
 
     testPlayer.addEndTestCallback(this.onTestEnd_.bind(this));
     testPlayer.start();
