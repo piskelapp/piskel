@@ -10,6 +10,12 @@
     this.toolId = ns.Move.TOOL_ID;
     this.helpText = 'Move tool';
 
+    this.tooltipDescriptors = [
+      {key : 'ctrl', description : 'Apply to all layers'},
+      {key : 'shift', description : 'Apply to all frames'},
+      {key : 'alt', description : 'Warp canvas borders'}
+    ];
+
     // Stroke's first point coordinates (set in applyToolAt)
     this.startCol = null;
     this.startRow = null;
