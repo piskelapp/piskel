@@ -25,13 +25,14 @@
   ns.Move.prototype.applyToolAt = function(col, row, color, frame, overlay, event) {
     this.startCol = col;
     this.startRow = row;
-    this.frameClone = frame.clone();
+    this.currentFrame = frame;
+    this.currentFrameClone = frame.clone();
   };
 
   ns.Move.prototype.moveToolAt = function(col, row, color, frame, overlay, event) {
     var colDiff = col - this.startCol;
     var rowDiff = row - this.startRow;
-    this.shiftFrame(colDiff, rowDiff, frame, this.frameClone, event);
+    this.shiftFrame(colDiff, rowDiff, frame, this.currentFrameClone, event);
   };
 
   ns.Move.prototype.shiftFrame = function (colDiff, rowDiff, frame, reference, event) {
@@ -42,7 +43,7 @@
       for (var row = 0 ; row < h ; row++) {
         var x = col - colDiff;
         var y = row - rowDiff;
-        if (event.shiftKey) {
+        if (event.altKey) {
           x = (x + w) % w;
           y = (y + h) % h;
         }
@@ -60,19 +61,33 @@
    * @override
    */
   ns.Move.prototype.releaseToolAt = function(col, row, color, frame, overlay, event) {
-    this.moveToolAt(col, row, color, frame, overlay, event);
+    var colDiff = col - this.startCol;
+    var rowDiff = row - this.startRow;
+
+    pskl.tools.ToolsHelper.getTargetFrames(event.ctrlKey, event.shiftKey).forEach(function (f) {
+      // for the current frame, the backup clone should be reused as reference
+      // the current frame has been modified by the user action already
+      var reference = this.currentFrame == f ? this.currentFrameClone : f.clone();
+      this.shiftFrame(colDiff, rowDiff, f, reference, event);
+    }.bind(this));
 
     this.raiseSaveStateEvent({
-      colDiff : col - this.startCol,
-      rowDiff : row - this.startRow,
+      colDiff : colDiff,
+      rowDiff : rowDiff,
+      ctrlKey : event.ctrlKey,
+      altKey : event.altKey,
       shiftKey : event.shiftKey
     });
   };
 
   ns.Move.prototype.replay = function(frame, replayData) {
     var event = {
-      shiftKey : replayData.shiftKey
+      shiftKey : replayData.shiftKey,
+      altKey : replayData.altKey,
+      ctrlKey : replayData.ctrlKey
     };
-    this.shiftFrame(replayData.colDiff, replayData.rowDiff, frame, frame.clone(), event);
+    pskl.tools.ToolsHelper.getTargetFrames(event.ctrlKey, event.shiftKey).forEach(function (frame) {
+      this.shiftFrame(replayData.colDiff, replayData.rowDiff, frame, frame.clone(), event);
+    }.bind(this));
   };
 })();

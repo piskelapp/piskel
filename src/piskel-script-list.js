@@ -162,6 +162,7 @@
   "js/service/FileDropperService.js",
 
   // Tools
+  "js/tools/ToolsHelper.js",
   "js/tools/Tool.js",
   "js/tools/IconMarkupRenderer.js",
   "js/tools/drawing/BaseTool.js",
