@@ -23,27 +23,8 @@
       callback(blob);
     },
 
-    canvasToBlob : function (sourceCanvas, callback, type /*, ...args*/) {
+    canvasToBlob : function (canvas, callback, type /*, ...args*/) {
       type = type || 'image/png';
-
-      var exportScaling = pskl.UserSettings.get(pskl.UserSettings.EXPORT_SCALING);
-      var canvas;
-      if (exportScaling > 1) {
-        // Scale the input canvas to an offscreen canvas.
-        canvas = document.createElement('canvas');
-        canvas.width = sourceCanvas.width * exportScaling;
-        canvas.height = sourceCanvas.height * exportScaling;
-
-        var ctx = canvas.getContext('2d');
-        ctx.mozImageSmoothingEnabled = false;
-        ctx.webkitImageSmoothingEnabled = false;
-        ctx.msImageSmoothingEnabled = false;
-        ctx.imageSmoothingEnabled = false;
-
-        ctx.drawImage(sourceCanvas, 0, 0, sourceCanvas.width, sourceCanvas.height, 0, 0, canvas.width, canvas.height);
-      } else {
-        canvas = sourceCanvas;
-      }
 
       if (canvas.mozGetAsFile) {
         callback(canvas.mozGetAsFile('canvas', type));
