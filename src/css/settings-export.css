@@ -57,6 +57,10 @@
   color: white;
 }
 
+.scaling-factor {
+  margin-bottom: 10px;
+}
+
 .scaling-factor-input {
   margin: 5px;
   vertical-align: middle;
@@ -72,8 +76,4 @@
   box-sizing: border-box;
   border-radius: 3px;
   text-align: center;
-}
-
-.settings-section--export > .settings-item > label {
-  display: block;
 }

@@ -1,27 +1,22 @@
 <div class="settings-section">
-
-  <div class="settings-title settings-section--export">
-    General Export Settings
-  </div>
-  <div class="settings-item">
-    <span class="settings-description" style="display:block"><label for="scaling-factor">Output Scaling Factor</label></span>
-    <span class="settings-description" style="display:block">Currently affects only spritesheet export.</span>
-    <input type="range" class="scaling-factor-input" name="scaling-factor" min="1"  max="32" step="1"/>
-    <span class="scaling-factor-text"></span>
-  </div>
   <div class="settings-title">
     Export Spritesheet
   </div>
   <div class="settings-item">
-    <span class="settings-description">PNG with all frames side by side.</span>
+    <div class="settings-description">PNG with all frames side by side.</div>
+    <div class="settings-description"><label for="scaling-factor">Output Scaling Factor</label></div>
+    <div class="scaling-factor">
+      <input type="range" class="scaling-factor-input" name="scaling-factor" min="1"  max="32" step="1"/>
+      <span class="scaling-factor-text"></span>
+    </div>
     <button type="button" class="button button-primary png-download-button">Download PNG</button>
   </div>
   <div class="settings-title">
     Export as ZIP
   </div>
   <div class="settings-item">
-    <span class="settings-description">ZIP with one PNG file per frame.</span>
-    <span class="settings-description" style="display:block">File names will start with the prefix below.</span>
+    <div class="settings-description">ZIP with one PNG file per frame.</div>
+    <div class="settings-description">File names will start with the prefix below.</div>
     <div class="settings-item">
       <label>Prefix</label>
       <input class="zip-prefix-name  textfield" type="text" placeholder="PNG file prefix ...">
