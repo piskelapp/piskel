@@ -28,13 +28,14 @@ var Constants = {
    * Fake semi-transparent color used to highlight transparent
    * strokes and rectangles:
    */
-  SELECTION_TRANSPARENT_COLOR: 'rgba(255, 255, 255, 0.6)',
+  SELECTION_TRANSPARENT_COLOR: 'rgba(160, 215, 240, 0.6)',
 
   /*
    * When a tool is hovering the drawing canvas, we highlight the eventual
    * pixel target with this color:
    */
-  TOOL_TARGET_HIGHLIGHT_COLOR: 'rgba(255, 255, 255, 0.2)',
+  TOOL_HIGHLIGHT_COLOR_LIGHT: 'rgba(255, 255, 255, 0.2)',
+  TOOL_HIGHLIGHT_COLOR_DARK: 'rgba(0, 0, 0, 0.2)',
 
   ZOOMED_OUT_BACKGROUND_COLOR : '#A0A0A0',
 

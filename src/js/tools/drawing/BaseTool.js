@@ -13,35 +13,51 @@
 
   pskl.utils.inherit(ns.BaseTool, pskl.tools.Tool);
 
-  ns.BaseTool.prototype.applyToolAt = function(col, row, color, frame, overlay, event) {};
+  ns.BaseTool.prototype.applyToolAt = function (col, row, color, frame, overlay, event) {};
 
-  ns.BaseTool.prototype.moveToolAt = function(col, row, color, frame, overlay, event) {};
+  ns.BaseTool.prototype.moveToolAt = function (col, row, color, frame, overlay, event) {};
 
   ns.BaseTool.prototype.replay = Constants.ABSTRACT_FUNCTION;
 
-  ns.BaseTool.prototype.moveUnactiveToolAt = function(col, row, color, frame, overlay, event) {
-
+  ns.BaseTool.prototype.moveUnactiveToolAt = function (col, row, color, frame, overlay, event) {
     if (overlay.containsPixel(col, row)) {
-      if (!isNaN(this.highlightedPixelCol) &&
-        !isNaN(this.highlightedPixelRow) &&
-        (this.highlightedPixelRow != row ||
-          this.highlightedPixelCol != col)) {
-
-        // Clean the previously highlighted pixel:
-        overlay.clear();
-      }
-
-      // Show the current pixel targeted by the tool:
-      overlay.setPixel(col, row, Constants.TOOL_TARGET_HIGHLIGHT_COLOR);
-
-      this.highlightedPixelCol = col;
-      this.highlightedPixelRow = row;
+      this.updateHighlightedPixel(frame, overlay, col, row);
     } else {
       this.hideHighlightedPixel(overlay);
     }
   };
 
-  ns.BaseTool.prototype.hideHighlightedPixel = function(overlay) {
+  ns.BaseTool.prototype.updateHighlightedPixel = function (frame, overlay, col, row) {
+    if (!isNaN(this.highlightedPixelCol) &&
+      !isNaN(this.highlightedPixelRow) &&
+      (this.highlightedPixelRow != row ||
+        this.highlightedPixelCol != col)) {
+
+      // Clean the previously highlighted pixel:
+      overlay.clear();
+    }
+
+    var frameColor = frame.getPixel(col, row);
+    overlay.setPixel(col, row, this.getHighlightColor_(frameColor));
+
+    this.highlightedPixelCol = col;
+    this.highlightedPixelRow = row;
+  };
+
+  ns.BaseTool.prototype.getHighlightColor_ = function (frameColor) {
+    if (!frameColor) {
+      return Constants.TOOL_HIGHLIGHT_COLOR_DARK;
+    }
+
+    var luminance = window.tinycolor(frameColor).toHsl().l;
+    if (luminance > 0.5) {
+      return Constants.TOOL_HIGHLIGHT_COLOR_DARK;
+    } else {
+      return Constants.TOOL_HIGHLIGHT_COLOR_LIGHT;
+    }
+  };
+
+  ns.BaseTool.prototype.hideHighlightedPixel = function (overlay) {
     if (this.highlightedPixelRow !== null && this.highlightedPixelCol !== null) {
       try {
         overlay.setPixel(this.highlightedPixelCol, this.highlightedPixelRow, Constants.TRANSPARENT_COLOR);
@@ -61,7 +77,7 @@
     });
   };
 
-  ns.BaseTool.prototype.releaseToolAt = function(col, row, color, frame, overlay, event) {};
+  ns.BaseTool.prototype.releaseToolAt = function (col, row, color, frame, overlay, event) {};
 
   /**
    * Bresenham line algorithm: Get an array of pixels from
@@ -72,7 +88,7 @@
    *
    * @private
    */
-  ns.BaseTool.prototype.getLinePixels_ = function(x0, x1, y0, y1) {
+  ns.BaseTool.prototype.getLinePixels_ = function (x0, x1, y0, y1) {
     x1 = pskl.utils.normalize(x1, 0);
     y1 = pskl.utils.normalize(y1, 0);
 
