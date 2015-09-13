@@ -12,3 +12,4 @@ before_install:
 before_script:
   - phantomjs --version
   - casperjs --version
+sudo: false
