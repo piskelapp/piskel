@@ -93,6 +93,12 @@
     return this.zoom;
   };
 
+  ns.FrameRenderer.prototype.setCanvasOpacity = function (opacity) {
+    if (this.displayCanvas) {
+      this.displayCanvas.style.opacity = opacity;
+    }
+  };
+
   ns.FrameRenderer.prototype.setDisplaySize = function (width, height) {
     this.displayWidth = width;
     this.displayHeight = height;

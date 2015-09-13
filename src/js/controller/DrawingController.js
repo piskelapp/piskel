@@ -62,8 +62,9 @@
 
     $(window).resize($.proxy(this.startResizeTimer_, this));
 
-    $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
-    $.subscribe(Events.FRAME_SIZE_CHANGED, $.proxy(this.onFrameSizeChange_, this));
+    $.subscribe(Events.USER_SETTINGS_CHANGED, this.onUserSettingsChange_.bind(this));
+    $.subscribe(Events.FRAME_SIZE_CHANGED, this.onFrameSizeChange_.bind(this));
+    $.subscribe(Events.SET_OVERLAY_OPACITY, this.onSetOverlayOpacity_.bind(this));
 
     pskl.app.shortcutService.addShortcut('0', this.resetZoom_.bind(this));
     pskl.app.shortcutService.addShortcut('+', this.increaseZoom_.bind(this, 1));
@@ -134,6 +135,10 @@
     this.compositeRenderer.setZoom(this.calculateZoom_());
     this.compositeRenderer.setOffset(0, 0);
     $.publish(Events.ZOOM_CHANGED);
+  };
+
+  ns.DrawingController.prototype.onSetOverlayOpacity_ = function (evt, opacity) {
+    this.overlayRenderer.setCanvasOpacity(opacity);
   };
 
   /**
