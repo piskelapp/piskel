@@ -55,3 +55,7 @@ body {
   vertical-align: -2px;
   margin-left: 0;
 }
+
+.tooltip-shortcut {
+  color:gold;
+}

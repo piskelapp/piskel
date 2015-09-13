@@ -15,12 +15,14 @@
 
     this.fpsRangeInput = document.querySelector('#preview-fps');
     this.fpsCounterDisplay = document.querySelector('#display-fps');
+    this.openPopupPreview = document.querySelector('.open-popup-preview-button');
+    this.originalSizeButton = document.querySelector('.original-size-button');
 
     this.setFPS(Constants.DEFAULT.FPS);
 
     var frame = this.piskelController.getCurrentFrame();
 
-    this.renderer = new pskl.rendering.frame.TiledFrameRenderer(this.container);
+    this.renderer = new pskl.rendering.frame.BackgroundImageFrameRenderer(this.container);
     this.popupPreviewController = new ns.PopupPreviewController(piskelController);
   };
 
@@ -33,9 +35,11 @@
     this.toggleOnionSkinEl = document.querySelector('.preview-toggle-onion-skin');
     this.toggleOnionSkinEl.addEventListener('click', this.toggleOnionSkin_.bind(this));
 
-    pskl.utils.Event.addEventListener('.open-popup-preview-button', 'click', this.onOpenPopupPreviewClick_, this);
+    pskl.utils.Event.addEventListener(this.openPopupPreview, 'click', this.onOpenPopupPreviewClick_, this);
+    pskl.utils.Event.addEventListener(this.originalSizeButton, 'click', this.onOriginalSizeButtonClick_, this);
 
     pskl.app.shortcutService.addShortcut('alt+O', this.toggleOnionSkin_.bind(this));
+    pskl.app.shortcutService.addShortcut('alt+1', this.onOriginalSizeButtonClick_.bind(this));
 
     $.subscribe(Events.FRAME_SIZE_CHANGED, this.onFrameSizeChange_.bind(this));
     $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
@@ -47,12 +51,18 @@
 
     this.updateZoom_();
     this.updateOnionSkinPreview_();
+    this.updateOriginalSizeButton_();
     this.updateMaxFPS_();
     this.updateContainerDimensions_();
   };
 
   ns.PreviewController.prototype.onOpenPopupPreviewClick_ = function () {
     this.popupPreviewController.open();
+  };
+
+  ns.PreviewController.prototype.onOriginalSizeButtonClick_ = function () {
+    var isEnabled = pskl.UserSettings.get(pskl.UserSettings.ORIGINAL_SIZE_PREVIEW);
+    pskl.UserSettings.set(pskl.UserSettings.ORIGINAL_SIZE_PREVIEW, !isEnabled);
   };
 
   ns.PreviewController.prototype.onUserSettingsChange_ = function (evt, name, value) {
@@ -62,17 +72,21 @@
       this.updateMaxFPS_();
     } else {
       this.updateZoom_();
+      this.updateOriginalSizeButton_();
       this.updateContainerDimensions_();
     }
   };
 
   ns.PreviewController.prototype.updateOnionSkinPreview_ = function () {
     var enabledClassname = 'preview-toggle-onion-skin-enabled';
-    if (pskl.UserSettings.get(pskl.UserSettings.ONION_SKIN)) {
-      this.toggleOnionSkinEl.classList.add(enabledClassname);
-    } else {
-      this.toggleOnionSkinEl.classList.remove(enabledClassname);
-    }
+    var isEnabled = pskl.UserSettings.get(pskl.UserSettings.ONION_SKIN);
+    this.toggleOnionSkinEl.classList.toggle(enabledClassname, isEnabled);
+  };
+
+  ns.PreviewController.prototype.updateOriginalSizeButton_ = function () {
+    var enabledClassname = 'original-size-button-enabled';
+    var isEnabled = pskl.UserSettings.get(pskl.UserSettings.ORIGINAL_SIZE_PREVIEW);
+    this.originalSizeButton.classList.toggle(enabledClassname, isEnabled);
   };
 
   ns.PreviewController.prototype.updateMaxFPS_ = function () {
@@ -82,8 +96,11 @@
   };
 
   ns.PreviewController.prototype.updateZoom_ = function () {
-    var isTiled = pskl.UserSettings.get(pskl.UserSettings.TILED_PREVIEW);
-    var zoom = isTiled ? 1 : this.calculateZoom_();
+    var originalSizeEnabled = pskl.UserSettings.get(pskl.UserSettings.ORIGINAL_SIZE_PREVIEW);
+    var tiledPreviewEnabled = pskl.UserSettings.get(pskl.UserSettings.TILED_PREVIEW);
+    var useOriginalSize = originalSizeEnabled || tiledPreviewEnabled;
+
+    var zoom = useOriginalSize ? 1 : this.calculateZoom_();
     this.renderer.setZoom(zoom);
     this.setRenderFlag_(true);
   };
@@ -172,8 +189,9 @@
   };
 
   ns.PreviewController.prototype.updateContainerDimensions_ = function () {
-    var containerEl = this.container.get(0);
     var isTiled = pskl.UserSettings.get(pskl.UserSettings.TILED_PREVIEW);
+    this.renderer.setRepeated(isTiled);
+
     var height, width;
 
     if (isTiled) {
@@ -186,6 +204,7 @@
       width = frame.getWidth() * zoom;
     }
 
+    var containerEl = this.container.get(0);
     containerEl.style.height = height + 'px';
     containerEl.style.width = width + 'px';
 

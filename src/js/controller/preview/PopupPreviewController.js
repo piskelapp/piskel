@@ -33,7 +33,7 @@
     pskl.utils.Event.addEventListener(this.popup, 'resize', this.onWindowResize_, this);
     pskl.utils.Event.addEventListener(this.popup, 'unload', this.onPopupClosed_, this);
     var container = this.popup.document.querySelector('.preview-container');
-    this.renderer = new pskl.rendering.frame.TiledFrameRenderer($(container));
+    this.renderer = new pskl.rendering.frame.BackgroundImageFrameRenderer($(container));
     this.updateZoom_();
     this.renderFlag = true;
   };
