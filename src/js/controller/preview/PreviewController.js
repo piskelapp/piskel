@@ -15,12 +15,14 @@
 
     this.fpsRangeInput = document.querySelector('#preview-fps');
     this.fpsCounterDisplay = document.querySelector('#display-fps');
+    this.openPopupPreview = document.querySelector('.open-popup-preview-button');
+    this.realSizePreview = document.querySelector('.real-size-preview-button');
 
     this.setFPS(Constants.DEFAULT.FPS);
 
     var frame = this.piskelController.getCurrentFrame();
 
-    this.renderer = new pskl.rendering.frame.TiledFrameRenderer(this.container);
+    this.renderer = new pskl.rendering.frame.BackgroundImageFrameRenderer(this.container);
     this.popupPreviewController = new ns.PopupPreviewController(piskelController);
   };
 
@@ -33,7 +35,8 @@
     this.toggleOnionSkinEl = document.querySelector('.preview-toggle-onion-skin');
     this.toggleOnionSkinEl.addEventListener('click', this.toggleOnionSkin_.bind(this));
 
-    pskl.utils.Event.addEventListener('.open-popup-preview-button', 'click', this.onOpenPopupPreviewClick_, this);
+    pskl.utils.Event.addEventListener(this.openPopupPreview, 'click', this.onOpenPopupPreviewClick_, this);
+    pskl.utils.Event.addEventListener(this.realSizePreview, 'click', this.onRealSizePreviewClick_, this);
 
     pskl.app.shortcutService.addShortcut('alt+O', this.toggleOnionSkin_.bind(this));
 
@@ -47,12 +50,18 @@
 
     this.updateZoom_();
     this.updateOnionSkinPreview_();
+    this.updateRealSizePreviewButton_();
     this.updateMaxFPS_();
     this.updateContainerDimensions_();
   };
 
   ns.PreviewController.prototype.onOpenPopupPreviewClick_ = function () {
     this.popupPreviewController.open();
+  };
+
+  ns.PreviewController.prototype.onRealSizePreviewClick_ = function () {
+    var realSizeEnabled = pskl.UserSettings.get(pskl.UserSettings.REAL_SIZE_PREVIEW);
+    pskl.UserSettings.set(pskl.UserSettings.REAL_SIZE_PREVIEW, !realSizeEnabled);
   };
 
   ns.PreviewController.prototype.onUserSettingsChange_ = function (evt, name, value) {
@@ -62,17 +71,21 @@
       this.updateMaxFPS_();
     } else {
       this.updateZoom_();
+      this.updateRealSizePreviewButton_();
       this.updateContainerDimensions_();
     }
   };
 
   ns.PreviewController.prototype.updateOnionSkinPreview_ = function () {
     var enabledClassname = 'preview-toggle-onion-skin-enabled';
-    if (pskl.UserSettings.get(pskl.UserSettings.ONION_SKIN)) {
-      this.toggleOnionSkinEl.classList.add(enabledClassname);
-    } else {
-      this.toggleOnionSkinEl.classList.remove(enabledClassname);
-    }
+    var isEnabled = pskl.UserSettings.get(pskl.UserSettings.ONION_SKIN);
+    this.toggleOnionSkinEl.classList.toggle(enabledClassname, isEnabled);
+  };
+
+  ns.PreviewController.prototype.updateRealSizePreviewButton_ = function () {
+    var enabledClassname = 'real-size-preview-button-enabled';
+    var isEnabled = pskl.UserSettings.get(pskl.UserSettings.REAL_SIZE_PREVIEW);
+    this.realSizePreview.classList.toggle(enabledClassname, isEnabled);
   };
 
   ns.PreviewController.prototype.updateMaxFPS_ = function () {
@@ -82,8 +95,11 @@
   };
 
   ns.PreviewController.prototype.updateZoom_ = function () {
-    var isTiled = pskl.UserSettings.get(pskl.UserSettings.TILED_PREVIEW);
-    var zoom = isTiled ? 1 : this.calculateZoom_();
+    var realSizeEnabled = pskl.UserSettings.get(pskl.UserSettings.REAL_SIZE_PREVIEW);
+    var tiledPreviewEnabled = pskl.UserSettings.get(pskl.UserSettings.TILED_PREVIEW);
+    var useRealSize = realSizeEnabled || tiledPreviewEnabled;
+
+    var zoom = useRealSize ? 1 : this.calculateZoom_();
     this.renderer.setZoom(zoom);
     this.setRenderFlag_(true);
   };
@@ -172,8 +188,9 @@
   };
 
   ns.PreviewController.prototype.updateContainerDimensions_ = function () {
-    var containerEl = this.container.get(0);
     var isTiled = pskl.UserSettings.get(pskl.UserSettings.TILED_PREVIEW);
+    this.renderer.setRepeated(isTiled);
+
     var height, width;
 
     if (isTiled) {
@@ -186,6 +203,7 @@
       width = frame.getWidth() * zoom;
     }
 
+    var containerEl = this.container.get(0);
     containerEl.style.height = height + 'px';
     containerEl.style.width = width + 'px';
 

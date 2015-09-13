@@ -34,11 +34,11 @@
   overflow:hidden;
 }
 
-.tiled-frame-container {
+.preview-container .background-image-frame-container {
   height: 100%;
   width: 100%;
   position: relative;
-  background-repeat : repeat;
+  background-position: center;
 }
 
 .display-fps {
@@ -80,26 +80,58 @@
   color : gold;
 }
 
-.open-popup-preview-button {
+.preview-contextual-actions {
   position : absolute;
   z-index: 500;
   right : 10px;
   top : 10px;
-  width : 24px;
-  height: 18px;
 
-  border : 2px solid white;
-  background : rgba(0,0,0,0.3);
   cursor : pointer;
 
   opacity: 0;
   transition: 0.3s opacity, 0.3s border-color;
 }
 
-.minimap-container:hover .open-popup-preview-button {
+.minimap-container:hover .preview-contextual-actions {
   opacity: 1;
 }
 
+.real-size-preview-button {
+  width : 18px;
+  height: 18px;
+  line-height: 18px;
+  margin: 0px 5px;
+
+  border: 2px solid white;
+  background: rgba(0, 0, 0, 0.3);
+  color: #FFF;
+
+  font-size: 10px;
+  font-weight: bold;
+  font-family: Tahoma;
+}
+
+.real-size-preview-button-enabled {
+  color: gold;
+  border-color: gold;
+}
+
+.preview-contextual-action {
+  float: left;
+}
+
+.open-popup-preview-button {
+  width : 18px;
+  height: 18px;
+
+  border : 2px solid white;
+  background-image: url(../img/popup-preview-arrow-white.png);
+  background-color : rgba(0,0,0,0.3);
+
+}
+
+
 .open-popup-preview-button:hover {
   border-color: gold;
+  background-image: url(../img/popup-preview-arrow-gold.png);
 }
