@@ -75,18 +75,24 @@
   };
 
   ns.FrameRenderer.prototype.setZoom = function (zoom) {
-    if (zoom > Constants.MINIMUM_ZOOM) {
-      // back up center coordinates
-      var centerX = this.offset.x + (this.displayWidth / (2 * this.zoom));
-      var centerY = this.offset.y + (this.displayHeight / (2 * this.zoom));
-
-      this.zoom = zoom;
-      // recenter
-      this.setOffset(
-        centerX - (this.displayWidth / (2 * this.zoom)),
-        centerY - (this.displayHeight / (2 * this.zoom))
-      );
+    if (zoom < Constants.MINIMUM_ZOOM) {
+      zoom = Constants.MINIMUM_ZOOM;
     }
+
+    if (zoom == this.zoom) {
+      return;
+    }
+
+    // back up center coordinates
+    var centerX = this.offset.x + (this.displayWidth / (2 * this.zoom));
+    var centerY = this.offset.y + (this.displayHeight / (2 * this.zoom));
+
+    this.zoom = zoom;
+    // recenter
+    this.setOffset(
+      centerX - (this.displayWidth / (2 * this.zoom)),
+      centerY - (this.displayHeight / (2 * this.zoom))
+    );
   };
 
   ns.FrameRenderer.prototype.getZoom = function () {

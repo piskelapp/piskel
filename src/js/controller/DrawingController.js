@@ -225,17 +225,24 @@
   };
 
   ns.DrawingController.prototype.onMousewheel_ = function (jQueryEvent) {
-    var event = jQueryEvent.originalEvent;
+    var evt = jQueryEvent.originalEvent;
     // Ratio between wheelDeltaY (mousewheel event) and deltaY (wheel event) is -40
     var delta;
     if (pskl.utils.UserAgent.isChrome) {
-      delta = event.wheelDeltaY;
+      delta = evt.wheelDeltaY;
     } else if (pskl.utils.UserAgent.isIE11) {
-      delta = event.wheelDelta;
+      delta = evt.wheelDelta;
     } else if (pskl.utils.UserAgent.isFirefox) {
-      delta = -40 * event.deltaY;
+      delta = -40 * evt.deltaY;
     }
     var modifier = Math.abs(delta / 120);
+
+    if (pskl.utils.UserAgent.isMac ? evt.metaKey : evt.ctrlKey) {
+      modifier = modifier * 5;
+      // prevent default to prevent the default browser UI resize
+      evt.preventDefault();
+    }
+
     if (delta > 0) {
       this.increaseZoom_(modifier);
     } else if (delta < 0) {
@@ -422,7 +429,7 @@
   };
 
   ns.DrawingController.prototype.getZoomStep_ = function () {
-    return this.calculateZoom_() / 10;
+    return Math.max(0.1, this.renderer.getZoom() / 15);
   };
 
   ns.DrawingController.prototype.setZoom_ = function (zoom) {

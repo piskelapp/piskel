@@ -39,6 +39,7 @@
     pskl.utils.Event.addEventListener(this.realSizePreview, 'click', this.onRealSizePreviewClick_, this);
 
     pskl.app.shortcutService.addShortcut('alt+O', this.toggleOnionSkin_.bind(this));
+    pskl.app.shortcutService.addShortcut('ctrl+1', this.onRealSizePreviewClick_.bind(this));
 
     $.subscribe(Events.FRAME_SIZE_CHANGED, this.onFrameSizeChange_.bind(this));
     $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
@@ -62,6 +63,8 @@
   ns.PreviewController.prototype.onRealSizePreviewClick_ = function () {
     var realSizeEnabled = pskl.UserSettings.get(pskl.UserSettings.REAL_SIZE_PREVIEW);
     pskl.UserSettings.set(pskl.UserSettings.REAL_SIZE_PREVIEW, !realSizeEnabled);
+    // ctrl + 1 is a browser shortcut : return false to prevent default (see ShortcutService)
+    return false;
   };
 
   ns.PreviewController.prototype.onUserSettingsChange_ = function (evt, name, value) {
