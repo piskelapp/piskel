@@ -26,6 +26,11 @@ input[type="submit"] {
   font-family: Arial;
 }
 
+/* IE11 applies a big default margin for range inputs */
+input[type="range"] {
+  padding: 0;
+}
+
 /* Force apparition of scrollbars on leopard */
 ::-webkit-scrollbar {
     -webkit-appearance: none;
