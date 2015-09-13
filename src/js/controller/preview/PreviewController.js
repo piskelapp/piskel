@@ -16,7 +16,7 @@
     this.fpsRangeInput = document.querySelector('#preview-fps');
     this.fpsCounterDisplay = document.querySelector('#display-fps');
     this.openPopupPreview = document.querySelector('.open-popup-preview-button');
-    this.realSizePreview = document.querySelector('.real-size-preview-button');
+    this.originalSizeButton = document.querySelector('.original-size-button');
 
     this.setFPS(Constants.DEFAULT.FPS);
 
@@ -36,10 +36,10 @@
     this.toggleOnionSkinEl.addEventListener('click', this.toggleOnionSkin_.bind(this));
 
     pskl.utils.Event.addEventListener(this.openPopupPreview, 'click', this.onOpenPopupPreviewClick_, this);
-    pskl.utils.Event.addEventListener(this.realSizePreview, 'click', this.onRealSizePreviewClick_, this);
+    pskl.utils.Event.addEventListener(this.originalSizeButton, 'click', this.onOriginalSizeButtonClick_, this);
 
     pskl.app.shortcutService.addShortcut('alt+O', this.toggleOnionSkin_.bind(this));
-    pskl.app.shortcutService.addShortcut('ctrl+1', this.onRealSizePreviewClick_.bind(this));
+    pskl.app.shortcutService.addShortcut('alt+1', this.onOriginalSizeButtonClick_.bind(this));
 
     $.subscribe(Events.FRAME_SIZE_CHANGED, this.onFrameSizeChange_.bind(this));
     $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
@@ -51,7 +51,7 @@
 
     this.updateZoom_();
     this.updateOnionSkinPreview_();
-    this.updateRealSizePreviewButton_();
+    this.updateOriginalSizeButton_();
     this.updateMaxFPS_();
     this.updateContainerDimensions_();
   };
@@ -60,11 +60,9 @@
     this.popupPreviewController.open();
   };
 
-  ns.PreviewController.prototype.onRealSizePreviewClick_ = function () {
-    var realSizeEnabled = pskl.UserSettings.get(pskl.UserSettings.REAL_SIZE_PREVIEW);
-    pskl.UserSettings.set(pskl.UserSettings.REAL_SIZE_PREVIEW, !realSizeEnabled);
-    // ctrl + 1 is a browser shortcut : return false to prevent default (see ShortcutService)
-    return false;
+  ns.PreviewController.prototype.onOriginalSizeButtonClick_ = function () {
+    var isEnabled = pskl.UserSettings.get(pskl.UserSettings.ORIGINAL_SIZE_PREVIEW);
+    pskl.UserSettings.set(pskl.UserSettings.ORIGINAL_SIZE_PREVIEW, !isEnabled);
   };
 
   ns.PreviewController.prototype.onUserSettingsChange_ = function (evt, name, value) {
@@ -74,7 +72,7 @@
       this.updateMaxFPS_();
     } else {
       this.updateZoom_();
-      this.updateRealSizePreviewButton_();
+      this.updateOriginalSizeButton_();
       this.updateContainerDimensions_();
     }
   };
@@ -85,10 +83,10 @@
     this.toggleOnionSkinEl.classList.toggle(enabledClassname, isEnabled);
   };
 
-  ns.PreviewController.prototype.updateRealSizePreviewButton_ = function () {
-    var enabledClassname = 'real-size-preview-button-enabled';
-    var isEnabled = pskl.UserSettings.get(pskl.UserSettings.REAL_SIZE_PREVIEW);
-    this.realSizePreview.classList.toggle(enabledClassname, isEnabled);
+  ns.PreviewController.prototype.updateOriginalSizeButton_ = function () {
+    var enabledClassname = 'original-size-button-enabled';
+    var isEnabled = pskl.UserSettings.get(pskl.UserSettings.ORIGINAL_SIZE_PREVIEW);
+    this.originalSizeButton.classList.toggle(enabledClassname, isEnabled);
   };
 
   ns.PreviewController.prototype.updateMaxFPS_ = function () {
@@ -98,11 +96,11 @@
   };
 
   ns.PreviewController.prototype.updateZoom_ = function () {
-    var realSizeEnabled = pskl.UserSettings.get(pskl.UserSettings.REAL_SIZE_PREVIEW);
+    var originalSizeEnabled = pskl.UserSettings.get(pskl.UserSettings.ORIGINAL_SIZE_PREVIEW);
     var tiledPreviewEnabled = pskl.UserSettings.get(pskl.UserSettings.TILED_PREVIEW);
-    var useRealSize = realSizeEnabled || tiledPreviewEnabled;
+    var useOriginalSize = originalSizeEnabled || tiledPreviewEnabled;
 
-    var zoom = useRealSize ? 1 : this.calculateZoom_();
+    var zoom = useOriginalSize ? 1 : this.calculateZoom_();
     this.renderer.setZoom(zoom);
     this.setRenderFlag_(true);
   };

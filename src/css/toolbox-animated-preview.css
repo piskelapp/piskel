@@ -96,14 +96,14 @@
   opacity: 1;
 }
 
-.real-size-preview-button {
+.original-size-button {
   width : 18px;
   height: 18px;
   line-height: 18px;
-  margin: 0px 5px;
+  margin: 0 5px;
 
   border: 2px solid white;
-  background: rgba(0, 0, 0, 0.3);
+  background-color: rgba(0, 0, 0, 0.3);
   color: white;
 
   font-size: 10px;
@@ -111,15 +111,9 @@
   font-family: Tahoma;
 }
 
-.real-size-preview-button:hover,
-.real-size-preview-button-enabled {
+.original-size-button-enabled {
   color: gold;
   border-color: gold;
-}
-
-.real-size-preview-button-enabled:hover {
-  color: white;
-  border-color: white;
 }
 
 .preview-contextual-action {
