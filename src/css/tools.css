@@ -149,7 +149,7 @@
 }
 
 .tool-move .drawing-canvas-container:hover {
-  cursor: url(../img/icons/hand.png) 15 15, pointer;
+  cursor: url(../img/icons/hand.png) 7 7, pointer;
 }
 
 .tool-rectangle-select .drawing-canvas-container:hover {
