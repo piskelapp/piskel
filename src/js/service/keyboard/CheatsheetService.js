@@ -77,6 +77,7 @@
     var descriptors = [
       this.toDescriptor_('0', 'Reset zoom level'),
       this.toDescriptor_('+/-', 'Zoom in/Zoom out'),
+      this.toDescriptor_('ctrl + 1', 'Toggle 1X preview size'),
       this.toDescriptor_('ctrl + Z', 'Undo'),
       this.toDescriptor_('ctrl + Y', 'Redo'),
       this.toDescriptor_('&#65514;', 'Select previous frame'), /* ASCII for up-arrow */

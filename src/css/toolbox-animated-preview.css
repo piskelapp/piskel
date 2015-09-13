@@ -104,16 +104,22 @@
 
   border: 2px solid white;
   background: rgba(0, 0, 0, 0.3);
-  color: #FFF;
+  color: white;
 
   font-size: 10px;
   font-weight: bold;
   font-family: Tahoma;
 }
 
+.real-size-preview-button:hover,
 .real-size-preview-button-enabled {
   color: gold;
   border-color: gold;
+}
+
+.real-size-preview-button-enabled:hover {
+  color: white;
+  border-color: white;
 }
 
 .preview-contextual-action {
@@ -127,9 +133,7 @@
   border : 2px solid white;
   background-image: url(../img/popup-preview-arrow-white.png);
   background-color : rgba(0,0,0,0.3);
-
 }
-
 
 .open-popup-preview-button:hover {
   border-color: gold;
