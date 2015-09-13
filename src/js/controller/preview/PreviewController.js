@@ -13,8 +13,8 @@
 
     this.renderFlag = true;
 
-    this.fpsRangeInput = $('#preview-fps');
-    this.fpsCounterDisplay = $('#display-fps');
+    this.fpsRangeInput = document.querySelector('#preview-fps');
+    this.fpsCounterDisplay = document.querySelector('#display-fps');
 
     this.setFPS(Constants.DEFAULT.FPS);
 
@@ -25,7 +25,9 @@
   };
 
   ns.PreviewController.prototype.init = function () {
-    this.fpsRangeInput.on('input change', this.onFPSSliderChange.bind(this));
+    this.fpsRangeInput.addEventListener('change', this.onFpsRangeInputUpdate_.bind(this));
+    this.fpsRangeInput.addEventListener('input', this.onFpsRangeInputUpdate_.bind(this));
+
     document.querySelector('.right-column').style.width = Constants.ANIMATED_PREVIEW_WIDTH + 'px';
 
     this.toggleOnionSkinEl = document.querySelector('.preview-toggle-onion-skin');
@@ -75,7 +77,7 @@
 
   ns.PreviewController.prototype.updateMaxFPS_ = function () {
     var maxFps = pskl.UserSettings.get(pskl.UserSettings.MAX_FPS);
-    this.fpsRangeInput.get(0).setAttribute('max', maxFps);
+    this.fpsRangeInput.setAttribute('max', maxFps);
     this.setFPS(Math.min(this.fps, maxFps));
   };
 
@@ -101,20 +103,25 @@
     };
   };
 
-  ns.PreviewController.prototype.onFPSSliderChange = function (evt) {
-    this.setFPS(parseInt(this.fpsRangeInput[0].value, 10));
-
+  /**
+   * Event handler triggered on 'input' or 'change' events.
+   */
+  ns.PreviewController.prototype.onFpsRangeInputUpdate_ = function (evt) {
+    this.setFPS(parseInt(this.fpsRangeInput.value, 10));
+    // blur only on 'change' events, as blurring on 'input' breaks on Firefox
+    if (evt.type === 'change') {
+      this.fpsRangeInput.blur();
+    }
   };
 
   ns.PreviewController.prototype.setFPS = function (fps) {
     if (typeof fps === 'number') {
       this.fps = fps;
       // reset
-      this.fpsRangeInput.get(0).value = 0;
+      this.fpsRangeInput.value = 0;
       // set proper value
-      this.fpsRangeInput.get(0).value = this.fps;
-      this.fpsRangeInput.blur();
-      this.fpsCounterDisplay.html(this.fps + ' FPS');
+      this.fpsRangeInput.value = this.fps;
+      this.fpsCounterDisplay.innerHTML = this.fps + ' FPS';
     }
   };
 
