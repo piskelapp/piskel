@@ -1,10 +1,10 @@
 <form action="" method="POST" name="application-settings-form">
-  <div class="settings-section">
+  <div class="settings-section settings-section--application-general">
     <div class="settings-title">
       General
     </div>
     <div class="settings-item">
-      <label>Background:</label>
+      <label>Background</label>
       <div class="background-picker-wrapper">
         <div class="background-picker light-picker-background" data-background="light-canvas-background"
               rel="tooltip" data-placement="bottom" title="light / high contrast">
@@ -20,8 +20,9 @@
         </div>
       </div>
     </div>
+
     <div class="settings-item">
-      <label for="grid-width">Grid :</label>
+      <label for="grid-width">Grid</label>
       <select id="grid-width" class="grid-width-select">
         <option value="0">Disabled</option>
         <option value="1">1px</option>
@@ -30,6 +31,13 @@
         <option value="4">4px</option>
       </select>
     </div>
+
+    <div class="settings-item">
+      <label for="tiled-preview">Layer Preview Opacity</label>
+      <input type="range" class="layer-opacity-input" name="layer-opacity" min="0"  max="1" step="0.05"/>
+      <span class="layer-opacity-text"></span>
+    </div>
+
   </div>
 
   <div class="settings-section">
@@ -39,14 +47,14 @@
 
     <div class="settings-item">
       <label>
-        <input type="checkbox" value="1" class="tiled-preview-checkbox" name="tiled-preview-checkbox"/>
+        <input type="checkbox" value="1" class="tiled-preview-checkbox  checkbox-fix" name="tiled-preview-checkbox"/>
         Repeated preview
       </label>
     </div>
 
     <div class="settings-item">
       <label for="tiled-preview">Maximum FPS </label>
-          <input type="text" class="textfield  textfield-small  max-fps-input" name="max-fps"/>
+      <input type="text" class="textfield  textfield-small  max-fps-input" name="max-fps"/>
     </div>
 
     <input type="submit" class="button button-primary" value="Save" />
