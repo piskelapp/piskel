@@ -12,8 +12,8 @@
   };
 
   ns.SelectedColorsService.prototype.getColors = function () {
-    if (this.primaryColor_ == null || this.secondaryColor_ == null) {
-      throw "SelectedColorsService not properly intialized.";
+    if (this.primaryColor_ === null || this.secondaryColor_ === null) {
+      throw 'SelectedColorsService not properly intialized.';
     }
     return [this.primaryColor_, this.secondaryColor_];
   };

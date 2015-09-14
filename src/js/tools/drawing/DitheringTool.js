@@ -20,7 +20,7 @@
     var ditheringColor;
     var currentColors = pskl.app.selectedColorsService.getColors();
     // XOR on either row or col parity.
-    if (((col % 2 == 0) && !(row % 2 == 0)) || (!(col % 2 == 0) && (row % 2 == 0))) {
+    if ((col % 2 === 0 && row % 2 !== 0) || (col % 2 !== 0 && row % 2 === 0)) {
       ditheringColor = currentColors[0];
     } else {
       ditheringColor = currentColors[1];
