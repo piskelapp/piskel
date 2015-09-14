@@ -17,14 +17,15 @@
    * @override
    */
   ns.DitheringTool.prototype.applyToolAt = function(col, row, color, frame, overlay, event) {
-    var ditheringColor;
-    var currentColors = pskl.app.selectedColorsService.getColors();
-    // XOR on either row or col parity.
-    if ((col % 2 === 0 && row % 2 !== 0) || (col % 2 !== 0 && row % 2 === 0)) {
-      ditheringColor = currentColors[0];
-    } else {
-      ditheringColor = currentColors[1];
-    }
+    // Use primary selected color on cell with either an odd col or row.
+    // Use secondary color otherwise.
+    // When using the right mouse button, invert the above behavior to allow quick corrections.
+    var usePrimaryColor = (col + row) % 2;
+    var invertColors = event.button === Constants.RIGHT_BUTTON;
+    usePrimaryColor = invertColors ? !usePrimaryColor : usePrimaryColor;
+
+    var selectedColors = pskl.app.selectedColorsService.getColors();
+    var ditheringColor = usePrimaryColor ? selectedColors[0] : selectedColors[1];
     this.superclass.applyToolAt.call(this, col, row, ditheringColor, frame, overlay, event);
   };
 })();

@@ -13,7 +13,7 @@
 
   ns.SelectedColorsService.prototype.getColors = function () {
     if (this.primaryColor_ === null || this.secondaryColor_ === null) {
-      throw 'SelectedColorsService not properly intialized.';
+      throw 'SelectedColorsService not properly initialized.';
     }
     return [this.primaryColor_, this.secondaryColor_];
   };
