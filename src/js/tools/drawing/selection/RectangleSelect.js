@@ -32,12 +32,12 @@
       overlay.clear();
       $.publish(Events.SELECTION_DISMISSED);
     } else {
-      this.startSelection_();
+      this.startSelection_(col, row);
       overlay.setPixel(col, row, color);
     }
   };
 
-  ns.RectangleSelect.prototype.startSelection_ = function (col, row, color) {
+  ns.RectangleSelect.prototype.startSelection_ = function (col, row) {
     this.hasSelection = true;
     $.publish(Events.DRAG_START, [col, row]);
     // Drawing the first point of the rectangle in the fake overlay canvas:
@@ -51,7 +51,7 @@
    */
   ns.RectangleSelect.prototype.onSelect_ = function (col, row, color, frame, overlay) {
     if (!this.hasSelection && (this.selectionOrigin_.col !== col || this.selectionOrigin_.row !== row)) {
-      this.startSelection_();
+      this.startSelection_(col, row);
     }
 
     if (this.hasSelection) {
