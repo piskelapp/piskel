@@ -31,13 +31,6 @@ var Events = {
   CLOSE_SETTINGS_DRAWER : 'CLOSE_SETTINGS_DRAWER',
 
   /**
-   * Fire this event to update the opacity of the overlay frame.
-   * Payload :
-   *   1st argument : opacity {Number} between 0 and 1
-   */
-  SET_OVERLAY_OPACITY : 'SET_OVERLAY_OPACITY',
-
-  /**
    * The framesheet was reseted and is now probably drastically different.
    * Number of frames, content of frames, color used for the palette may have changed.
    */

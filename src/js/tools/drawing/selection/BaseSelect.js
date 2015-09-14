@@ -35,8 +35,6 @@
     this.lastCol = col;
     this.lastRow = row;
 
-    $.publish(Events.SET_OVERLAY_OPACITY, [0.5]);
-
     // The select tool can be in two different state.
     // If the inital click of the tool is not on a selection, we go in 'select'
     // mode to create a selection.
@@ -71,8 +69,6 @@
     } else if (this.mode == 'moveSelection') {
       this.onSelectionDragEnd_(col, row, color, frame, overlay);
     }
-
-    $.publish(Events.SET_OVERLAY_OPACITY, [1]);
   };
 
   /**
@@ -113,11 +109,18 @@
     for (var i = 0, l = pixels.length; i < l ; i++) {
       var pixel = pixels[i];
       var hasColor = pixel.color && pixel.color !== Constants.TRANSPARENT_COLOR ;
-      var color = hasColor ? pixel.color : Constants.SELECTION_TRANSPARENT_COLOR;
+      var color = hasColor ? this.getTransparentVariant_(pixel.color) : Constants.SELECTION_TRANSPARENT_COLOR;
 
       overlay.setPixel(pixels[i].col, pixels[i].row, color);
     }
   };
+
+  ns.BaseSelect.prototype.getTransparentVariant_ = pskl.utils.FunctionUtils.memo(function (colorStr) {
+    var color = window.tinycolor(colorStr);
+    color = window.tinycolor.lighten(color, 10);
+    color.setAlpha(0.5);
+    return color.toRgbString();
+  }, {});
 
   // The list of callbacks to implement by specialized tools to implement the selection creation behavior.
   /** @protected */

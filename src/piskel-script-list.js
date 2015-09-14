@@ -23,6 +23,7 @@
   "js/utils/Dom.js",
   "js/utils/Event.js",
   "js/utils/Environment.js",
+  "js/utils/FunctionUtils.js",
   "js/utils/Math.js",
   "js/utils/FileUtils.js",
   "js/utils/FileUtilsDesktop.js",
