@@ -2,6 +2,7 @@
   var ns = $.namespace('pskl.controller');
 
   ns.PaletteController = function () {
+    // TODO(grosbouddha): Reuse default colors from SelectedColorsService.
     this.primaryColor =  Constants.DEFAULT_PEN_COLOR;
     this.secondaryColor =  Constants.TRANSPARENT_COLOR;
   };

@@ -160,6 +160,7 @@
   "js/service/ImageUploadService.js",
   "js/service/CurrentColorsService.js",
   "js/service/FileDropperService.js",
+  "js/service/SelectedColorsService.js",
 
   // Tools
   "js/tools/ToolsHelper.js",
@@ -181,6 +182,7 @@
   "js/tools/drawing/selection/ShapeSelect.js",
   "js/tools/drawing/ColorPicker.js",
   "js/tools/drawing/ColorSwap.js",
+  "js/tools/drawing/DitheringTool.js",
   "js/tools/transform/Transform.js",
   "js/tools/transform/Clone.js",
   "js/tools/transform/Flip.js",
