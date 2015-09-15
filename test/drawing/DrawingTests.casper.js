@@ -11,5 +11,6 @@
   "selection.rectangular.json",
   "squares.circles.json",
   "stroke.json",
-  "verticalpen.drawing.json"
+  "verticalpen.drawing.json",
+  "dithering.basic.json"
 ];
