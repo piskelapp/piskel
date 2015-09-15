@@ -114,6 +114,12 @@
   background-size: 30px;
 }
 
+.tool-icon.tool-dithering {
+  background-image: url(../img/tools/dithering.png);
+  background-position: 8px 9px;
+  background-size: 30px;
+}
+
 /*
  * Tool cursors:
  */
@@ -128,7 +134,8 @@
 }
 
 .tool-pen .drawing-canvas-container:hover,
-.tool-lighten .drawing-canvas-container:hover {
+.tool-lighten .drawing-canvas-container:hover,
+.tool-dithering .drawing-canvas-container:hover {
   cursor: url(../img/icons/pen.png) 0 15, pointer;
 }
 

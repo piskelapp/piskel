@@ -19,6 +19,7 @@
       toDescriptor('rectangleSelect', 'S', new pskl.tools.drawing.RectangleSelect()),
       toDescriptor('shapeSelect', 'Z', new pskl.tools.drawing.ShapeSelect()),
       toDescriptor('lighten', 'U', new pskl.tools.drawing.Lighten()),
+      toDescriptor('dithering', 'T', new pskl.tools.drawing.DitheringTool()),
       toDescriptor('colorPicker', 'O', new pskl.tools.drawing.ColorPicker())
     ];
 
