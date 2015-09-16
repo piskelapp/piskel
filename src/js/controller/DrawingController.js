@@ -321,9 +321,9 @@
     // This always matches a LEFT mouse button which is __really__ not helpful
 
     if (this.currentMouseButton_ == Constants.RIGHT_BUTTON) {
-      return this.paletteController.getSecondaryColor();
+      return pskl.app.selectedColorsService.getSecondaryColor();
     } else if (this.currentMouseButton_ == Constants.LEFT_BUTTON) {
-      return this.paletteController.getPrimaryColor();
+      return pskl.app.selectedColorsService.getPrimaryColor();
     } else {
       return Constants.DEFAULT_PEN_COLOR;
     }

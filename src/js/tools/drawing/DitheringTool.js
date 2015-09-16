@@ -29,8 +29,9 @@
     var usePrimaryColor = (col + row) % 2;
     usePrimaryColor = this.invertColors_ ? !usePrimaryColor : usePrimaryColor;
 
-    var selectedColors = pskl.app.selectedColorsService.getColors();
-    var ditheringColor = usePrimaryColor ? selectedColors[0] : selectedColors[1];
+    var ditheringColor = usePrimaryColor ?
+        pskl.app.selectedColorsService.getPrimaryColor() :
+        pskl.app.selectedColorsService.getSecondaryColor();
     this.superclass.applyToolAt.call(this, col, row, ditheringColor, frame, overlay, event);
   };
 })();
