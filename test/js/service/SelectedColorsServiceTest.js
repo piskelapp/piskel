@@ -3,10 +3,8 @@ describe("SelectedColorsService test suite", function() {
   it("returns the default selected colors initially", function() {
     var service = new pskl.service.SelectedColorsService();
     
-    var defaultSelectedColors = service.getColors();
-    expect(defaultSelectedColors.length).toBe(2);
-    expect(defaultSelectedColors[0]).toBe(Constants.DEFAULT_PEN_COLOR);
-    expect(defaultSelectedColors[1]).toBe(Constants.TRANSPARENT_COLOR);
+    expect(service.getPrimaryColor()).toBe(Constants.DEFAULT_PEN_COLOR);
+    expect(service.getSecondaryColor()).toBe(Constants.TRANSPARENT_COLOR);
   });
 
   it("reacts to PRIMARY_COLOR_SELECTED event", function() {
@@ -16,10 +14,8 @@ describe("SelectedColorsService test suite", function() {
     var expectedColor = "#123456";
     $.publish(Events.PRIMARY_COLOR_SELECTED, [expectedColor]);
 
-    var defaultSelectedColors = service.getColors();
-    expect(defaultSelectedColors.length).toBe(2);
-    expect(defaultSelectedColors[0]).toBe(expectedColor);
-    expect(defaultSelectedColors[1]).toBe(Constants.TRANSPARENT_COLOR);
+    expect(service.getPrimaryColor()).toBe(expectedColor);
+    expect(service.getSecondaryColor()).toBe(Constants.TRANSPARENT_COLOR);
   });
 
   it("reacts to SECONDARY_COLOR_SELECTED event", function() {
@@ -29,9 +25,7 @@ describe("SelectedColorsService test suite", function() {
     var expectedColor = "#123456";
     $.publish(Events.SECONDARY_COLOR_SELECTED, [expectedColor]);
 
-    var defaultSelectedColors = service.getColors();
-    expect(defaultSelectedColors.length).toBe(2);
-    expect(defaultSelectedColors[0]).toBe(Constants.DEFAULT_PEN_COLOR);
-    expect(defaultSelectedColors[1]).toBe(expectedColor);
+    expect(service.getPrimaryColor()).toBe(Constants.DEFAULT_PEN_COLOR);
+    expect(service.getSecondaryColor()).toBe(expectedColor);
   });
 });
