@@ -1,11 +1,7 @@
 (function () {
   var ns = $.namespace('pskl.controller');
 
-  ns.PaletteController = function () {
-    // TODO(grosbouddha): Reuse default colors from SelectedColorsService.
-    this.primaryColor =  Constants.DEFAULT_PEN_COLOR;
-    this.secondaryColor =  Constants.TRANSPARENT_COLOR;
-  };
+  ns.PaletteController = function () {};
 
   /**
    * @public
@@ -52,9 +48,9 @@
   ns.PaletteController.prototype.onPickerChange_ = function(evt, isPrimary) {
     var inputPicker = $(evt.target);
     if (evt.data.isPrimary) {
-      this.setPrimaryColor(inputPicker.val());
+      this.setPrimaryColor_(inputPicker.val());
     } else {
-      this.setSecondaryColor(inputPicker.val());
+      this.setSecondaryColor_(inputPicker.val());
     }
   };
 
@@ -64,41 +60,30 @@
   ns.PaletteController.prototype.onColorSelected_ = function(args, evt, color) {
     var inputPicker = $(evt.target);
     if (args.isPrimary) {
-      this.setPrimaryColor(color);
+      this.setPrimaryColor_(color);
     } else {
-      this.setSecondaryColor(color);
+      this.setSecondaryColor_(color);
     }
   };
 
-  ns.PaletteController.prototype.setPrimaryColor = function (color) {
-    this.primaryColor = color;
+  ns.PaletteController.prototype.setPrimaryColor_ = function (color) {
     this.updateColorPicker_(color, $('#color-picker'));
     $.publish(Events.PRIMARY_COLOR_SELECTED, [color]);
   };
 
-  ns.PaletteController.prototype.setSecondaryColor = function (color) {
-    this.secondaryColor = color;
+  ns.PaletteController.prototype.setSecondaryColor_ = function (color) {
     this.updateColorPicker_(color, $('#secondary-color-picker'));
     $.publish(Events.SECONDARY_COLOR_SELECTED, [color]);
   };
 
-  ns.PaletteController.prototype.getPrimaryColor = function () {
-    return this.primaryColor;
-  };
-
-  ns.PaletteController.prototype.getSecondaryColor = function () {
-    return this.secondaryColor;
-  };
-
   ns.PaletteController.prototype.swapColors = function () {
-    var primaryColor = this.getPrimaryColor();
-    this.setPrimaryColor(this.getSecondaryColor());
-    this.setSecondaryColor(primaryColor);
+    var primaryColor = pskl.app.selectedColorsService.getPrimaryColor();
+    this.setPrimaryColor_(pskl.app.selectedColorsService.getSecondaryColor());
+    this.setSecondaryColor_(primaryColor);
   };
 
   ns.PaletteController.prototype.resetColors = function () {
-    this.setPrimaryColor(Constants.DEFAULT_PEN_COLOR);
-    this.setSecondaryColor(Constants.TRANSPARENT_COLOR);
+    pskl.app.selectedColorsService.reset();
   };
 
   /**
