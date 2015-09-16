@@ -162,6 +162,7 @@
   "js/service/CurrentColorsService.js",
   "js/service/FileDropperService.js",
   "js/service/SelectedColorsService.js",
+  "js/service/MouseStateService.js",
 
   // Tools
   "js/tools/ToolsHelper.js",
