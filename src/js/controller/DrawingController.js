@@ -151,7 +151,6 @@
       this.currentToolBehavior.applyToolAt(
         coords.x,
         coords.y,
-        this.getCurrentColor_(),
         frame,
         this.overlayFrame,
         event
@@ -194,7 +193,6 @@
         this.currentToolBehavior.moveToolAt(
           coords.x | 0,
           coords.y | 0,
-          this.getCurrentColor_(),
           currentFrame,
           this.overlayFrame,
           event
@@ -204,7 +202,6 @@
       this.currentToolBehavior.moveUnactiveToolAt(
         coords.x,
         coords.y,
-        this.getCurrentColor_(),
         currentFrame,
         this.overlayFrame,
         event
@@ -273,7 +270,6 @@
         this.currentToolBehavior.releaseToolAt(
           coords.x,
           coords.y,
-          this.getCurrentColor_(),
           this.piskelController.getCurrentFrame(),
           this.overlayFrame,
           event
@@ -297,25 +293,6 @@
 
   ns.DrawingController.prototype.getScreenCoordinates = function(spriteX, spriteY) {
     return this.renderer.reverseCoordinates(spriteX, spriteY);
-  };
-
-  /**
-   * @private
-   */
-  ns.DrawingController.prototype.getCurrentColor_ = function () {
-    // WARNING : Do not rely on the current event to get the current color!
-    // It might seem like a good idea, and works perfectly fine on Chrome
-    // Sadly Firefox and IE found clever, for some reason, to set event.button to 0
-    // on a mouse move event
-    // This always matches a LEFT mouse button which is __really__ not helpful
-
-    if (pskl.app.mouseStateService.isRightButtonPressed()) {
-      return pskl.app.selectedColorsService.getSecondaryColor();
-    } else if (pskl.app.mouseStateService.isLeftButtonPressed()) {
-      return pskl.app.selectedColorsService.getPrimaryColor();
-    } else {
-      return Constants.DEFAULT_PEN_COLOR;
-    }
   };
 
   /**

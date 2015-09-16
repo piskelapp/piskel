@@ -29,9 +29,9 @@
   /**
    * @override
    */
-  ns.DitheringTool.prototype.applyToolAt = function(col, row, color_legacy, frame, overlay, event) {
+  ns.DitheringTool.prototype.applyToolAt = function(col, row, frame, overlay, event) {
     this.col_ = col;
     this.row_ = row;
-    this.superclass.applyToolAt.call(this, col, row, color_legacy, frame, overlay, event);
+    this.superclass.applyToolAt.call(this, col, row, frame, overlay, event);
   };
 })();

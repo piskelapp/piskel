@@ -16,7 +16,7 @@
   /**
    * @override
    */
-  ns.ColorPicker.prototype.applyToolAt = function(col, row, color_legacy, frame, overlay, event) {
+  ns.ColorPicker.prototype.applyToolAt = function(col, row, frame, overlay, event) {
     if (frame.containsPixel(col, row)) {
       var sampledColor = frame.getPixel(col, row);
       if (event.button == Constants.LEFT_BUTTON) {

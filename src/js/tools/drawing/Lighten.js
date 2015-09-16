@@ -66,17 +66,17 @@
   /**
    * @Override
    */
-  ns.Lighten.prototype.applyToolAt = function(col, row, color_legacy, frame, overlay, event, mouseButton) {
+  ns.Lighten.prototype.applyToolAt = function(col, row, frame, overlay, event, mouseButton) {
     var overlayColor = overlay.getPixel(col, row);
     var frameColor = frame.getPixel(col, row);
 
     this.col_ = col;
     this.row_ = row;
     this.pixelColor_ = overlayColor === Constants.TRANSPARENT_COLOR ? frameColor : overlayColor;
-    this.isDarken_ = pskl.utils.UserAgent.isMac ?  event.metaKey : event.ctrlKey;;
+    this.isDarken_ = pskl.utils.UserAgent.isMac ?  event.metaKey : event.ctrlKey;
     this.isTransparent_ = this.pixelColor_ === Constants.TRANSPARENT_COLOR;
     this.isSinglePass_ = event.shiftKey;
 
-    this.superclass.applyToolAt.call(this, col, row, color_legacy, frame, overlay, event);
+    this.superclass.applyToolAt.call(this, col, row, frame, overlay, event);
   };
 })();

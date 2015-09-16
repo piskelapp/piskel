@@ -13,9 +13,9 @@
 
   pskl.utils.inherit(ns.BaseTool, pskl.tools.Tool);
 
-  ns.BaseTool.prototype.applyToolAt = function (col, row, color, frame, overlay, event) {};
+  ns.BaseTool.prototype.applyToolAt = function (col, row, frame, overlay, event) {};
 
-  ns.BaseTool.prototype.moveToolAt = function (col, row, color, frame, overlay, event) {};
+  ns.BaseTool.prototype.moveToolAt = function (col, row, frame, overlay, event) {};
 
   ns.BaseTool.prototype.replay = Constants.ABSTRACT_FUNCTION;
 
@@ -26,7 +26,7 @@
     return pskl.app.selectedColorsService.getPrimaryColor();
   };
 
-  ns.BaseTool.prototype.moveUnactiveToolAt = function (col, row, color, frame, overlay, event) {
+  ns.BaseTool.prototype.moveUnactiveToolAt = function (col, row, frame, overlay, event) {
     if (overlay.containsPixel(col, row)) {
       this.updateHighlightedPixel(frame, overlay, col, row);
     } else {
@@ -84,7 +84,7 @@
     });
   };
 
-  ns.BaseTool.prototype.releaseToolAt = function (col, row, color, frame, overlay, event) {};
+  ns.BaseTool.prototype.releaseToolAt = function (col, row, frame, overlay, event) {};
 
   /**
    * Bresenham line algorithm: Get an array of pixels from

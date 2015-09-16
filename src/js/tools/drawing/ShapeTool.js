@@ -2,7 +2,7 @@
   var ns = $.namespace('pskl.tools.drawing');
   /**
    * Abstract shape tool class, parent to all shape tools (rectangle, circle).
-   * Shape tools should override only the draw_ method
+   * Shape tools should override only the draw method
    */
   ns.ShapeTool = function() {
     // Shapes's first point coordinates (set in applyToolAt)
@@ -19,7 +19,7 @@
   /**
    * @override
    */
-  ns.ShapeTool.prototype.applyToolAt = function(col, row, color_legacy, frame, overlay, event) {
+  ns.ShapeTool.prototype.applyToolAt = function(col, row, frame, overlay, event) {
     $.publish(Events.DRAG_START, [col, row]);
     this.startCol = col;
     this.startRow = row;
@@ -28,7 +28,7 @@
     overlay.setPixel(col, row, this.getToolColor());
   };
 
-  ns.ShapeTool.prototype.moveToolAt = function(col, row, color_legacy, frame, overlay, event) {
+  ns.ShapeTool.prototype.moveToolAt = function(col, row, frame, overlay, event) {
     var coords = this.getCoordinates_(col, row, event);
     $.publish(Events.CURSOR_MOVED, [coords.col, coords.row]);
 
@@ -39,17 +39,17 @@
     }
 
     // draw in overlay
-    this.draw_(coords.col, coords.row, color, overlay);
+    this.draw(coords.col, coords.row, color, overlay);
   };
 
   /**
    * @override
    */
-  ns.ShapeTool.prototype.releaseToolAt = function(col, row, color_legacy, frame, overlay, event) {
+  ns.ShapeTool.prototype.releaseToolAt = function(col, row, frame, overlay, event) {
     overlay.clear();
     var coords = this.getCoordinates_(col, row, event);
     var color = this.getToolColor();
-    this.draw_(coords.col, coords.row, color, frame);
+    this.draw(coords.col, coords.row, color, frame);
 
     $.publish(Events.DRAG_END, [coords.col, coords.row]);
     this.raiseSaveStateEvent({
@@ -67,7 +67,7 @@
   ns.ShapeTool.prototype.replay = function(frame, replayData) {
     this.startCol = replayData.startCol;
     this.startRow = replayData.startRow;
-    this.draw_(replayData.col, replayData.row, replayData.color, frame);
+    this.draw(replayData.col, replayData.row, replayData.color, frame);
   };
 
   /**
@@ -108,6 +108,6 @@
     };
   };
 
-  ns.ShapeTool.prototype.draw_ = Constants.ABSTRACT_FUNCTION;
+  ns.ShapeTool.prototype.draw = Constants.ABSTRACT_FUNCTION;
 
 })();

@@ -3,6 +3,12 @@
 
   var BUTTON_UNSET = null;
 
+  /**
+   * This service exists mostly due to a FF/IE bug.
+   * For mousemove events, the button type is set to 0 (e.g. left button type) whatever was the
+   * pressed button on mousedown. We use this service to cache the button type value on mousedown
+   * and make it available to mousemove events.
+   */
   ns.MouseStateService = function () {
     this.lastButtonPressed_ = BUTTON_UNSET;
   };
@@ -25,7 +31,7 @@
 
   ns.MouseStateService.prototype.isMouseButtonPressed_ = function (mouseButton) {
     return this.lastButtonPressed_ != BUTTON_UNSET && this.lastButtonPressed_ == mouseButton;
-  }
+  };
 
   ns.MouseStateService.prototype.onMouseEvent_ = function(evt, mouseEvent) {
     if (mouseEvent.type == 'mousedown') {
@@ -33,7 +39,5 @@
     } else if (mouseEvent.type == 'mouseup') {
       this.lastButtonPressed_ = BUTTON_UNSET;
     }
-    // Warning : do not call setCurrentButton here
-        // mousemove do not have the correct mouse button information on all browsers
   };
 })();

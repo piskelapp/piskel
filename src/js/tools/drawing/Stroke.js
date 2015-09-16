@@ -20,7 +20,7 @@
   /**
    * @override
    */
-  ns.Stroke.prototype.applyToolAt = function(col, row, color_legacy, frame, overlay, event) {
+  ns.Stroke.prototype.applyToolAt = function(col, row, frame, overlay, event) {
     this.startCol = col;
     this.startRow = row;
 
@@ -36,7 +36,7 @@
     overlay.setPixel(col, row, this.getToolColor());
   };
 
-  ns.Stroke.prototype.moveToolAt = function(col, row, color_legacy, frame, overlay, event) {
+  ns.Stroke.prototype.moveToolAt = function(col, row, frame, overlay, event) {
     overlay.clear();
 
     // When the user moussemove (before releasing), we dynamically compute the
@@ -63,7 +63,7 @@
   /**
    * @override
    */
-  ns.Stroke.prototype.releaseToolAt = function(col, row, color_legacy, frame, overlay, event) {
+  ns.Stroke.prototype.releaseToolAt = function(col, row, frame, overlay, event) {
     var color = this.getToolColor();
     // The user released the tool to draw a line. We will compute the pixel coordinate, impact
     // the model and draw them in the drawing canvas (not the fake overlay anymore)
