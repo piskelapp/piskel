@@ -256,7 +256,6 @@
     var frame = this.piskelController.getCurrentFrame();
     var coords = this.getSpriteCoordinates(event.clientX, event.clientY);
     if (this.isClicked) {
-      $.publish(Events.MOUSE_EVENT, [event, this]);
       // A mouse button was clicked on the drawing canvas before this mouseup event,
       // the user was probably drawing on the canvas.
       // Note: The mousemove movement (and the mouseup) may end up outside
@@ -282,6 +281,7 @@
 
         $.publish(Events.TOOL_RELEASED);
       }
+      $.publish(Events.MOUSE_EVENT, [event, this]);
     }
   };
 

@@ -19,20 +19,21 @@
   /**
    * @override
    */
-  ns.ShapeTool.prototype.applyToolAt = function(col, row, color, frame, overlay, event) {
+  ns.ShapeTool.prototype.applyToolAt = function(col, row, color_legacy, frame, overlay, event) {
     $.publish(Events.DRAG_START, [col, row]);
     this.startCol = col;
     this.startRow = row;
 
     // Drawing the first point of the rectangle in the fake overlay canvas:
-    overlay.setPixel(col, row, color);
+    overlay.setPixel(col, row, this.getToolColor());
   };
 
-  ns.ShapeTool.prototype.moveToolAt = function(col, row, color, frame, overlay, event) {
+  ns.ShapeTool.prototype.moveToolAt = function(col, row, color_legacy, frame, overlay, event) {
     var coords = this.getCoordinates_(col, row, event);
     $.publish(Events.CURSOR_MOVED, [coords.col, coords.row]);
 
     overlay.clear();
+    var color = this.getToolColor();
     if (color == Constants.TRANSPARENT_COLOR) {
       color = Constants.SELECTION_TRANSPARENT_COLOR;
     }
@@ -44,9 +45,10 @@
   /**
    * @override
    */
-  ns.ShapeTool.prototype.releaseToolAt = function(col, row, color, frame, overlay, event) {
+  ns.ShapeTool.prototype.releaseToolAt = function(col, row, color_legacy, frame, overlay, event) {
     overlay.clear();
     var coords = this.getCoordinates_(col, row, event);
+    var color = this.getToolColor();
     this.draw_(coords.col, coords.row, color, frame);
 
     $.publish(Events.DRAG_END, [coords.col, coords.row]);

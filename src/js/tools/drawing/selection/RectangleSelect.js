@@ -49,7 +49,7 @@
    * the current mouse coordiinate in sprite.
    * @override
    */
-  ns.RectangleSelect.prototype.onSelect_ = function (col, row, color, frame, overlay) {
+  ns.RectangleSelect.prototype.onSelect_ = function (col, row, color_legacy, frame, overlay) {
     if (!this.hasSelection && (this.selectionOrigin_.col !== col || this.selectionOrigin_.row !== row)) {
       this.startSelection_(col, row);
     }
@@ -63,9 +63,9 @@
     }
   };
 
-  ns.RectangleSelect.prototype.onSelectEnd_ = function (col, row, color, frame, overlay) {
+  ns.RectangleSelect.prototype.onSelectEnd_ = function (col, row, color_legacy, frame, overlay) {
     if (this.hasSelection) {
-      this.onSelect_(col, row, color, frame, overlay);
+      this.onSelect_(col, row, color_legacy, frame, overlay);
       $.publish(Events.DRAG_END, [col, row]);
     }
   };

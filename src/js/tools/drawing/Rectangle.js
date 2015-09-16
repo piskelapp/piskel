@@ -16,11 +16,11 @@
 
   pskl.utils.inherit(ns.Rectangle, ns.ShapeTool);
 
-  ns.Rectangle.prototype.draw_ = function (col, row, color, targetFrame) {
+  ns.Rectangle.prototype.draw_ = function (col, row, color_legacy, targetFrame) {
     var strokePoints = pskl.PixelUtils.getBoundRectanglePixels(this.startCol, this.startRow, col, row);
     for (var i = 0 ; i < strokePoints.length ; i++) {
       // Change model:
-      targetFrame.setPixel(strokePoints[i].col, strokePoints[i].row, color);
+      targetFrame.setPixel(strokePoints[i].col, strokePoints[i].row, this.getToolColor());
     }
   };
 })();

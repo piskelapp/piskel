@@ -19,6 +19,13 @@
 
   ns.BaseTool.prototype.replay = Constants.ABSTRACT_FUNCTION;
 
+  ns.BaseTool.prototype.getToolColor = function() {
+    if (pskl.app.mouseStateService.isRightButtonPressed()) {
+      return pskl.app.selectedColorsService.getSecondaryColor();
+    }
+    return pskl.app.selectedColorsService.getPrimaryColor();
+  };
+
   ns.BaseTool.prototype.moveUnactiveToolAt = function (col, row, color, frame, overlay, event) {
     if (overlay.containsPixel(col, row)) {
       this.updateHighlightedPixel(frame, overlay, col, row);

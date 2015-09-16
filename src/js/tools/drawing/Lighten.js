@@ -1,5 +1,5 @@
 /**
- * @provide pskl.tools.drawing.Eraser
+ * @provide pskl.tools.drawing.Lighten
  *
  * @require Constants
  * @require pskl.utils
@@ -41,33 +41,42 @@
   /**
    * @Override
    */
-  ns.Lighten.prototype.applyToolAt = function(col, row, color, frame, overlay, event, mouseButton) {
-    var overlayColor = overlay.getPixel(col, row);
-    var frameColor = frame.getPixel(col, row);
-    var pixelColor = overlayColor === Constants.TRANSPARENT_COLOR ? frameColor : overlayColor;
+  ns.Lighten.prototype.getToolColor = function() {
+    var color = this.superclass.getToolColor.call();
 
-    var isDarken = pskl.utils.UserAgent.isMac ?  event.metaKey : event.ctrlKey;
-    var isSinglePass = event.shiftKey;
-
-    var isTransparent = pixelColor === Constants.TRANSPARENT_COLOR;
-    var usedPixels = isDarken ? this.usedPixels_.darken : this.usedPixels_.lighten;
-    var key = col + '-' + row;
-
-    var doNotModify = isTransparent || (isSinglePass && usedPixels[key]);
+    var usedPixels = this.isDarken_ ? this.usedPixels_.darken : this.usedPixels_.lighten;
+    var key = this.col_ + '-' + this.row_;
+    var doNotModify = this.isTransparent_ || (this.isSinglePass_ && usedPixels[key]);
     if (doNotModify) {
-      color = window.tinycolor(pixelColor);
+      color = window.tinycolor(this.pixelColor_);
     } else {
-      var step = isSinglePass ? DEFAULT_STEP * 2 : DEFAULT_STEP;
-      if (isDarken) {
-        color = window.tinycolor.darken(pixelColor, step);
+      var step = this.isSinglePass_ ? DEFAULT_STEP * 2 : DEFAULT_STEP;
+      if (this.isDarken_) {
+        color = window.tinycolor.darken(this.pixelColor_, step);
       } else {
-        color = window.tinycolor.lighten(pixelColor, step);
+        color = window.tinycolor.lighten(this.pixelColor_, step);
       }
     }
     if (color) {
       usedPixels[key] = true;
-      this.superclass.applyToolAt.call(this, col, row, color.toRgbString(), frame, overlay, event);
     }
+    return color.toRgbString();
   };
 
+  /**
+   * @Override
+   */
+  ns.Lighten.prototype.applyToolAt = function(col, row, color_legacy, frame, overlay, event, mouseButton) {
+    var overlayColor = overlay.getPixel(col, row);
+    var frameColor = frame.getPixel(col, row);
+
+    this.col_ = col;
+    this.row_ = row;
+    this.pixelColor_ = overlayColor === Constants.TRANSPARENT_COLOR ? frameColor : overlayColor;
+    this.isDarken_ = pskl.utils.UserAgent.isMac ?  event.metaKey : event.ctrlKey;;
+    this.isTransparent_ = this.pixelColor_ === Constants.TRANSPARENT_COLOR;
+    this.isSinglePass_ = event.shiftKey;
+
+    this.superclass.applyToolAt.call(this, col, row, color_legacy, frame, overlay, event);
+  };
 })();

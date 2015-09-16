@@ -16,22 +16,22 @@
   /**
    * @override
    */
-  ns.DitheringTool.prototype.applyToolAt = function(col, row, color, frame, overlay, event) {
-    // On Firefox/IE, the clicked button type is not part of the mousemove event.
-    // Ensure we record the pressed button on the initial mousedown only.
-    if (event.type == 'mousedown') {
-      this.invertColors_ = event.button === Constants.RIGHT_BUTTON;
-    }
-
-    // Use primary selected color on cell with either an odd col or row.
-    // Use secondary color otherwise.
-    // When using the right mouse button, invert the above behavior to allow quick corrections.
-    var usePrimaryColor = (col + row) % 2;
-    usePrimaryColor = this.invertColors_ ? !usePrimaryColor : usePrimaryColor;
-
+  ns.DitheringTool.prototype.getToolColor = function() {
+    var usePrimaryColor = (this.col_ + this.row_) % 2;
+    usePrimaryColor =
+      pskl.app.mouseStateService.isRightButtonPressed() ? !usePrimaryColor : usePrimaryColor;
     var ditheringColor = usePrimaryColor ?
-        pskl.app.selectedColorsService.getPrimaryColor() :
-        pskl.app.selectedColorsService.getSecondaryColor();
-    this.superclass.applyToolAt.call(this, col, row, ditheringColor, frame, overlay, event);
+      pskl.app.selectedColorsService.getPrimaryColor() :
+      pskl.app.selectedColorsService.getSecondaryColor();
+    return ditheringColor;
+  };
+
+  /**
+   * @override
+   */
+  ns.DitheringTool.prototype.applyToolAt = function(col, row, color_legacy, frame, overlay, event) {
+    this.col_ = col;
+    this.row_ = row;
+    this.superclass.applyToolAt.call(this, col, row, color_legacy, frame, overlay, event);
   };
 })();
