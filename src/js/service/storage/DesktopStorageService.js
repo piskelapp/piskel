@@ -1,5 +1,5 @@
 (function () {
-  var ns = $.namespace('pskl.service');
+  var ns = $.namespace('pskl.service.storage');
 
   ns.DesktopStorageService = function(piskelController) {
     this.piskelController = piskelController || pskl.app.piskelController;

@@ -1,14 +1,13 @@
 (function () {
-  var ns = $.namespace('pskl.service');
+  var ns = $.namespace('pskl.service.storage');
 
-  ns.AppEngineStorageService = function (piskelController) {
+  ns.GalleryStorageService = function (piskelController) {
     this.piskelController = piskelController;
   };
 
-  ns.AppEngineStorageService.prototype.init = function () {};
+  ns.GalleryStorageService.prototype.init = function () {};
 
-  ns.AppEngineStorageService.prototype.store = function (callbacks) {
-    var piskel = this.piskelController.getPiskel();
+  ns.GalleryStorageService.prototype.store = function (piskel, onSuccess, onError) {
     var descriptor = piskel.getDescriptor();
 
     var data = {
@@ -25,16 +24,10 @@
       data.public = true;
     }
 
-    var success = function () {
-      callbacks.success();
-      callbacks.after();
+    var errorCallback = function (response) {
+      onError(response.status);
     };
 
-    var error = function (response) {
-      callbacks.error(response.status);
-      callbacks.after();
-    };
-
-    pskl.utils.Xhr.post(Constants.APPENGINE_SAVE_URL, data, success, error);
+    pskl.utils.Xhr.post(Constants.APPENGINE_SAVE_URL, data, onSuccess, errorCallback);
   };
 })();

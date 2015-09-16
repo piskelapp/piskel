@@ -1,5 +1,5 @@
 (function () {
-  var ns = $.namespace('pskl.service');
+  var ns = $.namespace('pskl.service.storage');
 
   ns.LocalStorageService = function (piskelController) {
     if (piskelController === undefined) {

@@ -109,10 +109,13 @@
       this.canvasBackgroundController = new pskl.controller.CanvasBackgroundController();
       this.canvasBackgroundController.init();
 
-      this.localStorageService = new pskl.service.LocalStorageService(this.piskelController);
+      this.galleryStorageService = new pskl.service.storage.GalleryStorageService(this.piskelController);
+      this.galleryStorageService.init();
+
+      this.localStorageService = new pskl.service.storage.LocalStorageService(this.piskelController);
       this.localStorageService.init();
 
-      this.desktopStorageService = new pskl.service.DesktopStorageService(this.piskelController);
+      this.desktopStorageService = new pskl.service.storage.DesktopStorageService(this.piskelController);
       this.desktopStorageService.init();
 
       this.imageUploadService = new pskl.service.ImageUploadService();
@@ -134,13 +137,6 @@
         this.piskelController,
         document.querySelector('#drawing-canvas-container'));
       this.fileDropperService.init();
-
-      if (this.isAppEngineVersion) {
-        this.storageService = new pskl.service.AppEngineStorageService(this.piskelController);
-      } else {
-        this.storageService = new pskl.service.GithubStorageService(this.piskelController);
-      }
-      this.storageService.init();
 
       var drawingLoop = new pskl.rendering.DrawingLoop();
       drawingLoop.addCallback(this.render, this);
