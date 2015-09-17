@@ -41,42 +41,44 @@
   /**
    * @Override
    */
-  ns.Lighten.prototype.getToolColor = function() {
-    var color = this.superclass.getToolColor.call();
+  ns.Lighten.prototype.applyToolAt = function(col, row, frame, overlay, event, mouseButton) {
+    var modifiedColor = this.getModifiedColor_(col, row, frame, overlay, event);
+    this.draw(modifiedColor, col, row, frame, overlay);
+  };
 
-    var usedPixels = this.isDarken_ ? this.usedPixels_.darken : this.usedPixels_.lighten;
-    var key = this.col_ + '-' + this.row_;
-    var doNotModify = this.isTransparent_ || (this.isSinglePass_ && usedPixels[key]);
+  ns.Lighten.prototype.getModifiedColor_ = function(col, row, frame, overlay, event) {
+    var overlayColor = overlay.getPixel(col, row);
+    var frameColor = frame.getPixel(col, row);
+    var pixelColor = overlayColor === Constants.TRANSPARENT_COLOR ? frameColor : overlayColor;
+    var isDarken = pskl.utils.UserAgent.isMac ?  event.metaKey : event.ctrlKey;
+    var isTransparent = pixelColor === Constants.TRANSPARENT_COLOR;
+    var isSinglePass = event.shiftKey;
+
+    var usedPixels = isDarken ? this.usedPixels_.darken : this.usedPixels_.lighten;
+    var key = col + '-' + row;
+    var doNotModify = isTransparent || (isSinglePass && usedPixels[key]);
+
+    var color;
     if (doNotModify) {
-      color = window.tinycolor(this.pixelColor_);
+      color = window.tinycolor(pixelColor);
     } else {
-      var step = this.isSinglePass_ ? DEFAULT_STEP * 2 : DEFAULT_STEP;
-      if (this.isDarken_) {
-        color = window.tinycolor.darken(this.pixelColor_, step);
+      var step = isSinglePass ? DEFAULT_STEP * 2 : DEFAULT_STEP;
+      if (isDarken) {
+        color = window.tinycolor.darken(pixelColor, step);
       } else {
-        color = window.tinycolor.lighten(this.pixelColor_, step);
+        color = window.tinycolor.lighten(pixelColor, step);
       }
     }
     if (color) {
-      usedPixels[key] = true;
+      // Convert tinycolor color to string format.
+      color = color.toRgbString();
+    } else {
+      // Not sure why this check exists in the first place.
+      // Fallback to the always defined SimplePen tool color in this case.
+      color = this.getToolColor();
     }
-    return color.toRgbString();
-  };
+    usedPixels[key] = true;
 
-  /**
-   * @Override
-   */
-  ns.Lighten.prototype.applyToolAt = function(col, row, frame, overlay, event, mouseButton) {
-    var overlayColor = overlay.getPixel(col, row);
-    var frameColor = frame.getPixel(col, row);
-
-    this.col_ = col;
-    this.row_ = row;
-    this.pixelColor_ = overlayColor === Constants.TRANSPARENT_COLOR ? frameColor : overlayColor;
-    this.isDarken_ = pskl.utils.UserAgent.isMac ?  event.metaKey : event.ctrlKey;
-    this.isTransparent_ = this.pixelColor_ === Constants.TRANSPARENT_COLOR;
-    this.isSinglePass_ = event.shiftKey;
-
-    this.superclass.applyToolAt.call(this, col, row, frame, overlay, event);
+    return color;
   };
 })();

@@ -22,11 +22,15 @@
    * @override
    */
   ns.SimplePen.prototype.applyToolAt = function(col, row, frame, overlay, event) {
+    var color = this.getToolColor();
+    this.draw(color, col, row, frame, overlay);
+  };
+
+  ns.SimplePen.prototype.draw = function(color, col, row, frame, overlay) {
     this.previousCol = col;
     this.previousRow = row;
-    var color = this.getToolColor();
-    overlay.setPixel(col, row, color);
 
+    overlay.setPixel(col, row, color);
     if (color === Constants.TRANSPARENT_COLOR) {
       frame.setPixel(col, row, color);
     }

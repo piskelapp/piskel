@@ -16,22 +16,14 @@
   /**
    * @override
    */
-  ns.DitheringTool.prototype.getToolColor = function() {
-    var usePrimaryColor = (this.col_ + this.row_) % 2;
+  ns.DitheringTool.prototype.applyToolAt = function(col, row, frame, overlay, event) {
+    var usePrimaryColor = (col + row) % 2;
     usePrimaryColor =
       pskl.app.mouseStateService.isRightButtonPressed() ? !usePrimaryColor : usePrimaryColor;
     var ditheringColor = usePrimaryColor ?
       pskl.app.selectedColorsService.getPrimaryColor() :
       pskl.app.selectedColorsService.getSecondaryColor();
-    return ditheringColor;
-  };
 
-  /**
-   * @override
-   */
-  ns.DitheringTool.prototype.applyToolAt = function(col, row, frame, overlay, event) {
-    this.col_ = col;
-    this.row_ = row;
-    this.superclass.applyToolAt.call(this, col, row, frame, overlay, event);
+    this.draw(ditheringColor, col, row, frame, overlay);
   };
 })();
