@@ -140,11 +140,23 @@
   };
 
   ns.FrameRenderer.prototype.getGridWidth = function () {
-    if (this.supportGridRendering) {
-      return this.gridWidth_;
-    } else {
+    if (!this.supportGridRendering) {
       return 0;
     }
+
+    return this.gridWidth_;
+  };
+
+  /**
+   * Compute a grid width value best suited to the current display context,
+   * particularly for the current zoom level
+   */
+  ns.FrameRenderer.prototype.computeGridWidthForDisplay_ = function () {
+    var gridWidth = this.getGridWidth();
+    while (this.zoom < 6 * gridWidth) {
+      gridWidth--;
+    }
+    return gridWidth;
   };
 
   ns.FrameRenderer.prototype.updateMargins_ = function (frame) {
@@ -249,7 +261,7 @@
 
     var isIE10 = pskl.utils.UserAgent.isIE && pskl.utils.UserAgent.version === 10;
 
-    var gridWidth = this.getGridWidth();
+    var gridWidth = this.computeGridWidthForDisplay_();
     var isGridEnabled = gridWidth > 0;
     if (isGridEnabled || isIE10) {
       var scaled = pskl.utils.ImageResizer.resizeNearestNeighbour(this.canvas, this.zoom, gridWidth);
