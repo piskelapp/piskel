@@ -1,21 +1,17 @@
 (function () {
   var ns = $.namespace('pskl.tools.transform');
 
-  ns.Transform = function () {
-    this.toolId = 'tool-transform';
-    this.helpText = 'Transform tool';
-    this.tooltipDescriptors = [];
-  };
+  ns.AbstractTransformTool = function () {};
 
-  pskl.utils.inherit(ns.Transform, pskl.tools.Tool);
+  pskl.utils.inherit(ns.AbstractTransformTool, pskl.tools.Tool);
 
-  ns.Transform.prototype.apply = function (evt) {
+  ns.AbstractTransformTool.prototype.apply = function (evt) {
     var allFrames = evt.shiftKey;
     var allLayers = evt.ctrlKey;
     this.applyTool_(evt.altKey, allFrames, allLayers);
   };
 
-  ns.Transform.prototype.applyTool_ = function (altKey, allFrames, allLayers) {
+  ns.AbstractTransformTool.prototype.applyTool_ = function (altKey, allFrames, allLayers) {
     var currentFrameIndex = pskl.app.piskelController.getCurrentFrameIndex();
     var layers = allLayers ? pskl.app.piskelController.getLayers() : [pskl.app.piskelController.getCurrentLayer()];
     layers.forEach(function (layer) {

@@ -10,18 +10,18 @@
       {key : 'shift', description : 'Apply to all frames'}];
   };
 
-  pskl.utils.inherit(ns.Rotate, ns.Transform);
+  pskl.utils.inherit(ns.Rotate, ns.AbstractTransformTool);
 
   ns.Rotate.prototype.applyToolOnFrame_ = function (frame, altKey) {
     var direction;
 
     if (altKey) {
-      direction = pskl.utils.FrameTransform.CLOCKWISE;
+      direction = ns.TransformUtils.CLOCKWISE;
     } else {
-      direction = pskl.utils.FrameTransform.COUNTERCLOCKWISE;
+      direction = ns.TransformUtils.COUNTERCLOCKWISE;
     }
 
-    pskl.utils.FrameTransform.rotate(frame, direction);
+    ns.TransformUtils.rotate(frame, direction);
   };
 
 })();

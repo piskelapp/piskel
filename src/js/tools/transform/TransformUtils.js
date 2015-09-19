@@ -1,8 +1,8 @@
 (function () {
-  var ns = $.namespace('pskl.utils');
+  var ns = $.namespace('pskl.tools.transform');
 
-  ns.FrameTransform = {
-    VERTICAL : 'vertical',
+  ns.TransformUtils = {
+    VERTICAL : 'VERTICAL',
     HORIZONTAL : 'HORIZONTAL',
     flip : function (frame, axis) {
       var clone = frame.clone();
@@ -10,9 +10,9 @@
       var h = frame.getHeight();
 
       clone.forEachPixel(function (color, x, y) {
-        if (axis === ns.FrameTransform.VERTICAL) {
+        if (axis === ns.TransformUtils.VERTICAL) {
           x = w - x - 1;
-        } else if (axis === ns.FrameTransform.HORIZONTAL) {
+        } else if (axis === ns.TransformUtils.HORIZONTAL) {
           y = h - y - 1;
         }
         frame.pixels[x][y] = color;
@@ -43,10 +43,10 @@
         // Perform the rotation
         var tmpX = x;
         var tmpY = y;
-        if (direction === ns.FrameTransform.CLOCKWISE) {
+        if (direction === ns.TransformUtils.CLOCKWISE) {
           x = tmpY;
           y = max - 1 - tmpX;
-        } else if (direction === ns.FrameTransform.COUNTERCLOCKWISE) {
+        } else if (direction === ns.TransformUtils.COUNTERCLOCKWISE) {
           y = tmpX;
           x = max - 1 - tmpY;
         }
