@@ -136,6 +136,11 @@
   "js/widgets/SizeInput.js",
 
   // Services
+  "js/service/storage/StorageService.js",
+  "js/service/storage/FileDownloadStorageService.js",
+  "js/service/storage/LocalStorageService.js",
+  "js/service/storage/GalleryStorageService.js",
+  "js/service/storage/DesktopStorageService.js",
   "js/service/BackupService.js",
   "js/service/BeforeUnloadService.js",
   "js/service/HistoryService.js",

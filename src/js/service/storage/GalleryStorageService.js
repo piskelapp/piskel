@@ -7,8 +7,9 @@
 
   ns.GalleryStorageService.prototype.init = function () {};
 
-  ns.GalleryStorageService.prototype.store = function (piskel, onSuccess, onError) {
+  ns.GalleryStorageService.prototype.save = function (piskel) {
     var descriptor = piskel.getDescriptor();
+    var deferred = Q.defer();
 
     var data = {
       framesheet : this.piskelController.serialize(),
@@ -24,10 +25,30 @@
       data.public = true;
     }
 
-    var errorCallback = function (response) {
-      onError(response.status);
+    var successCallback = function (response) {
+      deferred.resolve();
     };
 
-    pskl.utils.Xhr.post(Constants.APPENGINE_SAVE_URL, data, onSuccess, errorCallback);
+    var errorCallback = function (response) {
+      deferred.reject(this.getErrorMessage_(response));
+    };
+
+    pskl.utils.Xhr.post(Constants.APPENGINE_SAVE_URL, data, successCallback, errorCallback.bind(this));
+
+    return deferred.promise;
+  };
+
+  ns.GalleryStorageService.prototype.getErrorMessage_ = function (response) {
+    var errorMessage = '';
+    if (response.status === 401) {
+      errorMessage = 'Session expired, please log in again.';
+    } else if (response.status === 403) {
+      errorMessage = 'Unauthorized action, this sprite belongs to another account.';
+    } else if (response.status === 500) {
+      errorMessage = 'Unexpected server error, please contact us on Github (piskel) or Twitter (@piskelapp)';
+    } else {
+      errorMessage = 'Unknown error';
+    }
+    return errorMessage;
   };
 })();

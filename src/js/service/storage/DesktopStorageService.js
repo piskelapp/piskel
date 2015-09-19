@@ -1,69 +1,58 @@
 (function () {
   var ns = $.namespace('pskl.service.storage');
+  var PISKEL_EXTENSION = '.piskel';
 
   ns.DesktopStorageService = function(piskelController) {
     this.piskelController = piskelController || pskl.app.piskelController;
     this.hideNotificationTimeoutID = 0;
   };
 
-  ns.DesktopStorageService.prototype.init = function () {
-    // activate keyboard shortcuts if this is the desktop version
-    if (pskl.utils.Environment.detectNodeWebkit()) {
-      pskl.app.shortcutService.addShortcut('ctrl+o', this.openPiskel.bind(this));
-      pskl.app.shortcutService.addShortcut('ctrl+s', this.save.bind(this));
-      pskl.app.shortcutService.addShortcut('ctrl+shift+s', this.savePiskelAs.bind(this));
-    }
-  };
+  ns.DesktopStorageService.prototype.init = function () {};
 
-  ns.DesktopStorageService.prototype.save = function () {
-    var savePath = this.piskelController.getSavePath();
-    // if we already have a filename, just save the file (using nodejs 'fs' api)
-    if (savePath) {
-      this.savePiskel(savePath);
+  ns.DesktopStorageService.prototype.save = function (piskel, saveAsNew) {
+    if (piskel.savePath && !saveAsNew) {
+      return this.saveAtPath_(piskel, piskel.savePath);
     } else {
-      this.savePiskelAs();
+      var name = piskel.getDescriptor().name;
+      var filenamePromise = pskl.utils.FileUtilsDesktop.chooseFilenameDialog(name, PISKEL_EXTENSION);
+      return filenamePromise.then(this.saveAtPath_.bind(this, piskel));
     }
   };
 
-  ns.DesktopStorageService.prototype.savePiskel = function (savePath) {
-    var serialized = this.piskelController.serialize();
-    pskl.utils.FileUtilsDesktop.saveToFile(serialized, savePath, function () {
-      this.onSaveSuccess_();
-    }.bind(this));
+  ns.DesktopStorageService.prototype.saveAtPath_ = function (piskel, savePath) {
+    if (!savePath) {
+      return Q.reject('Invalid file name');
+    }
+
+    var serialized = pskl.utils.Serializer.serializePiskel(piskel, false);
+    savePath = this.addExtensionIfNeeded_(savePath);
+    piskel.savePath = savePath;
+    piskel.setName(this.extractFilename_(savePath));
+    return pskl.utils.FileUtilsDesktop.saveToFile(serialized, savePath);
   };
 
   ns.DesktopStorageService.prototype.openPiskel = function () {
-    pskl.utils.FileUtilsDesktop.chooseFileDialog(function (filename) {
-      var savePath = filename;
-      pskl.utils.FileUtilsDesktop.readFile(savePath, function (content) {
-        pskl.utils.PiskelFileUtils.decodePiskelFile(content, function (piskel, descriptor, fps) {
-          piskel.setDescriptor(descriptor);
-          // store save path so we can re-save without opening the save dialog
-          piskel.savePath = savePath;
-          pskl.app.piskelController.setPiskel(piskel);
-          pskl.app.previewController.setFPS(fps);
-        });
+    return pskl.utils.FileUtilsDesktop.chooseFilenameDialog().then(this.load);
+  };
+
+  ns.DesktopStorageService.prototype.load = function (savePath) {
+    pskl.utils.FileUtilsDesktop.readFile(savePath).then(function (content) {
+      pskl.utils.PiskelFileUtils.decodePiskelFile(content, function (piskel, descriptor, fps) {
+        piskel.setDescriptor(descriptor);
+        // store save path so we can re-save without opening the save dialog
+        piskel.savePath = savePath;
+        pskl.app.piskelController.setPiskel(piskel);
+        pskl.app.previewController.setFPS(fps);
       });
     });
   };
 
-  ns.DesktopStorageService.prototype.savePiskelAs = function () {
-    var serialized = this.piskelController.serialize();
-    var name = this.piskelController.getPiskel().getDescriptor().name;
-    // TODO: if there is already a file path, use it for the dialog's
-    // working directory and filename
-    pskl.utils.FileUtilsDesktop.saveAs(serialized, name, 'piskel', function (selectedSavePath) {
-      this.piskelController.setSavePath(selectedSavePath);
-
-      var filename = this.extractFilename_(selectedSavePath);
-      if (filename) {
-        var descriptor = this.piskelController.getPiskel().getDescriptor();
-        descriptor.name = filename;
-        this.piskelController.getPiskel().setDescriptor(descriptor);
-      }
-
-      this.onSaveSuccess_();
-    }.bind(this));
+  ns.DesktopStorageService.prototype.addExtensionIfNeeded_ = function (filename) {
+    var hasExtension = filename.substr(-PISKEL_EXTENSION.length) === PISKEL_EXTENSION;
+    if (!hasExtension) {
+      return filename + PISKEL_EXTENSION;
+    }
+    return filename;
   };
 
   ns.DesktopStorageService.prototype.extractFilename_ = function (savePath) {
@@ -72,15 +61,4 @@
       return matches[1];
     }
   };
-
-  ns.DesktopStorageService.prototype.onSaveSuccess_ = function () {
-    var savePath = this.piskelController.getSavePath();
-    $.publish(Events.CLOSE_SETTINGS_DRAWER);
-    $.publish(Events.SHOW_NOTIFICATION, [{'content': 'Successfully saved: ' + savePath}]);
-    $.publish(Events.PISKEL_SAVED);
-    // clear the old time out, if any.
-    window.clearTimeout(this.hideNotificationTimeoutID);
-    this.hideNotificationTimeoutID = window.setTimeout($.publish.bind($, Events.HIDE_NOTIFICATION), 3000);
-  };
-
 })();

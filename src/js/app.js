@@ -109,14 +109,20 @@
       this.canvasBackgroundController = new pskl.controller.CanvasBackgroundController();
       this.canvasBackgroundController.init();
 
-      this.galleryStorageService = new pskl.service.storage.GalleryStorageService(this.piskelController);
-      this.galleryStorageService.init();
-
       this.localStorageService = new pskl.service.storage.LocalStorageService(this.piskelController);
       this.localStorageService.init();
 
+      this.fileDownloadStorageService = new pskl.service.storage.FileDownloadStorageService(this.piskelController);
+      this.fileDownloadStorageService.init();
+
       this.desktopStorageService = new pskl.service.storage.DesktopStorageService(this.piskelController);
       this.desktopStorageService.init();
+
+      this.galleryStorageService = new pskl.service.storage.GalleryStorageService(this.piskelController);
+      this.galleryStorageService.init();
+
+      this.storageService = new pskl.service.storage.StorageService(this.piskelController);
+      this.storageService.init();
 
       this.imageUploadService = new pskl.service.ImageUploadService();
       this.imageUploadService.init();
