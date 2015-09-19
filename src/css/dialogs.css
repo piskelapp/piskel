@@ -21,7 +21,7 @@
 }
 
 #dialog-container-wrapper.animated {
-  transition: opacity 0.5s;
+  transition: opacity 0.2s;
 }
 
 #dialog-container-wrapper.show {
@@ -45,7 +45,7 @@
 }
 
 .animated #dialog-container {
-  transition:margin-top 0.5s;
+  transition:margin-top 0.2s;
 }
 
 .show #dialog-container {
