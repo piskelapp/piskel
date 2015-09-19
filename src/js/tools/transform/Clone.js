@@ -7,7 +7,7 @@
     this.tooltipDescriptors = [];
   };
 
-  pskl.utils.inherit(ns.Clone, ns.Transform);
+  pskl.utils.inherit(ns.Clone, ns.AbstractTransformTool);
 
   ns.Clone.prototype.apply = function (evt) {
     var ref = pskl.app.piskelController.getCurrentFrame();

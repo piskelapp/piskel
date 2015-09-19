@@ -1,13 +1,13 @@
-describe("FrameTransform suite", function() {
+describe("TransformUtils suite", function() {
   var A = '#000000';
   var B = '#ff0000';
   var O = Constants.TRANSPARENT_COLOR;
 
-  var HORIZONTAL = pskl.utils.FrameTransform.HORIZONTAL;
-  var VERTICAL = pskl.utils.FrameTransform.VERTICAL;
+  var HORIZONTAL = pskl.tools.transform.TransformUtils.HORIZONTAL;
+  var VERTICAL = pskl.tools.transform.TransformUtils.VERTICAL;
 
-  var CLOCKWISE = pskl.utils.FrameTransform.CLOCKWISE;
-  var COUNTERCLOCKWISE = pskl.utils.FrameTransform.COUNTERCLOCKWISE;
+  var CLOCKWISE = pskl.tools.transform.TransformUtils.CLOCKWISE;
+  var COUNTERCLOCKWISE = pskl.tools.transform.TransformUtils.COUNTERCLOCKWISE;
 
   // shortcuts
   var frameEqualsGrid = test.testutils.frameEqualsGrid;
@@ -25,7 +25,7 @@ describe("FrameTransform suite", function() {
     ]));
 
     // should have flipped
-    pskl.utils.FrameTransform.flip(frame, VERTICAL);
+    pskl.tools.transform.TransformUtils.flip(frame, VERTICAL);
     frameEqualsGrid(frame, [
       [O, A],
       [B, O]
@@ -40,7 +40,7 @@ describe("FrameTransform suite", function() {
     ]));
 
     // should have flipped
-    pskl.utils.FrameTransform.flip(frame, HORIZONTAL);
+    pskl.tools.transform.TransformUtils.flip(frame, HORIZONTAL);
     frameEqualsGrid(frame, [
       [O, B],
       [A, O]
@@ -56,7 +56,7 @@ describe("FrameTransform suite", function() {
     ]));
 
     // should have flipped
-    pskl.utils.FrameTransform.flip(frame, VERTICAL);
+    pskl.tools.transform.TransformUtils.flip(frame, VERTICAL);
     frameEqualsGrid(frame, [
       [O, A],
       [O, A],
@@ -64,7 +64,7 @@ describe("FrameTransform suite", function() {
     ]);
 
     // should be the same
-    pskl.utils.FrameTransform.flip(frame, HORIZONTAL);
+    pskl.tools.transform.TransformUtils.flip(frame, HORIZONTAL);
     frameEqualsGrid(frame, [
       [O, A],
       [O, A],
@@ -84,28 +84,28 @@ describe("FrameTransform suite", function() {
     ]));
 
     // rotate once
-    pskl.utils.FrameTransform.rotate(frame, COUNTERCLOCKWISE);
+    pskl.tools.transform.TransformUtils.rotate(frame, COUNTERCLOCKWISE);
     frameEqualsGrid(frame, [
       [O, B],
       [A, O]
     ]);
 
     // rotate twice
-    pskl.utils.FrameTransform.rotate(frame, COUNTERCLOCKWISE);
+    pskl.tools.transform.TransformUtils.rotate(frame, COUNTERCLOCKWISE);
     frameEqualsGrid(frame, [
       [B, O],
       [O, A]
     ]);
 
     // rotate 3
-    pskl.utils.FrameTransform.rotate(frame, COUNTERCLOCKWISE);
+    pskl.tools.transform.TransformUtils.rotate(frame, COUNTERCLOCKWISE);
     frameEqualsGrid(frame, [
       [O, A],
       [B, O]
     ]);
 
     // rotate 4 - back to initial state
-    pskl.utils.FrameTransform.rotate(frame, COUNTERCLOCKWISE);
+    pskl.tools.transform.TransformUtils.rotate(frame, COUNTERCLOCKWISE);
     frameEqualsGrid(frame, [
       [A, O],
       [O, B]
@@ -120,28 +120,28 @@ describe("FrameTransform suite", function() {
     ]));
 
     // rotate once
-    pskl.utils.FrameTransform.rotate(frame, CLOCKWISE);
+    pskl.tools.transform.TransformUtils.rotate(frame, CLOCKWISE);
     frameEqualsGrid(frame, [
       [O, A],
       [B, O]
     ]);
 
     // rotate twice
-    pskl.utils.FrameTransform.rotate(frame, CLOCKWISE);
+    pskl.tools.transform.TransformUtils.rotate(frame, CLOCKWISE);
     frameEqualsGrid(frame, [
       [B, O],
       [O, A]
     ]);
 
     // rotate 3
-    pskl.utils.FrameTransform.rotate(frame, CLOCKWISE);
+    pskl.tools.transform.TransformUtils.rotate(frame, CLOCKWISE);
     frameEqualsGrid(frame, [
       [O, B],
       [A, O]
     ]);
 
     // rotate 4 - back to initial state
-    pskl.utils.FrameTransform.rotate(frame, CLOCKWISE);
+    pskl.tools.transform.TransformUtils.rotate(frame, CLOCKWISE);
     frameEqualsGrid(frame, [
       [A, O],
       [O, B]
@@ -158,7 +158,7 @@ describe("FrameTransform suite", function() {
     ]));
 
     // rotate once
-    pskl.utils.FrameTransform.rotate(frame, CLOCKWISE);
+    pskl.tools.transform.TransformUtils.rotate(frame, CLOCKWISE);
     frameEqualsGrid(frame, [
       [O, O],
       [B, A],
@@ -167,7 +167,7 @@ describe("FrameTransform suite", function() {
     ]);
 
     // rotate twice
-    pskl.utils.FrameTransform.rotate(frame, CLOCKWISE);
+    pskl.tools.transform.TransformUtils.rotate(frame, CLOCKWISE);
     frameEqualsGrid(frame, [
       [O, O],
       [O, B],
@@ -176,7 +176,7 @@ describe("FrameTransform suite", function() {
     ]);
 
     // rotate 3
-    pskl.utils.FrameTransform.rotate(frame, CLOCKWISE);
+    pskl.tools.transform.TransformUtils.rotate(frame, CLOCKWISE);
     frameEqualsGrid(frame, [
       [O, O],
       [O, O],
@@ -185,7 +185,7 @@ describe("FrameTransform suite", function() {
     ]);
 
     // rotate 4
-    pskl.utils.FrameTransform.rotate(frame, CLOCKWISE);
+    pskl.tools.transform.TransformUtils.rotate(frame, CLOCKWISE);
     frameEqualsGrid(frame, [
       [O, O],
       [A, O],
@@ -202,28 +202,28 @@ describe("FrameTransform suite", function() {
     ]));
 
     // rotate once
-    pskl.utils.FrameTransform.rotate(frame, CLOCKWISE);
+    pskl.tools.transform.TransformUtils.rotate(frame, CLOCKWISE);
     frameEqualsGrid(frame, [
       [O, A, O, O],
       [O, B, O, O]
     ]);
 
     // rotate twice
-    pskl.utils.FrameTransform.rotate(frame, CLOCKWISE);
+    pskl.tools.transform.TransformUtils.rotate(frame, CLOCKWISE);
     frameEqualsGrid(frame, [
       [O, B, A, O],
       [O, O, O, O]
     ]);
 
     // rotate 3
-    pskl.utils.FrameTransform.rotate(frame, CLOCKWISE);
+    pskl.tools.transform.TransformUtils.rotate(frame, CLOCKWISE);
     frameEqualsGrid(frame, [
       [O, O, B, O],
       [O, O, A, O]
     ]);
 
     // rotate 4
-    pskl.utils.FrameTransform.rotate(frame, CLOCKWISE);
+    pskl.tools.transform.TransformUtils.rotate(frame, CLOCKWISE);
     frameEqualsGrid(frame, [
       [O, O, O, O],
       [O, A, B, O]

@@ -11,18 +11,18 @@
     ];
   };
 
-  pskl.utils.inherit(ns.Flip, ns.Transform);
+  pskl.utils.inherit(ns.Flip, ns.AbstractTransformTool);
 
   ns.Flip.prototype.applyToolOnFrame_ = function (frame, altKey) {
     var axis;
 
     if (altKey) {
-      axis = pskl.utils.FrameTransform.HORIZONTAL;
+      axis = ns.TransformUtils.HORIZONTAL;
     } else {
-      axis = pskl.utils.FrameTransform.VERTICAL;
+      axis = ns.TransformUtils.VERTICAL;
     }
 
-    pskl.utils.FrameTransform.flip(frame, axis);
+    ns.TransformUtils.flip(frame, axis);
   };
 
 })();

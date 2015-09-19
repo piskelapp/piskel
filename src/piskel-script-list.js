@@ -27,7 +27,6 @@
   "js/utils/Math.js",
   "js/utils/FileUtils.js",
   "js/utils/FileUtilsDesktop.js",
-  "js/utils/FrameTransform.js",
   "js/utils/FrameUtils.js",
   "js/utils/LayerUtils.js",
   "js/utils/ImageResizer.js",
@@ -184,10 +183,11 @@
   "js/tools/drawing/ColorPicker.js",
   "js/tools/drawing/ColorSwap.js",
   "js/tools/drawing/DitheringTool.js",
-  "js/tools/transform/Transform.js",
+  "js/tools/transform/AbstractTransformTool.js",
   "js/tools/transform/Clone.js",
   "js/tools/transform/Flip.js",
   "js/tools/transform/Rotate.js",
+  "js/tools/transform/TransformUtils.js",
 
   // Devtools
   "js/devtools/DrawingTestPlayer.js",
