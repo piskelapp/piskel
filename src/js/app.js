@@ -139,6 +139,9 @@
       this.beforeUnloadService = new pskl.service.BeforeUnloadService(this.piskelController);
       this.beforeUnloadService.init();
 
+      this.headerController = new pskl.controller.HeaderController(this.piskelController, this.savedStatusService);
+      this.headerController.init();
+
       this.fileDropperService = new pskl.service.FileDropperService(
         this.piskelController,
         document.querySelector('#drawing-canvas-container'));
