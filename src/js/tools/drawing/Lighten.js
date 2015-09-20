@@ -69,16 +69,9 @@
         color = window.tinycolor.lighten(pixelColor, step);
       }
     }
-    if (color) {
-      // Convert tinycolor color to string format.
-      color = color.toRgbString();
-    } else {
-      // Not sure why this check exists in the first place.
-      // Fallback to the always defined SimplePen tool color in this case.
-      color = this.getToolColor();
-    }
     usedPixels[key] = true;
 
-    return color;
+    // Convert tinycolor color to string format.
+    return color.toRgbString();
   };
 })();

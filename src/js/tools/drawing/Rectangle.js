@@ -10,7 +10,6 @@
     ns.ShapeTool.call(this);
 
     this.toolId = 'tool-rectangle';
-
     this.helpText = 'Rectangle tool';
   };
 
@@ -23,7 +22,7 @@
     var strokePoints = pskl.PixelUtils.getBoundRectanglePixels(this.startCol, this.startRow, col, row);
     for (var i = 0 ; i < strokePoints.length ; i++) {
       // Change model:
-      targetFrame.setPixel(strokePoints[i].col, strokePoints[i].row, this.getToolColor());
+      targetFrame.setPixel(strokePoints[i].col, strokePoints[i].row, color);
     }
   };
 })();
