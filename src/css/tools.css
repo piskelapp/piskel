@@ -75,6 +75,10 @@
   background-size: 24px 20px;
 }
 
+.tool-icon.tool-lasso-select {
+  background-image: url(../img/tools/lasso.png);
+}
+
 .tool-icon.tool-shape-select {
   background-image: url(../img/tools/magicwand.png);
 }
