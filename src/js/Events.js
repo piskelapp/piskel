@@ -40,8 +40,17 @@ var Events = {
   HISTORY_STATE_SAVED: 'HISTORY_STATE_SAVED',
   HISTORY_STATE_LOADED: 'HISTORY_STATE_LOADED',
 
+  /**
+   * Fired when a Piskel is successfully saved
+   */
   PISKEL_SAVED: 'PISKEL_SAVED',
+  /**
+   * Fired when a save action starts
+   */
   BEFORE_SAVING_PISKEL: 'BEFORE_SAVING_PISKEL',
+  /**
+   * Fired when a save action ends. Always fires, even if saving was not successful
+   */
   AFTER_SAVING_PISKEL: 'AFTER_SAVING_PISKEL',
 
   FRAME_SIZE_CHANGED : 'FRAME_SIZE_CHANGED',

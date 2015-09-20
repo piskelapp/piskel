@@ -32,15 +32,19 @@
     this.addEventListener(this.saveBrowserButton, 'click', this.saveBrowser_);
     this.addEventListener('form[name=save-form]', 'submit', this.onSaveFormSubmit_);
 
-    $.subscribe(Events.BEFORE_SAVING_PISKEL, this.disableSaveButtons_.bind(this));
-    $.subscribe(Events.AFTER_SAVING_PISKEL, this.enableSaveButtons_.bind(this));
-
     if (pskl.app.isLoggedIn()) {
       this.authenticatedUserInit_();
     }
 
     if (pskl.utils.Environment.detectNodeWebkit()) {
       this.desktopApplicationInit_();
+    }
+
+    $.subscribe(Events.BEFORE_SAVING_PISKEL, this.disableSaveButtons_.bind(this));
+    $.subscribe(Events.AFTER_SAVING_PISKEL, this.enableSaveButtons_.bind(this));
+
+    if (pskl.app.storageService.isSaving()) {
+      this.disableSaveButtons_();
     }
   };
 
