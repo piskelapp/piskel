@@ -28,7 +28,7 @@
   /**
    * @override
    */
-  ns.BaseSelect.prototype.applyToolAt = function(col, row, color, frame, overlay, event) {
+  ns.BaseSelect.prototype.applyToolAt = function(col, row, frame, overlay, event) {
     this.startCol = col;
     this.startRow = row;
 
@@ -42,32 +42,32 @@
     // mode to allow to move the selection by drag'n dropping it.
     if (this.isInSelection(col, row)) {
       this.mode = 'moveSelection';
-      this.onSelectionDragStart_(col, row, color, frame, overlay);
+      this.onSelectionDragStart_(col, row, frame, overlay);
     } else {
       this.mode = 'select';
-      this.onSelectStart_(col, row, color, frame, overlay);
+      this.onSelectStart_(col, row, frame, overlay);
     }
   };
 
   /**
    * @override
    */
-  ns.BaseSelect.prototype.moveToolAt = function(col, row, color, frame, overlay, event) {
+  ns.BaseSelect.prototype.moveToolAt = function(col, row, frame, overlay, event) {
     if (this.mode == 'select') {
-      this.onSelect_(col, row, color, frame, overlay);
+      this.onSelect_(col, row, frame, overlay);
     } else if (this.mode == 'moveSelection') {
-      this.onSelectionDrag_(col, row, color, frame, overlay);
+      this.onSelectionDrag_(col, row, frame, overlay);
     }
   };
 
   /**
    * @override
    */
-  ns.BaseSelect.prototype.releaseToolAt = function(col, row, color, frame, overlay, event) {
+  ns.BaseSelect.prototype.releaseToolAt = function(col, row, frame, overlay, event) {
     if (this.mode == 'select') {
-      this.onSelectEnd_(col, row, color, frame, overlay);
+      this.onSelectEnd_(col, row, frame, overlay);
     } else if (this.mode == 'moveSelection') {
-      this.onSelectionDragEnd_(col, row, color, frame, overlay);
+      this.onSelectionDragEnd_(col, row, frame, overlay);
     }
   };
 
@@ -76,7 +76,7 @@
    * instead of the 'select' one. It indicates that we can move the selection by dragndroping it.
    * @override
    */
-  ns.BaseSelect.prototype.moveUnactiveToolAt = function(col, row, color, frame, overlay, event) {
+  ns.BaseSelect.prototype.moveUnactiveToolAt = function(col, row, frame, overlay, event) {
     if (overlay.containsPixel(col, row)) {
       if (this.isInSelection(col, row)) {
         // We're hovering the selection, show the move tool:
@@ -124,18 +124,18 @@
 
   // The list of callbacks to implement by specialized tools to implement the selection creation behavior.
   /** @protected */
-  ns.BaseSelect.prototype.onSelectStart_ = function (col, row, color, frame, overlay) {};
+  ns.BaseSelect.prototype.onSelectStart_ = function (col, row, frame, overlay) {};
   /** @protected */
-  ns.BaseSelect.prototype.onSelect_ = function (col, row, color, frame, overlay) {};
+  ns.BaseSelect.prototype.onSelect_ = function (col, row, frame, overlay) {};
   /** @protected */
-  ns.BaseSelect.prototype.onSelectEnd_ = function (col, row, color, frame, overlay) {};
+  ns.BaseSelect.prototype.onSelectEnd_ = function (col, row, frame, overlay) {};
 
   // The list of callbacks that define the drag'n drop behavior of the selection.
   /** @private */
-  ns.BaseSelect.prototype.onSelectionDragStart_ = function (col, row, color, frame, overlay) {};
+  ns.BaseSelect.prototype.onSelectionDragStart_ = function (col, row, frame, overlay) {};
 
   /** @private */
-  ns.BaseSelect.prototype.onSelectionDrag_ = function (col, row, color, frame, overlay) {
+  ns.BaseSelect.prototype.onSelectionDrag_ = function (col, row, frame, overlay) {
     var deltaCol = col - this.lastCol;
     var deltaRow = row - this.lastRow;
 
@@ -152,7 +152,7 @@
   };
 
   /** @private */
-  ns.BaseSelect.prototype.onSelectionDragEnd_ = function (col, row, color, frame, overlay) {
-    this.onSelectionDrag_(col, row, color, frame, overlay);
+  ns.BaseSelect.prototype.onSelectionDragEnd_ = function (col, row, frame, overlay) {
+    this.onSelectionDrag_(col, row, frame, overlay);
   };
 })();

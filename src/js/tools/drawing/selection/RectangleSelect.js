@@ -22,7 +22,7 @@
   /**
    * @override
    */
-  ns.RectangleSelect.prototype.onSelectStart_ = function (col, row, color, frame, overlay) {
+  ns.RectangleSelect.prototype.onSelectStart_ = function (col, row, frame, overlay) {
     this.selectionOrigin_ = {
       col : col,
       row : row
@@ -33,7 +33,7 @@
       $.publish(Events.SELECTION_DISMISSED);
     } else {
       this.startSelection_(col, row);
-      overlay.setPixel(col, row, color);
+      overlay.setPixel(col, row, Constants.SELECTION_TRANSPARENT_COLOR);
     }
   };
 
@@ -49,7 +49,7 @@
    * the current mouse coordiinate in sprite.
    * @override
    */
-  ns.RectangleSelect.prototype.onSelect_ = function (col, row, color, frame, overlay) {
+  ns.RectangleSelect.prototype.onSelect_ = function (col, row, frame, overlay) {
     if (!this.hasSelection && (this.selectionOrigin_.col !== col || this.selectionOrigin_.row !== row)) {
       this.startSelection_(col, row);
     }
@@ -63,9 +63,9 @@
     }
   };
 
-  ns.RectangleSelect.prototype.onSelectEnd_ = function (col, row, color, frame, overlay) {
+  ns.RectangleSelect.prototype.onSelectEnd_ = function (col, row, frame, overlay) {
     if (this.hasSelection) {
-      this.onSelect_(col, row, color, frame, overlay);
+      this.onSelect_(col, row, frame, overlay);
       $.publish(Events.DRAG_END, [col, row]);
     }
   };

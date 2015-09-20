@@ -10,10 +10,9 @@
   // I apologize to my future self for this one.
   var NO_SCROLL_MAX_COLORS = 20;
 
-  ns.PalettesListController = function (paletteController, usedColorService) {
+  ns.PalettesListController = function (usedColorService) {
     this.usedColorService = usedColorService;
     this.paletteService = pskl.app.paletteService;
-    this.paletteController = paletteController;
   };
 
   ns.PalettesListController.prototype.init = function () {
@@ -184,13 +183,13 @@
     this.removeClass_(PRIMARY_COLOR_CLASSNAME);
     this.removeClass_(SECONDARY_COLOR_CLASSNAME);
 
-    var colorContainer = this.getColorContainer_(this.paletteController.getSecondaryColor());
+    var colorContainer = this.getColorContainer_(pskl.app.selectedColorsService.getSecondaryColor());
     if (colorContainer) {
       colorContainer.classList.remove(PRIMARY_COLOR_CLASSNAME);
       colorContainer.classList.add(SECONDARY_COLOR_CLASSNAME);
     }
 
-    colorContainer = this.getColorContainer_(this.paletteController.getPrimaryColor());
+    colorContainer = this.getColorContainer_(pskl.app.selectedColorsService.getPrimaryColor());
     if (colorContainer) {
       colorContainer.classList.remove(SECONDARY_COLOR_CLASSNAME);
       colorContainer.classList.add(PRIMARY_COLOR_CLASSNAME);

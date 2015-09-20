@@ -10,13 +10,15 @@
     ns.ShapeTool.call(this);
 
     this.toolId = 'tool-rectangle';
-
     this.helpText = 'Rectangle tool';
   };
 
   pskl.utils.inherit(ns.Rectangle, ns.ShapeTool);
 
-  ns.Rectangle.prototype.draw_ = function (col, row, color, targetFrame) {
+  /**
+   * @override
+   */
+  ns.Rectangle.prototype.draw = function (col, row, color, targetFrame) {
     var strokePoints = pskl.PixelUtils.getBoundRectanglePixels(this.startCol, this.startRow, col, row);
     for (var i = 0 ; i < strokePoints.length ; i++) {
       // Change model:

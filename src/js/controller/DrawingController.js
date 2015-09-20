@@ -47,9 +47,6 @@
     this.isClicked = false;
     this.previousMousemoveTime = 0;
     this.currentToolBehavior = null;
-
-    // State of clicked button (need to be stateful here, see comment in getCurrentColor_)
-    this.currentMouseButton_ = Constants.LEFT_BUTTON;
   };
 
   ns.DrawingController.prototype.init = function () {
@@ -145,7 +142,6 @@
     var coords = this.getSpriteCoordinates(event.clientX, event.clientY);
 
     this.isClicked = true;
-    this.setCurrentButton(event);
 
     if (event.button === Constants.MIDDLE_BUTTON) {
       this.dragHandler.startDrag(event.clientX, event.clientY);
@@ -155,7 +151,6 @@
       this.currentToolBehavior.applyToolAt(
         coords.x,
         coords.y,
-        this.getCurrentColor_(),
         frame,
         this.overlayFrame,
         event
@@ -191,16 +186,13 @@
     var currentFrame = this.piskelController.getCurrentFrame();
 
     if (this.isClicked) {
-      if (this.currentMouseButton_ == Constants.MIDDLE_BUTTON) {
+      if (pskl.app.mouseStateService.isMiddleButtonPressed()) {
         this.dragHandler.updateDrag(x, y);
       } else {
         $.publish(Events.MOUSE_EVENT, [event, this]);
-        // Warning : do not call setCurrentButton here
-        // mousemove do not have the correct mouse button information on all browsers
         this.currentToolBehavior.moveToolAt(
           coords.x | 0,
           coords.y | 0,
-          this.getCurrentColor_(),
           currentFrame,
           this.overlayFrame,
           event
@@ -210,7 +202,6 @@
       this.currentToolBehavior.moveUnactiveToolAt(
         coords.x,
         coords.y,
-        this.getCurrentColor_(),
         currentFrame,
         this.overlayFrame,
         event
@@ -262,16 +253,14 @@
     var frame = this.piskelController.getCurrentFrame();
     var coords = this.getSpriteCoordinates(event.clientX, event.clientY);
     if (this.isClicked) {
-      $.publish(Events.MOUSE_EVENT, [event, this]);
       // A mouse button was clicked on the drawing canvas before this mouseup event,
       // the user was probably drawing on the canvas.
       // Note: The mousemove movement (and the mouseup) may end up outside
       // of the drawing canvas.
 
       this.isClicked = false;
-      this.setCurrentButton(event);
 
-      if (event.button === Constants.MIDDLE_BUTTON) {
+      if (pskl.app.mouseStateService.isMiddleButtonPressed()) {
         if (this.dragHandler.isDragging()) {
           this.dragHandler.stopDrag();
         } else if (frame.containsPixel(coords.x, coords.y)) {
@@ -281,7 +270,6 @@
         this.currentToolBehavior.releaseToolAt(
           coords.x,
           coords.y,
-          this.getCurrentColor_(),
           this.piskelController.getCurrentFrame(),
           this.overlayFrame,
           event
@@ -289,6 +277,7 @@
 
         $.publish(Events.TOOL_RELEASED);
       }
+      $.publish(Events.MOUSE_EVENT, [event, this]);
     }
   };
 
@@ -304,29 +293,6 @@
 
   ns.DrawingController.prototype.getScreenCoordinates = function(spriteX, spriteY) {
     return this.renderer.reverseCoordinates(spriteX, spriteY);
-  };
-
-  ns.DrawingController.prototype.setCurrentButton = function (event) {
-    this.currentMouseButton_ = event.button;
-  };
-
-  /**
-   * @private
-   */
-  ns.DrawingController.prototype.getCurrentColor_ = function () {
-    // WARNING : Do not rely on the current event to get the current color!
-    // It might seem like a good idea, and works perfectly fine on Chrome
-    // Sadly Firefox and IE found clever, for some reason, to set event.button to 0
-    // on a mouse move event
-    // This always matches a LEFT mouse button which is __really__ not helpful
-
-    if (this.currentMouseButton_ == Constants.RIGHT_BUTTON) {
-      return this.paletteController.getSecondaryColor();
-    } else if (this.currentMouseButton_ == Constants.LEFT_BUTTON) {
-      return this.paletteController.getPrimaryColor();
-    } else {
-      return Constants.DEFAULT_PEN_COLOR;
-    }
   };
 
   /**

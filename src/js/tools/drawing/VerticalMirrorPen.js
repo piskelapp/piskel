@@ -28,8 +28,10 @@
   /**
    * @override
    */
-  ns.VerticalMirrorPen.prototype.applyToolAt = function(col, row, color, frame, overlay, event) {
-    this.superclass.applyToolAt.call(this, col, row, color, frame, overlay);
+  ns.VerticalMirrorPen.prototype.applyToolAt = function(col, row, frame, overlay, event) {
+    var color = this.getToolColor();
+    this.draw(color, col, row, frame, overlay);
+
     this.backupPreviousPositions_();
 
     var mirroredCol = this.getSymmetricCol_(col, frame);
@@ -37,15 +39,15 @@
 
     var hasCtrlKey = pskl.utils.UserAgent.isMac ?  event.metaKey : event.ctrlKey;
     if (!hasCtrlKey) {
-      this.superclass.applyToolAt.call(this, mirroredCol, row, color, frame, overlay);
+      this.draw(color, mirroredCol, row, frame, overlay);
     }
 
     if (event.shiftKey || hasCtrlKey) {
-      this.superclass.applyToolAt.call(this, col, mirroredRow, color, frame, overlay);
+      this.draw(color, col, mirroredRow, frame, overlay);
     }
 
     if (event.shiftKey) {
-      this.superclass.applyToolAt.call(this, mirroredCol, mirroredRow, color, frame, overlay);
+      this.draw(color, mirroredCol, mirroredRow, frame, overlay);
     }
 
     this.restorePreviousPositions_();

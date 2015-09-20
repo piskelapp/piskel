@@ -28,14 +28,14 @@
   /**
    * @override
    */
-  ns.Move.prototype.applyToolAt = function(col, row, color, frame, overlay, event) {
+  ns.Move.prototype.applyToolAt = function(col, row, frame, overlay, event) {
     this.startCol = col;
     this.startRow = row;
     this.currentFrame = frame;
     this.currentFrameClone = frame.clone();
   };
 
-  ns.Move.prototype.moveToolAt = function(col, row, color, frame, overlay, event) {
+  ns.Move.prototype.moveToolAt = function(col, row, frame, overlay, event) {
     var colDiff = col - this.startCol;
     var rowDiff = row - this.startRow;
     this.shiftFrame(colDiff, rowDiff, frame, this.currentFrameClone, event);
@@ -66,7 +66,7 @@
   /**
    * @override
    */
-  ns.Move.prototype.releaseToolAt = function(col, row, color, frame, overlay, event) {
+  ns.Move.prototype.releaseToolAt = function(col, row, frame, overlay, event) {
     var colDiff = col - this.startCol;
     var rowDiff = row - this.startRow;
 

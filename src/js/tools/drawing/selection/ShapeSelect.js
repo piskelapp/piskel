@@ -21,7 +21,7 @@
    * So we jsut need to implement onSelectStart_ (no need for onSelect_ & onSelectEnd_)
    * @override
    */
-  ns.ShapeSelect.prototype.onSelectStart_ = function (col, row, color, frame, overlay) {
+  ns.ShapeSelect.prototype.onSelectStart_ = function (col, row, frame, overlay) {
     // Clean previous selection:
     $.publish(Events.SELECTION_DISMISSED);
     overlay.clear();

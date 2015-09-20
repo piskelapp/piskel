@@ -15,7 +15,10 @@
 
   pskl.utils.inherit(ns.Circle, ns.ShapeTool);
 
-  ns.Circle.prototype.draw_ = function (col, row, color, targetFrame) {
+  /**
+   * @override
+   */
+  ns.Circle.prototype.draw = function (col, row, color, targetFrame) {
     var circlePoints = this.getCirclePixels_(this.startCol, this.startRow, col, row);
     for (var i = 0 ; i < circlePoints.length ; i++) {
       // Change model:

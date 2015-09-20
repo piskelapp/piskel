@@ -21,12 +21,16 @@
   /**
    * @override
    */
-  ns.SimplePen.prototype.applyToolAt = function(col, row, color, frame, overlay, event) {
+  ns.SimplePen.prototype.applyToolAt = function(col, row, frame, overlay, event) {
+    var color = this.getToolColor();
+    this.draw(color, col, row, frame, overlay);
+  };
+
+  ns.SimplePen.prototype.draw = function(color, col, row, frame, overlay) {
     this.previousCol = col;
     this.previousRow = row;
 
     overlay.setPixel(col, row, color);
-
     if (color === Constants.TRANSPARENT_COLOR) {
       frame.setPixel(col, row, color);
     }
@@ -40,7 +44,7 @@
   /**
    * @override
    */
-  ns.SimplePen.prototype.moveToolAt = function(col, row, color, frame, overlay, event) {
+  ns.SimplePen.prototype.moveToolAt = function(col, row, frame, overlay, event) {
     if ((Math.abs(col - this.previousCol) > 1) || (Math.abs(row - this.previousRow) > 1)) {
       // The pen movement is too fast for the mousemove frequency, there is a gap between the
       // current point and the previously drawn one.
@@ -48,24 +52,24 @@
       var interpolatedPixels = this.getLinePixels_(col, this.previousCol, row, this.previousRow);
       for (var i = 0, l = interpolatedPixels.length ; i < l ; i++) {
         var coords = interpolatedPixels[i];
-        this.applyToolAt(coords.col, coords.row, color, frame, overlay, event);
+        this.applyToolAt(coords.col, coords.row, frame, overlay, event);
       }
     } else {
-      this.applyToolAt(col, row, color, frame, overlay, event);
+      this.applyToolAt(col, row, frame, overlay, event);
     }
 
     this.previousCol = col;
     this.previousRow = row;
   };
 
-  ns.SimplePen.prototype.releaseToolAt = function(col, row, color, frame, overlay, event) {
+  ns.SimplePen.prototype.releaseToolAt = function(col, row, frame, overlay, event) {
     // apply on real frame
     this.setPixelsToFrame_(frame, this.pixels);
 
     // save state
     this.raiseSaveStateEvent({
       pixels : this.pixels.slice(0),
-      color : color
+      color : this.getToolColor()
     });
 
     // reset

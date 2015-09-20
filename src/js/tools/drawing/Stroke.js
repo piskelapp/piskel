@@ -20,7 +20,7 @@
   /**
    * @override
    */
-  ns.Stroke.prototype.applyToolAt = function(col, row, color, frame, overlay, event) {
+  ns.Stroke.prototype.applyToolAt = function(col, row, frame, overlay, event) {
     this.startCol = col;
     this.startRow = row;
 
@@ -33,10 +33,10 @@
 
     // The fake canvas where we will draw the preview of the stroke:
     // Drawing the first point of the stroke in the fake overlay canvas:
-    overlay.setPixel(col, row, color);
+    overlay.setPixel(col, row, this.getToolColor());
   };
 
-  ns.Stroke.prototype.moveToolAt = function(col, row, color, frame, overlay, event) {
+  ns.Stroke.prototype.moveToolAt = function(col, row, frame, overlay, event) {
     overlay.clear();
 
     // When the user moussemove (before releasing), we dynamically compute the
@@ -44,6 +44,7 @@
     var strokePoints = this.getLinePixels_(this.startCol, col, this.startRow, row);
 
     // Drawing current stroke:
+    var color = this.getToolColor();
     for (var i = 0; i < strokePoints.length; i++) {
 
       if (color == Constants.TRANSPARENT_COLOR) {
@@ -62,7 +63,8 @@
   /**
    * @override
    */
-  ns.Stroke.prototype.releaseToolAt = function(col, row, color, frame, overlay, event) {
+  ns.Stroke.prototype.releaseToolAt = function(col, row, frame, overlay, event) {
+    var color = this.getToolColor();
     // The user released the tool to draw a line. We will compute the pixel coordinate, impact
     // the model and draw them in the drawing canvas (not the fake overlay anymore)
     var strokePoints = this.getLinePixels_(this.startCol, col, this.startRow, row);

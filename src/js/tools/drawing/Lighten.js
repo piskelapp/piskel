@@ -1,5 +1,5 @@
 /**
- * @provide pskl.tools.drawing.Eraser
+ * @provide pskl.tools.drawing.Lighten
  *
  * @require Constants
  * @require pskl.utils
@@ -41,19 +41,24 @@
   /**
    * @Override
    */
-  ns.Lighten.prototype.applyToolAt = function(col, row, color, frame, overlay, event, mouseButton) {
+  ns.Lighten.prototype.applyToolAt = function(col, row, frame, overlay, event, mouseButton) {
+    var modifiedColor = this.getModifiedColor_(col, row, frame, overlay, event);
+    this.draw(modifiedColor, col, row, frame, overlay);
+  };
+
+  ns.Lighten.prototype.getModifiedColor_ = function(col, row, frame, overlay, event) {
     var overlayColor = overlay.getPixel(col, row);
     var frameColor = frame.getPixel(col, row);
     var pixelColor = overlayColor === Constants.TRANSPARENT_COLOR ? frameColor : overlayColor;
-
     var isDarken = pskl.utils.UserAgent.isMac ?  event.metaKey : event.ctrlKey;
+    var isTransparent = pixelColor === Constants.TRANSPARENT_COLOR;
     var isSinglePass = event.shiftKey;
 
-    var isTransparent = pixelColor === Constants.TRANSPARENT_COLOR;
     var usedPixels = isDarken ? this.usedPixels_.darken : this.usedPixels_.lighten;
     var key = col + '-' + row;
-
     var doNotModify = isTransparent || (isSinglePass && usedPixels[key]);
+
+    var color;
     if (doNotModify) {
       color = window.tinycolor(pixelColor);
     } else {
@@ -64,10 +69,9 @@
         color = window.tinycolor.lighten(pixelColor, step);
       }
     }
-    if (color) {
-      usedPixels[key] = true;
-      this.superclass.applyToolAt.call(this, col, row, color.toRgbString(), frame, overlay, event);
-    }
-  };
+    usedPixels[key] = true;
 
+    // Convert tinycolor color to string format.
+    return color.toRgbString();
+  };
 })();

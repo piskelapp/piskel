@@ -45,8 +45,8 @@
         width : this.piskelController.getWidth(),
         height : this.piskelController.getHeight()
       },
-      primaryColor : pskl.app.paletteController.getPrimaryColor(),
-      secondaryColor : pskl.app.paletteController.getSecondaryColor(),
+      primaryColor : pskl.app.selectedColorsService.getPrimaryColor(),
+      secondaryColor : pskl.app.selectedColorsService.getSecondaryColor(),
       selectedTool : pskl.app.toolController.currentSelectedTool.instance.toolId
     };
   };

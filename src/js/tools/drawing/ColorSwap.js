@@ -21,14 +21,14 @@
   /**
    * @override
    */
-  ns.ColorSwap.prototype.applyToolAt = function(col, row, color, frame, overlay, event) {
+  ns.ColorSwap.prototype.applyToolAt = function(col, row, frame, overlay, event) {
     if (frame.containsPixel(col, row)) {
       var sampledColor = frame.getPixel(col, row);
 
       var allLayers = pskl.utils.UserAgent.isMac ?  event.metaKey : event.ctrlKey;
       var allFrames = event.shiftKey;
 
-      this.swapColors(sampledColor, color, allLayers, allFrames);
+      this.swapColors(sampledColor, this.getToolColor(), allLayers, allFrames);
 
       $.publish(Events.PISKEL_SAVE_STATE, {
         type : pskl.service.HistoryService.SNAPSHOT
