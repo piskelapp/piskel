@@ -14,9 +14,11 @@
 
   /**
    * Add a keyboard shortcut
-   * @param {String}   rawKey   (case insensitive) key can be a meta (optional) + [a-z0-9] or
-   *                            a special key (check list of supported keys in KeycodeTranslator)
-   *                            eg. 'ctrl+A', 'del'
+   * @param {String}   rawKey   (case insensitive) a key is a combination of modifiers + ([a-z0-9] or
+   *                            a special key) (check list of supported special keys in KeycodeTranslator)
+   *                            eg. 'ctrl+A',
+   *                                'del'
+   *                                'ctrl+shift+S'
    * @param {Function} callback should return true to let the original event perform its default action
    */
   ns.ShortcutService.prototype.addShortcut = function (rawKey, callback) {

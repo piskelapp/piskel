@@ -28,6 +28,7 @@
 
     this.shortcutService.addShortcut('ctrl+Z', this.undo.bind(this));
     this.shortcutService.addShortcut('ctrl+Y', this.redo.bind(this));
+    this.shortcutService.addShortcut('ctrl+shift+Z', this.redo.bind(this));
 
     this.saveState({
       type : ns.HistoryService.SNAPSHOT
