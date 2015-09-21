@@ -16,9 +16,9 @@
       toDescriptor('rectangle', 'R', new pskl.tools.drawing.Rectangle()),
       toDescriptor('circle', 'C', new pskl.tools.drawing.Circle()),
       toDescriptor('move', 'M', new pskl.tools.drawing.Move()),
-      toDescriptor('rectangleSelect', 'S', new pskl.tools.drawing.RectangleSelect()),
-      toDescriptor('lassoSelect', 'S', new pskl.tools.drawing.LassoSelect()),
-      toDescriptor('shapeSelect', 'Z', new pskl.tools.drawing.ShapeSelect()),
+      toDescriptor('rectangleSelect', 'S', new pskl.tools.drawing.selection.RectangleSelect()),
+      toDescriptor('lassoSelect', 'H', new pskl.tools.drawing.selection.LassoSelect()),
+      toDescriptor('shapeSelect', 'Z', new pskl.tools.drawing.selection.ShapeSelect()),
       toDescriptor('lighten', 'U', new pskl.tools.drawing.Lighten()),
       toDescriptor('dithering', 'T', new pskl.tools.drawing.DitheringTool()),
       toDescriptor('colorPicker', 'O', new pskl.tools.drawing.ColorPicker())
@@ -97,22 +97,12 @@
   };
 
   ns.ToolController.prototype.onKeyboardShortcut_ = function(charkey) {
-
-    var tools = [];
     for (var i = 0 ; i < this.tools.length ; i++) {
       var tool = this.tools[i];
       if (tool.shortcut.toLowerCase() === charkey.toLowerCase()) {
-        tools.push(tool);
+        this.selectTool_(tool);
       }
     }
-
-    if (tools.length === 0) {
-      return;
-    }
-
-    var currentToolIndex = tools.indexOf(this.currentSelectedTool);
-
-    this.selectTool_(tools[(currentToolIndex+1) % tools.length]);
   };
 
   ns.ToolController.prototype.getToolById_ = function (toolId) {

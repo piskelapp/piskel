@@ -163,7 +163,8 @@
   cursor: url(../img/icons/hand.png) 7 7, pointer;
 }
 
-.tool-rectangle-select .drawing-canvas-container:hover {
+.tool-rectangle-select .drawing-canvas-container:hover,
+.tool-lasso-select .drawing-canvas-container:hover {
   cursor: crosshair;
 }
 

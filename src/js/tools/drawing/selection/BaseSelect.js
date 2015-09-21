@@ -4,7 +4,7 @@
  * @require pskl.utils
  */
 (function() {
-  var ns = $.namespace('pskl.tools.drawing');
+  var ns = $.namespace('pskl.tools.drawing.selection');
 
   ns.BaseSelect = function() {
     this.secondaryToolId = pskl.tools.drawing.Move.TOOL_ID;
@@ -23,7 +23,7 @@
     ];
   };
 
-  pskl.utils.inherit(ns.BaseSelect, ns.BaseTool);
+  pskl.utils.inherit(ns.BaseSelect, pskl.tools.drawing.BaseTool);
 
   /**
    * @override

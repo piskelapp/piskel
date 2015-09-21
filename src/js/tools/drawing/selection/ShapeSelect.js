@@ -4,7 +4,7 @@
  * @require pskl.utils
  */
 (function() {
-  var ns = $.namespace('pskl.tools.drawing');
+  var ns = $.namespace('pskl.tools.drawing.selection');
 
   ns.ShapeSelect = function() {
     this.toolId = 'tool-shape-select';

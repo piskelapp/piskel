@@ -72,6 +72,7 @@
   // Selection
   "js/selection/SelectionManager.js",
   "js/selection/BaseSelection.js",
+  "js/selection/LassoSelection.js",
   "js/selection/RectangularSelection.js",
   "js/selection/ShapeSelection.js",
 
@@ -184,6 +185,7 @@
   "js/tools/drawing/Circle.js",
   "js/tools/drawing/Move.js",
   "js/tools/drawing/selection/BaseSelect.js",
+  "js/tools/drawing/selection/AbstractDragSelect.js",
   "js/tools/drawing/selection/LassoSelect.js",
   "js/tools/drawing/selection/RectangleSelect.js",
   "js/tools/drawing/selection/ShapeSelect.js",
