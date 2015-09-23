@@ -58,7 +58,7 @@
     this.redraw();
   };
 
-  ns.CursorCoordinatesController.prototype.onDragEnd_ = function (event, x, y) {
+  ns.CursorCoordinatesController.prototype.onDragEnd_ = function (event) {
     this.origin = null;
     this.redraw();
   };

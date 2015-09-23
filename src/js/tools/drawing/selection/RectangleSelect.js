@@ -1,5 +1,5 @@
 /**
- * @provide pskl.tools.drawing.RectangleSelect
+ * @provide pskl.tools.drawing.selection.RectangleSelect
  *
  * @require pskl.utils
  */
@@ -15,6 +15,7 @@
 
   pskl.utils.inherit(ns.RectangleSelect, ns.AbstractDragSelect);
 
+  /** @override */
   ns.RectangleSelect.prototype.startDragSelection_ = function (col, row) {
     $.publish(Events.DRAG_START, [col, row]);
   };
@@ -32,9 +33,10 @@
     this.drawSelectionOnOverlay_(overlay);
   };
 
-  ns.RectangleSelect.prototype.onSelectEnd_ = function (col, row, color, frame, overlay) {
+  /** @override */
+  ns.RectangleSelect.prototype.endDragSelection_ = function (col, row, color, frame, overlay) {
     this.onSelect_(col, row, color, frame, overlay);
-    $.publish(Events.DRAG_END, [col, row]);
+    $.publish(Events.DRAG_END);
   };
 
 })();

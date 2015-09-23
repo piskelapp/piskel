@@ -51,7 +51,7 @@
     var color = this.getToolColor();
     this.draw(coords.col, coords.row, color, frame);
 
-    $.publish(Events.DRAG_END, [coords.col, coords.row]);
+    $.publish(Events.DRAG_END);
     this.raiseSaveStateEvent({
       col : coords.col,
       row : coords.row,

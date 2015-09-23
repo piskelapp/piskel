@@ -1,5 +1,5 @@
 /**
- * @provide pskl.tools.drawing.ShapeSelect
+ * @provide pskl.tools.drawing.selection.LassoSelect
  *
  * @require pskl.utils
  */
@@ -15,6 +15,7 @@
 
   pskl.utils.inherit(ns.LassoSelect, ns.AbstractDragSelect);
 
+  /** @override */
   ns.LassoSelect.prototype.startDragSelection_ = function (col, row) {
     this.pixels = [{col : col, row : row}];
     this.previousCol = col;
@@ -22,41 +23,60 @@
     $.publish(Events.DRAG_START, [col, row]);
   };
 
+  /** @override */
   ns.LassoSelect.prototype.updateDragSelection_ = function (col, row, color, frame, overlay) {
-    col = pskl.utils.Math.minmax(col, 0, frame.getWidth() - 1);
-    row = pskl.utils.Math.minmax(row, 0, frame.getHeight() - 1);
-    this.addPixelToSelection_(col, row, frame);
-    var additionnalPixels = this.getLinePixels_(col, this.startCol, row, this.startRow);
-
-    // during the selection, create simple ShapeSelection, containing only the pixels hovered by the user
-    this.selection = new pskl.selection.ShapeSelection(this.pixels.concat(additionnalPixels));
-    $.publish(Events.SELECTION_CREATED, [this.selection]);
-
-    overlay.clear();
-    this.drawSelectionOnOverlay_(overlay);
+    this.addPixel_(col, row, frame);
+    // use ShapeSelection during selection, contains only the pixels hovered by the user
+    var selection = new pskl.selection.ShapeSelection(this.getLassoPixels_());
+    this.setSelection_(selection, overlay);
   };
 
+  /** @override */
   ns.LassoSelect.prototype.endDragSelection_ = function (col, row, color, frame, overlay) {
-    col = pskl.utils.Math.minmax(col, 0, frame.getWidth() - 1);
-    row = pskl.utils.Math.minmax(row, 0, frame.getHeight() - 1);
-    this.addPixelToSelection_(col, row, frame);
-    var additionnalPixels = this.getLinePixels_(col, this.startCol, row, this.startRow);
+    this.addPixel_(col, row, frame);
+    // use LassoSelection to finalize selection, includes pixels inside the lasso shape
+    var selection = new pskl.selection.LassoSelection(this.getLassoPixels_(), frame);
+    this.setSelection_(selection, overlay);
 
-    // finalize the selection, add all pixels contained inside the shape drawn by the user to the selection
-    this.selection = new pskl.selection.LassoSelection(this.pixels.concat(additionnalPixels), frame);
-    $.publish(Events.SELECTION_CREATED, [this.selection]);
-
-    overlay.clear();
-    this.drawSelectionOnOverlay_(overlay);
-
-    $.publish(Events.DRAG_END, [col, row]);
+    $.publish(Events.DRAG_END);
   };
 
-  ns.LassoSelect.prototype.addPixelToSelection_ = function (col, row, frame) {
+  /**
+   * Retrieve the lasso shape as an array of pixels. A line is added between the origin of the selection
+   * and the last known coordinate to make sure the shape is closed.
+   *
+   * @return {Array} array of pixels corresponding to the whole lasso shape
+   * @private
+   */
+  ns.LassoSelect.prototype.getLassoPixels_ = function () {
+    var line = this.getLinePixels_(this.previousCol, this.startCol, this.previousRow, this.startRow);
+    return this.pixels.concat(line);
+  };
+
+  /**
+   * Add the provided pixel to the lasso pixels Array.
+   * @private
+   */
+  ns.LassoSelect.prototype.addPixel_ = function (col, row, frame) {
+    // normalize coordinates to always remain inside the frame
+    col = pskl.utils.Math.minmax(col, 0, frame.getWidth() - 1);
+    row = pskl.utils.Math.minmax(row, 0, frame.getHeight() - 1);
+
+    // line interpolation needed in case mousemove was too fast
     var interpolatedPixels = this.getLinePixels_(col, this.previousCol, row, this.previousRow);
     this.pixels = this.pixels.concat(interpolatedPixels);
 
+    // update state
     this.previousCol = col;
     this.previousRow = row;
+  };
+
+  /** @private */
+  ns.LassoSelect.prototype.setSelection_ = function (selection, overlay) {
+    this.selection = selection;
+
+    $.publish(Events.SELECTION_CREATED, [this.selection]);
+    overlay.clear();
+    this.drawSelectionOnOverlay_(overlay);
   };
 })();

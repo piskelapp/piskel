@@ -1,3 +1,8 @@
+/**
+ * Base class for all select tools that use a dragging mechanism to define the selection.
+ *
+ * @provide pskl.tools.drawing.selection.AbstractDragSelect
+ */
 (function () {
   var ns = $.namespace('pskl.tools.drawing.selection');
 
@@ -8,9 +13,7 @@
 
   pskl.utils.inherit(ns.AbstractDragSelect, ns.BaseSelect);
 
-  /**
-   * @override
-   */
+  /** @override */
   ns.AbstractDragSelect.prototype.onSelectStart_ = function (col, row, color, frame, overlay) {
     if (this.hasSelection) {
       this.hasSelection = false;
@@ -23,6 +26,7 @@
     }
   };
 
+  /** @override */
   ns.AbstractDragSelect.prototype.onSelect_ = function (col, row, color, frame, overlay) {
     if (!this.hasSelection && (this.startCol !== col || this.startRow !== row)) {
       this.hasSelection = true;
@@ -34,6 +38,7 @@
     }
   };
 
+  /** @override */
   ns.AbstractDragSelect.prototype.onSelectEnd_ = function (col, row, color, frame, overlay) {
     if (this.hasSelection) {
       this.endDragSelection_(col, row, color, frame, overlay);

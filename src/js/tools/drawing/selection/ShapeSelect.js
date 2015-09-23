@@ -1,5 +1,5 @@
 /**
- * @provide pskl.tools.drawing.ShapeSelect
+ * @provide pskl.tools.drawing.selection.ShapeSelect
  *
  * @require pskl.utils
  */

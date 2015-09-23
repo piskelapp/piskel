@@ -1,5 +1,5 @@
 /**
- * @provide pskl.tools.drawing.BaseSelect
+ * @provide pskl.tools.drawing.selection.BaseSelect
  *
  * @require pskl.utils
  */
@@ -40,12 +40,12 @@
     // mode to create a selection.
     // If the initial click is on a previous selection, we go in 'moveSelection'
     // mode to allow to move the selection by drag'n dropping it.
-    if (this.isInSelection(col, row)) {
-      this.mode = 'moveSelection';
-      this.onSelectionDragStart_(col, row, frame, overlay);
-    } else {
+    if (!this.isInSelection(col, row)) {
       this.mode = 'select';
-      this.onSelectStart_(col, row, frame, overlay);
+      this.onSelectStart_(col, row, color, frame, overlay);
+    } else {
+      this.mode = 'moveSelection';
+      this.onSelectionMoveStart_(col, row, color, frame, overlay);
     }
   };
 
@@ -56,7 +56,7 @@
     if (this.mode == 'select') {
       this.onSelect_(col, row, frame, overlay);
     } else if (this.mode == 'moveSelection') {
-      this.onSelectionDrag_(col, row, frame, overlay);
+      this.onSelectionMove_(col, row, color, frame, overlay);
     }
   };
 
@@ -67,7 +67,7 @@
     if (this.mode == 'select') {
       this.onSelectEnd_(col, row, frame, overlay);
     } else if (this.mode == 'moveSelection') {
-      this.onSelectionDragEnd_(col, row, frame, overlay);
+      this.onSelectionMoveEnd_(col, row, color, frame, overlay);
     }
   };
 
@@ -132,10 +132,11 @@
 
   // The list of callbacks that define the drag'n drop behavior of the selection.
   /** @private */
-  ns.BaseSelect.prototype.onSelectionDragStart_ = function (col, row, frame, overlay) {};
+
+  ns.BaseSelect.prototype.onSelectionMoveStart_ = function (col, row, color, frame, overlay) {};
 
   /** @private */
-  ns.BaseSelect.prototype.onSelectionDrag_ = function (col, row, frame, overlay) {
+  ns.BaseSelect.prototype.onSelectionMove_ = function (col, row, color, frame, overlay) {
     var deltaCol = col - this.lastCol;
     var deltaRow = row - this.lastRow;
 
@@ -152,7 +153,7 @@
   };
 
   /** @private */
-  ns.BaseSelect.prototype.onSelectionDragEnd_ = function (col, row, frame, overlay) {
-    this.onSelectionDrag_(col, row, frame, overlay);
+  ns.BaseSelect.prototype.onSelectionMoveEnd_ = function (col, row, color, frame, overlay) {
+    this.onSelectionMove_(col, row, color, frame, overlay);
   };
 })();
