@@ -120,6 +120,18 @@
       return paintedPixels;
     },
 
+    /**
+     * Starting from a provided origin, visit connected pixels using a visitor function.
+     * After visiting a pixel, select the 4 connected pixels (up, right, down, left).
+     * Call the provided visitor on each pixel. The visitor should return true if the
+     * pixel should be considered as connected. If the pixel is connected repeat the
+     * process with its own connected pixels
+     *
+     * TODO : Julian : The visitor is also responsible for making sure a pixel is never
+     * visited twice. This could be handled by default by this method.
+     *
+     * @return {Array} the array of visited pixels {col, row}
+     */
     visitConnectedPixels : function (pixel, frame, pixelVisitor) {
       var col = pixel.col;
       var row = pixel.row;
