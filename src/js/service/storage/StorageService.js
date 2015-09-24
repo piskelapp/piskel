@@ -39,7 +39,7 @@
   };
 
   ns.StorageService.prototype.delegateSave_ = function(delegatedService, piskel, saveAsNew) {
-    if (this.isSaving_) {
+    if (this.savingFlag_) {
       return Q.reject('Already saving');
     }
 
