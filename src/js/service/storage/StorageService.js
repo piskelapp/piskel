@@ -30,11 +30,11 @@
     return this.delegateSave_(pskl.app.localStorageService, piskel);
   };
 
-  ns.StorageService.prototype.saveToFileBrowser = function (piskel) {
+  ns.StorageService.prototype.saveToFileDownload = function (piskel) {
     return this.delegateSave_(pskl.app.fileDownloadStorageService, piskel);
   };
 
-  ns.StorageService.prototype.saveToFileNodeWebkit = function (piskel, saveAsNew) {
+  ns.StorageService.prototype.saveToDesktop = function (piskel, saveAsNew) {
     return this.delegateSave_(pskl.app.desktopStorageService, piskel, saveAsNew);
   };
 
@@ -59,7 +59,7 @@
     if (pskl.app.isLoggedIn()) {
       this.saveToGallery(this.piskelController.getPiskel());
     } else if (pskl.utils.Environment.detectNodeWebkit()) {
-      this.saveToFileNodeWebkit(this.piskelController.getPiskel());
+      this.saveToDesktop(this.piskelController.getPiskel());
     } else {
       this.saveToLocalStorage(this.piskelController.getPiskel());
     }
@@ -67,7 +67,7 @@
 
   ns.StorageService.prototype.onSaveAsKey_ = function () {
     if (pskl.utils.Environment.detectNodeWebkit()) {
-      this.saveToFileNodeWebkit(this.piskelController.getPiskel(), true);
+      this.saveToDesktop(this.piskelController.getPiskel(), true);
     }
     // no other implementation for now
   };

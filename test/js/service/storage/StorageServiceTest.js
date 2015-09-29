@@ -54,19 +54,19 @@ describe("Storage Service test suite", function() {
   });
 
   // DesktopStorage
-  it("calls DesktopStorage#save in saveToFileNodeWebkit", function(done) {
-    checkSubServiceSuccessfulSave(pskl.app.desktopStorageService, 'saveToFileNodeWebkit', done);
+  it("calls DesktopStorage#save in saveToDesktop", function(done) {
+    checkSubServiceSuccessfulSave(pskl.app.desktopStorageService, 'saveToDesktop', done);
   });
-  it("calls DesktopStorage#save in saveToFileNodeWebkit - error case", function(done) {
-    checkSubServiceFailedSave(pskl.app.desktopStorageService, 'saveToFileNodeWebkit', done);
+  it("calls DesktopStorage#save in saveToDesktop - error case", function(done) {
+    checkSubServiceFailedSave(pskl.app.desktopStorageService, 'saveToDesktop', done);
   });
 
   // FileDownloadStorage
-  it("calls FileDownloadStorage#save in saveToFileBrowser", function(done) {
-    checkSubServiceSuccessfulSave(pskl.app.fileDownloadStorageService, 'saveToFileBrowser', done);
+  it("calls FileDownloadStorage#save in saveToFileDownload", function(done) {
+    checkSubServiceSuccessfulSave(pskl.app.fileDownloadStorageService, 'saveToFileDownload', done);
   });
-  it("calls FileDownloadStorage#save in saveToFileBrowser - error case", function(done) {
-    checkSubServiceFailedSave(pskl.app.fileDownloadStorageService, 'saveToFileBrowser', done);
+  it("calls FileDownloadStorage#save in saveToFileDownload - error case", function(done) {
+    checkSubServiceFailedSave(pskl.app.fileDownloadStorageService, 'saveToFileDownload', done);
   });
 
   // LocalStorage
