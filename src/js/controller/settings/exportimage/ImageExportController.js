@@ -14,6 +14,7 @@
     var scalingFactorInput = document.querySelector('.scaling-factor-input');
     scalingFactorInput.value = pskl.UserSettings.get(pskl.UserSettings.EXPORT_SCALING);
     this.addEventListener(scalingFactorInput, 'change', this.onScalingFactorChange_);
+    this.addEventListener(scalingFactorInput, 'input', this.onScalingFactorChange_);
     this.updateScalingFactorText_(scalingFactorInput.value);
 
     this.pngExportController.init();
