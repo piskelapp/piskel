@@ -24,7 +24,17 @@
 
   ns.PngExportController.prototype.onPngDownloadButtonClick_ = function (evt) {
     var fileName = this.getPiskelName_() + '.png';
-    pskl.utils.BlobUtils.canvasToBlob(this.getFramesheetAsCanvas(), function(blob) {
+
+    var outputCanvas = this.getFramesheetAsCanvas();
+
+    var scalingFactor = pskl.UserSettings.get(pskl.UserSettings.EXPORT_SCALING);
+    if (scalingFactor > 1) {
+      var width = outputCanvas.width * scalingFactor;
+      var height = outputCanvas.height * scalingFactor;
+      outputCanvas = pskl.utils.ImageResizer.resize(outputCanvas, width, height, false);
+    }
+
+    pskl.utils.BlobUtils.canvasToBlob(outputCanvas, function(blob) {
       pskl.utils.FileUtils.downloadAsFile(blob, fileName);
     });
   };

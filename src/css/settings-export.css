@@ -56,3 +56,24 @@
   background: rgba(0,0,0,0.5);
   color: white;
 }
+
+.scaling-factor {
+  margin-bottom: 10px;
+}
+
+.scaling-factor-input {
+  margin: 5px;
+  vertical-align: middle;
+  width: 145px;
+}
+
+.scaling-factor-text {
+  height: 31px;
+  display: inline-block;
+  line-height: 30px;
+  width: 40px;
+  border: 1px solid grey;
+  box-sizing: border-box;
+  border-radius: 3px;
+  text-align: center;
+}
