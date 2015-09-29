@@ -24,6 +24,7 @@
   ns.ImageExportController.prototype.destroy = function () {
     this.pngExportController.destroy();
     this.gifExportController.destroy();
+    this.superclass.destroy.call(this);
   };
 
   ns.ImageExportController.prototype.onScalingFactorChange_ = function (evt) {
