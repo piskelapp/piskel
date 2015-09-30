@@ -32,7 +32,10 @@
 
   ns.SavedStatusService.prototype.updateDirtyStatus = function (status) {
     var piskel = this.piskelController.getPiskel();
-    piskel.isDirty_ = status;
+    if (piskel.isDirty_ != status) {
+      piskel.isDirty_ = status;
+      $.publish(Events.PISKEL_SAVED_STATUS_UPDATE);
+    }
   };
 
   ns.SavedStatusService.prototype.isDirty = function (evt) {
