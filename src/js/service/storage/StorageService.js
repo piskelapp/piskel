@@ -54,14 +54,20 @@
     // no other implementation for now
   };
 
-  ns.StorageService.prototype.onSaveKey_ = function () {
+  ns.StorageService.prototype.onSaveKey_ = function (charkey) {
     var piskel = this.piskelController.getPiskel();
     if (pskl.app.isLoggedIn()) {
       this.saveToGallery(this.piskelController.getPiskel());
     } else if (pskl.utils.Environment.detectNodeWebkit()) {
       this.saveToDesktop(this.piskelController.getPiskel());
     } else {
-      this.saveToLocalStorage(this.piskelController.getPiskel());
+      // saveToLocalStorage might display a native confirm dialog
+      // on Firefox, the native 'save' window will then be displayed
+      // wrap in timeout in order to start saving only after event.preventDefault
+      // has been done
+      window.setTimeout(function () {
+        this.saveToLocalStorage(this.piskelController.getPiskel());
+      }.bind(this), 0);
     }
   };
 
