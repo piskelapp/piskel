@@ -1,5 +1,5 @@
 (function () {
-  var ns = $.namespace('pskl.service');
+  var ns = $.namespace('pskl.service.storage');
 
   ns.LocalStorageService = function (piskelController) {
     if (piskelController === undefined) {
@@ -10,10 +10,26 @@
 
   ns.LocalStorageService.prototype.init = function() {};
 
-  ns.LocalStorageService.prototype.save = function(name, description, piskel) {
-    this.removeFromKeys_(name);
-    this.addToKeys_(name, description, Date.now());
-    window.localStorage.setItem('piskel.' + name, piskel);
+  ns.LocalStorageService.prototype.save = function(piskel) {
+    var name = piskel.getDescriptor().name;
+    var description = piskel.getDescriptor().description;
+    var serialized = pskl.utils.Serializer.serializePiskel(piskel, false);
+
+    if (pskl.app.localStorageService.getPiskel(name)) {
+      var confirmOverwrite = window.confirm('There is already a piskel saved as ' + name + '. Overwrite ?');
+      if (!confirmOverwrite) {
+        return Q.reject('Cancelled by user, "' + name + '" already exists');
+      }
+    }
+
+    try {
+      this.removeFromKeys_(name);
+      this.addToKeys_(name, description, Date.now());
+      window.localStorage.setItem('piskel.' + name, serialized);
+      return Q.resolve();
+    } catch (e) {
+      return Q.reject(e.message);
+    }
   };
 
   ns.LocalStorageService.prototype.load = function(name) {

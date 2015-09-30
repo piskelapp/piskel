@@ -109,11 +109,20 @@
       this.canvasBackgroundController = new pskl.controller.CanvasBackgroundController();
       this.canvasBackgroundController.init();
 
-      this.localStorageService = new pskl.service.LocalStorageService(this.piskelController);
+      this.localStorageService = new pskl.service.storage.LocalStorageService(this.piskelController);
       this.localStorageService.init();
 
-      this.desktopStorageService = new pskl.service.DesktopStorageService(this.piskelController);
+      this.fileDownloadStorageService = new pskl.service.storage.FileDownloadStorageService(this.piskelController);
+      this.fileDownloadStorageService.init();
+
+      this.desktopStorageService = new pskl.service.storage.DesktopStorageService(this.piskelController);
       this.desktopStorageService.init();
+
+      this.galleryStorageService = new pskl.service.storage.GalleryStorageService(this.piskelController);
+      this.galleryStorageService.init();
+
+      this.storageService = new pskl.service.storage.StorageService(this.piskelController);
+      this.storageService.init();
 
       this.imageUploadService = new pskl.service.ImageUploadService();
       this.imageUploadService.init();
@@ -130,17 +139,13 @@
       this.beforeUnloadService = new pskl.service.BeforeUnloadService(this.piskelController);
       this.beforeUnloadService.init();
 
+      this.headerController = new pskl.controller.HeaderController(this.piskelController, this.savedStatusService);
+      this.headerController.init();
+
       this.fileDropperService = new pskl.service.FileDropperService(
         this.piskelController,
         document.querySelector('#drawing-canvas-container'));
       this.fileDropperService.init();
-
-      if (this.isAppEngineVersion) {
-        this.storageService = new pskl.service.AppEngineStorageService(this.piskelController);
-      } else {
-        this.storageService = new pskl.service.GithubStorageService(this.piskelController);
-      }
-      this.storageService.init();
 
       var drawingLoop = new pskl.rendering.DrawingLoop();
       drawingLoop.addCallback(this.render, this);

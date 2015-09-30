@@ -94,6 +94,7 @@
   "js/controller/DrawingController.js",
   "js/controller/drawing/DragHandler.js",
   "js/controller/FramesListController.js",
+  "js/controller/HeaderController.js",
   "js/controller/LayersListController.js",
   "js/controller/preview/PopupPreviewController.js",
   "js/controller/preview/PreviewController.js",
@@ -136,10 +137,11 @@
   "js/widgets/SizeInput.js",
 
   // Services
-  "js/service/LocalStorageService.js",
-  "js/service/GithubStorageService.js",
-  "js/service/AppEngineStorageService.js",
-  "js/service/DesktopStorageService.js",
+  "js/service/storage/StorageService.js",
+  "js/service/storage/FileDownloadStorageService.js",
+  "js/service/storage/LocalStorageService.js",
+  "js/service/storage/GalleryStorageService.js",
+  "js/service/storage/DesktopStorageService.js",
   "js/service/BackupService.js",
   "js/service/BeforeUnloadService.js",
   "js/service/HistoryService.js",
@@ -162,6 +164,9 @@
   "js/service/FileDropperService.js",
   "js/service/SelectedColorsService.js",
   "js/service/MouseStateService.js",
+  "js/service/storage/LocalStorageService.js",
+  "js/service/storage/GalleryStorageService.js",
+  "js/service/storage/DesktopStorageService.js",
 
   // Tools
   "js/tools/ToolsHelper.js",

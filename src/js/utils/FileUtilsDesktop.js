@@ -1,63 +1,39 @@
 (function () {
   var ns = $.namespace('pskl.utils');
 
-  var stopPropagation = function (e) {
-    e.stopPropagation();
+  var getFileInputElement = function (nwsaveas, accept) {
+    var fileInputElement = document.createElement('INPUT');
+    fileInputElement.setAttribute('type', 'file');
+    fileInputElement.setAttribute('nwworkingdir', '');
+    if (nwsaveas) {
+      fileInputElement.setAttribute('nwsaveas', nwsaveas);
+    }
+    if (accept) {
+      fileInputElement.setAttribute('accept', accept);
+    }
+
+    return fileInputElement;
   };
 
-  var CONFIRM_OVERRIDE = 'File already exists, do you want to override it ?';
-
   ns.FileUtilsDesktop = {
+    chooseFilenameDialog : function (nwsaveas, accept) {
+      var deferred = Q.defer();
+      var fileInputElement = getFileInputElement(nwsaveas, accept);
+      var changeListener = function (evt) {
+        fileInputElement.removeEventListener('change', changeListener);
+        document.removeEventListener('click', changeListener);
+        deferred.resolve(fileInputElement.value);
+      };
 
-    chooseFileDialog: function (callback) {
-      var tagString = '<input type="file" nwworkingdir=""/>';
-      var $chooser = $(tagString);
-      $chooser.change(function (e) {
-        var filename = $(this).val();
-        callback(filename);
-      });
-      $chooser.trigger('click');
-    },
+      fileInputElement.click();
 
-    addExtensionIfNeeded : function (filename, extension) {
-      if (typeof extension == 'string') {
-        if (extension[0] !== '.') {
-          extension = '.' + extension;
-        }
-        var hasExtension = (filename.substring(filename.length - extension.length) === extension);
-        if (!hasExtension) {
-          filename += extension;
-        }
-      }
-      return filename;
-    },
+      fileInputElement.addEventListener('change', changeListener);
+      // there is no way to detect a cancelled fileInput popup
+      // as a crappy workaround we add a click listener on the document
+      // on top the change event listener
+      document.addEventListener('click', changeListener);
 
-    /**
-     *
-     * @param content
-     * @param defaultFilename - file name to pre-populate the dialog
-     * @param extension - if supplied, the selected extension will guaranteed to be on the filename -
-     * NOTE: there is a possible danger here... If the extension is added to a fileName, but there
-     * is already another file of the same name *with* the extension, it will get overwritten.
-     * @param callback
-     */
-    saveAs: function (content, defaultFilename, extension, callback) {
-      // NodeWebkit has no js api for opening the save dialog.
-      // Instead, it adds two new attributes to the anchor tag: nwdirectory and nwsaveas
-      // (see: https://github.com/nwjs/nw.js/wiki/File-dialogs )
-      defaultFilename = defaultFilename || 'New Piskel';
-      defaultFilename = pskl.utils.FileUtilsDesktop.addExtensionIfNeeded(defaultFilename, extension);
-      var tagString = '<input type="file" accept=".piskel" nwsaveas="' + defaultFilename + '" nwworkingdir=""/>';
-      var $chooser = $(tagString);
-      $chooser.change(function (e) {
-        var filename = $(this).val();
-        filename = pskl.utils.FileUtilsDesktop.addExtensionIfNeeded(filename, extension);
-        pskl.utils.FileUtilsDesktop.saveToFile(content, filename, function () {
-          callback(filename);
-        });
-      });
-
-      $chooser.trigger('click');
+      return deferred.promise;
     },
 
     /**
@@ -67,26 +43,32 @@
      * @param {string} filename - fill path to the file
      * @callback callback
      */
-    saveToFile : function(content, filename, callback) {
+    saveToFile : function(content, filename) {
+      var deferred = Q.defer();
       var fs = window.require('fs');
       fs.writeFile(filename, content, function (err) {
         if (err) {
-          //throw err;
-          console.log('FileUtilsDesktop::savetoFile() - error saving file:', filename, 'Error:', err);
+          deferred.reject('FileUtilsDesktop::savetoFile() - error saving file: ' + filename + ' Error: ' + err);
+        } else {
+          deferred.resolve();
         }
-        callback();
       });
+
+      return deferred.promise;
     },
 
-    readFile : function(filename, callback) {
+    readFile : function(filename) {
+      var deferred = Q.defer();
       var fs = window.require('fs');
       // NOTE: currently loading everything as utf8, which may not be desirable in future
       fs.readFile(filename, 'utf8', function (err, data) {
         if (err) {
-          console.log('FileUtilsDesktop::readFile() - error reading file:', filename, 'Error:', err);
+          deferred.reject('FileUtilsDesktop::readFile() - error reading file: ' + filename + ' Error: ' + err);
+        } else {
+          deferred.resolve(data);
         }
-        callback(data);
       });
+      return deferred.promise;
     }
   };
 })();

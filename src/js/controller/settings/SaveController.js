@@ -1,6 +1,14 @@
 (function () {
   var ns = $.namespace('pskl.controller.settings');
 
+  var PARTIALS = {
+    DESKTOP : 'save-desktop-partial',
+    GALLERY : 'save-gallery-partial',
+    GALLERY_UNAVAILABLE : 'save-gallery-unavailable-partial',
+    LOCALSTORAGE : 'save-localstorage-partial',
+    FILEDOWNLOAD : 'save-file-download-partial'
+  };
+
   ns.SaveController = function (piskelController) {
     this.piskelController = piskelController;
   };
@@ -11,20 +19,56 @@
    * @public
    */
   ns.SaveController.prototype.init = function () {
-    // timestamp used to generate unique name when saving as .piskel
-    this.timestamp = new Date();
+    this.saveForm = document.querySelector('.save-form');
+    this.insertSavePartials_();
 
-    this.insertPartials_();
-
-    // Only available in app-engine mode
     this.piskelName = document.querySelector('.piskel-name');
-    this.saveOnlineStatus = document.querySelector('#save-online-status');
-    this.saveFileStatus = document.querySelector('#save-file-status');
     this.descriptionInput = document.querySelector('#save-description');
     this.nameInput =  document.querySelector('#save-name');
-    this.saveOnlineButton = document.querySelector('#save-online-button');
     this.isPublicCheckbox = document.querySelector('input[name=save-public-checkbox]');
+    this.updateDescriptorInputs_();
 
+    this.saveLocalStorageButton = document.querySelector('#save-localstorage-button');
+    this.saveGalleryButton = document.querySelector('#save-gallery-button');
+    this.saveDesktopButton = document.querySelector('#save-desktop-button');
+    this.saveDesktopAsNewButton = document.querySelector('#save-desktop-as-new-button');
+    this.saveFileDownloadButton = document.querySelector('#save-file-download-button');
+
+    this.safeAddEventListener_(this.saveLocalStorageButton, 'click', this.saveToLocalStorage_);
+    this.safeAddEventListener_(this.saveGalleryButton, 'click', this.saveToGallery_);
+    this.safeAddEventListener_(this.saveDesktopButton, 'click', this.saveToDesktop_);
+    this.safeAddEventListener_(this.saveDesktopAsNewButton, 'click', this.saveToDesktopAsNew_);
+    this.safeAddEventListener_(this.saveFileDownloadButton, 'click', this.saveToFileDownload_);
+
+    this.addEventListener(this.saveForm, 'submit', this.onSaveFormSubmit_);
+
+    if (pskl.app.storageService.isSaving()) {
+      this.disableSaveButtons_();
+    }
+
+    $.subscribe(Events.BEFORE_SAVING_PISKEL, this.disableSaveButtons_.bind(this));
+    $.subscribe(Events.AFTER_SAVING_PISKEL, this.enableSaveButtons_.bind(this));
+  };
+
+  ns.SaveController.prototype.insertSavePartials_ = function () {
+    this.getPartials_().forEach(function (partial) {
+      pskl.utils.Template.insert(this.saveForm, 'beforeend', partial);
+    }.bind(this));
+  };
+
+  ns.SaveController.prototype.getPartials_ = function () {
+    if (pskl.utils.Environment.detectNodeWebkit()) {
+      return [PARTIALS.DESKTOP, PARTIALS.LOCALSTORAGE, PARTIALS.GALLERY_UNAVAILABLE];
+    }
+
+    if (pskl.app.isLoggedIn()) {
+      return [PARTIALS.GALLERY, PARTIALS.LOCALSTORAGE, PARTIALS.FILEDOWNLOAD];
+    }
+
+    return [PARTIALS.FILEDOWNLOAD, PARTIALS.LOCALSTORAGE, PARTIALS.GALLERY_UNAVAILABLE];
+  };
+
+  ns.SaveController.prototype.updateDescriptorInputs_ = function (evt) {
     var descriptor = this.piskelController.getPiskel().getDescriptor();
     this.descriptionInput.value = descriptor.description;
     this.nameInput.value = descriptor.name;
@@ -32,57 +76,10 @@
       this.isPublicCheckbox.setAttribute('checked', true);
     }
 
-    if (pskl.utils.Environment.detectNodeWebkit()) {
-      this.addEventListener('#save-as-button', 'click', this.saveAs_);
+    if (!pskl.app.isLoggedIn()) {
+      var isPublicCheckboxContainer = document.querySelector('.save-public-section');
+      isPublicCheckboxContainer.style.display = 'none';
     }
-
-    this.addEventListener('#save-file-button', 'click', this.saveFile_);
-    this.addEventListener('#save-browser-button', 'click', this.saveLocal_);
-    this.addEventListener(this.saveOnlineButton, 'click', this.saveOnline_);
-    this.addEventListener('form[name=save-form]', 'submit', this.onSaveFormSubmit_);
-
-    if (pskl.app.isLoggedIn()) {
-      pskl.utils.Template.insert(this.saveOnlineStatus, 'beforeend', 'save-online-status-partial');
-    } else {
-      pskl.utils.Template.insert(this.saveOnlineStatus, 'beforeend', 'save-please-login-partial');
-      var container = document.querySelector('.setting-save-section');
-      container.classList.add('anonymous');
-    }
-  };
-
-  ns.SaveController.prototype.insertPartials_ = function () {
-    var partials = [];
-    if (pskl.utils.Environment.detectNodeWebkit()) {
-      partials = [
-        'save-file-nw-partial',
-        'save-localstorage-partial',
-        'save-online-partial'
-      ];
-    } else if (pskl.app.isLoggedIn()) {
-      partials = [
-        'save-online-partial',
-        'save-localstorage-partial',
-        'save-file-partial'
-      ];
-    } else {
-      partials = [
-        'save-file-partial',
-        'save-localstorage-partial',
-        'save-online-partial'
-      ];
-    }
-
-    var container = document.querySelector('.save-form');
-    partials.forEach(function (partial) {
-      pskl.utils.Template.insert(container, 'beforeend', partial);
-    });
-
-  };
-
-  ns.SaveController.prototype.getLocalFilename_ = function () {
-    var piskelName = this.getName();
-    var timestamp = pskl.utils.DateUtils.format(this.timestamp, '{{Y}}{{M}}{{D}}-{{H}}{{m}}{{s}}');
-    return piskelName + '-' + timestamp + '.piskel';
   };
 
   ns.SaveController.prototype.onSaveFormSubmit_ = function (evt) {
@@ -90,131 +87,88 @@
     evt.stopPropagation();
 
     if (pskl.app.isLoggedIn()) {
-      this.saveOnline_();
+      this.saveToGallery_();
     } else {
-      this.saveLocal_();
-    }
-
-  };
-
-  ns.SaveController.prototype.saveOnline_ = function () {
-    var name = this.getName();
-
-    if (!name) {
-      name = window.prompt('Please specify a name', 'New piskel');
-    }
-
-    if (name) {
-      var description = this.getDescription();
-      var isPublic = this.isPublic_();
-
-      var descriptor = new pskl.model.piskel.Descriptor(name, description, isPublic);
-      this.piskelController.getPiskel().setDescriptor(descriptor);
-
-      this.beforeSaving_();
-
-      this.saveOnlineButton.setAttribute('disabled', true);
-      this.saveOnlineStatus.innerHTML = 'Saving ...';
-
-      pskl.app.storageService.store({
-        success : this.onSaveSuccess_.bind(this),
-        error : this.onSaveError_.bind(this),
-        after : this.afterOnlineSaving_.bind(this)
-      });
+      this.saveToLocalStorage_();
     }
   };
 
-  ns.SaveController.prototype.saveLocal_ = function () {
-    var localStorageService = pskl.app.localStorageService;
-    var isOk = true;
-    var name = this.getName();
-    var description = this.getDescription();
-    if (localStorageService.getPiskel(name)) {
-      isOk = window.confirm('There is already a piskel saved as ' + name + '. Override ?');
-    }
-
-    if (isOk) {
-      this.beforeSaving_();
-      localStorageService.save(name, description, pskl.app.piskelController.serialize());
-      window.setTimeout(function () {
-        this.onSaveSuccess_();
-        this.afterSaving_();
-      }.bind(this), 500);
-    }
+  ns.SaveController.prototype.saveToFileDownload_ = function () {
+    this.saveTo_('saveToFileDownload', false);
   };
 
-  ns.SaveController.prototype.saveFile_ = function () {
-    // detect if this is running in NodeWebkit
-    if (pskl.utils.Environment.detectNodeWebkit()) {
-      pskl.app.desktopStorageService.save();
-    } else {
-      this.saveFileBrowser_();
-    }
+  ns.SaveController.prototype.saveToGallery_ = function () {
+    this.saveTo_('saveToGallery', false);
   };
 
-  ns.SaveController.prototype.saveAs_ = function () {
-    pskl.app.desktopStorageService.savePiskelAs();
+  ns.SaveController.prototype.saveToLocalStorage_ = function () {
+    this.saveTo_('saveToLocalStorage', false);
   };
 
-  ns.SaveController.prototype.saveFileBrowser_ = function () {
-    this.beforeSaving_();
-    pskl.utils.BlobUtils.stringToBlob(pskl.app.piskelController.serialize(), function(blob) {
-      pskl.utils.FileUtils.downloadAsFile(blob, this.getLocalFilename_());
-      this.onSaveSuccess_();
-      this.afterSaving_();
-    }.bind(this), 'application/piskel+json');
+  ns.SaveController.prototype.saveToDesktop_ = function () {
+    this.saveTo_('saveToDesktop', false);
   };
 
-  ns.SaveController.prototype.getName = function () {
-    return this.nameInput.value;
+  ns.SaveController.prototype.saveToDesktopAsNew_ = function () {
+    this.saveTo_('saveToDesktop', true);
   };
 
-  ns.SaveController.prototype.getDescription = function () {
-    return this.descriptionInput.value;
+  ns.SaveController.prototype.saveTo_ = function (methodName, saveAsNew) {
+    var piskel = this.piskelController.getPiskel();
+    piskel.setDescriptor(this.getDescriptor_());
+    pskl.app.storageService[methodName](piskel, !!saveAsNew).then(this.onSaveSuccess_);
+  };
+
+  ns.SaveController.prototype.getDescriptor_ = function () {
+    var name = this.nameInput.value;
+    var description = this.descriptionInput.value;
+    return new pskl.model.piskel.Descriptor(name, description, this.isPublic_());
   };
 
   ns.SaveController.prototype.isPublic_ = function () {
-    return !!this.isPublicCheckbox.checked;
-  };
-
-  ns.SaveController.prototype.beforeSaving_ = function () {
-    this.updatePiskelDescriptor_();
-
-    if (this.piskelName) {
-      this.piskelName.classList.add('piskel-name-saving');
+    if (!this.isPublicCheckbox) {
+      return true;
     }
-  };
 
-  ns.SaveController.prototype.updatePiskelDescriptor_ = function () {
-    var name = this.getName();
-    var description = this.getDescription();
-    var isPublic = this.isPublic_();
-
-    var descriptor = new pskl.model.piskel.Descriptor(name, description, isPublic);
-    this.piskelController.getPiskel().setDescriptor(descriptor);
+    return !!this.isPublicCheckbox.checked;
   };
 
   ns.SaveController.prototype.onSaveSuccess_ = function () {
     $.publish(Events.CLOSE_SETTINGS_DRAWER);
-    $.publish(Events.SHOW_NOTIFICATION, [{'content': 'Successfully saved !'}]);
-    $.publish(Events.PISKEL_SAVED);
   };
 
-  ns.SaveController.prototype.onSaveError_ = function (status) {
-    $.publish(Events.SHOW_NOTIFICATION, [{'content': 'Saving failed (' + status + ')'}]);
+  ns.SaveController.prototype.disableSaveButtons_ = function () {
+    this.setDisabled_(this.saveLocalStorageButton, true);
+    this.setDisabled_(this.saveGalleryButton, true);
+    this.setDisabled_(this.saveDesktopButton, true);
+    this.setDisabled_(this.saveDesktopAsNewButton, true);
+    this.setDisabled_(this.saveFileDownloadButton, true);
   };
 
-  ns.SaveController.prototype.afterOnlineSaving_ = function () {
-    this.saveOnlineButton.setAttribute('disabled', false);
-    this.saveOnlineStatus.innerHTML = '';
-    this.afterSaving_();
+  ns.SaveController.prototype.enableSaveButtons_ = function () {
+    this.setDisabled_(this.saveLocalStorageButton, false);
+    this.setDisabled_(this.saveGalleryButton, false);
+    this.setDisabled_(this.saveDesktopButton, false);
+    this.setDisabled_(this.saveDesktopAsNewButton, false);
+    this.setDisabled_(this.saveFileDownloadButton, false);
   };
 
-  ns.SaveController.prototype.afterSaving_ = function () {
-    if (this.piskelName) {
-      this.piskelName.classList.remove('piskel-name-saving');
+  ns.SaveController.prototype.setDisabled_ = function (element, isDisabled) {
+    if (!element) {
+      return;
     }
 
-    window.setTimeout($.publish.bind($, Events.HIDE_NOTIFICATION), 5000);
+    if (isDisabled) {
+      element.setAttribute('disabled', 'disabled');
+    } else {
+      element.removeAttribute('disabled');
+    }
   };
+
+  ns.SaveController.prototype.safeAddEventListener_ = function (element, type, callback) {
+    if (element) {
+      this.addEventListener(element, type, callback);
+    }
+  };
+
 })();

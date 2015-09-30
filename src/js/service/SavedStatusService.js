@@ -8,7 +8,6 @@
   ns.SavedStatusService.prototype.init = function () {
     $.subscribe(Events.TOOL_RELEASED, this.onToolReleased.bind(this));
     $.subscribe(Events.PISKEL_RESET, this.onPiskelReset.bind(this));
-
     $.subscribe(Events.PISKEL_SAVED, this.onPiskelSaved.bind(this));
   };
 
@@ -33,20 +32,9 @@
 
   ns.SavedStatusService.prototype.updateDirtyStatus = function (status) {
     var piskel = this.piskelController.getPiskel();
-    if (piskel.isDirty_ !== status) {
-      // Redraw piskel name only if dirty status actually changed
+    if (piskel.isDirty_ != status) {
       piskel.isDirty_ = status;
-      this.updatePiskelName();
-    }
-  };
-
-  ns.SavedStatusService.prototype.updatePiskelName = function () {
-    var piskel = this.piskelController.getPiskel();
-    var name = piskel.getDescriptor().name;
-    if (piskel.isDirty_) {
-      $('.piskel-name').html(name + ' *');
-    } else {
-      $('.piskel-name').html(name);
+      $.publish(Events.PISKEL_SAVED_STATUS_UPDATE);
     }
   };
 

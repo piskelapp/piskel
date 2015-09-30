@@ -114,7 +114,12 @@
 
   ns.Piskel.prototype.setDescriptor = function (descriptor) {
     this.descriptor = descriptor;
-    var appEngineEditorHeader = $('.piskel-name').html(this.descriptor.name);
+    $.publish(Events.PISKEL_DESCRIPTOR_UPDATED);
+  };
+
+  ns.Piskel.prototype.setName = function (name) {
+    this.descriptor.name = name;
+    $.publish(Events.PISKEL_DESCRIPTOR_UPDATED);
   };
 
   ns.Piskel.prototype.getHash = function () {
