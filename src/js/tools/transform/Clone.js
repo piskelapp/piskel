@@ -17,7 +17,5 @@
         frame.setPixels(ref.getPixels());
       }
     });
-    $.publish(Events.PISKEL_RESET);
-    this.raiseSaveStateEvent_({});
   };
 })();

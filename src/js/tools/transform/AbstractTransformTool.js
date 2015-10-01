@@ -8,7 +8,15 @@
   ns.AbstractTransformTool.prototype.apply = function (evt) {
     var allFrames = evt.shiftKey;
     var allLayers = evt.ctrlKey;
+
     this.applyTool_(evt.altKey, allFrames, allLayers);
+
+    $.publish(Events.PISKEL_RESET);
+    this.raiseSaveStateEvent_({
+      altKey : evt.altKey,
+      allFrames : allFrames,
+      allLayers : allLayers
+    });
   };
 
   ns.AbstractTransformTool.prototype.applyTool_ = function (altKey, allFrames, allLayers) {
@@ -20,13 +28,6 @@
         this.applyToolOnFrame_(frame, altKey);
       }.bind(this));
     }.bind(this));
-
-    $.publish(Events.PISKEL_RESET);
-    this.raiseSaveStateEvent_({
-      altKey : altKey,
-      allFrames : allFrames,
-      allLayers : allLayers
-    });
   };
 
   ns.AbstractTransformTool.prototype.raiseSaveStateEvent_ = function (replayData) {
