@@ -20,10 +20,25 @@
         this.applyToolOnFrame_(frame, altKey);
       }.bind(this));
     }.bind(this));
+
     $.publish(Events.PISKEL_RESET);
-    $.publish(Events.PISKEL_SAVE_STATE, {
-      type : pskl.service.HistoryService.SNAPSHOT
+    this.raiseSaveStateEvent_({
+      altKey : altKey,
+      allFrames : allFrames,
+      allLayers : allLayers
     });
+  };
+
+  ns.AbstractTransformTool.prototype.raiseSaveStateEvent_ = function (replayData) {
+    $.publish(Events.PISKEL_SAVE_STATE, {
+      type : pskl.service.HistoryService.REPLAY,
+      scope : this,
+      replay : replayData
+    });
+  };
+
+  ns.AbstractTransformTool.prototype.replay = function (replayData) {
+    this.applyTool_(replayData.altKey, replayData.allFrames, replayData.allLayers);
   };
 
 })();

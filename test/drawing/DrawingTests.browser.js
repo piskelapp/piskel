@@ -14,5 +14,11 @@
   "squares.circles.json",
   "stroke.json",
   "verticalpen.drawing.json",
-  "dithering.basic.json"
+  "dithering.basic.json",
+  "transform.clone.once.json",
+  "transform.clone.twice.undo.once.json",
+  "transform.rotate.once.alt.json",
+  "transform.rotate.twice.undo.once.json",
+  "transform.mirror.once.alt.json",
+  "transform.mirror.twice.undo.once.json"
 ]}

@@ -17,11 +17,11 @@
     });
 
     casper.then(function () {
-      this.echo('Waiting for test result : ' + resultSelector);
+      this.echo('... Waiting for test result : ' + resultSelector);
       this.waitForSelector(resultSelector, function () {
         // then
         var result = this.getHTML(resultSelector);
-        this.echo('Test finished : ' + result);
+        this.echo('... Test finished : ' + result);
         this.test.assertEquals(result, 'OK');
       }, function () {
         // onTimeout
