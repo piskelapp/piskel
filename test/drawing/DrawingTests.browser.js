@@ -19,6 +19,7 @@
   "transform.clone.twice.undo.once.json",
   "transform.rotate.once.alt.json",
   "transform.rotate.twice.undo.once.json",
+  "transform.rotate.alt.twice.undo.once.json",
   "transform.flip.once.alt.json",
   "transform.flip.twice.undo.once.json",
   "transform.flip.thrice.undo.all.redo.all.json"

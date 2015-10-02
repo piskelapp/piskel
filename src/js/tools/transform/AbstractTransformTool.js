@@ -38,7 +38,7 @@
     });
   };
 
-  ns.AbstractTransformTool.prototype.replay = function (replayData) {
+  ns.AbstractTransformTool.prototype.replay = function (frame, replayData) {
     this.applyTool_(replayData.altKey, replayData.allFrames, replayData.allLayers);
   };
 
