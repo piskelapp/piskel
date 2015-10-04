@@ -16,7 +16,7 @@
   pskl.utils.inherit(ns.RectangleSelect, ns.AbstractDragSelect);
 
   /** @override */
-  ns.RectangleSelect.prototype.startDragSelection_ = function (col, row) {
+  ns.RectangleSelect.prototype.onDragSelectStart_ = function (col, row) {
     $.publish(Events.DRAG_START, [col, row]);
   };
 
@@ -26,7 +26,7 @@
    * the current mouse coordiinate in sprite.
    * @override
    */
-  ns.RectangleSelect.prototype.updateDragSelection_ = function (col, row, color, frame, overlay) {
+  ns.RectangleSelect.prototype.onDragSelect_ = function (col, row, frame, overlay) {
     overlay.clear();
     this.selection = new pskl.selection.RectangularSelection(this.startCol, this.startRow, col, row);
     $.publish(Events.SELECTION_CREATED, [this.selection]);
@@ -34,8 +34,8 @@
   };
 
   /** @override */
-  ns.RectangleSelect.prototype.endDragSelection_ = function (col, row, color, frame, overlay) {
-    this.onSelect_(col, row, color, frame, overlay);
+  ns.RectangleSelect.prototype.onDragSelectEnd_ = function (col, row, frame, overlay) {
+    this.onSelect_(col, row, frame, overlay);
     $.publish(Events.DRAG_END);
   };
 

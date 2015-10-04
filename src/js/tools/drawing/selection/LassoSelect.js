@@ -16,15 +16,20 @@
   pskl.utils.inherit(ns.LassoSelect, ns.AbstractDragSelect);
 
   /** @override */
-  ns.LassoSelect.prototype.startDragSelection_ = function (col, row) {
+  ns.LassoSelect.prototype.onDragSelectStart_ = function (col, row) {
     this.pixels = [{col : col, row : row}];
+
+    this.startCol = col;
+    this.startRow = row;
+
     this.previousCol = col;
     this.previousRow = row;
+
     $.publish(Events.DRAG_START, [col, row]);
   };
 
   /** @override */
-  ns.LassoSelect.prototype.updateDragSelection_ = function (col, row, color, frame, overlay) {
+  ns.LassoSelect.prototype.onDragSelect_ = function (col, row, frame, overlay) {
     this.addPixel_(col, row, frame);
     // use ShapeSelection during selection, contains only the pixels hovered by the user
     var selection = new pskl.selection.ShapeSelection(this.getLassoPixels_());
@@ -32,7 +37,7 @@
   };
 
   /** @override */
-  ns.LassoSelect.prototype.endDragSelection_ = function (col, row, color, frame, overlay) {
+  ns.LassoSelect.prototype.onDragSelectEnd_ = function (col, row, frame, overlay) {
     this.addPixel_(col, row, frame);
     // use LassoSelection to finalize selection, includes pixels inside the lasso shape
     var selection = new pskl.selection.LassoSelection(this.getLassoPixels_(), frame);

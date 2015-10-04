@@ -14,6 +14,9 @@
     this.startCol = null;
     this.startRow = null;
 
+    this.lastMoveCol = null;
+    this.lastMoveRow = null;
+
     this.selection = null;
 
     this.tooltipDescriptors = [
@@ -32,8 +35,8 @@
     this.startCol = col;
     this.startRow = row;
 
-    this.lastCol = col;
-    this.lastRow = row;
+    this.lastMoveCol = col;
+    this.lastMoveRow = row;
 
     // The select tool can be in two different state.
     // If the inital click of the tool is not on a selection, we go in 'select'
@@ -42,10 +45,10 @@
     // mode to allow to move the selection by drag'n dropping it.
     if (!this.isInSelection(col, row)) {
       this.mode = 'select';
-      this.onSelectStart_(col, row, color, frame, overlay);
+      this.onSelectStart_(col, row, frame, overlay);
     } else {
       this.mode = 'moveSelection';
-      this.onSelectionMoveStart_(col, row, color, frame, overlay);
+      this.onSelectionMoveStart_(col, row, frame, overlay);
     }
   };
 
@@ -56,7 +59,7 @@
     if (this.mode == 'select') {
       this.onSelect_(col, row, frame, overlay);
     } else if (this.mode == 'moveSelection') {
-      this.onSelectionMove_(col, row, color, frame, overlay);
+      this.onSelectionMove_(col, row, frame, overlay);
     }
   };
 
@@ -67,7 +70,7 @@
     if (this.mode == 'select') {
       this.onSelectEnd_(col, row, frame, overlay);
     } else if (this.mode == 'moveSelection') {
-      this.onSelectionMoveEnd_(col, row, color, frame, overlay);
+      this.onSelectionMoveEnd_(col, row, frame, overlay);
     }
   };
 
@@ -136,9 +139,9 @@
   ns.BaseSelect.prototype.onSelectionMoveStart_ = function (col, row, color, frame, overlay) {};
 
   /** @private */
-  ns.BaseSelect.prototype.onSelectionMove_ = function (col, row, color, frame, overlay) {
-    var deltaCol = col - this.lastCol;
-    var deltaRow = row - this.lastRow;
+  ns.BaseSelect.prototype.onSelectionMove_ = function (col, row, frame, overlay) {
+    var deltaCol = col - this.lastMoveCol;
+    var deltaRow = row - this.lastMoveRow;
 
     var colDiff = col - this.startCol;
     var rowDiff = row - this.startRow;
@@ -148,8 +151,8 @@
     overlay.clear();
     this.drawSelectionOnOverlay_(overlay);
 
-    this.lastCol = col;
-    this.lastRow = row;
+    this.lastMoveCol = col;
+    this.lastMoveRow = row;
   };
 
   /** @private */

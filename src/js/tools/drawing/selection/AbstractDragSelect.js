@@ -14,41 +14,48 @@
   pskl.utils.inherit(ns.AbstractDragSelect, ns.BaseSelect);
 
   /** @override */
-  ns.AbstractDragSelect.prototype.onSelectStart_ = function (col, row, color, frame, overlay) {
+  ns.AbstractDragSelect.prototype.onSelectStart_ = function (col, row, frame, overlay) {
     if (this.hasSelection) {
       this.hasSelection = false;
       overlay.clear();
       $.publish(Events.SELECTION_DISMISSED);
     } else {
       this.hasSelection = true;
-      this.startDragSelection_(col, row);
+      this.onDragSelectStart_(col, row);
       overlay.setPixel(col, row, this.getTransparentVariant_(Constants.SELECTION_TRANSPARENT_COLOR));
     }
   };
 
   /** @override */
-  ns.AbstractDragSelect.prototype.onSelect_ = function (col, row, color, frame, overlay) {
+  ns.AbstractDragSelect.prototype.onSelect_ = function (col, row, frame, overlay) {
     if (!this.hasSelection && (this.startCol !== col || this.startRow !== row)) {
       this.hasSelection = true;
-      this.startDragSelection_(col, row);
+      this.onDragSelectStart_(col, row);
     }
 
     if (this.hasSelection) {
-      this.updateDragSelection_(col, row, color, frame, overlay);
+      this.onDragSelect_(col, row, frame, overlay);
     }
   };
 
   /** @override */
-  ns.AbstractDragSelect.prototype.onSelectEnd_ = function (col, row, color, frame, overlay) {
+  ns.AbstractDragSelect.prototype.onSelectEnd_ = function (col, row, frame, overlay) {
     if (this.hasSelection) {
-      this.endDragSelection_(col, row, color, frame, overlay);
+      this.onDragSelectEnd_(col, row, frame, overlay);
     }
   };
 
+  /** @private */
+  ns.AbstractDragSelect.prototype.startDragSelection_ = function (col, row, overlay) {
+    this.hasSelection = true;
+    this.onDragSelectStart_(col, row);
+    overlay.setPixel(col, row, this.getTransparentVariant_(Constants.SELECTION_TRANSPARENT_COLOR));
+  };
+
   /** @protected */
-  ns.AbstractDragSelect.prototype.startDragSelection_ = function (col, row, color, frame, overlay) {};
+  ns.AbstractDragSelect.prototype.onDragSelectStart_ = function (col, row, frame, overlay) {};
   /** @protected */
-  ns.AbstractDragSelect.prototype.updateDragSelection_ = function (col, row, color, frame, overlay) {};
+  ns.AbstractDragSelect.prototype.onDragSelect_ = function (col, row, frame, overlay) {};
   /** @protected */
-  ns.AbstractDragSelect.prototype.endDragSelection_ = function (col, row, color, frame, overlay) {};
+  ns.AbstractDragSelect.prototype.onDragSelectEnd_ = function (col, row, frame, overlay) {};
 })();
