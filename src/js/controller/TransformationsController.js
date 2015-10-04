@@ -19,17 +19,22 @@
   ns.TransformationsController.prototype.init = function () {
     var container = document.querySelector('.transformations-container');
     this.toolsContainer = container.querySelector('.tools-wrapper');
-    container.addEventListener('click', this.onTransformationClick.bind(this));
+    container.addEventListener('click', this.onTransformationClick_.bind(this));
     this.createToolsDom_();
   };
 
-  ns.TransformationsController.prototype.onTransformationClick = function (evt) {
-    var toolId = evt.target.dataset.toolId;
+  ns.TransformationsController.prototype.applyTool = function (toolId, evt) {
     this.tools.forEach(function (tool) {
       if (tool.instance.toolId === toolId) {
+        $.publish(Events.TRANSFORMATION_EVENT, [toolId, evt]);
         tool.instance.apply(evt);
       }
     }.bind(this));
+  };
+
+  ns.TransformationsController.prototype.onTransformationClick_ = function (evt) {
+    var toolId = evt.target.dataset.toolId;
+    this.applyTool(toolId, evt);
   };
 
   ns.TransformationsController.prototype.createToolsDom_ = function() {

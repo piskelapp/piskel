@@ -11,6 +11,7 @@
     $.subscribe(Events.MOUSE_EVENT, this.onMouseEvent_.bind(this));
     $.subscribe(Events.KEYBOARD_EVENT, this.onKeyboardEvent_.bind(this));
     $.subscribe(Events.TOOL_SELECTED, this.onToolEvent_.bind(this));
+    $.subscribe(Events.TRANSFORMATION_EVENT, this.onTransformationEvent_.bind(this));
     $.subscribe(Events.PRIMARY_COLOR_SELECTED, this.onColorEvent_.bind(this, true));
     $.subscribe(Events.SECONDARY_COLOR_SELECTED, this.onColorEvent_.bind(this, false));
 
@@ -74,17 +75,17 @@
     }
   };
 
-  ns.DrawingTestRecorder.prototype.onKeyboardEvent_ = function (evt, keyboardEvent) {
+  ns.DrawingTestRecorder.prototype.onKeyboardEvent_ = function (evt, domEvent) {
     if (this.isRecording) {
       var recordEvent = {};
       recordEvent.type = 'keyboard-event';
       recordEvent.event = {
-        which : keyboardEvent.which,
-        shiftKey : keyboardEvent.shiftKey,
-        altKey : keyboardEvent.altKey,
-        ctrlKey : keyboardEvent.ctrlKey,
+        which : domEvent.which,
+        shiftKey : domEvent.shiftKey,
+        altKey : domEvent.altKey,
+        ctrlKey : domEvent.ctrlKey,
         target : {
-          nodeName : keyboardEvent.target.nodeName
+          nodeName : domEvent.target.nodeName
         }
       };
       this.events.push(recordEvent);
@@ -106,6 +107,20 @@
       var recordEvent = {};
       recordEvent.type = 'tool-event';
       recordEvent.toolId = tool.toolId;
+      this.events.push(recordEvent);
+    }
+  };
+
+  ns.DrawingTestRecorder.prototype.onTransformationEvent_ = function (evt, toolId, domEvent) {
+    if (this.isRecording) {
+      var recordEvent = {};
+      recordEvent.type = 'transformtool-event';
+      recordEvent.toolId = toolId;
+      recordEvent.event = {
+        shiftKey : domEvent.shiftKey,
+        altKey : domEvent.altKey,
+        ctrlKey : domEvent.ctrlKey
+      };
       this.events.push(recordEvent);
     }
   };

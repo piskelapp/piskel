@@ -94,6 +94,8 @@
         this.playColorEvent_(recordEvent);
       } else if (recordEvent.type === 'tool-event') {
         this.playToolEvent_(recordEvent);
+      } else if (recordEvent.type === 'transformtool-event') {
+        this.playTransformToolEvent_(recordEvent);
       } else if (recordEvent.type === 'instrumented-event') {
         this.playInstrumentedEvent_(recordEvent);
       }
@@ -140,6 +142,10 @@
 
   ns.DrawingTestPlayer.prototype.playToolEvent_ = function (recordEvent) {
     $.publish(Events.SELECT_TOOL, [recordEvent.toolId]);
+  };
+
+  ns.DrawingTestPlayer.prototype.playTransformToolEvent_ = function (recordEvent) {
+    pskl.app.transformationsController.applyTool(recordEvent.toolId, recordEvent.event);
   };
 
   ns.DrawingTestPlayer.prototype.playInstrumentedEvent_ = function (recordEvent) {
