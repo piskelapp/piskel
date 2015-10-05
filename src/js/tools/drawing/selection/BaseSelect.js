@@ -1,10 +1,10 @@
 /**
- * @provide pskl.tools.drawing.BaseSelect
+ * @provide pskl.tools.drawing.selection.BaseSelect
  *
  * @require pskl.utils
  */
 (function() {
-  var ns = $.namespace('pskl.tools.drawing');
+  var ns = $.namespace('pskl.tools.drawing.selection');
 
   ns.BaseSelect = function() {
     this.secondaryToolId = pskl.tools.drawing.Move.TOOL_ID;
@@ -13,6 +13,9 @@
     // Select's first point coordinates (set in applyToolAt)
     this.startCol = null;
     this.startRow = null;
+
+    this.lastMoveCol = null;
+    this.lastMoveRow = null;
 
     this.selection = null;
 
@@ -23,7 +26,7 @@
     ];
   };
 
-  pskl.utils.inherit(ns.BaseSelect, ns.BaseTool);
+  pskl.utils.inherit(ns.BaseSelect, pskl.tools.drawing.BaseTool);
 
   /**
    * @override
@@ -32,20 +35,20 @@
     this.startCol = col;
     this.startRow = row;
 
-    this.lastCol = col;
-    this.lastRow = row;
+    this.lastMoveCol = col;
+    this.lastMoveRow = row;
 
     // The select tool can be in two different state.
     // If the inital click of the tool is not on a selection, we go in 'select'
     // mode to create a selection.
     // If the initial click is on a previous selection, we go in 'moveSelection'
     // mode to allow to move the selection by drag'n dropping it.
-    if (this.isInSelection(col, row)) {
-      this.mode = 'moveSelection';
-      this.onSelectionDragStart_(col, row, frame, overlay);
-    } else {
+    if (!this.isInSelection(col, row)) {
       this.mode = 'select';
       this.onSelectStart_(col, row, frame, overlay);
+    } else {
+      this.mode = 'moveSelection';
+      this.onSelectionMoveStart_(col, row, frame, overlay);
     }
   };
 
@@ -56,7 +59,7 @@
     if (this.mode == 'select') {
       this.onSelect_(col, row, frame, overlay);
     } else if (this.mode == 'moveSelection') {
-      this.onSelectionDrag_(col, row, frame, overlay);
+      this.onSelectionMove_(col, row, frame, overlay);
     }
   };
 
@@ -67,7 +70,7 @@
     if (this.mode == 'select') {
       this.onSelectEnd_(col, row, frame, overlay);
     } else if (this.mode == 'moveSelection') {
-      this.onSelectionDragEnd_(col, row, frame, overlay);
+      this.onSelectionMoveEnd_(col, row, frame, overlay);
     }
   };
 
@@ -132,12 +135,13 @@
 
   // The list of callbacks that define the drag'n drop behavior of the selection.
   /** @private */
-  ns.BaseSelect.prototype.onSelectionDragStart_ = function (col, row, frame, overlay) {};
+
+  ns.BaseSelect.prototype.onSelectionMoveStart_ = function (col, row, frame, overlay) {};
 
   /** @private */
-  ns.BaseSelect.prototype.onSelectionDrag_ = function (col, row, frame, overlay) {
-    var deltaCol = col - this.lastCol;
-    var deltaRow = row - this.lastRow;
+  ns.BaseSelect.prototype.onSelectionMove_ = function (col, row, frame, overlay) {
+    var deltaCol = col - this.lastMoveCol;
+    var deltaRow = row - this.lastMoveRow;
 
     var colDiff = col - this.startCol;
     var rowDiff = row - this.startRow;
@@ -147,12 +151,12 @@
     overlay.clear();
     this.drawSelectionOnOverlay_(overlay);
 
-    this.lastCol = col;
-    this.lastRow = row;
+    this.lastMoveCol = col;
+    this.lastMoveRow = row;
   };
 
   /** @private */
-  ns.BaseSelect.prototype.onSelectionDragEnd_ = function (col, row, frame, overlay) {
-    this.onSelectionDrag_(col, row, frame, overlay);
+  ns.BaseSelect.prototype.onSelectionMoveEnd_ = function (col, row, frame, overlay) {
+    this.onSelectionMove_(col, row, frame, overlay);
   };
 })();

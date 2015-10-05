@@ -1,10 +1,10 @@
 /**
- * @provide pskl.tools.drawing.ShapeSelect
+ * @provide pskl.tools.drawing.selection.ShapeSelect
  *
  * @require pskl.utils
  */
 (function() {
-  var ns = $.namespace('pskl.tools.drawing');
+  var ns = $.namespace('pskl.tools.drawing.selection');
 
   ns.ShapeSelect = function() {
     this.toolId = 'tool-shape-select';
