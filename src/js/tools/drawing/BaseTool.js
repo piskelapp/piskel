@@ -76,14 +76,6 @@
     }
   };
 
-  ns.BaseTool.prototype.raiseSaveStateEvent = function (replayData) {
-    $.publish(Events.PISKEL_SAVE_STATE, {
-      type : pskl.service.HistoryService.REPLAY,
-      scope : this,
-      replay : replayData
-    });
-  };
-
   ns.BaseTool.prototype.releaseToolAt = function (col, row, frame, overlay, event) {};
 
   /**

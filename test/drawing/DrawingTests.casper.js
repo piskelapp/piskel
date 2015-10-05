@@ -5,7 +5,6 @@
   "history.basic.json",
   "layers.fun.json",
   "layers.merge.json",
-  "lighten.darken.json",
   "move.json",
   "move-alllayers-allframes.json",
   "pen.secondary.color.json",
@@ -22,5 +21,7 @@
   "transform.flip.once.alt.json",
   "transform.flip.twice.undo.once.json",
   "transform.flip.thrice.undo.all.redo.all.json",
-  "selection.lasso.json"
+  "selection.lasso.json",
+  "swapcolor.twice.undo.once.json",
+  "swapcolor.alllayers.allframes.twice.undo.once.json"
 ];
