@@ -23,5 +23,7 @@
   "transform.flip.once.alt.json",
   "transform.flip.twice.undo.once.json",
   "transform.flip.thrice.undo.all.redo.all.json",
-  "selection.lasso.json"
+  "selection.lasso.json",
+  "swapcolor.twice.undo.once.json",
+  "swapcolor.alllayers.allframes.twice.undo.once.json"
 ]}

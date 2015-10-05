@@ -41,7 +41,7 @@
   /**
    * @Override
    */
-  ns.Lighten.prototype.applyToolAt = function(col, row, frame, overlay, event, mouseButton) {
+  ns.Lighten.prototype.applyToolAt = function(col, row, frame, overlay, event) {
     var modifiedColor = this.getModifiedColor_(col, row, frame, overlay, event);
     this.draw(modifiedColor, col, row, frame, overlay);
   };

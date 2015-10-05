@@ -23,36 +23,44 @@
    */
   ns.ColorSwap.prototype.applyToolAt = function(col, row, frame, overlay, event) {
     if (frame.containsPixel(col, row)) {
-      var sampledColor = frame.getPixel(col, row);
+      var oldColor = frame.getPixel(col, row);
+      var newColor = this.getToolColor();
 
       var allLayers = pskl.utils.UserAgent.isMac ?  event.metaKey : event.ctrlKey;
       var allFrames = event.shiftKey;
 
-      this.swapColors(sampledColor, this.getToolColor(), allLayers, allFrames);
+      this.swapColors_(oldColor, newColor, allLayers, allFrames);
 
-      $.publish(Events.PISKEL_SAVE_STATE, {
-        type : pskl.service.HistoryService.SNAPSHOT
+      this.raiseSaveStateEvent({
+        allLayers : allLayers,
+        allFrames : allFrames,
+        oldColor : oldColor,
+        newColor : newColor
       });
     }
   };
 
-  ns.ColorSwap.prototype.swapColors = function(oldColor, newColor, allLayers, allFrames) {
-    var swapPixelColor = function (pixelColor, x, y, frame) {
-      if (pixelColor == oldColor) {
-        frame.pixels[x][y] = newColor;
-      }
-    };
-    var currentLayer = pskl.app.piskelController.getCurrentLayer();
+  ns.ColorSwap.prototype.replay = function (frame, replayData) {
+    this.swapColors_(replayData.oldColor, replayData.newColor, replayData.allLayers, replayData.allFrames);
+  };
+
+  ns.ColorSwap.prototype.swapColors_ = function(oldColor, newColor, allLayers, allFrames) {
     var currentFrameIndex = pskl.app.piskelController.getCurrentFrameIndex();
-    pskl.app.piskelController.getPiskel().getLayers().forEach(function (l) {
-      if (allLayers || l === currentLayer) {
-        l.getFrames().forEach(function (f, frameIndex) {
-          if (allFrames || frameIndex === currentFrameIndex) {
-            f.forEachPixel(swapPixelColor);
-            f.version++;
-          }
-        });
+    var layers = allLayers ? pskl.app.piskelController.getLayers() : [pskl.app.piskelController.getCurrentLayer()];
+    layers.forEach(function (layer) {
+      var frames = allFrames ? layer.getFrames() : [layer.getFrameAt(currentFrameIndex)];
+      frames.forEach(function (frame) {
+        this.applyToolOnFrame_(frame, oldColor, newColor);
+      }.bind(this));
+    }.bind(this));
+  };
+
+  ns.ColorSwap.prototype.applyToolOnFrame_ = function (frame, oldColor, newColor) {
+    frame.forEachPixel(function (color, col, row) {
+      if (color == oldColor) {
+        frame.pixels[col][row] = newColor;
       }
     });
+    frame.version++;
   };
 })();

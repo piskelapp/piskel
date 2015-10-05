@@ -12,7 +12,8 @@
     this.applyTool_(evt.altKey, allFrames, allLayers);
 
     $.publish(Events.PISKEL_RESET);
-    this.raiseSaveStateEvent_({
+
+    this.raiseSaveStateEvent({
       altKey : evt.altKey,
       allFrames : allFrames,
       allLayers : allLayers
@@ -28,14 +29,6 @@
         this.applyToolOnFrame_(frame, altKey);
       }.bind(this));
     }.bind(this));
-  };
-
-  ns.AbstractTransformTool.prototype.raiseSaveStateEvent_ = function (replayData) {
-    $.publish(Events.PISKEL_SAVE_STATE, {
-      type : pskl.service.HistoryService.REPLAY,
-      scope : this,
-      replay : replayData
-    });
   };
 
   ns.AbstractTransformTool.prototype.replay = function (frame, replayData) {
