@@ -4,6 +4,9 @@
   // Preview is a square of PREVIEW_SIZE x PREVIEW_SIZE
   var PREVIEW_SIZE = 200;
 
+  var ONION_SKIN_SHORTCUT = 'alt+O';
+  var ORIGINAL_SIZE_SHORTCUT = 'alt+1';
+
   ns.PreviewController = function (piskelController, container) {
     this.piskelController = piskelController;
     this.container = container;
@@ -13,14 +16,22 @@
 
     this.renderFlag = true;
 
+    /**
+     * !! WARNING !! ALL THE INITIALISATION BELOW SHOULD BE MOVED TO INIT()
+     * IT WILL STAY HERE UNTIL WE CAN REMOVE SETFPS (see comment below)
+     */
     this.fpsRangeInput = document.querySelector('#preview-fps');
     this.fpsCounterDisplay = document.querySelector('#display-fps');
     this.openPopupPreview = document.querySelector('.open-popup-preview-button');
     this.originalSizeButton = document.querySelector('.original-size-button');
+    this.toggleOnionSkinButton = document.querySelector('.preview-toggle-onion-skin');
 
+    /**
+     * !! WARNING !! THIS SHOULD REMAIN HERE UNTIL, BECAUSE THE PREVIEW CONTROLLER
+     * IS THE SOURCE OF TRUTH AT THE MOMENT WHEN IT COMES TO FPSs
+     * IT WILL BE QUERIED BY OTHER OBJECTS SO DEFINE IT AS SOON AS POSSIBLE
+     */
     this.setFPS(Constants.DEFAULT.FPS);
-
-    var frame = this.piskelController.getCurrentFrame();
 
     this.renderer = new pskl.rendering.frame.BackgroundImageFrameRenderer(this.container);
     this.popupPreviewController = new ns.PopupPreviewController(piskelController);
@@ -32,21 +43,19 @@
 
     document.querySelector('.right-column').style.width = Constants.ANIMATED_PREVIEW_WIDTH + 'px';
 
-    this.toggleOnionSkinEl = document.querySelector('.preview-toggle-onion-skin');
-    this.toggleOnionSkinEl.addEventListener('click', this.toggleOnionSkin_.bind(this));
-
+    pskl.utils.Event.addEventListener(this.toggleOnionSkinButton, 'click', this.toggleOnionSkin_, this);
     pskl.utils.Event.addEventListener(this.openPopupPreview, 'click', this.onOpenPopupPreviewClick_, this);
     pskl.utils.Event.addEventListener(this.originalSizeButton, 'click', this.onOriginalSizeButtonClick_, this);
 
-    pskl.app.shortcutService.addShortcut('alt+O', this.toggleOnionSkin_.bind(this));
-    pskl.app.shortcutService.addShortcut('alt+1', this.onOriginalSizeButtonClick_.bind(this));
+    pskl.app.shortcutService.addShortcut(ONION_SKIN_SHORTCUT, this.toggleOnionSkin_.bind(this));
+    pskl.app.shortcutService.addShortcut(ORIGINAL_SIZE_SHORTCUT, this.onOriginalSizeButtonClick_.bind(this));
 
     $.subscribe(Events.FRAME_SIZE_CHANGED, this.onFrameSizeChange_.bind(this));
     $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
-
     $.subscribe(Events.PISKEL_SAVE_STATE, this.setRenderFlag_.bind(this, true));
     $.subscribe(Events.PISKEL_RESET, this.setRenderFlag_.bind(this, true));
 
+    this.initTooltips_();
     this.popupPreviewController.init();
 
     this.updateZoom_();
@@ -54,6 +63,13 @@
     this.updateOriginalSizeButton_();
     this.updateMaxFPS_();
     this.updateContainerDimensions_();
+  };
+
+  ns.PreviewController.prototype.initTooltips_ = function () {
+    var onionSkinTooltip = pskl.utils.TooltipFormatter.format('Toggle onion skin', ONION_SKIN_SHORTCUT);
+    this.toggleOnionSkinButton.setAttribute('title', onionSkinTooltip);
+    var originalSizeTooltip = pskl.utils.TooltipFormatter.format('Original size preview', ORIGINAL_SIZE_SHORTCUT);
+    this.originalSizeButton.setAttribute('title', originalSizeTooltip);
   };
 
   ns.PreviewController.prototype.onOpenPopupPreviewClick_ = function () {
@@ -80,7 +96,7 @@
   ns.PreviewController.prototype.updateOnionSkinPreview_ = function () {
     var enabledClassname = 'preview-toggle-onion-skin-enabled';
     var isEnabled = pskl.UserSettings.get(pskl.UserSettings.ONION_SKIN);
-    this.toggleOnionSkinEl.classList.toggle(enabledClassname, isEnabled);
+    this.toggleOnionSkinButton.classList.toggle(enabledClassname, isEnabled);
   };
 
   ns.PreviewController.prototype.updateOriginalSizeButton_ = function () {

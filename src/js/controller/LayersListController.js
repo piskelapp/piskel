@@ -1,6 +1,8 @@
 (function () {
   var ns = $.namespace('pskl.controller');
 
+  var TOGGLE_LAYER_SHORTCUT = 'alt+L';
+
   ns.LayersListController = function (piskelController) {
     this.piskelController = piskelController;
   };
@@ -14,13 +16,12 @@
     this.rootEl.addEventListener('click', this.onClick_.bind(this));
     this.toggleLayerPreviewEl.addEventListener('click', this.toggleLayerPreview_.bind(this));
 
-    $.subscribe(Events.PISKEL_RESET, this.renderLayerList_.bind(this));
-
-    pskl.app.shortcutService.addShortcut('alt+L', this.toggleLayerPreview_.bind(this));
+    this.initToggleLayerPreview_();
 
     this.renderLayerList_();
     this.updateToggleLayerPreview_();
 
+    $.subscribe(Events.PISKEL_RESET, this.renderLayerList_.bind(this));
     $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
   };
 
@@ -29,6 +30,16 @@
     var layers = this.piskelController.getLayers();
     layers.forEach(this.addLayerItem.bind(this));
     this.updateButtonStatus_();
+  };
+
+  ns.LayersListController.prototype.initToggleLayerPreview_ = function () {
+    var descriptors = [{description : 'Opacity defined in PREFERENCES'}];
+    var helpText = 'Preview all layers';
+
+    var toggleLayerPreviewTooltip = pskl.utils.TooltipFormatter.format(helpText, TOGGLE_LAYER_SHORTCUT, descriptors);
+    this.toggleLayerPreviewEl.setAttribute('title', toggleLayerPreviewTooltip);
+
+    pskl.app.shortcutService.addShortcut(TOGGLE_LAYER_SHORTCUT, this.toggleLayerPreview_.bind(this));
   };
 
   ns.LayersListController.prototype.updateButtonStatus_ = function () {
