@@ -3,7 +3,7 @@
   "name": "piskel",
   "main": "./dest/index.html",
   "description": "Web based 2d animations editor",
-  "version": "0.5.5-SNAPSHOT",
+  "version": "0.6.0-SNAPSHOT",
   "homepage": "http://github.com/juliandescottes/piskel",
   "repository": {
     "type": "git",
