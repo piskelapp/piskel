@@ -10,9 +10,9 @@
   };
 
   ns.StorageService.prototype.init = function () {
-    pskl.app.shortcutService.addShortcut('ctrl+o', this.onOpenKey_.bind(this));
-    pskl.app.shortcutService.addShortcut('ctrl+s', this.onSaveKey_.bind(this));
-    pskl.app.shortcutService.addShortcut('ctrl+shift+s', this.onSaveAsKey_.bind(this));
+    pskl.app.shortcutService.registerShortcut('ctrl+o', this.onOpenKey_.bind(this));
+    pskl.app.shortcutService.registerShortcut('ctrl+s', this.onSaveKey_.bind(this));
+    pskl.app.shortcutService.registerShortcut('ctrl+shift+s', this.onSaveAsKey_.bind(this));
 
     $.subscribe(Events.BEFORE_SAVING_PISKEL, this.setSavingFlag_.bind(this, true));
     $.subscribe(Events.AFTER_SAVING_PISKEL, this.setSavingFlag_.bind(this, false));

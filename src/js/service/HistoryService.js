@@ -26,9 +26,9 @@
   ns.HistoryService.prototype.init = function () {
     $.subscribe(Events.PISKEL_SAVE_STATE, this.onSaveStateEvent.bind(this));
 
-    this.shortcutService.addShortcut('ctrl+Z', this.undo.bind(this));
-    this.shortcutService.addShortcut('ctrl+Y', this.redo.bind(this));
-    this.shortcutService.addShortcut('ctrl+shift+Z', this.redo.bind(this));
+    this.shortcutService.registerShortcut('ctrl+Z', this.undo.bind(this));
+    this.shortcutService.registerShortcut('ctrl+Y', this.redo.bind(this));
+    this.shortcutService.registerShortcut('ctrl+shift+Z', this.redo.bind(this));
 
     this.saveState({
       type : ns.HistoryService.SNAPSHOT

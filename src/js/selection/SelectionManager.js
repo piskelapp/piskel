@@ -18,11 +18,11 @@
     $.subscribe(Events.SELECTION_DISMISSED, $.proxy(this.onSelectionDismissed_, this));
     $.subscribe(Events.SELECTION_MOVE_REQUEST, $.proxy(this.onSelectionMoved_, this));
 
-    pskl.app.shortcutService.addShortcut('ctrl+V', this.paste.bind(this));
-    pskl.app.shortcutService.addShortcut('ctrl+X', this.cut.bind(this));
-    pskl.app.shortcutService.addShortcut('ctrl+C', this.copy.bind(this));
-    pskl.app.shortcutService.addShortcut('del', this.erase.bind(this));
-    pskl.app.shortcutService.addShortcut('back', this.onBackPressed_.bind(this));
+    pskl.app.shortcutService.registerShortcut('ctrl+V', this.paste.bind(this));
+    pskl.app.shortcutService.registerShortcut('ctrl+X', this.cut.bind(this));
+    pskl.app.shortcutService.registerShortcut('ctrl+C', this.copy.bind(this));
+    pskl.app.shortcutService.registerShortcut('del', this.erase.bind(this));
+    pskl.app.shortcutService.registerShortcut('back', this.onBackPressed_.bind(this));
 
     $.subscribe(Events.TOOL_SELECTED, $.proxy(this.onToolSelected_, this));
   };

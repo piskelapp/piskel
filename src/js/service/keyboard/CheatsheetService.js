@@ -13,7 +13,7 @@
     }
 
     this.initMarkup_();
-    pskl.app.shortcutService.addShortcuts(['?', 'shift+?'], this.toggleCheatsheet_.bind(this));
+    pskl.app.shortcutService.registerShortcuts(['?', 'shift+?'], this.toggleCheatsheet_.bind(this));
 
     pskl.utils.Event.addEventListener(document.body, 'click', this.onBodyClick_, this);
 
@@ -46,13 +46,13 @@
   };
 
   ns.CheatsheetService.prototype.showCheatsheet_ = function () {
-    pskl.app.shortcutService.addShortcut('ESC', this.hideCheatsheet_.bind(this));
+    pskl.app.shortcutService.registerShortcut('ESC', this.hideCheatsheet_.bind(this));
     this.cheatsheetEl.style.display = 'block';
     this.isDisplayed = true;
   };
 
   ns.CheatsheetService.prototype.hideCheatsheet_ = function () {
-    pskl.app.shortcutService.removeShortcut('ESC');
+    pskl.app.shortcutService.unregisterShortcut('ESC');
     this.cheatsheetEl.style.display = 'none';
     this.isDisplayed = false;
   };

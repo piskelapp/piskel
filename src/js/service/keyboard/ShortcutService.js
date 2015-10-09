@@ -21,7 +21,7 @@
    *                                'ctrl+shift+S'
    * @param {Function} callback should return true to let the original event perform its default action
    */
-  ns.ShortcutService.prototype.addShortcut = function (rawKey, callback) {
+  ns.ShortcutService.prototype.registerShortcut = function (rawKey, callback) {
     var parsedKey = this.parseKey_(rawKey.toLowerCase());
 
     var key = parsedKey.key;
@@ -37,13 +37,13 @@
     }
   };
 
-  ns.ShortcutService.prototype.addShortcuts = function (keys, callback) {
+  ns.ShortcutService.prototype.registerShortcuts = function (keys, callback) {
     keys.forEach(function (key) {
-      this.addShortcut(key, callback);
+      this.registerShortcut(key, callback);
     }.bind(this));
   };
 
-  ns.ShortcutService.prototype.removeShortcut = function (rawKey) {
+  ns.ShortcutService.prototype.unregisterShortcut = function (rawKey) {
     var parsedKey = this.parseKey_(rawKey.toLowerCase());
     var key = parsedKey.key;
     var meta = parsedKey.meta;

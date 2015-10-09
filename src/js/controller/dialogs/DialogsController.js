@@ -27,7 +27,7 @@
     $.subscribe(Events.DIALOG_DISPLAY, this.onDialogDisplayEvent_.bind(this));
     $.subscribe(Events.DIALOG_HIDE, this.onDialogHideEvent_.bind(this));
 
-    pskl.app.shortcutService.addShortcut('alt+P', this.onDialogDisplayEvent_.bind(this, null, 'create-palette'));
+    pskl.app.shortcutService.registerShortcut('alt+P', this.onDialogDisplayEvent_.bind(this, null, 'create-palette'));
 
     this.dialogWrapper_.classList.add('animated');
   };
@@ -65,7 +65,7 @@
   };
 
   ns.DialogsController.prototype.showDialogWrapper_ = function () {
-    pskl.app.shortcutService.addShortcut('ESC', this.hideDialog.bind(this));
+    pskl.app.shortcutService.registerShortcut('ESC', this.hideDialog.bind(this));
     this.dialogWrapper_.classList.add('show');
   };
 
@@ -84,7 +84,7 @@
   };
 
   ns.DialogsController.prototype.hideDialogWrapper_ = function () {
-    pskl.app.shortcutService.removeShortcut('ESC');
+    pskl.app.shortcutService.unregisterShortcut('ESC');
     this.dialogWrapper_.classList.remove('show');
   };
 

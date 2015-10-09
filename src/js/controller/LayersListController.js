@@ -39,7 +39,7 @@
     var toggleLayerPreviewTooltip = pskl.utils.TooltipFormatter.format(helpText, TOGGLE_LAYER_SHORTCUT, descriptors);
     this.toggleLayerPreviewEl.setAttribute('title', toggleLayerPreviewTooltip);
 
-    pskl.app.shortcutService.addShortcut(TOGGLE_LAYER_SHORTCUT, this.toggleLayerPreview_.bind(this));
+    pskl.app.shortcutService.registerShortcut(TOGGLE_LAYER_SHORTCUT, this.toggleLayerPreview_.bind(this));
   };
 
   ns.LayersListController.prototype.updateButtonStatus_ = function () {

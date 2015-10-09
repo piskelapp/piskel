@@ -125,7 +125,7 @@
 
   ns.ToolController.prototype.addKeyboardShortcuts_ = function () {
     for (var i = 0 ; i < this.tools.length ; i++) {
-      pskl.app.shortcutService.addShortcut(this.tools[i].shortcut, this.onKeyboardShortcut_.bind(this));
+      pskl.app.shortcutService.registerShortcut(this.tools[i].shortcut, this.onKeyboardShortcut_.bind(this));
     }
   };
 })();

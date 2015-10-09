@@ -47,8 +47,8 @@
     pskl.utils.Event.addEventListener(this.openPopupPreview, 'click', this.onOpenPopupPreviewClick_, this);
     pskl.utils.Event.addEventListener(this.originalSizeButton, 'click', this.onOriginalSizeButtonClick_, this);
 
-    pskl.app.shortcutService.addShortcut(ONION_SKIN_SHORTCUT, this.toggleOnionSkin_.bind(this));
-    pskl.app.shortcutService.addShortcut(ORIGINAL_SIZE_SHORTCUT, this.onOriginalSizeButtonClick_.bind(this));
+    pskl.app.shortcutService.registerShortcut(ONION_SKIN_SHORTCUT, this.toggleOnionSkin_.bind(this));
+    pskl.app.shortcutService.registerShortcut(ORIGINAL_SIZE_SHORTCUT, this.onOriginalSizeButtonClick_.bind(this));
 
     $.subscribe(Events.FRAME_SIZE_CHANGED, this.onFrameSizeChange_.bind(this));
     $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
