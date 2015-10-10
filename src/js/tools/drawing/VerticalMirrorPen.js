@@ -6,7 +6,7 @@
 
     this.toolId = 'tool-vertical-mirror-pen';
     this.helpText = 'Vertical Mirror pen';
-    this.shortcut = 'V';
+    this.shortcut = pskl.service.keyboard.Shortcuts.TOOL.MIRROR_PEN;
 
     this.tooltipDescriptors = [
       {key : 'ctrl', description : 'Use horizontal axis'},

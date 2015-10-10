@@ -21,7 +21,7 @@
       new pskl.tools.drawing.ColorPicker()
     ];
 
-    this.toolIconRenderer = new pskl.tools.IconMarkupRenderer();
+    this.iconMarkupRenderer = new pskl.tools.IconMarkupRenderer();
   };
 
   /**
@@ -93,12 +93,10 @@
     }
   };
 
-  ns.ToolController.prototype.onKeyboardShortcut_ = function(charkey) {
-    for (var i = 0 ; i < this.tools.length ; i++) {
-      var tool = this.tools[i];
-      if (tool.shortcut.toLowerCase() === charkey.toLowerCase()) {
-        this.selectTool_(tool);
-      }
+  ns.ToolController.prototype.onKeyboardShortcut_ = function(toolId, charkey) {
+    var tool = this.getToolById_(toolId);
+    if (tool !== null) {
+      this.selectTool_(tool);
     }
   };
 
@@ -115,14 +113,15 @@
     var html = '';
     for (var i = 0 ; i < this.tools.length ; i++) {
       var tool = this.tools[i];
-      html += this.toolIconRenderer.render(tool, tool.shortcut);
+      html += this.iconMarkupRenderer.render(tool);
     }
     $('#tools-container').html(html);
   };
 
   ns.ToolController.prototype.addKeyboardShortcuts_ = function () {
     for (var i = 0 ; i < this.tools.length ; i++) {
-      pskl.app.shortcutService.registerShortcut(this.tools[i].shortcut, this.onKeyboardShortcut_.bind(this));
+      var tool = this.tools[i];
+      pskl.app.shortcutService.registerShortcut(tool.shortcut, this.onKeyboardShortcut_.bind(this, tool.toolId));
     }
   };
 })();

@@ -11,7 +11,7 @@
 
     this.toolId = 'tool-shape-select';
     this.helpText = 'Shape selection';
-    this.shortcut = 'Z';
+    this.shortcut = pskl.service.keyboard.Shortcuts.TOOL.SHAPE_SELECT;
   };
 
   pskl.utils.inherit(ns.ShapeSelect, ns.BaseSelect);

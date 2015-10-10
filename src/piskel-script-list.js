@@ -157,6 +157,8 @@
   "js/service/palette/reader/PaletteTxtReader.js",
   "js/service/palette/PaletteImportService.js",
   "js/service/SavedStatusService.js",
+  "js/service/keyboard/Shortcut.js",
+  "js/service/keyboard/Shortcuts.js",
   "js/service/keyboard/ShortcutService.js",
   "js/service/keyboard/KeycodeTranslator.js",
   "js/service/keyboard/CheatsheetService.js",

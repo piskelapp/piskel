@@ -11,7 +11,7 @@
 
     this.toolId = 'tool-lasso-select';
     this.helpText = 'Lasso selection';
-    this.shortcut = 'H';
+    this.shortcut = pskl.service.keyboard.Shortcuts.TOOL.LASSO_SELECT;
   };
 
   pskl.utils.inherit(ns.LassoSelect, ns.AbstractDragSelect);

@@ -11,7 +11,7 @@
 
     this.toolId = 'tool-rectangle-select';
     this.helpText = 'Rectangle selection';
-    this.shortcut = 'S';
+    this.shortcut = pskl.service.keyboard.Shortcuts.TOOL.RECTANGLE_SELECT;
 
   };
 

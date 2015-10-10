@@ -37,9 +37,10 @@
     $.subscribe(Events.SECONDARY_COLOR_SELECTED, this.highlightSelectedColors.bind(this));
     $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
 
-    pskl.app.shortcutService.registerShortcuts(['>', 'shift+>'], this.selectNextColor_.bind(this));
-    pskl.app.shortcutService.registerShortcuts('123465789'.split(''), this.selectColorForKey_.bind(this));
-    pskl.app.shortcutService.registerShortcut('<', this.selectPreviousColor_.bind(this));
+    var shortcuts = pskl.service.keyboard.Shortcuts;
+    pskl.app.shortcutService.registerShortcut(shortcuts.COLOR.PREVIOUS_COLOR, this.selectPreviousColor_.bind(this));
+    pskl.app.shortcutService.registerShortcut(shortcuts.COLOR.NEXT_COLOR, this.selectNextColor_.bind(this));
+    pskl.app.shortcutService.registerShortcut(shortcuts.COLOR.SELECT_COLOR, this.selectColorForKey_.bind(this));
 
     this.fillPaletteList();
     this.updateFromUserSettings();

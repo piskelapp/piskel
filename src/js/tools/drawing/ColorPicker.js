@@ -9,7 +9,7 @@
   ns.ColorPicker = function() {
     this.toolId = 'tool-colorpicker';
     this.helpText = 'Color picker';
-    this.shortcut = 'O';
+    this.shortcut = pskl.service.keyboard.Shortcuts.TOOL.COLORPICKER;
   };
 
   pskl.utils.inherit(ns.ColorPicker, ns.BaseTool);

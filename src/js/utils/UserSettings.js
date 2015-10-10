@@ -91,6 +91,10 @@
      * @private
      */
     checkKeyValidity_ : function(key) {
+      if (key.indexOf(pskl.service.keyboard.Shortcut.USER_SETTINGS_PREFIX) === 0) {
+        return true;
+      }
+
       var isValidKey = key in this.KEY_TO_DEFAULT_VALUE_MAP_;
       if (!isValidKey) {
         console.error('UserSettings key <' + key + '> not found in supported keys.');

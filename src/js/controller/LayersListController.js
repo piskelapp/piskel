@@ -5,6 +5,7 @@
 
   ns.LayersListController = function (piskelController) {
     this.piskelController = piskelController;
+    this.layerPreviewShortcut = pskl.service.keyboard.Shortcuts.MISC.LAYER_PREVIEW  ;
   };
 
   ns.LayersListController.prototype.init = function () {
@@ -36,10 +37,9 @@
     var descriptors = [{description : 'Opacity defined in PREFERENCES'}];
     var helpText = 'Preview all layers';
 
-    var toggleLayerPreviewTooltip = pskl.utils.TooltipFormatter.format(helpText, TOGGLE_LAYER_SHORTCUT, descriptors);
-    this.toggleLayerPreviewEl.setAttribute('title', toggleLayerPreviewTooltip);
-
-    pskl.app.shortcutService.registerShortcut(TOGGLE_LAYER_SHORTCUT, this.toggleLayerPreview_.bind(this));
+    pskl.app.shortcutService.registerShortcut(this.layerPreviewShortcut, this.toggleLayerPreview_.bind(this));
+    var tooltip = pskl.utils.TooltipFormatter.format(helpText, this.layerPreviewShortcut, descriptors);
+    this.toggleLayerPreviewEl.setAttribute('title', tooltip);
   };
 
   ns.LayersListController.prototype.updateButtonStatus_ = function () {

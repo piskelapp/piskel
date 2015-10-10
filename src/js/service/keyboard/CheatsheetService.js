@@ -1,8 +1,13 @@
 (function () {
   var ns = $.namespace('pskl.service.keyboard');
 
+  /**
+   * TODO : JD : This is not a service, but a controller
+   * Moreover this should be handled by the DialogsController
+   */
   ns.CheatsheetService = function () {
     this.isDisplayed = false;
+    this.closePopupShortcut = pskl.service.keyboard.Shortcuts.MISC.CLOSE_POPUP;
   };
 
   ns.CheatsheetService.prototype.init = function () {
@@ -13,7 +18,9 @@
     }
 
     this.initMarkup_();
-    pskl.app.shortcutService.registerShortcuts(['?', 'shift+?'], this.toggleCheatsheet_.bind(this));
+
+    var cheatsheetShortcut = pskl.service.keyboard.Shortcuts.MISC.CHEATSHEET;
+    pskl.app.shortcutService.registerShortcut(cheatsheetShortcut, this.toggleCheatsheet_.bind(this));
 
     pskl.utils.Event.addEventListener(document.body, 'click', this.onBodyClick_, this);
 
@@ -46,13 +53,13 @@
   };
 
   ns.CheatsheetService.prototype.showCheatsheet_ = function () {
-    pskl.app.shortcutService.registerShortcut('ESC', this.hideCheatsheet_.bind(this));
+    pskl.app.shortcutService.registerShortcut(this.closePopupShortcut, this.hideCheatsheet_.bind(this));
     this.cheatsheetEl.style.display = 'block';
     this.isDisplayed = true;
   };
 
   ns.CheatsheetService.prototype.hideCheatsheet_ = function () {
-    pskl.app.shortcutService.unregisterShortcut('ESC');
+    pskl.app.shortcutService.unregisterShortcut(this.closePopupShortcut);
     this.cheatsheetEl.style.display = 'none';
     this.isDisplayed = false;
   };
@@ -65,71 +72,56 @@
   };
 
   ns.CheatsheetService.prototype.initMarkupForTools_ = function () {
-    var descriptors = pskl.app.toolController.tools.map(function (tool) {
-      return this.toDescriptor_(tool.shortcut, tool.getHelpText(), 'tool-icon ' + tool.toolId);
-    }.bind(this));
+    var descriptors = this.createShortcutDescriptors_(ns.Shortcuts.TOOL, this.getToolShortcutClassname_);
+    this.initMarkupForDescriptors_(descriptors, '.cheatsheet-tool-shortcuts');
+  };
 
-    var container = this.cheatsheetEl.querySelector('.cheatsheet-tool-shortcuts');
-    this.initMarkupForDescriptors_(descriptors, container);
+  ns.CheatsheetService.prototype.getToolShortcutClassname_ = function (shortcut) {
+    return 'tool-icon ' + shortcut.getId();
   };
 
   ns.CheatsheetService.prototype.initMarkupForMisc_ = function () {
-    var descriptors = [
-      this.toDescriptor_('0', 'Reset zoom level'),
-      this.toDescriptor_('+/-', 'Zoom in/Zoom out'),
-      this.toDescriptor_('ctrl + Z', 'Undo'),
-      this.toDescriptor_('ctrl + Y', 'Redo'),
-      this.toDescriptor_('&#65514;', 'Select previous frame'), /* ASCII for up-arrow */
-      this.toDescriptor_('&#65516;', 'Select next frame'), /* ASCII for down-arrow */
-      this.toDescriptor_('N', 'Create new frame'),
-      this.toDescriptor_('shift + N', 'Duplicate selected frame'),
-      this.toDescriptor_('shift + ?', 'Open/Close this popup'),
-      this.toDescriptor_('alt + 1', 'Toggle original size preview'),
-      this.toDescriptor_('alt + O', 'Toggle Onion Skin'),
-      this.toDescriptor_('alt + L', 'Toggle Layer Preview')
-    ];
-
-    var container = this.cheatsheetEl.querySelector('.cheatsheet-misc-shortcuts');
-    this.initMarkupForDescriptors_(descriptors, container);
+    var descriptors = this.createShortcutDescriptors_(ns.Shortcuts.MISC);
+    this.initMarkupForDescriptors_(descriptors, '.cheatsheet-misc-shortcuts');
   };
 
   ns.CheatsheetService.prototype.initMarkupForColors_ = function () {
-    var descriptors = [
-      this.toDescriptor_('X', 'Swap primary/secondary colors'),
-      this.toDescriptor_('D', 'Reset default colors'),
-      this.toDescriptor_('alt + P', 'Create a Palette'),
-      this.toDescriptor_('&lt;/&gt;', 'Select prev/next palette color'),
-      this.toDescriptor_('1 to 9', 'Select palette color at index')
-    ];
-
-    var container = this.cheatsheetEl.querySelector('.cheatsheet-colors-shortcuts');
-    this.initMarkupForDescriptors_(descriptors, container);
+    var descriptors = this.createShortcutDescriptors_(ns.Shortcuts.COLOR);
+    this.initMarkupForDescriptors_(descriptors, '.cheatsheet-colors-shortcuts');
   };
 
   ns.CheatsheetService.prototype.initMarkupForSelection_ = function () {
-    var descriptors = [
-      this.toDescriptor_('ctrl + X', 'Cut selection'),
-      this.toDescriptor_('ctrl + C', 'Copy selection'),
-      this.toDescriptor_('ctrl + V', 'Paste selection'),
-      this.toDescriptor_('del', 'Delete selection')
-    ];
-
-    var container = this.cheatsheetEl.querySelector('.cheatsheet-selection-shortcuts');
-    this.initMarkupForDescriptors_(descriptors, container);
+    var descriptors = this.createShortcutDescriptors_(ns.Shortcuts.SELECTION);
+    this.initMarkupForDescriptors_(descriptors, '.cheatsheet-selection-shortcuts');
   };
 
-  ns.CheatsheetService.prototype.toDescriptor_ = function (shortcut, description, icon) {
+  ns.CheatsheetService.prototype.createShortcutDescriptors_ = function (shortcutMap, classnameProvider) {
+    return Object.keys(shortcutMap).map(function (shortcutKey) {
+      var shortcut = shortcutMap[shortcutKey];
+      var classname = typeof classnameProvider == 'function' ? classnameProvider(shortcut) : '';
+      return this.toDescriptor_(shortcut.getKey(), shortcut.getDescription(), classname);
+    }.bind(this));
+  };
+
+  ns.CheatsheetService.prototype.toDescriptor_ = function (key, description, icon) {
     if (pskl.utils.UserAgent.isMac) {
-      shortcut = shortcut.replace('ctrl', 'cmd');
+      key = key.replace('ctrl', 'cmd');
     }
+    key = key.replace('up', '&#65514;');
+    key = key.replace('down', '&#65516;');
+    key = key.replace(/>/g, '&gt;');
+    key = key.replace(/</g, '&lt;');
+    key = key.replace(/^(.*[^ ])\+([^ ].*)$/g, '$1 + $2');
+
     return {
-      'shortcut' : shortcut,
+      'key' : key,
       'description' : description,
       'icon' : icon
     };
   };
 
-  ns.CheatsheetService.prototype.initMarkupForDescriptors_ = function (descriptors, container) {
+  ns.CheatsheetService.prototype.initMarkupForDescriptors_ = function (descriptors, containerSelector) {
+    var container = this.cheatsheetEl.querySelector(containerSelector);
     descriptors.forEach(function (descriptor) {
       var shortcut = this.getDomFromDescriptor_(descriptor);
       container.appendChild(shortcut);
@@ -141,7 +133,7 @@
     var markup = pskl.utils.Template.replace(shortcutTemplate, {
       shortcutIcon : descriptor.icon,
       shortcutDescription : descriptor.description,
-      shortcutKey : descriptor.shortcut
+      shortcutKey : descriptor.key
     });
 
     return pskl.utils.Template.createFromHTML(markup);

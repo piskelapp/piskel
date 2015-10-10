@@ -18,6 +18,7 @@
 
   ns.DialogsController = function (piskelController) {
     this.piskelController = piskelController;
+    this.closePopupShortcut = pskl.service.keyboard.Shortcuts.MISC.CLOSE_POPUP;
     this.currentDialog_ = null;
   };
 
@@ -28,9 +29,14 @@
     $.subscribe(Events.DIALOG_HIDE, this.onDialogHideEvent_.bind(this));
 
     // TODO : JD : should be moved to a main controller
-    pskl.app.shortcutService.registerShortcut('alt+P', this.onDialogDisplayEvent_.bind(this, null, 'create-palette'));
+    var createPaletteShortcut = pskl.service.keyboard.Shortcuts.COLOR.CREATE_PALETTE;
+    pskl.app.shortcutService.registerShortcut(createPaletteShortcut, this.onCreatePaletteShortcut_.bind(this));
 
     this.dialogWrapper_.classList.add('animated');
+  };
+
+  ns.DialogsController.prototype.onCreatePaletteShortcut_ = function () {
+    this.onDialogDisplayEvent_(null, 'create-palette');
   };
 
   ns.DialogsController.prototype.onDialogDisplayEvent_ = function (evt, args) {
@@ -66,7 +72,7 @@
   };
 
   ns.DialogsController.prototype.showDialogWrapper_ = function () {
-    pskl.app.shortcutService.registerShortcut('ESC', this.hideDialog.bind(this));
+    pskl.app.shortcutService.registerShortcut(this.closePopupShortcut, this.hideDialog.bind(this));
     this.dialogWrapper_.classList.add('show');
   };
 
@@ -85,7 +91,7 @@
   };
 
   ns.DialogsController.prototype.hideDialogWrapper_ = function () {
-    pskl.app.shortcutService.unregisterShortcut('ESC');
+    pskl.app.shortcutService.unregisterShortcut(this.closePopupShortcut);
     this.dialogWrapper_.classList.remove('show');
   };
 

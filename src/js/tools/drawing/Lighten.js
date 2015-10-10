@@ -13,7 +13,7 @@
 
     this.toolId = 'tool-lighten';
     this.helpText = 'Lighten';
-    this.shortcut = 'U';
+    this.shortcut = pskl.service.keyboard.Shortcuts.TOOL.LIGHTEN;
 
     this.tooltipDescriptors = [
       {key : 'ctrl', description : 'Darken'},

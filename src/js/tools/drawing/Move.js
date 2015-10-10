@@ -9,7 +9,7 @@
   ns.Move = function() {
     this.toolId = ns.Move.TOOL_ID;
     this.helpText = 'Move tool';
-    this.shortcut = 'M';
+    this.shortcut = pskl.service.keyboard.Shortcuts.TOOL.MOVE;
 
     this.tooltipDescriptors = [
       {key : 'ctrl', description : 'Apply to all layers'},

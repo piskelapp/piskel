@@ -2,7 +2,7 @@
   var ns = $.namespace('pskl.service.keyboard');
 
   ns.ShortcutService = function () {
-    this.shortcuts_ = {};
+    this.shortcuts_ = [];
   };
 
   /**
@@ -14,43 +14,34 @@
 
   /**
    * Add a keyboard shortcut
-   * @param {String}   rawKey   (case insensitive) a key is a combination of modifiers + ([a-z0-9] or
-   *                            a special key) (check list of supported special keys in KeycodeTranslator)
-   *                            eg. 'ctrl+A',
-   *                                'del'
-   *                                'ctrl+shift+S'
+   * @param {pskl.service.keyboard.Shortcut} shortcut
    * @param {Function} callback should return true to let the original event perform its default action
    */
-  ns.ShortcutService.prototype.registerShortcut = function (rawKey, callback) {
-    var parsedKey = this.parseKey_(rawKey.toLowerCase());
-
-    var key = parsedKey.key;
-    var meta = parsedKey.meta;
-
-    this.shortcuts_[key] = this.shortcuts_[key] || {};
-
-    if (this.shortcuts_[key][meta]) {
-      var keyStr = (meta !== 'normal' ? meta + ' + ' : '') + key;
-      console.error('[ShortcutService] >>> Shortcut [' + keyStr + '] already registered');
-    } else {
-      this.shortcuts_[key][meta] = callback;
+  ns.ShortcutService.prototype.registerShortcut = function (shortcut, callback) {
+    if (!(shortcut instanceof ns.Shortcut)) {
+      throw 'Invalid shortcut argument, please use instances of pskl.service.keyboard.Shortcut';
     }
+
+    if (typeof callback != 'function') {
+      throw 'Invalid callback argument, please provide a function';
+    }
+
+    this.shortcuts_.push({
+      shortcut : shortcut,
+      callback : callback
+    });
   };
 
-  ns.ShortcutService.prototype.registerShortcuts = function (keys, callback) {
-    keys.forEach(function (key) {
-      this.registerShortcut(key, callback);
-    }.bind(this));
-  };
-
-  ns.ShortcutService.prototype.unregisterShortcut = function (rawKey) {
-    var parsedKey = this.parseKey_(rawKey.toLowerCase());
-    var key = parsedKey.key;
-    var meta = parsedKey.meta;
-
-    this.shortcuts_[key] = this.shortcuts_[key] || {};
-
-    this.shortcuts_[key][meta] = null;
+  ns.ShortcutService.prototype.unregisterShortcut = function (shortcut) {
+    var index = -1;
+    this.shortcuts_.forEach(function (s, i) {
+      if (s.shortcut === shortcut) {
+        index = i;
+      }
+    });
+    if (index != -1) {
+      this.shortcuts_.splice(index, 1);
+    }
   };
 
   ns.ShortcutService.prototype.parseKey_ = function (key) {
@@ -62,51 +53,58 @@
 
     var parts = key.split(/\+(?!$)/);
     key = parts[parts.length - 1];
-    return {meta : meta, key : key};
+    return {meta : meta, key : key.toLowerCase()};
   };
 
+  /**
+   * Retrieve a comparable representation of a meta information for a key
+   * 'alt' 'ctrl' and 'shift' will always be in the same order for the same meta
+   */
   ns.ShortcutService.prototype.getMetaKey_ = function (meta) {
     var keyBuffer = [];
-    ['alt', 'ctrl', 'shift'].forEach(function (metaKey) {
-      if (meta[metaKey]) {
-        keyBuffer.push(metaKey);
-      }
-    });
 
-    if (keyBuffer.length > 0) {
-      return keyBuffer.join('+');
-    } else {
-      return 'normal';
+    if (meta.alt) {
+      keyBuffer.push('alt');
     }
+    if (meta.ctrl) {
+      keyBuffer.push('ctrl');
+    }
+    if (meta.shift) {
+      keyBuffer.push('shift');
+    }
+
+    return keyBuffer.join('+') || 'normal';
   };
 
   /**
    * @private
    */
   ns.ShortcutService.prototype.onKeyUp_ = function(evt) {
-    if (!this.isInInput_(evt)) {
-      // jquery names FTW ...
-      var keycode = evt.which;
-      var charkey = pskl.service.keyboard.KeycodeTranslator.toChar(keycode);
-
-      var keyShortcuts = this.shortcuts_[charkey];
-      if (keyShortcuts) {
-        var meta = this.getMetaKey_({
-          alt : this.isAltKeyPressed_(evt),
-          shift : this.isShiftKeyPressed_(evt),
-          ctrl : this.isCtrlKeyPressed_(evt)
-        });
-        var cb = keyShortcuts[meta];
-
-        if (cb) {
-          var bubble = cb(charkey);
-          if (bubble !== true) {
-            evt.preventDefault();
-          }
-          $.publish(Events.KEYBOARD_EVENT, [evt]);
-        }
-      }
+    if (this.isInInput_(evt)) {
+      return;
     }
+
+    var keycode = evt.which;
+    var eventKey = pskl.service.keyboard.KeycodeTranslator.toChar(keycode);
+    var eventMeta = this.getMetaKey_({
+      alt : evt.altKey,
+      shift : evt.shiftKey,
+      ctrl : this.isCtrlKeyPressed_(evt)
+    });
+
+    this.shortcuts_.forEach(function (shortcutInfo) {
+      shortcutInfo.shortcut.getKeys().forEach(function (key) {
+        if (!this.isKeyMatching_(key, eventKey, eventMeta)) {
+          return;
+        }
+
+        var bubble = shortcutInfo.callback(eventKey);
+        if (bubble !== true) {
+          evt.preventDefault();
+        }
+        $.publish(Events.KEYBOARD_EVENT, [evt]);
+      }.bind(this));
+    }.bind(this));
   };
 
   ns.ShortcutService.prototype.isInInput_ = function (evt) {
@@ -114,15 +112,12 @@
     return targetTagName === 'INPUT' || targetTagName === 'TEXTAREA';
   };
 
+  ns.ShortcutService.prototype.isKeyMatching_ = function (key, eventKey, eventMeta) {
+    var parsedKey = this.parseKey_(key);
+    return parsedKey.key === eventKey && parsedKey.meta === eventMeta;
+  };
+
   ns.ShortcutService.prototype.isCtrlKeyPressed_ = function (evt) {
     return pskl.utils.UserAgent.isMac ? evt.metaKey : evt.ctrlKey;
-  };
-
-  ns.ShortcutService.prototype.isShiftKeyPressed_ = function (evt) {
-    return evt.shiftKey;
-  };
-
-  ns.ShortcutService.prototype.isAltKeyPressed_ = function (evt) {
-    return evt.altKey;
   };
 })();

@@ -12,7 +12,7 @@
 
     this.toolId = 'tool-eraser';
     this.helpText = 'Eraser tool';
-    this.shortcut = 'E';
+    this.shortcut = pskl.service.keyboard.Shortcuts.TOOL.ERASER;
   };
 
   pskl.utils.inherit(ns.Eraser, ns.SimplePen);
