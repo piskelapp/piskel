@@ -44,7 +44,7 @@
       NEXT_FRAME : createShortcut('next-frame', 'Select next frame', 'down'),
       NEW_FRAME : createShortcut('new-frame', 'Create new empty frame', 'N'),
       DUPLICATE_FRAME : createShortcut('duplicate-frame', 'Duplicate selected frame', 'shift+N'),
-      CHEATSHEET : createShortcut('cheatsheet', 'Open the keyboard shortcut cheatsheet', 'shift+?'),
+      CHEATSHEET : createShortcut('cheatsheet', 'Open the keyboard shortcut cheatsheet', ['?', 'shift+?']),
       X1_PREVIEW : createShortcut('x1-preview', 'Toggle original size preview', 'alt+1'),
       ONION_SKIN : createShortcut('onion-skin', 'Toggle onion skin', 'alt+O'),
       LAYER_PREVIEW : createShortcut('layer-preview', 'Toggle layer preview', 'alt+L'),
