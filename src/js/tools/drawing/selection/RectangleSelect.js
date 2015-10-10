@@ -7,10 +7,12 @@
   var ns = $.namespace('pskl.tools.drawing.selection');
 
   ns.RectangleSelect = function() {
+    ns.AbstractDragSelect.call(this);
+
     this.toolId = 'tool-rectangle-select';
     this.helpText = 'Rectangle selection';
+    this.shortcut = 'S';
 
-    ns.AbstractDragSelect.call(this);
   };
 
   pskl.utils.inherit(ns.RectangleSelect, ns.AbstractDragSelect);

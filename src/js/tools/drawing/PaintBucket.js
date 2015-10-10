@@ -9,6 +9,7 @@
   ns.PaintBucket = function() {
     this.toolId = 'tool-paint-bucket';
     this.helpText = 'Paint bucket tool';
+    this.shortcut = 'B';
   };
 
   pskl.utils.inherit(ns.PaintBucket, ns.BaseTool);

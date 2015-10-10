@@ -5,7 +5,7 @@
 
   pskl.utils.inherit(ns.AbstractTransformTool, pskl.tools.Tool);
 
-  ns.AbstractTransformTool.prototype.apply = function (evt) {
+  ns.AbstractTransformTool.prototype.applyTransformation = function (evt) {
     var allFrames = evt.shiftKey;
     var allLayers = evt.ctrlKey;
 

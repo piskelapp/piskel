@@ -11,6 +11,7 @@
 
     this.toolId = 'tool-rectangle';
     this.helpText = 'Rectangle tool';
+    this.shortcut = 'R';
   };
 
   pskl.utils.inherit(ns.Rectangle, ns.ShapeTool);

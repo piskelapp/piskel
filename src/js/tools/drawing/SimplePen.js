@@ -9,6 +9,7 @@
   ns.SimplePen = function() {
     this.toolId = 'tool-pen';
     this.helpText = 'Pen tool';
+    this.shortcut = 'P';
 
     this.previousCol = null;
     this.previousRow = null;

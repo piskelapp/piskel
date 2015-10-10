@@ -27,6 +27,7 @@
     $.subscribe(Events.DIALOG_DISPLAY, this.onDialogDisplayEvent_.bind(this));
     $.subscribe(Events.DIALOG_HIDE, this.onDialogHideEvent_.bind(this));
 
+    // TODO : JD : should be moved to a main controller
     pskl.app.shortcutService.registerShortcut('alt+P', this.onDialogDisplayEvent_.bind(this, null, 'create-palette'));
 
     this.dialogWrapper_.classList.add('animated');

@@ -6,6 +6,7 @@
 
     this.toolId = 'tool-vertical-mirror-pen';
     this.helpText = 'Vertical Mirror pen';
+    this.shortcut = 'V';
 
     this.tooltipDescriptors = [
       {key : 'ctrl', description : 'Use horizontal axis'},

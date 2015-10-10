@@ -7,8 +7,8 @@
 
   ns.ColorSwap = function() {
     this.toolId = 'tool-colorswap';
-
     this.helpText = 'Paint all pixels of the same color';
+    this.shortcut = 'A';
 
     this.tooltipDescriptors = [
       {key : 'ctrl', description : 'Apply to all layers'},

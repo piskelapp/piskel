@@ -11,6 +11,7 @@
 
     this.toolId = 'tool-circle';
     this.helpText = 'Circle tool';
+    this.shortcut = 'C';
   };
 
   pskl.utils.inherit(ns.Circle, ns.ShapeTool);

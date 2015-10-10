@@ -9,6 +9,7 @@
   ns.Stroke = function() {
     this.toolId = 'tool-stroke';
     this.helpText = 'Stroke tool';
+    this.shortcut = 'L';
 
     // Stroke's first point coordinates (set in applyToolAt)
     this.startCol = null;
