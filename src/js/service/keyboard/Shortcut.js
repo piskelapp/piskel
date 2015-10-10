@@ -32,7 +32,7 @@
    * @return {Array<String>} array of keys
    */
   ns.Shortcut.prototype.getKeys = function () {
-    var keys = pskl.UserSettings.get(ns.Shortcut.USER_SETTINGS_PREFIX + this.id_) || this.defaultKey_;
+    var keys = pskl.UserSettings.get(this.getLocalStorageKey_()) || this.defaultKey_;
     if (typeof keys === 'string') {
       keys = [keys];
     }
@@ -57,4 +57,12 @@
     return '';
   };
 
+  ns.Shortcut.prototype.updateKeys = function (keys) {
+    pskl.UserSettings.set(this.getLocalStorageKey_(), keys.split(', '));
+    $.publish(Events.SHORTCUTS_CHANGED);
+  };
+
+  ns.Shortcut.prototype.getLocalStorageKey_ = function () {
+    return ns.Shortcut.USER_SETTINGS_PREFIX + this.id_;
+  };
 })();

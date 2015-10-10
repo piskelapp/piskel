@@ -26,14 +26,21 @@
       return false;
     },
 
-    getParentWithData : function (node, data) {
+    getParentWithData : function (node, dataName) {
       while (node) {
-        if (node.dataset && typeof node.dataset[data] !== 'undefined') {
+        if (node.dataset && typeof node.dataset[dataName] !== 'undefined') {
           return node;
         }
         node = node.parentNode;
       }
       return null;
+    },
+
+    getData : function (node, dataName) {
+      var parent = ns.Dom.getParentWithData(node, dataName);
+      if (parent !== null) {
+        return parent.dataset[dataName];
+      }
     }
   };
 })();

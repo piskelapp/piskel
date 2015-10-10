@@ -65,6 +65,23 @@
       NEXT_COLOR : createShortcut('next-color', 'Select the next color in the current palette', '>'),
       SELECT_COLOR : createShortcut('select-color', 'Select a palette color in the current palette',
         '123456789'.split(''), '1 to 9')
+    },
+
+    CATEGORIES : ['TOOL', 'SELECTION', 'MISC', 'STORAGE', 'COLOR'],
+
+    getShortcutById : function (id) {
+      var shortcut = null;
+      ns.Shortcuts.CATEGORIES.forEach(function (category) {
+        var shortcuts = ns.Shortcuts[category];
+        Object.keys(shortcuts).forEach(function (shortcutKey) {
+          if (shortcuts[shortcutKey].getId() === id) {
+            shortcut = shortcuts[shortcutKey];
+          }
+        });
+      });
+
+      return shortcut;
     }
+
   };
 })();

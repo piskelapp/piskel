@@ -12,8 +12,26 @@
     if (!this.cheatsheetEl) {
       throw 'cheatsheetEl DOM element could not be retrieved';
     }
-    console.log('>>>>>> CheatsheetController INIT');
+
+    pskl.utils.Event.addEventListener(this.cheatsheetEl, 'click', this.onCheatsheetClick_, this);
+    $.subscribe(Events.SHORTCUTS_CHANGED, this.onShortcutsChanged_.bind(this));
+
     this.initMarkup_();
+  };
+
+  ns.CheatsheetController.prototype.onShortcutsChanged_ = function () {
+    this.initMarkup_();
+  };
+
+  ns.CheatsheetController.prototype.onCheatsheetClick_ = function (evt) {
+    var shortcutId = pskl.utils.Dom.getData(evt.target, 'shortcutId');
+    if (!shortcutId) {
+      return;
+    }
+
+    var shortcut = pskl.service.keyboard.Shortcuts.getShortcutById(shortcutId);
+    var newKeys = window.prompt('Please enter the new key', shortcut.getKeys().join(', '));
+    shortcut.updateKeys(newKeys);
   };
 
   ns.CheatsheetController.prototype.initMarkup_ = function () {
@@ -51,11 +69,12 @@
     return Object.keys(shortcutMap).map(function (shortcutKey) {
       var shortcut = shortcutMap[shortcutKey];
       var classname = typeof classnameProvider == 'function' ? classnameProvider(shortcut) : '';
-      return this.toDescriptor_(shortcut.getKey(), shortcut.getDescription(), classname);
+      return this.toDescriptor_(shortcut, classname);
     }.bind(this));
   };
 
-  ns.CheatsheetController.prototype.toDescriptor_ = function (key, description, icon) {
+  ns.CheatsheetController.prototype.toDescriptor_ = function (shortcut, icon) {
+    var key = shortcut.getKey();
     if (pskl.utils.UserAgent.isMac) {
       key = key.replace('ctrl', 'cmd');
     }
@@ -67,27 +86,30 @@
 
     return {
       'key' : key,
-      'description' : description,
+      'id' : shortcut.getId(),
+      'description' : shortcut.getDescription(),
       'icon' : icon
     };
   };
 
   ns.CheatsheetController.prototype.initMarkupForDescriptors_ = function (descriptors, containerSelector) {
     var container = document.querySelector(containerSelector);
-    descriptors.forEach(function (descriptor) {
-      var shortcut = this.getDomFromDescriptor_(descriptor);
-      container.appendChild(shortcut);
-    }.bind(this));
+    if (!container) {
+      return;
+    }
+    var markupArray = descriptors.map(this.getMarkupForDescriptor_);
+    container.innerHTML = markupArray.join('');
   };
 
-  ns.CheatsheetController.prototype.getDomFromDescriptor_ = function (descriptor) {
+  ns.CheatsheetController.prototype.getMarkupForDescriptor_ = function (descriptor) {
     var shortcutTemplate = pskl.utils.Template.get('cheatsheet-shortcut-template');
     var markup = pskl.utils.Template.replace(shortcutTemplate, {
+      shortcutId : descriptor.id,
       shortcutIcon : descriptor.icon,
       shortcutDescription : descriptor.description,
       shortcutKey : descriptor.key
     });
 
-    return pskl.utils.Template.createFromHTML(markup);
+    return markup;
   };
 })();
