@@ -1,5 +1,9 @@
-<div id="cheatsheet-wrapper" style="display:none">
-  <div class="cheatsheet-container">
+<div id="cheatsheetContainer" class="dialog-wrapper">
+  <h3 class="dialog-head">
+    <span class="dialog-title">Keyboard shortcuts</span>
+    <span class="dialog-close">X</span>
+  </h3>
+  <div class="cheatsheet-container dialog-content">
     <div class="cheatsheet-section">
       <h3 class="cheatsheet-title">Tool shortcuts</h3>
       <ul class="cheatsheet-tool-shortcuts"></ul>
@@ -16,9 +20,6 @@
     </div>
   </div>
 </div>
-<span
-  class="cheatsheet-link"
-  rel="tooltip" data-placement="right" title="Keyboard shortcuts">&nbsp;</span>
 <script type="text/template" id="cheatsheet-shortcut-template">
   <li class="cheatsheet-shortcut">
     <div class="cheatsheet-icon {{shortcutIcon}}"></div>

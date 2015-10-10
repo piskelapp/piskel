@@ -23,25 +23,7 @@
   opacity: 1;
 }
 
-#cheatsheet-wrapper {
-  position: absolute;
-  z-index: 10000;
-
-  top: 50px;
-  right: 50px;
-  bottom: 50px;
-  left: 50px;
-
-  box-sizing: border-box;
-  -moz-box-sizing : border-box;
-
-  color: white;
-}
-
 .cheatsheet-container {
-  width: 100%;
-  height:  100%;
-
   box-sizing: border-box;
   -moz-box-sizing : border-box;
 

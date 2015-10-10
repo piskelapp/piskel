@@ -71,7 +71,9 @@
   };
 
   ns.ImportController.prototype.onBrowseLocalClick_ = function (evt) {
-    $.publish(Events.DIALOG_DISPLAY, 'browse-local');
+    $.publish(Events.DIALOG_DISPLAY, {
+      dialogId : 'browse-local'
+    });
     this.closeDrawer_();
   };
 

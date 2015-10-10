@@ -128,6 +128,7 @@
   "js/controller/dialogs/CreatePaletteController.js",
   "js/controller/dialogs/ImportImageController.js",
   "js/controller/dialogs/BrowseLocalController.js",
+  "js/controller/dialogs/CheatsheetController.js",
 
   // Dialogs controller
   "js/controller/dialogs/DialogsController.js",
@@ -161,7 +162,6 @@
   "js/service/keyboard/Shortcuts.js",
   "js/service/keyboard/ShortcutService.js",
   "js/service/keyboard/KeycodeTranslator.js",
-  "js/service/keyboard/CheatsheetService.js",
   "js/service/ImageUploadService.js",
   "js/service/CurrentColorsService.js",
   "js/service/FileDropperService.js",

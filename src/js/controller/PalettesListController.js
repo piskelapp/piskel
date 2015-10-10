@@ -152,7 +152,9 @@
   };
 
   ns.PalettesListController.prototype.onCreatePaletteClick_ = function (evt) {
-    $.publish(Events.DIALOG_DISPLAY, 'create-palette');
+    $.publish(Events.DIALOG_DISPLAY, {
+      dialogId : 'create-palette'
+    });
   };
 
   ns.PalettesListController.prototype.onEditPaletteClick_ = function (evt) {

@@ -70,6 +70,14 @@
   position : relative;
 }
 
+.dialog-content {
+  position: absolute;
+  top: 45px;
+  bottom: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
 .dialog-head {
   width: 100%;
   background: gold;
@@ -77,6 +85,7 @@
   padding: 10px;
   color: black;
   font-size: 1.8em;
+  height: 45px;
   box-sizing: border-box;
   -moz-box-sizing: border-box;
 }
