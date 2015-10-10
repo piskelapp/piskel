@@ -28,6 +28,7 @@ describe("History Service suite", function() {
       }
     };
     var mockShortcutService = {
+      registerShortcuts : function () {},
       registerShortcut : function () {}
     };
     return new pskl.service.HistoryService(mockPiskelController, mockShortcutService);
