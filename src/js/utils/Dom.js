@@ -41,6 +41,14 @@
       if (parent !== null) {
         return parent.dataset[dataName];
       }
+    },
+
+    removeClass : function (className, container) {
+      container = container || document;
+      var elements = container.querySelectorAll('.' + className);
+      for (var i = 0 ; i < elements.length ; i++) {
+        elements[i].classList.remove(className);
+      }
     }
   };
 })();

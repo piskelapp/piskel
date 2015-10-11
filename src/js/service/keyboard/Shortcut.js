@@ -6,14 +6,17 @@
    *
    * @param {String} id          Shortcut identifier
    * @param {String} description Shortcut description
-   * @param {String|Array<String>} defaultKey  combination of modifiers + ([a-z0-9] or a special key)
+   * @param {String|Array<String>} defaultKeys  combination of modifiers + ([a-z0-9] or a special key)
    *                 Special keys are defined in KeycodeTranslator. If the shortcut supports several keys,
    *                 use an array of String keys
    */
-  ns.Shortcut = function (id, description, defaultKey, displayKey) {
+  ns.Shortcut = function (id, description, defaultKeys, displayKey) {
     this.id_ = id;
     this.description_ = description;
-    this.defaultKey_ = defaultKey;
+    if (typeof defaultKeys === 'string') {
+      defaultKeys = [defaultKeys];
+    }
+    this.defaultKeys_ = defaultKeys;
     this.displayKey_ = displayKey;
   };
 
@@ -32,34 +35,75 @@
    * @return {Array<String>} array of keys
    */
   ns.Shortcut.prototype.getKeys = function () {
-    var keys = pskl.UserSettings.get(this.getLocalStorageKey_()) || this.defaultKey_;
+    var keys = pskl.UserSettings.get(this.getLocalStorageKey_()) || this.defaultKeys_;
+
     if (typeof keys === 'string') {
-      keys = [keys];
+      return [keys];
+    }
+
+    if (!Array.isArray(keys)) {
+      return [];
     }
 
     return keys;
+  };
+
+  ns.Shortcut.prototype.isCustom = function () {
+    var keys = this.getKeys();
+    if (keys.length !== this.defaultKeys_.length) {
+      return true;
+    }
+
+    // for some default keys
+    return this.defaultKeys_.some(function (defaultKey) {
+      // no match can be found in the current keys
+      return !keys.some(function (key) {
+        return ns.KeyUtils.equals(key, defaultKey);
+      });
+    });
+  };
+
+  ns.Shortcut.prototype.isUndefined = function () {
+    return this.getKeys().length === 0;
   };
 
   /**
    * Get the key to be displayed for this shortcut, if
    * @return {[type]} [description]
    */
-  ns.Shortcut.prototype.getKey = function () {
+  ns.Shortcut.prototype.getDisplayKey = function () {
+    if (this.isUndefined()) {
+      return '???';
+    }
+
     if (this.displayKey_) {
       return this.displayKey_;
     }
 
-    var keys = this.getKeys();
-    if (Array.isArray(keys) && keys.length > 0) {
-      return keys[0];
-    }
+    return this.getKeys()[0];
+  };
 
-    return '';
+  ns.Shortcut.prototype.restoreDefault = function (keys) {
+    pskl.UserSettings.set(this.getLocalStorageKey_(), '');
   };
 
   ns.Shortcut.prototype.updateKeys = function (keys) {
-    pskl.UserSettings.set(this.getLocalStorageKey_(), keys.split(', '));
-    $.publish(Events.SHORTCUTS_CHANGED);
+    pskl.UserSettings.set(this.getLocalStorageKey_(), keys);
+  };
+
+  ns.Shortcut.prototype.removeKeys = function (keysToRemove) {
+    var keys = this.getKeys();
+    var updatedKeys = keys.filter(function (key) {
+      return !keysToRemove.some(function (keyToRemove) {
+        return ns.KeyUtils.equals(key, keyToRemove);
+      });
+    });
+
+    if (updatedKeys.length !== keys.length) {
+      this.updateKeys(updatedKeys);
+      return true;
+    }
+    return false;
   };
 
   ns.Shortcut.prototype.getLocalStorageKey_ = function () {

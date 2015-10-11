@@ -38,6 +38,7 @@
     $('#tool-section').mousedown($.proxy(this.onToolIconClicked_, this));
 
     $.subscribe(Events.SELECT_TOOL, this.onSelectToolEvent_.bind(this));
+    $.subscribe(Events.SHORTCUTS_CHANGED, this.createToolsDom_.bind(this));
   };
 
   /**

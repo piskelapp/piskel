@@ -129,7 +129,7 @@
     }
 
     event.preventDefault = function () {};
-    pskl.app.shortcutService.onKeyUp_(event);
+    pskl.app.shortcutService.onKeyDown_(event);
   };
 
   ns.DrawingTestPlayer.prototype.playColorEvent_ = function (recordEvent) {

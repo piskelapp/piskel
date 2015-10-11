@@ -94,7 +94,7 @@ describe("ShortcutService test suite", function() {
     });
 
     console.log('[ShortcutService] ... verify shortcut is called');
-    service.onKeyUp_(createEvent(A_KEYCODE));
+    service.onKeyDown_(createEvent(A_KEYCODE));
     expect(callbackCalled).toBe(true);
   });
 
@@ -123,13 +123,13 @@ describe("ShortcutService test suite", function() {
     });
 
     console.log('[ShortcutService] ... trigger A, expect counter A at 1, B at 0, A_B at 1');
-    service.onKeyUp_(createEvent(A_KEYCODE));
+    service.onKeyDown_(createEvent(A_KEYCODE));
     expect(counters.a).toBe(1);
     expect(counters.b).toBe(0);
     expect(counters.a_b).toBe(1);
 
     console.log('[ShortcutService] ... trigger A, expect counter A at 1, B at 1, A_B at 2');
-    service.onKeyUp_(createEvent(B_KEYCODE));
+    service.onKeyDown_(createEvent(B_KEYCODE));
     expect(counters.a).toBe(1);
     expect(counters.b).toBe(1);
     expect(counters.a_b).toBe(2);
@@ -149,7 +149,7 @@ describe("ShortcutService test suite", function() {
     service.unregisterShortcut(shortcutA);
 
     console.log('[ShortcutService] ... verify shortcut callback is not called');
-    service.onKeyUp_(createEvent(A_KEYCODE));
+    service.onKeyDown_(createEvent(A_KEYCODE));
     expect(callbackCalled).toBe(false);
   });
 
@@ -169,7 +169,7 @@ describe("ShortcutService test suite", function() {
     service.unregisterShortcut(shortcutA);
 
     console.log('[ShortcutService] ... verify shortcut callback for B can still be called');
-    service.onKeyUp_(createEvent(B_KEYCODE));
+    service.onKeyDown_(createEvent(B_KEYCODE));
     expect(callbackCalled).toBe(true);
   });
 
@@ -189,7 +189,7 @@ describe("ShortcutService test suite", function() {
 
     console.log('[ShortcutService] ... verify shortcut callback for A can still be called');
     callbackCalled = false;
-    service.onKeyUp_(createEvent(A_KEYCODE));
+    service.onKeyDown_(createEvent(A_KEYCODE));
     expect(callbackCalled).toBe(true);
   });
 
@@ -204,15 +204,15 @@ describe("ShortcutService test suite", function() {
     });
 
     console.log('[ShortcutService] ... verify shortcut is not called from event on INPUT');
-    service.onKeyUp_(createEvent(A_KEYCODE).setNodeName('INPUT'));
+    service.onKeyDown_(createEvent(A_KEYCODE).setNodeName('INPUT'));
     expect(callbackCalled).toBe(false);
 
     console.log('[ShortcutService] ... verify shortcut is not called from event on TEXTAREA');
-    service.onKeyUp_(createEvent(A_KEYCODE).setNodeName('TEXTAREA'));
+    service.onKeyDown_(createEvent(A_KEYCODE).setNodeName('TEXTAREA'));
     expect(callbackCalled).toBe(false);
 
     console.log('[ShortcutService] ... verify shortcut is called from event on LINK');
-    service.onKeyUp_(createEvent(A_KEYCODE).setNodeName('A'));
+    service.onKeyDown_(createEvent(A_KEYCODE).setNodeName('A'));
     expect(callbackCalled).toBe(true);
   });
 
@@ -252,23 +252,23 @@ describe("ShortcutService test suite", function() {
     };
 
     console.log('[ShortcutService] ... trigger A, expect counters CTRL+A, CTRL+SHIFT+A, CTRL+SHIFT+ALT+A, ALT+A to remain at 0');
-    service.onKeyUp_(createEvent(A_KEYCODE));
+    service.onKeyDown_(createEvent(A_KEYCODE));
     verifyCounters(1,0,0,0,0);
 
     console.log('[ShortcutService] ... trigger CTRL+A, expect counters CTRL+SHIFT+A, CTRL+SHIFT+ALT+A, ALT+A to remain at 0');
-    service.onKeyUp_(createEvent(A_KEYCODE).withCtrlKey());
+    service.onKeyDown_(createEvent(A_KEYCODE).withCtrlKey());
     verifyCounters(1,1,0,0,0);
 
     console.log('[ShortcutService] ... trigger CTRL+A, expect counters CTRL+SHIFT+ALT+A, ALT+A to remain at 0');
-    service.onKeyUp_(createEvent(A_KEYCODE).withCtrlKey().withShiftKey());
+    service.onKeyDown_(createEvent(A_KEYCODE).withCtrlKey().withShiftKey());
     verifyCounters(1,1,1,0,0);
 
     console.log('[ShortcutService] ... trigger CTRL+A, expect counter ALT+A to remain at 0');
-    service.onKeyUp_(createEvent(A_KEYCODE).withCtrlKey().withShiftKey().withAltKey());
+    service.onKeyDown_(createEvent(A_KEYCODE).withCtrlKey().withShiftKey().withAltKey());
     verifyCounters(1,1,1,1,0);
 
     console.log('[ShortcutService] ... trigger CTRL+A, expect all counters at 1');
-    service.onKeyUp_(createEvent(A_KEYCODE).withAltKey());
+    service.onKeyDown_(createEvent(A_KEYCODE).withAltKey());
     verifyCounters(1,1,1,1,1);
   });
 

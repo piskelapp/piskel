@@ -3,6 +3,7 @@
 (typeof exports != "undefined" ? exports : pskl_exports).styles = [
   "css/reset.css",
   "css/style.css",
+  "css/animations.css",
   "css/layout.css",
   "css/font-icon.css",
   "css/forms.css",

@@ -30,7 +30,7 @@
     SELECTION : {
       CUT : createShortcut('selection-cut', 'Cut selection', 'ctrl+X'),
       COPY : createShortcut('selection-copy', 'Copy selection', 'ctrl+C'),
-      PASTE : createShortcut('selection-cut', 'Paste selection', 'ctrl+V'),
+      PASTE : createShortcut('selection-paste', 'Paste selection', 'ctrl+V'),
       DELETE : createShortcut('selection-delete', 'Delete selection', ['del', 'back'])
     },
 
@@ -52,9 +52,9 @@
     },
 
     STORAGE : {
-      OPEN : createShortcut('open', '(Desktop only) Open a .piskel file', 'ctrl+O'),
       SAVE : createShortcut('save', 'Save the current sprite', 'ctrl+S'),
-      SAVE_AS : createShortcut('save-as', '(Desktop only) Save as a new .piskel file', 'ctrl+shift+S')
+      OPEN : createShortcut('open', '(desktop) Open a .piskel file', 'ctrl+O'),
+      SAVE_AS : createShortcut('save-as', '(desktop) Save as new', 'ctrl+shift+S')
     },
 
     COLOR : {
@@ -70,18 +70,43 @@
     CATEGORIES : ['TOOL', 'SELECTION', 'MISC', 'STORAGE', 'COLOR'],
 
     getShortcutById : function (id) {
-      var shortcut = null;
+      return pskl.utils.Array.find(ns.Shortcuts.getShortcuts(), function (shortcut) {
+        return shortcut.getId() === id;
+      });
+    },
+
+    getShortcuts : function () {
+      var shortcuts = [];
       ns.Shortcuts.CATEGORIES.forEach(function (category) {
-        var shortcuts = ns.Shortcuts[category];
-        Object.keys(shortcuts).forEach(function (shortcutKey) {
-          if (shortcuts[shortcutKey].getId() === id) {
-            shortcut = shortcuts[shortcutKey];
-          }
+        var shortcutMap = ns.Shortcuts[category];
+        Object.keys(shortcutMap).forEach(function (shortcutKey) {
+          shortcuts.push(shortcutMap[shortcutKey]);
         });
       });
+      return shortcuts;
+    },
 
-      return shortcut;
+    updateShortcut : function (shortcut, keysString) {
+      keysString = keysString.replace(/\s/g, '');
+      var keys = keysString.split(',');
+      ns.Shortcuts.getShortcuts().forEach(function (s) {
+        if (s === shortcut) {
+          return;
+        }
+
+        if (s.removeKeys(keys)) {
+          $.publish(Events.SHOW_NOTIFICATION, [{'content': 'Shortcut key removed for ' + s.getId()}]);
+        }
+      });
+      shortcut.updateKeys(keys);
+      $.publish(Events.SHORTCUTS_CHANGED);
+    },
+
+    restoreDefaultShortcuts : function () {
+      ns.Shortcuts.getShortcuts().forEach(function (shortcut) {
+        shortcut.restoreDefault();
+      });
+      $.publish(Events.SHORTCUTS_CHANGED);
     }
-
   };
 })();
