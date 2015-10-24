@@ -1,6 +1,8 @@
 (function () {
   var ns = $.namespace('pskl.controller.dialogs');
 
+  var SHORTCUT_EDITING_CLASSNAME = 'cheatsheet-shortcut-editing';
+
   ns.CheatsheetController = function () {};
 
   pskl.utils.inherit(ns.CheatsheetController, ns.AbstractDialogController);
@@ -9,7 +11,7 @@
     this.superclass.init.call(this);
 
     this.cheatsheetEl = document.getElementById('cheatsheetContainer');
-    this.eventTrapInput = document.getElementById('cheatsheet-event-trap');
+    this.eventTrapInput = document.getElementById('cheatsheetEventTrap');
 
     pskl.utils.Event.addEventListener('.cheatsheet-restore-defaults', 'click', this.onRestoreDefaultsClick_, this);
     pskl.utils.Event.addEventListener(this.cheatsheetEl, 'click', this.onCheatsheetClick_, this);
@@ -35,30 +37,38 @@
   };
 
   ns.CheatsheetController.prototype.onCheatsheetClick_ = function (evt) {
-    pskl.utils.Dom.removeClass('cheatsheet-shortcut-editing');
-
     var shortcutEl = pskl.utils.Dom.getParentWithData(evt.target, 'shortcutId');
+    if (!shortcutEl) {
+      pskl.utils.Dom.removeClass(SHORTCUT_EDITING_CLASSNAME);
+      return;
+    }
+
+    var shortcutId = shortcutEl.dataset.shortcutId;
+    var shortcut = pskl.service.keyboard.Shortcuts.getShortcutById(shortcutId);
+
+    if (shortcutEl.classList.contains(SHORTCUT_EDITING_CLASSNAME)) {
+      shortcutEl.classList.remove(SHORTCUT_EDITING_CLASSNAME);
+      this.eventTrapInput.blur();
+    } else if (shortcut.isEditable()) {
+      shortcutEl.classList.add(SHORTCUT_EDITING_CLASSNAME);
+      this.eventTrapInput.focus();
+    }
+  };
+
+  ns.CheatsheetController.prototype.onEventTrapKeydown_ = function (evt) {
+    var shortcutEl = document.querySelector('.' + SHORTCUT_EDITING_CLASSNAME);
     if (!shortcutEl) {
       return;
     }
 
-    shortcutEl.classList.add('cheatsheet-shortcut-editing');
-    this.eventTrapInput.focus();
-  };
-
-  ns.CheatsheetController.prototype.onEventTrapKeydown_ = function (evt) {
-    var editedShortcutEl = document.querySelector('.cheatsheet-shortcut-editing');
-    if (!editedShortcutEl) {
-      return;
-    }
-
+    var shortcutId = shortcutEl.dataset.shortcutId;
+    var shortcut = pskl.service.keyboard.Shortcuts.getShortcutById(shortcutId);
     var shortcutKeyObject = pskl.service.keyboard.KeyUtils.createKeyFromEvent(evt);
     var shortcutKeyString = pskl.service.keyboard.KeyUtils.stringify(shortcutKeyObject);
 
-    var shortcutId = editedShortcutEl.dataset.shortcutId;
-    var shortcut = pskl.service.keyboard.Shortcuts.getShortcutById(shortcutId);
     pskl.service.keyboard.Shortcuts.updateShortcut(shortcut, shortcutKeyString);
 
+    shortcutEl.classList.remove(SHORTCUT_EDITING_CLASSNAME);
     this.eventTrapInput.blur();
 
     evt.preventDefault();
@@ -108,13 +118,23 @@
     var shortcut = descriptor.shortcut;
     var description = shortcut.isCustom() ? shortcut.getDescription() + ' *' : shortcut.getDescription();
 
-    var shortcutClass = shortcut.isUndefined() ? 'cheatsheet-shortcut-undefined' : '';
+    var shortcutClasses = [];
+    if (shortcut.isUndefined()) {
+      shortcutClasses.push('cheatsheet-shortcut-undefined');
+    }
+    if (shortcut.isEditable()) {
+      shortcutClasses.push('cheatsheet-shortcut-editable');
+    }
+
+    var title = shortcut.isEditable() ? 'Click to edit the key' : 'Shortcut cannot be remapped';
+
     var markup = pskl.utils.Template.replace(shortcutTemplate, {
-      shortcutId : shortcut.getId(),
-      shortcutIcon : descriptor.iconClass,
-      shortcutDescription : description,
-      shortcutKey : this.formatKey_(shortcut.getDisplayKey()),
-      shortcutClass : shortcutClass
+      id : shortcut.getId(),
+      title : title,
+      icon : descriptor.iconClass,
+      description : description,
+      key : this.formatKey_(shortcut.getDisplayKey()),
+      className : shortcutClasses.join(' ')
     });
 
     return markup;

@@ -48,6 +48,14 @@
     return keys;
   };
 
+  /**
+   * For now, only shortcuts with a single key mapped can be edited
+   * @return {Boolean} true if the shortcut can be updated
+   */
+  ns.Shortcut.prototype.isEditable = function () {
+    return this.getKeys().length < 2;
+  };
+
   ns.Shortcut.prototype.isCustom = function () {
     var keys = this.getKeys();
     if (keys.length !== this.defaultKeys_.length) {
@@ -92,6 +100,10 @@
   };
 
   ns.Shortcut.prototype.removeKeys = function (keysToRemove) {
+    if (!this.isEditable()) {
+      return;
+    }
+
     var keys = this.getKeys();
     var updatedKeys = keys.filter(function (key) {
       return !keysToRemove.some(function (keyToRemove) {

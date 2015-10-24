@@ -44,10 +44,6 @@
   overflow: auto;
 }
 
-.animated #dialog-container {
-  transition:margin-top 0.2s;
-}
-
 .show #dialog-container {
   margin-top: 0;
 }

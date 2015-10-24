@@ -27,6 +27,7 @@
 .cheatsheet-container {
   box-sizing: border-box;
 
+  bottom: 70px;
   padding: 20px 3%;
   border-radius: 3px;
   background-color: rgba(0,0,0,0.9);
@@ -46,12 +47,18 @@
   display: inline-block;
   vertical-align: top;
   padding : 0 20px;
+  box-sizing: border-box;
+}
+
+@media (min-width: 1200px) {
+  .cheatsheet-section {
+    width: 33%;
+  }
 }
 
 .cheatsheet-shortcut {
   overflow: hidden;
   margin: 10px 0;
-  cursor : pointer;
 }
 
 .cheatsheet-icon.tool-icon {
@@ -79,14 +86,14 @@
   line-height: 26px;
   padding: 0 10px;
 
-  border : 2px solid gold;
+  border : 2px solid white;
   border-radius: 2px;
 
   text-align: center;
   font-family:Courier;
   font-weight: bold;
   font-size : 18px;
-  color: gold;
+  color: white;
 }
 
 .cheatsheet-shorcut-conflict .cheatsheet-key {
@@ -94,10 +101,50 @@
   color: red;
 }
 
-.cheatsheet-shortcut-editing .cheatsheet-key{
+.cheatsheet-shortcut-editable {
+  cursor : pointer;
+}
+
+.cheatsheet-shortcut-editable .cheatsheet-key {
+  border-color: gold;
+  color: gold;
+}
+
+.cheatsheet-shortcut-editing .cheatsheet-key {
   animation: fade .5s infinite;
 }
-.cheatsheet-shortcut-undefined .cheatsheet-key{
+
+.cheatsheet-shortcut-undefined .cheatsheet-key {
   border-color: red;
   color: red;
+}
+
+/*Cheatsheet actions*/
+
+.cheatsheet-actions {
+  position: absolute;
+  box-sizing: border-box;
+
+  bottom : 0;
+  left : 0;
+  right : 0;
+  height : 70px;
+
+  padding : 10px;
+  overflow: hidden;
+
+  background-color : gold;
+}
+
+.cheatsheet-helptext {
+  display: block;
+  font-size: 14px;
+  color: black;
+  padding-right: 150px;
+}
+
+.cheatsheet-button {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
 }
