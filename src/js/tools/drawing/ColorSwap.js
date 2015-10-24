@@ -56,8 +56,9 @@
   };
 
   ns.ColorSwap.prototype.applyToolOnFrame_ = function (frame, oldColor, newColor) {
+    oldColor = oldColor.toUpperCase();
     frame.forEachPixel(function (color, col, row) {
-      if (color == oldColor) {
+      if (color && color.toUpperCase() == oldColor) {
         frame.pixels[col][row] = newColor;
       }
     });
