@@ -25,13 +25,16 @@
         deferred.resolve(fileInputElement.value);
       };
 
-      fileInputElement.click();
-
-      fileInputElement.addEventListener('change', changeListener);
-      // there is no way to detect a cancelled fileInput popup
-      // as a crappy workaround we add a click listener on the document
-      // on top the change event listener
-      document.addEventListener('click', changeListener);
+      // fix for issue #322 :
+      window.setTimeout(function () {
+        fileInputElement.click();
+        fileInputElement.addEventListener('change', changeListener);
+        // there is no way to detect a cancelled fileInput popup
+        // as a crappy workaround we add a click listener on the document
+        // on top the change event listener
+        // todo : listen to dirty check instead
+        document.addEventListener('mousedown', changeListener);
+      }, 50);
 
       return deferred.promise;
     },
