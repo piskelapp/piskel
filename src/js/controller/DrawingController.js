@@ -172,7 +172,6 @@
   ns.DrawingController.prototype.onMousemove_ = function (event) {
     this._clientX = event.clientX;
     this._clientY = event.clientY;
-    
     if (typeof event.targetTouches != 'undefined' &&
         typeof event.targetTouches[0] != 'undefined' &&
         typeof event.targetTouches[0].pageX != 'undefined' &&
@@ -272,7 +271,6 @@
         typeof event.changedTouches[0] != 'undefined' &&
         typeof event.changedTouches[0].pageX != 'undefined' &&
         typeof event.changedTouches[0].pageY != 'undefined') {
-
       coords = this.getSpriteCoordinates(event.changedTouches[0].pageX, event.changedTouches[0].pageY);
     }
     if (this.isClicked) {
