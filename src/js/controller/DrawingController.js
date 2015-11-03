@@ -85,7 +85,9 @@
     window.addEventListener('mouseup', this.onMouseup_.bind(this));
     window.addEventListener('mousemove', this.onMousemove_.bind(this));
     window.addEventListener('keyup', this.onKeyup_.bind(this));
-
+    window.addEventListener('touchstart', this.onMousedown_.bind(this));
+    window.addEventListener('touchmove' , this.onMousemove_.bind(this));
+    window.addEventListener('touchend', this.onMouseup_.bind(this));
     // Deactivate right click:
     body.contextmenu(this.onCanvasContextMenu_);
 
@@ -140,6 +142,12 @@
     $.publish(Events.MOUSE_EVENT, [event, this]);
     var frame = this.piskelController.getCurrentFrame();
     var coords = this.getSpriteCoordinates(event.clientX, event.clientY);
+    if (typeof event.targetTouches != 'undefined' &&
+        typeof event.targetTouches[0] != 'undefined' &&
+        typeof event.targetTouches[0].pageX != 'undefined' &&
+        typeof event.targetTouches[0].pageY != 'undefined') {
+      coords = this.getSpriteCoordinates(event.targetTouches[0].pageX, event.targetTouches[0].pageY);
+    }
 
     this.isClicked = true;
 
@@ -164,6 +172,14 @@
   ns.DrawingController.prototype.onMousemove_ = function (event) {
     this._clientX = event.clientX;
     this._clientY = event.clientY;
+    
+    if (typeof event.targetTouches != 'undefined' &&
+        typeof event.targetTouches[0] != 'undefined' &&
+        typeof event.targetTouches[0].pageX != 'undefined' &&
+        typeof event.targetTouches[0].pageY != 'undefined') {
+      this._clientX = event.targetTouches[0].pageX;
+      this._clientY = event.targetTouches[0].pageY;
+    }
 
     var currentTime = new Date().getTime();
     // Throttling of the mousemove event:
@@ -252,6 +268,13 @@
   ns.DrawingController.prototype.onMouseup_ = function (event) {
     var frame = this.piskelController.getCurrentFrame();
     var coords = this.getSpriteCoordinates(event.clientX, event.clientY);
+    if (typeof event.changedTouches != 'undefined' &&
+        typeof event.changedTouches[0] != 'undefined' &&
+        typeof event.changedTouches[0].pageX != 'undefined' &&
+        typeof event.changedTouches[0].pageY != 'undefined') {
+
+      coords = this.getSpriteCoordinates(event.changedTouches[0].pageX, event.changedTouches[0].pageY);
+    }
     if (this.isClicked) {
       // A mouse button was clicked on the drawing canvas before this mouseup event,
       // the user was probably drawing on the canvas.
