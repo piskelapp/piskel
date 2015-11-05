@@ -1,4 +1,5 @@
 module.exports = function(grunt) {
+  var ip = 'localhost';
   var dateFormat = require('dateformat');
   var now = new Date();
   var version = '-' + dateFormat(now, "yyyy-mm-dd-hh-MM");
@@ -34,7 +35,7 @@ module.exports = function(grunt) {
       filesSrc : tests,
       options : {
         args : {
-          baseUrl : 'http://localhost:' + '<%= express.test.options.port %>/',
+          baseUrl : 'http://' + ip + ':' + '<%= express.test.options.port %>/',
           mode : '?debug',
           delay : conf.delay
         },
@@ -58,7 +59,7 @@ module.exports = function(grunt) {
     return {
       options: {
         port: port,
-        hostname : host || 'localhost',
+        hostname : host || ip,
         bases: bases
       }
     };
@@ -111,10 +112,10 @@ module.exports = function(grunt) {
     },
     open : {
       regular : {
-        path : 'http://localhost:9001/'
+        path : 'http://' + ip + ':9001/'
       },
       debug : {
-        path : 'http://localhost:9901/?debug'
+        path : 'http://' + ip + ':9901/?debug'
       }
     },
 
