@@ -85,7 +85,9 @@
     window.addEventListener('mouseup', this.onMouseup_.bind(this));
     window.addEventListener('mousemove', this.onMousemove_.bind(this));
     window.addEventListener('keyup', this.onKeyup_.bind(this));
-
+    window.addEventListener('touchstart', this.onMousedown_.bind(this));
+    window.addEventListener('touchmove' , this.onMousemove_.bind(this));
+    window.addEventListener('touchend', this.onMouseup_.bind(this));
     // Deactivate right click:
     body.contextmenu(this.onCanvasContextMenu_);
 
@@ -140,6 +142,10 @@
     $.publish(Events.MOUSE_EVENT, [event, this]);
     var frame = this.piskelController.getCurrentFrame();
     var coords = this.getSpriteCoordinates(event.clientX, event.clientY);
+    if (typeof event.changedTouches != 'undefined' &&
+        typeof event.changedTouches[0] != 'undefined') {
+      coords = this.getSpriteCoordinates(event.changedTouches[0].clientX, event.changedTouches[0].clientY);
+    }
 
     this.isClicked = true;
 
@@ -164,6 +170,11 @@
   ns.DrawingController.prototype.onMousemove_ = function (event) {
     this._clientX = event.clientX;
     this._clientY = event.clientY;
+    if (typeof event.changedTouches != 'undefined' &&
+        typeof event.changedTouches[0] != 'undefined') {
+      this._clientX = event.changedTouches[0].clientX;
+      this._clientY = event.changedTouches[0].clientY;
+    }
 
     var currentTime = new Date().getTime();
     // Throttling of the mousemove event:
@@ -252,6 +263,10 @@
   ns.DrawingController.prototype.onMouseup_ = function (event) {
     var frame = this.piskelController.getCurrentFrame();
     var coords = this.getSpriteCoordinates(event.clientX, event.clientY);
+    if (typeof event.changedTouches != 'undefined' &&
+        typeof event.changedTouches[0] != 'undefined') {
+      coords = this.getSpriteCoordinates(event.changedTouches[0].clientX, event.changedTouches[0].clientY);
+    }
     if (this.isClicked) {
       // A mouse button was clicked on the drawing canvas before this mouseup event,
       // the user was probably drawing on the canvas.
