@@ -142,8 +142,7 @@
     $.publish(Events.MOUSE_EVENT, [event, this]);
     var frame = this.piskelController.getCurrentFrame();
     var coords = this.getSpriteCoordinates(event.clientX, event.clientY);
-    if (typeof event.changedTouches != 'undefined' &&
-        typeof event.changedTouches[0] != 'undefined') {
+    if (event.changedTouches && event.changedTouches[0]) {
       coords = this.getSpriteCoordinates(event.changedTouches[0].clientX, event.changedTouches[0].clientY);
     }
 
@@ -170,8 +169,7 @@
   ns.DrawingController.prototype.onMousemove_ = function (event) {
     this._clientX = event.clientX;
     this._clientY = event.clientY;
-    if (typeof event.changedTouches != 'undefined' &&
-        typeof event.changedTouches[0] != 'undefined') {
+    if (event.changedTouches && event.changedTouches[0]) {
       this._clientX = event.changedTouches[0].clientX;
       this._clientY = event.changedTouches[0].clientY;
     }
@@ -263,8 +261,7 @@
   ns.DrawingController.prototype.onMouseup_ = function (event) {
     var frame = this.piskelController.getCurrentFrame();
     var coords = this.getSpriteCoordinates(event.clientX, event.clientY);
-    if (typeof event.changedTouches != 'undefined' &&
-        typeof event.changedTouches[0] != 'undefined') {
+    if (event.changedTouches && event.changedTouches[0]) {
       coords = this.getSpriteCoordinates(event.changedTouches[0].clientX, event.changedTouches[0].clientY);
     }
     if (this.isClicked) {
