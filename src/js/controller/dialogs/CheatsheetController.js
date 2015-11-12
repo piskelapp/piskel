@@ -20,6 +20,7 @@
     $.subscribe(Events.SHORTCUTS_CHANGED, this.onShortcutsChanged_.bind(this));
 
     this.initMarkup_();
+    document.querySelector('.cheatsheet-helptext').setAttribute('title', this.getHelptextTitle_());
   };
 
   ns.CheatsheetController.prototype.destroy = function () {
@@ -29,7 +30,9 @@
   };
 
   ns.CheatsheetController.prototype.onRestoreDefaultsClick_ = function () {
-    pskl.service.keyboard.Shortcuts.restoreDefaultShortcuts();
+    if (window.confirm('Replace all custom shortcuts by the default Piskel shortcuts ?')) {
+      pskl.service.keyboard.Shortcuts.restoreDefaultShortcuts();
+    }
   };
 
   ns.CheatsheetController.prototype.onShortcutsChanged_ = function () {
@@ -151,5 +154,20 @@
     // add spaces around '+' delimiters
     key = key.replace(/([^ ])\+([^ ])/g, '$1 + $2');
     return key;
+  };
+
+  ns.CheatsheetController.prototype.getHelptextTitle_ = function () {
+    var helpItems = [
+      'Click on a shortcut to change the key.',
+      'When the shortcut blinks, press the key on your keyboard to assign it.',
+      'White shortcuts can not be edited.',
+      'Click on \'Restore default shortcuts\' to erase all custom shortcuts.'
+    ];
+
+    var helptextTitle = helpItems.reduce(function (p, n) {
+      return p + '<div class="cheatsheet-helptext-tooltip-item">' + n + '</div>';
+    }, '');
+    helptextTitle = '<div class="cheatsheet-helptext-tooltip">' + helptextTitle + '</div>';
+    return helptextTitle;
   };
 })();

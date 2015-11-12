@@ -26,8 +26,9 @@
 
 .cheatsheet-container {
   box-sizing: border-box;
+  display: block;
 
-  bottom: 70px;
+  bottom: 46px;
   padding: 20px 3%;
   border-radius: 3px;
   background-color: rgba(0,0,0,0.9);
@@ -44,15 +45,28 @@
 }
 
 .cheatsheet-section {
-  display: inline-block;
-  vertical-align: top;
-  padding : 0 20px;
   box-sizing: border-box;
+  float: left;
+
+  vertical-align: top;
+  padding : 0 20px 20px 20px;
+  min-width: 300px;
 }
 
-@media (min-width: 1200px) {
-  .cheatsheet-section {
+.cheatsheet-boxes {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+
+  float: left;
+}
+
+@media (min-width: 1300px) {
+  .cheatsheet-container > div {
     width: 33%;
+  }
+  .cheatsheet-boxes {
+    flex-direction: column;
   }
 }
 
@@ -128,7 +142,7 @@
   bottom : 0;
   left : 0;
   right : 0;
-  height : 70px;
+  height : 46px;
 
   padding : 10px;
   overflow: hidden;
@@ -137,10 +151,19 @@
 }
 
 .cheatsheet-helptext {
-  display: block;
   font-size: 14px;
+  height : 26px;
+  line-height : 26px;
   color: black;
-  padding-right: 150px;
+}
+
+.cheatsheet-helptext-tooltip {
+  text-align: left;
+}
+
+.cheatsheet-helptext-tooltip-item {
+  line-height: 0.9em;
+  margin: 10px 0;
 }
 
 .cheatsheet-button {
