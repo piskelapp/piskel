@@ -9,8 +9,10 @@
 
   ns.Eraser = function() {
     this.superclass.constructor.call(this);
+
     this.toolId = 'tool-eraser';
     this.helpText = 'Eraser tool';
+    this.shortcut = pskl.service.keyboard.Shortcuts.TOOL.ERASER;
   };
 
   pskl.utils.inherit(ns.Eraser, ns.SimplePen);

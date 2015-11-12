@@ -10,9 +10,10 @@
 
   ns.Lighten = function() {
     this.superclass.constructor.call(this);
-    this.toolId = 'tool-lighten';
 
+    this.toolId = 'tool-lighten';
     this.helpText = 'Lighten';
+    this.shortcut = pskl.service.keyboard.Shortcuts.TOOL.LIGHTEN;
 
     this.tooltipDescriptors = [
       {key : 'ctrl', description : 'Darken'},

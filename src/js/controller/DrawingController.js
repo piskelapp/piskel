@@ -62,9 +62,10 @@
     $.subscribe(Events.USER_SETTINGS_CHANGED, this.onUserSettingsChange_.bind(this));
     $.subscribe(Events.FRAME_SIZE_CHANGED, this.onFrameSizeChange_.bind(this));
 
-    pskl.app.shortcutService.addShortcut('0', this.resetZoom_.bind(this));
-    pskl.app.shortcutService.addShortcut('+', this.increaseZoom_.bind(this, 1));
-    pskl.app.shortcutService.addShortcut('-', this.decreaseZoom_.bind(this, 1));
+    var shortcuts = pskl.service.keyboard.Shortcuts;
+    pskl.app.shortcutService.registerShortcut(shortcuts.MISC.RESET_ZOOM, this.resetZoom_.bind(this));
+    pskl.app.shortcutService.registerShortcut(shortcuts.MISC.INCREASE_ZOOM, this.increaseZoom_.bind(this, 1));
+    pskl.app.shortcutService.registerShortcut(shortcuts.MISC.DECREASE_ZOOM, this.decreaseZoom_.bind(this, 1));
 
     window.setTimeout(function () {
       this.afterWindowResize_();

@@ -9,6 +9,7 @@
   ns.Stroke = function() {
     this.toolId = 'tool-stroke';
     this.helpText = 'Stroke tool';
+    this.shortcut = pskl.service.keyboard.Shortcuts.TOOL.STROKE;
 
     // Stroke's first point coordinates (set in applyToolAt)
     this.startCol = null;

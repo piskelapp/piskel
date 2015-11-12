@@ -9,6 +9,7 @@
   ns.Move = function() {
     this.toolId = ns.Move.TOOL_ID;
     this.helpText = 'Move tool';
+    this.shortcut = pskl.service.keyboard.Shortcuts.TOOL.MOVE;
 
     this.tooltipDescriptors = [
       {key : 'ctrl', description : 'Apply to all layers'},
@@ -21,6 +22,10 @@
     this.startRow = null;
   };
 
+  /**
+   * The move tool id is used by the ToolController and the BaseSelect and needs to be
+   * easliy accessible
+   */
   ns.Move.TOOL_ID = 'tool-move';
 
   pskl.utils.inherit(ns.Move, ns.BaseTool);

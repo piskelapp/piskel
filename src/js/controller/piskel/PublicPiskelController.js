@@ -30,10 +30,11 @@
     this.saveWrap_('moveLayerDown', true);
     this.saveWrap_('removeCurrentLayer', true);
 
-    pskl.app.shortcutService.addShortcut('up', this.selectPreviousFrame.bind(this));
-    pskl.app.shortcutService.addShortcut('down', this.selectNextFrame.bind(this));
-    pskl.app.shortcutService.addShortcut('n', this.addFrameAtCurrentIndex.bind(this));
-    pskl.app.shortcutService.addShortcut('shift+n', this.duplicateCurrentFrame.bind(this));
+    var shortcuts = pskl.service.keyboard.Shortcuts;
+    pskl.app.shortcutService.registerShortcut(shortcuts.MISC.PREVIOUS_FRAME, this.selectPreviousFrame.bind(this));
+    pskl.app.shortcutService.registerShortcut(shortcuts.MISC.NEXT_FRAME, this.selectNextFrame.bind(this));
+    pskl.app.shortcutService.registerShortcut(shortcuts.MISC.NEW_FRAME, this.addFrameAtCurrentIndex.bind(this));
+    pskl.app.shortcutService.registerShortcut(shortcuts.MISC.DUPLICATE_FRAME, this.duplicateCurrentFrame.bind(this));
   };
 
   ns.PublicPiskelController.prototype.setPiskel = function (piskel, preserveState) {

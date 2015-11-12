@@ -16,7 +16,7 @@ describe("Storage Service test suite", function() {
       save : function () {}
     };
     pskl.app.shortcutService = {
-      addShortcut : function () {}
+      registerShortcut : function () {}
     };
 
     storageService = new pskl.service.storage.StorageService();

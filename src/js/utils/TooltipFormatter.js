@@ -5,7 +5,7 @@
 
   ns.TooltipFormatter.format = function(helpText, shortcut, descriptors) {
     var tpl = pskl.utils.Template.get('tooltip-container-template');
-    shortcut = shortcut ? '(' + shortcut + ')' : '';
+    shortcut = shortcut ? '(' + shortcut.getDisplayKey() + ')' : '';
     return pskl.utils.Template.replace(tpl, {
       helptext : helpText,
       shortcut : shortcut,

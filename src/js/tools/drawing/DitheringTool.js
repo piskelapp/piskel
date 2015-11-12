@@ -10,6 +10,7 @@
     ns.SimplePen.call(this);
     this.toolId = 'tool-dithering';
     this.helpText = 'Dithering tool';
+    this.shortcut = pskl.service.keyboard.Shortcuts.TOOL.DITHERING;
   };
   pskl.utils.inherit(ns.DitheringTool, ns.SimplePen);
 

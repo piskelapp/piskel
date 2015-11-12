@@ -17,7 +17,9 @@
     // 61 on Firefox for =/+ key
     61 : '+',
     188 : '<',
-    190 : '>'
+    190 : '>',
+    219 : '[',
+    221 : ']'
   };
 
   var ns = $.namespace('pskl.service.keyboard');

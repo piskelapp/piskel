@@ -8,6 +8,7 @@
 
   ns.AbstractDragSelect = function () {
     ns.BaseSelect.call(this);
+
     this.hasSelection = false;
   };
 

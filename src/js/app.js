@@ -127,9 +127,6 @@
       this.imageUploadService = new pskl.service.ImageUploadService();
       this.imageUploadService.init();
 
-      this.cheatsheetService = new pskl.service.keyboard.CheatsheetService();
-      this.cheatsheetService.init();
-
       this.savedStatusService = new pskl.service.SavedStatusService(this.piskelController);
       this.savedStatusService.init();
 

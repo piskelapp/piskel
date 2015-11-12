@@ -10,8 +10,9 @@
     $.subscribe(Events.SELECT_PRIMARY_COLOR, this.onColorSelected_.bind(this, {isPrimary:true}));
     $.subscribe(Events.SELECT_SECONDARY_COLOR, this.onColorSelected_.bind(this, {isPrimary:false}));
 
-    pskl.app.shortcutService.addShortcut('X', this.swapColors.bind(this));
-    pskl.app.shortcutService.addShortcut('D', this.resetColors.bind(this));
+    var shortcuts = pskl.service.keyboard.Shortcuts;
+    pskl.app.shortcutService.registerShortcut(shortcuts.COLOR.SWAP, this.swapColors.bind(this));
+    pskl.app.shortcutService.registerShortcut(shortcuts.COLOR.RESET, this.resetColors.bind(this));
 
     var spectrumCfg = {
       showPalette: true,

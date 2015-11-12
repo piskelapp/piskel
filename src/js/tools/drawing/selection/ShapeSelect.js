@@ -7,11 +7,11 @@
   var ns = $.namespace('pskl.tools.drawing.selection');
 
   ns.ShapeSelect = function() {
-    this.toolId = 'tool-shape-select';
-
-    this.helpText = 'Shape selection';
-
     ns.BaseSelect.call(this);
+
+    this.toolId = 'tool-shape-select';
+    this.helpText = 'Shape selection';
+    this.shortcut = pskl.service.keyboard.Shortcuts.TOOL.SHAPE_SELECT;
   };
 
   pskl.utils.inherit(ns.ShapeSelect, ns.BaseSelect);

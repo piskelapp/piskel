@@ -2,29 +2,26 @@
   var ns = $.namespace('pskl.controller');
 
   ns.ToolController = function () {
-    var toDescriptor = function (id, shortcut, instance) {
-      return {id:id, shortcut:shortcut, instance:instance};
-    };
 
     this.tools = [
-      toDescriptor('simplePen', 'P', new pskl.tools.drawing.SimplePen()),
-      toDescriptor('verticalMirrorPen', 'V', new pskl.tools.drawing.VerticalMirrorPen()),
-      toDescriptor('paintBucket', 'B', new pskl.tools.drawing.PaintBucket()),
-      toDescriptor('colorSwap', 'A', new pskl.tools.drawing.ColorSwap()),
-      toDescriptor('eraser', 'E', new pskl.tools.drawing.Eraser()),
-      toDescriptor('stroke', 'L', new pskl.tools.drawing.Stroke()),
-      toDescriptor('rectangle', 'R', new pskl.tools.drawing.Rectangle()),
-      toDescriptor('circle', 'C', new pskl.tools.drawing.Circle()),
-      toDescriptor('move', 'M', new pskl.tools.drawing.Move()),
-      toDescriptor('shapeSelect', 'Z', new pskl.tools.drawing.selection.ShapeSelect()),
-      toDescriptor('rectangleSelect', 'S', new pskl.tools.drawing.selection.RectangleSelect()),
-      toDescriptor('lassoSelect', 'H', new pskl.tools.drawing.selection.LassoSelect()),
-      toDescriptor('lighten', 'U', new pskl.tools.drawing.Lighten()),
-      toDescriptor('dithering', 'T', new pskl.tools.drawing.DitheringTool()),
-      toDescriptor('colorPicker', 'O', new pskl.tools.drawing.ColorPicker())
+      new pskl.tools.drawing.SimplePen(),
+      new pskl.tools.drawing.VerticalMirrorPen(),
+      new pskl.tools.drawing.PaintBucket(),
+      new pskl.tools.drawing.ColorSwap(),
+      new pskl.tools.drawing.Eraser(),
+      new pskl.tools.drawing.Stroke(),
+      new pskl.tools.drawing.Rectangle(),
+      new pskl.tools.drawing.Circle(),
+      new pskl.tools.drawing.Move(),
+      new pskl.tools.drawing.selection.ShapeSelect(),
+      new pskl.tools.drawing.selection.RectangleSelect(),
+      new pskl.tools.drawing.selection.LassoSelect(),
+      new pskl.tools.drawing.Lighten(),
+      new pskl.tools.drawing.DitheringTool(),
+      new pskl.tools.drawing.ColorPicker()
     ];
 
-    this.toolIconRenderer = new pskl.tools.IconMarkupRenderer();
+    this.iconMarkupRenderer = new pskl.tools.IconMarkupRenderer();
   };
 
   /**
@@ -41,6 +38,7 @@
     $('#tool-section').mousedown($.proxy(this.onToolIconClicked_, this));
 
     $.subscribe(Events.SELECT_TOOL, this.onSelectToolEvent_.bind(this));
+    $.subscribe(Events.SHORTCUTS_CHANGED, this.createToolsDom_.bind(this));
   };
 
   /**
@@ -53,8 +51,8 @@
       stage.removeClass(previousSelectedToolClass);
       stage.removeClass(pskl.tools.drawing.Move.TOOL_ID);
     }
-    stage.addClass(tool.instance.toolId);
-    stage.data('selected-tool-class', tool.instance.toolId);
+    stage.addClass(tool.toolId);
+    stage.data('selected-tool-class', tool.toolId);
   };
 
   ns.ToolController.prototype.onSelectToolEvent_ = function(event, toolId) {
@@ -72,12 +70,12 @@
     this.activateToolOnStage_(this.currentSelectedTool);
 
     var selectedToolElement = $('#tool-section .tool-icon.selected');
-    var toolElement = $('[data-tool-id=' + tool.instance.toolId + ']');
+    var toolElement = $('[data-tool-id=' + tool.toolId + ']');
 
     selectedToolElement.removeClass('selected');
     toolElement.addClass('selected');
 
-    $.publish(Events.TOOL_SELECTED, [tool.instance]);
+    $.publish(Events.TOOL_SELECTED, [tool]);
   };
 
   /**
@@ -96,18 +94,16 @@
     }
   };
 
-  ns.ToolController.prototype.onKeyboardShortcut_ = function(charkey) {
-    for (var i = 0 ; i < this.tools.length ; i++) {
-      var tool = this.tools[i];
-      if (tool.shortcut.toLowerCase() === charkey.toLowerCase()) {
-        this.selectTool_(tool);
-      }
+  ns.ToolController.prototype.onKeyboardShortcut_ = function(toolId, charkey) {
+    var tool = this.getToolById_(toolId);
+    if (tool !== null) {
+      this.selectTool_(tool);
     }
   };
 
   ns.ToolController.prototype.getToolById_ = function (toolId) {
     return pskl.utils.Array.find(this.tools, function (tool) {
-      return tool.instance.toolId == toolId;
+      return tool.toolId == toolId;
     });
   };
 
@@ -118,14 +114,15 @@
     var html = '';
     for (var i = 0 ; i < this.tools.length ; i++) {
       var tool = this.tools[i];
-      html += this.toolIconRenderer.render(tool.instance, tool.shortcut);
+      html += this.iconMarkupRenderer.render(tool);
     }
     $('#tools-container').html(html);
   };
 
   ns.ToolController.prototype.addKeyboardShortcuts_ = function () {
     for (var i = 0 ; i < this.tools.length ; i++) {
-      pskl.app.shortcutService.addShortcut(this.tools[i].shortcut, this.onKeyboardShortcut_.bind(this));
+      var tool = this.tools[i];
+      pskl.app.shortcutService.registerShortcut(tool.shortcut, this.onKeyboardShortcut_.bind(this, tool.toolId));
     }
   };
 })();

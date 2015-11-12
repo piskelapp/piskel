@@ -25,9 +25,6 @@
     document.body.appendChild(message);
 
     message.querySelector('.close').addEventListener('click', this.removeMessage_.bind(this));
-    if (messageInfo.behavior) {
-      messageInfo.behavior(message);
-    }
 
     if (messageInfo.hideDelay) {
       window.setTimeout(this.removeMessage_.bind(this), messageInfo.hideDelay);

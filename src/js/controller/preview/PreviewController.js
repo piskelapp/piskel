@@ -14,6 +14,9 @@
     this.elapsedTime = 0;
     this.currentIndex = 0;
 
+    this.onionSkinShortcut = pskl.service.keyboard.Shortcuts.MISC.ONION_SKIN;
+    this.originalSizeShortcut = pskl.service.keyboard.Shortcuts.MISC.X1_PREVIEW;
+
     this.renderFlag = true;
 
     /**
@@ -47,8 +50,8 @@
     pskl.utils.Event.addEventListener(this.openPopupPreview, 'click', this.onOpenPopupPreviewClick_, this);
     pskl.utils.Event.addEventListener(this.originalSizeButton, 'click', this.onOriginalSizeButtonClick_, this);
 
-    pskl.app.shortcutService.addShortcut(ONION_SKIN_SHORTCUT, this.toggleOnionSkin_.bind(this));
-    pskl.app.shortcutService.addShortcut(ORIGINAL_SIZE_SHORTCUT, this.onOriginalSizeButtonClick_.bind(this));
+    pskl.app.shortcutService.registerShortcut(this.onionSkinShortcut, this.toggleOnionSkin_.bind(this));
+    pskl.app.shortcutService.registerShortcut(this.originalSizeShortcut, this.onOriginalSizeButtonClick_.bind(this));
 
     $.subscribe(Events.FRAME_SIZE_CHANGED, this.onFrameSizeChange_.bind(this));
     $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
@@ -66,9 +69,9 @@
   };
 
   ns.PreviewController.prototype.initTooltips_ = function () {
-    var onionSkinTooltip = pskl.utils.TooltipFormatter.format('Toggle onion skin', ONION_SKIN_SHORTCUT);
+    var onionSkinTooltip = pskl.utils.TooltipFormatter.format('Toggle onion skin', this.onionSkinShortcut);
     this.toggleOnionSkinButton.setAttribute('title', onionSkinTooltip);
-    var originalSizeTooltip = pskl.utils.TooltipFormatter.format('Original size preview', ORIGINAL_SIZE_SHORTCUT);
+    var originalSizeTooltip = pskl.utils.TooltipFormatter.format('Original size preview', this.originalSizeShortcut);
     this.originalSizeButton.setAttribute('title', originalSizeTooltip);
   };
 

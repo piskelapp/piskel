@@ -32,7 +32,6 @@
     border-radius: 0 0 0 2px;
 }
 
-
 .palettes-list-color:nth-child(1):after {
     content: "1";
 }
@@ -64,6 +63,7 @@
 .palettes-list-color:nth-child(-n+5) {
     margin-top: 5px;
 }
+
 .palettes-list-color div {
     width: 32px;
     height: 32px;

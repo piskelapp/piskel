@@ -17,7 +17,7 @@ describe("SelectionManager suite", function() {
    * @Mock
    */
   pskl.app.shortcutService = {
-    addShortcut : function () {}
+    registerShortcut : function () {}
   };
 
   /**
@@ -40,7 +40,7 @@ describe("SelectionManager suite", function() {
     selectionManager.init();
 
     selection = new pskl.selection.BaseSelection();
-    
+
     selection.pixels = [];
   });
 
@@ -161,7 +161,7 @@ describe("SelectionManager suite", function() {
       [R, B, T],
       [T, R, B]
     ]);
-    
+
     selection.move(-1, 0);
 
     console.log('[SelectionManager] ... paste out of bounds');
