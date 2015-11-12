@@ -31,7 +31,7 @@
 
   ns.CheatsheetController.prototype.onRestoreDefaultsClick_ = function () {
     if (window.confirm('Replace all custom shortcuts by the default Piskel shortcuts ?')) {
-      pskl.service.keyboard.Shortcuts.restoreDefaultShortcuts();
+      pskl.app.shortcutService.restoreDefaultShortcuts();
     }
   };
 
@@ -47,7 +47,7 @@
     }
 
     var shortcutId = shortcutEl.dataset.shortcutId;
-    var shortcut = pskl.service.keyboard.Shortcuts.getShortcutById(shortcutId);
+    var shortcut = pskl.app.shortcutService.getShortcutById(shortcutId);
 
     if (shortcutEl.classList.contains(SHORTCUT_EDITING_CLASSNAME)) {
       shortcutEl.classList.remove(SHORTCUT_EDITING_CLASSNAME);
@@ -65,11 +65,11 @@
     }
 
     var shortcutId = shortcutEl.dataset.shortcutId;
-    var shortcut = pskl.service.keyboard.Shortcuts.getShortcutById(shortcutId);
+    var shortcut = pskl.app.shortcutService.getShortcutById(shortcutId);
     var shortcutKeyObject = pskl.service.keyboard.KeyUtils.createKeyFromEvent(evt);
     var shortcutKeyString = pskl.service.keyboard.KeyUtils.stringify(shortcutKeyObject);
 
-    pskl.service.keyboard.Shortcuts.updateShortcut(shortcut, shortcutKeyString);
+    pskl.app.shortcutService.updateShortcut(shortcut, shortcutKeyString);
 
     shortcutEl.classList.remove(SHORTCUT_EDITING_CLASSNAME);
     this.eventTrapInput.blur();

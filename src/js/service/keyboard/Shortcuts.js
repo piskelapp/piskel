@@ -5,14 +5,14 @@
     return new ns.Shortcut(id, description, defaultKey, displayKey);
   };
 
-  /**
-   * List of keys that cannot be remapped. Either alternate keys, which are not displayed.
-   * Or really custom shortcuts such as the 1-9 for color palette shorctus
-   */
-  var FORBIDDEN_KEYS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '?', 'shift+?',
-    'del', 'back', 'ctrl+Y', 'ctrl+shift+Z'];
-
   ns.Shortcuts = {
+    /**
+     * List of keys that cannot be remapped. Either alternate keys, which are not displayed.
+     * Or really custom shortcuts such as the 1-9 for color palette shorctus
+     */
+    FORBIDDEN_KEYS : ['1', '2', '3', '4', '5', '6', '7', '8', '9', '?', 'shift+?',
+      'del', 'back', 'ctrl+Y', 'ctrl+shift+Z'],
+
     /**
      * Syntax : createShortcut(id, description, default key(s))
      */
@@ -74,64 +74,6 @@
         '123456789'.split(''), '1 to 9')
     },
 
-    CATEGORIES : ['TOOL', 'SELECTION', 'MISC', 'STORAGE', 'COLOR'],
-
-    getShortcutById : function (id) {
-      return pskl.utils.Array.find(ns.Shortcuts.getShortcuts(), function (shortcut) {
-        return shortcut.getId() === id;
-      });
-    },
-
-    getShortcuts : function () {
-      var shortcuts = [];
-      ns.Shortcuts.CATEGORIES.forEach(function (category) {
-        var shortcutMap = ns.Shortcuts[category];
-        Object.keys(shortcutMap).forEach(function (shortcutKey) {
-          shortcuts.push(shortcutMap[shortcutKey]);
-        });
-      });
-      return shortcuts;
-    },
-
-    updateShortcut : function (shortcut, keysString) {
-      keysString = keysString.replace(/\s/g, '');
-      var keys = keysString.split(',');
-
-      var hasForbiddenKey = FORBIDDEN_KEYS.some(function (forbiddenKey) {
-        return keys.some(function (key) {
-          return forbiddenKey == key;
-        });
-      });
-
-      if (hasForbiddenKey) {
-        $.publish(Events.SHOW_NOTIFICATION, [{
-          'content': 'Key cannot be remapped (' + keysString + ')',
-          'hideDelay' : 5000
-        }]);
-        return;
-      }
-
-      ns.Shortcuts.getShortcuts().forEach(function (s) {
-        if (s === shortcut) {
-          return;
-        }
-
-        if (s.removeKeys(keys)) {
-          $.publish(Events.SHOW_NOTIFICATION, [{
-            'content': 'Shortcut key removed for ' + s.getId(),
-            'hideDelay' : 5000
-          }]);
-        }
-      });
-      shortcut.updateKeys(keys);
-      $.publish(Events.SHORTCUTS_CHANGED);
-    },
-
-    restoreDefaultShortcuts : function () {
-      ns.Shortcuts.getShortcuts().forEach(function (shortcut) {
-        shortcut.restoreDefault();
-      });
-      $.publish(Events.SHORTCUTS_CHANGED);
-    }
+    CATEGORIES : ['TOOL', 'SELECTION', 'MISC', 'STORAGE', 'COLOR']
   };
 })();

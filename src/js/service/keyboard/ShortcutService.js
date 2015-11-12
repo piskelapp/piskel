@@ -72,4 +72,59 @@
     var targetTagName = evt.target.nodeName.toUpperCase();
     return targetTagName === 'INPUT' || targetTagName === 'TEXTAREA';
   };
+
+  ns.ShortcutService.prototype.getShortcutById = function (id) {
+    return pskl.utils.Array.find(this.getShortcuts(), function (shortcut) {
+      return shortcut.getId() === id;
+    });
+  };
+
+  ns.ShortcutService.prototype.getShortcuts = function () {
+    var shortcuts = [];
+    ns.Shortcuts.CATEGORIES.forEach(function (category) {
+      var shortcutMap = ns.Shortcuts[category];
+      Object.keys(shortcutMap).forEach(function (shortcutKey) {
+        shortcuts.push(shortcutMap[shortcutKey]);
+      });
+    });
+    return shortcuts;
+  };
+
+  ns.ShortcutService.prototype.updateShortcut = function (shortcut, keyAsString) {
+    var key = keyAsString.replace(/\s/g, '');
+
+    var isForbiddenKey = ns.Shortcuts.FORBIDDEN_KEYS.indexOf(key) != -1;
+    if (isForbiddenKey) {
+      $.publish(Events.SHOW_NOTIFICATION, [{
+        'content': 'Key cannot be remapped (' + keyAsString + ')',
+        'hideDelay' : 5000
+      }]);
+    } else {
+      this.removeKeyFromAllShortcuts_(key);
+      shortcut.updateKeys([key]);
+      $.publish(Events.SHORTCUTS_CHANGED);
+    }
+  };
+
+  ns.ShortcutService.prototype.removeKeyFromAllShortcuts_ = function (key) {
+    this.getShortcuts().forEach(function (s) {
+      if (s.removeKeys([key])) {
+        $.publish(Events.SHOW_NOTIFICATION, [{
+          'content': 'Shortcut key removed for ' + s.getId(),
+          'hideDelay' : 5000
+        }]);
+      }
+    });
+  };
+
+  /**
+   * Restore the default piskel key for all shortcuts
+   */
+  ns.ShortcutService.prototype.restoreDefaultShortcuts = function () {
+    this.getShortcuts().forEach(function (shortcut) {
+      shortcut.restoreDefault();
+    });
+    $.publish(Events.SHORTCUTS_CHANGED);
+  };
+
 })();
