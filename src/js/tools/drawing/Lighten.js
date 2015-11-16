@@ -43,8 +43,14 @@
    * @Override
    */
   ns.Lighten.prototype.applyToolAt = function(col, row, frame, overlay, event) {
-    var modifiedColor = this.getModifiedColor_(col, row, frame, overlay, event);
-    this.draw(modifiedColor, col, row, frame, overlay);
+    this.previousCol = col;
+    this.previousRow = row;
+
+    var pixels = pskl.app.penSizeService.getPixelsForPenSize(col, row);
+    pixels.forEach(function (p) {
+      var modifiedColor = this.getModifiedColor_(p[0], p[1], frame, overlay, event);
+      this.draw(modifiedColor, p[0], p[1], frame, overlay);
+    }.bind(this));
   };
 
   ns.Lighten.prototype.getModifiedColor_ = function(col, row, frame, overlay, event) {

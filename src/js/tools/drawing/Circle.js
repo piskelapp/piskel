@@ -19,11 +19,17 @@
   /**
    * @override
    */
-  ns.Circle.prototype.draw = function (col, row, color, targetFrame) {
+  ns.Circle.prototype.draw = function (col, row, color, targetFrame, penSize) {
     var circlePoints = this.getCirclePixels_(this.startCol, this.startRow, col, row);
+
+    var applyDraw = function (p) {
+      targetFrame.setPixel(p[0], p[1], color);
+    }.bind(this);
+
     for (var i = 0 ; i < circlePoints.length ; i++) {
       // Change model:
-      targetFrame.setPixel(circlePoints[i].col, circlePoints[i].row, color);
+      var pixels = pskl.app.penSizeService.getPixelsForPenSize(circlePoints[i].col, circlePoints[i].row, penSize);
+      pixels.forEach(applyDraw);
     }
   };
 

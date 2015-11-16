@@ -19,18 +19,30 @@
 
   pskl.utils.inherit(ns.SimplePen, ns.BaseTool);
 
+  ns.SimplePen.prototype.supportsDynamicPenSize = function() {
+    return true;
+  };
+
   /**
    * @override
    */
   ns.SimplePen.prototype.applyToolAt = function(col, row, frame, overlay, event) {
-    var color = this.getToolColor();
-    this.draw(color, col, row, frame, overlay);
-  };
-
-  ns.SimplePen.prototype.draw = function(color, col, row, frame, overlay) {
     this.previousCol = col;
     this.previousRow = row;
 
+    var color = this.getToolColor();
+
+    this.drawUsingPenSize(color, col, row, frame, overlay);
+  };
+
+  ns.SimplePen.prototype.drawUsingPenSize = function(color, col, row, frame, overlay) {
+    var pixels = pskl.app.penSizeService.getPixelsForPenSize(col, row);
+    pixels.forEach(function (p) {
+      this.draw(color, p[0], p[1], frame, overlay);
+    }.bind(this));
+  };
+
+  ns.SimplePen.prototype.draw = function(color, col, row, frame, overlay) {
     overlay.setPixel(col, row, color);
     if (color === Constants.TRANSPARENT_COLOR) {
       frame.setPixel(col, row, color);

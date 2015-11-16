@@ -19,6 +19,10 @@
 
   ns.BaseTool.prototype.replay = Constants.ABSTRACT_FUNCTION;
 
+  ns.BaseTool.prototype.supportsDynamicPenSize = function() {
+    return false;
+  };
+
   ns.BaseTool.prototype.getToolColor = function() {
     if (pskl.app.mouseStateService.isRightButtonPressed()) {
       return pskl.app.selectedColorsService.getSecondaryColor();
@@ -45,7 +49,15 @@
     }
 
     var frameColor = frame.getPixel(col, row);
-    overlay.setPixel(col, row, this.getHighlightColor_(frameColor));
+
+    if (this.supportsDynamicPenSize()) {
+      var pixels = pskl.app.penSizeService.getPixelsForPenSize(col, row);
+      pixels.forEach(function (p) {
+        overlay.setPixel(p[0], p[1], this.getHighlightColor_(frameColor));
+      }.bind(this));
+    } else {
+      overlay.setPixel(col, row, this.getHighlightColor_(frameColor));
+    }
 
     this.highlightedPixelCol = col;
     this.highlightedPixelRow = row;
@@ -66,11 +78,7 @@
 
   ns.BaseTool.prototype.hideHighlightedPixel = function (overlay) {
     if (this.highlightedPixelRow !== null && this.highlightedPixelCol !== null) {
-      try {
-        overlay.setPixel(this.highlightedPixelCol, this.highlightedPixelRow, Constants.TRANSPARENT_COLOR);
-      } catch (e) {
-        window.console.warn('ns.BaseTool.prototype.hideHighlightedPixel failed');
-      }
+      overlay.clear();
       this.highlightedPixelRow = null;
       this.highlightedPixelCol = null;
     }

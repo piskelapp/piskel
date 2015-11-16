@@ -14,6 +14,7 @@
   "css/settings-resize.css",
   "css/settings-save.css",
   "css/tools.css",
+  "css/pensize.css",
   "css/icons.css",
   "css/color-picker-slider.css",
   "css/dialogs.css",

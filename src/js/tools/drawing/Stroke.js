@@ -21,6 +21,10 @@
 
   pskl.utils.inherit(ns.Stroke, ns.BaseTool);
 
+  ns.Stroke.prototype.supportsDynamicPenSize = function() {
+    return true;
+  };
+
   /**
    * @override
    */
@@ -55,6 +59,11 @@
 
     // Drawing current stroke:
     var color = this.getToolColor();
+
+    var setPixel = function (p) {
+      overlay.setPixel(p[0], p[1], color);
+    }.bind(this);
+
     for (var i = 0; i < strokePoints.length; i++) {
 
       if (color == Constants.TRANSPARENT_COLOR) {
@@ -66,7 +75,9 @@
         // eg deleting the equivalent of a stroke.
         color = Constants.SELECTION_TRANSPARENT_COLOR;
       }
-      overlay.setPixel(strokePoints[i].col, strokePoints[i].row, color);
+
+      var pixels = pskl.app.penSizeService.getPixelsForPenSize(strokePoints[i].col, strokePoints[i].row);
+      pixels.forEach(setPixel);
     }
   };
 
@@ -82,25 +93,38 @@
       row = coords.row;
     }
 
+    var setPixel = function (p) {
+      frame.setPixel(p[0], p[1], color);
+    }.bind(this);
+
     // The user released the tool to draw a line. We will compute the pixel coordinate, impact
     // the model and draw them in the drawing canvas (not the fake overlay anymore)
     var strokePoints = this.getLinePixels_(this.startCol, col, this.startRow, row);
     for (var i = 0; i < strokePoints.length; i++) {
       // Change model:
-      frame.setPixel(strokePoints[i].col, strokePoints[i].row, color);
+
+      var pixels = pskl.app.penSizeService.getPixelsForPenSize(strokePoints[i].col, strokePoints[i].row);
+      pixels.forEach(setPixel);
     }
     // For now, we are done with the stroke tool and don't need an overlay anymore:
     overlay.clear();
 
     this.raiseSaveStateEvent({
       pixels : strokePoints,
-      color : color
+      color : color,
+      penSize : pskl.app.penSizeService.getPenSize()
     });
   };
 
   ns.Stroke.prototype.replay = function(frame, replayData) {
+    var color = replayData.color;
+    var setPixel = function (p) {
+      frame.setPixel(p[0], p[1], color);
+    }.bind(this);
+
     replayData.pixels.forEach(function (pixel) {
-      frame.setPixel(pixel.col, pixel.row, replayData.color);
+      var pixels = pskl.app.penSizeService.getPixelsForPenSize(pixel.col, pixel.row);
+      pixels.forEach(setPixel);
     });
   };
 

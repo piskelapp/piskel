@@ -16,6 +16,10 @@
 
   pskl.utils.inherit(ns.ShapeTool, ns.BaseTool);
 
+  ns.ShapeTool.prototype.supportsDynamicPenSize = function() {
+    return true;
+  };
+
   /**
    * @override
    */
@@ -57,7 +61,8 @@
       row : coords.row,
       startCol : this.startCol,
       startRow : this.startRow,
-      color : color
+      color : color,
+      penSize : pskl.app.penSizeService.getPenSize()
     });
   };
 
@@ -67,7 +72,7 @@
   ns.ShapeTool.prototype.replay = function(frame, replayData) {
     this.startCol = replayData.startCol;
     this.startRow = replayData.startRow;
-    this.draw(replayData.col, replayData.row, replayData.color, frame);
+    this.draw(replayData.col, replayData.row, replayData.color, frame, replayData.penSize);
   };
 
   /**
