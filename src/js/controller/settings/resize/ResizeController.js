@@ -17,14 +17,26 @@
     this.widthInput = this.container.querySelector('[name="resize-width"]');
     this.heightInput = this.container.querySelector('[name="resize-height"]');
     this.resizeForm = this.container.querySelector('form');
-    this.resizeContentCheckbox = this.container.querySelector('.resize-content-checkbox');
-    this.maintainRatioCheckbox = this.container.querySelector('.resize-ratio-checkbox');
+
+    var settings = pskl.UserSettings.get('RESIZE_SETTINGS');
 
     var initWidth = this.piskelController.getWidth();
     var initHeight = this.piskelController.getHeight();
     this.sizeInputWidget = new pskl.widgets.SizeInput(this.widthInput, this.heightInput, initWidth, initHeight);
 
-    this.anchorWidget.setOrigin(ns.AnchorWidget.ORIGIN.TOPLEFT);
+    var origin = ns.AnchorWidget.ORIGIN[settings.origin] || ns.AnchorWidget.ORIGIN.TOPLEFT;
+    this.anchorWidget.setOrigin(origin);
+
+    this.resizeContentCheckbox = this.container.querySelector('.resize-content-checkbox');
+    if (settings.content) {
+      this.resizeContentCheckbox.checked = true;
+      this.anchorWidget.disable();
+    }
+    this.maintainRatioCheckbox = this.container.querySelector('.resize-ratio-checkbox');
+    if (settings.ratio) {
+      this.maintainRatioCheckbox.checked = true;
+      this.sizeInputWidget.enableSync();
+    }
 
     this.addEventListener(this.resizeForm, 'submit', this.onResizeFormSubmit_);
     this.addEventListener(this.resizeContentCheckbox, 'change', this.onResizeContentChange_);
@@ -34,6 +46,8 @@
   };
 
   ns.ResizeController.prototype.destroy = function () {
+    this.updateUserPreferences_();
+
     this.anchorWidget.destroy();
     this.sizeInputWidget.destroy();
     this.superclass.destroy.call(this);
@@ -75,6 +89,14 @@
     } else {
       this.sizeInputWidget.disableSync();
     }
+  };
+
+  ns.ResizeController.prototype.updateUserPreferences_ = function () {
+    pskl.UserSettings.set('RESIZE_SETTINGS', {
+      origin : this.anchorWidget.getOrigin(),
+      content : !!this.resizeContentCheckbox.checked,
+      ratio : !!this.maintainRatioCheckbox.checked
+    });
   };
 
   /***********************/
