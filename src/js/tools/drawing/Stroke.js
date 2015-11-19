@@ -123,7 +123,7 @@
     }.bind(this);
 
     replayData.pixels.forEach(function (pixel) {
-      var pixels = pskl.app.penSizeService.getPixelsForPenSize(pixel.col, pixel.row);
+      var pixels = pskl.app.penSizeService.getPixelsForPenSize(pixel.col, pixel.row, replayData.penSize);
       pixels.forEach(setPixel);
     });
   };
