@@ -43,29 +43,29 @@
    * @public
    */
   ns.SettingsController.prototype.init = function() {
-    pskl.utils.Event.addEventListener(this.settingsContainer, 'click', this.onSettingContainerClick, this);
-    pskl.utils.Event.addEventListener(document.body, 'click', this.onBodyClick, this);
+    pskl.utils.Event.addEventListener(this.settingsContainer, 'click', this.onSettingsContainerClick_, this);
+    pskl.utils.Event.addEventListener(document.body, 'click', this.onBodyClick_, this);
 
-    $.subscribe(Events.CLOSE_SETTINGS_DRAWER, this.closeDrawer.bind(this));
+    $.subscribe(Events.CLOSE_SETTINGS_DRAWER, this.closeDrawer_.bind(this));
   };
 
-  ns.SettingsController.prototype.onSettingContainerClick = function (evt) {
+  ns.SettingsController.prototype.onSettingsContainerClick_ = function (evt) {
     var setting = pskl.utils.Dom.getData(evt.target, 'setting');
     if (!setting) {
       return;
     }
 
     if (this.currentSetting != setting) {
-      this.loadSetting(setting);
+      this.loadSetting_(setting);
     } else {
-      this.closeDrawer();
+      this.closeDrawer_();
     }
 
     evt.stopPropagation();
     evt.preventDefault();
   };
 
-  ns.SettingsController.prototype.onBodyClick = function (evt) {
+  ns.SettingsController.prototype.onBodyClick_ = function (evt) {
     var target = evt.target;
 
     var isInDrawerContainer = pskl.utils.Dom.isParent(target, this.drawerContainer);
@@ -73,11 +73,11 @@
     var isInSettingsContainer = isInDrawerContainer || isInSettingsIcon;
 
     if (this.isExpanded && !isInSettingsContainer) {
-      this.closeDrawer();
+      this.closeDrawer_();
     }
   };
 
-  ns.SettingsController.prototype.loadSetting = function (setting) {
+  ns.SettingsController.prototype.loadSetting_ = function (setting) {
     this.drawerContainer.innerHTML = pskl.utils.Template.get(settings[setting].template);
 
     // when switching settings controller, destroy previously loaded controller
@@ -97,7 +97,7 @@
     this.isExpanded = true;
   };
 
-  ns.SettingsController.prototype.closeDrawer = function () {
+  ns.SettingsController.prototype.closeDrawer_ = function () {
     pskl.utils.Dom.removeClass(SEL_SETTING_CLS);
     this.settingsContainer.classList.remove(EXP_DRAWER_CLS);
 
