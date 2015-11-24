@@ -24,7 +24,19 @@
     var initHeight = this.piskelController.getHeight();
     this.sizeInputWidget = new pskl.widgets.SizeInput(this.widthInput, this.heightInput, initWidth, initHeight);
 
-    this.anchorWidget.setOrigin(ns.AnchorWidget.ORIGIN.TOPLEFT);
+    var settings = pskl.UserSettings.get('RESIZE_SETTINGS');
+    var origin = ns.AnchorWidget.ORIGIN[settings.origin] || ns.AnchorWidget.ORIGIN.TOPLEFT;
+    this.anchorWidget.setOrigin(origin);
+
+    if (settings.resizeContent) {
+      this.resizeContentCheckbox.checked = true;
+      this.anchorWidget.disable();
+    }
+
+    if (settings.maintainRatio) {
+      this.maintainRatioCheckbox.checked = true;
+      this.sizeInputWidget.enableSync();
+    }
 
     this.addEventListener(this.resizeForm, 'submit', this.onResizeFormSubmit_);
     this.addEventListener(this.resizeContentCheckbox, 'change', this.onResizeContentChange_);
@@ -34,6 +46,8 @@
   };
 
   ns.ResizeController.prototype.destroy = function () {
+    this.updateUserPreferences_();
+
     this.anchorWidget.destroy();
     this.sizeInputWidget.destroy();
     this.superclass.destroy.call(this);
@@ -75,6 +89,14 @@
     } else {
       this.sizeInputWidget.disableSync();
     }
+  };
+
+  ns.ResizeController.prototype.updateUserPreferences_ = function () {
+    pskl.UserSettings.set('RESIZE_SETTINGS', {
+      origin : this.anchorWidget.getOrigin(),
+      resizeContent : !!this.resizeContentCheckbox.checked,
+      maintainRatio : !!this.maintainRatioCheckbox.checked
+    });
   };
 
   /***********************/

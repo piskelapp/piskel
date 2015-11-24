@@ -44,6 +44,10 @@
   border-color: #555 !important;
 }
 
+.resize-origin-option:hover {
+  border : 3px solid white;
+}
+
 .resize-origin-option.selected {
   border : 3px solid gold;
 }

@@ -5,6 +5,7 @@
     this.heightInput = heightInput;
     this.initWidth = initWidth;
     this.initHeight = initHeight;
+
     this.syncEnabled = true;
     this.lastInput = this.widthInput;
 
