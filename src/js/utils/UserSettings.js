@@ -31,8 +31,8 @@
       'LAYER_PREVIEW' : true,
       'EXPORT_SCALING' : 1,
       'RESIZE_SETTINGS': {
-        content : false,
-        ratio : true,
+        maintainRatio : true,
+        resizeContent : false,
         origin : 'TOPLEFT'
       }
     },
