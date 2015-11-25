@@ -16,7 +16,7 @@
   pskl.utils.inherit(ns.DitheringTool, ns.SimplePen);
 
   ns.DitheringTool.prototype.supportsDynamicPenSize = function() {
-    return false;
+    return true;
   };
 
   /**
@@ -26,13 +26,24 @@
     this.previousCol = col;
     this.previousRow = row;
 
+    var pixels = pskl.app.penSizeService.getPixelsForPenSize(col, row);
+    pixels.forEach(function (p) {
+      this.applyToolOnPixel(p[0], p[1], frame, overlay, event);
+    }.bind(this));
+  };
+
+  ns.DitheringTool.prototype.applyToolOnPixel = function(col, row, frame, overlay, event) {
     var usePrimaryColor = (col + row) % 2;
-    usePrimaryColor =
-      pskl.app.mouseStateService.isRightButtonPressed() ? !usePrimaryColor : usePrimaryColor;
+
+    if (pskl.app.mouseStateService.isRightButtonPressed()) {
+      usePrimaryColor = !usePrimaryColor;
+    }
+
     var ditheringColor = usePrimaryColor ?
       pskl.app.selectedColorsService.getPrimaryColor() :
       pskl.app.selectedColorsService.getSecondaryColor();
 
     this.draw(ditheringColor, col, row, frame, overlay);
   };
+
 })();
