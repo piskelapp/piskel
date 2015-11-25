@@ -11,8 +11,8 @@
             "ctrlKey": false
         },
         "coords": {
-            "x": 0,
-            "y": 1
+            "x": 2,
+            "y": 2
         },
         "type": "mouse-event"
     }, {
@@ -24,8 +24,8 @@
             "ctrlKey": false
         },
         "coords": {
-            "x": 0,
-            "y": 1
+            "x": 2,
+            "y": 2
         },
         "type": "mouse-event"
     }, {
@@ -122,98 +122,10 @@
             "y": 0
         },
         "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousedown",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 0,
-            "y": 1
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousemove",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 0,
-            "y": 1
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousemove",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 1,
-            "y": 1
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousemove",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 2,
-            "y": 1
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousemove",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 3,
-            "y": 1
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousemove",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 4,
-            "y": 1
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mouseup",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 4,
-            "y": 1
-        },
-        "type": "mouse-event"
-    }, {
+    },
+    {"type":"tool-event","toolId":"tool-colorpicker"},
+    {"type":"tool-event","toolId":"tool-lighten"},
+    {
         "event": {
             "type": "mousedown",
             "button": 0,
@@ -304,7 +216,10 @@
             "y": 0
         },
         "type": "mouse-event"
-    }, {
+    },
+    {"type":"tool-event","toolId":"tool-colorpicker"},
+    {"type":"tool-event","toolId":"tool-lighten"},
+    {
         "event": {
             "type": "mousedown",
             "button": 0,
@@ -314,513 +229,6 @@
         },
         "coords": {
             "x": 0,
-            "y": 2
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousemove",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 0,
-            "y": 2
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousemove",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 1,
-            "y": 2
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousemove",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 2,
-            "y": 2
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousemove",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 3,
-            "y": 2
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousemove",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 4,
-            "y": 2
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mouseup",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 4,
-            "y": 2
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousedown",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 0,
-            "y": 2
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousemove",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 0,
-            "y": 2
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousemove",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 1,
-            "y": 2
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousemove",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 2,
-            "y": 2
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousemove",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 3,
-            "y": 2
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousemove",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 4,
-            "y": 2
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mouseup",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 4,
-            "y": 2
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousedown",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 0,
-            "y": 2
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousemove",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 0,
-            "y": 2
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousemove",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 1,
-            "y": 2
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousemove",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 2,
-            "y": 2
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousemove",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 3,
-            "y": 2
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousemove",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 4,
-            "y": 2
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mouseup",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 4,
-            "y": 2
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousedown",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 0,
-            "y": 2
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousemove",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 0,
-            "y": 2
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousemove",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 1,
-            "y": 2
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousemove",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 2,
-            "y": 2
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousemove",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 3,
-            "y": 2
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousemove",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 4,
-            "y": 2
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mouseup",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 4,
-            "y": 2
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousedown",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 0,
-            "y": 3
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousemove",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 0,
-            "y": 3
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousemove",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 1,
-            "y": 3
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousemove",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 2,
-            "y": 3
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousemove",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 3,
-            "y": 3
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousemove",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 4,
-            "y": 3
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousemove",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 4,
-            "y": 2
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousemove",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 4,
-            "y": 1
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousemove",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 4,
-            "y": 0
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousemove",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 3,
-            "y": 0
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousemove",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 2,
-            "y": 0
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousemove",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 1,
             "y": 0
         },
         "type": "mouse-event"
@@ -846,60 +254,8 @@
             "ctrlKey": false
         },
         "coords": {
-            "x": 0,
-            "y": 1
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousemove",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 0,
-            "y": 2
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousemove",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 0,
-            "y": 3
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousemove",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 0,
-            "y": 4
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousemove",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
             "x": 1,
-            "y": 4
+            "y": 0
         },
         "type": "mouse-event"
     }, {
@@ -912,7 +268,7 @@
         },
         "coords": {
             "x": 2,
-            "y": 4
+            "y": 0
         },
         "type": "mouse-event"
     }, {
@@ -925,7 +281,7 @@
         },
         "coords": {
             "x": 3,
-            "y": 4
+            "y": 0
         },
         "type": "mouse-event"
     }, {
@@ -938,7 +294,7 @@
         },
         "coords": {
             "x": 4,
-            "y": 4
+            "y": 0
         },
         "type": "mouse-event"
     }, {
@@ -951,400 +307,13 @@
         },
         "coords": {
             "x": 4,
-            "y": 4
+            "y": 0
         },
         "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousedown",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 1,
-            "y": 3
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousemove",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 1,
-            "y": 3
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousemove",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 1,
-            "y": 4
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousemove",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 2,
-            "y": 4
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousemove",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 3,
-            "y": 4
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousemove",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 3,
-            "y": 3
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousemove",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 2,
-            "y": 3
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mouseup",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 2,
-            "y": 3
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousedown",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 2,
-            "y": 3
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousemove",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 2,
-            "y": 3
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousemove",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 1,
-            "y": 3
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousemove",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 2,
-            "y": 3
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousemove",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 2,
-            "y": 4
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousemove",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 2,
-            "y": 3
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mouseup",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 2,
-            "y": 3
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousedown",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 3,
-            "y": 3
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mouseup",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 3,
-            "y": 3
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousedown",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 2,
-            "y": 4
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousemove",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 2,
-            "y": 4
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mouseup",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 2,
-            "y": 4
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousedown",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 2,
-            "y": 3
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mouseup",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 2,
-            "y": 3
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousedown",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 2,
-            "y": 3
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mouseup",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 2,
-            "y": 3
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousedown",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 2,
-            "y": 3
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mouseup",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 2,
-            "y": 3
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousedown",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 2,
-            "y": 3
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mouseup",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 2,
-            "y": 3
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousedown",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 2,
-            "y": 3
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mouseup",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": false
-        },
-        "coords": {
-            "x": 2,
-            "y": 3
-        },
-        "type": "mouse-event"
-    }, {
+    },
+    {"type":"tool-event","toolId":"tool-colorpicker"},
+    {"type":"tool-event","toolId":"tool-lighten"},
+    {
         "event": {
             "type": "mousedown",
             "button": 0,
@@ -1353,104 +322,26 @@
             "ctrlKey": true
         },
         "coords": {
-            "x": 0,
-            "y": 3
+            "x": 2,
+            "y": 0
         },
         "type": "mouse-event"
     }, {
         "event": {
-            "type": "mouseup",
+            "type": "mousemove",
             "button": 0,
             "shiftKey": true,
             "altKey": false,
             "ctrlKey": true
         },
         "coords": {
-            "x": 0,
-            "y": 3
+            "x": 2,
+            "y": 0
         },
         "type": "mouse-event"
     }, {
         "event": {
-            "type": "mousedown",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": true
-        },
-        "coords": {
-            "x": 4,
-            "y": 3
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mouseup",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": true
-        },
-        "coords": {
-            "x": 4,
-            "y": 3
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousedown",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": true
-        },
-        "coords": {
-            "x": 3,
-            "y": 2
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mouseup",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": true
-        },
-        "coords": {
-            "x": 3,
-            "y": 2
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousedown",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": true
-        },
-        "coords": {
-            "x": 1,
-            "y": 2
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mouseup",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": true
-        },
-        "coords": {
-            "x": 1,
-            "y": 2
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mousedown",
+            "type": "mousemove",
             "button": 0,
             "shiftKey": true,
             "altKey": false,
@@ -1463,11 +354,69 @@
         "type": "mouse-event"
     }, {
         "event": {
+            "type": "mousemove",
+            "button": 0,
+            "shiftKey": true,
+            "altKey": false,
+            "ctrlKey": true
+        },
+        "coords": {
+            "x": 0,
+            "y": 0
+        },
+        "type": "mouse-event"
+    }, {
+        "event": {
             "type": "mouseup",
             "button": 0,
             "shiftKey": true,
             "altKey": false,
             "ctrlKey": true
+        },
+        "coords": {
+            "x": 0,
+            "y": 0
+        },
+        "type": "mouse-event"
+    },
+    {"type":"tool-event","toolId":"tool-colorpicker"},
+    {"type":"tool-event","toolId":"tool-lighten"},
+    {
+        "event": {
+            "type": "mousedown",
+            "button": 0,
+            "shiftKey": true,
+            "altKey": false,
+            "ctrlKey": false
+        },
+        "coords": {
+            "x": 0,
+            "y": 0
+        },
+        "type": "mouse-event"
+    }, {
+        "event": {
+            "type": "mouseup",
+            "button": 0,
+            "shiftKey": true,
+            "altKey": false,
+            "ctrlKey": false
+        },
+        "coords": {
+            "x": 0,
+            "y": 0
+        },
+        "type": "mouse-event"
+    },
+    {"type":"tool-event","toolId":"tool-colorpicker"},
+    {"type":"tool-event","toolId":"tool-lighten"},
+     {
+        "event": {
+            "type": "mousedown",
+            "button": 0,
+            "shiftKey": true,
+            "altKey": false,
+            "ctrlKey": false
         },
         "coords": {
             "x": 1,
@@ -1476,6 +425,138 @@
         "type": "mouse-event"
     }, {
         "event": {
+            "type": "mouseup",
+            "button": 0,
+            "shiftKey": true,
+            "altKey": false,
+            "ctrlKey": false
+        },
+        "coords": {
+            "x": 1,
+            "y": 0
+        },
+        "type": "mouse-event"
+    },
+    {"type":"tool-event","toolId":"tool-colorpicker"},
+    {"type":"tool-event","toolId":"tool-lighten"},
+    {
+        "event": {
+            "type": "mousedown",
+            "button": 0,
+            "shiftKey": true,
+            "altKey": false,
+            "ctrlKey": false
+        },
+        "coords": {
+            "x": 1,
+            "y": 0
+        },
+        "type": "mouse-event"
+    }, {
+        "event": {
+            "type": "mouseup",
+            "button": 0,
+            "shiftKey": true,
+            "altKey": false,
+            "ctrlKey": false
+        },
+        "coords": {
+            "x": 1,
+            "y": 0
+        },
+        "type": "mouse-event"
+    },
+    {"type":"tool-event","toolId":"tool-colorpicker"},
+    {"type":"tool-event","toolId":"tool-lighten"},
+    {
+        "event": {
+            "type": "mousedown",
+            "button": 0,
+            "shiftKey": true,
+            "altKey": false,
+            "ctrlKey": false
+        },
+        "coords": {
+            "x": 2,
+            "y": 0
+        },
+        "type": "mouse-event"
+    }, {
+        "event": {
+            "type": "mouseup",
+            "button": 0,
+            "shiftKey": true,
+            "altKey": false,
+            "ctrlKey": false
+        },
+        "coords": {
+            "x": 2,
+            "y": 0
+        },
+        "type": "mouse-event"
+    },
+    {"type":"tool-event","toolId":"tool-colorpicker"},
+    {"type":"tool-event","toolId":"tool-lighten"},
+    {
+        "event": {
+            "type": "mousedown",
+            "button": 0,
+            "shiftKey": true,
+            "altKey": false,
+            "ctrlKey": false
+        },
+        "coords": {
+            "x": 2,
+            "y": 0
+        },
+        "type": "mouse-event"
+    }, {
+        "event": {
+            "type": "mouseup",
+            "button": 0,
+            "shiftKey": true,
+            "altKey": false,
+            "ctrlKey": false
+        },
+        "coords": {
+            "x": 2,
+            "y": 0
+        },
+        "type": "mouse-event"
+    },
+    {"type":"tool-event","toolId":"tool-colorpicker"},
+    {"type":"tool-event","toolId":"tool-lighten"},
+    {
+        "event": {
+            "type": "mousedown",
+            "button": 0,
+            "shiftKey": true,
+            "altKey": false,
+            "ctrlKey": false
+        },
+        "coords": {
+            "x": 2,
+            "y": 0
+        },
+        "type": "mouse-event"
+    }, {
+        "event": {
+            "type": "mouseup",
+            "button": 0,
+            "shiftKey": true,
+            "altKey": false,
+            "ctrlKey": false
+        },
+        "coords": {
+            "x": 2,
+            "y": 0
+        },
+        "type": "mouse-event"
+    },
+    {"type":"tool-event","toolId":"tool-colorpicker"},
+    {"type":"tool-event","toolId":"tool-lighten"},
+    {
+        "event": {
             "type": "mousedown",
             "button": 0,
             "shiftKey": true,
@@ -1483,7 +564,7 @@
             "ctrlKey": true
         },
         "coords": {
-            "x": 3,
+            "x": 2,
             "y": 0
         },
         "type": "mouse-event"
@@ -1496,12 +577,44 @@
             "ctrlKey": true
         },
         "coords": {
-            "x": 3,
+            "x": 2,
+            "y": 0
+        },
+        "type": "mouse-event"
+    },
+    {"type":"tool-event","toolId":"tool-colorpicker"},
+    {"type":"tool-event","toolId":"tool-lighten"},
+    {
+        "event": {
+            "type": "mousedown",
+            "button": 0,
+            "shiftKey": true,
+            "altKey": false,
+            "ctrlKey": true
+        },
+        "coords": {
+            "x": 2,
             "y": 0
         },
         "type": "mouse-event"
     }, {
         "event": {
+            "type": "mouseup",
+            "button": 0,
+            "shiftKey": true,
+            "altKey": false,
+            "ctrlKey": true
+        },
+        "coords": {
+            "x": 2,
+            "y": 0
+        },
+        "type": "mouse-event"
+    },
+    {"type":"tool-event","toolId":"tool-colorpicker"},
+    {"type":"tool-event","toolId":"tool-lighten"},
+    {
+        "event": {
             "type": "mousedown",
             "button": 0,
             "shiftKey": true,
@@ -1509,8 +622,8 @@
             "ctrlKey": true
         },
         "coords": {
-            "x": 0,
-            "y": 2
+            "x": 2,
+            "y": 0
         },
         "type": "mouse-event"
     }, {
@@ -1522,11 +635,14 @@
             "ctrlKey": true
         },
         "coords": {
-            "x": 0,
-            "y": 2
+            "x": 2,
+            "y": 0
         },
         "type": "mouse-event"
-    }, {
+    },
+    {"type":"tool-event","toolId":"tool-colorpicker"},
+    {"type":"tool-event","toolId":"tool-lighten"},
+    {
         "event": {
             "type": "mousedown",
             "button": 0,
@@ -1535,8 +651,8 @@
             "ctrlKey": true
         },
         "coords": {
-            "x": 4,
-            "y": 2
+            "x": 2,
+            "y": 0
         },
         "type": "mouse-event"
     }, {
@@ -1548,36 +664,21 @@
             "ctrlKey": true
         },
         "coords": {
-            "x": 4,
-            "y": 2
+            "x": 2,
+            "y": 0
         },
         "type": "mouse-event"
     }, {
+        "type": "keyboard-event",
         "event": {
-            "type": "mousedown",
-            "button": 0,
-            "shiftKey": true,
+            "which": 90,
+            "shiftKey": false,
             "altKey": false,
-            "ctrlKey": true
-        },
-        "coords": {
-            "x": 0,
-            "y": 1
-        },
-        "type": "mouse-event"
-    }, {
-        "event": {
-            "type": "mouseup",
-            "button": 0,
-            "shiftKey": true,
-            "altKey": false,
-            "ctrlKey": true
-        },
-        "coords": {
-            "x": 0,
-            "y": 1
-        },
-        "type": "mouse-event"
+            "ctrlKey": true,
+            "target": {
+                "nodeName": "BODY"
+            }
+        }
     }],
     "initialState": {
         "size": {
@@ -1586,8 +687,7 @@
         },
         "primaryColor": "#000000",
         "secondaryColor": "rgba(0, 0, 0, 0)",
-        "selectedTool": "tool-move",
-        "step" : 100
+        "selectedTool": "tool-pen"
     },
-    "png": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAARklEQVQIW2PU1dX9//HjRwZ+fn4GGM0I5PxnQAIgSUYbGxtMlUBF/4FGMHh7ezNs3bqV4fLlywxg7SAtcnJyDI8ePQKbCwDi5B7DVPJoXAAAAABJRU5ErkJggg=="
+    "png": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAI0lEQVQIW2PU1dX9z8/Pz/Do0SMGEA0CjAwMDP/BLCRAoSAAeuwIiFt0t6sAAAAASUVORK5CYII="
 }
