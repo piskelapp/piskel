@@ -48,7 +48,7 @@
       },
       primaryColor : pskl.app.selectedColorsService.getPrimaryColor(),
       secondaryColor : pskl.app.selectedColorsService.getSecondaryColor(),
-      selectedTool : pskl.app.toolController.currentSelectedTool.instance.toolId
+      selectedTool : pskl.app.toolController.currentSelectedTool.toolId
     };
   };
 
