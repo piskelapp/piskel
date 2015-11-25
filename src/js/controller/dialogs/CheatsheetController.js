@@ -50,9 +50,10 @@
     var shortcut = pskl.app.shortcutService.getShortcutById(shortcutId);
 
     if (shortcutEl.classList.contains(SHORTCUT_EDITING_CLASSNAME)) {
-      shortcutEl.classList.remove(SHORTCUT_EDITING_CLASSNAME);
+      pskl.utils.Dom.removeClass(SHORTCUT_EDITING_CLASSNAME);
       this.eventTrapInput.blur();
     } else if (shortcut.isEditable()) {
+      pskl.utils.Dom.removeClass(SHORTCUT_EDITING_CLASSNAME);
       shortcutEl.classList.add(SHORTCUT_EDITING_CLASSNAME);
       this.eventTrapInput.focus();
     }
@@ -64,11 +65,14 @@
       return;
     }
 
+    var shortcutKeyObject = pskl.service.keyboard.KeyUtils.createKeyFromEvent(evt);
+    if (!shortcutKeyObject) {
+      return;
+    }
+
+    var shortcutKeyString = pskl.service.keyboard.KeyUtils.stringify(shortcutKeyObject);
     var shortcutId = shortcutEl.dataset.shortcutId;
     var shortcut = pskl.app.shortcutService.getShortcutById(shortcutId);
-    var shortcutKeyObject = pskl.service.keyboard.KeyUtils.createKeyFromEvent(evt);
-    var shortcutKeyString = pskl.service.keyboard.KeyUtils.stringify(shortcutKeyObject);
-
     pskl.app.shortcutService.updateShortcut(shortcut, shortcutKeyString);
 
     shortcutEl.classList.remove(SHORTCUT_EDITING_CLASSNAME);
@@ -147,7 +151,9 @@
     if (pskl.utils.UserAgent.isMac) {
       key = key.replace('ctrl', 'cmd');
     }
+    key = key.replace(/left/i, '&#65513;');
     key = key.replace(/up/i, '&#65514;');
+    key = key.replace(/right/i, '&#65515;');
     key = key.replace(/down/i, '&#65516;');
     key = key.replace(/>/g, '&gt;');
     key = key.replace(/</g, '&lt;');
