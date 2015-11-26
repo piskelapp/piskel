@@ -30,10 +30,11 @@
     this.previousCol = col;
     this.previousRow = row;
 
-    var pixels = pskl.app.penSizeService.getPixelsForPenSize(col, row);
-    pixels.forEach(function (p) {
-      var modifiedColor = this.getModifiedColor_(p[0], p[1], frame, overlay, event);
-      this.draw(modifiedColor, p[0], p[1], frame, overlay);
+    var penSize = pskl.app.penSizeService.getPenSize();
+    var points = pskl.PixelUtils.resizePixel(col, row, penSize);
+    points.forEach(function (point) {
+      var modifiedColor = this.getModifiedColor_(point[0], point[1], frame, overlay, event);
+      this.draw(modifiedColor, point[0], point[1], frame, overlay);
     }.bind(this));
   };
 

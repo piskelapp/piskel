@@ -20,16 +20,10 @@
    * @override
    */
   ns.Rectangle.prototype.draw = function (col, row, color, targetFrame, penSize) {
-    var strokePoints = pskl.PixelUtils.getBoundRectanglePixels(this.startCol, this.startRow, col, row);
+    var rectanglePixels = pskl.PixelUtils.getBoundRectanglePixels(this.startCol, this.startRow, col, row);
 
-    var applyDraw = function (p) {
-      targetFrame.setPixel(p[0], p[1], color);
-    }.bind(this);
-
-    for (var i = 0 ; i < strokePoints.length ; i++) {
-      // Change model:
-      var pixels = pskl.app.penSizeService.getPixelsForPenSize(strokePoints[i].col, strokePoints[i].row, penSize);
-      pixels.forEach(applyDraw);
-    }
+    pskl.PixelUtils.resizePixels(rectanglePixels, penSize).forEach(function (point) {
+      targetFrame.setPixel(point[0], point[1], color);
+    });
   };
 })();

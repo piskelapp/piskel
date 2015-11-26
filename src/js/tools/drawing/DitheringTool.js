@@ -26,9 +26,10 @@
     this.previousCol = col;
     this.previousRow = row;
 
-    var pixels = pskl.app.penSizeService.getPixelsForPenSize(col, row);
-    pixels.forEach(function (p) {
-      this.applyToolOnPixel(p[0], p[1], frame, overlay, event);
+    var penSize = pskl.app.penSizeService.getPenSize();
+    var points = pskl.PixelUtils.resizePixel(col, row, penSize);
+    points.forEach(function (point) {
+      this.applyToolOnPixel(point[0], point[1], frame, overlay, event);
     }.bind(this));
   };
 

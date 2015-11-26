@@ -49,15 +49,11 @@
     }
 
     var frameColor = frame.getPixel(col, row);
-
-    if (this.supportsDynamicPenSize()) {
-      var pixels = pskl.app.penSizeService.getPixelsForPenSize(col, row);
-      pixels.forEach(function (p) {
-        overlay.setPixel(p[0], p[1], this.getHighlightColor_(frameColor));
-      }.bind(this));
-    } else {
-      overlay.setPixel(col, row, this.getHighlightColor_(frameColor));
-    }
+    var highlightColor = this.getHighlightColor_(frameColor);
+    var size = this.supportsDynamicPenSize() ? pskl.app.penSizeService.getPenSize() : 1;
+    pskl.PixelUtils.resizePixel(col, row, size).forEach(function (point) {
+      overlay.setPixel(point[0], point[1], highlightColor);
+    });
 
     this.highlightedPixelCol = col;
     this.highlightedPixelRow = row;
