@@ -11,7 +11,9 @@
 
   ns.PalettePalReader.prototype.extractColorFromLine = function (line) {
     var matches = line.match(RE_COLOR_LINE);
-    var color = 'rgb(' + matches[1] + ',' + matches[2] + ',' + matches[3] + ')';
-    return color;
+    var rgbColor = 'rgb(' + matches[1] + ',' + matches[2] + ',' + matches[3] + ')';
+    var color = window.tinycolor(rgbColor);
+
+    return color.toHexString();
   };
 })();

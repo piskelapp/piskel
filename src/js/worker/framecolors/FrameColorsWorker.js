@@ -17,7 +17,7 @@
         var hexRe = (/^#([a-f0-9]{3}){1,2}$/i);
         var rgbRe = (/^rgb\((\d{1,3}),(\d{1,3}),(\d{1,3})\)$/i);
         if (hexRe.test(color)) {
-          return color.toUpperCase();
+          return color.toLowerCase();
         } else if (rgbRe.test(color)) {
           var exec = rgbRe.exec(color);
           return rgbToHex(exec[1] * 1, exec[2] * 1, exec[3] * 1);

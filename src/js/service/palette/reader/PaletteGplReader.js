@@ -18,6 +18,6 @@
       b : parseInt(matches[3], 10)
     });
 
-    return color.toRgbString();
+    return color.toHexString();
   };
 })();
