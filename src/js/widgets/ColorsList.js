@@ -71,10 +71,10 @@
   };
 
   ns.ColorsList.prototype.onColorUpdated_ = function (color) {
-    var rgbColor = color.toRgbString();
-    this.colorPreviewEl.style.background = rgbColor;
+    var strColor = color.toHexString();
+    this.colorPreviewEl.style.background = strColor;
     if (this.palette) {
-      this.palette.set(this.selectedIndex, rgbColor);
+      this.palette.set(this.selectedIndex, strColor);
       this.refreshColorElement_(this.selectedIndex);
     }
   };

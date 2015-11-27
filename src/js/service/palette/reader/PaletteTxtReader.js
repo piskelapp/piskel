@@ -12,6 +12,6 @@
   ns.PaletteTxtReader.prototype.extractColorFromLine = function (line) {
     var matches = line.match(RE_COLOR_LINE);
     var color = '#' + matches[1] + matches[2] + matches[3];
-    return color;
+    return color.toLowerCase();
   };
 })();

@@ -73,6 +73,6 @@
     usedPixels[key] = true;
 
     // Convert tinycolor color to string format.
-    return color.toRgbString();
+    return color.toHexString();
   };
 })();
