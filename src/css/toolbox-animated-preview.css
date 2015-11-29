@@ -121,15 +121,18 @@
 }
 
 .open-popup-preview-button {
-  width : 18px;
-  height: 18px;
-
   border : 2px solid white;
-  background-image: url(../img/popup-preview-arrow-white.png);
   background-color : rgba(0,0,0,0.3);
 }
 
 .open-popup-preview-button:hover {
   border-color: gold;
-  background-image: url(../img/popup-preview-arrow-gold.png);
+}
+
+/**
+ * The regular image is provided bby the sprite icons.png+icons.css
+ */
+.icon-minimap-popup-preview-arrow-white:hover {
+  background-image: url(../img/icons/minimap/minimap-popup-preview-arrow-gold.png);
+  background-position: 0 0;
 }

@@ -107,7 +107,8 @@
     newFrameButton.id = 'add-frame-action';
     newFrameButton.className = 'add-frame-action';
     newFrameButton.setAttribute('data-tile-action', ACTION.NEW_FRAME);
-    newFrameButton.innerHTML = '<p class="label">Add new frame</p>';
+    newFrameButton.innerHTML = '<div class="add-frame-action-icon icon-frame-plus-white">' +
+      '</div><div class="label">Add new frame</div>';
     this.container.append(newFrameButton);
 
     var needDragndropBehavior = (frameCount > 1);
@@ -178,7 +179,7 @@
     cloneFrameButton.setAttribute('data-tile-number', tileNumber);
     cloneFrameButton.setAttribute('data-tile-action', ACTION.CLONE);
     cloneFrameButton.setAttribute('title', 'Duplicate this frame');
-    cloneFrameButton.className = 'tile-overlay duplicate-frame-action';
+    cloneFrameButton.className = 'tile-overlay duplicate-frame-action icon-frame-duplicate-white';
     previewTileRoot.appendChild(cloneFrameButton);
 
     canvasContainer.appendChild(this.getCanvasForFrame(currentFrame));
@@ -192,12 +193,12 @@
       deleteButton.setAttribute('title', 'Delete this frame');
       deleteButton.setAttribute('data-tile-number', tileNumber);
       deleteButton.setAttribute('data-tile-action', ACTION.DELETE);
-      deleteButton.className = 'tile-overlay delete-frame-action';
+      deleteButton.className = 'tile-overlay delete-frame-action icon-frame-recyclebin-white';
       previewTileRoot.appendChild(deleteButton);
 
       // Add 'dragndrop handle'.
       var dndHandle = document.createElement('div');
-      dndHandle.className = 'tile-overlay dnd-action';
+      dndHandle.className = 'tile-overlay dnd-action icon-frame-dragndrop-white' ;
       previewTileRoot.appendChild(dndHandle);
     }
     var tileCount = document.createElement('div');

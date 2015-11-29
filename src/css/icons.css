@@ -1,24 +1,197 @@
-.action-icon {
-  cursor: pointer;
-  height: 100%;
-  background-repeat: no-repeat;
-  background-position: 50%;
-}
+/*
+Icon classes can be used entirely standalone. They are named after their original file names.
 
-.edit-icon {
-  background-image: url('../img/tools/pen.png');
-  background-repeat: no-repeat;
-}
+```html
+<!-- `display: block` sprite -->
+<div class="icon-home"></div>
 
-.merge-icon {
-  background-image: url('../img/merge-icon.png');
-  background-repeat: no-repeat;
+<!-- `display: inline-block` sprite -->
+<img class="icon-home" />
+```
+*/
+.icon-common-keyboard-gold {
+  background-image: url(../img/icons.png);
+  background-position: -230px 0px;
+  width: 35px;
+  height: 20px;
 }
-
-.plus-icon {
-  font-size:15px;
-  text-align:center;
+.icon-common-swapcolors-arrow-grey {
+  background-image: url(../img/icons.png);
+  background-position: -230px -46px;
+  width: 18px;
+  height: 18px;
 }
-
-.delete-icon {
+.icon-frame-dragndrop-white {
+  background-image: url(../img/icons.png);
+  background-position: -198px -184px;
+  width: 30px;
+  height: 30px;
+}
+.icon-frame-duplicate-white {
+  background-image: url(../img/icons.png);
+  background-position: -168px -184px;
+  width: 30px;
+  height: 30px;
+}
+.icon-frame-plus-white {
+  background-image: url(../img/icons.png);
+  background-position: -230px -20px;
+  width: 26px;
+  height: 26px;
+}
+.icon-frame-recyclebin-white {
+  background-image: url(../img/icons.png);
+  background-position: -138px -184px;
+  width: 30px;
+  height: 30px;
+}
+.icon-minimap-popup-preview-arrow-gold {
+  background-image: url(../img/icons.png);
+  background-position: -230px -82px;
+  width: 18px;
+  height: 18px;
+}
+.icon-minimap-popup-preview-arrow-white {
+  background-image: url(../img/icons.png);
+  background-position: -230px -64px;
+  width: 18px;
+  height: 18px;
+}
+.icon-settings-export-white {
+  background-image: url(../img/icons.png);
+  background-position: -92px -92px;
+  width: 46px;
+  height: 46px;
+}
+.icon-settings-gear-white {
+  background-image: url(../img/icons.png);
+  background-position: -138px 0px;
+  width: 46px;
+  height: 46px;
+}
+.icon-settings-open-folder-white {
+  background-image: url(../img/icons.png);
+  background-position: -138px -46px;
+  width: 46px;
+  height: 46px;
+}
+.icon-settings-resize-white {
+  background-image: url(../img/icons.png);
+  background-position: -138px -92px;
+  width: 46px;
+  height: 46px;
+}
+.icon-settings-save-white {
+  background-image: url(../img/icons.png);
+  background-position: 0px -138px;
+  width: 46px;
+  height: 46px;
+}
+.icon-tool-circle {
+  background-image: url(../img/icons.png);
+  background-position: -46px -138px;
+  width: 46px;
+  height: 46px;
+}
+.icon-tool-colorpicker {
+  background-image: url(../img/icons.png);
+  background-position: -92px -138px;
+  width: 46px;
+  height: 46px;
+}
+.icon-tool-colorswap {
+  background-image: url(../img/icons.png);
+  background-position: 0px 0px;
+  width: 46px;
+  height: 46px;
+}
+.icon-tool-dithering {
+  background-image: url(../img/icons.png);
+  background-position: -184px 0px;
+  width: 46px;
+  height: 46px;
+}
+.icon-tool-eraser {
+  background-image: url(../img/icons.png);
+  background-position: -184px -46px;
+  width: 46px;
+  height: 46px;
+}
+.icon-tool-lasso-select {
+  background-image: url(../img/icons.png);
+  background-position: -184px -92px;
+  width: 46px;
+  height: 46px;
+}
+.icon-tool-lighten {
+  background-image: url(../img/icons.png);
+  background-position: -184px -138px;
+  width: 46px;
+  height: 46px;
+}
+.icon-tool-move {
+  background-image: url(../img/icons.png);
+  background-position: 0px -184px;
+  width: 46px;
+  height: 46px;
+}
+.icon-tool-paint-bucket {
+  background-image: url(../img/icons.png);
+  background-position: -46px -184px;
+  width: 46px;
+  height: 46px;
+}
+.icon-tool-pen {
+  background-image: url(../img/icons.png);
+  background-position: -92px -184px;
+  width: 46px;
+  height: 46px;
+}
+.icon-tool-rectangle-select {
+  background-image: url(../img/icons.png);
+  background-position: -138px -138px;
+  width: 46px;
+  height: 46px;
+}
+.icon-tool-rectangle {
+  background-image: url(../img/icons.png);
+  background-position: -46px -92px;
+  width: 46px;
+  height: 46px;
+}
+.icon-tool-shape-select {
+  background-image: url(../img/icons.png);
+  background-position: 0px -92px;
+  width: 46px;
+  height: 46px;
+}
+.icon-tool-stroke {
+  background-image: url(../img/icons.png);
+  background-position: -92px -46px;
+  width: 46px;
+  height: 46px;
+}
+.icon-tool-vertical-mirror-pen {
+  background-image: url(../img/icons.png);
+  background-position: -92px 0px;
+  width: 46px;
+  height: 46px;
+}
+.icon-tool-clone {
+  background-image: url(../img/icons.png);
+  background-position: -46px -46px;
+  width: 46px;
+  height: 46px;
+}
+.icon-tool-flip {
+  background-image: url(../img/icons.png);
+  background-position: 0px -46px;
+  width: 46px;
+  height: 46px;
+}
+.icon-tool-rotate {
+  background-image: url(../img/icons.png);
+  background-position: -46px 0px;
+  width: 46px;
+  height: 46px;
 }

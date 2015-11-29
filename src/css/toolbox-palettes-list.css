@@ -137,10 +137,6 @@
     outline: none;
 }
 
-.palettes-list-actions .edit-icon {
-    background-size: 15px;
-    background-position: 50%;
-}
 .palettes-list-no-colors {
     height: 42px;
     width: 100%;

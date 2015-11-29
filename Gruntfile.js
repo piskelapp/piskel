@@ -236,6 +236,18 @@ module.exports = function(grunt) {
         },
         src: ['./dest/**/*', "./package.json", "!./dest/desktop/"]
       }
+    },
+    /**
+     *
+     * SPRITING
+     *
+     */
+    sprite:{
+      all : {
+        src: 'src/img/icons/**/*.png',
+        dest: 'src/img/icons.png',
+        destCss: 'src/css/icons.css'
+      }
     }
   });
 
@@ -254,7 +266,7 @@ module.exports = function(grunt) {
   grunt.registerTask('test', ['test-travis']);
   grunt.registerTask('precommit', ['test-local']);
 
-  grunt.registerTask('build',  ['concat:js', 'concat:css', 'uglify', 'replace:main', 'replace:editor', 'copy']);
+  grunt.registerTask('build',  ['sprite', 'concat:js', 'concat:css', 'uglify', 'replace:main', 'replace:editor', 'copy']);
 
   // Validate & Build
   grunt.registerTask('default', ['clean:before', 'lint', 'build']);
