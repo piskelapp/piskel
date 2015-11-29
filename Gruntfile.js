@@ -118,11 +118,17 @@ module.exports = function(grunt) {
         path : 'http://' + ip + ':9901/?debug'
       }
     },
-
     watch: {
-      scripts: {
+      prod: {
         files: ['src/**/*.*'],
-        tasks: ['merge'],
+        tasks: ['build'],
+        options: {
+          spawn: false
+        }
+      },
+      dev: {
+        files: ['src/img/**/*.*'],
+        tasks: ['sprite'],
         options: {
           spawn: false
         }
@@ -270,15 +276,16 @@ module.exports = function(grunt) {
 
   // Validate & Build
   grunt.registerTask('default', ['clean:before', 'lint', 'build']);
+  grunt.registerTask('caca', ['sprite']);
 
   // Build stand alone app with nodewebkit
   grunt.registerTask('desktop', ['default', 'nodewebkit:windows']);
   grunt.registerTask('desktop-mac', ['default', 'nodewebkit:macos']);
 
   // Start webserver and watch for changes
-  grunt.registerTask('serve', ['build', 'express:regular', 'open:regular', 'express-keepalive', 'watch']);
+  grunt.registerTask('serve', ['build', 'express:regular', 'open:regular', 'watch:prod']);
 
   // Start webserver on src folder, in debug mode
-  grunt.registerTask('serve-debug', ['express:debug', 'open:debug', 'express-keepalive']);
+  grunt.registerTask('serve-debug', ['sprite', 'express:debug', 'open:debug', 'watch:dev']);
   grunt.registerTask('play', ['serve-debug']);
 };
