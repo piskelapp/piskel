@@ -72,15 +72,8 @@
     } else {
       script = 'js/piskel-packaged-min' + version + '.js';
     }
-    loadStyle('css/piskel-style-packaged' + version + '.css');
 
-    var loaderInterval = window.setInterval(function () {
-      if (document.querySelectorAll('[data-iframe-loader]').length === 0) {
-        window.clearInterval(loaderInterval);
-        loadScript(script, 'onPiskelReady()');
-      } else {
-        window.console.log('waiting for templates to load ....');
-      }
-    }, 100);
+    loadStyle('css/piskel-style-packaged' + version + '.css');
+    loadScript(script, 'onPiskelReady()');
   }
 })();

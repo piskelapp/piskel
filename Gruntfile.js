@@ -70,14 +70,21 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
     clean: {
-      before: ['dest']
+      prod: ['dest', 'dest-tmp'],
+      dev: ['dest-dev', 'dest-tmp']
     },
+
+    /**
+     * STYLE CHECKS
+     */
+
     leadingIndent : {
       options: {
         indentation : "spaces"
       },
       css : ['src/css/**/*.css']
     },
+
     jscs : {
       options : {
         "preset": "google",
@@ -89,6 +96,7 @@ module.exports = function(grunt) {
       },
       js : [ 'src/js/**/*.js' , '!src/js/**/lib/**/*.js' ]
     },
+
     jshint: {
       options: {
         undef : true,
@@ -105,11 +113,17 @@ module.exports = function(grunt) {
         '!src/js/**/lib/**/*.js' // Exclude lib folder (note the leading !)
       ]
     },
+
+    /**
+     * SERVERS, BROWSER LAUNCHERS
+     */
+
     express: {
-      test: getExpressConfig(['src', 'test'], 9991),
+      test: getExpressConfig(['dest-dev', 'test'], 9991),
       regular: getExpressConfig('dest', 9001),
-      debug: getExpressConfig(['src', 'test'], 9901)
+      debug: getExpressConfig(['dest-dev', 'test'], 9901)
     },
+
     open : {
       regular : {
         path : 'http://' + ip + ':9001/'
@@ -118,6 +132,7 @@ module.exports = function(grunt) {
         path : 'http://' + ip + ':9901/?debug'
       }
     },
+
     watch: {
       prod: {
         files: ['src/**/*.*'],
@@ -127,17 +142,26 @@ module.exports = function(grunt) {
         }
       },
       dev: {
-        files: ['src/img/**/*.*'],
-        tasks: ['sprite'],
+        files: ['src/**/*.*'],
+        tasks: ['build-dev'],
         options: {
           spawn: false
         }
       }
     },
-    ghost : {
-      'travis' : getCasperConfig('travis'),
-      'local' : getCasperConfig('local')
+
+    /**
+     * BUILD STEPS
+     */
+
+    sprite:{
+      all : {
+        src: 'src/img/icons/**/*.png',
+        dest: 'src/img/icons.png',
+        destCss: 'src/css/icons.css'
+      }
     },
+
     concat : {
       js : {
         options : {
@@ -151,18 +175,27 @@ module.exports = function(grunt) {
         dest : 'dest/css/piskel-style-packaged' + version + '.css'
       }
     },
+
     uglify : {
       options : {
         mangle : true
       },
       js : {
         files : {
-          'dest/js/piskel-packaged-min.js' : ['dest/js/piskel-packaged' + version + '.js']
+          'dest-tmp/js/piskel-packaged-min.js' : ['dest/js/piskel-packaged' + version + '.js']
         }
       }
     },
+
+    includereplace: {
+      all: {
+        src: 'src/index.html',
+        dest: 'dest-tmp/index.html'
+      }
+    },
+
     replace: {
-      main: {
+      piskelBoot: {
         options: {
           patterns: [
             {
@@ -172,16 +205,14 @@ module.exports = function(grunt) {
           ]
         },
         files: [
-          {src: ['src/piskel-boot.js'], dest: 'dest/piskel-boot.js'}
+          {src: ['src/piskel-boot.js'], dest: 'dest/piskel-boot.js'},
+          {src: ['src/piskel-boot.js'], dest: 'dest/piskel-boot' + version +'.js'}
         ]
       },
-      editor: {
+      // main-partial.html is used when embedded in piskelapp.com
+      mainPartial: {
         options: {
-          patterns: [
-            {
-              match: /templates\//g,
-              replacement: "../templates"+version+"/"
-            },{
+          patterns: [{
               match: /piskel-boot.js/g,
               replacement: "../piskel-boot"+version+".js"
             },{
@@ -200,29 +231,57 @@ module.exports = function(grunt) {
           ]
         },
         files: [
-          {src: ['src/index.html'], dest: 'dest/piskelapp-partials/main-partial.html'}
+          // src/index.html should already have been moved by the includereplace task
+          {src: ['dest/index.html'], dest: 'dest/piskelapp-partials/main-partial.html'}
         ]
       }
     },
+
     copy: {
-      main: {
+      prod: {
         files: [
-          {src: ['dest/js/piskel-packaged-min.js'], dest: 'dest/js/piskel-packaged-min' + version + '.js'},
-          {src: ['dest/piskel-boot.js'], dest: 'dest/piskel-boot' + version + '.js'},
+          // dest/js/piskel-packaged-min.js should have been created by the uglify task
+          {src: ['dest-tmp/js/piskel-packaged-min.js'], dest: 'dest/js/piskel-packaged-min' + version + '.js'},
+          {src: ['dest-tmp/index.html'], dest: 'dest/index.html'},
           {src: ['src/logo.png'], dest: 'dest/logo.png'},
-          {src: ['src/js/lib/iframeLoader-0.1.0.js'], dest: 'dest/js/lib/iframeLoader-0.1.0.js'},
           {src: ['src/js/lib/gif/gif.ie.worker.js'], dest: 'dest/js/lib/gif/gif.ie.worker.js'},
           {expand: true, src: ['img/**'], cwd: 'src/', dest: 'dest/', filter: 'isFile'},
-          {expand: true, src: ['css/fonts/**'], cwd: 'src/', dest: 'dest/', filter: 'isFile'},
-          {expand: true, src: ['**/*.html'], cwd: 'src/', dest: 'dest/', filter: 'isFile'}
+          {expand: true, src: ['css/fonts/**'], cwd: 'src/', dest: 'dest/', filter: 'isFile'}
+        ]
+      },
+      dev: {
+        files: [
+          // in dev copy everything to dest-dev
+          {src: ['dest-tmp/index.html'], dest: 'dest-dev/index.html'},
+          {src: ['src/piskel-boot.js'], dest: 'dest-dev/piskel-boot.js'},
+          {src: ['src/piskel-script-list.js'], dest: 'dest-dev/piskel-script-list.js'},
+          {src: ['src/piskel-style-list.js'], dest: 'dest-dev/piskel-style-list.js'},
+          {expand: true, src: ['js/**'], cwd: 'src/', dest: 'dest-dev/', filter: 'isFile'},
+          {expand: true, src: ['css/**'], cwd: 'src/', dest: 'dest-dev/', filter: 'isFile'},
+          {expand: true, src: ['img/**'], cwd: 'src/', dest: 'dest-dev/', filter: 'isFile'},
         ]
       }
     },
+
+    /**
+     * TESTING
+     */
+
     karma: {
       unit: {
         configFile: 'karma.conf.js'
       }
     },
+
+    ghost : {
+      'travis' : getCasperConfig('travis'),
+      'local' : getCasperConfig('local')
+    },
+
+    /**
+     * DESKTOP BUILDS
+     */
+
     nodewebkit: {
       windows : {
         options: {
@@ -237,22 +296,11 @@ module.exports = function(grunt) {
       macos : {
         options: {
           platforms : ['osx64'],
+          // had performance issues with 0.11.5 on mac os, need to test new versions/new hardware
           version : "0.10.5",
           build_dir: './dest/desktop/'
         },
         src: ['./dest/**/*', "./package.json", "!./dest/desktop/"]
-      }
-    },
-    /**
-     *
-     * SPRITING
-     *
-     */
-    sprite:{
-      all : {
-        src: 'src/img/icons/**/*.png',
-        dest: 'src/img/icons.png',
-        destCss: 'src/css/icons.css'
       }
     }
   });
@@ -264,19 +312,22 @@ module.exports = function(grunt) {
   grunt.registerTask('unit-test', ['karma']);
 
   // Validate & Test
-  grunt.registerTask('test-travis', ['lint', 'unit-test', 'express:test', 'ghost:travis']);
+  grunt.registerTask('test-travis', ['lint', 'unit-test', 'build-dev', 'express:test', 'ghost:travis']);
   // Validate & Test (faster version) will NOT work on travis !!
-  grunt.registerTask('test-local', ['lint', 'unit-test', 'express:test', 'ghost:local']);
-  grunt.registerTask('test-local-nolint', ['unit-test', 'express:test', 'ghost:local']);
+  grunt.registerTask('test-local', ['lint', 'unit-test', 'build-dev', 'express:test', 'ghost:local']);
+  grunt.registerTask('test-local-nolint', ['unit-test', 'build-dev', 'express:test', 'ghost:local']);
 
   grunt.registerTask('test', ['test-travis']);
   grunt.registerTask('precommit', ['test-local']);
 
-  grunt.registerTask('build',  ['sprite', 'concat:js', 'concat:css', 'uglify', 'replace:main', 'replace:editor', 'copy']);
+  grunt.registerTask('build-index.html', ['includereplace']);
+  grunt.registerTask('merge-statics', ['concat:js', 'concat:css', 'uglify']);
+  grunt.registerTask('replace-all', ['replace:piskelBoot', 'replace:mainPartial']);
+  grunt.registerTask('build',  ['clean:prod', 'sprite', 'merge-statics', 'build-index.html', 'replace-all', 'copy:prod']);
+  grunt.registerTask('build-dev',  ['clean:dev', 'sprite', 'build-index.html', 'copy:dev']);
 
   // Validate & Build
-  grunt.registerTask('default', ['clean:before', 'lint', 'build']);
-  grunt.registerTask('caca', ['sprite']);
+  grunt.registerTask('default', ['lint', 'build']);
 
   // Build stand alone app with nodewebkit
   grunt.registerTask('desktop', ['default', 'nodewebkit:windows']);
@@ -284,8 +335,7 @@ module.exports = function(grunt) {
 
   // Start webserver and watch for changes
   grunt.registerTask('serve', ['build', 'express:regular', 'open:regular', 'watch:prod']);
-
   // Start webserver on src folder, in debug mode
-  grunt.registerTask('serve-debug', ['sprite', 'express:debug', 'open:debug', 'watch:dev']);
+  grunt.registerTask('serve-debug', ['build-dev', 'express:debug', 'open:debug', 'watch:dev']);
   grunt.registerTask('play', ['serve-debug']);
 };
