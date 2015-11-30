@@ -66,6 +66,7 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
     clean: {
+      all: ['dest', 'src/img/icons.png', 'src/css/icons.css'],
       prod: ['dest/prod', 'dest/tmp'],
       desktop: ['dest/desktop', 'dest/tmp'],
       dev: ['dest/dev', 'dest/tmp']
