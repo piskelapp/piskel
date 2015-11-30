@@ -1,0 +1,79 @@
+/*******************************/
+/* Gif/Png Export Setting panel*/
+/*******************************/
+.gif-download-button,
+.gif-render-button {
+  margin-top : 10px;
+  margin-right : 10px;
+}
+
+.gif-export-preview,
+.png-export-preview {
+  position:relative;
+  margin-top:10px;
+  max-height:32px;
+}
+
+.gif-export-preview {
+  max-width:32px;
+}
+
+.png-export-preview img {
+  max-height:32px;
+  float: left;
+}
+
+.png-export-preview .light-picker-background {
+  max-width:240px;
+}
+
+.gif-upload-status {
+  width: 180px;
+  margin-left: 5px;
+  margin-top: 10px;
+}
+
+.gif-upload,
+.png-export-preview {
+  overflow: hidden;
+}
+
+.gif-upload-status,
+.gif-export-preview {
+  float : left;
+}
+
+.preview-upload-ongoing:before{
+  content: "Upload ongoing ...";
+  position: absolute;
+  display: block;
+  height: 100%;
+  width: 100%;
+  text-align: center;
+  padding-top: 45%;
+  box-sizing:border-box;
+  -moz-box-sizing:border-box;
+  background: rgba(0,0,0,0.5);
+  color: white;
+}
+
+.scaling-factor {
+  margin-bottom: 10px;
+}
+
+.scaling-factor-input {
+  margin: 5px;
+  vertical-align: middle;
+  width: 145px;
+}
+
+.scaling-factor-text {
+  height: 31px;
+  display: inline-block;
+  line-height: 30px;
+  width: 40px;
+  border: 1px solid grey;
+  box-sizing: border-box;
+  border-radius: 3px;
+  text-align: center;
+}

@@ -1,0 +1,12 @@
+01 - Run grunt desktop on mac os x
+02 - Retrieve piskel.new.dmg.zip on Dropbox. Unzip it.
+03 - Retrieve nw.icns on Dropbox
+04 - Go to piskel/dest/desktop/releases/mac ; copy piskel.app to your working directory
+05 - Expand piskel.app
+06 - Replace nw.icns by the one from dropbox in Contents/Resources
+07 - Open piskel.new.dmg
+08 - Drag and drop piskel.app in it
+09 - Update readme.txt
+10 - Open disk utility, and open piskel.new.dmg in it
+11 - Convert image, piskel-x.y.z.dmg
+12 - Upload to Dropbox

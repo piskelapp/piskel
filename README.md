@@ -1,70 +1,88 @@
 Piskel
 ======
 
-The goal is to create an easy-to-use/in-the-cloud/web-based 2d animation editor. 
+[![Travis Status](https://api.travis-ci.org/juliandescottes/piskel.png?branch=master)](https://travis-ci.org/juliandescottes/piskel) [![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](http://gruntjs.com/)
 
-Try it at : http://juliandescottes.github.com/piskel/
+A simple web-based tool for Spriting and Pixel art.
 
-29 May 2013 
------------------------------------
-Trying to wake up after a big 8 months nap. 
+![Piskel editor screenshot](https://screenletstore.appspot.com/img/8f03e768-ac59-11e3-b2a1-7f5a1b97c420.jpeg "Piskel editor screenshot")
 
-![nap](http://screenletstore.appspot.com/img/68e1690f-c8a3-11e2-a431-13a291e88f09.gif)
+You can try the standalone editor at **http://juliandescottes.github.io/piskel** or see it integrated in **http://piskelapp.com**.
 
-Also, new features :
-* color picker : ![color picker](http://screenletstore.appspot.com/img/18e24a63-c8a4-11e2-b479-13a291e88f09.png)
-* create an animated GIF from your piskel (uses jsgif, results may vary ...)
+Piskel is mainly developped by :
 
-16 Sep 2012
-------------------------------------
-Just a quick update to post a new screenshot. @grosbouddha is delivering features so fast, it's hard to keep up !
+* **[@juliandescottes](https://github.com/juliandescottes)**
+* **[@grosbouddha](https://github.com/grosbouddha)**
 
-![Screenshot 4](https://dl.dropbox.com/u/17803671/screen_piskel_4.png "Screenshot 4")
+## What's the point ?
 
-15 Sep 2012
-------------------------------------
-2 weeks already since the last README.md update, and so many changes ! There has been a continuous stream of features added to piskel by @grosboudda, @captainbrosset (thanks guys) and myself.
-I can't list everything here but quickly
-* __Tools__ : in addition to the regular Pen, you can now draw Rectangles, Circles. You can move stuff, copy, paste !
-* __Undo/redo__ : you can now cancel your actions using ctrl-z/ctrl-y 
-* __Drag and drop__ : move frames around in your framesheet, using drag and drop
+You can use Piskel to do two things :
+* **spriting** : create retro-style sprites for games
 
-And a screenshot, for the record : 
+![Megaman spritesheet](http://piskel-imgstore-a.appspot.com/img/c8081287-ac58-11e3-bd8c-b3c4036c0eee.png "Megaman spritesheet")
 
-![Screenshot 3](https://dl.dropbox.com/u/17803671/screen_piskel_3.png "Screenshot 3")
+* **pixelart** : create crazy/pretty pixelart animations for fun !
 
-30 Aug 2012
-------------------------------------
-Many new features in 2 days :
-* __save animations__, they are persisted in the cloud, and can be retrieved via a __unique URL__
-* __color picker__, no longer limited to black and white 
-* __local storage__, your work is automatically backed up locally
-* __color palette__, listing all the colors already used in the animation
-* __slider__ for choosing the speed of the preview
+![Rabbit jumping](http://piskel-imgstore-a.appspot.com/img/947f2dab-ac58-11e3-949a-b3c4036c0eee.gif "Rabit jumping")
 
-UI was slightly updated : 
+Integrated in **[piskelapp.com](http://piskelapp.com)**, you can share everything you work on with others as easily as you share a link.
 
-![Screenshot 2](https://dl.dropbox.com/u/17803671/screen_piskel_2.png "Screenshot 2")
+## Requirements
 
-28 Aug 2012
-------------------------------------
-Thanks to grosbouddha, new features added to Piskel :
-* modify preview speed !
-* remove frames
-* transparent background
+Piskel supports the following browsers :
+* **Chrome** (latest)
+* **Firefox** (latest)
+* **Internet Explorer** 11+
 
-24 Aug 2012 (aka the thing I did last night)
-------------------------------------
-* create small animations in __black__ (left click) and __white__ (right click)
-* and actually animations are always in __32x32__ zoomed 10 times
-* you can __not even save them__ ! 
-* add new frames for your animation
-* do small __ridiculous__ characters
+... and a fairly recent computer.
 
-Looks like this : 
-![Alt text](https://dl.dropbox.com/u/17803671/screen_piskel.png "Optional title")
+We don't plan/want/could be forced into supporting older IEs. For Opera and Safari, we've never tested them but the gap shouldn't be huge.
 
-**On the left**, the list of frames for the animation. 
-**In the 'middle'**, the editable canvas.
-**On the right**, the LIVE-ANIMATED-PREVIEW (rocket science stuff going on here).
+## Offline version
+
+Offline builds are available. More details in the [dedicated wiki page](https://github.com/juliandescottes/piskel/wiki/Desktop-applications).
+
+## Built with
+
+The Piskel editor is purely built in **JavaScript, HTML and CSS**. It uses Canvas extensively for displaying all them pretty sprites.
+
+We also use the following **libraries** :
+* [spectrum](https://github.com/bgrins/spectrum) : awesome standalone colorpicker
+* [gifjs](http://jnordberg.github.io/gif.js/) : generate animated GIFs in javascript, using webworkers
+* [supergif](https://github.com/buzzfeed/libgif-js) : modified version of SuperGif to parse and import GIFs
+* [jszip](https://github.com/Stuk/jszip) : create, read and edit .zip files with Javascript
+* [canvas-toBlob](https://github.com/eligrey/canvas-toBlob.js/) : shim for canvas toBlob
+* [jquery](http://jquery.com/) : used sporadically in the application
+* [bootstrap-tooltip](http://getbootstrap.com/javascript/#tooltips) : nice tooltips
+
+As well as some **icons** from the [Noun Project](http://thenounproject.com/) :
+* Folder by Simple Icons from The Noun Project
+* (and probably one or two others)
+
+
+## Contributing ?
+
+Help is always welcome !
+
+* **Issues** : Found a problem when using the application, want to request a feature, [open an issue](https://github.com/juliandescottes/piskel/issues).
+* **Participate** : Have a look at the [wiki](https://github.com/juliandescottes/piskel/wiki) to set up the development environment
+
+## License
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+## Mobile/Tablets
+
+There is no support for mobile for now.
 

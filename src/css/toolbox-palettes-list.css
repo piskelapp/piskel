@@ -1,0 +1,152 @@
+.palettes-title {
+    background-size: 22px;
+    background-repeat: no-repeat;
+    background-position: 97%;
+}
+.palettes-list-colors {
+    overflow: auto;
+    max-height: 160px;
+}
+.palettes-list-color {
+    cursor: pointer;
+    float: left;
+    margin: 0 0 5px 5px;
+    width: 32px;
+    height: 32px;
+    position: relative;
+}
+
+.palettes-list-color:nth-child(-n+10):after {
+    position: absolute;
+    top: 0;
+    right: 0;
+
+    background-color: black;
+    color: gold;
+
+    font-family: Tahoma;
+    font-size: 0.5em;
+    font-weight: bold;
+
+    padding: 2px 3px 2px 3px;
+    border-radius: 0 0 0 2px;
+}
+
+.palettes-list-color:nth-child(1):after {
+    content: "1";
+}
+.palettes-list-color:nth-child(2):after {
+    content: "2";
+}
+.palettes-list-color:nth-child(3):after {
+    content: "3";
+}
+.palettes-list-color:nth-child(4):after {
+    content: "4";
+}
+.palettes-list-color:nth-child(5):after {
+    content: "5";
+}
+.palettes-list-color:nth-child(6):after {
+    content: "6";
+}
+.palettes-list-color:nth-child(7):after {
+    content: "7";
+}
+.palettes-list-color:nth-child(8):after {
+    content: "8";
+}
+.palettes-list-color:nth-child(9):after {
+    content: "9";
+}
+
+.palettes-list-color:nth-child(-n+5) {
+    margin-top: 5px;
+}
+
+.palettes-list-color div {
+    width: 32px;
+    height: 32px;
+}
+.palettes-list-has-scrollbar .palettes-list-color, .palettes-list-has-scrollbar .palettes-list-color div {
+    width: 29px
+}
+.palettes-list-primary-color:before, .palettes-list-secondary-color:before {
+    content: "";
+    position: absolute;
+    bottom: 1px;
+    display: inline-block;
+    border: 7px solid gold;
+    border-top-color: transparent;
+    width: 0px;
+    height: 0px;
+}
+.palettes-list-primary-color:before {
+    left: 1px;
+    border-right-color: transparent;
+}
+.palettes-list-secondary-color:before {
+    right: 1px;
+    border-left-color: transparent;
+}
+.palettes-list-actions {
+    background-color: #3f3f3f;
+    border-bottom-color: #222;
+    height: 24px;
+    padding: 0;
+    overflow: hidden;
+}
+
+.palettes-list-button,
+.palettes-list-select {
+    margin: 0;
+    float: left;
+}
+
+.palettes-list-button {
+    width: 16.66667%;
+}
+.palettes-list-select {
+    width: 66.66667%;
+    height: 100%;
+    padding: 0 5px 0 5px;
+
+    border-style: solid;
+    border-width: 1px 0 1px 0;
+
+    color: #aaa;
+    font-size : 0.75em;
+
+    /*thanks firefox, you suck*/
+    text-align:left;
+    /*text-shadow:none;*/
+    font-weight: normal;
+
+    transition : background-color 0.3s, color 0.3s;
+    cursor:pointer;
+}
+
+.palettes-list-select:hover {
+    color: white;
+    background-color: #484848;
+}
+
+.palettes-list-select:focus {
+    background-color: #484848;
+    color: white;
+    outline: none;
+}
+
+.palettes-list-actions .edit-icon {
+    background-size: 15px;
+    background-position: 50%;
+}
+.palettes-list-no-colors {
+    height: 42px;
+    width: 100%;
+    color: grey;
+    font-size: 0.7em;
+    font-style: italic;
+    line-height: 42px;
+    text-align: center
+}

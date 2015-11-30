@@ -1,0 +1,32 @@
+<div style="display:none">
+  <script type="text/template" id="progress-bar-template">
+    <div class="progress-bar-container">
+      <div class="progress-bar-name">{{name}}</div>
+      <div class="progress-bar-item progress-bar"></div>
+      <div class="progress-bar-item progress-bar-status">{{status}}%</div>
+    </div>
+  </script>
+
+  <!-- Tooltip container -->
+  <script type="text/template" id="tooltip-container-template">
+    <div class='tooltip-container'>
+      <div>{{helptext}} <span class='tooltip-shortcut'>{{shortcut}}</span></div>
+      {{descriptors}}
+    </div>
+  </script>
+
+  <!-- Tooltip description with modifier -->
+  <script type="text/template" id="tooltip-modifier-descriptor-template">
+    <div class='tooltip-descriptor'>
+      <span class='tooltip-descriptor-button'>{{key}}</span>
+      {{description}}
+    </div>
+  </script>
+
+  <!-- Simple tooltip description -->
+  <script type="text/template" id="tooltip-simple-descriptor-template">
+    <div class='tooltip-descriptor'>
+      {{description}}
+    </div>
+  </script>
+</div>

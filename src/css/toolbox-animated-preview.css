@@ -1,0 +1,135 @@
+/**
+ * Animated preview styles.
+ */
+
+.preview-container {
+  border : 0 Solid black;
+  border-radius:5px 0 0 5px;
+  box-shadow : 0 0 2px rgba(0,0,0,0.2);
+  font-size: 0;
+}
+
+.preview-container .canvas-container {
+  overflow : hidden;
+}
+
+.preview-container canvas {
+  border : 0 Solid transparent;
+}
+
+.canvas-container .animated-preview-canvas-background {
+  position : relative;
+  height: 100%;
+}
+
+#animated-preview-container {
+  background: #333;
+  border-radius : 0 0 2px 2px;
+  overflow : hidden;
+}
+
+.canvas-container-wrapper {
+  height :200px;
+  width : 200px;
+  overflow:hidden;
+}
+
+.preview-container .background-image-frame-container {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  background-position: center;
+}
+
+.display-fps {
+  float: left;
+  color: #aaa;
+  font-size: 12px;
+  min-width: 55px;
+  vertical-align: bottom;
+  line-height: 26px;
+}
+
+.range-fps {
+  overflow: hidden;
+  width: 100px;
+  height : 26px;
+  margin : 0;
+  box-sizing: border-box;
+}
+
+.preview-toggle-onion-skin {
+  font-size: 2rem;
+  color: #aaa;
+  float: left;
+  line-height: 26px;
+  height: 100%;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-right: 1px solid #222;
+  transition: 0.2s linear;
+  cursor:pointer;
+}
+
+.preview-toggle-onion-skin:hover {
+  color : white;
+}
+
+.preview-toggle-onion-skin-enabled,
+.preview-toggle-onion-skin-enabled:hover {
+  color : gold;
+}
+
+.preview-contextual-actions {
+  position : absolute;
+  z-index: 500;
+  right : 10px;
+  top : 10px;
+
+  cursor : pointer;
+
+  opacity: 0;
+  transition: 0.3s opacity, 0.3s border-color;
+}
+
+.minimap-container:hover .preview-contextual-actions {
+  opacity: 1;
+}
+
+.original-size-button {
+  width : 18px;
+  height: 18px;
+  line-height: 18px;
+  margin: 0 5px;
+
+  border: 2px solid white;
+  background-color: rgba(0, 0, 0, 0.3);
+  color: white;
+
+  font-size: 10px;
+  font-weight: bold;
+  font-family: Tahoma;
+}
+
+.original-size-button-enabled {
+  color: gold;
+  border-color: gold;
+}
+
+.preview-contextual-action {
+  float: left;
+}
+
+.open-popup-preview-button {
+  width : 18px;
+  height: 18px;
+
+  border : 2px solid white;
+  background-image: url(../img/popup-preview-arrow-white.png);
+  background-color : rgba(0,0,0,0.3);
+}
+
+.open-popup-preview-button:hover {
+  border-color: gold;
+  background-image: url(../img/popup-preview-arrow-gold.png);
+}

@@ -1,0 +1,83 @@
+<div class="dialog-wrapper">
+  <h3 class="dialog-head">
+    <span class="dialog-title">Create palette</span>
+    <span class="dialog-close">X</span>
+  </h3>
+  <div class="dialog-create-palette" style="font-size:1.3em">
+      <div class="create-palette-section form-section">
+        <span class="create-palette-name-label">Name</span>
+        <input type="text" class="textfield create-palette-name-input" name="palette-name" placeholder="palette name ..."/>
+        <div class="create-palette-import-section">
+          <button
+            type="button"
+            rel="tooltip" data-placement="right" title="Import palette from an existing Image or from a palette file"
+            class="button  button-primary create-palette-import-button">Import from file</button>
+          <button
+            type="button"
+            rel="tooltip" data-placement="right" title="Download the palette as a GPL file"
+            class="button  button-primary create-palette-download-button">Download as file</button>
+          <input style="display:none"
+            class="create-palette-import-input"
+            type="file" value="file" accept="*"/>
+        </div>
+      </div>
+      <div class="colors-container">
+        <ul class="colors-list"></ul>
+        <div class="color-picker-container">
+          <div class="color-picker-spectrum"></div>
+          <div class="color-picker-input">
+            <input type="text"  data-model="hex" data-dimension="*" class="textfield  uppercase" value="#000000" />
+          </div>
+          <div class="color-picker-slider">
+            <span>H</span>
+            <input type="range" data-model="hsv" data-dimension="h" value="0" min="0" max="359" tabindex="-1"/>
+            <input type="text"  data-model="hsv" data-dimension="h" class="textfield" value="0" />
+          </div>
+          <div class="color-picker-slider">
+            <span>S</span>
+            <input type="range" data-model="hsv" data-dimension="s" value="0" min="0" max="100" tabindex="-1"/>
+            <input type="text"  data-model="hsv" data-dimension="s" class="textfield" value="0" />
+          </div>
+          <div class="color-picker-slider">
+            <span>V</span>
+            <input type="range" data-model="hsv" data-dimension="v" value="0" min="0" max="100" tabindex="-1"/>
+            <input type="text"  data-model="hsv" data-dimension="v" class="textfield" value="0" />
+          </div>
+          <br/>
+          <div class="color-picker-slider">
+            <span>R</span>
+            <input type="range" data-model="rgb" data-dimension="r" value="0" min="0" max="255" tabindex="-1"/>
+            <input type="text"  data-model="rgb" data-dimension="r" class="textfield" value="0" />
+          </div>
+          <div class="color-picker-slider">
+            <span>G</span>
+            <input type="range" data-model="rgb" data-dimension="g" value="0" min="0" max="255" tabindex="-1"/>
+            <input type="text"  data-model="rgb" data-dimension="g" class="textfield" value="0" />
+          </div>
+          <div class="color-picker-slider">
+            <span>B</span>
+            <input type="range" data-model="rgb" data-dimension="b" value="0" min="0" max="255" tabindex="-1"/>
+            <input type="text"  data-model="rgb" data-dimension="b" class="textfield" value="0" />
+          </div>
+          <div class="color-preview"></div>
+        </div>
+      </div>
+      <div class="create-palette-actions">
+        <button type="button" name="create-palette-cancel" data-action="cancel" class="button create-palette-cancel">Cancel</button>
+        <button type="button" name="create-palette-delete" data-action="delete" class="button button-primary create-palette-delete">Delete</button>
+        <!-- <button type="button" name="create-palette-clone" class="button button-primary create-palette-clone">Save as new</button> -->
+        <button type="button" name="create-palette-submit" data-action="submit" class="button button-primary create-palette-submit">Save</button>
+      </div>
+  </div>
+
+  <script type="text/template" id="create-palette-color-template">
+    <li
+      class="create-palette-color {{:selected}} {{:light-color}}"
+      style="background:{{color}}"
+      data-palette-index="{{index}}"
+      data-palette-color="{{color}}">
+      <div class="create-palette-remove-color">X</div>
+    </li>
+  </script>
+
+</div>

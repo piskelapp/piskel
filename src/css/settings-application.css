@@ -1,0 +1,61 @@
+/*******************************/
+/*  Application Setting panel  */
+/*******************************/
+
+.background-picker-wrapper {
+  overflow: hidden;
+  padding: 5px 5px 2px 5px;
+}
+
+.background-picker {
+  cursor: pointer;
+  float: left;
+  height: 35px;
+  width: 35px;
+  background-color: transparent;
+  margin-right: 15px;
+  padding: 1px;
+  position: relative;
+}
+
+.background-picker:after {
+  content: " ";
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  bottom: -2px;
+  left: -2px;
+}
+
+.background-picker:hover:after {
+  border: #eee 1px solid;
+}
+
+.background-picker.selected:after {
+  border: gold 1px solid;
+}
+
+.layer-opacity-input {
+  margin: 5px;
+  vertical-align: middle;
+  width: 145px;
+}
+
+.layer-opacity-text {
+  height: 31px;
+  display: inline-block;
+  line-height: 30px;
+  width: 40px;
+  border: 1px solid grey;
+  box-sizing: border-box;
+  border-radius: 3px;
+  text-align: center;
+}
+
+.grid-width-select {
+  margin: 5px;
+}
+
+.settings-section--application-general > .settings-item > label {
+  display: block;
+}

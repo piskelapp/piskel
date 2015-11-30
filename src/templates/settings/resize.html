@@ -1,0 +1,66 @@
+<div class="settings-section">
+  <!-- RESIZE DRAWING SECTION -->
+  <div class="settings-title">
+    Resize
+  </div>
+  <div class="settings-item  resize-canvas">
+    <form action="" method="POST" name="resize-canvas-form">
+      <div class="resize-section">
+        <span  class="resize-section-title">Width</span>
+        <input type="text" class="textfield resize-size-field" autocomplete="off" name="resize-width"/>
+        <span>px</span>
+      </div>
+      <div class="resize-section">
+        <span  class="resize-section-title">Height</span>
+        <input type="text" class="textfield resize-size-field" autocomplete="off" name="resize-height"/>
+        <span>px</span>
+      </div>
+      <div class="resize-section">
+        <label>
+          <input type="checkbox" class="resize-ratio-checkbox checkbox-fix" value="true"/>
+          <span>Maintain aspect ratio</span>
+        </label>
+      </div>
+      <div class="resize-section">
+        <label>
+          <input type="checkbox" class="resize-content-checkbox checkbox-fix" value="true"/>
+          <span>Resize canvas content</span>
+        </label>
+      </div>
+      <div class="resize-section">
+        <span  class="resize-section-title">Anchor</span>
+        <div class="resize-origin-container">
+          <div class="resize-origin-option"  title="top left"      data-origin="TOPLEFT"></div>
+          <div class="resize-origin-option"  title="top"           data-origin="TOP"></div>
+          <div class="resize-origin-option"  title="top right"     data-origin="TOPRIGHT"></div>
+          <div class="resize-origin-option"  title="middle left"   data-origin="MIDDLELEFT"></div>
+          <div class="resize-origin-option"  title="middle"        data-origin="MIDDLE"></div>
+          <div class="resize-origin-option"  title="middle right"  data-origin="MIDDLERIGHT"></div>
+          <div class="resize-origin-option"  title="bottom left"   data-origin="BOTTOMLEFT"></div>
+          <div class="resize-origin-option"  title="bottom"        data-origin="BOTTOM"></div>
+          <div class="resize-origin-option"  title="bottom right"  data-origin="BOTTOMRIGHT"></div>
+        </div>
+      </div>
+      <input type="submit" class="button button-primary resize-button" value="Resize" />
+    </form>
+  </div>
+  <!-- DEFAULT SIZE SECTION -->
+  <div class="settings-title">
+    Default size
+  </div>
+  <div class="settings-item  settings-default-size">
+    <form action="" method="POST" name="default-size-form">
+      <div class="resize-section">
+        <span  class="resize-section-title">Width</span>
+        <input type="text" class="textfield resize-size-field" autocomplete="off" name="default-width"/>
+        <span>px</span>
+      </div>
+      <div class="resize-section">
+        <span  class="resize-section-title">Height</span>
+        <input type="text" class="textfield resize-size-field" autocomplete="off" name="default-height"/>
+        <span>px</span>
+      </div>
+      <input type="submit" class="button button-primary resize-button" value="Set default" />
+    </form>
+  </div>
+</div>

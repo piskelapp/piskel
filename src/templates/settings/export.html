@@ -1,0 +1,63 @@
+<div class="settings-section">
+  <div class="settings-title">
+    Export Spritesheet
+  </div>
+  <div class="settings-item">
+    <div class="settings-description">PNG with all frames side by side.</div>
+    <div class="scaling-factor"
+      title="Scale the exported PNG spritesheet"
+      rel="tooltip"
+      data-placement="top">
+      <label for="scaling-factor">Scale</label>
+      <input type="range" class="scaling-factor-input" name="scaling-factor" min="1"  max="32" step="1"/>
+      <span class="scaling-factor-text"></span>
+    </div>
+    <button type="button" class="button button-primary png-download-button">Download PNG</button>
+  </div>
+  <div class="settings-title">
+    Export as ZIP
+  </div>
+  <div class="settings-item">
+    <div class="settings-description">ZIP with one PNG file per frame.</div>
+    <div class="settings-description">File names will start with the prefix below.</div>
+    <div class="settings-item">
+      <label>Prefix</label>
+      <input type="text" class="zip-prefix-name  textfield" autocomplete="off" placeholder="PNG file prefix ...">
+    </div>
+  <div class="settings-item">
+      <label>
+        <input class="zip-split-layers-checkbox  checkbox-fix" type="checkbox" />
+        Split by layers
+      </label>
+    </div>
+    <button type="button" class="button button-primary zip-generate-button"/>Download ZIP</button>
+  </div>
+  <div class="settings-title">
+    Export to Animated GIF
+  </div>
+  <div class="settings-item">
+    <form action="" method="POST" class="gif-export-form">
+      <div class="settings-item">
+        <label>Select resolution:</label>
+        <div class="resize-section">
+          <span  class="resize-section-title">Width</span>
+          <input type="text" class="textfield  export-size-field  export-gif-resize-width" autocomplete="off" name="resize-width"/>
+          <span>px</span>
+        </div>
+        <div class="resize-section">
+          <span  class="resize-section-title">Height</span>
+          <input type="text" class="textfield  export-size-field  export-gif-resize-height" autocomplete="off" name="resize-height"/>
+          <span>px</span>
+        </div>
+      </div>
+      <div class="settings-item">
+        <button type="button" class="button button-primary gif-download-button">Download GIF</button>
+        <button type="button" class="button button gif-upload-button">Get public URL</button>
+      </div>
+    </form>
+    <div class="gif-upload">
+      <div class="gif-export-preview"></div>
+      <div class="gif-upload-status"></div>
+    </div>
+  </div>
+</div>

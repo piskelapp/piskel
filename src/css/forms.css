@@ -1,0 +1,85 @@
+.row {
+  display: block;
+}
+
+.textfield {
+  box-sizing:border-box;
+
+  background : black;
+  border : 1px solid #888;
+  border-radius : 2px;
+  padding : 3px 10px;
+  color : white;
+
+  height: 23px;
+}
+
+.textfield[disabled=disabled] {
+  background : #3a3a3a;
+}
+
+.textfield-small {
+  width : 50px;
+}
+
+.button {
+  box-sizing: border-box;
+  height: 24px;
+
+  background-color: #3f3f3f;
+  border: 1px solid #333;
+  border-top-color: #666;
+  border-bottom-color: #222;
+
+  cursor: pointer;
+  text-decoration: none;
+
+  color: white;
+  text-shadow: 0 -1px 0 black;
+  font-weight: bold;
+  font-size: 1rem;
+  text-align: center;
+
+  transition: background-color 0.2s linear;
+}
+
+.button:hover {
+  text-decoration: none;
+  background-color: #484848;
+  color: gold;
+}
+
+.button-primary {
+  background-color: rgb(255,215,0); /* gold */
+
+  border-color: rgb(179, 164, 0);
+  border-top-color: white;
+  border-bottom-color: rgb(151, 133, 0);
+
+  color: black;
+  text-shadow: 0 1px 0 #fff;
+}
+
+.button-primary:hover {
+  background-color: rgb(255,235,20);
+  color: #333;
+}
+
+.button[disabled],
+.button[disabled]:hover {
+  cursor:default;
+  background-color: #aaa;
+  color: #777;
+  text-shadow: 0 1px 0 #bbb;
+  border-color: #666;
+  border-top-color: #999;
+  border-bottom-color: #555;
+}
+
+.import-size-field,
+.resize-size-field,
+.export-size-field  {
+  width: 50px;
+  margin-right: 8px;
+  text-align: right;
+}

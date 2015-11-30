@@ -1,0 +1,17 @@
+.toolbox-container {
+  border: 4px solid #888;
+  font-size: medium;
+  color: white;
+  text-align: left;
+  border-radius: 4px;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+
+.toolbox-title {
+  padding: 8px;
+  margin: 0;
+  font-size: 15px;
+  background: #222;
+}

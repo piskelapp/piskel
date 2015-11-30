@@ -3,6 +3,10 @@
 
 # nodejs local installs
 node_modules
+npm-debug.log
+
+# node webkit cache
+cache
 
 # sublime text stuff (the -project should actually be shared, but then we'd have to share the same disk location)
 *.sublime-project
@@ -10,3 +14,17 @@ node_modules
 
 # git stackdumps
 *.stackdump
+
+
+# diffs
+diff.txt
+
+# build destination
+dest
+build/closure/closure_compiled_binary.js
+
+# plato report directory
+report
+
+# marked as private
+*.private.*
