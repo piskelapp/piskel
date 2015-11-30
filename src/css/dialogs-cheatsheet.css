@@ -3,17 +3,12 @@
   bottom: 10px;
   left: 10px;
 
-  padding: 1px 0 0 45px;
   color : gold;
   font-weight: bold;
   font-size : 1.25em;
   line-height: 20px;
 
-  cursor : pointer;
-
-  background-image:url('../img/keyboard.png');
-  background-size:35px 20px;
-  background-repeat:no-repeat;
+  cursor: pointer;
 
   opacity: 0.5;
   z-index: 11000;
@@ -81,9 +76,7 @@
   height: 30px;
   width: 30px;
   margin: 0 10px 0 0;
-
-  background-size: 20px 20px;
-  background-position: 5px 5px;
+  background-size: 30px 30px;
 }
 
 .cheatsheet-description {
@@ -170,4 +163,65 @@
   position: absolute;
   bottom: 10px;
   right: 10px;
+}
+
+
+.cheatsheet-icon-tool-circle {
+  background-image: url(../img/icons/tools/tool-circle.png);
+}
+
+.cheatsheet-icon-tool-colorpicker {
+  background-image: url(../img/icons/tools/tool-colorpicker.png);
+}
+
+.cheatsheet-icon-tool-colorswap {
+  background-image: url(../img/icons/tools/tool-colorswap.png);
+}
+
+.cheatsheet-icon-tool-dithering {
+  background-image: url(../img/icons/tools/tool-dithering.png);
+}
+
+.cheatsheet-icon-tool-eraser {
+  background-image: url(../img/icons/tools/tool-eraser.png);
+}
+
+.cheatsheet-icon-tool-lasso-select {
+  background-image: url(../img/icons/tools/tool-lasso-select.png);
+}
+
+.cheatsheet-icon-tool-lighten {
+  background-image: url(../img/icons/tools/tool-lighten.png);
+}
+
+.cheatsheet-icon-tool-move {
+  background-image: url(../img/icons/tools/tool-move.png);
+}
+
+.cheatsheet-icon-tool-paint-bucket {
+  background-image: url(../img/icons/tools/tool-paint-bucket.png);
+}
+
+.cheatsheet-icon-tool-pen {
+  background-image: url(../img/icons/tools/tool-pen.png);
+}
+
+.cheatsheet-icon-tool-rectangle-select {
+  background-image: url(../img/icons/tools/tool-rectangle-select.png);
+}
+
+.cheatsheet-icon-tool-rectangle {
+  background-image: url(../img/icons/tools/tool-rectangle.png);
+}
+
+.cheatsheet-icon-tool-shape-select {
+  background-image: url(../img/icons/tools/tool-shape-select.png);
+}
+
+.cheatsheet-icon-tool-stroke {
+  background-image: url(../img/icons/tools/tool-stroke.png);
+}
+
+.cheatsheet-icon-tool-vertical-mirror-pen {
+  background-image: url(../img/icons/tools/tool-vertical-mirror-pen.png);
 }

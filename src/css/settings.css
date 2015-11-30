@@ -21,55 +21,6 @@
   margin-right: 0;
 }
 
-/********************************************************** *j* j** j*j j j j** *****************/
-/* Settings icons                                            I  I   I I I\I  \                  */
-/********************************************************** *** *** *** * * '** *****************/
-
-.tool-icon.gallery-icon {
-  background-image: url(../img/gallery.png);
-  background-position: 3px 3px;
-  background-size: 39px 39px;
-}
-
-.tool-icon.resize-icon {
-  background-image: url(../img/resize-icon.png);
-  background-position: 10px 10px;
-  background-size: 26px 26px;
-}
-
-.tool-icon.save-icon {
-  background-image: url(../img/save.png);
-  background-position: 6px 6px;
-  background-size: 36px 36px;
-}
-
-.tool-icon.gear-icon {
-  background-image: url(../img/gear.png);
-  background-position: 6px 7px;
-  background-size: 32px 32px;
-}
-
-.tool-icon.export-icon {
-  background-image: url(../img/export.png);
-  background-position: 7px 5px;
-  background-size: 36px 36px;
-  position: relative;
-}
-
-.tool-icon.local-storage-icon {
-  background-image: url(../img/local-storage-icon.png);
-  background-position: 10px 12px;
-  background-size: 30px;
-  position: relative;
-}
-
-.tool-icon.import-icon {
-  background-image: url(../img/import-icon.png);
-  background-position: 10px 5px;
-  background-size: 26px;
-  position: relative;
-}
-
 .tool-icon .label {
   position: absolute;
   left: 0;

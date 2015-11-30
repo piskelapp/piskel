@@ -55,24 +55,28 @@
 }
 
 .add-frame-action {
-  border: #888 solid 4px;
-  font-size: 13px;
-  color: #888;
-  cursor: pointer;
-  padding: 6px 0;
-  border-radius: 4px;
   margin-top: 8px;
-  background-image: url(../img/plus.png);
-  background-repeat: no-repeat;
-  background-position: 3px 7px;
-  background-size: 26px 26px;
-  text-indent: 18px;
+  padding: 6px 0;
+  overflow: hidden;
+  width: 96px;
+
+  border: #888 solid 3px;
+  border-radius: 4px;
+
+  color: #888;
   background-color: #222;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.add-frame-action-icon {
+  margin: 3px;
+  float: left;
 }
 
 .add-frame-action .label {
-  width: 80px;
-  margin: 0 auto;
+  overflow: hidden;
+  text-align: left;
 }
 
 .add-frame-action:hover {
@@ -129,15 +133,9 @@
 }
 
 .preview-tile .tile-overlay.delete-frame-action {
-   background-image: url(../img/garbage.png);
-   background-repeat: no-repeat;
    top: 0;
    right: 0;
    border-bottom-left-radius: 3px;
-   height: 30px;
-   width: 30px;
-   background-position: 5px 5px;
-   background-size: 20px;
    cursor: pointer;
 }
 
@@ -145,10 +143,6 @@
    bottom: 0;
    right: 0;
    border-bottom-left-radius: 3px;
-   background-image: url(../img/duplicate.png);
-   background-repeat: no-repeat;
-   background-position: 5px 5px;
-   background-size: 20px;
    cursor: pointer;
 }
 
@@ -156,10 +150,6 @@
    bottom: 0;
    left: 0;
    border-top-right-radius: 3px;
-   background-image: url(../img/dragndrop.png);
-   background-repeat: no-repeat;
-   background-position: 5px 5px;
-   background-size: 20px;
    cursor: move;
 }
 

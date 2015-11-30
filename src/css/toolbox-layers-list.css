@@ -5,13 +5,6 @@
 .layers-list-container {
 }
 
-/*.layers-title {
-  background-image: url('../img/layers.svg');
-  background-size: 22px;
-  background-repeat: no-repeat;
-  background-position: 97%;
-}*/
-
 .layers-title {
   position: relative;
 }

@@ -39,7 +39,7 @@
     secondaryColorPicker.change({isPrimary : false}, $.proxy(this.onPickerChange_, this));
     this.setTitleOnPicker_(Constants.TRANSPARENT_COLOR, secondaryColorPicker);
 
-    var swapColorsIcon = $('.swap-colors-icon');
+    var swapColorsIcon = $('.swap-colors-button');
     swapColorsIcon.click(this.swapColors.bind(this));
   };
 

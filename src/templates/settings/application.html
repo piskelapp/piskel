@@ -1,63 +1,64 @@
-<form action="" method="POST" name="application-settings-form">
-  <div class="settings-section settings-section--application-general">
-    <div class="settings-title">
-      General
-    </div>
-    <div class="settings-item">
-      <label>Background</label>
-      <div class="background-picker-wrapper">
-        <div class="background-picker light-picker-background" data-background="light-canvas-background"
-              rel="tooltip" data-placement="bottom" title="light / high contrast">
-        </div>
-        <div class="background-picker medium-picker-background" data-background="medium-canvas-background"
-              rel="tooltip" data-placement="bottom" title="medium / high contrast">
-        </div>
-        <div class="background-picker lowcont-medium-picker-background" data-background="lowcont-medium-canvas-background"
-              rel="tooltip" data-placement="bottom" title="medium / low contrast">
-        </div>
-        <div class="background-picker lowcont-dark-picker-background" data-background="lowcont-dark-canvas-background"
-              rel="tooltip" data-placement="bottom" title="dark / low contrast">
+<script type="text/html" id="templates/settings/application.html">
+  <form action="" method="POST" name="application-settings-form">
+    <div class="settings-section settings-section--application-general">
+      <div class="settings-title">
+        General
+      </div>
+      <div class="settings-item">
+        <label>Background</label>
+        <div class="background-picker-wrapper">
+          <div class="background-picker light-picker-background" data-background="light-canvas-background"
+                rel="tooltip" data-placement="bottom" title="light / high contrast">
+          </div>
+          <div class="background-picker medium-picker-background" data-background="medium-canvas-background"
+                rel="tooltip" data-placement="bottom" title="medium / high contrast">
+          </div>
+          <div class="background-picker lowcont-medium-picker-background" data-background="lowcont-medium-canvas-background"
+                rel="tooltip" data-placement="bottom" title="medium / low contrast">
+          </div>
+          <div class="background-picker lowcont-dark-picker-background" data-background="lowcont-dark-canvas-background"
+                rel="tooltip" data-placement="bottom" title="dark / low contrast">
+          </div>
         </div>
       </div>
+
+      <div class="settings-item">
+        <label for="grid-width">Grid</label>
+        <select id="grid-width" class="grid-width-select">
+          <option value="0">Disabled</option>
+          <option value="1">1px</option>
+          <option value="2">2px</option>
+          <option value="3">3px</option>
+          <option value="4">4px</option>
+        </select>
+      </div>
+
+      <div class="settings-item">
+        <label for="tiled-preview">Layer Preview Opacity</label>
+        <input type="range" class="layer-opacity-input" name="layer-opacity" min="0"  max="1" step="0.05"/>
+        <span class="layer-opacity-text"></span>
+      </div>
+
     </div>
 
-    <div class="settings-item">
-      <label for="grid-width">Grid</label>
-      <select id="grid-width" class="grid-width-select">
-        <option value="0">Disabled</option>
-        <option value="1">1px</option>
-        <option value="2">2px</option>
-        <option value="3">3px</option>
-        <option value="4">4px</option>
-      </select>
+    <div class="settings-section">
+      <div class="settings-title">
+        Preview
+      </div>
+
+      <div class="settings-item">
+        <label>
+          <input type="checkbox" value="1" class="tiled-preview-checkbox  checkbox-fix" name="tiled-preview-checkbox"/>
+          Repeated preview
+        </label>
+      </div>
+
+      <div class="settings-item">
+        <label for="tiled-preview">Maximum FPS </label>
+        <input type="text" class="textfield  textfield-small  max-fps-input" autocomplete="off" name="max-fps"/>
+      </div>
+
+      <input type="submit" class="button button-primary" value="Save" />
     </div>
-
-    <div class="settings-item">
-      <label for="tiled-preview">Layer Preview Opacity</label>
-      <input type="range" class="layer-opacity-input" name="layer-opacity" min="0"  max="1" step="0.05"/>
-      <span class="layer-opacity-text"></span>
-    </div>
-
-  </div>
-
-  <div class="settings-section">
-    <div class="settings-title">
-      Preview
-    </div>
-
-    <div class="settings-item">
-      <label>
-        <input type="checkbox" value="1" class="tiled-preview-checkbox  checkbox-fix" name="tiled-preview-checkbox"/>
-        Repeated preview
-      </label>
-    </div>
-
-    <div class="settings-item">
-      <label for="tiled-preview">Maximum FPS </label>
-      <input type="text" class="textfield  textfield-small  max-fps-input" autocomplete="off" name="max-fps"/>
-    </div>
-
-    <input type="submit" class="button button-primary" value="Save" />
-  </div>
-</form>
-
+  </form>
+</script>

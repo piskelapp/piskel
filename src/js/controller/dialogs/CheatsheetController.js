@@ -86,7 +86,7 @@
   };
 
   ns.CheatsheetController.prototype.getToolIconClass_ = function (shortcut) {
-    return 'tool-icon ' + shortcut.getId();
+    return 'tool-icon cheatsheet-icon-' + shortcut.getId();
   };
 
   ns.CheatsheetController.prototype.initMarkupForCategory_ = function (category, container, iconClassProvider) {
