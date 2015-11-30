@@ -102,7 +102,9 @@
   @@include('templates/settings/import.html', {})
   @@include('templates/settings/export.html', {})
 
-  <script type="text/javascript" src="piskel-boot.js"></script>
+  <script type="text/javascript">
+    @@include('piskel-boot.js', {})
+  </script>
   <!--body-main-end-->
   <!-- the comment above indicates the end of the markup reused by the editor integrated in piskelapp.com -->
   <!-- do not delete, do not move :) -->

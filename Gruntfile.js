@@ -190,32 +190,20 @@ module.exports = function(grunt) {
     includereplace: {
       all: {
         src: 'src/index.html',
-        dest: 'dest-tmp/index.html'
+        dest: 'dest-tmp/index.html',
+        options : {
+          globals : {
+            'version' : version
+          }
+        }
       }
     },
 
     replace: {
-      piskelBoot: {
-        options: {
-          patterns: [
-            {
-              match: 'version',
-              replacement: version
-            }
-          ]
-        },
-        files: [
-          {src: ['src/piskel-boot.js'], dest: 'dest/piskel-boot.js'},
-          {src: ['src/piskel-boot.js'], dest: 'dest/piskel-boot' + version +'.js'}
-        ]
-      },
       // main-partial.html is used when embedded in piskelapp.com
       mainPartial: {
         options: {
           patterns: [{
-              match: /piskel-boot.js/g,
-              replacement: "../piskel-boot"+version+".js"
-            },{
               match: /^(.|[\r\n])*<!--body-main-start-->/,
               replacement: "",
               description : "Remove everything before body-main-start comment"
@@ -253,7 +241,6 @@ module.exports = function(grunt) {
         files: [
           // in dev copy everything to dest-dev
           {src: ['dest-tmp/index.html'], dest: 'dest-dev/index.html'},
-          {src: ['src/piskel-boot.js'], dest: 'dest-dev/piskel-boot.js'},
           {src: ['src/piskel-script-list.js'], dest: 'dest-dev/piskel-script-list.js'},
           {src: ['src/piskel-style-list.js'], dest: 'dest-dev/piskel-style-list.js'},
           {expand: true, src: ['js/**'], cwd: 'src/', dest: 'dest-dev/', filter: 'isFile'},
@@ -322,8 +309,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('build-index.html', ['includereplace']);
   grunt.registerTask('merge-statics', ['concat:js', 'concat:css', 'uglify']);
-  grunt.registerTask('replace-all', ['replace:piskelBoot', 'replace:mainPartial']);
-  grunt.registerTask('build',  ['clean:prod', 'sprite', 'merge-statics', 'build-index.html', 'replace-all', 'copy:prod']);
+  grunt.registerTask('build',  ['clean:prod', 'sprite', 'merge-statics', 'build-index.html', 'replace', 'copy:prod']);
   grunt.registerTask('build-dev',  ['clean:dev', 'sprite', 'build-index.html', 'copy:dev']);
 
   // Validate & Build
