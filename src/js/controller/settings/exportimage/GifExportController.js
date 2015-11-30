@@ -153,7 +153,7 @@
   // FIXME : JD : HORRIBLE COPY/PASTA (JD later : where???)
   ns.GifExportController.prototype.updateStatus_ = function (imageUrl, error) {
     if (imageUrl) {
-      var linkTpl = '<a class="image-link" href="${link}" target="_blank">${shortLink}</a>';
+      var linkTpl = '<a class="image-link" href="{{link}}" target="_blank">{{shortLink}}</a>';
       var linkHtml = pskl.utils.Template.replace(linkTpl, {
         link : imageUrl,
         shortLink : this.shorten_(imageUrl, URL_MAX_LENGTH, '...')

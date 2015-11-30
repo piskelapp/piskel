@@ -47,7 +47,7 @@
     });
 
     keys.forEach((function (key) {
-      var date = pskl.utils.DateUtils.format(key.date, '${Y}/${M}/${D} ${H}:${m}');
+      var date = pskl.utils.DateUtils.format(key.date, '{{Y}}/{{M}}/{{D}} {{H}}:{{m}}');
       html += pskl.utils.Template.replace(this.localStorageItemTemplate_, {name : key.name, date : date});
     }).bind(this));
 

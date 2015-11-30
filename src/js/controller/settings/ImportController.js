@@ -32,7 +32,7 @@
     var previousInfo = pskl.app.backupService.getPreviousPiskelInfo();
     if (previousInfo) {
       var previousSessionTemplate_ = pskl.utils.Template.get('previous-session-info-template');
-      var date = pskl.utils.DateUtils.format(previousInfo.date, '${H}:${m} - ${Y}/${M}/${D}');
+      var date = pskl.utils.DateUtils.format(previousInfo.date, '{{H}}:{{m}} - {{Y}}/{{M}}/{{D}}');
       previousSessionContainer.innerHTML = pskl.utils.Template.replace(previousSessionTemplate_, {
         name : previousInfo.name,
         date : date

@@ -49,7 +49,7 @@
               value = '';
             }
           }
-          template = template.replace(new RegExp('\\$\\{' + key + '\\}', 'g'), value);
+          template = template.replace(new RegExp('\\{\\{' + key + '\\}\\}', 'g'), value);
         }
       }
       return template;

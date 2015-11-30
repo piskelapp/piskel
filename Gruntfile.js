@@ -205,11 +205,11 @@ module.exports = function(grunt) {
         options: {
           patterns: [{
               match: /^(.|[\r\n])*<!--body-main-start-->/,
-              replacement: "",
+              replacement: "{% raw %}",
               description : "Remove everything before body-main-start comment"
             },{
               match: /<!--body-main-end-->(.|[\r\n])*$/,
-              replacement: "",
+              replacement: "{% endraw %}",
               description : "Remove everything after body-main-end comment"
             },{
               match: /([\r\n])  /g,

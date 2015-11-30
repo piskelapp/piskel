@@ -21,7 +21,7 @@
 
     var testSuiteStatus = document.createElement('li');
     testSuiteStatus.innerHTML = pskl.utils.Template.replace(
-      '<b>Test Suite [${path}]</b>',
+      '<b>Test Suite [{{path}}]</b>',
       {path : this.shortenPath_(this.suitePath)}
     );
     this.testListElt.appendChild(testSuiteStatus);
@@ -51,7 +51,7 @@
     var testCaseStatus = document.createElement('li');
 
     testCaseStatus.innerHTML = pskl.utils.Template.replace(
-      '[${path}] finished : <b style="color:${color}">${status}</b>',
+      '[{{path}}] finished : <b style="color:{{color}}">{{status}}</b>',
       {path : this.shortenPath_(testPath), status : status ? 'OK' : 'KO', color : status ? 'green' : 'red'}
     );
     this.testListElt.appendChild(testCaseStatus);
@@ -64,7 +64,7 @@
 
     var testSuiteStatus = document.createElement('li');
     testSuiteStatus.innerHTML = pskl.utils.Template.replace(
-      '<b>Test finished : ${status}</b> (${elapsed} seconds)',
+      '<b>Test finished : {{status}}</b> ({{elapsed}} seconds)',
       {status : status, elapsed : elapsed}
     );
     this.testListElt.appendChild(testSuiteStatus);
