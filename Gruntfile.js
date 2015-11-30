@@ -1,43 +1,42 @@
 module.exports = function(grunt) {
-  var ip = 'localhost';
+
+  // Update this variable if you don't want or can't serve on localhost
+  var hostname = 'localhost';
+
+  // create a version based on the build timestamp
   var dateFormat = require('dateformat');
-  var now = new Date();
-  var version = '-' + dateFormat(now, "yyyy-mm-dd-hh-MM");
+  var version = '-' + dateFormat(new Date(), "yyyy-mm-dd-hh-MM");
 
-  // get the list of scripts paths to include
-  var piskelScripts = require('./src/piskel-script-list.js').scripts.map(function (path) {
-    return "src/" + path;
-  }).filter(function (path) {
-    return path.indexOf('devtools') === -1;
-  });
-  // get the list of styles paths to include
-  var piskelStyles = require('./src/piskel-style-list.js').styles.map(function (path) {
-    return "src/" + path;
-  });
-
-  var casperEnvironments = {
-    'local' : {
-      suite : './test/casperjs/LocalTestSuite.js',
-      delay : 50
-    },
-    'travis' : {
-      suite : './test/casperjs/TravisTestSuite.js',
-      delay : 10000
-    }
+  /**
+   * Helper to prefix all strings in provided array with the provided path
+   */
+  var prefixPaths = function (paths, prefix) {
+    return paths.map(function (path) {
+      return prefix + path;
+    });
   };
 
-  var getCasperConfig = function (env) {
-    var conf = casperEnvironments[env];
-    var tests = require(conf.suite).tests.map(function (path) {
-      return "test/casperjs/" + path;
-    });
+  // get the list of scripts paths to include
+  var scriptPaths = require('./src/piskel-script-list.js').scripts;
+  var piskelScripts = prefixPaths(scriptPaths, "src/").filter(function (path) {
+    return path.indexOf('devtools') === -1;
+  });
+
+  // get the list of styles paths to include
+  var stylePaths = require('./src/piskel-style-list.js').styles;
+  var piskelStyles = prefixPaths(stylePaths, "src/");
+
+  var getCasperConfig = function (suiteName, delay, host) {
+    var testPaths = require('./test/casperjs/' + suiteName).tests;
+    var tests = prefixPaths(testPaths, "test/casperjs/");
+
     return {
       filesSrc : tests,
       options : {
         args : {
-          baseUrl : 'http://' + ip + ':' + '<%= express.test.options.port %>/',
+          baseUrl : 'http://' + host + ':' + '<%= express.test.options.port %>/',
           mode : '?debug',
-          delay : conf.delay
+          delay : delay
         },
         async : false,
         direct : false,
@@ -48,19 +47,16 @@ module.exports = function(grunt) {
     };
   };
 
-  var getExpressConfig = function (source, port, host) {
-    var bases;
-    if (typeof source === 'string') {
-      bases = [source];
-    } else if (Array.isArray(source)) {
-      bases = source;
+  var getExpressConfig = function (sourceFolders, port, host) {
+    if (typeof sourceFolders === 'string') {
+      sourceFolders = [sourceFolders];
     }
 
     return {
       options: {
         port: port,
-        hostname : host || ip,
-        bases: bases
+        hostname : host,
+        bases: sourceFolders
       }
     };
   };
@@ -70,8 +66,9 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
     clean: {
-      prod: ['dest', 'dest-tmp'],
-      dev: ['dest-dev', 'dest-tmp']
+      prod: ['dest/prod', 'dest/tmp'],
+      desktop: ['dest/desktop', 'dest/tmp'],
+      dev: ['dest/dev', 'dest/tmp']
     },
 
     /**
@@ -119,17 +116,17 @@ module.exports = function(grunt) {
      */
 
     express: {
-      test: getExpressConfig(['dest-dev', 'test'], 9991),
-      regular: getExpressConfig('dest', 9001),
-      debug: getExpressConfig(['dest-dev', 'test'], 9901)
+      regular: getExpressConfig('dest/prod', 9001, hostname),
+      test: getExpressConfig(['dest/dev', 'test'], 9991, hostname),
+      debug: getExpressConfig(['dest/dev', 'test'], 9901, hostname)
     },
 
     open : {
       regular : {
-        path : 'http://' + ip + ':9001/'
+        path : 'http://' + hostname + ':9001/'
       },
       debug : {
-        path : 'http://' + ip + ':9901/?debug'
+        path : 'http://' + hostname + ':9901/?debug'
       }
     },
 
@@ -168,11 +165,11 @@ module.exports = function(grunt) {
           separator : ';'
         },
         src : piskelScripts,
-        dest : 'dest/js/piskel-packaged' + version + '.js'
+        dest : 'dest/prod/js/piskel-packaged' + version + '.js'
       },
       css : {
         src : piskelStyles,
-        dest : 'dest/css/piskel-style-packaged' + version + '.css'
+        dest : 'dest/prod/css/piskel-style-packaged' + version + '.css'
       }
     },
 
@@ -182,7 +179,7 @@ module.exports = function(grunt) {
       },
       js : {
         files : {
-          'dest-tmp/js/piskel-packaged-min.js' : ['dest/js/piskel-packaged' + version + '.js']
+          'dest/tmp/js/piskel-packaged-min.js' : ['dest/prod/js/piskel-packaged' + version + '.js']
         }
       }
     },
@@ -190,7 +187,7 @@ module.exports = function(grunt) {
     includereplace: {
       all: {
         src: 'src/index.html',
-        dest: 'dest-tmp/index.html',
+        dest: 'dest/tmp/index.html',
         options : {
           globals : {
             'version' : version
@@ -220,7 +217,7 @@ module.exports = function(grunt) {
         },
         files: [
           // src/index.html should already have been moved by the includereplace task
-          {src: ['dest-tmp/index.html'], dest: 'dest/piskelapp-partials/main-partial.html'}
+          {src: ['dest/tmp/index.html'], dest: 'dest/prod/piskelapp-partials/main-partial.html'}
         ]
       }
     },
@@ -229,23 +226,23 @@ module.exports = function(grunt) {
       prod: {
         files: [
           // dest/js/piskel-packaged-min.js should have been created by the uglify task
-          {src: ['dest-tmp/js/piskel-packaged-min.js'], dest: 'dest/js/piskel-packaged-min' + version + '.js'},
-          {src: ['dest-tmp/index.html'], dest: 'dest/index.html'},
-          {src: ['src/logo.png'], dest: 'dest/logo.png'},
-          {src: ['src/js/lib/gif/gif.ie.worker.js'], dest: 'dest/js/lib/gif/gif.ie.worker.js'},
-          {expand: true, src: ['img/**'], cwd: 'src/', dest: 'dest/', filter: 'isFile'},
-          {expand: true, src: ['css/fonts/**'], cwd: 'src/', dest: 'dest/', filter: 'isFile'}
+          {src: ['dest/tmp/js/piskel-packaged-min.js'], dest: 'dest/prod/js/piskel-packaged-min' + version + '.js'},
+          {src: ['dest/tmp/index.html'], dest: 'dest/prod/index.html'},
+          {src: ['src/logo.png'], dest: 'dest/prod/logo.png'},
+          {src: ['src/js/lib/gif/gif.ie.worker.js'], dest: 'dest/prod/js/lib/gif/gif.ie.worker.js'},
+          {expand: true, src: ['img/**'], cwd: 'src/', dest: 'dest/prod/', filter: 'isFile'},
+          {expand: true, src: ['css/fonts/**'], cwd: 'src/', dest: 'dest/prod/', filter: 'isFile'}
         ]
       },
       dev: {
         files: [
-          // in dev copy everything to dest-dev
-          {src: ['dest-tmp/index.html'], dest: 'dest-dev/index.html'},
-          {src: ['src/piskel-script-list.js'], dest: 'dest-dev/piskel-script-list.js'},
-          {src: ['src/piskel-style-list.js'], dest: 'dest-dev/piskel-style-list.js'},
-          {expand: true, src: ['js/**'], cwd: 'src/', dest: 'dest-dev/', filter: 'isFile'},
-          {expand: true, src: ['css/**'], cwd: 'src/', dest: 'dest-dev/', filter: 'isFile'},
-          {expand: true, src: ['img/**'], cwd: 'src/', dest: 'dest-dev/', filter: 'isFile'},
+          // in dev copy everything to dest/dev
+          {src: ['dest/tmp/index.html'], dest: 'dest/dev/index.html'},
+          {src: ['src/piskel-script-list.js'], dest: 'dest/dev/piskel-script-list.js'},
+          {src: ['src/piskel-style-list.js'], dest: 'dest/dev/piskel-style-list.js'},
+          {expand: true, src: ['js/**'], cwd: 'src/', dest: 'dest/dev/', filter: 'isFile'},
+          {expand: true, src: ['css/**'], cwd: 'src/', dest: 'dest/dev/', filter: 'isFile'},
+          {expand: true, src: ['img/**'], cwd: 'src/', dest: 'dest/dev/', filter: 'isFile'},
         ]
       }
     },
@@ -261,8 +258,8 @@ module.exports = function(grunt) {
     },
 
     ghost : {
-      'travis' : getCasperConfig('travis'),
-      'local' : getCasperConfig('local')
+      'travis' : getCasperConfig('TravisTestSuite.js', 10000, hostname),
+      'local' : getCasperConfig('LocalTestSuite.js', 50, hostname)
     },
 
     /**
@@ -278,7 +275,7 @@ module.exports = function(grunt) {
           linux32: true,
           linux64: true
         },
-        src: ['./dest/**/*', "./package.json", "!./dest/desktop/"]
+        src: ['./dest/prod/**/*', "./package.json", "!./dest/desktop/"]
       },
       macos : {
         options: {
@@ -287,7 +284,7 @@ module.exports = function(grunt) {
           version : "0.10.5",
           build_dir: './dest/desktop/'
         },
-        src: ['./dest/**/*', "./package.json", "!./dest/desktop/"]
+        src: ['./dest/prod/**/*', "./package.json", "!./dest/desktop/"]
       }
     }
   });
@@ -316,8 +313,8 @@ module.exports = function(grunt) {
   grunt.registerTask('default', ['lint', 'build']);
 
   // Build stand alone app with nodewebkit
-  grunt.registerTask('desktop', ['default', 'nodewebkit:windows']);
-  grunt.registerTask('desktop-mac', ['default', 'nodewebkit:macos']);
+  grunt.registerTask('desktop', ['clean:desktop', 'default', 'nodewebkit:windows']);
+  grunt.registerTask('desktop-mac', ['clean:desktop', 'default', 'nodewebkit:macos']);
 
   // Start webserver and watch for changes
   grunt.registerTask('serve', ['build', 'express:regular', 'open:regular', 'watch:prod']);

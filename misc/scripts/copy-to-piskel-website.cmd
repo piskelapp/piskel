@@ -6,7 +6,7 @@ SETLOCAL
   SET PISKELAPP_PATH="C:\Development\git\piskel-website"
 
   ECHO "Copying files to piskelapp"
-  XCOPY "%PISKEL_PATH%\dest" "%PISKELAPP_PATH%\static\editor" /e /i /h /y
+  XCOPY "%PISKEL_PATH%\dest\prod" "%PISKELAPP_PATH%\static\editor" /e /i /h /y
 
   ECHO "Delete previous partial"
   DEL "%PISKELAPP_PATH%\templates\editor\main-partial.html"
