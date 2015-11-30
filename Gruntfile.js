@@ -4,18 +4,16 @@ module.exports = function(grunt) {
   var now = new Date();
   var version = '-' + dateFormat(now, "yyyy-mm-dd-hh-MM");
 
-  var mapToSrcFolder = function (path) {
+  // get the list of scripts paths to include
+  var piskelScripts = require('./src/piskel-script-list.js').scripts.map(function (path) {
     return "src/" + path;
-  };
-
-  var piskelScripts = require('./src/piskel-script-list.js').scripts.map(mapToSrcFolder).filter(function (path) {
+  }).filter(function (path) {
     return path.indexOf('devtools') === -1;
   });
-  var piskelStyles = require('./src/piskel-style-list.js').styles.map(mapToSrcFolder);
-
-  var mapToCasperFolder = function (path) {
-    return "test/casperjs/" + path;
-  };
+  // get the list of styles paths to include
+  var piskelStyles = require('./src/piskel-style-list.js').styles.map(function (path) {
+    return "src/" + path;
+  });
 
   var casperEnvironments = {
     'local' : {
@@ -30,7 +28,9 @@ module.exports = function(grunt) {
 
   var getCasperConfig = function (env) {
     var conf = casperEnvironments[env];
-    var tests = require(conf.suite).tests.map(mapToCasperFolder);
+    var tests = require(conf.suite).tests.map(function (path) {
+      return "test/casperjs/" + path;
+    });
     return {
       filesSrc : tests,
       options : {
@@ -232,7 +232,7 @@ module.exports = function(grunt) {
         },
         files: [
           // src/index.html should already have been moved by the includereplace task
-          {src: ['dest/index.html'], dest: 'dest/piskelapp-partials/main-partial.html'}
+          {src: ['dest-tmp/index.html'], dest: 'dest/piskelapp-partials/main-partial.html'}
         ]
       }
     },

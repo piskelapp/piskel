@@ -51,7 +51,7 @@
     var palettes = this.paletteService.getPalettes();
 
     var html = palettes.map(function (palette) {
-      return pskl.utils.Template.replace('<option value="{{id}}">{{name}}</option>', palette);
+      return pskl.utils.Template.replace('<option value="${id}">${name}</option>', palette);
     }).join('');
     this.colorPaletteSelect_.innerHTML = html;
   };
