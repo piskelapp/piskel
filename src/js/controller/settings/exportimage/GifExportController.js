@@ -6,6 +6,7 @@
   var MAX_EXPORT_ZOOM = 20;
   var DEFAULT_EXPORT_ZOOM = 10;
   var MAGIC_PINK = '#FF00FF';
+  var WHITE = '#FFFFFF';
 
   ns.GifExportController = function (piskelController) {
     this.piskelController = piskelController;
@@ -105,10 +106,16 @@
     var currentColors = pskl.app.currentColorsService.getCurrentColors();
 
     var preserveColors = currentColors.length < MAX_GIF_COLORS;
-    var transparentColor = this.getTransparentColor(currentColors);
 
+    var transparentColor, transparent;
     // transparency only supported if preserveColors is true, see Issue #357
-    var transparent = preserveColors ? parseInt(transparentColor.substring(1), 16) : null;
+    if (preserveColors) {
+      transparentColor = this.getTransparentColor(currentColors);
+      transparent = parseInt(transparentColor.substring(1), 16);
+    } else {
+      transparentColor = WHITE;
+      transparent = null;
+    }
 
     var gif = new window.GIF({
       workers: 5,
@@ -122,6 +129,9 @@
     for (var i = 0 ; i < this.piskelController.getFrameCount() ; i++) {
       var frame = this.piskelController.getFrameAt(i);
       var canvasRenderer = new pskl.rendering.CanvasRenderer(frame, zoom);
+      if (preserveColors) {
+
+      }
       canvasRenderer.drawTransparentAs(transparentColor);
       var canvas = canvasRenderer.render();
       gif.addFrame(canvas.getContext('2d'), {
