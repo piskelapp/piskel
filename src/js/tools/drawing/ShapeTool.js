@@ -16,6 +16,10 @@
 
   pskl.utils.inherit(ns.ShapeTool, ns.BaseTool);
 
+  ns.ShapeTool.prototype.supportsDynamicPenSize = function() {
+    return true;
+  };
+
   /**
    * @override
    */
@@ -25,7 +29,8 @@
     this.startRow = row;
 
     // Drawing the first point of the rectangle in the fake overlay canvas:
-    overlay.setPixel(col, row, this.getToolColor());
+    var penSize = pskl.app.penSizeService.getPenSize();
+    this.draw(col, row, this.getToolColor(), overlay, penSize);
   };
 
   ns.ShapeTool.prototype.moveToolAt = function(col, row, frame, overlay, event) {
@@ -39,7 +44,8 @@
     }
 
     // draw in overlay
-    this.draw(coords.col, coords.row, color, overlay);
+    var penSize = pskl.app.penSizeService.getPenSize();
+    this.draw(coords.col, coords.row, color, overlay, penSize);
   };
 
   /**
@@ -49,7 +55,8 @@
     overlay.clear();
     var coords = this.getCoordinates_(col, row, event);
     var color = this.getToolColor();
-    this.draw(coords.col, coords.row, color, frame);
+    var penSize = pskl.app.penSizeService.getPenSize();
+    this.draw(coords.col, coords.row, color, frame, penSize);
 
     $.publish(Events.DRAG_END);
     this.raiseSaveStateEvent({
@@ -57,7 +64,8 @@
       row : coords.row,
       startCol : this.startCol,
       startRow : this.startRow,
-      color : color
+      color : color,
+      penSize : penSize
     });
   };
 
@@ -67,7 +75,7 @@
   ns.ShapeTool.prototype.replay = function(frame, replayData) {
     this.startCol = replayData.startCol;
     this.startRow = replayData.startRow;
-    this.draw(replayData.col, replayData.row, replayData.color, frame);
+    this.draw(replayData.col, replayData.row, replayData.color, frame, replayData.penSize);
   };
 
   /**

@@ -28,6 +28,9 @@
     $.publish(Events.SELECT_PRIMARY_COLOR, [this.initialState.primaryColor]);
     $.publish(Events.SELECT_SECONDARY_COLOR, [this.initialState.secondaryColor]);
     $.publish(Events.SELECT_TOOL, [this.initialState.selectedTool]);
+    if (this.initialState.penSize) {
+      pskl.app.penSizeService.setPenSize(this.initialState.penSize);
+    }
   };
 
   ns.DrawingTestPlayer.prototype.createPiskel_ = function (width, height) {
@@ -94,6 +97,8 @@
         this.playColorEvent_(recordEvent);
       } else if (recordEvent.type === 'tool-event') {
         this.playToolEvent_(recordEvent);
+      } else if (recordEvent.type === 'pensize-event') {
+        this.playPenSizeEvent_(recordEvent);
       } else if (recordEvent.type === 'transformtool-event') {
         this.playTransformToolEvent_(recordEvent);
       } else if (recordEvent.type === 'instrumented-event') {
@@ -142,6 +147,10 @@
 
   ns.DrawingTestPlayer.prototype.playToolEvent_ = function (recordEvent) {
     $.publish(Events.SELECT_TOOL, [recordEvent.toolId]);
+  };
+
+  ns.DrawingTestPlayer.prototype.playPenSizeEvent_ = function (recordEvent) {
+    pskl.app.penSizeService.setPenSize(recordEvent.penSize);
   };
 
   ns.DrawingTestPlayer.prototype.playTransformToolEvent_ = function (recordEvent) {

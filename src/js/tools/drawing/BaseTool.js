@@ -19,6 +19,10 @@
 
   ns.BaseTool.prototype.replay = Constants.ABSTRACT_FUNCTION;
 
+  ns.BaseTool.prototype.supportsDynamicPenSize = function() {
+    return false;
+  };
+
   ns.BaseTool.prototype.getToolColor = function() {
     if (pskl.app.mouseStateService.isRightButtonPressed()) {
       return pskl.app.selectedColorsService.getSecondaryColor();
@@ -45,7 +49,11 @@
     }
 
     var frameColor = frame.getPixel(col, row);
-    overlay.setPixel(col, row, this.getHighlightColor_(frameColor));
+    var highlightColor = this.getHighlightColor_(frameColor);
+    var size = this.supportsDynamicPenSize() ? pskl.app.penSizeService.getPenSize() : 1;
+    pskl.PixelUtils.resizePixel(col, row, size).forEach(function (point) {
+      overlay.setPixel(point[0], point[1], highlightColor);
+    });
 
     this.highlightedPixelCol = col;
     this.highlightedPixelRow = row;
@@ -66,11 +74,7 @@
 
   ns.BaseTool.prototype.hideHighlightedPixel = function (overlay) {
     if (this.highlightedPixelRow !== null && this.highlightedPixelCol !== null) {
-      try {
-        overlay.setPixel(this.highlightedPixelCol, this.highlightedPixelRow, Constants.TRANSPARENT_COLOR);
-      } catch (e) {
-        window.console.warn('ns.BaseTool.prototype.hideHighlightedPixel failed');
-      }
+      overlay.clear();
       this.highlightedPixelRow = null;
       this.highlightedPixelCol = null;
     }

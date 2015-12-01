@@ -19,11 +19,11 @@
   /**
    * @override
    */
-  ns.Rectangle.prototype.draw = function (col, row, color, targetFrame) {
-    var strokePoints = pskl.PixelUtils.getBoundRectanglePixels(this.startCol, this.startRow, col, row);
-    for (var i = 0 ; i < strokePoints.length ; i++) {
-      // Change model:
-      targetFrame.setPixel(strokePoints[i].col, strokePoints[i].row, color);
-    }
+  ns.Rectangle.prototype.draw = function (col, row, color, targetFrame, penSize) {
+    var rectanglePixels = pskl.PixelUtils.getBoundRectanglePixels(this.startCol, this.startRow, col, row);
+
+    pskl.PixelUtils.resizePixels(rectanglePixels, penSize).forEach(function (point) {
+      targetFrame.setPixel(point[0], point[1], color);
+    });
   };
 })();

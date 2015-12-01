@@ -45,6 +45,8 @@
       RESET_ZOOM : createShortcut('reset-zoom', 'Reset zoom level', '0'),
       INCREASE_ZOOM : createShortcut('increase-zoom', 'Increase zoom level', '+'),
       DECREASE_ZOOM : createShortcut('decrease-zoom', 'Decrease zoom level', '-'),
+      INCREASE_PENSIZE : createShortcut('increase-pensize', 'Increase pen size', ']'),
+      DECREASE_PENSIZE : createShortcut('decrease-pensize', 'Decrease pen size', '['),
       UNDO : createShortcut('undo', 'Undo', 'ctrl+Z'),
       REDO : createShortcut('redo', 'Redo', ['ctrl+Y', 'ctrl+shift+Z']),
       PREVIOUS_FRAME : createShortcut('previous-frame', 'Select previous frame', 'up'),

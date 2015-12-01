@@ -43,6 +43,8 @@ var Events = {
   HISTORY_STATE_SAVED: 'HISTORY_STATE_SAVED',
   HISTORY_STATE_LOADED: 'HISTORY_STATE_LOADED',
 
+  PEN_SIZE_CHANGED : 'PEN_SIZE_CHANGED',
+
   /**
    * Fired when a Piskel is successfully saved
    */

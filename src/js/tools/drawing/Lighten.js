@@ -19,11 +19,6 @@
       {key : 'ctrl', description : 'Darken'},
       {key : 'shift', description : 'Apply only once per pixel'}
     ];
-
-    this.usedPixels_ = {
-      darken : {},
-      lighten : {}
-    };
   };
 
   pskl.utils.inherit(ns.Lighten, ns.SimplePen);
@@ -31,46 +26,45 @@
   /**
    * @Override
    */
-  ns.Lighten.prototype.resetUsedPixels_ = function() {
-    this.usedPixels_ = {
-      darken : {},
-      lighten : {}
-    };
-    this.superclass.resetUsedPixels_.call(this);
-  };
-
-  /**
-   * @Override
-   */
   ns.Lighten.prototype.applyToolAt = function(col, row, frame, overlay, event) {
-    var modifiedColor = this.getModifiedColor_(col, row, frame, overlay, event);
-    this.draw(modifiedColor, col, row, frame, overlay);
+    this.previousCol = col;
+    this.previousRow = row;
+
+    var penSize = pskl.app.penSizeService.getPenSize();
+    var points = pskl.PixelUtils.resizePixel(col, row, penSize);
+    points.forEach(function (point) {
+      var modifiedColor = this.getModifiedColor_(point[0], point[1], frame, overlay, event);
+      this.draw(modifiedColor, point[0], point[1], frame, overlay);
+    }.bind(this));
   };
 
   ns.Lighten.prototype.getModifiedColor_ = function(col, row, frame, overlay, event) {
+    // get colors in overlay and in frame
     var overlayColor = overlay.getPixel(col, row);
     var frameColor = frame.getPixel(col, row);
-    var pixelColor = overlayColor === Constants.TRANSPARENT_COLOR ? frameColor : overlayColor;
-    var isDarken = pskl.utils.UserAgent.isMac ?  event.metaKey : event.ctrlKey;
-    var isTransparent = pixelColor === Constants.TRANSPARENT_COLOR;
-    var isSinglePass = event.shiftKey;
 
-    var usedPixels = isDarken ? this.usedPixels_.darken : this.usedPixels_.lighten;
-    var key = col + '-' + row;
-    var doNotModify = isTransparent || (isSinglePass && usedPixels[key]);
+    var isPixelModified = overlayColor !== Constants.TRANSPARENT_COLOR;
+    var pixelColor = isPixelModified ? overlayColor : frameColor;
+
+    var isTransparent = pixelColor === Constants.TRANSPARENT_COLOR;
+    if (isTransparent) {
+      return Constants.TRANSPARENT_COLOR;
+    }
+
+    var oncePerPixel = event.shiftKey;
+    if (oncePerPixel && isPixelModified) {
+      return pixelColor;
+    }
+
+    var step = oncePerPixel ? DEFAULT_STEP * 2 : DEFAULT_STEP;
+    var isDarken = pskl.utils.UserAgent.isMac ?  event.metaKey : event.ctrlKey;
 
     var color;
-    if (doNotModify) {
-      color = window.tinycolor(pixelColor);
+    if (isDarken) {
+      color = window.tinycolor.darken(pixelColor, step);
     } else {
-      var step = isSinglePass ? DEFAULT_STEP * 2 : DEFAULT_STEP;
-      if (isDarken) {
-        color = window.tinycolor.darken(pixelColor, step);
-      } else {
-        color = window.tinycolor.lighten(pixelColor, step);
-      }
+      color = window.tinycolor.lighten(pixelColor, step);
     }
-    usedPixels[key] = true;
 
     // Convert tinycolor color to string format.
     return color.toHexString();

@@ -71,6 +71,53 @@
     },
 
     /**
+     * Resize the pixel at {col, row} for the provided size. Will return the array of pixels centered
+     * around the original pixel, forming a pixel square of side=size
+     *
+     * @param  {Number} row  x-coordinate of the original pixel
+     * @param  {Number} col  y-coordinate of the original pixel
+     * @param  {Number} size >= 1 && <= 4
+     * @return {Array}  array of arrays of 2 Numbers (eg. [[0,0], [0,1], [1,0], [1,1]])
+     */
+    resizePixel : function (col, row, size) {
+      if (size == 1) {
+        return [[col, row]];
+      } else if (size == 2) {
+        return [
+          [col, row], [col + 1, row],
+          [col, row + 1], [col + 1, row + 1]
+        ];
+      } else if (size == 3) {
+        return [
+          [col - 1, row - 1], [col, row - 1], [col + 1, row - 1],
+          [col - 1, row + 0], [col, row + 0], [col + 1, row + 0],
+          [col - 1, row + 1], [col, row + 1], [col + 1, row + 1],
+        ];
+      } else if (size == 4) {
+        return [
+          [col - 1, row - 1], [col, row - 1], [col + 1, row - 1], [col + 2, row - 1],
+          [col - 1, row + 0], [col, row + 0], [col + 1, row + 0], [col + 2, row + 0],
+          [col - 1, row + 1], [col, row + 1], [col + 1, row + 1], [col + 2, row + 1],
+          [col - 1, row + 2], [col, row + 2], [col + 1, row + 2], [col + 2, row + 2],
+        ];
+      } else {
+        console.error('Unsupported size : ' + size);
+      }
+    },
+
+    /**
+     * Shortcut to reduce the output of pskl.PixelUtils.resizePixel for several pixels
+     * @param  {Array}  pixels Array of pixels (objects {col:Number, row:Number})
+     * @param  {Number} >= 1 && <= 4
+     * @return {Array}  array of arrays of 2 Numbers (eg. [[0,0], [0,1], [1,0], [1,1]])
+     */
+    resizePixels : function (pixels, size) {
+      return pixels.reduce(function (p, pixel) {
+        return p.concat(pskl.PixelUtils.resizePixel(pixel.col, pixel.row, size));
+      }, []);
+    },
+
+    /**
      * Apply the paintbucket tool in a frame at the (col, row) initial position
      * with the replacement color.
      *
