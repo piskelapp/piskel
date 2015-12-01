@@ -177,7 +177,7 @@
   // Tools
   "js/tools/ToolsHelper.js",
   "js/tools/Tool.js",
-  "js/tools/IconMarkupRenderer.js",
+  "js/tools/ToolIconBuilder.js",
   "js/tools/drawing/BaseTool.js",
   "js/tools/drawing/ShapeTool.js",
   "js/tools/drawing/SimplePen.js",

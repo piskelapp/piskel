@@ -8,7 +8,7 @@
       new pskl.tools.transform.Clone()
     ];
 
-    this.toolIconRenderer = new pskl.tools.IconMarkupRenderer();
+    this.toolIconBuilder = new pskl.tools.ToolIconBuilder();
   };
 
   ns.TransformationsController.prototype.init = function () {
@@ -34,7 +34,7 @@
 
   ns.TransformationsController.prototype.createToolsDom_ = function() {
     var html = this.tools.reduce(function (p, tool) {
-      return p + this.toolIconRenderer.render(tool, tool.shortcut, 'left');
+      return p + this.toolIconBuilder.createIcon(tool, 'left');
     }.bind(this), '');
     this.toolsContainer.innerHTML = html;
   };

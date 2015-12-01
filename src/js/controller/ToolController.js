@@ -21,7 +21,7 @@
       new pskl.tools.drawing.ColorPicker()
     ];
 
-    this.iconMarkupRenderer = new pskl.tools.IconMarkupRenderer();
+    this.toolIconBuilder = new pskl.tools.ToolIconBuilder();
   };
 
   /**
@@ -114,7 +114,7 @@
     var html = '';
     for (var i = 0 ; i < this.tools.length ; i++) {
       var tool = this.tools[i];
-      html += this.iconMarkupRenderer.render(tool);
+      html += this.toolIconBuilder.createIcon(tool);
     }
     $('#tools-container').html(html);
   };

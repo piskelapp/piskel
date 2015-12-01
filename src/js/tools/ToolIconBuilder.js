@@ -1,9 +1,9 @@
 (function () {
   var ns = $.namespace('pskl.tools');
 
-  ns.IconMarkupRenderer = function () {};
+  ns.ToolIconBuilder = function () {};
 
-  ns.IconMarkupRenderer.prototype.render = function (tool, tooltipPosition) {
+  ns.ToolIconBuilder.prototype.createIcon = function (tool, tooltipPosition) {
     tooltipPosition = tooltipPosition || 'right';
     var tpl = pskl.utils.Template.get('drawingTool-item-template');
     return pskl.utils.Template.replace(tpl, {
@@ -14,7 +14,7 @@
     });
   };
 
-  ns.IconMarkupRenderer.prototype.getTooltipText = function(tool) {
+  ns.ToolIconBuilder.prototype.getTooltipText = function(tool) {
     var descriptors = tool.tooltipDescriptors;
     return pskl.utils.TooltipFormatter.format(tool.getHelpText(), tool.shortcut, descriptors);
   };
