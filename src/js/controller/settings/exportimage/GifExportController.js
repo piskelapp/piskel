@@ -94,7 +94,7 @@
   };
 
   ns.GifExportController.prototype.updatePreview_ = function (src) {
-    this.previewContainerEl.innerHTML = '<div><img style="max-width:32px;"src="' + src + '"/></div>';
+    this.previewContainerEl.innerHTML = '<div><img style="max-width:32px;" src="' + src + '"/></div>';
   };
 
   ns.GifExportController.prototype.getZoom_ = function () {
@@ -107,13 +107,16 @@
     var preserveColors = currentColors.length < MAX_GIF_COLORS;
     var transparentColor = this.getTransparentColor(currentColors);
 
+    // transparency only supported if preserveColors is true, see Issue #357
+    var transparent = preserveColors ? parseInt(transparentColor.substring(1), 16) : null;
+
     var gif = new window.GIF({
       workers: 5,
       quality: 1,
       width: this.piskelController.getWidth() * zoom,
       height: this.piskelController.getHeight() * zoom,
       preserveColors : preserveColors,
-      transparent : parseInt(transparentColor.substring(1), 16)
+      transparent : transparent
     });
 
     for (var i = 0 ; i < this.piskelController.getFrameCount() ; i++) {
