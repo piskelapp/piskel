@@ -35,7 +35,9 @@
 
     if (settings.maintainRatio) {
       this.maintainRatioCheckbox.checked = true;
-      this.sizeInputWidget.enableSync();
+    } else {
+      // the SizeInput widget is enabled by default
+      this.sizeInputWidget.disableSync();
     }
 
     this.addEventListener(this.resizeForm, 'submit', this.onResizeFormSubmit_);
