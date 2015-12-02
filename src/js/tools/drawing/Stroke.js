@@ -92,9 +92,9 @@
   ns.Stroke.prototype.draw_ = function (col, row, color, targetFrame, penSize, isStraight) {
     var linePixels;
     if (isStraight) {
-      linePixels = this.getUniformLinePixels_(this.startCol, col, this.startRow, row);
+      linePixels = pskl.PixelUtils.getUniformLinePixels(this.startCol, col, this.startRow, row);
     } else {
-      linePixels = this.getLinePixels_(col, this.startCol, row, this.startRow);
+      linePixels = pskl.PixelUtils.getLinePixels(col, this.startCol, row, this.startRow);
     }
 
     pskl.PixelUtils.resizePixels(linePixels, penSize).forEach(function (point) {

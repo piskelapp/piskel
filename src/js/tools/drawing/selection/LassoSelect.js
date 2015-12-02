@@ -55,7 +55,7 @@
    * @private
    */
   ns.LassoSelect.prototype.getLassoPixels_ = function () {
-    var line = this.getLinePixels_(this.previousCol, this.startCol, this.previousRow, this.startRow);
+    var line = pskl.PixelUtils.getLinePixels(this.previousCol, this.startCol, this.previousRow, this.startRow);
     return this.pixels.concat(line);
   };
 
@@ -69,7 +69,7 @@
     row = pskl.utils.Math.minmax(row, 0, frame.getHeight() - 1);
 
     // line interpolation needed in case mousemove was too fast
-    var interpolatedPixels = this.getLinePixels_(col, this.previousCol, row, this.previousRow);
+    var interpolatedPixels = pskl.PixelUtils.getLinePixels(col, this.previousCol, row, this.previousRow);
     this.pixels = this.pixels.concat(interpolatedPixels);
 
     // update state

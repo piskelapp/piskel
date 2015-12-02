@@ -63,7 +63,7 @@
       // The pen movement is too fast for the mousemove frequency, there is a gap between the
       // current point and the previously drawn one.
       // We fill the gap by calculating missing dots (simple linear interpolation) and draw them.
-      var interpolatedPixels = this.getLinePixels_(col, this.previousCol, row, this.previousRow);
+      var interpolatedPixels = pskl.PixelUtils.getLinePixels(col, this.previousCol, row, this.previousRow);
       for (var i = 0, l = interpolatedPixels.length ; i < l ; i++) {
         var coords = interpolatedPixels[i];
         this.applyToolAt(coords.col, coords.row, frame, overlay, event);
