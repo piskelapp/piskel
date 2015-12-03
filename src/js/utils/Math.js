@@ -6,6 +6,9 @@
       return Math.max(Math.min(val, max), min);
     },
 
+    /**
+     * Calculate the distance between {x0, y0} and {x1, y1}
+     */
     distance : function (x0, x1, y0, y1) {
       var dx = Math.abs(x1 - x0);
       var dy = Math.abs(y1 - y0);

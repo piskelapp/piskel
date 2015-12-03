@@ -4,7 +4,7 @@
   /**
    * Maximum step for uniform lines
    */
-  var MAX_LINE_STEP = 5;
+  var MAX_LINE_STEP = 4;
 
   ns.PixelUtils = {
 
@@ -293,24 +293,17 @@
       x1 = pskl.utils.normalize(x1, 0);
       y1 = pskl.utils.normalize(y1, 0);
 
-      var dx = Math.abs(x1 - x0);
-      var dy = Math.abs(y1 - y0);
+      var dx = Math.abs(x1 - x0) + 1;
+      var dy = Math.abs(y1 - y0) + 1;
 
       var sx = (x0 < x1) ? 1 : -1;
       var sy = (y0 < y1) ? 1 : -1;
 
       var ratio = Math.max(dx, dy) / Math.min(dx, dy);
       // in pixel art, lines should use uniform number of pixels for each step
-      var pixelStep = Math.round(ratio);
-      // invalid step, bail out
-      if (pixelStep === 0 || isNaN(pixelStep)) {
-        return pixels;
-      }
+      var pixelStep = Math.round(ratio) || 0;
 
-      if (pixelStep > MAX_LINE_STEP && pixelStep < MAX_LINE_STEP * 2) {
-        pixelStep = MAX_LINE_STEP;
-      } else if (pixelStep >= MAX_LINE_STEP * 2) {
-        // straight line
+      if (pixelStep > Math.min(dx, dy)) {
         pixelStep = Infinity;
       }
 
