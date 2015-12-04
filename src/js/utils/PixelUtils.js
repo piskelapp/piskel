@@ -234,6 +234,97 @@
      */
     calculateZoomForContainer : function (container, pictureHeight, pictureWidth) {
       return this.calculateZoom(container.height(), container.width(), pictureHeight, pictureWidth);
+    },
+
+    /**
+     * Bresenham line algorithm: Get an array of pixels from
+     * start and end coordinates.
+     *
+     * http://en.wikipedia.org/wiki/Bresenham's_line_algorithm
+     * http://stackoverflow.com/questions/4672279/bresenham-algorithm-in-javascript
+     */
+    getLinePixels : function (x0, x1, y0, y1) {
+      var pixels = [];
+
+      x1 = pskl.utils.normalize(x1, 0);
+      y1 = pskl.utils.normalize(y1, 0);
+
+      var dx = Math.abs(x1 - x0);
+      var dy = Math.abs(y1 - y0);
+
+      var sx = (x0 < x1) ? 1 : -1;
+      var sy = (y0 < y1) ? 1 : -1;
+
+      var err = dx - dy;
+      while (true) {
+        // Do what you need to for this
+        pixels.push({'col': x0, 'row': y0});
+
+        if ((x0 == x1) && (y0 == y1)) {
+          break;
+        }
+
+        var e2 = 2 * err;
+        if (e2 > -dy) {
+          err -= dy;
+          x0  += sx;
+        }
+        if (e2 < dx) {
+          err += dx;
+          y0  += sy;
+        }
+      }
+
+      return pixels;
+    },
+
+    /**
+     * Create a uniform line using the same number of pixel at each step, between the provided
+     * origin and target coordinates.
+     */
+    getUniformLinePixels : function (x0, x1, y0, y1) {
+      var pixels = [];
+
+      x1 = pskl.utils.normalize(x1, 0);
+      y1 = pskl.utils.normalize(y1, 0);
+
+      var dx = Math.abs(x1 - x0) + 1;
+      var dy = Math.abs(y1 - y0) + 1;
+
+      var sx = (x0 < x1) ? 1 : -1;
+      var sy = (y0 < y1) ? 1 : -1;
+
+      var ratio = Math.max(dx, dy) / Math.min(dx, dy);
+      // in pixel art, lines should use uniform number of pixels for each step
+      var pixelStep = Math.round(ratio) || 0;
+
+      if (pixelStep > Math.min(dx, dy)) {
+        pixelStep = Infinity;
+      }
+
+      var maxDistance = pskl.utils.Math.distance(x0, x1, y0, y1);
+
+      var x = x0;
+      var y = y0;
+      var i = 0;
+      while (true) {
+        i++;
+
+        pixels.push({'col': x, 'row': y});
+        if (pskl.utils.Math.distance(x0, x, y0, y) >= maxDistance) {
+          break;
+        }
+
+        var isAtStep = i % pixelStep === 0;
+        if (dx >= dy || isAtStep) {
+          x += sx;
+        }
+        if (dy >= dx || isAtStep) {
+          y += sy;
+        }
+      }
+
+      return pixels;
     }
   };
 })();

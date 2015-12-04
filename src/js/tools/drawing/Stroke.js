@@ -90,13 +90,13 @@
   };
 
   ns.Stroke.prototype.draw_ = function (col, row, color, targetFrame, penSize, isStraight) {
+    var linePixels;
     if (isStraight) {
-      var coords = this.getStraightLineCoordinates_(col, row);
-      col = coords.col;
-      row = coords.row;
+      linePixels = pskl.PixelUtils.getUniformLinePixels(this.startCol, col, this.startRow, row);
+    } else {
+      linePixels = pskl.PixelUtils.getLinePixels(col, this.startCol, row, this.startRow);
     }
 
-    var linePixels = this.getLinePixels_(this.startCol, col, this.startRow, row);
     pskl.PixelUtils.resizePixels(linePixels, penSize).forEach(function (point) {
       targetFrame.setPixel(point[0], point[1], color);
     });
@@ -108,50 +108,4 @@
     this.draw_(replayData.col, replayData.row, replayData.color, frame, replayData.penSize, replayData.isStraight);
   };
 
-  /**
-   * Convert col, row to be on the nearest straight line or 45 degrees diagonal.
-   */
-  ns.Stroke.prototype.getStraightLineCoordinates_ = function(col, row) {
-    // coordinates translated using startCol, startRow as origin
-    var tCol = col - this.startCol;
-    var tRow = this.startRow - row;
-
-    var dist = Math.sqrt(Math.pow(tCol, 2) + Math.pow(tRow, 2));
-
-    var axisDistance = Math.round(dist);
-    var diagDistance = Math.round(dist / Math.sqrt(2));
-
-    var PI8 = Math.PI / 8;
-    var angle = Math.atan2(tRow, tCol);
-    if (angle < PI8 && angle >= -PI8) {
-      row = this.startRow;
-      col = this.startCol + axisDistance;
-    } else if (angle >= PI8 && angle < 3 * PI8) {
-      row = this.startRow - diagDistance;
-      col = this.startCol + diagDistance;
-    } else if (angle >= 3 * PI8 && angle < 5 * PI8) {
-      row = this.startRow - axisDistance;
-      col = this.startCol;
-    } else if (angle >= 5 * PI8 && angle < 7 * PI8) {
-      row = this.startRow - diagDistance;
-      col = this.startCol - diagDistance;
-    } else if (angle >= 7 * PI8 || angle < -7 * PI8) {
-      row = this.startRow;
-      col = this.startCol - axisDistance;
-    } else if (angle >= -7 * PI8 && angle < -5 * PI8) {
-      row = this.startRow + diagDistance;
-      col = this.startCol - diagDistance;
-    } else if (angle >= -5 * PI8 && angle < -3 * PI8) {
-      row = this.startRow + axisDistance;
-      col = this.startCol;
-    } else if (angle >= -3 * PI8 && angle < -PI8) {
-      row = this.startRow + diagDistance;
-      col = this.startCol + diagDistance;
-    }
-
-    return {
-      col : col,
-      row : row
-    };
-  };
 })();
