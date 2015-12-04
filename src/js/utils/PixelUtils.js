@@ -1,11 +1,6 @@
 (function () {
   var ns = $.namespace('pskl');
 
-  /**
-   * Maximum step for uniform lines
-   */
-  var MAX_LINE_STEP = 4;
-
   ns.PixelUtils = {
 
     getRectanglePixels : function (x0, y0, x1, y1) {
