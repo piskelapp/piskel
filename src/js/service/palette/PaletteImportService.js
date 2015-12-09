@@ -24,23 +24,23 @@
   };
 
   ns.PaletteImportService.prototype.getReader_ = function (file, onSuccess, onError) {
-    var readerClass = this.getReaderClass_(file);
-    if (readerClass) {
-      return new readerClass(file, onSuccess, onError);
+    var ReaderClass = this.getReaderClass_(file);
+    if (ReaderClass) {
+      return new ReaderClass(file, onSuccess, onError);
     } else {
       return null;
     }
   };
 
   ns.PaletteImportService.prototype.getReaderClass_ = function (file) {
-    var readerClass;
+    var ReaderClass;
     if (this.isImage_(file)) {
-      readerClass = fileReaders.img;
+      ReaderClass = fileReaders.img;
     } else {
       var extension = this.getExtension_(file);
-      readerClass = fileReaders[extension];
+      ReaderClass = fileReaders[extension];
     }
-    return readerClass;
+    return ReaderClass;
   };
 
   ns.PaletteImportService.prototype.getExtension_ = function (file) {

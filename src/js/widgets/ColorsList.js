@@ -105,7 +105,7 @@
       var isSelected = (index === this.selectedIndex);
 
       html += pskl.utils.Template.replace(tpl, {
-        'color' : color, index:index,
+        'color' : color, index : index,
         ':selected' : isSelected,
         ':light-color' : this.isLight_(color)
       });

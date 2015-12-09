@@ -167,7 +167,7 @@
 
       if (pskl.utils.Environment.detectNodeWebkit() && pskl.utils.UserAgent.isMac) {
         var gui = require('nw.gui');
-        var mb = new gui.Menu({type:'menubar'});
+        var mb = new gui.Menu({type : 'menubar'});
         mb.createMacBuiltin('Piskel');
         gui.Window.get().menu = mb;
       }
