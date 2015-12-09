@@ -275,7 +275,7 @@ module.exports = function(grunt) {
      * DESKTOP BUILDS
      */
 
-    nodewebkit: {
+    nwjs: {
       windows : {
         options: {
           version : "0.11.5",
@@ -322,8 +322,8 @@ module.exports = function(grunt) {
   grunt.registerTask('default', ['lint', 'build']);
 
   // Build stand alone app with nodewebkit
-  grunt.registerTask('desktop', ['clean:desktop', 'default', 'nodewebkit:windows']);
-  grunt.registerTask('desktop-mac', ['clean:desktop', 'default', 'nodewebkit:macos']);
+  grunt.registerTask('desktop', ['clean:desktop', 'default', 'nwjs:windows']);
+  grunt.registerTask('desktop-mac', ['clean:desktop', 'default', 'nwjs:macos']);
 
   // Start webserver and watch for changes
   grunt.registerTask('serve', ['build', 'connect:prod', 'open:prod', 'watch:prod']);
