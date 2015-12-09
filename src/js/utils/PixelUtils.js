@@ -157,7 +157,11 @@
         return;
       }
 
-      var paintedPixels = pskl.PixelUtils.visitConnectedPixels({col:col, row:row}, frame, function (pixel) {
+      var startPixel = {
+        col : col,
+        row : row
+      };
+      var paintedPixels = pskl.PixelUtils.visitConnectedPixels(startPixel, frame, function (pixel) {
         if (frame.containsPixel(pixel.col, pixel.row) && frame.getPixel(pixel.col, pixel.row) == targetColor) {
           frame.setPixel(pixel.col, pixel.row, replacementColor);
           return true;

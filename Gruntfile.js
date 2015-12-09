@@ -3,6 +3,14 @@ module.exports = function(grunt) {
   // Update this variable if you don't want or can't serve on localhost
   var hostname = 'localhost';
 
+  var PORT = {
+    PROD : 9001,
+    DEV : 9901,
+    TEST : 9991
+  };
+
+  var DEV_MODE = '?debug';
+
   // create a version based on the build timestamp
   var dateFormat = require('dateformat');
   var version = '-' + dateFormat(new Date(), "yyyy-mm-dd-hh-MM");
@@ -34,8 +42,8 @@ module.exports = function(grunt) {
       filesSrc : tests,
       options : {
         args : {
-          baseUrl : 'http://' + host + ':' + '<%= express.test.options.port %>/',
-          mode : '?debug',
+          baseUrl : 'http://' + host + ':' + PORT.TEST,
+          mode : DEV_MODE,
           delay : delay
         },
         async : false,
@@ -47,16 +55,16 @@ module.exports = function(grunt) {
     };
   };
 
-  var getExpressConfig = function (sourceFolders, port, host) {
-    if (typeof sourceFolders === 'string') {
-      sourceFolders = [sourceFolders];
+  var getConnectConfig = function (base, port, host) {
+    if (typeof base === 'string') {
+      base = [base];
     }
 
     return {
       options: {
         port: port,
         hostname : host,
-        bases: sourceFolders
+        base: base
       }
     };
   };
@@ -85,7 +93,7 @@ module.exports = function(grunt) {
 
     jscs : {
       options : {
-        "preset": "google",
+        "config": ".jscsrc",
         "maximumLineLength": 120,
         "requireCamelCaseOrUpperCaseIdentifiers": "ignoreProperties",
         "validateQuoteMarks": { "mark": "'", "escape": true },
@@ -116,18 +124,18 @@ module.exports = function(grunt) {
      * SERVERS, BROWSER LAUNCHERS
      */
 
-    express: {
-      regular: getExpressConfig('dest/prod', 9001, hostname),
-      test: getExpressConfig(['dest/dev', 'test'], 9991, hostname),
-      debug: getExpressConfig(['dest/dev', 'test'], 9901, hostname)
+    connect: {
+      prod: getConnectConfig('dest/prod', PORT.PROD, hostname),
+      test: getConnectConfig(['dest/dev', 'test'], PORT.TEST, hostname),
+      dev: getConnectConfig(['dest/dev', 'test'], PORT.DEV, hostname)
     },
 
     open : {
-      regular : {
-        path : 'http://' + hostname + ':9001/'
+      prod : {
+        path : 'http://' + hostname + ':' + PORT.PROD + '/'
       },
-      debug : {
-        path : 'http://' + hostname + ':9901/?debug'
+      dev : {
+        path : 'http://' + hostname + ':' + PORT.DEV + '/' + DEV_MODE
       }
     },
 
@@ -297,10 +305,10 @@ module.exports = function(grunt) {
   grunt.registerTask('unit-test', ['karma']);
 
   // Validate & Test
-  grunt.registerTask('test-travis', ['lint', 'unit-test', 'build-dev', 'express:test', 'ghost:travis']);
+  grunt.registerTask('test-travis', ['lint', 'unit-test', 'build-dev', 'connect:test', 'ghost:travis']);
   // Validate & Test (faster version) will NOT work on travis !!
-  grunt.registerTask('test-local', ['lint', 'unit-test', 'build-dev', 'express:test', 'ghost:local']);
-  grunt.registerTask('test-local-nolint', ['unit-test', 'build-dev', 'express:test', 'ghost:local']);
+  grunt.registerTask('test-local', ['lint', 'unit-test', 'build-dev', 'connect:test', 'ghost:local']);
+  grunt.registerTask('test-local-nolint', ['unit-test', 'build-dev', 'connect:test', 'ghost:local']);
 
   grunt.registerTask('test', ['test-travis']);
   grunt.registerTask('precommit', ['test-local']);
@@ -318,8 +326,10 @@ module.exports = function(grunt) {
   grunt.registerTask('desktop-mac', ['clean:desktop', 'default', 'nodewebkit:macos']);
 
   // Start webserver and watch for changes
-  grunt.registerTask('serve', ['build', 'express:regular', 'open:regular', 'watch:prod']);
+  grunt.registerTask('serve', ['build', 'connect:prod', 'open:prod', 'watch:prod']);
   // Start webserver on src folder, in debug mode
-  grunt.registerTask('serve-debug', ['build-dev', 'express:debug', 'open:debug', 'watch:dev']);
-  grunt.registerTask('play', ['serve-debug']);
+  grunt.registerTask('serve-dev', ['build-dev', 'connect:dev', 'open:dev', 'watch:dev']);
+
+  grunt.registerTask('serve-debug', ['serve-dev']);
+  grunt.registerTask('play', ['serve-dev']);
 };

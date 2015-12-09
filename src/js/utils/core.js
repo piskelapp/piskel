@@ -25,14 +25,14 @@ if (!Function.prototype.bind) {
 
     var bindArgs = Array.prototype.slice.call(arguments, 1);
     var fToBind = this;
-    var fNOP = function () {};
+    var FNOP = function () {};
     var fBound = function () {
       var args = bindArgs.concat(Array.prototype.slice.call(arguments));
-      return fToBind.apply(this instanceof fNOP && oThis ? this : oThis, args);
+      return fToBind.apply(this instanceof FNOP && oThis ? this : oThis, args);
     };
 
-    fNOP.prototype = this.prototype;
-    fBound.prototype = new fNOP();
+    FNOP.prototype = this.prototype;
+    fBound.prototype = new FNOP();
 
     return fBound;
   };
