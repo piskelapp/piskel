@@ -288,7 +288,7 @@ module.exports = function(grunt) {
       },
       macos : {
         options: {
-          platforms : ['osx64'],
+          osx64: true,
           // had performance issues with 0.11.5 on mac os, need to test new versions/new hardware
           version : "0.10.5",
           build_dir: './dest/desktop/'
