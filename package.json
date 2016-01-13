@@ -25,7 +25,7 @@
     "grunt-contrib-watch": "0.6.1",
     "grunt-ghost": "1.1.0",
     "grunt-include-replace": "3.2.0",
-    "grunt-jscs": "2.5.0",
+    "grunt-jscs": "2.6.0",
     "grunt-karma": "0.12.1",
     "grunt-leading-indent": "0.2.0",
     "grunt-nw-builder": "2.0.0",
@@ -37,7 +37,7 @@
     "karma-chrome-launcher": "0.2.2",
     "karma-jasmine": "0.3.5",
     "karma-phantomjs-launcher": "0.2.2",
-    "load-grunt-tasks": "3.1.0",
+    "load-grunt-tasks": "3.4.0",
     "phantomjs": "1.9.19"
   },
   "window": {
