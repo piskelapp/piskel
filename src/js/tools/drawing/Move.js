@@ -75,7 +75,8 @@
     var colDiff = col - this.startCol;
     var rowDiff = row - this.startRow;
 
-    pskl.tools.ToolsHelper.getTargetFrames(event.ctrlKey, event.shiftKey).forEach(function (f) {
+    var ctrlKey = pskl.utils.UserAgent.isMac ?  event.metaKey : event.ctrlKey;
+    pskl.tools.ToolsHelper.getTargetFrames(ctrlKey, event.shiftKey).forEach(function (f) {
       // for the current frame, the backup clone should be reused as reference
       // the current frame has been modified by the user action already
       var reference = this.currentFrame == f ? this.currentFrameClone : f.clone();
@@ -85,7 +86,7 @@
     this.raiseSaveStateEvent({
       colDiff : colDiff,
       rowDiff : rowDiff,
-      ctrlKey : event.ctrlKey,
+      ctrlKey : ctrlKey,
       altKey : event.altKey,
       shiftKey : event.shiftKey
     });
