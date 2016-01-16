@@ -9,6 +9,15 @@
 
     var TRANSPARENT_COLOR = 'rgba(0, 0, 0, 0)';
 
+    var componentToHex = function (c) {
+      var hex = c.toString(16);
+      return hex.length == 1 ? '0' + hex : hex;
+    };
+
+    var rgbToHex = function (r, g, b) {
+      return '#' + componentToHex(r) + componentToHex(g) + componentToHex(b);
+    };
+
     var toHexString_ = function(color) {
       if (color === TRANSPARENT_COLOR) {
         return color;
@@ -23,15 +32,6 @@
           return rgbToHex(exec[1] * 1, exec[2] * 1, exec[3] * 1);
         }
       }
-    };
-
-    var rgbToHex = function (r, g, b) {
-      return '#' + componentToHex(r) + componentToHex(g) + componentToHex(b);
-    };
-
-    var componentToHex = function (c) {
-      var hex = c.toString(16);
-      return hex.length == 1 ? '0' + hex : hex;
     };
 
     var getFrameColors = function (frame) {
