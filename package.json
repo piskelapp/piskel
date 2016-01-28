@@ -38,7 +38,7 @@
     "karma-jasmine": "0.3.5",
     "karma-phantomjs-launcher": "0.2.3",
     "load-grunt-tasks": "3.4.0",
-    "phantomjs": "1.9.19"
+    "phantomjs": "2.1.3"
   },
   "window": {
     "title": "Piskel",
