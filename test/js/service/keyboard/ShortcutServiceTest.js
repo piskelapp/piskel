@@ -20,8 +20,10 @@ describe("ShortcutService test suite", function() {
         return this;
       },
       ctrlKey : false,
+      metaKey : false,
       withCtrlKey : function () {
         this.ctrlKey = true;
+        this.metaKey = true;
         return this;
       },
       shiftKey : false,
