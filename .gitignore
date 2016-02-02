@@ -12,6 +12,9 @@ cache
 *.sublime-project
 *.sublime-workspace
 
+# netbeans project folder
+nbproject
+
 # git stackdumps
 *.stackdump
 
