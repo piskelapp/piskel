@@ -2,7 +2,7 @@
   var ns = $.namespace('pskl.controller');
 
   ns.PaletteController = function () {
-      this.displayer = $('.palette-value-displayer');
+    this.displayer = $('.palette-value-displayer');
   };
 
   /**
@@ -29,7 +29,7 @@
         tinycolor.setAlpha(1);
       }
     };
-    
+
     // Initialize colorpickers:
     var colorPicker = $('#color-picker');
     colorPicker.spectrum($.extend({color: Constants.DEFAULT_PEN_COLOR}, spectrumCfg));
@@ -116,7 +116,9 @@
    * @private
    */
   ns.PaletteController.prototype.showValueDisplayer_ = function (evt) {
-    var color = evt.data.isPrimary ? pskl.app.selectedColorsService.getPrimaryColor() : pskl.app.selectedColorsService.getSecondaryColor();
+    var color = evt.data.isPrimary ?
+      pskl.app.selectedColorsService.getPrimaryColor() :
+      pskl.app.selectedColorsService.getSecondaryColor();
     this.displayer.html(color);
   };
   /**
