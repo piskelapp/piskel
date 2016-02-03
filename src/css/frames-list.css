@@ -25,9 +25,9 @@
 
   background-image: linear-gradient(45deg, #1D1D1D 20%, transparent 25%, transparent 75%, #1D1D1D 80%, #1D1D1D),
                     linear-gradient(-45deg, #1D1D1D 20%, transparent 25%, transparent 75%, #1D1D1D 80%, #1D1D1D);
-  background-size: 29px 45px;
+  background-size: 30px 40px;
   background-repeat: repeat-x;
-  background-position-x: 3px;
+  background-position: 3px 0;
   z-index: 10;
 }
 
@@ -37,8 +37,7 @@
 
 .bottom-overflow {
   bottom: -20px;
-  background-position-x: 0;
-  background-position-y: -23px;
+  background-position: 3px -20px;
 }
 
 .top-overflow-visible .top-overflow {
