@@ -159,3 +159,10 @@
   );
 }
 
+.palette-value-displayer{
+    color: #FFF;
+    text-align: center;
+    clear: both;
+    padding-top: 3px;
+    min-height: 1em;
+}

@@ -1,7 +1,9 @@
 (function () {
   var ns = $.namespace('pskl.controller');
 
-  ns.PaletteController = function () {};
+  ns.PaletteController = function () {
+      this.displayer = $('.palette-value-displayer');
+  };
 
   /**
    * @public
@@ -27,17 +29,19 @@
         tinycolor.setAlpha(1);
       }
     };
-
+    
     // Initialize colorpickers:
     var colorPicker = $('#color-picker');
     colorPicker.spectrum($.extend({color: Constants.DEFAULT_PEN_COLOR}, spectrumCfg));
     colorPicker.change({isPrimary : true}, $.proxy(this.onPickerChange_, this));
-    this.setTitleOnPicker_(Constants.DEFAULT_PEN_COLOR, colorPicker);
+    colorPicker.parent().mouseenter({isPrimary : true}, $.proxy(this.showValueDisplayer_, this))
+      .mouseleave($.proxy(this.hideValueDisplayer_, this));
 
     var secondaryColorPicker = $('#secondary-color-picker');
     secondaryColorPicker.spectrum($.extend({color: Constants.TRANSPARENT_COLOR}, spectrumCfg));
     secondaryColorPicker.change({isPrimary : false}, $.proxy(this.onPickerChange_, this));
-    this.setTitleOnPicker_(Constants.TRANSPARENT_COLOR, secondaryColorPicker);
+    secondaryColorPicker.parent().mouseenter({isPrimary : false}, $.proxy(this.showValueDisplayer_, this))
+      .mouseleave($.proxy(this.hideValueDisplayer_, this));
 
     var swapColorsIcon = $('.swap-colors-button');
     swapColorsIcon.click(this.swapColors.bind(this));
@@ -106,11 +110,19 @@
     } else {
       colorPicker.spectrum('set', color);
     }
-    this.setTitleOnPicker_(color, colorPicker);
   };
 
-  ns.PaletteController.prototype.setTitleOnPicker_ = function (title, colorPicker) {
-    var spectrumInputSelector = '.sp-replacer';
-    colorPicker.next(spectrumInputSelector).attr('title', title);
+  /**
+   * @private
+   */
+  ns.PaletteController.prototype.showValueDisplayer_ = function (evt) {
+    var color = evt.data.isPrimary ? pskl.app.selectedColorsService.getPrimaryColor() : pskl.app.selectedColorsService.getSecondaryColor();
+    this.displayer.html(color);
+  };
+  /**
+   * @private
+   */
+  ns.PaletteController.prototype.hideValueDisplayer_ = function (evt) {
+    this.displayer.html('');
   };
 })();
