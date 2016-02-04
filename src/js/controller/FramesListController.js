@@ -128,8 +128,7 @@
       update: $.proxy(this.onUpdate_, this),
       items: '.preview-tile',
       axis: 'y',
-      tolerance: 'pointer',
-      handle: '.dnd-action'
+      tolerance: 'pointer'
     });
     $('#preview-list').disableSelection();
   };
