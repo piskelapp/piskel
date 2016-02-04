@@ -94,8 +94,9 @@
   ns.PngExportController.prototype.getFramesheetAsCanvas = function () {
     var renderer = new pskl.rendering.PiskelRenderer(this.piskelController);
     var framesPerRows = parseInt(pskl.UserSettings.get(pskl.UserSettings.FRAMES_PER_ROWS));
-    if(isNaN(framesPerRows) || framesPerRows == 0)
+    if (isNaN(framesPerRows) || framesPerRows <= 0) {
       framesPerRows = Infinity;
+    }
     return renderer.renderAsCanvas(framesPerRows);
   };
 

@@ -17,7 +17,9 @@
     var canvas = this.createCanvas_(framesPerRows);
     for (var i = 0 ; i < this.frames.length ; i++) {
       var frame = this.frames[i];
-      this.drawFrameInCanvas_(frame, canvas, (i % framesPerRows) * frame.getWidth(), Math.floor(i / framesPerRows) * frame.getHeight());
+      var posX = (i % framesPerRows) * frame.getWidth();
+      var posY = Math.floor(i / framesPerRows) * frame.getHeight();
+      this.drawFrameInCanvas_(frame, canvas, posX, posY);
     }
     return canvas;
   };
