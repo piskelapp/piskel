@@ -124,9 +124,12 @@
   ns.FramesListController.prototype.initDragndropBehavior_ = function () {
 
     $('#preview-list').sortable({
-      placeholder: 'preview-tile-drop-proxy',
+      placeholder: 'preview-tile preview-tile-drop-proxy',
       update: $.proxy(this.onUpdate_, this),
-      items: '.preview-tile'
+      items: '.preview-tile',
+      axis: 'y',
+      tolerance: 'pointer',
+      handle: '.dnd-action'
     });
     $('#preview-list').disableSelection();
   };
