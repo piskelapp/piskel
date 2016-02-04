@@ -4,7 +4,7 @@
       Export Spritesheet
     </div>
     <div class="settings-item">
-      <div class="settings-description">PNG with all frames side by side.</div>
+      <div class="settings-description">PNG with all frames.</div>
       <div class="scaling-factor"
         title="Scale the exported PNG spritesheet"
         rel="tooltip"
@@ -12,6 +12,13 @@
         <label for="scaling-factor">Scale</label>
         <input type="range" class="scaling-factor-input" name="scaling-factor" min="1"  max="32" step="1"/>
         <span class="scaling-factor-text"></span>
+      </div>
+      <div class="settings-item"
+        title="Choose the number of frames per rows (0 to disable)"
+        rel="tooltip"
+        data-placement="top">
+        <label for="frame-per-rows">Frames per rows</label>
+        <input type="number" class="textfield  export-frames-per-rows-field" name="frames-per-rows" min="0" step="1"/>
       </div>
       <button type="button" class="button button-primary png-download-button">Download PNG</button>
     </div>

@@ -78,6 +78,7 @@
 
 .import-size-field,
 .resize-size-field,
+.export-frames-per-rows-field,
 .export-size-field  {
   width: 50px;
   margin-right: 8px;
