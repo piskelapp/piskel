@@ -50,7 +50,7 @@
 
 .preview-list {
   list-style-type: none;
-  padding-right: 7px;
+  padding-right: 9px;
 }
 
 .add-frame-action {
@@ -157,13 +157,13 @@
 }
 
 .preview-tile.selected:after {
-  content: " ";
+  content: "";
   position: absolute;
   top: 38px;
-  right: -15px;
+  right: -9px;
   border: transparent 4px solid;
   border-left-color: gold;
-  border-width: 6px;
+  border-width: 6px 0 6px 6px;
   border-style: solid;
 }
 
@@ -174,7 +174,5 @@
 
 .preview-tile-drop-proxy {
   border: 3px dashed gold;
-  height: 90px;
-  border-radius: 9px;
   background-color: rgba(255, 215,0, 0.2);
 }
