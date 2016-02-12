@@ -25,9 +25,9 @@
 
   background-image: linear-gradient(45deg, #1D1D1D 20%, transparent 25%, transparent 75%, #1D1D1D 80%, #1D1D1D),
                     linear-gradient(-45deg, #1D1D1D 20%, transparent 25%, transparent 75%, #1D1D1D 80%, #1D1D1D);
-  background-size: 29px 45px;
+  background-size: 30px 40px;
   background-repeat: repeat-x;
-  background-position-x: 3px;
+  background-position: 3px 0;
   z-index: 10;
 }
 
@@ -37,8 +37,7 @@
 
 .bottom-overflow {
   bottom: -20px;
-  background-position-x: 0;
-  background-position-y: -23px;
+  background-position: 3px -20px;
 }
 
 .top-overflow-visible .top-overflow {
@@ -51,7 +50,7 @@
 
 .preview-list {
   list-style-type: none;
-  padding-right: 7px;
+  padding-right: 9px;
 }
 
 .add-frame-action {
@@ -158,13 +157,13 @@
 }
 
 .preview-tile.selected:after {
-  content: " ";
+  content: "";
   position: absolute;
   top: 38px;
-  right: -15px;
+  right: -9px;
   border: transparent 4px solid;
   border-left-color: gold;
-  border-width: 6px;
+  border-width: 6px 0 6px 6px;
   border-style: solid;
 }
 
@@ -175,7 +174,5 @@
 
 .preview-tile-drop-proxy {
   border: 3px dashed gold;
-  height: 90px;
-  border-radius: 9px;
   background-color: rgba(255, 215,0, 0.2);
 }
