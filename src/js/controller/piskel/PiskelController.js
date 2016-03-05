@@ -205,6 +205,13 @@
     }
   };
 
+  ns.PiskelController.prototype.setLayerOpacityAt = function (index, opacity) {
+    var layer = this.getLayerByIndex(index);
+    if (layer) {
+      layer.setOpacity(opacity);
+    }
+  };
+
   ns.PiskelController.prototype.mergeDownLayerAt = function (index) {
     var layer = this.getLayerByIndex(index);
     var downLayer = this.getLayerByIndex(index - 1);
