@@ -25,6 +25,7 @@
       var renderer = new pskl.rendering.FramesheetRenderer(frames);
       var layerToSerialize = {
         name : layer.getName(),
+        opacity : layer.getOpacity(),
         frameCount : frames.length
       };
       if (expanded) {
