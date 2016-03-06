@@ -127,7 +127,7 @@
     });
 
     for (var i = 0 ; i < this.piskelController.getFrameCount() ; i++) {
-      var frame = this.piskelController.getFrameAt(i);
+      var frame = this.piskelController.getMergedFrameAt(i);
       var canvasRenderer = new pskl.rendering.CanvasRenderer(frame, zoom);
       if (preserveColors) {
 

@@ -170,7 +170,7 @@
     var index = this.getNextIndex_(delta);
     if (this.shoudlRender_() || this.currentIndex != index) {
       this.currentIndex = index;
-      var frame = this.piskelController.getFrameAt(this.currentIndex);
+      var frame = this.piskelController.getMergedFrameAt(this.currentIndex);
       this.renderer.render(frame);
       this.renderFlag = false;
 

@@ -90,7 +90,7 @@
     return this.piskel;
   };
 
-  ns.PiskelController.prototype.getFrameAt = function (index) {
+  ns.PiskelController.prototype.getMergedFrameAt = function (index) {
     var hash = [];
     var frames = this.getLayers().map(function (l) {
       var frame = l.getFrameAt(index);

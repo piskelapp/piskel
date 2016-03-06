@@ -203,7 +203,7 @@
     },
 
     getFirstFrameAsPng : function () {
-      var firstFrame = this.piskelController.getFrameAt(0);
+      var firstFrame = this.piskelController.getMergedFrameAt(0);
       var firstFrameCanvas = pskl.utils.FrameUtils.toImage(firstFrame);
       return firstFrameCanvas.toDataURL('image/png');
     },

@@ -22,7 +22,6 @@
 
     serializeLayer : function (layer, expanded) {
       var frames = layer.getFrames();
-      var renderer = new pskl.rendering.FramesheetRenderer(frames);
       var layerToSerialize = {
         name : layer.getName(),
         opacity : layer.getOpacity(),
@@ -32,6 +31,7 @@
         layerToSerialize.grids = frames.map(function (f) {return f.pixels;});
         return layerToSerialize;
       } else {
+        var renderer = new pskl.rendering.FramesheetRenderer(frames);
         layerToSerialize.base64PNG = renderer.renderAsCanvas().toDataURL();
         return JSON.stringify(layerToSerialize);
       }

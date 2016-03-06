@@ -60,7 +60,7 @@
   ns.PngExportController.prototype.mergedExport_ = function (zip) {
     var paddingLength = ('' + this.piskelController.getFrameCount()).length;
     for (var i = 0; i < this.piskelController.getFrameCount(); i++) {
-      var frame = this.piskelController.getFrameAt(i);
+      var frame = this.piskelController.getMergedFrameAt(i);
       var canvas = this.getFrameAsCanvas_(frame);
       var basename = this.pngFilePrefixInput.value;
       var id = pskl.utils.StringUtils.leftPad(i, paddingLength, '0');
