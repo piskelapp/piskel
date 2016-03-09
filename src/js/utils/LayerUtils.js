@@ -42,17 +42,21 @@
       return mergedLayer;
     },
 
+    renderFrameAt : function (layer, index, preserveOpacity) {
+      var opacity = preserveOpacity ? layer.getOpacity() : 1;
+      var frame = layer.getFrameAt(index);
+      return pskl.utils.FrameUtils.toImage(frame, 1, opacity);
+    },
+
     flattenFrameAt : function (layers, index, preserveOpacity) {
       var width = layers[0].getFrameAt(index).getWidth();
       var height = layers[0].getFrameAt(index).getHeight();
       var canvas = pskl.utils.CanvasUtils.createCanvas(width, height);
+
       var context = canvas.getContext('2d');
       layers.forEach(function (l) {
-        var frameRender = pskl.utils.FrameUtils.toImage(l.getFrameAt(index));
-        if (preserveOpacity) {
-          context.globalAlpha = l.getOpacity();
-        }
-        context.drawImage(frameRender, 0, 0, width, height, 0, 0, width, height);
+        var render = ns.LayerUtils.renderFrameAt(l, index, preserveOpacity);
+        context.drawImage(render, 0, 0, width, height, 0, 0, width, height);
       });
 
       return canvas;

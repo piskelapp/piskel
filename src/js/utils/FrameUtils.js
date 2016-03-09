@@ -9,22 +9,28 @@
      * @param zoom {Number} zoom
      * @return {Image}
      */
-    toImage : function (frame, zoom) {
+    toImage : function (frame, zoom, opacity) {
       zoom = zoom || 1;
+      opacity = isNaN(opacity) ? 1 : opacity;
+
       var canvasRenderer = new pskl.rendering.CanvasRenderer(frame, zoom);
       canvasRenderer.drawTransparentAs(Constants.TRANSPARENT_COLOR);
+      canvasRenderer.setOpacity(opacity);
       return canvasRenderer.render();
     },
 
     /**
      * Draw the provided frame in a 2d canvas
      *
-     * @param frame {pskl.model.Frame} frame the frame to draw
-     * @param canvas {Canvas} canvas the canvas target
-     * @param transparentColor {String} transparentColor (optional) color to use to represent transparent pixels.
+     * @param {Frame} frame the frame to draw
+     * @param {Canvas} canvas the canvas target
+     * @param {String} transparentColor (optional) color to use to represent transparent pixels.
+     * @param {String} opacity (optional) global frame opacity
      */
-    drawToCanvas : function (frame, canvas, transparentColor) {
+    drawToCanvas : function (frame, canvas, transparentColor, opacity) {
       var context = canvas.getContext('2d');
+      opacity = isNaN(opacity) ? 1 : opacity;
+      context.globalAlpha = opacity;
 
       transparentColor = transparentColor || Constants.TRANSPARENT_COLOR;
       for (var x = 0, width = frame.getWidth() ; x < width ; x++) {
@@ -46,6 +52,7 @@
           y = y + w - 1;
         }
       }
+      context.globalAlpha = 1;
     },
 
     /**
