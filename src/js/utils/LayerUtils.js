@@ -3,12 +3,15 @@
 
   ns.LayerUtils = {
     /**
-     * Create a pskl.model.Layer from an Image object.
+     * Create a Frame array from an Image object.
      * Transparent pixels will either be converted to completely opaque or completely transparent pixels.
+     * TODO : move to FrameUtils
+     *
      * @param  {Image} image source image
-     * @return {pskl.model.Frame} corresponding frame
+     * @param  {Number} frameCount number of frames in the spritesheet
+     * @return {Array<Frame>}
      */
-    createLayerFromSpritesheet : function (image, frameCount) {
+    createFramesFromSpritesheet : function (image, frameCount) {
       var width = image.width;
       var height = image.height;
       var frameWidth = width / frameCount;
@@ -37,6 +40,22 @@
       });
       var mergedLayer = pskl.model.Layer.fromFrames(layerA.getName(), mergedFrames);
       return mergedLayer;
+    },
+
+    flattenFrameAt : function (layers, index, preserveOpacity) {
+      var width = layers[0].getFrameAt(index).getWidth();
+      var height = layers[0].getFrameAt(index).getHeight();
+      var canvas = pskl.utils.CanvasUtils.createCanvas(width, height);
+      var context = canvas.getContext('2d');
+      layers.forEach(function (l) {
+        var frameRender = pskl.utils.FrameUtils.toImage(l.getFrameAt(index));
+        if (preserveOpacity) {
+          context.globalAlpha = l.getOpacity();
+        }
+        context.drawImage(frameRender, 0, 0, width, height, 0, 0, width, height);
+      });
+
+      return canvas;
     }
   };
 
