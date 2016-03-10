@@ -110,7 +110,8 @@
   };
 
   ns.PaletteController.prototype.setTitleOnPicker_ = function (title, colorPicker) {
-    var spectrumInputSelector = '.sp-replacer';
-    colorPicker.next(spectrumInputSelector).attr('title', title);
+    var parent = colorPicker.parent();
+    title = parent.data('initial-title') + '<br/>' + title;
+    parent.attr('data-original-title', title);
   };
 })();
