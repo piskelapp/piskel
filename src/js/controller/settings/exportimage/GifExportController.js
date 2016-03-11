@@ -105,7 +105,11 @@
   ns.GifExportController.prototype.renderAsImageDataAnimatedGIF = function(zoom, fps, cb) {
     var currentColors = pskl.app.currentColorsService.getCurrentColors();
 
-    var preserveColors = currentColors.length < MAX_GIF_COLORS;
+    var hasTransparency = this.piskelController.getLayers().some(function (l) {
+      var opacity = l.getOpacity();
+      return opacity > 0 && opacity < 1;
+    });
+    var preserveColors = !hasTransparency && currentColors.length < MAX_GIF_COLORS;
 
     var transparentColor, transparent;
     // transparency only supported if preserveColors is true, see Issue #357
@@ -117,23 +121,30 @@
       transparent = null;
     }
 
+    var width = this.piskelController.getWidth();
+    var height = this.piskelController.getHeight();
+
     var gif = new window.GIF({
       workers: 5,
       quality: 1,
-      width: this.piskelController.getWidth() * zoom,
-      height: this.piskelController.getHeight() * zoom,
+      width: width * zoom,
+      height: height * zoom,
       preserveColors : preserveColors,
       transparent : transparent
     });
 
-    for (var i = 0 ; i < this.piskelController.getFrameCount() ; i++) {
-      var frame = this.piskelController.getMergedFrameAt(i);
-      var canvasRenderer = new pskl.rendering.CanvasRenderer(frame, zoom);
-      if (preserveColors) {
+    // Create a background canvas that will be filled with the transparent color before each render.
+    var background = pskl.utils.CanvasUtils.createCanvas(width, height);
+    var context = background.getContext('2d');
+    context.fillStyle = transparentColor;
 
-      }
-      canvasRenderer.drawTransparentAs(transparentColor);
-      var canvas = canvasRenderer.render();
+    for (var i = 0 ; i < this.piskelController.getFrameCount() ; i++) {
+      var render = this.piskelController.renderFrameAt(i, true);
+      context.clearRect(0, 0, width, height);
+      context.fillRect(0, 0, width, height);
+      context.drawImage(render, 0, 0, width, height);
+
+      var canvas = pskl.utils.ImageResizer.scale(background, zoom);
       gif.addFrame(canvas.getContext('2d'), {
         delay: 1000 / fps
       });
