@@ -26,7 +26,7 @@
     "grunt-ghost": "1.1.0",
     "grunt-include-replace": "3.2.0",
     "grunt-jscs": "2.8.0",
-    "grunt-karma": "0.12.1",
+    "grunt-karma": "0.12.2",
     "grunt-leading-indent": "0.2.0",
     "grunt-nw-builder": "2.0.0",
     "grunt-open": "0.2.3",
