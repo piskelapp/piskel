@@ -71,8 +71,11 @@
   };
 
   ns.ResizeController.prototype.resizeLayer_ = function (layer) {
+    var opacity = layer.getOpacity();
     var resizedFrames = layer.getFrames().map(this.resizeFrame_.bind(this));
-    return pskl.model.Layer.fromFrames(layer.getName(), resizedFrames);
+    var resizedLayer = pskl.model.Layer.fromFrames(layer.getName(), resizedFrames);
+    resizedLayer.setOpacity(opacity);
+    return resizedLayer;
   };
 
   ns.ResizeController.prototype.onResizeContentChange_ = function (evt) {
