@@ -56,19 +56,16 @@
 
     // 3 - set the source of the image
     image.src = base64PNG;
-
-    // 4 - return a pointer to the new layer instance
     return layer;
   };
 
   ns.Deserializer.prototype.loadExpandedLayer = function (layerData, index) {
     var layer = new pskl.model.Layer(layerData.name);
+    layer.setOpacity(layerData.opacity);
     var frames = layerData.grids.map(function (grid) {
       return pskl.model.Frame.fromPixelGrid(grid);
     });
     this.addFramesToLayer(frames, layer, index);
-
-    // 4 - return a pointer to the new layer instance
     return layer;
   };
 

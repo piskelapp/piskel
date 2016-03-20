@@ -58,7 +58,7 @@
   // Promises
   "js/lib/q.js",
 
-  // Application libraries-->
+  // Application libraries
   "js/rendering/DrawingLoop.js",
 
   // Models
@@ -67,6 +67,7 @@
   "js/model/piskel/Descriptor.js",
   "js/model/frame/CachedFrameProcessor.js",
   "js/model/frame/AsyncCachedFrameProcessor.js",
+  "js/model/frame/RenderedFrame.js",
   "js/model/Palette.js",
   "js/model/Piskel.js",
 

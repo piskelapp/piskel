@@ -105,11 +105,9 @@
   ns.GifExportController.prototype.renderAsImageDataAnimatedGIF = function(zoom, fps, cb) {
     var currentColors = pskl.app.currentColorsService.getCurrentColors();
 
-    var hasTransparency = this.piskelController.getLayers().some(function (l) {
-      var opacity = l.getOpacity();
-      return opacity > 0 && opacity < 1;
-    });
-    var preserveColors = !hasTransparency && currentColors.length < MAX_GIF_COLORS;
+    var layers = this.piskelController.getLayers();
+    var isTransparent = layers.some(function (l) {return l.isTransparent();});
+    var preserveColors = !isTransparent && currentColors.length < MAX_GIF_COLORS;
 
     var transparentColor, transparent;
     // transparency only supported if preserveColors is true, see Issue #357

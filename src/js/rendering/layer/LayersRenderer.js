@@ -32,11 +32,11 @@
     var offset = this.getOffset();
     var size = this.getDisplaySize();
     var layers = this.piskelController.getLayers();
-    var currentFrameIndex = this.piskelController.getCurrentFrameIndex();
-    var currentLayerIndex = this.piskelController.getCurrentLayerIndex();
+    var frameIndex = this.piskelController.getCurrentFrameIndex();
+    var layerIndex = this.piskelController.getCurrentLayerIndex();
 
-    var belowLayers = layers.slice(0, currentLayerIndex);
-    var aboveLayers = layers.slice(currentLayerIndex + 1, layers.length);
+    var belowLayers = layers.slice(0, layerIndex);
+    var aboveLayers = layers.slice(layerIndex + 1, layers.length);
 
     var serializedRendering = [
       this.getZoom(),
@@ -45,8 +45,8 @@
       offset.y,
       size.width,
       size.height,
-      this.getHashForLayersAt_(currentFrameIndex, belowLayers),
-      this.getHashForLayersAt_(currentFrameIndex, aboveLayers),
+      pskl.utils.LayerUtils.getFrameHashAt(belowLayers, frameIndex),
+      pskl.utils.LayerUtils.getFrameHashAt(aboveLayers, frameIndex),
       layers.length
     ].join('-');
 
@@ -56,12 +56,12 @@
       this.clear();
 
       if (belowLayers.length > 0) {
-        var belowFrame = this.getFrameForLayersAt_(currentFrameIndex, belowLayers);
+        var belowFrame = pskl.utils.LayerUtils.mergeFrameAt(belowLayers, frameIndex);
         this.belowRenderer.render(belowFrame);
       }
 
       if (aboveLayers.length > 0) {
-        var aboveFrame = this.getFrameForLayersAt_(currentFrameIndex, aboveLayers);
+        var aboveFrame = pskl.utils.LayerUtils.mergeFrameAt(aboveLayers, frameIndex);
         this.aboveRenderer.render(aboveFrame);
       }
     }
@@ -78,20 +78,6 @@
     if (size.width !== width || size.height !== height) {
       this.superclass.setDisplaySize.call(this, width, height);
     }
-  };
-
-  ns.LayersRenderer.prototype.getFrameForLayersAt_ = function (frameIndex, layers) {
-    var frames = layers.map(function (l) {
-      return l.getFrameAt(frameIndex);
-    });
-    return pskl.utils.FrameUtils.merge(frames);
-  };
-
-  ns.LayersRenderer.prototype.getHashForLayersAt_ = function (frameIndex, layers) {
-    var hash = layers.map(function (l) {
-      return l.getFrameAt(frameIndex).getHash();
-    });
-    return hash.join('-');
   };
 
   ns.LayersRenderer.prototype.onUserSettingsChange_ = function (evt, settingsName, settingsValue) {
