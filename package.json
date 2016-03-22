@@ -34,7 +34,7 @@
     "grunt-spritesmith": "6.3.0",
     "jasmine-core": "2.1.0",
     "karma": "0.13.21",
-    "karma-chrome-launcher": "0.2.2",
+    "karma-chrome-launcher": "0.2.3",
     "karma-jasmine": "0.3.7",
     "karma-phantomjs-launcher": "0.2.3",
     "load-grunt-tasks": "3.4.1",
