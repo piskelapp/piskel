@@ -58,11 +58,13 @@
   };
 
   ns.PngExportController.prototype.mergedExport_ = function (zip) {
+    var paddingLength = (""+this.piskelController.getFrameCount()).length;
+    var padding = new Array(paddingLength).join("0");
     for (var i = 0; i < this.piskelController.getFrameCount(); i++) {
       var frame = this.piskelController.getFrameAt(i);
       var canvas = this.getFrameAsCanvas_(frame);
       var basename = this.pngFilePrefixInput.value;
-      var filename = basename + (i + 1) + '.png';
+      var filename = basename + (padding + (i + 1)).slice(-paddingLength) + '.png';
       zip.file(filename, pskl.utils.CanvasUtils.getBase64FromCanvas(canvas) + '\n', {base64: true});
     }
   };
