@@ -6,5 +6,5 @@
       var padding = new Array(length).join(pad);
       return (padding + input).slice(-length);
     },
-  }
+  };
 })();
