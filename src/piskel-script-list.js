@@ -32,6 +32,7 @@
   "js/utils/LayerUtils.js",
   "js/utils/PixelUtils.js",
   "js/utils/PiskelFileUtils.js",
+  "js/utils/StringUtils.js",
   "js/utils/Template.js",
   "js/utils/TooltipFormatter.js",
   "js/utils/UserSettings.js",

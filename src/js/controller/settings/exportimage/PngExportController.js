@@ -59,31 +59,28 @@
 
   ns.PngExportController.prototype.mergedExport_ = function (zip) {
     var paddingLength = (""+this.piskelController.getFrameCount()).length;
-    var padding = new Array(paddingLength).join("0");
     for (var i = 0; i < this.piskelController.getFrameCount(); i++) {
       var frame = this.piskelController.getFrameAt(i);
       var canvas = this.getFrameAsCanvas_(frame);
       var basename = this.pngFilePrefixInput.value;
-      var id = (padding + (i + 1)).slice(-paddingLength);
+      var id = pskl.utils.StringUtils.leftPad(i, paddingLength, "0");
       var filename = basename + id + '.png';
       zip.file(filename, pskl.utils.CanvasUtils.getBase64FromCanvas(canvas) + '\n', {base64: true});
     }
   };
 
   ns.PngExportController.prototype.splittedExport_ = function (zip) {
-    var framePaddingLength = (""+this.piskelController.getFrameCount()).length;
-    var framePadding = new Array(framePaddingLength).join("0");
     var layers = this.piskelController.getLayers();
+    var framePaddingLength = (""+this.piskelController.getFrameCount()).length;
     var layerPaddingLength = (""+layers.length).length;
-    var layerPadding = new Array(layerPaddingLength).join("0");
     for (var j = 0; this.piskelController.hasLayerAt(j); j++) {
       var layer = this.piskelController.getLayerAt(j);
-      var layerid = (layerPadding + j).slice(-layerPaddingLength);
+      var layerid = pskl.utils.StringUtils.leftPad(j, layerPaddingLength, "0");
       for (var i = 0; i < this.piskelController.getFrameCount(); i++) {
         var frame = layer.getFrameAt(i);
         var canvas = this.getFrameAsCanvas_(frame);
         var basename = this.pngFilePrefixInput.value;
-        var frameid = (framePadding + (i + 1)).slice(-framePaddingLength);
+        var frameid = pskl.utils.StringUtils.leftPad(i + 1, framePaddingLength, "0");
         var filename = 'l' + layerid + '_' + basename + frameid + '.png';
         zip.file(filename, pskl.utils.CanvasUtils.getBase64FromCanvas(canvas) + '\n', {base64: true});
       }
