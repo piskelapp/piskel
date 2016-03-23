@@ -64,20 +64,27 @@
       var frame = this.piskelController.getFrameAt(i);
       var canvas = this.getFrameAsCanvas_(frame);
       var basename = this.pngFilePrefixInput.value;
-      var filename = basename + (padding + (i + 1)).slice(-paddingLength) + '.png';
+      var id = (padding + (i + 1)).slice(-paddingLength);
+      var filename = basename + id + '.png';
       zip.file(filename, pskl.utils.CanvasUtils.getBase64FromCanvas(canvas) + '\n', {base64: true});
     }
   };
 
   ns.PngExportController.prototype.splittedExport_ = function (zip) {
+    var framePaddingLength = (""+this.piskelController.getFrameCount()).length;
+    var framePadding = new Array(framePaddingLength).join("0");
     var layers = this.piskelController.getLayers();
+    var layerPaddingLength = (""+layers.length).length;
+    var layerPadding = new Array(layerPaddingLength).join("0");
     for (var j = 0; this.piskelController.hasLayerAt(j); j++) {
       var layer = this.piskelController.getLayerAt(j);
+      var layerid = (layerPadding + j).slice(-layerPaddingLength);
       for (var i = 0; i < this.piskelController.getFrameCount(); i++) {
         var frame = layer.getFrameAt(i);
         var canvas = this.getFrameAsCanvas_(frame);
         var basename = this.pngFilePrefixInput.value;
-        var filename = 'l' + j + '_' + basename + (i + 1) + '.png';
+        var frameid = (framePadding + (i + 1)).slice(-framePaddingLength);
+        var filename = 'l' + layerid + '_' + basename + frameid + '.png';
         zip.file(filename, pskl.utils.CanvasUtils.getBase64FromCanvas(canvas) + '\n', {base64: true});
       }
     }
