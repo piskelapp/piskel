@@ -16,7 +16,12 @@
   };
 
   ns.BackgroundImageFrameRenderer.prototype.frameToDataUrl_ = function (frame) {
-    var canvas = new pskl.utils.FrameUtils.toImage(frame, this.zoom);
+    var canvas;
+    if (frame instanceof pskl.model.frame.RenderedFrame) {
+      canvas = pskl.utils.ImageResizer.scale(frame.getRenderedFrame(), this.zoom);
+    } else {
+      canvas = pskl.utils.FrameUtils.toImage(frame, this.zoom);
+    }
     return canvas.toDataURL('image/png');
   };
 

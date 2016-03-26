@@ -46,6 +46,11 @@
   background : #222;
 }
 
+.layer-item-opacity {
+  position: absolute;
+  right: 8px;
+}
+
 .current-layer-item,
 .current-layer-item:hover {
   background : #333;

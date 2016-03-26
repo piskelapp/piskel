@@ -90,17 +90,14 @@
     return this.piskel;
   };
 
-  ns.PiskelController.prototype.getFrameAt = function (index) {
-    var hash = [];
-    var frames = this.getLayers().map(function (l) {
-      var frame = l.getFrameAt(index);
-      hash.push(frame.getHash());
-      return frame;
+  ns.PiskelController.prototype.isTransparent = function () {
+    return this.getLayers().some(function (l) {
+      return l.isTransparent();
     });
-    var mergedFrame = pskl.utils.FrameUtils.merge(frames);
-    mergedFrame.id = hash.join('-');
-    mergedFrame.version = 0;
-    return mergedFrame;
+  };
+
+  ns.PiskelController.prototype.renderFrameAt = function (index, preserveOpacity) {
+    return pskl.utils.LayerUtils.flattenFrameAt(this.getLayers(), index, preserveOpacity);
   };
 
   ns.PiskelController.prototype.hasFrameAt = function (index) {
@@ -202,6 +199,13 @@
     var layer = this.getLayerByIndex(index);
     if (layer) {
       layer.setName(name);
+    }
+  };
+
+  ns.PiskelController.prototype.setLayerOpacityAt = function (index, opacity) {
+    var layer = this.getLayerByIndex(index);
+    if (layer) {
+      layer.setOpacity(opacity);
     }
   };
 

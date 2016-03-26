@@ -34,6 +34,13 @@
   <ul class="layers-list"></ul>
 
   <script type="text/template" id="layer-item-template">
-    <li class="layer-item {{isselected:current-layer-item}}" data-layer-index="{{layerindex}}">{{layername}}</li>
+    <li class="layer-item {{isselected:current-layer-item}}"
+        data-layer-index="{{layerindex}}">
+        {{layername}}
+        <span class="layer-item-opacity"
+              title="Layer opacity" rel="tooltip" data-placement="top">
+          {{opacity}}&#945;
+        </span>
+    </li>
   </script>
 </div>

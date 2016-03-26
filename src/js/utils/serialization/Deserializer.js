@@ -6,6 +6,7 @@
     this.data_ = data;
     this.callback_ = callback;
     this.piskel_ = null;
+    this.layers_ = [];
   };
 
   ns.Deserializer.deserialize = function (data, callback) {
@@ -36,9 +37,10 @@
     }
   };
 
-  ns.Deserializer.prototype.deserializeLayer = function (layerString) {
+  ns.Deserializer.prototype.deserializeLayer = function (layerString, index) {
     var layerData = JSON.parse(layerString);
     var layer = new pskl.model.Layer(layerData.name);
+    layer.setOpacity(layerData.opacity);
 
     // 1 - create an image to load the base64PNG representing the layer
     var base64PNG = layerData.base64PNG;
@@ -47,39 +49,39 @@
     // 2 - attach the onload callback that will be triggered asynchronously
     image.onload = function () {
       // 5 - extract the frames from the loaded image
-      var frames = pskl.utils.LayerUtils.createLayerFromSpritesheet(image, layerData.frameCount);
+      var frames = pskl.utils.LayerUtils.createFramesFromSpritesheet(image, layerData.frameCount);
       // 6 - add each image to the layer
-      this.addFramesToLayer(frames, layer);
+      this.addFramesToLayer(frames, layer, index);
     }.bind(this);
 
     // 3 - set the source of the image
     image.src = base64PNG;
-
-    // 4 - return a pointer to the new layer instance
     return layer;
   };
 
-  ns.Deserializer.prototype.loadExpandedLayer = function (layerData) {
+  ns.Deserializer.prototype.loadExpandedLayer = function (layerData, index) {
     var layer = new pskl.model.Layer(layerData.name);
+    layer.setOpacity(layerData.opacity);
     var frames = layerData.grids.map(function (grid) {
       return pskl.model.Frame.fromPixelGrid(grid);
     });
-    this.addFramesToLayer(frames, layer);
-
-    // 4 - return a pointer to the new layer instance
+    this.addFramesToLayer(frames, layer, index);
     return layer;
   };
 
-  ns.Deserializer.prototype.addFramesToLayer = function (frames, layer) {
+  ns.Deserializer.prototype.addFramesToLayer = function (frames, layer, index) {
     frames.forEach(layer.addFrame.bind(layer));
 
-    this.piskel_.addLayer(layer);
+    this.layers_[index] = layer;
     this.onLayerLoaded_();
   };
 
   ns.Deserializer.prototype.onLayerLoaded_ = function () {
     this.layersToLoad_ = this.layersToLoad_ - 1;
     if (this.layersToLoad_ === 0) {
+      this.layers_.forEach(function (layer) {
+        this.piskel_.addLayer(layer);
+      }.bind(this));
       this.callback_(this.piskel_);
     }
   };
