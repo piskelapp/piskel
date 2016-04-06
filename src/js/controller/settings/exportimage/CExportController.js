@@ -36,7 +36,7 @@
 
     frameStr += '/* Piskel data for \"' + this.getPiskelName_() + '\" */\n\n';
 
-    frameStr += 'uint32_t ' + cName.toLowerCase();
+    frameStr += 'static const uint32_t ' + cName.toLowerCase();
     frameStr += '_data[' + frameCount + '][' + width * height + '] = {\n';
 
     for (var i = 0 ; i < frameCount ; i++) {
