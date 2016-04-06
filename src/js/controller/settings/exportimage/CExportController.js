@@ -49,7 +49,7 @@
 
       frameStr += '{\n';
       for (var j = 0; j < pix.length; j += 4) {
-        frameStr += this.rgbToCHex(pix[j], pix[j + 1], pix[j + 2]);
+        frameStr += this.rgbToCHex(pix[j], pix[j + 1], pix[j + 2], pix[j + 3]);
         if (j != pix.length - 4) {
           frameStr += ', ';
         }
@@ -74,11 +74,12 @@
     return this.piskelController.getPiskel().getDescriptor().name;
   };
 
-  ns.CExportController.prototype.rgbToCHex = function (r, g, b) {
+  ns.CExportController.prototype.rgbToCHex = function (r, g, b, a) {
     var hexStr = '0x';
-    hexStr += ('00' + r.toString(16)).substr(-2);
-    hexStr += ('00' + g.toString(16)).substr(-2);
+    hexStr += ('00' + a.toString(16)).substr(-2);
     hexStr += ('00' + b.toString(16)).substr(-2);
+    hexStr += ('00' + g.toString(16)).substr(-2);
+    hexStr += ('00' + r.toString(16)).substr(-2);
     return hexStr;
   };
 
