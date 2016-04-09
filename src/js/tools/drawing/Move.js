@@ -14,7 +14,7 @@
     this.tooltipDescriptors = [
       {key : 'ctrl', description : 'Apply to all layers'},
       {key : 'shift', description : 'Apply to all frames'},
-      {key : 'alt', description : 'Warp canvas borders'}
+      {key : 'alt', description : 'Wrap canvas borders'}
     ];
 
     // Stroke's first point coordinates (set in applyToolAt)
