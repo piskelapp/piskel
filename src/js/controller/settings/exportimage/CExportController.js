@@ -18,7 +18,6 @@
   ns.CExportController.prototype.onCDownloadButtonClick_ = function (evt) {
     var fileName = this.getPiskelName_() + '.c';
     var cName = this.getPiskelName_().replace(' ','_');
-    var outputCanvas = this.getFramesheetAsCanvas();
     var width = this.piskelController.getWidth();
     var height = this.piskelController.getHeight();
     var frameCount = this.piskelController.getFrameCount();
@@ -26,7 +25,6 @@
     // Create a background canvas that will be filled with the transparent color before each render.
     var background = pskl.utils.CanvasUtils.createCanvas(width, height);
     var context = background.getContext('2d');
-    context.fillStyle = BLACK;
 
     // Useful defines for C routines
     var frameStr = '#include <stdint.h>\n\n';
@@ -41,8 +39,6 @@
 
     for (var i = 0 ; i < frameCount ; i++) {
       var render = this.piskelController.renderFrameAt(i, true);
-      context.clearRect(0, 0, width, height);
-      context.fillRect(0, 0, width, height);
       context.drawImage(render, 0, 0, width, height);
       var imgd = context.getImageData(0, 0, width, height);
       var pix = imgd.data;
@@ -82,10 +78,4 @@
     hexStr += ('00' + r.toString(16)).substr(-2);
     return hexStr;
   };
-
-  ns.CExportController.prototype.getFramesheetAsCanvas = function () {
-    var renderer = new pskl.rendering.PiskelRenderer(this.piskelController);
-    return renderer.renderAsCanvas();
-  };
-
 })();
