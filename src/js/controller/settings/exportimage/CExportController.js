@@ -22,10 +22,6 @@
     var height = this.piskelController.getHeight();
     var frameCount = this.piskelController.getFrameCount();
 
-    // Create a background canvas that will be filled with the transparent color before each render.
-    var background = pskl.utils.CanvasUtils.createCanvas(width, height);
-    var context = background.getContext('2d');
-
     // Useful defines for C routines
     var frameStr = '#include <stdint.h>\n\n';
     frameStr += '#define ' + cName.toUpperCase() + '_FRAME_COUNT ' +  this.piskelController.getFrameCount() + '\n';
@@ -39,7 +35,7 @@
 
     for (var i = 0 ; i < frameCount ; i++) {
       var render = this.piskelController.renderFrameAt(i, true);
-      context.drawImage(render, 0, 0, width, height);
+      var context = render.getContext('2d');
       var imgd = context.getImageData(0, 0, width, height);
       var pix = imgd.data;
 
