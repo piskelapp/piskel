@@ -241,9 +241,46 @@
 
     if (delta > 0) {
       this.increaseZoom_(modifier);
+
+      var coords = this.getCoordinatesCenteredAround_(this._clientX, this._clientY);
+      var currentOffset = this.getOffset();
+      this.setOffset((coords.x + currentOffset.x) / 2, (coords.y + currentOffset.y) / 2);
     } else if (delta < 0) {
       this.decreaseZoom_(modifier);
     }
+  };
+
+  ns.DrawingController.prototype.getCoordinatesCenteredAround_ = function (x, y) {
+    var frameCoords = this.renderer.getCoordinates(x, y);
+
+    var frameWidth = this.piskelController.getCurrentFrame().getWidth();
+    var frameHeight = this.piskelController.getCurrentFrame().getHeight();
+
+    var width = frameWidth / this.getHorizontalRatio_();
+    var height = frameHeight / this.getVerticalRatio_();
+
+    return {
+      x : frameCoords.x - ((width - 1) / 2),
+      y : frameCoords.y - ((height - 1) / 2)
+    };
+  };
+
+  ns.DrawingController.prototype.getVerticalRatio_ = function () {
+    var drawingAreaZoom = this.compositeRenderer.getZoom();
+    var frame = this.piskelController.getCurrentFrame();
+    var frameTotalHeight = frame.getHeight() * drawingAreaZoom;
+    var frameDisplayHeight = this.compositeRenderer.getDisplaySize().height;
+
+    return frameTotalHeight / frameDisplayHeight;
+  };
+
+  ns.DrawingController.prototype.getHorizontalRatio_ = function () {
+    var drawingAreaZoom = this.compositeRenderer.getZoom();
+    var frame = this.piskelController.getCurrentFrame();
+    var frameTotalWidth = frame.getWidth() * drawingAreaZoom;
+    var frameDisplayWidth = this.compositeRenderer.getDisplaySize().width;
+
+    return frameTotalWidth / frameDisplayWidth;
   };
 
   ns.DrawingController.prototype.increaseZoom_ = function (zoomMultiplier) {
