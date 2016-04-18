@@ -27,8 +27,8 @@
   };
 
   ns.MinimapController.prototype.renderMinimap_ = function () {
-    var verticalRatio = this.getVerticalRatio_();
-    var horizontalRatio = this.getHorizontalRatio_();
+    var verticalRatio = this.drawingController.getVerticalRatio_();
+    var horizontalRatio = this.drawingController.getHorizontalRatio_();
     if (verticalRatio > 1 || horizontalRatio > 1) {
       this.displayMinimap_();
     } else {
@@ -119,30 +119,12 @@
     var frameWidth = this.piskelController.getCurrentFrame().getWidth();
     var frameHeight = this.piskelController.getCurrentFrame().getHeight();
 
-    var width = frameWidth / this.getHorizontalRatio_();
-    var height = frameHeight / this.getVerticalRatio_();
+    var width = frameWidth / this.drawingController.getHorizontalRatio_();
+    var height = frameHeight / this.drawingController.getVerticalRatio_();
 
     return {
-      x : frameCoords.x - (width / 2),
-      y : frameCoords.y - (height / 2)
+      x : frameCoords.x - ((width - 1) / 2),
+      y : frameCoords.y - ((height - 1) / 2)
     };
-  };
-
-  ns.MinimapController.prototype.getVerticalRatio_ = function () {
-    var drawingAreaZoom = this.drawingController.getRenderer().getZoom();
-    var frame = this.piskelController.getCurrentFrame();
-    var frameTotalHeight = frame.getHeight() * drawingAreaZoom;
-    var frameDisplayHeight = this.drawingController.getRenderer().getDisplaySize().height;
-
-    return frameTotalHeight / frameDisplayHeight;
-  };
-
-  ns.MinimapController.prototype.getHorizontalRatio_ = function () {
-    var drawingAreaZoom = this.drawingController.getRenderer().getZoom();
-    var frame = this.piskelController.getCurrentFrame();
-    var frameTotalWidth = frame.getWidth() * drawingAreaZoom;
-    var frameDisplayWidth = this.drawingController.getRenderer().getDisplaySize().width;
-
-    return frameTotalWidth / frameDisplayWidth;
   };
 })();
