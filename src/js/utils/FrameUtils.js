@@ -9,42 +9,55 @@
      * @param zoom {Number} zoom
      * @return {Image}
      */
-    toImage : function (frame, zoom) {
+    toImage : function (frame, zoom, opacity) {
       zoom = zoom || 1;
+      opacity = isNaN(opacity) ? 1 : opacity;
+
       var canvasRenderer = new pskl.rendering.CanvasRenderer(frame, zoom);
       canvasRenderer.drawTransparentAs(Constants.TRANSPARENT_COLOR);
+      canvasRenderer.setOpacity(opacity);
       return canvasRenderer.render();
     },
 
     /**
      * Draw the provided frame in a 2d canvas
      *
-     * @param frame {pskl.model.Frame} frame the frame to draw
-     * @param canvas {Canvas} canvas the canvas target
-     * @param transparentColor {String} transparentColor (optional) color to use to represent transparent pixels.
+     * @param {Frame|RenderedFrame} frame the frame to draw
+     * @param {Canvas} canvas the canvas target
+     * @param {String} transparentColor (optional) color to use to represent transparent pixels.
+     * @param {String} globalAlpha (optional) global frame opacity
      */
-    drawToCanvas : function (frame, canvas, transparentColor) {
+    drawToCanvas : function (frame, canvas, transparentColor, globalAlpha) {
       var context = canvas.getContext('2d');
-
+      globalAlpha = isNaN(globalAlpha) ? 1 : globalAlpha;
+      context.globalAlpha = globalAlpha;
       transparentColor = transparentColor || Constants.TRANSPARENT_COLOR;
-      for (var x = 0, width = frame.getWidth() ; x < width ; x++) {
-        for (var y = 0, height = frame.getHeight() ; y < height ; y++) {
-          var color = frame.getPixel(x, y);
 
-          // accumulate all the pixels of the same color to speed up rendering
-          // by reducting fillRect calls
-          var w = 1;
-          while (color === frame.getPixel(x, y + w) && (y + w) < height) {
-            w++;
+      if (frame instanceof pskl.model.frame.RenderedFrame) {
+        context.fillRect(transparentColor, 0, 0, frame.getWidth(), frame.getHeight());
+        context.drawImage(frame.getRenderedFrame(), 0, 0);
+      } else {
+        for (var x = 0, width = frame.getWidth() ; x < width ; x++) {
+          for (var y = 0, height = frame.getHeight() ; y < height ; y++) {
+            var color = frame.getPixel(x, y);
+
+            // accumulate all the pixels of the same color to speed up rendering
+            // by reducting fillRect calls
+            var w = 1;
+            while (color === frame.getPixel(x, y + w) && (y + w) < height) {
+              w++;
+            }
+
+            if (color == Constants.TRANSPARENT_COLOR) {
+              color = transparentColor;
+            }
+
+            pskl.utils.FrameUtils.renderLine_(color, x, y, w, context);
+            y = y + w - 1;
           }
-
-          if (color == Constants.TRANSPARENT_COLOR) {
-            color = transparentColor;
-          }
-
-          pskl.utils.FrameUtils.renderLine_(color, x, y, w, context);
-          y = y + w - 1;
         }
+
+        context.globalAlpha = 1;
       }
     },
 
@@ -91,12 +104,16 @@
     },
 
     /*
-     * Create a pskl.model.Frame from an Image object.
-     * Transparent pixels will either be converted to completely opaque or completely transparent pixels.
+     * Create a pskl.model.Frame from an Image object. By default transparent
+     * pixels will be converted to completely opaque or completely transparent
+     * pixels. If preserveOpacity is true the actual opacity of the pixel will
+     * be used and the generated frame will contain rgba pixels.
+     *
      * @param  {Image} image source image
+     * @param  {boolean} preserveOpacity set to true to preserve the opacity
      * @return {pskl.model.Frame} corresponding frame
      */
-    createFromImage : function (image) {
+    createFromImage : function (image, preserveOpacity) {
       var w = image.width;
       var h = image.height;
       var canvas = pskl.utils.CanvasUtils.createCanvas(w, h);
@@ -104,10 +121,10 @@
 
       context.drawImage(image, 0, 0, w, h, 0, 0, w, h);
       var imgData = context.getImageData(0, 0, w, h).data;
-      return pskl.utils.FrameUtils.createFromImageData_(imgData, w, h);
+      return pskl.utils.FrameUtils.createFromImageData_(imgData, w, h, preserveOpacity);
     },
 
-    createFromImageData_ : function (imageData, width, height) {
+    createFromImageData_ : function (imageData, width, height, preserveOpacity) {
       // Draw the zoomed-up pixels to a different canvas context
       var grid = [];
       for (var x = 0 ; x < width ; x++) {
@@ -119,10 +136,18 @@
           var g = imageData[i + 1];
           var b = imageData[i + 2];
           var a = imageData[i + 3];
-          if (a < 125) {
-            grid[x][y] = Constants.TRANSPARENT_COLOR;
+          if (preserveOpacity) {
+            if (a === 0) {
+              grid[x][y] = Constants.TRANSPARENT_COLOR;
+            } else {
+              grid[x][y] = 'rgba(' + [r, g, b, a / 255].join(',') + ')';
+            }
           } else {
-            grid[x][y] = pskl.utils.rgbToHex(r, g, b);
+            if (a < 125) {
+              grid[x][y] = Constants.TRANSPARENT_COLOR;
+            } else {
+              grid[x][y] = pskl.utils.rgbToHex(r, g, b);
+            }
           }
         }
       }

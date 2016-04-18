@@ -58,33 +58,33 @@
   };
 
   ns.PngExportController.prototype.mergedExport_ = function (zip) {
+    var paddingLength = ('' + this.piskelController.getFrameCount()).length;
     for (var i = 0; i < this.piskelController.getFrameCount(); i++) {
-      var frame = this.piskelController.getFrameAt(i);
-      var canvas = this.getFrameAsCanvas_(frame);
+      var render = this.piskelController.renderFrameAt(i, true);
+      var canvas = pskl.utils.CanvasUtils.createFromImage(render);
       var basename = this.pngFilePrefixInput.value;
-      var filename = basename + (i + 1) + '.png';
+      var id = pskl.utils.StringUtils.leftPad(i, paddingLength, '0');
+      var filename = basename + id + '.png';
       zip.file(filename, pskl.utils.CanvasUtils.getBase64FromCanvas(canvas) + '\n', {base64: true});
     }
   };
 
   ns.PngExportController.prototype.splittedExport_ = function (zip) {
     var layers = this.piskelController.getLayers();
+    var framePaddingLength = ('' + this.piskelController.getFrameCount()).length;
+    var layerPaddingLength = ('' + layers.length).length;
     for (var j = 0; this.piskelController.hasLayerAt(j); j++) {
       var layer = this.piskelController.getLayerAt(j);
+      var layerid = pskl.utils.StringUtils.leftPad(j, layerPaddingLength, '0');
       for (var i = 0; i < this.piskelController.getFrameCount(); i++) {
-        var frame = layer.getFrameAt(i);
-        var canvas = this.getFrameAsCanvas_(frame);
+        var render = pskl.utils.LayerUtils.renderFrameAt(layer, i, true);
+        var canvas = pskl.utils.CanvasUtils.createFromImage(render);
         var basename = this.pngFilePrefixInput.value;
-        var filename = 'l' + j + '_' + basename + (i + 1) + '.png';
+        var frameid = pskl.utils.StringUtils.leftPad(i + 1, framePaddingLength, '0');
+        var filename = 'l' + layerid + '_' + basename + frameid + '.png';
         zip.file(filename, pskl.utils.CanvasUtils.getBase64FromCanvas(canvas) + '\n', {base64: true});
       }
     }
-  };
-
-  ns.PngExportController.prototype.getFrameAsCanvas_ = function (frame) {
-    var canvasRenderer = new pskl.rendering.CanvasRenderer(frame, 1);
-    canvasRenderer.drawTransparentAs(Constants.TRANSPARENT_COLOR);
-    return canvasRenderer.render();
   };
 
   ns.PngExportController.prototype.getPiskelName_ = function () {

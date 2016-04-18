@@ -16,10 +16,10 @@
    * we expect this to be a 3x2 image, one black line above a white line.
    *
    * However Frame.createFromGrid needs the following input to create such an image :
-   * 
+   *
    * [[black, white],
    *  [black, white],
-   *  [black, white]] 
+   *  [black, white]]
    *
    * This helper will build the second array from the first array.
    */
@@ -41,4 +41,32 @@
       expect(color).toBe(grid[row][col]);
     });
   };
+
+  ns.imageEqualsGrid = function (image, grid) {
+    for (var x = 0 ; x < grid.length ; x++) {
+      for (var y = 0 ; y < grid[x].length ; y++) {
+        var expected = tinycolor(grid[x][y]).toRgbString();
+        var color = tinycolor(ns.getRgbaAt(image, x, y)).toRgbString();
+        expect(color).toBe(expected);
+      }
+    }
+  }
+
+  ns.getRgbaAt = function (image, x, y) {
+    var w = image.width;
+    var h = image.height;
+    var canvas = pskl.utils.CanvasUtils.createCanvas(w, h);
+    var context = canvas.getContext('2d');
+
+    context.drawImage(image, 0, 0, w, h, 0, 0, w, h);
+    var imageData = context.getImageData(0, 0, w, h).data;
+    var i = (y * w + x) * 4;
+
+    return {
+      r : imageData[i],
+      g : imageData[i + 1],
+      b : imageData[i + 2],
+      a : imageData[i + 3]/255
+    };
+  }
 })();

@@ -7,6 +7,7 @@
     } else {
       this.name = name;
       this.frames = [];
+      this.opacity = 1;
     }
   };
 
@@ -29,6 +30,21 @@
 
   ns.Layer.prototype.setName = function (name) {
     this.name = name;
+  };
+
+  ns.Layer.prototype.getOpacity = function () {
+    return this.opacity;
+  };
+
+  ns.Layer.prototype.setOpacity = function (opacity) {
+    if (opacity === null || isNaN(opacity) || opacity < 0 || opacity > 1) {
+      return;
+    }
+    this.opacity = opacity;
+  };
+
+  ns.Layer.prototype.isTransparent = function () {
+    return this.opacity > 0 && this.opacity < 1;
   };
 
   ns.Layer.prototype.getFrames = function () {

@@ -88,7 +88,8 @@
     var layerItemHtml = pskl.utils.Template.replace(this.layerItemTemplate_, {
       'layername' : layer.getName(),
       'layerindex' : index,
-      'isselected:current-layer-item' : isSelected
+      'isselected:current-layer-item' : isSelected,
+      'opacity': layer.getOpacity()
     });
     var layerItem = pskl.utils.Template.createFromHTML(layerItemHtml);
     this.layersListEl.insertBefore(layerItem, this.layersListEl.firstChild);
@@ -102,6 +103,11 @@
     } else if (el.classList.contains('layer-item')) {
       index = el.dataset.layerIndex;
       this.piskelController.setCurrentLayerIndex(parseInt(index, 10));
+    } else if (el.classList.contains('layer-item-opacity')) {
+      index = pskl.utils.Dom.getData(el, 'layerIndex');
+      var layer = this.piskelController.getLayerAt(parseInt(index, 10));
+      var opacity = window.prompt('Set layer opacity (value between 0 and 1)', layer.getOpacity());
+      this.piskelController.setLayerOpacityAt(index, opacity);
     }
   };
 

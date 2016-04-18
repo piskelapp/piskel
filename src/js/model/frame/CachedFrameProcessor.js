@@ -66,6 +66,10 @@
     var cacheKey = frame.getHash();
     if (cache[cacheKey]) {
       processedFrame = cache[cacheKey];
+    } else if (frame instanceof pskl.model.frame.RenderedFrame) {
+      // Cannot use 2nd level cache with rendered frames
+      processedFrame = this.frameProcessor(frame);
+      cache[cacheKey] = processedFrame;
     } else {
       var framePixels = JSON.stringify(frame.getPixels());
       var frameAsString = pskl.utils.hashCode(framePixels);
