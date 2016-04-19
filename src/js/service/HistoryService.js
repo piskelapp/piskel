@@ -58,25 +58,28 @@
     $.publish(Events.HISTORY_STATE_SAVED);
   };
 
-  ns.HistoryService.prototype.getCurrentState = function(){
-    if(this.currentUUID){
+  ns.HistoryService.prototype.getCurrentStateIndex = function() {
+    return this.currentUUID;
+  };
+
+  ns.HistoryService.prototype.getCurrentState = function() {
+    if (this.currentUUID) {
       return this.stateQueue[this.currentUUID];
-    }
-    else{
+    } else {
       return false;
     }
   };
 
-  ns.HistoryService.prototype.pushNewState_ = function(state){
+  ns.HistoryService.prototype.pushNewState_ = function(state) {
     // Generate a random UUID (~1e28 combinations)
-    var uuid = 'xxxxxx'.replace(/x/g, function(){
+    var uuid = 'xxxxxx'.replace(/x/g, function() {
       return (Math.random() * 36 << 0).toString(36);
     });
 
     var currentState = this.getCurrentState();
-    if(currentState){
+    if (currentState) {
       // Clear unlinked states
-      if(currentState.nextIndex){
+      if (currentState.nextIndex) {
         this.clearBranchingQueue_(currentState.nextIndex);
       }
 
@@ -89,8 +92,8 @@
     this.currentUUID = uuid;
   };
 
-  ns.HistoryService.prototype.clearBranchingQueue_ = function(index){
-    while(this.stateQueue[index]){
+  ns.HistoryService.prototype.clearBranchingQueue_ = function(index) {
+    while (this.stateQueue[index]) {
       var next = this.stateQueue[index].nextIndex;
       delete(this.stateQueue[index]);
       index = next;
@@ -99,14 +102,16 @@
 
   ns.HistoryService.prototype.undo = function () {
     var currentState = this.getCurrentState();
-    if(currentState.previousIndex)
+    if (currentState.previousIndex) {
       this.loadState(currentState.previousIndex);
+    }
   };
 
   ns.HistoryService.prototype.redo = function () {
     var currentState = this.getCurrentState();
-    if(currentState.nextIndex)
+    if (currentState.nextIndex) {
       this.loadState(currentState.nextIndex);
+    }
   };
 
   ns.HistoryService.prototype.isLoadStateAllowed_ = function (index) {
@@ -175,9 +180,9 @@
     this.piskelController.setPiskel(piskel);
 
     var walkingIndex = snapshotIndex;
-    while(walkingIndex && walkingIndex != index){
+    while (walkingIndex && walkingIndex != index) {
       walkingIndex = this.stateQueue[walkingIndex].nextIndex;
-      if(walkingIndex){
+      if (walkingIndex) {
         var state = this.stateQueue[walkingIndex];
         this.setupState(state);
         this.replayState(state);
