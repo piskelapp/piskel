@@ -175,12 +175,14 @@
     this.piskelController.setPiskel(piskel);
 
     var walkingIndex = snapshotIndex;
-    do{
+    while(walkingIndex && walkingIndex != index){
       walkingIndex = this.stateQueue[walkingIndex].nextIndex;
-      var state = this.stateQueue[walkingIndex];
-      this.setupState(state);
-      this.replayState(state);
-    } while(walkingIndex && walkingIndex != index);
+      if(walkingIndex){
+        var state = this.stateQueue[walkingIndex];
+        this.setupState(state);
+        this.replayState(state);
+      }
+    }
 
     // Should only do this when going backwards
     var next = this.stateQueue[index].nextIndex;
