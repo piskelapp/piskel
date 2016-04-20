@@ -18,7 +18,7 @@ describe("History Service suite", function() {
   var historyService = null;
 
   var getLastState = function () {
-    return historyService.stateQueue[historyService.currentIndex];
+    return historyService.getCurrentState();
   };
 
   var createMockHistoryService = function () {
@@ -34,15 +34,15 @@ describe("History Service suite", function() {
     return new pskl.service.HistoryService(mockPiskelController, mockShortcutService);
   };
 
-  it("starts at -1", function() {
+  it("starts empty", function() {
     historyService = createMockHistoryService();
-    expect(historyService.currentIndex).toBe(-1);
+    expect(historyService.stateQueue.length).toBe(0);
   });
 
-  it("is at 0 after init", function() {
+  it("has 1 item after init", function() {
     historyService = createMockHistoryService();
     historyService.init();
-    expect(historyService.currentIndex).toBe(0);
+    expect(historyService.stateQueue.length).toBe(1);
   });
 
   var sendSaveEvents = function (type) {
@@ -65,7 +65,7 @@ describe("History Service suite", function() {
 
     sendSaveEvents(pskl.service.HistoryService.REPLAY).times(5);
 
-    expect(historyService.currentIndex).toBe(5);
+    expect(historyService.stateQueue.length).toBe(5);
 
     expect(getLastState().piskel).toBe(SERIALIZED_PISKEL);
 
