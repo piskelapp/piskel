@@ -80,6 +80,7 @@
     border-top-color: transparent;
     width: 0px;
     height: 0px;
+    mix-blend-mode: difference;
 }
 .palettes-list-primary-color:before {
     left: 1px;
