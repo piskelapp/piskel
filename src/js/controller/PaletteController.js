@@ -48,10 +48,18 @@
    */
   ns.PaletteController.prototype.onPickerChange_ = function(evt, isPrimary) {
     var inputPicker = $(evt.target);
+    var color = inputPicker.val();
+
+    if (color != Constants.TRANSPARENT_COLOR) {
+      // Unless the color is TRANSPARENT_COLOR, format it to hexstring, as
+      // expected by the rest of the application.
+      color = window.tinycolor(value).toHexString();
+    }
+
     if (evt.data.isPrimary) {
-      this.setPrimaryColor_(inputPicker.val());
+      this.setPrimaryColor_(color);
     } else {
-      this.setSecondaryColor_(inputPicker.val());
+      this.setSecondaryColor_(color);
     }
   };
 
