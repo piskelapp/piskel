@@ -13,11 +13,13 @@
     }
   };
 
-  ns.FramesheetRenderer.prototype.renderAsCanvas = function () {
-    var canvas = this.createCanvas_();
+  ns.FramesheetRenderer.prototype.renderAsCanvas = function (framesPerRows) {
+    var canvas = this.createCanvas_(framesPerRows);
     for (var i = 0 ; i < this.frames.length ; i++) {
       var frame = this.frames[i];
-      this.drawFrameInCanvas_(frame, canvas, i * frame.getWidth(), 0);
+      var posX = (i % framesPerRows) * frame.getWidth();
+      var posY = Math.floor(i / framesPerRows) * frame.getHeight();
+      this.drawFrameInCanvas_(frame, canvas, posX, posY);
     }
     return canvas;
   };
@@ -32,11 +34,11 @@
     });
   };
 
-  ns.FramesheetRenderer.prototype.createCanvas_ = function () {
+  ns.FramesheetRenderer.prototype.createCanvas_ = function (framesPerRows) {
     var sampleFrame = this.frames[0];
     var count = this.frames.length;
-    var width = count * sampleFrame.getWidth();
-    var height = sampleFrame.getHeight();
+    var width = Math.min(framesPerRows, count) * sampleFrame.getWidth();
+    var height = Math.max(1, Math.ceil(count / framesPerRows)) * sampleFrame.getHeight();
     return pskl.utils.CanvasUtils.createCanvas(width, height);
   };
 })();

@@ -13,7 +13,7 @@
     this.pngFilePrefixInput = document.querySelector('.zip-prefix-name');
     this.pngFilePrefixInput.value = 'sprite_';
 
-    this.splitByLayersCheckbox =  document.querySelector('.zip-split-layers-checkbox');
+    this.splitByLayersCheckbox = document.querySelector('.zip-split-layers-checkbox');
 
     var downloadButton = document.querySelector('.png-download-button');
     this.addEventListener(downloadButton, 'click', this.onPngDownloadButtonClick_);
@@ -93,7 +93,11 @@
 
   ns.PngExportController.prototype.getFramesheetAsCanvas = function () {
     var renderer = new pskl.rendering.PiskelRenderer(this.piskelController);
-    return renderer.renderAsCanvas();
+    var framesPerRows = parseInt(pskl.UserSettings.get(pskl.UserSettings.FRAMES_PER_ROWS));
+    if (isNaN(framesPerRows) || framesPerRows <= 0) {
+      framesPerRows = Infinity;
+    }
+    return renderer.renderAsCanvas(framesPerRows);
   };
 
   ns.PngExportController.prototype.updateStatus_ = function (imageUrl, error) {
