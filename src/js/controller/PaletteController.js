@@ -48,10 +48,18 @@
    */
   ns.PaletteController.prototype.onPickerChange_ = function(evt, isPrimary) {
     var inputPicker = $(evt.target);
+    var color = inputPicker.val();
+
+    if (color != Constants.TRANSPARENT_COLOR) {
+      // Unless the color is TRANSPARENT_COLOR, format it to hexstring, as
+      // expected by the rest of the application.
+      color = window.tinycolor(color).toHexString();
+    }
+
     if (evt.data.isPrimary) {
-      this.setPrimaryColor_(inputPicker.val());
+      this.setPrimaryColor_(color);
     } else {
-      this.setSecondaryColor_(inputPicker.val());
+      this.setSecondaryColor_(color);
     }
   };
 
@@ -110,7 +118,8 @@
   };
 
   ns.PaletteController.prototype.setTitleOnPicker_ = function (title, colorPicker) {
-    var spectrumInputSelector = '.sp-replacer';
-    colorPicker.next(spectrumInputSelector).attr('title', title);
+    var parent = colorPicker.parent();
+    title = parent.data('initial-title') + '<br/>' + title;
+    parent.attr('data-original-title', title);
   };
 })();

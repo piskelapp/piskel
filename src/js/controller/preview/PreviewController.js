@@ -168,9 +168,9 @@
   ns.PreviewController.prototype.render = function (delta) {
     this.elapsedTime += delta;
     var index = this.getNextIndex_(delta);
-    if (this.shoudlRender_() || this.currentIndex != index) {
+    if (this.shouldRender_() || this.currentIndex != index) {
       this.currentIndex = index;
-      var frame = this.piskelController.getFrameAt(this.currentIndex);
+      var frame = pskl.utils.LayerUtils.mergeFrameAt(this.piskelController.getLayers(), index);
       this.renderer.render(frame);
       this.renderFlag = false;
 
@@ -240,7 +240,7 @@
     this.renderFlag = bool;
   };
 
-  ns.PreviewController.prototype.shoudlRender_ = function () {
+  ns.PreviewController.prototype.shouldRender_ = function () {
     return this.renderFlag || this.popupPreviewController.renderFlag;
   };
 

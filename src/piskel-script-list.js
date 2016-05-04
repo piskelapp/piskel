@@ -32,6 +32,7 @@
   "js/utils/LayerUtils.js",
   "js/utils/PixelUtils.js",
   "js/utils/PiskelFileUtils.js",
+  "js/utils/StringUtils.js",
   "js/utils/Template.js",
   "js/utils/TooltipFormatter.js",
   "js/utils/UserSettings.js",
@@ -57,7 +58,7 @@
   // Promises
   "js/lib/q.js",
 
-  // Application libraries-->
+  // Application libraries
   "js/rendering/DrawingLoop.js",
 
   // Models
@@ -66,6 +67,7 @@
   "js/model/piskel/Descriptor.js",
   "js/model/frame/CachedFrameProcessor.js",
   "js/model/frame/AsyncCachedFrameProcessor.js",
+  "js/model/frame/RenderedFrame.js",
   "js/model/Palette.js",
   "js/model/Piskel.js",
 
@@ -115,6 +117,7 @@
   "js/controller/settings/exportimage/ImageExportController.js",
   "js/controller/settings/exportimage/GifExportController.js",
   "js/controller/settings/exportimage/PngExportController.js",
+  "js/controller/settings/exportimage/CExportController.js",
   "js/controller/settings/resize/AnchorWidget.js",
   "js/controller/settings/resize/ResizeController.js",
   "js/controller/settings/resize/DefaultSizeController.js",

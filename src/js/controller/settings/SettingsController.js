@@ -33,6 +33,7 @@
 
   ns.SettingsController = function (piskelController) {
     this.piskelController = piskelController;
+    this.closeDrawerShortcut = pskl.service.keyboard.Shortcuts.MISC.CLOSE_POPUP;
     this.settingsContainer = document.querySelector('[data-pskl-controller=settings]');
     this.drawerContainer = document.getElementById('drawer-container');
     this.isExpanded = false;
@@ -87,6 +88,8 @@
     this.currentController = new settings[setting].controller(this.piskelController);
     this.currentController.init();
 
+    pskl.app.shortcutService.registerShortcut(this.closeDrawerShortcut, this.closeDrawer_.bind(this));
+
     pskl.utils.Dom.removeClass(SEL_SETTING_CLS);
     var selectedSettingButton = document.querySelector('[data-setting=' + setting + ']');
     if (selectedSettingButton) {
@@ -109,9 +112,12 @@
   };
 
   ns.SettingsController.prototype.destroyCurrentController_ = function () {
-    if (this.currentController && this.currentController.destroy) {
-      this.currentController.destroy();
-      this.currentController = null;
+    if (this.currentController) {
+      pskl.app.shortcutService.unregisterShortcut(this.closeDrawerShortcut);
+      if (this.currentController.destroy) {
+        this.currentController.destroy();
+        this.currentController = null;
+      }
     }
   };
 })();

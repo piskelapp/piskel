@@ -203,9 +203,14 @@
     },
 
     getFirstFrameAsPng : function () {
-      var firstFrame = this.piskelController.getFrameAt(0);
-      var firstFrameCanvas = pskl.utils.FrameUtils.toImage(firstFrame);
-      return firstFrameCanvas.toDataURL('image/png');
+      var frame = pskl.utils.LayerUtils.mergeFrameAt(this.piskelController.getLayers(), 0);
+      var canvas;
+      if (frame instanceof pskl.model.frame.RenderedFrame) {
+        canvas = pskl.utils.CanvasUtils.createFromImage(frame.getRenderedFrame());
+      } else {
+        canvas = pskl.utils.FrameUtils.toImage(frame);
+      }
+      return canvas.toDataURL('image/png');
     },
 
     getFramesheetAsPng : function () {

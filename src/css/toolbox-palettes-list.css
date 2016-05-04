@@ -76,18 +76,16 @@
     position: absolute;
     bottom: 1px;
     display: inline-block;
-    border: 7px solid gold;
-    border-top-color: transparent;
-    width: 0px;
-    height: 0px;
+    background: url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20height%3D%2215%22%20width%3D%2215%22%3E%3Cpath%20stroke%3D%22gold%22%20stroke-width%3D%222%22%20d%3D%22M1%203v10h10z%22/%3E%3C/svg%3E');
+    width: 14px;
+    height: 14px;
 }
 .palettes-list-primary-color:before {
     left: 1px;
-    border-right-color: transparent;
 }
 .palettes-list-secondary-color:before {
     right: 1px;
-    border-left-color: transparent;
+    background: url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20height%3D%2215%22%20width%3D%2215%22%3E%3Cpath%20stroke%3D%22gold%22%20stroke-width%3D%222%22%20d%3D%22M3%2013h10V3z%22/%3E%3C/svg%3E');
 }
 .palettes-list-actions {
     background-color: #3f3f3f;

@@ -4,6 +4,7 @@
   ns.CanvasRenderer = function (frame, zoom) {
     this.frame = frame;
     this.zoom = zoom;
+    this.opacity_ = 1;
     this.transparentColor_ = 'white';
   };
 
@@ -16,11 +17,15 @@
     this.transparentColor_ = color;
   };
 
+  ns.CanvasRenderer.prototype.setOpacity = function (opacity) {
+    this.opacity_ = opacity;
+  };
+
   ns.CanvasRenderer.prototype.render = function  () {
     var canvas = this.createCanvas_();
 
     // Draw in canvas
-    pskl.utils.FrameUtils.drawToCanvas(this.frame, canvas, this.transparentColor_);
+    pskl.utils.FrameUtils.drawToCanvas(this.frame, canvas, this.transparentColor_, this.opacity_);
 
     var scaledCanvas = this.createCanvas_(this.zoom);
     var scaledContext = scaledCanvas.getContext('2d');
