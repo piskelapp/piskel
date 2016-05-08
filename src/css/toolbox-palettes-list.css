@@ -1,146 +1,180 @@
+.palettes-list-container {
+  min-height: 100px;
+  display: flex;
+  flex-direction: column;
+}
+
 .palettes-title {
-    background-size: 22px;
-    background-repeat: no-repeat;
-    background-position: 97%;
-}
-.palettes-list-colors {
-    overflow: auto;
-    max-height: 160px;
-}
-.palettes-list-color {
-    cursor: pointer;
-    float: left;
-    margin: 0 0 5px 5px;
-    width: 32px;
-    height: 32px;
-    position: relative;
+  flex-shrink: 0;
+  background-size: 22px;
+  background-repeat: no-repeat;
+  background-position: 97%;
 }
 
-.palettes-list-color:nth-child(-n+10):after {
-    position: absolute;
-    top: 0;
-    right: 0;
+/**
+ * Palettes action buttons
+ */
 
-    background-color: black;
-    color: gold;
-
-    font-family: Tahoma;
-    font-size: 0.5em;
-    font-weight: bold;
-
-    padding: 2px 3px 2px 3px;
-    border-radius: 0 0 0 2px;
-}
-
-.palettes-list-color:nth-child(1):after {
-    content: "1";
-}
-.palettes-list-color:nth-child(2):after {
-    content: "2";
-}
-.palettes-list-color:nth-child(3):after {
-    content: "3";
-}
-.palettes-list-color:nth-child(4):after {
-    content: "4";
-}
-.palettes-list-color:nth-child(5):after {
-    content: "5";
-}
-.palettes-list-color:nth-child(6):after {
-    content: "6";
-}
-.palettes-list-color:nth-child(7):after {
-    content: "7";
-}
-.palettes-list-color:nth-child(8):after {
-    content: "8";
-}
-.palettes-list-color:nth-child(9):after {
-    content: "9";
-}
-
-.palettes-list-color:nth-child(-n+5) {
-    margin-top: 5px;
-}
-
-.palettes-list-color div {
-    width: 32px;
-    height: 32px;
-}
-.palettes-list-has-scrollbar .palettes-list-color, .palettes-list-has-scrollbar .palettes-list-color div {
-    width: 29px
-}
-.palettes-list-primary-color:before, .palettes-list-secondary-color:before {
-    content: "";
-    position: absolute;
-    bottom: 1px;
-    display: inline-block;
-    background: url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20height%3D%2215%22%20width%3D%2215%22%3E%3Cpath%20stroke%3D%22gold%22%20stroke-width%3D%222%22%20d%3D%22M1%203v10h10z%22/%3E%3C/svg%3E');
-    width: 14px;
-    height: 14px;
-}
-.palettes-list-primary-color:before {
-    left: 1px;
-}
-.palettes-list-secondary-color:before {
-    right: 1px;
-    background: url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20height%3D%2215%22%20width%3D%2215%22%3E%3Cpath%20stroke%3D%22gold%22%20stroke-width%3D%222%22%20d%3D%22M3%2013h10V3z%22/%3E%3C/svg%3E');
-}
 .palettes-list-actions {
-    background-color: #3f3f3f;
-    border-bottom-color: #222;
-    height: 24px;
-    padding: 0;
-    overflow: hidden;
+  flex-shrink: 0;
+  background-color: #3f3f3f;
+  border-bottom-color: #222;
+  height: 24px;
+  padding: 0;
+  overflow: hidden;
 }
 
 .palettes-list-button,
 .palettes-list-select {
-    margin: 0;
-    float: left;
+  margin: 0;
+  float: left;
 }
 
 .palettes-list-button {
-    width: 16.66667%;
+  width: 16.66667%;
 }
+
 .palettes-list-select {
-    width: 66.66667%;
-    height: 100%;
-    padding: 0 5px 0 5px;
+  width: 66.66667%;
+  height: 100%;
+  padding: 0 5px 0 5px;
 
-    border-style: solid;
-    border-width: 1px 0 1px 0;
+  border-style: solid;
+  border-width: 1px 0 1px 0;
 
-    color: #aaa;
-    font-size : 0.75em;
+  color: #aaa;
+  font-size : 0.75em;
 
-    /*thanks firefox, you suck*/
-    text-align:left;
-    /*text-shadow:none;*/
-    font-weight: normal;
+  text-align:left;
+  font-weight: normal;
 
-    transition : background-color 0.3s, color 0.3s;
-    cursor:pointer;
+  transition : background-color 0.3s, color 0.3s;
+  cursor:pointer;
 }
 
-.palettes-list-select:hover {
-    color: white;
-    background-color: #484848;
+.palettes-list-select:hover,
+.palettes-list-select:focus {
+  background-color: #484848;
+  color: white;
 }
 
 .palettes-list-select:focus {
-    background-color: #484848;
-    color: white;
-    outline: none;
+  outline: none;
 }
 
+/*
+ * Palette colors list
+ */
+
+.palettes-list-colors {
+  height: 100%;
+  max-height: 160px;
+  overflow: auto;
+  padding-top: 5px;
+}
+
+.palettes-list-color {
+  cursor: pointer;
+  float: left;
+  margin: 0 0 5px 5px;
+  width: calc((100% - 30px) / 5);
+  height: 32px;
+  position: relative;
+}
+
+.palettes-list-color div {
+  height: 100%;
+}
+
+/*
+ * Placeholder when no color is available in the current palette
+ */
+
 .palettes-list-no-colors {
-    height: 42px;
-    width: 100%;
-    color: grey;
-    font-size: 0.7em;
-    font-style: italic;
-    line-height: 42px;
-    text-align: center
+  height: 35px;
+  line-height: 35px;
+  width: 100%;
+  color: gray;
+  font-size: 0.7em;
+  font-style: italic;
+  text-align: center
+}
+
+/*
+ * Primary and secondary color markers
+ */
+
+.palettes-list-primary-color:before, .palettes-list-secondary-color:before {
+  content: "";
+  position: absolute;
+  bottom: 1px;
+  display: inline-block;
+  background: url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20height%3D%2215%22%20width%3D%2215%22%3E%3Cpath%20stroke%3D%22gold%22%20stroke-width%3D%222%22%20d%3D%22M1%203v10h10z%22/%3E%3C/svg%3E');
+  width: 14px;
+  height: 14px;
+}
+
+.palettes-list-primary-color:before {
+  left: 1px;
+}
+
+.palettes-list-secondary-color:before {
+  right: 1px;
+  background: url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20height%3D%2215%22%20width%3D%2215%22%3E%3Cpath%20stroke%3D%22gold%22%20stroke-width%3D%222%22%20d%3D%22M3%2013h10V3z%22/%3E%3C/svg%3E');
+}
+
+/*
+ * Color index for the 9 first colors
+ */
+
+.palettes-list-color:nth-child(-n+10):after {
+  position: absolute;
+  top: 0;
+  right: 0;
+
+  background-color: black;
+  color: gold;
+
+  font-family: Tahoma;
+  font-size: 0.5em;
+  font-weight: bold;
+
+  padding: 2px 3px 2px 3px;
+  border-radius: 0 0 0 2px;
+}
+
+.palettes-list-color:nth-child(1):after {
+  content: "1";
+}
+
+.palettes-list-color:nth-child(2):after {
+  content: "2";
+}
+
+.palettes-list-color:nth-child(3):after {
+  content: "3";
+}
+
+.palettes-list-color:nth-child(4):after {
+  content: "4";
+}
+
+.palettes-list-color:nth-child(5):after {
+  content: "5";
+}
+
+.palettes-list-color:nth-child(6):after {
+  content: "6";
+}
+
+.palettes-list-color:nth-child(7):after {
+  content: "7";
+}
+
+.palettes-list-color:nth-child(8):after {
+  content: "8";
+}
+
+.palettes-list-color:nth-child(9):after {
+  content: "9";
 }

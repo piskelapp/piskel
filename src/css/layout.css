@@ -36,10 +36,17 @@
 }
 
 .right-column {
+  box-sizing: border-box;
   vertical-align: top;
-  margin-left: 10px;
   height: 100%;
+
+  display: inline-flex;
+  flex-direction: column;
   position: relative;
+
+  margin-left: 10px;
+  /* Add some padding for the absolutely positioned .cursor-coordinates */
+  padding-bottom: 20px;
 }
 
 .drawing-canvas-container {
