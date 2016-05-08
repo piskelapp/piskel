@@ -13,15 +13,13 @@
 .column-wrapper {
   text-align: center;
   font-size: 0;
+  display: flex;
+
   position: absolute;
   left: 100px; /* Reserve room for tools on the left edge of the screen. */
   top: 0;
   right: 50px; /* Reserve room for actions on the right edge of the screen. */
   bottom: 0;
-}
-
-.column {
-  display: inline-block;
 }
 
 .left-column {
@@ -40,7 +38,7 @@
   vertical-align: top;
   height: 100%;
 
-  display: inline-flex;
+  display: flex;
   flex-direction: column;
   position: relative;
 

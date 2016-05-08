@@ -3,7 +3,7 @@
  * Layers container
  */
 .layers-list-container {
-  min-height: 83px;
+  min-height: 85px;
   display: flex;
   flex-direction: column;
 }
@@ -42,21 +42,10 @@
  * Layers buttons
  */
 
-.layers-button-container {
-  overflow : hidden;
-  flex-shrink: 0;
-}
-
 .layers-button {
   margin: 0;
   width: 16.66667%;
   float : left;
-  /* Override border propery on .button elements from form.css */
-  border-left-width: 0;
-}
-
-.layers-button:last-child {
-  border-right-width: 0;
 }
 
 /**
