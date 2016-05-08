@@ -61,7 +61,7 @@
       <div class="palette-wrapper">
         <div
           class="tool-icon tool-color-picker"
-          title="Primary - left mouse button"
+          data-initial-title="Primary - left mouse button"
           rel="tooltip"
           data-placement="right"
         >
@@ -69,7 +69,7 @@
         </div>
         <div
           class="tool-icon tool-color-picker"
-          title="Secondary - right mouse button"
+          data-initial-title="Secondary - right mouse button"
           rel="tooltip"
           data-placement="right"
         >
@@ -139,7 +139,7 @@
          data-placement="left"
          class="layers-toggle-preview piskel-icon-eye"></div>
   </h3>
-  <div class="layers-button-container">
+  <div class="toolbox-buttons">
     <button data-action="add"
       class="button layers-button piskel-icon-plus"
       title="Create a new layer" rel="tooltip" data-placement="top" ></button>
@@ -169,7 +169,14 @@
   <ul class="layers-list"></ul>
 
   <script type="text/template" id="layer-item-template">
-    <li class="layer-item {{isselected:current-layer-item}}" data-layer-index="{{layerindex}}">{{layername}}</li>
+    <li class="layer-item {{isselected:current-layer-item}}"
+        data-layer-index="{{layerindex}}">
+        {{layername}}
+        <span class="layer-item-opacity"
+              title="Layer opacity" rel="tooltip" data-placement="top">
+          {{opacity}}&#945;
+        </span>
+    </li>
   </script>
 </div>
 
@@ -179,7 +186,7 @@
 </div>
         <div class="toolbox-container palettes-list-container">
   <h3 class="toolbox-title palettes-title">Palettes</h3>
-  <div class="palettes-list-actions">
+  <div class="toolbox-buttons">
     <button
       class="button palettes-list-button create-palette-button piskel-icon-plus" data-action="add"
       title="Create a new palette" rel="tooltip" data-placement="top" ></button>
@@ -866,6 +873,13 @@
       <button type="button" class="button button-primary zip-generate-button"/>Download ZIP</button>
     </div>
     <div class="settings-title">
+      Export as C File
+    </div>
+    <div class="settings-item">
+      <div class="settings-description">C file with frame rendered as array.</div>
+      <button type="button" class="button button-primary c-download-button">Download C file</button>
+    </div>
+    <div class="settings-title">
       Export to Animated GIF
     </div>
     <div class="settings-item">
@@ -901,9 +915,9 @@
     (function () {
 
   /**
-   * See @Gruntfile.js => after build, -2016-01-14-12-02 is replaced by the build version
+   * See @Gruntfile.js => after build, -2016-05-08-04-05 is replaced by the build version
    */
-  var version = '-2016-01-14-12-02';
+  var version = '-2016-05-08-04-05';
   var versionHasNotBeenReplaced = version.indexOf('@@') === 0;
   if (versionHasNotBeenReplaced)  {
     version = '';
