@@ -1,3 +1,6 @@
+.transformations-container {
+  flex-shrink: 0;
+}
 
 .transformations-container .tool-icon {
   float:left;

@@ -13,15 +13,13 @@
 .column-wrapper {
   text-align: center;
   font-size: 0;
+  display: flex;
+
   position: absolute;
   left: 100px; /* Reserve room for tools on the left edge of the screen. */
   top: 0;
   right: 50px; /* Reserve room for actions on the right edge of the screen. */
   bottom: 0;
-}
-
-.column {
-  display: inline-block;
 }
 
 .left-column {
@@ -36,10 +34,17 @@
 }
 
 .right-column {
+  box-sizing: border-box;
   vertical-align: top;
-  margin-left: 10px;
   height: 100%;
+
+  display: flex;
+  flex-direction: column;
   position: relative;
+
+  margin-left: 10px;
+  /* Add some padding for the absolutely positioned .cursor-coordinates */
+  padding-bottom: 20px;
 }
 
 .drawing-canvas-container {

@@ -4,12 +4,6 @@
   var PRIMARY_COLOR_CLASSNAME = 'palettes-list-primary-color';
   var SECONDARY_COLOR_CLASSNAME = 'palettes-list-secondary-color';
 
-  var HAS_SCROLL_CLASSNAME = 'palettes-list-has-scrollbar';
-  // well ... I know that if there are more than 20 colors, a scrollbar will be displayed
-  // It's linked to the max-height: 160px; defined in toolbox-palette-list.css !
-  // I apologize to my future self for this one.
-  var NO_SCROLL_MAX_COLORS = 20;
-
   ns.PalettesListController = function (usedColorService) {
     this.usedColorService = usedColorService;
     this.paletteService = pskl.app.paletteService;
@@ -67,13 +61,6 @@
       this.colorListContainer_.innerHTML = html;
 
       this.highlightSelectedColors();
-
-      var hasScrollbar = colors.length > NO_SCROLL_MAX_COLORS;
-      if (hasScrollbar && !pskl.utils.UserAgent.isChrome) {
-        this.colorListContainer_.classList.add(HAS_SCROLL_CLASSNAME);
-      } else {
-        this.colorListContainer_.classList.remove(HAS_SCROLL_CLASSNAME);
-      }
     } else {
       this.colorListContainer_.innerHTML = pskl.utils.Template.get('palettes-list-no-colors-partial');
     }
