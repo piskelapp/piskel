@@ -66,15 +66,17 @@
 
     align : function(frame) {
       // Figure out the boundary
-      var minx = frame.width, miny = frame.height;
-      var maxx = 0, maxy = 0;
-      for(var col = 0; col < frame.width; col++) {
-        for(var row = 0; row < frame.height; row++) {
-          if(frame.pixels[col][row] !== Constants.TRANSPARENT_COLOR) {
-            if(row < miny) miny = row;
-            if(row > maxy) maxy = row;
-            if(col < minx) minx = col;
-            if(col > maxx) maxx = col;
+      var minx = frame.width;
+      var miny = frame.height;
+      var maxx = 0;
+      var maxy = 0;
+      for (var col = 0; col < frame.width; col++) {
+        for (var row = 0; row < frame.height; row++) {
+          if (frame.pixels[col][row] !== Constants.TRANSPARENT_COLOR) {
+            miny = Math.min(miny, row);
+            maxy = Math.max(maxy, row);
+            minx = Math.min(minx, col);
+            maxx = Math.max(maxx, col);
           }
         }
       }
@@ -91,15 +93,15 @@
       // Actually move the pixels
       var clone = frame.clone();
       frame.forEachPixel(function(color, x, y) {
-        var _x = x, _y = y;
+        var _x = x;
+        var _y = y;
 
         x -= dx;
         y -= dy;
 
-        if(clone.containsPixel(x, y)) {
+        if (clone.containsPixel(x, y)) {
           frame.pixels[_x][_y] = clone.getPixel(x, y);
-        }
-        else {
+        } else {
           frame.pixels[_x][_y] = Constants.TRANSPARENT_COLOR;
         }
       });
