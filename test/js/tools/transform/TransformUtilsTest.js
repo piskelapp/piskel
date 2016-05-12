@@ -230,4 +230,27 @@ describe("TransformUtils suite", function() {
     ]);
   });
 
+  /*******************************/
+  /*********** CENTER ************/
+  /*******************************/
+
+  it("centers a frame", function () {
+    // create frame
+    var frame = pskl.model.Frame.fromPixelGrid(toFrameGrid([
+      [A, B, O, O],
+      [B, A, O, 0],
+      [O, O, O, O],
+      [O, O, O, O]
+    ]));
+
+    // should be centered
+    pskl.tools.transform.TransformUtils.center(frame);
+    frameEqualsGrid(frame, [
+      [O, O, O, O],
+      [O, A, B, O],
+      [O, B, A, O],
+      [O, O, O, O]
+    ]);
+  });
+
 });
