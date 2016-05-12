@@ -238,7 +238,7 @@ describe("TransformUtils suite", function() {
     // create frame
     var frame = pskl.model.Frame.fromPixelGrid(toFrameGrid([
       [A, B, O, O],
-      [B, A, O, 0],
+      [B, A, O, O],
       [O, O, O, O],
       [O, O, O, O]
     ]));
