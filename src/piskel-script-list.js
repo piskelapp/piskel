@@ -201,7 +201,7 @@
   "js/tools/drawing/ColorSwap.js",
   "js/tools/drawing/DitheringTool.js",
   "js/tools/transform/AbstractTransformTool.js",
-  "js/tools/transform/Align.js",
+  "js/tools/transform/Center.js",
   "js/tools/transform/Clone.js",
   "js/tools/transform/Flip.js",
   "js/tools/transform/Rotate.js",

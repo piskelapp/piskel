@@ -64,22 +64,20 @@
       return frame;
     },
 
-    align : function(frame) {
+    center : function(frame) {
       // Figure out the boundary
       var minx = frame.width;
       var miny = frame.height;
       var maxx = 0;
       var maxy = 0;
-      for (var col = 0; col < frame.width; col++) {
-        for (var row = 0; row < frame.height; row++) {
-          if (frame.pixels[col][row] !== Constants.TRANSPARENT_COLOR) {
-            miny = Math.min(miny, row);
-            maxy = Math.max(maxy, row);
-            minx = Math.min(minx, col);
-            maxx = Math.max(maxx, col);
-          }
+      frame.forEachPixel(function (color, x, y) {
+        if (color !== Constants.TRANSPARENT_COLOR) {
+          minx = Math.min(minx, x);
+          maxx = Math.max(maxx, x);
+          miny = Math.min(miny, y);
+          maxy = Math.max(maxy, y);
         }
-      }
+      });
 
       // Calculate how much to move the pixels
       var bw = (maxx - minx + 1) / 2;
