@@ -62,6 +62,49 @@
       });
       frame.version++;
       return frame;
+    },
+
+    center : function(frame) {
+      // Figure out the boundary
+      var minx = frame.width;
+      var miny = frame.height;
+      var maxx = 0;
+      var maxy = 0;
+      frame.forEachPixel(function (color, x, y) {
+        if (color !== Constants.TRANSPARENT_COLOR) {
+          minx = Math.min(minx, x);
+          maxx = Math.max(maxx, x);
+          miny = Math.min(miny, y);
+          maxy = Math.max(maxy, y);
+        }
+      });
+
+      // Calculate how much to move the pixels
+      var bw = (maxx - minx + 1) / 2;
+      var bh = (maxy - miny + 1) / 2;
+      var fw = frame.width / 2;
+      var fh = frame.height / 2;
+
+      var dx = Math.floor(fw - bw - minx);
+      var dy = Math.floor(fh - bh - miny);
+
+      // Actually move the pixels
+      var clone = frame.clone();
+      frame.forEachPixel(function(color, x, y) {
+        var _x = x;
+        var _y = y;
+
+        x -= dx;
+        y -= dy;
+
+        if (clone.containsPixel(x, y)) {
+          frame.pixels[_x][_y] = clone.getPixel(x, y);
+        } else {
+          frame.pixels[_x][_y] = Constants.TRANSPARENT_COLOR;
+        }
+      });
+      frame.version++;
+      return frame;
     }
   };
 })();
