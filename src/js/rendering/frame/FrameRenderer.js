@@ -237,6 +237,10 @@
       this.canvas = pskl.utils.CanvasUtils.createCanvas(frame.getWidth(), frame.getHeight());
     }
 
+    var w = this.canvas.width;
+    var h = this.canvas.height;
+    var z = this.zoom;
+
     // Draw in canvas
     pskl.utils.FrameUtils.drawToCanvas(frame, this.canvas);
 
@@ -245,31 +249,46 @@
     var displayContext = this.displayCanvas.getContext('2d');
     displayContext.save();
 
-    var smallerHeight = this.canvas.height * this.zoom < this.displayCanvas.height;
-    var smallerWidth = this.canvas.width * this.zoom < this.displayCanvas.width;
-    if (smallerHeight || smallerWidth) {
-      displayContext.fillStyle = Constants.ZOOMED_OUT_BACKGROUND_COLOR;
-      displayContext.fillRect(0, 0, this.displayCanvas.width - 1, this.displayCanvas.height - 1);
-    }
+    // Draw background
+    displayContext.fillStyle = Constants.ZOOMED_OUT_BACKGROUND_COLOR;
+    displayContext.fillRect(0, 0, this.displayCanvas.width - 1, this.displayCanvas.height - 1);
 
     displayContext.translate(
-      this.margin.x - this.offset.x * this.zoom,
-      this.margin.y - this.offset.y * this.zoom
+      this.margin.x - this.offset.x * z,
+      this.margin.y - this.offset.y * z
     );
 
-    displayContext.clearRect(0, 0, this.canvas.width * this.zoom, this.canvas.height * this.zoom);
-
-    var isIE10 = pskl.utils.UserAgent.isIE && pskl.utils.UserAgent.version === 10;
+    if (pskl.UserSettings.get('TILED_PREVIEW')) {
+      displayContext.clearRect(-1 * w  * z, -1 * h * z, 3 * w  * z, 3 * h * z);
+    } else {
+      displayContext.clearRect(0, 0, w  * z, h * z);
+    }
 
     var gridWidth = this.computeGridWidthForDisplay_();
-    var isGridEnabled = gridWidth > 0;
-    if (isGridEnabled || isIE10) {
-      var scaled = pskl.utils.ImageResizer.resizeNearestNeighbour(this.canvas, this.zoom, gridWidth);
+    if (gridWidth > 0) {
+      var scaled = pskl.utils.ImageResizer.resizeNearestNeighbour(this.canvas, z, gridWidth);
+
+      if (pskl.UserSettings.get('TILED_PREVIEW')) {
+        this.drawTiledFrames_(displayContext, scaled, w, h, z);
+      }
       displayContext.drawImage(scaled, 0, 0);
     } else {
-      displayContext.scale(this.zoom, this.zoom);
+      displayContext.scale(z, z);
+
+      if (pskl.UserSettings.get('TILED_PREVIEW')) {
+        this.drawTiledFrames_(displayContext, this.canvas, w, h, 1);
+      }
       displayContext.drawImage(this.canvas, 0, 0);
     }
+
     displayContext.restore();
+  };
+
+  ns.FrameRenderer.prototype.drawTiledFrames_ = function (context, image, w, h, z) {
+    context.fillStyle = 'rgba(255,255,255,0.5)';
+    [[0, -1], [0, 1], [-1, -1], [-1, 0], [-1, 1], [1, -1], [1, 0], [1, 1]].forEach(function (d) {
+      context.drawImage(image, d[0] * w * z, d[1] * h * z);
+      context.fillRect(d[0] * w * z, d[1] * h * z, w * z, h * z);
+    });
   };
 })();
