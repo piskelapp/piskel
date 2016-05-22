@@ -127,7 +127,7 @@
       this.imageUploadService = new pskl.service.ImageUploadService();
       this.imageUploadService.init();
 
-      this.savedStatusService = new pskl.service.SavedStatusService(this.piskelController);
+      this.savedStatusService = new pskl.service.SavedStatusService(this.piskelController, this.historyService);
       this.savedStatusService.init();
 
       this.backupService = new pskl.service.BackupService(this.piskelController);
