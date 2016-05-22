@@ -56,6 +56,6 @@
   margin: 5px;
 }
 
-.settings-section--application-general > .settings-item > label {
+.settings-section-application > .settings-item > label {
   display: block;
 }
