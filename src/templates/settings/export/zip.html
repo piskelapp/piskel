@@ -1,19 +1,19 @@
 <script type="text/html" id="templates/settings/export/zip.html">
-  <div class="settings-title">
-    Export as ZIP
-  </div>
-  <div class="settings-item">
-    <div class="settings-description">ZIP with one PNG file per frame.</div>
-    <div class="settings-description">File names will start with the prefix below.</div>
+  <div>
     <div class="settings-item">
-      <label>Prefix</label>
-      <input type="text" class="zip-prefix-name  textfield" autocomplete="off" placeholder="PNG file prefix ...">
+      <div class="settings-description">ZIP with one PNG file per frame.</div>
+      <div class="settings-description">File names will start with the prefix below.</div>
+      <div class="settings-item">
+        <label>Prefix</label>
+        <input type="text" class="zip-prefix-name  textfield" autocomplete="off" placeholder="PNG file prefix ...">
+      </div>
     </div>
-  <div class="settings-item">
-    <label>
-      <input class="zip-split-layers-checkbox  checkbox-fix" type="checkbox" />
-      Split by layers
-    </label>
+    <div class="settings-item">
+      <label>
+        <input class="zip-split-layers-checkbox  checkbox-fix" type="checkbox" />
+        Split by layers
+      </label>
+    </div>
+    <button type="button" class="button button-primary zip-generate-button"/>Download ZIP</button>
   </div>
-  <button type="button" class="button button-primary zip-generate-button"/>Download ZIP</button>
 </script>
