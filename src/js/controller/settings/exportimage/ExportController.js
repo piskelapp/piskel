@@ -20,8 +20,6 @@
     }
   };
 
-  var DEFAULT_TAB = 'png';
-
   ns.ExportController = function (piskelController) {
     this.piskelController = piskelController;
     this.onSizeInputChange_ = this.onSizeInputChange_.bind(this);
@@ -53,7 +51,8 @@
     this.exportTabs = document.querySelector('.export-tabs');
     this.addEventListener(this.exportTabs, 'click', this.onTabsClicked_);
 
-    this.selectTab(DEFAULT_TAB);
+    var tab = pskl.UserSettings.get(pskl.UserSettings.EXPORT_TAB);
+    this.selectTab(tab);
   };
 
   ns.ExportController.prototype.destroy = function () {
@@ -75,6 +74,7 @@
     this.currentController = new tabs[tabId].controller(this.piskelController, this);
     this.currentController.init();
     this.currentTab = tabId;
+    pskl.UserSettings.set(pskl.UserSettings.EXPORT_TAB, tabId);
 
     var selectedTab = this.exportTabs.querySelector('.selected');
     if (selectedTab) {
