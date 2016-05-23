@@ -53,6 +53,7 @@
     var layers = this.piskelController.getLayers();
     var framePaddingLength = ('' + this.piskelController.getFrameCount()).length;
     var layerPaddingLength = ('' + layers.length).length;
+    var zoom = this.exportController.getExportZoom();
     for (var j = 0; this.piskelController.hasLayerAt(j); j++) {
       var layer = this.piskelController.getLayerAt(j);
       var layerid = pskl.utils.StringUtils.leftPad(j, layerPaddingLength, '0');

@@ -137,24 +137,28 @@
   border-width: 1px;
 }
 
-.export-panel-gif .settings-item {
+.export-info {
+  padding: 10px 5px 0px;
+  font-weight: normal;
+  text-shadow: none;
+  font-style: italic;
+}
+
+.export-panel-section {
+  padding: 5px;
+  margin-top: 10px;
+  border: 1px solid #5d5d5d;
+  border-radius: 2px;
+}
+
+.export-panel-gif .export-panel-section {
   display: flex;
   align-items: center;
   overflow: hidden;
-  padding: 5px;
-  border: 1px solid #5d5d5d;
-  border-radius: 2px;
 }
 
 .export-panel-gif .button {
   margin-right: 5px;
   width: 75px;
   flex-shrink: 0;
-}
-
-.gif-export-info {
-  padding: 10px 5px 0px;
-  font-weight: normal;
-  text-shadow: none;
-  font-style: italic;
 }
