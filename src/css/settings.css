@@ -35,7 +35,7 @@
 .drawer-content {
   overflow: hidden;
   background-color: #444;
-  height: 650px;
+  height: 550px;
   max-height: 100%;
   width: 280px;
   border-top-left-radius: 4px;
@@ -72,7 +72,6 @@
 }
 
 .settings-title {
-  color : gold;
   margin-top: 20px;
   margin-bottom: 10px;
   text-transform: uppercase;

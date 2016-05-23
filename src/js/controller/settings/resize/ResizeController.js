@@ -20,9 +20,12 @@
     this.resizeContentCheckbox = this.container.querySelector('.resize-content-checkbox');
     this.maintainRatioCheckbox = this.container.querySelector('.resize-ratio-checkbox');
 
-    var initWidth = this.piskelController.getWidth();
-    var initHeight = this.piskelController.getHeight();
-    this.sizeInputWidget = new pskl.widgets.SizeInput(this.widthInput, this.heightInput, initWidth, initHeight);
+    this.sizeInputWidget = new pskl.widgets.SizeInput({
+      widthInput: this.widthInput,
+      heightInput: this.heightInput,
+      initWidth: this.piskelController.getWidth(),
+      initHeight: this.piskelController.getHeight(),
+    });
 
     var settings = pskl.UserSettings.get('RESIZE_SETTINGS');
     var origin = ns.AnchorWidget.ORIGIN[settings.origin] || ns.AnchorWidget.ORIGIN.TOPLEFT;

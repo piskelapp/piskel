@@ -13,6 +13,7 @@
     LAYER_PREVIEW : 'LAYER_PREVIEW',
     LAYER_OPACITY : 'LAYER_OPACITY',
     EXPORT_SCALING: 'EXPORT_SCALING',
+    EXPORT_TAB: 'EXPORT_TAB',
     PEN_SIZE : 'PEN_SIZE',
     RESIZE_SETTINGS: 'RESIZE_SETTINGS',
     KEY_TO_DEFAULT_VALUE_MAP_ : {
@@ -30,6 +31,7 @@
       'LAYER_OPACITY' : 0.2,
       'LAYER_PREVIEW' : true,
       'EXPORT_SCALING' : 1,
+      'EXPORT_TAB' : 'png',
       'PEN_SIZE' : 1,
       'RESIZE_SETTINGS': {
         maintainRatio : true,
