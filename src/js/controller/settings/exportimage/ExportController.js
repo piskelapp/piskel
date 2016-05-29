@@ -35,7 +35,7 @@
 
     this.widthInput = document.querySelector('.export-resize .resize-width');
     this.heightInput = document.querySelector('.export-resize .resize-height');
-    var scale = pskl.UserSettings.get(pskl.UserSettings.EXPORT_SCALING);
+    var scale = pskl.UserSettings.get(pskl.UserSettings.EXPORT_SCALE);
     this.sizeInputWidget = new pskl.widgets.SizeInput({
       widthInput : this.widthInput,
       heightInput : this.heightInput,
@@ -94,7 +94,7 @@
       if (Math.round(this.getExportZoom()) != value) {
         this.sizeInputWidget.setWidth(this.piskelController.getWidth() * value);
       }
-      pskl.UserSettings.set(pskl.UserSettings.EXPORT_SCALING, value);
+      pskl.UserSettings.set(pskl.UserSettings.EXPORT_SCALE, value);
     }
   };
 
@@ -111,6 +111,7 @@
     }
 
     this.updateScaleText_(zoom);
+    $.publish(Events.EXPORT_SCALE_CHANGED);
 
     this.scaleInput.value = Math.round(zoom);
     if (zoom >= 1 && zoom <= 32) {

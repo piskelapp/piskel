@@ -151,7 +151,7 @@
   border-radius: 2px;
 }
 
-.export-panel-gif .export-panel-section {
+.export-panel-row {
   display: flex;
   align-items: center;
   overflow: hidden;
@@ -161,4 +161,20 @@
   margin-right: 5px;
   width: 75px;
   flex-shrink: 0;
+}
+
+.export-panel-png .textfield {
+  width: 50px;
+}
+
+.png-export-dimension-info {
+  font-style: italic;
+  font-weight: normal;
+  margin-left: 5px;
+}
+
+#png-export-columns {
+  /* Override default textfield padding-right to keep the number spinners
+     aligned to the right. */
+  padding-right: 0;
 }

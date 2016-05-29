@@ -24,10 +24,6 @@
     this.addEventListener(this.downloadButton, 'click', this.onDownloadButtonClick_);
   };
 
-  ns.GifExportController.prototype.destroy = function () {
-    this.superclass.destroy.call(this);
-  };
-
   ns.GifExportController.prototype.getZoom_ = function () {
     return this.exportController.getExportZoom();
   };
