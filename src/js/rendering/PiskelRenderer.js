@@ -12,7 +12,7 @@
   };
 
   ns.PiskelRenderer.prototype.renderAsCanvas = function (columns) {
-    columns = columns || 1;
+    columns = columns || this.frames.length;
     var rows = Math.ceil(this.frames.length / columns);
 
     var canvas = this.createCanvas_(columns, rows);
