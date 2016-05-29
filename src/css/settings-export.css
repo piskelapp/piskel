@@ -172,3 +172,9 @@
   font-weight: normal;
   margin-left: 5px;
 }
+
+#png-export-columns {
+  /* Override default textfield padding-right to keep the number spinners
+     aligned to the right. */
+  padding-right: 0;
+}

@@ -2,17 +2,22 @@
   var ns = $.namespace('pskl.controller.settings.exportimage');
 
   var dimensionInfoPattern = '{{width}} x {{height}} px, {{frames}}<br/>{{rows}}, {{columns}}.';
+
+  // Shortcut to pskl.utils.Template.replace
   var replace = pskl.utils.Template.replace;
+
+  // Helper to return "X items" or "1 item" if X is 1.
   var pluralize = function (word, count) {
     if (count === 1) {
       return '1 ' + word;
     }
     return count + ' ' + word + 's';
   };
-  var getNearestPowerOfTwo = function (number) {
-    return Math.pow(2, Math.ceil(Math.log(number)/Math.log(2)));
-  };
 
+  // Compute the nearest power of two for the provided number.
+  var getNearestPowerOfTwo = function (number) {
+    return Math.pow(2, Math.ceil(Math.log(number) / Math.log(2)));
+  };
 
   ns.PngExportController = function (piskelController, exportController) {
     this.piskelController = piskelController;
@@ -33,7 +38,6 @@
     this.updateDimensionLabel_();
 
     this.addEventListener(downloadButton, 'click', this.onDownloadClick_);
-    this.addEventListener(this.columnsInput, 'keydown', this.onColumnsKeydown_);
     this.addEventListener(this.columnsInput, 'input', this.onColumnsChanged_);
     this.addEventListener(this.powerTwo, 'change', this.onPowerTwoChanged_);
     $.subscribe(Events.EXPORT_SCALE_CHANGED, this.onScaleChanged_);
@@ -51,7 +55,7 @@
     var frames = this.piskelController.getFrameCount();
     if (frames === 1) {
       // Hide the layout section if only one frame is defined.
-      this.layoutContainer.style.display = "none";
+      this.layoutContainer.style.display = 'none';
     } else {
       this.columnsInput.value = this.getBestFit_();
       this.powerTwo.checked = pskl.UserSettings.get('EXPORT_PNG_POWER_TWO');
@@ -77,10 +81,10 @@
     this.dimensionInfo.innerHTML = replace(dimensionInfoPattern, {
       width: width,
       height: height,
-      rows: pluralize("row", rows),
-      columns: pluralize("column", columns),
-      frames: pluralize("frame", frames),
-    })
+      rows: pluralize('row', rows),
+      columns: pluralize('column', columns),
+      frames: pluralize('frame', frames),
+    });
   };
 
   ns.PngExportController.prototype.getColumns_ = function () {
@@ -111,19 +115,6 @@
     }
     this.updateDimensionLabel_();
   };
-
-  ns.PngExportController.prototype.onColumnsKeydown_ = function (evt) {
-    var key = pskl.service.keyboard.KeycodeTranslator.toChar(evt.keyCode);
-    if (key === 'up') {
-      evt.preventDefault();
-      this.columnsInput.value = this.getColumns_() + 1;
-      this.onColumnsChanged_();
-    } else if (key === 'down') {
-      evt.preventDefault();
-      this.columnsInput.value = this.getColumns_() - 1;
-      this.onColumnsChanged_();
-    }
-  }
 
   ns.PngExportController.prototype.onPowerTwoChanged_ = function () {
     pskl.UserSettings.set('EXPORT_PNG_POWER_TWO', this.powerTwo.checked);
