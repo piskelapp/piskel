@@ -10,12 +10,11 @@
   pskl.utils.inherit(ns.MiscExportController, pskl.controller.settings.AbstractSettingController);
 
   ns.MiscExportController.prototype.init = function () {
-
-    var downloadButton = document.querySelector('.c-download-button');
-    this.addEventListener(downloadButton, 'click', this.onCDownloadButtonClick_);
+    var cDownloadButton = document.querySelector('.c-download-button');
+    this.addEventListener(cDownloadButton, 'click', this.onDownloadCFileClick_);
   };
 
-  ns.MiscExportController.prototype.onCDownloadButtonClick_ = function (evt) {
+  ns.MiscExportController.prototype.onDownloadCFileClick_ = function (evt) {
     var fileName = this.getPiskelName_() + '.c';
     var cName = this.getPiskelName_().replace(' ','_');
     var width = this.piskelController.getWidth();
