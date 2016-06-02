@@ -103,7 +103,6 @@ body {
 }
 
 .checkbox-fix {
-  vertical-align: -2px;
   margin-left: 0;
 }
 
@@ -156,15 +155,13 @@ body {
 .column-wrapper {
   text-align: center;
   font-size: 0;
+  display: flex;
+
   position: absolute;
   left: 100px; /* Reserve room for tools on the left edge of the screen. */
   top: 0;
   right: 50px; /* Reserve room for actions on the right edge of the screen. */
   bottom: 0;
-}
-
-.column {
-  display: inline-block;
 }
 
 .left-column {
@@ -179,10 +176,17 @@ body {
 }
 
 .right-column {
+  box-sizing: border-box;
   vertical-align: top;
-  margin-left: 10px;
   height: 100%;
+
+  display: flex;
+  flex-direction: column;
   position: relative;
+
+  margin-left: 10px;
+  /* Add some padding for the absolutely positioned .cursor-coordinates */
+  padding-bottom: 20px;
 }
 
 .drawing-canvas-container {
@@ -550,7 +554,6 @@ body {
 }
 
 .settings-title {
-  color : gold;
   margin-top: 20px;
   margin-bottom: 10px;
   text-transform: uppercase;
@@ -633,7 +636,7 @@ body {
   margin: 5px;
 }
 
-.settings-section--application-general > .settings-item > label {
+.settings-section-application > .settings-item > label {
   display: block;
 }
 /*******************************/
@@ -695,17 +698,17 @@ body {
   color: white;
 }
 
-.scaling-factor {
+.export-scale {
   margin-bottom: 10px;
 }
 
-.scaling-factor-input {
+.export-scale .scale-input {
   margin: 5px;
   vertical-align: middle;
-  width: 145px;
+  width: 150px;
 }
 
-.scaling-factor-text {
+.export-scale .scale-text {
   height: 31px;
   display: inline-block;
   line-height: 30px;
@@ -714,6 +717,107 @@ body {
   box-sizing: border-box;
   border-radius: 3px;
   text-align: center;
+}
+
+.export-resize {
+  margin: 10px 0;
+  overflow: hidden;
+}
+
+.export-resize > * {
+  float: left;
+}
+
+.export-resize > *:not(:last-child) {
+  margin-right: 10px;
+}
+
+.export-resize > .resize-field {
+  width: 70px;
+}
+
+.export-resize > .resize-label {
+  height: 23px;
+  line-height: 23px;
+}
+
+.export-tabs {
+  overflow: hidden;
+  position: relative;
+}
+
+.export-tabs:after {
+  content: "";
+  display: block;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 1px;
+  z-index: 0;
+  background-color: gold;
+}
+
+.export-tab {
+  float: left;
+  cursor: pointer;
+  padding: 5px;
+  border: 1px solid transparent;
+  /* Make sure the tab and its border are positioned above the :after element; */
+  position: relative;
+  z-index: 1;
+}
+
+.export-tab.selected,
+.export-tab:hover {
+  color: gold;
+}
+
+.export-tab.selected {
+  border-color: gold gold #444 gold;
+  border-style: solid;
+  border-width: 1px;
+}
+
+.export-info {
+  padding: 10px 5px 0px;
+  font-weight: normal;
+  text-shadow: none;
+  font-style: italic;
+}
+
+.export-panel-section {
+  padding: 5px;
+  margin-top: 10px;
+  border: 1px solid #5d5d5d;
+  border-radius: 2px;
+}
+
+.export-panel-row {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.export-panel-gif .button {
+  margin-right: 5px;
+  width: 75px;
+  flex-shrink: 0;
+}
+
+.export-panel-png .textfield {
+  width: 50px;
+}
+
+.png-export-dimension-info {
+  font-style: italic;
+  font-weight: normal;
+  margin-left: 5px;
+}
+
+#png-export-columns {
+  /* Override default textfield padding-right to keep the number spinners
+     aligned to the right. */
+  padding-right: 0;
 }
 
 /************************************************************************************************/
@@ -1092,49 +1196,49 @@ Icon classes can be used entirely standalone. They are named after their origina
 */
 .icon-common-keyboard-gold {
   background-image: url(../img/icons.png);
-  background-position: -230px 0px;
+  background-position: 0px -230px;
   width: 35px;
   height: 20px;
 }
 .icon-common-swapcolors-arrow-grey {
   background-image: url(../img/icons.png);
-  background-position: -230px -46px;
+  background-position: -230px -86px;
   width: 18px;
   height: 18px;
 }
 .icon-frame-dragndrop-white {
   background-image: url(../img/icons.png);
-  background-position: -198px -184px;
+  background-position: -230px -30px;
   width: 30px;
   height: 30px;
 }
 .icon-frame-duplicate-white {
   background-image: url(../img/icons.png);
-  background-position: -168px -184px;
+  background-position: -230px 0px;
   width: 30px;
   height: 30px;
 }
 .icon-frame-plus-white {
   background-image: url(../img/icons.png);
-  background-position: -230px -20px;
+  background-position: -230px -60px;
   width: 26px;
   height: 26px;
 }
 .icon-frame-recyclebin-white {
   background-image: url(../img/icons.png);
-  background-position: -138px -184px;
+  background-position: -184px -184px;
   width: 30px;
   height: 30px;
 }
 .icon-minimap-popup-preview-arrow-gold {
   background-image: url(../img/icons.png);
-  background-position: -230px -82px;
+  background-position: -230px -122px;
   width: 18px;
   height: 18px;
 }
 .icon-minimap-popup-preview-arrow-white {
   background-image: url(../img/icons.png);
-  background-position: -230px -64px;
+  background-position: -230px -104px;
   width: 18px;
   height: 18px;
 }
@@ -1182,13 +1286,13 @@ Icon classes can be used entirely standalone. They are named after their origina
 }
 .icon-tool-colorswap {
   background-image: url(../img/icons.png);
-  background-position: 0px 0px;
+  background-position: -138px -138px;
   width: 46px;
   height: 46px;
 }
 .icon-tool-dithering {
   background-image: url(../img/icons.png);
-  background-position: -184px 0px;
+  background-position: 0px 0px;
   width: 46px;
   height: 46px;
 }
@@ -1230,29 +1334,35 @@ Icon classes can be used entirely standalone. They are named after their origina
 }
 .icon-tool-rectangle-select {
   background-image: url(../img/icons.png);
-  background-position: -138px -138px;
+  background-position: -138px -184px;
   width: 46px;
   height: 46px;
 }
 .icon-tool-rectangle {
   background-image: url(../img/icons.png);
-  background-position: -46px -92px;
+  background-position: -184px 0px;
   width: 46px;
   height: 46px;
 }
 .icon-tool-shape-select {
   background-image: url(../img/icons.png);
-  background-position: 0px -92px;
+  background-position: -46px -92px;
   width: 46px;
   height: 46px;
 }
 .icon-tool-stroke {
   background-image: url(../img/icons.png);
-  background-position: -92px -46px;
+  background-position: 0px -92px;
   width: 46px;
   height: 46px;
 }
 .icon-tool-vertical-mirror-pen {
+  background-image: url(../img/icons.png);
+  background-position: -92px -46px;
+  width: 46px;
+  height: 46px;
+}
+.icon-tool-center {
   background-image: url(../img/icons.png);
   background-position: -92px 0px;
   width: 46px;
@@ -2090,13 +2200,12 @@ Icon classes can be used entirely standalone. They are named after their origina
   background-color : black;
 }
 .toolbox-container {
-  border: 4px solid #888;
+  border: 2px solid #888;
   font-size: medium;
   color: white;
   text-align: left;
-  border-radius: 4px;
+  border-radius: 2px;
   margin-top: 5px;
-  margin-bottom: 10px;
   overflow: hidden;
 }
 
@@ -2104,17 +2213,44 @@ Icon classes can be used entirely standalone. They are named after their origina
   padding: 8px;
   margin: 0;
   font-size: 15px;
+  /* reset for firefox */
+  height: 16px;
   background: #222;
 }
+
+.toolbox-buttons {
+  flex-shrink: 0;
+  overflow: hidden;
+  border-top: 1px solid #666;
+  border-bottom: 1px solid #222;
+}
+
+.toolbox-buttons .button {
+  /* Override border propery on .button elements from form.css */
+  border-width: 0 1px 0 0;
+}
+
+.toolbox-buttons button:last-child {
+  border-right-width: 0;
+}
+
 
 /**
  * Layers container
  */
 .layers-list-container {
+  min-height: 85px;
+  display: flex;
+  flex-direction: column;
 }
+
+/**
+ * Layers title and toggle preview
+ */
 
 .layers-title {
   position: relative;
+  flex-shrink: 0;
 }
 
 .layers-toggle-preview {
@@ -2138,31 +2274,9 @@ Icon classes can be used entirely standalone. They are named after their origina
   color : gold;
 }
 
-.layers-list {
-  font-size : 12px;
-}
-
-.layer-item {
-  height:24px;
-  line-height: 24px;
-  padding : 0 0 0 10px;
-  border-top: 1px solid #444;
-  cursor : pointer;
-}
-
-.layer-item:hover {
-  background : #222;
-}
-
-.current-layer-item,
-.current-layer-item:hover {
-  background : #333;
-  color: gold;
-}
-
-.layers-button-container {
-  overflow : hidden;
-}
+/**
+ * Layers buttons
+ */
 
 .layers-button {
   margin: 0;
@@ -2170,161 +2284,211 @@ Icon classes can be used entirely standalone. They are named after their origina
   float : left;
 }
 
-/* @override */
-.layers-button-container .layers-button {
-  border-left-width: 0;
+/**
+ * Layers list
+ */
+
+.layers-list {
+  font-size : 12px;
+  overflow: auto;
 }
 
-.layers-button:last-child {
-  border-right-width: 0;
+.layer-item {
+  position: relative;
+  height:24px;
+  line-height: 24px;
+  padding: 0 0 0 10px;
+  border-top: 1px solid #444;
+  cursor: pointer;
 }
+
+.layer-item:hover {
+  background : #222;
+}
+
+.layer-item-opacity {
+  position: absolute;
+  right: 8px;
+}
+
+.current-layer-item,
+.current-layer-item:hover {
+  background : #333;
+  color: gold;
+}
+.palettes-list-container {
+  min-height: 100px;
+  display: flex;
+  flex-direction: column;
+}
+
 .palettes-title {
-    background-size: 22px;
-    background-repeat: no-repeat;
-    background-position: 97%;
-}
-.palettes-list-colors {
-    overflow: auto;
-    max-height: 160px;
-}
-.palettes-list-color {
-    cursor: pointer;
-    float: left;
-    margin: 0 0 5px 5px;
-    width: 32px;
-    height: 32px;
-    position: relative;
+  flex-shrink: 0;
+  background-size: 22px;
+  background-repeat: no-repeat;
+  background-position: 97%;
 }
 
-.palettes-list-color:nth-child(-n+10):after {
-    position: absolute;
-    top: 0;
-    right: 0;
+/**
+ * Palettes action buttons
+ */
 
-    background-color: black;
-    color: gold;
-
-    font-family: Tahoma;
-    font-size: 0.5em;
-    font-weight: bold;
-
-    padding: 2px 3px 2px 3px;
-    border-radius: 0 0 0 2px;
-}
-
-.palettes-list-color:nth-child(1):after {
-    content: "1";
-}
-.palettes-list-color:nth-child(2):after {
-    content: "2";
-}
-.palettes-list-color:nth-child(3):after {
-    content: "3";
-}
-.palettes-list-color:nth-child(4):after {
-    content: "4";
-}
-.palettes-list-color:nth-child(5):after {
-    content: "5";
-}
-.palettes-list-color:nth-child(6):after {
-    content: "6";
-}
-.palettes-list-color:nth-child(7):after {
-    content: "7";
-}
-.palettes-list-color:nth-child(8):after {
-    content: "8";
-}
-.palettes-list-color:nth-child(9):after {
-    content: "9";
-}
-
-.palettes-list-color:nth-child(-n+5) {
-    margin-top: 5px;
-}
-
-.palettes-list-color div {
-    width: 32px;
-    height: 32px;
-}
-.palettes-list-has-scrollbar .palettes-list-color, .palettes-list-has-scrollbar .palettes-list-color div {
-    width: 29px
-}
-.palettes-list-primary-color:before, .palettes-list-secondary-color:before {
-    content: "";
-    position: absolute;
-    bottom: 1px;
-    display: inline-block;
-    border: 7px solid gold;
-    border-top-color: transparent;
-    width: 0px;
-    height: 0px;
-}
-.palettes-list-primary-color:before {
-    left: 1px;
-    border-right-color: transparent;
-}
-.palettes-list-secondary-color:before {
-    right: 1px;
-    border-left-color: transparent;
-}
-.palettes-list-actions {
-    background-color: #3f3f3f;
-    border-bottom-color: #222;
-    height: 24px;
-    padding: 0;
-    overflow: hidden;
+.palettes-list-container .toolbox-buttons {
+  background-color: #3f3f3f;
+  height: 24px;
+  padding: 0;
 }
 
 .palettes-list-button,
 .palettes-list-select {
-    margin: 0;
-    float: left;
+  margin: 0;
+  float: left;
 }
 
 .palettes-list-button {
-    width: 16.66667%;
+  width: 16.66667%;
 }
+
 .palettes-list-select {
-    width: 66.66667%;
-    height: 100%;
-    padding: 0 5px 0 5px;
+  width: 66.66667%;
+  height: 100%;
+  padding: 0 5px 0 5px;
 
-    border-style: solid;
-    border-width: 1px 0 1px 0;
+  color: #aaa;
+  font-size : 0.75em;
 
-    color: #aaa;
-    font-size : 0.75em;
+  text-align:left;
+  font-weight: normal;
 
-    /*thanks firefox, you suck*/
-    text-align:left;
-    /*text-shadow:none;*/
-    font-weight: normal;
-
-    transition : background-color 0.3s, color 0.3s;
-    cursor:pointer;
+  transition : background-color 0.3s, color 0.3s;
+  cursor:pointer;
 }
 
-.palettes-list-select:hover {
-    color: white;
-    background-color: #484848;
+.palettes-list-select:hover,
+.palettes-list-select:focus {
+  background-color: #484848;
+  color: white;
 }
 
 .palettes-list-select:focus {
-    background-color: #484848;
-    color: white;
-    outline: none;
+  outline: none;
 }
 
+/*
+ * Palette colors list
+ */
+
+.palettes-list-colors {
+  height: 100%;
+  max-height: 160px;
+  overflow: auto;
+  padding-top: 5px;
+}
+
+.palettes-list-color {
+  cursor: pointer;
+  float: left;
+  margin: 0 0 5px 5px;
+  width: calc((100% - 30px) / 5);
+  height: 32px;
+  position: relative;
+}
+
+.palettes-list-color div {
+  height: 100%;
+}
+
+/*
+ * Placeholder when no color is available in the current palette
+ */
+
 .palettes-list-no-colors {
-    height: 42px;
-    width: 100%;
-    color: grey;
-    font-size: 0.7em;
-    font-style: italic;
-    line-height: 42px;
-    text-align: center
+  height: 35px;
+  line-height: 35px;
+  width: 100%;
+  color: gray;
+  font-size: 0.7em;
+  font-style: italic;
+  text-align: center
+}
+
+/*
+ * Primary and secondary color markers
+ */
+
+.palettes-list-primary-color:before, .palettes-list-secondary-color:before {
+  content: "";
+  position: absolute;
+  bottom: 1px;
+  display: inline-block;
+  background: url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20height%3D%2215%22%20width%3D%2215%22%3E%3Cpath%20stroke%3D%22gold%22%20stroke-width%3D%222%22%20d%3D%22M1%203v10h10z%22/%3E%3C/svg%3E');
+  width: 14px;
+  height: 14px;
+}
+
+.palettes-list-primary-color:before {
+  left: 1px;
+}
+
+.palettes-list-secondary-color:before {
+  right: 1px;
+  background: url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20height%3D%2215%22%20width%3D%2215%22%3E%3Cpath%20stroke%3D%22gold%22%20stroke-width%3D%222%22%20d%3D%22M3%2013h10V3z%22/%3E%3C/svg%3E');
+}
+
+/*
+ * Color index for the 9 first colors
+ */
+
+.palettes-list-color:nth-child(-n+10):after {
+  position: absolute;
+  top: 0;
+  right: 0;
+
+  background-color: black;
+  color: gold;
+
+  font-family: Tahoma;
+  font-size: 0.5em;
+  font-weight: bold;
+
+  padding: 2px 3px 2px 3px;
+  border-radius: 0 0 0 2px;
+}
+
+.palettes-list-color:nth-child(1):after {
+  content: "1";
+}
+
+.palettes-list-color:nth-child(2):after {
+  content: "2";
+}
+
+.palettes-list-color:nth-child(3):after {
+  content: "3";
+}
+
+.palettes-list-color:nth-child(4):after {
+  content: "4";
+}
+
+.palettes-list-color:nth-child(5):after {
+  content: "5";
+}
+
+.palettes-list-color:nth-child(6):after {
+  content: "6";
+}
+
+.palettes-list-color:nth-child(7):after {
+  content: "7";
+}
+
+.palettes-list-color:nth-child(8):after {
+  content: "8";
+}
+
+.palettes-list-color:nth-child(9):after {
+  content: "9";
 }
 
 /**
@@ -2332,6 +2496,8 @@ Icon classes can be used entirely standalone. They are named after their origina
  */
 
 .preview-container {
+  flex-shrink: 0;
+
   border : 0 Solid black;
   border-radius:5px 0 0 5px;
   box-shadow : 0 0 2px rgba(0,0,0,0.2);
@@ -2466,6 +2632,9 @@ Icon classes can be used entirely standalone. They are named after their origina
   background-position: 0 0;
 }
 
+.transformations-container {
+  flex-shrink: 0;
+}
 
 .transformations-container .tool-icon {
   float:left;
@@ -3215,9 +3384,9 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
 
   background-image: linear-gradient(45deg, #1D1D1D 20%, transparent 25%, transparent 75%, #1D1D1D 80%, #1D1D1D),
                     linear-gradient(-45deg, #1D1D1D 20%, transparent 25%, transparent 75%, #1D1D1D 80%, #1D1D1D);
-  background-size: 29px 45px;
+  background-size: 30px 40px;
   background-repeat: repeat-x;
-  background-position-x: 3px;
+  background-position: 3px 0;
   z-index: 10;
 }
 
@@ -3227,8 +3396,7 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
 
 .bottom-overflow {
   bottom: -20px;
-  background-position-x: 0;
-  background-position-y: -23px;
+  background-position: 3px -20px;
 }
 
 .top-overflow-visible .top-overflow {
@@ -3241,7 +3409,7 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
 
 .preview-list {
   list-style-type: none;
-  padding-right: 7px;
+  padding-right: 9px;
 }
 
 .add-frame-action {
@@ -3348,13 +3516,13 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
 }
 
 .preview-tile.selected:after {
-  content: " ";
+  content: "";
   position: absolute;
   top: 38px;
-  right: -15px;
+  right: -9px;
   border: transparent 4px solid;
   border-left-color: gold;
-  border-width: 6px;
+  border-width: 6px 0 6px 6px;
   border-style: solid;
 }
 
@@ -3365,8 +3533,6 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
 
 .preview-tile-drop-proxy {
   border: 3px dashed gold;
-  height: 90px;
-  border-radius: 9px;
   background-color: rgba(255, 215,0, 0.2);
 }
 

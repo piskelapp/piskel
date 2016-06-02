@@ -11907,6 +11907,7 @@ var Events = {
   HIDE_PROGRESS: 'HIDE_PROGRESS',
 
   ZOOM_CHANGED : 'ZOOM_CHANGED',
+  EXPORT_SCALE_CHANGED : 'EXPORT_SCALE_CHANGED',
 
   CURRENT_COLORS_UPDATED : 'CURRENT_COLORS_UPDATED',
 
@@ -13600,7 +13601,9 @@ if (!Function.prototype.bind) {
     ONION_SKIN : 'ONION_SKIN',
     LAYER_PREVIEW : 'LAYER_PREVIEW',
     LAYER_OPACITY : 'LAYER_OPACITY',
-    EXPORT_SCALING: 'EXPORT_SCALING',
+    EXPORT_PNG_POWER_TWO: 'EXPORT_PNG_POWER_TWO',
+    EXPORT_SCALE: 'EXPORT_SCALE',
+    EXPORT_TAB: 'EXPORT_TAB',
     PEN_SIZE : 'PEN_SIZE',
     RESIZE_SETTINGS: 'RESIZE_SETTINGS',
     KEY_TO_DEFAULT_VALUE_MAP_ : {
@@ -13617,7 +13620,9 @@ if (!Function.prototype.bind) {
       'ONION_SKIN' : false,
       'LAYER_OPACITY' : 0.2,
       'LAYER_PREVIEW' : true,
-      'EXPORT_SCALING' : 1,
+      'EXPORT_PNG_POWER_TWO' : false,
+      'EXPORT_SCALE' : 1,
+      'EXPORT_TAB' : 'gif',
       'PEN_SIZE' : 1,
       'RESIZE_SETTINGS': {
         maintainRatio : true,
@@ -18629,6 +18634,7 @@ return Q;
     this.isRunning = false;
     this.previousTime = 0;
     this.callbacks = [];
+    this.loop_ = this.loop_.bind(this);
   };
 
   ns.DrawingLoop.prototype.addCallback = function (callback, scope, args) {
@@ -18658,7 +18664,7 @@ return Q;
     var delta = currentTime - this.previousTime;
     this.executeCallbacks_(delta);
     this.previousTime = currentTime;
-    this.requestAnimationFrame.call(window, this.loop_.bind(this));
+    this.requestAnimationFrame.call(window, this.loop_);
   };
 
   ns.DrawingLoop.prototype.executeCallbacks_ = function (deltaTime) {
@@ -20308,11 +20314,17 @@ return Q;
     }
   };
 
-  ns.FramesheetRenderer.prototype.renderAsCanvas = function () {
-    var canvas = this.createCanvas_();
+  ns.FramesheetRenderer.prototype.renderAsCanvas = function (columns) {
+    columns = columns || this.frames.length;
+    var rows = Math.ceil(this.frames.length / columns);
+
+    var canvas = this.createCanvas_(columns, rows);
+
     for (var i = 0 ; i < this.frames.length ; i++) {
       var frame = this.frames[i];
-      this.drawFrameInCanvas_(frame, canvas, i * frame.getWidth(), 0);
+      var posX = (i % columns) * frame.getWidth();
+      var posY = Math.floor(i / columns) * frame.getHeight();
+      this.drawFrameInCanvas_(frame, canvas, posX, posY);
     }
     return canvas;
   };
@@ -20327,11 +20339,10 @@ return Q;
     });
   };
 
-  ns.FramesheetRenderer.prototype.createCanvas_ = function () {
+  ns.FramesheetRenderer.prototype.createCanvas_ = function (columns, rows) {
     var sampleFrame = this.frames[0];
-    var count = this.frames.length;
-    var width = count * sampleFrame.getWidth();
-    var height = sampleFrame.getHeight();
+    var width = columns * sampleFrame.getWidth();
+    var height = rows * sampleFrame.getHeight();
     return pskl.utils.CanvasUtils.createCanvas(width, height);
   };
 })();
@@ -20348,11 +20359,17 @@ return Q;
     this.frames = frames;
   };
 
-  ns.PiskelRenderer.prototype.renderAsCanvas = function () {
-    var canvas = this.createCanvas_();
+  ns.PiskelRenderer.prototype.renderAsCanvas = function (columns) {
+    columns = columns || this.frames.length;
+    var rows = Math.ceil(this.frames.length / columns);
+
+    var canvas = this.createCanvas_(columns, rows);
+
     for (var i = 0 ; i < this.frames.length ; i++) {
       var frame = this.frames[i];
-      this.drawFrameInCanvas_(frame, canvas, i * this.piskelController.getWidth(), 0);
+      var posX = (i % columns) * this.piskelController.getWidth();
+      var posY = Math.floor(i / columns) * this.piskelController.getHeight();
+      this.drawFrameInCanvas_(frame, canvas, posX, posY);
     }
     return canvas;
   };
@@ -20362,10 +20379,9 @@ return Q;
     context.drawImage(frame, offsetWidth, offsetHeight, frame.width, frame.height);
   };
 
-  ns.PiskelRenderer.prototype.createCanvas_ = function () {
-    var count = this.frames.length;
-    var width = count * this.piskelController.getWidth();
-    var height = this.piskelController.getHeight();
+  ns.PiskelRenderer.prototype.createCanvas_ = function (columns, rows) {
+    var width = columns * this.piskelController.getWidth();
+    var height = rows * this.piskelController.getHeight();
     return pskl.utils.CanvasUtils.createCanvas(width, height);
   };
 })();
@@ -20906,9 +20922,10 @@ return Q;
     window.addEventListener('mouseup', this.onMouseup_.bind(this));
     window.addEventListener('mousemove', this.onMousemove_.bind(this));
     window.addEventListener('keyup', this.onKeyup_.bind(this));
-    window.addEventListener('touchstart', this.onMousedown_.bind(this));
-    window.addEventListener('touchmove' , this.onMousemove_.bind(this));
-    window.addEventListener('touchend', this.onMouseup_.bind(this));
+    window.addEventListener('touchstart', this.onTouchstart_.bind(this));
+    window.addEventListener('touchmove' , this.onTouchmove_.bind(this));
+    window.addEventListener('touchend', this.onTouchend_.bind(this));
+
     // Deactivate right click:
     body.contextmenu(this.onCanvasContextMenu_);
 
@@ -20954,6 +20971,21 @@ return Q;
     this.compositeRenderer.setZoom(this.calculateZoom_());
     this.compositeRenderer.setOffset(0, 0);
     $.publish(Events.ZOOM_CHANGED);
+  };
+
+  ns.DrawingController.prototype.onTouchstart_ = function (event) {
+    this.onMousedown_(event);
+    event.preventDefault();
+  };
+
+  ns.DrawingController.prototype.onTouchmove_ = function (event) {
+    this.onMousemove_(event);
+    event.preventDefault();
+  };
+
+  ns.DrawingController.prototype.onTouchend_ = function (event) {
+    this.onMouseup_(event);
+    event.preventDefault();
   };
 
   /**
@@ -22860,7 +22892,8 @@ return Q;
     this.tools = [
       new pskl.tools.transform.Flip(),
       new pskl.tools.transform.Rotate(),
-      new pskl.tools.transform.Clone()
+      new pskl.tools.transform.Clone(),
+      new pskl.tools.transform.Center()
     ];
 
     this.toolIconBuilder = new pskl.tools.ToolIconBuilder();
@@ -23054,99 +23087,31 @@ return Q;
 ;(function () {
   var ns = $.namespace('pskl.controller.settings.exportimage');
 
-  ns.ImageExportController = function (piskelController) {
-    this.piskelController = piskelController;
-    this.pngExportController = new ns.PngExportController(piskelController);
-    this.gifExportController = new ns.GifExportController(piskelController);
-    this.cExportController = new ns.CExportController(piskelController);
-  };
-
-  pskl.utils.inherit(ns.ImageExportController, pskl.controller.settings.AbstractSettingController);
-
-  ns.ImageExportController.prototype.init = function () {
-    // Output Scaling Factor
-    var scalingFactorInput = document.querySelector('.scaling-factor-input');
-    scalingFactorInput.value = pskl.UserSettings.get(pskl.UserSettings.EXPORT_SCALING);
-    this.addEventListener(scalingFactorInput, 'change', this.onScalingFactorChange_);
-    this.addEventListener(scalingFactorInput, 'input', this.onScalingFactorChange_);
-    this.updateScalingFactorText_(scalingFactorInput.value);
-
-    this.pngExportController.init();
-    this.gifExportController.init();
-    this.cExportController.init();
-  };
-
-  ns.ImageExportController.prototype.destroy = function () {
-    this.pngExportController.destroy();
-    this.gifExportController.destroy();
-    this.cExportController.destroy();
-    this.superclass.destroy.call(this);
-  };
-
-  ns.ImageExportController.prototype.onScalingFactorChange_ = function (evt) {
-    var target = evt.target;
-    var value = Math.round(parseFloat(target.value));
-    if (!isNaN(value)) {
-      this.updateScalingFactorText_(value);
-      pskl.UserSettings.set(pskl.UserSettings.EXPORT_SCALING, value);
-    } else {
-      target.value = pskl.UserSettings.get(pskl.UserSettings.EXPORT_SCALING);
-    }
-  };
-
-  ns.ImageExportController.prototype.updateScalingFactorText_ = function (scale) {
-    var scalingFactorText = document.querySelector('.scaling-factor-text');
-    scalingFactorText.innerHTML = scale + 'x';
-  };
-})();
-;(function () {
-  var ns = $.namespace('pskl.controller.settings.exportimage');
-
   var URL_MAX_LENGTH = 30;
   var MAX_GIF_COLORS = 256;
-  var MAX_EXPORT_ZOOM = 20;
-  var DEFAULT_EXPORT_ZOOM = 10;
   var MAGIC_PINK = '#FF00FF';
   var WHITE = '#FFFFFF';
 
-  ns.GifExportController = function (piskelController) {
+  ns.GifExportController = function (piskelController, exportController) {
     this.piskelController = piskelController;
+    this.exportController = exportController;
   };
 
   pskl.utils.inherit(ns.GifExportController, pskl.controller.settings.AbstractSettingController);
-
-  /**
-   * List of Resolutions applicable for Gif export
-   * @static
-   * @type {Array} array of Objects {zoom:{Number}, default:{Boolean}}
-   */
-  ns.GifExportController.RESOLUTIONS = [];
-  for (var i = 1 ; i <= MAX_EXPORT_ZOOM ; i++) {
-    ns.GifExportController.RESOLUTIONS.push({
-      zoom : i
-    });
-  }
 
   ns.GifExportController.prototype.init = function () {
 
     this.uploadStatusContainerEl = document.querySelector('.gif-upload-status');
     this.previewContainerEl = document.querySelector('.gif-export-preview');
-    this.widthInput = document.querySelector('.export-gif-resize-width');
-    this.heightInput = document.querySelector('.export-gif-resize-height');
     this.uploadButton = document.querySelector('.gif-upload-button');
     this.downloadButton = document.querySelector('.gif-download-button');
-
-    this.sizeInputWidget = new pskl.widgets.SizeInput(
-      this.widthInput, this.heightInput,
-      this.piskelController.getWidth(), this.piskelController.getHeight());
 
     this.addEventListener(this.uploadButton, 'click', this.onUploadButtonClick_);
     this.addEventListener(this.downloadButton, 'click', this.onDownloadButtonClick_);
   };
 
-  ns.GifExportController.prototype.destroy = function () {
-    this.sizeInputWidget.destroy();
-    this.superclass.destroy.call(this);
+  ns.GifExportController.prototype.getZoom_ = function () {
+    return this.exportController.getExportZoom();
   };
 
   ns.GifExportController.prototype.onUploadButtonClick_ = function (evt) {
@@ -23197,10 +23162,6 @@ return Q;
 
   ns.GifExportController.prototype.updatePreview_ = function (src) {
     this.previewContainerEl.innerHTML = '<div><img style="max-width:32px;" src="' + src + '"/></div>';
-  };
-
-  ns.GifExportController.prototype.getZoom_ = function () {
-    return parseInt(this.widthInput.value, 10) / this.piskelController.getWidth();
   };
 
   ns.GifExportController.prototype.renderAsImageDataAnimatedGIF = function(zoom, fps, cb) {
@@ -23273,7 +23234,6 @@ return Q;
     return transparentColor;
   };
 
-  // FIXME : JD : HORRIBLE COPY/PASTA (JD later : where???)
   ns.GifExportController.prototype.updateStatus_ = function (imageUrl, error) {
     if (imageUrl) {
       var linkTpl = '<a class="image-link" href="{{link}}" target="_blank">{{shortLink}}</a>';
@@ -23300,45 +23260,173 @@ return Q;
 ;(function () {
   var ns = $.namespace('pskl.controller.settings.exportimage');
 
-  var URL_MAX_LENGTH = 60;
+  var dimensionInfoPattern = '{{width}} x {{height}} px, {{frames}}<br/>{{rows}}, {{columns}}.';
 
-  ns.PngExportController = function (piskelController) {
+  // Shortcut to pskl.utils.Template.replace
+  var replace = pskl.utils.Template.replace;
+
+  // Helper to return "X items" or "1 item" if X is 1.
+  var pluralize = function (word, count) {
+    if (count === 1) {
+      return '1 ' + word;
+    }
+    return count + ' ' + word + 's';
+  };
+
+  // Compute the nearest power of two for the provided number.
+  var getNearestPowerOfTwo = function (number) {
+    return Math.pow(2, Math.ceil(Math.log(number) / Math.log(2)));
+  };
+
+  ns.PngExportController = function (piskelController, exportController) {
     this.piskelController = piskelController;
+    this.exportController = exportController;
+    this.onScaleChanged_ = this.onScaleChanged_.bind(this);
   };
 
   pskl.utils.inherit(ns.PngExportController, pskl.controller.settings.AbstractSettingController);
 
   ns.PngExportController.prototype.init = function () {
-    this.pngFilePrefixInput = document.querySelector('.zip-prefix-name');
-    this.pngFilePrefixInput.value = 'sprite_';
-
-    this.splitByLayersCheckbox =  document.querySelector('.zip-split-layers-checkbox');
-
+    this.layoutContainer = document.querySelector('.png-export-layout-section');
+    this.dimensionInfo = document.querySelector('.png-export-dimension-info');
+    this.columnsInput = document.querySelector('#png-export-columns');
+    this.powerTwo = document.querySelector('#png-export-power-two');
     var downloadButton = document.querySelector('.png-download-button');
-    this.addEventListener(downloadButton, 'click', this.onPngDownloadButtonClick_);
 
-    var zipButton = document.querySelector('.zip-generate-button');
-    this.addEventListener(zipButton, 'click', this.onZipButtonClick_);
+    this.initLayoutSection_();
+    this.updateDimensionLabel_();
+
+    this.addEventListener(downloadButton, 'click', this.onDownloadClick_);
+    this.addEventListener(this.columnsInput, 'input', this.onColumnsChanged_);
+    this.addEventListener(this.powerTwo, 'change', this.onPowerTwoChanged_);
+    $.subscribe(Events.EXPORT_SCALE_CHANGED, this.onScaleChanged_);
   };
 
-  ns.PngExportController.prototype.onPngDownloadButtonClick_ = function (evt) {
-    var fileName = this.getPiskelName_() + '.png';
+  ns.PngExportController.prototype.destroy = function () {
+    $.unsubscribe(Events.EXPORT_SCALE_CHANGED, this.onScaleChanged_);
+    this.superclass.destroy.call(this);
+  };
 
-    var outputCanvas = this.getFramesheetAsCanvas();
+  /**
+   * Initalize all controls related to the spritesheet layout.
+   */
+  ns.PngExportController.prototype.initLayoutSection_ = function () {
+    var frames = this.piskelController.getFrameCount();
+    if (frames === 1) {
+      // Hide the layout section if only one frame is defined.
+      this.layoutContainer.style.display = 'none';
+    } else {
+      this.columnsInput.value = this.getBestFit_();
+      this.powerTwo.checked = pskl.UserSettings.get('EXPORT_PNG_POWER_TWO');
+    }
+  };
 
-    var scalingFactor = pskl.UserSettings.get(pskl.UserSettings.EXPORT_SCALING);
-    if (scalingFactor > 1) {
-      var width = outputCanvas.width * scalingFactor;
-      var height = outputCanvas.height * scalingFactor;
-      outputCanvas = pskl.utils.ImageResizer.resize(outputCanvas, width, height, false);
+  ns.PngExportController.prototype.updateDimensionLabel_ = function () {
+    var zoom = this.exportController.getExportZoom();
+    var frames = this.piskelController.getFrameCount();
+    var width = this.piskelController.getWidth() * zoom;
+    var height = this.piskelController.getHeight() * zoom;
+
+    var columns = this.getColumns_();
+    var rows = Math.ceil(frames / columns);
+    width = columns * width;
+    height = rows * height;
+
+    if (this.isPowerTwoEnabled_()) {
+      width = getNearestPowerOfTwo(width);
+      height = getNearestPowerOfTwo(height);
+    }
+
+    this.dimensionInfo.innerHTML = replace(dimensionInfoPattern, {
+      width: width,
+      height: height,
+      rows: pluralize('row', rows),
+      columns: pluralize('column', columns),
+      frames: pluralize('frame', frames),
+    });
+  };
+
+  ns.PngExportController.prototype.getColumns_ = function () {
+    return parseInt(this.columnsInput.value || 1, 10);
+  };
+
+  ns.PngExportController.prototype.getBestFit_ = function () {
+    var ratio = this.piskelController.getWidth() / this.piskelController.getHeight();
+    var frameCount = this.piskelController.getFrameCount();
+    var bestFit = Math.round(Math.sqrt(frameCount / ratio));
+
+    return Math.max(1, Math.min(bestFit, frameCount));
+  };
+
+  ns.PngExportController.prototype.isPowerTwoEnabled_ = function () {
+    return pskl.UserSettings.get('EXPORT_PNG_POWER_TWO');
+  };
+
+  ns.PngExportController.prototype.onScaleChanged_ = function () {
+    this.updateDimensionLabel_();
+  };
+
+  ns.PngExportController.prototype.onColumnsChanged_ = function () {
+    if (this.getColumns_() > this.piskelController.getFrameCount()) {
+      this.columnsInput.value = this.piskelController.getFrameCount();
+    } else if (this.getColumns_() < 1) {
+      this.columnsInput.value = 1;
+    }
+    this.updateDimensionLabel_();
+  };
+
+  ns.PngExportController.prototype.onPowerTwoChanged_ = function () {
+    pskl.UserSettings.set('EXPORT_PNG_POWER_TWO', this.powerTwo.checked);
+    this.updateDimensionLabel_();
+  };
+
+  ns.PngExportController.prototype.onDownloadClick_ = function (evt) {
+    var name = this.piskelController.getPiskel().getDescriptor().name;
+    var fileName = name + '.png';
+
+    var renderer = new pskl.rendering.PiskelRenderer(this.piskelController);
+    var outputCanvas = renderer.renderAsCanvas(this.getColumns_());
+    var width = outputCanvas.width;
+    var height = outputCanvas.height;
+
+    var zoom = this.exportController.getExportZoom();
+    if (zoom != 1) {
+      outputCanvas = pskl.utils.ImageResizer.resize(outputCanvas, width * zoom, height * zoom, false);
+    }
+
+    if (this.isPowerTwoEnabled_()) {
+      var paddingCanvas = pskl.utils.CanvasUtils.createCanvas(
+        getNearestPowerOfTwo(width * zoom), getNearestPowerOfTwo(height * zoom));
+      paddingCanvas.getContext('2d').drawImage(outputCanvas, 0, 0);
+      outputCanvas = paddingCanvas;
     }
 
     pskl.utils.BlobUtils.canvasToBlob(outputCanvas, function(blob) {
       pskl.utils.FileUtils.downloadAsFile(blob, fileName);
     });
   };
+})();
+;(function () {
+  var ns = $.namespace('pskl.controller.settings.exportimage');
 
-  ns.PngExportController.prototype.onZipButtonClick_ = function () {
+  ns.ZipExportController = function (piskelController, exportController) {
+    this.piskelController = piskelController;
+    this.exportController = exportController;
+  };
+
+  pskl.utils.inherit(ns.ZipExportController, pskl.controller.settings.AbstractSettingController);
+
+  ns.ZipExportController.prototype.init = function () {
+    this.pngFilePrefixInput = document.querySelector('.zip-prefix-name');
+    this.pngFilePrefixInput.value = 'sprite_';
+
+    this.splitByLayersCheckbox =  document.querySelector('.zip-split-layers-checkbox');
+
+    var zipButton = document.querySelector('.zip-generate-button');
+    this.addEventListener(zipButton, 'click', this.onZipButtonClick_);
+  };
+
+  ns.ZipExportController.prototype.onZipButtonClick_ = function () {
     var zip = new window.JSZip();
 
     if (this.splitByLayersCheckbox.checked) {
@@ -23356,11 +23444,12 @@ return Q;
     pskl.utils.FileUtils.downloadAsFile(blob, fileName);
   };
 
-  ns.PngExportController.prototype.mergedExport_ = function (zip) {
+  ns.ZipExportController.prototype.mergedExport_ = function (zip) {
     var paddingLength = ('' + this.piskelController.getFrameCount()).length;
+    var zoom = this.exportController.getExportZoom();
     for (var i = 0; i < this.piskelController.getFrameCount(); i++) {
       var render = this.piskelController.renderFrameAt(i, true);
-      var canvas = pskl.utils.CanvasUtils.createFromImage(render);
+      var canvas = pskl.utils.ImageResizer.scale(render, zoom);
       var basename = this.pngFilePrefixInput.value;
       var id = pskl.utils.StringUtils.leftPad(i, paddingLength, '0');
       var filename = basename + id + '.png';
@@ -23368,16 +23457,17 @@ return Q;
     }
   };
 
-  ns.PngExportController.prototype.splittedExport_ = function (zip) {
+  ns.ZipExportController.prototype.splittedExport_ = function (zip) {
     var layers = this.piskelController.getLayers();
     var framePaddingLength = ('' + this.piskelController.getFrameCount()).length;
     var layerPaddingLength = ('' + layers.length).length;
+    var zoom = this.exportController.getExportZoom();
     for (var j = 0; this.piskelController.hasLayerAt(j); j++) {
       var layer = this.piskelController.getLayerAt(j);
       var layerid = pskl.utils.StringUtils.leftPad(j, layerPaddingLength, '0');
       for (var i = 0; i < this.piskelController.getFrameCount(); i++) {
         var render = pskl.utils.LayerUtils.renderFrameAt(layer, i, true);
-        var canvas = pskl.utils.CanvasUtils.createFromImage(render);
+        var canvas = pskl.utils.ImageResizer.scale(render, zoom);
         var basename = this.pngFilePrefixInput.value;
         var frameid = pskl.utils.StringUtils.leftPad(i + 1, framePaddingLength, '0');
         var filename = 'l' + layerid + '_' + basename + frameid + '.png';
@@ -23386,34 +23476,8 @@ return Q;
     }
   };
 
-  ns.PngExportController.prototype.getPiskelName_ = function () {
+  ns.ZipExportController.prototype.getPiskelName_ = function () {
     return this.piskelController.getPiskel().getDescriptor().name;
-  };
-
-  ns.PngExportController.prototype.getFramesheetAsCanvas = function () {
-    var renderer = new pskl.rendering.PiskelRenderer(this.piskelController);
-    return renderer.renderAsCanvas();
-  };
-
-  ns.PngExportController.prototype.updateStatus_ = function (imageUrl, error) {
-    if (imageUrl) {
-      var linkTpl = '<a class="image-link" href="{{link}}" target="_blank">{{shortLink}}</a>';
-      var linkHtml = pskl.utils.Template.replace(linkTpl, {
-        link : imageUrl,
-        shortLink : this.shorten_(imageUrl, URL_MAX_LENGTH, '...')
-      });
-      this.uploadStatusContainerEl.innerHTML = 'Your image is now available at : ' + linkHtml;
-    } else {
-      // FIXME : Should display error message instead
-    }
-  };
-
-  ns.PngExportController.prototype.shorten_ = function (url, maxLength, suffix) {
-    if (url.length > maxLength) {
-      url = url.substring(0, maxLength);
-      url += suffix;
-    }
-    return url;
   };
 })();
 ;(function () {
@@ -23421,19 +23485,18 @@ return Q;
 
   var BLACK = '#000000';
 
-  ns.CExportController = function (piskelController) {
+  ns.MiscExportController = function (piskelController) {
     this.piskelController = piskelController;
   };
 
-  pskl.utils.inherit(ns.CExportController, pskl.controller.settings.AbstractSettingController);
+  pskl.utils.inherit(ns.MiscExportController, pskl.controller.settings.AbstractSettingController);
 
-  ns.CExportController.prototype.init = function () {
-
-    var downloadButton = document.querySelector('.c-download-button');
-    this.addEventListener(downloadButton, 'click', this.onCDownloadButtonClick_);
+  ns.MiscExportController.prototype.init = function () {
+    var cDownloadButton = document.querySelector('.c-download-button');
+    this.addEventListener(cDownloadButton, 'click', this.onDownloadCFileClick_);
   };
 
-  ns.CExportController.prototype.onCDownloadButtonClick_ = function (evt) {
+  ns.MiscExportController.prototype.onDownloadCFileClick_ = function (evt) {
     var fileName = this.getPiskelName_() + '.c';
     var cName = this.getPiskelName_().replace(' ','_');
     var width = this.piskelController.getWidth();
@@ -23480,17 +23543,142 @@ return Q;
     }.bind(this), 'application/text');
   };
 
-  ns.CExportController.prototype.getPiskelName_ = function () {
+  ns.MiscExportController.prototype.getPiskelName_ = function () {
     return this.piskelController.getPiskel().getDescriptor().name;
   };
 
-  ns.CExportController.prototype.rgbToCHex = function (r, g, b, a) {
+  ns.MiscExportController.prototype.rgbToCHex = function (r, g, b, a) {
     var hexStr = '0x';
     hexStr += ('00' + a.toString(16)).substr(-2);
     hexStr += ('00' + b.toString(16)).substr(-2);
     hexStr += ('00' + g.toString(16)).substr(-2);
     hexStr += ('00' + r.toString(16)).substr(-2);
     return hexStr;
+  };
+})();
+;(function () {
+  var ns = $.namespace('pskl.controller.settings.exportimage');
+
+  var tabs = {
+    'png' : {
+      template : 'templates/settings/export/png.html',
+      controller : ns.PngExportController
+    },
+    'gif' : {
+      template : 'templates/settings/export/gif.html',
+      controller : ns.GifExportController
+    },
+    'zip' : {
+      template : 'templates/settings/export/zip.html',
+      controller : ns.ZipExportController
+    },
+    'misc' : {
+      template : 'templates/settings/export/misc.html',
+      controller : ns.MiscExportController
+    }
+  };
+
+  ns.ExportController = function (piskelController) {
+    this.piskelController = piskelController;
+    this.onSizeInputChange_ = this.onSizeInputChange_.bind(this);
+  };
+
+  pskl.utils.inherit(ns.ExportController, pskl.controller.settings.AbstractSettingController);
+
+  ns.ExportController.prototype.init = function () {
+    // Initialize zoom controls
+    this.scaleInput = document.querySelector('.export-scale .scale-input');
+    this.addEventListener(this.scaleInput, 'change', this.onScaleChange_);
+    this.addEventListener(this.scaleInput, 'input', this.onScaleChange_);
+
+    this.widthInput = document.querySelector('.export-resize .resize-width');
+    this.heightInput = document.querySelector('.export-resize .resize-height');
+    var scale = pskl.UserSettings.get(pskl.UserSettings.EXPORT_SCALE);
+    this.sizeInputWidget = new pskl.widgets.SizeInput({
+      widthInput : this.widthInput,
+      heightInput : this.heightInput,
+      initWidth : this.piskelController.getWidth() * scale,
+      initHeight : this.piskelController.getHeight() * scale,
+      onChange : this.onSizeInputChange_
+    });
+
+    this.onSizeInputChange_();
+
+    // Initialize tabs and panel
+    this.exportPanel = document.querySelector('.export-panel');
+    this.exportTabs = document.querySelector('.export-tabs');
+    this.addEventListener(this.exportTabs, 'click', this.onTabsClicked_);
+
+    var tab = pskl.UserSettings.get(pskl.UserSettings.EXPORT_TAB);
+    this.selectTab(tab);
+  };
+
+  ns.ExportController.prototype.destroy = function () {
+    this.sizeInputWidget.destroy();
+    this.currentController.destroy();
+    this.superclass.destroy.call(this);
+  };
+
+  ns.ExportController.prototype.selectTab = function (tabId) {
+    if (!tabs[tabId] || this.currentTab == tabId) {
+      return;
+    }
+
+    if (this.currentController) {
+      this.currentController.destroy();
+    }
+
+    this.exportPanel.innerHTML = pskl.utils.Template.get(tabs[tabId].template);
+    this.currentController = new tabs[tabId].controller(this.piskelController, this);
+    this.currentController.init();
+    this.currentTab = tabId;
+    pskl.UserSettings.set(pskl.UserSettings.EXPORT_TAB, tabId);
+
+    var selectedTab = this.exportTabs.querySelector('.selected');
+    if (selectedTab) {
+      selectedTab.classList.remove('selected');
+    }
+    this.exportTabs.querySelector('[data-tab-id="' + tabId + '"]').classList.add('selected');
+  };
+
+  ns.ExportController.prototype.onTabsClicked_ = function (e) {
+    var tabId = pskl.utils.Dom.getData(e.target, 'tabId');
+    this.selectTab(tabId);
+  };
+
+  ns.ExportController.prototype.onScaleChange_ = function () {
+    var value = parseFloat(this.scaleInput.value);
+    if (!isNaN(value)) {
+      if (Math.round(this.getExportZoom()) != value) {
+        this.sizeInputWidget.setWidth(this.piskelController.getWidth() * value);
+      }
+      pskl.UserSettings.set(pskl.UserSettings.EXPORT_SCALE, value);
+    }
+  };
+
+  ns.ExportController.prototype.updateScaleText_ = function (scale) {
+    scale = scale.toFixed(1);
+    var scaleText = document.querySelector('.export-scale .scale-text');
+    scaleText.innerHTML = scale + 'x';
+  };
+
+  ns.ExportController.prototype.onSizeInputChange_ = function () {
+    var zoom = this.getExportZoom();
+    if (isNaN(zoom)) {
+      return;
+    }
+
+    this.updateScaleText_(zoom);
+    $.publish(Events.EXPORT_SCALE_CHANGED);
+
+    this.scaleInput.value = Math.round(zoom);
+    if (zoom >= 1 && zoom <= 32) {
+      this.onScaleChange_();
+    }
+  };
+
+  ns.ExportController.prototype.getExportZoom = function () {
+    return parseInt(this.widthInput.value, 10) / this.piskelController.getWidth();
   };
 })();
 ;(function () {
@@ -23602,9 +23790,12 @@ return Q;
     this.resizeContentCheckbox = this.container.querySelector('.resize-content-checkbox');
     this.maintainRatioCheckbox = this.container.querySelector('.resize-ratio-checkbox');
 
-    var initWidth = this.piskelController.getWidth();
-    var initHeight = this.piskelController.getHeight();
-    this.sizeInputWidget = new pskl.widgets.SizeInput(this.widthInput, this.heightInput, initWidth, initHeight);
+    this.sizeInputWidget = new pskl.widgets.SizeInput({
+      widthInput: this.widthInput,
+      heightInput: this.heightInput,
+      initWidth: this.piskelController.getWidth(),
+      initHeight: this.piskelController.getHeight(),
+    });
 
     var settings = pskl.UserSettings.get('RESIZE_SETTINGS');
     var origin = ns.AnchorWidget.ORIGIN[settings.origin] || ns.AnchorWidget.ORIGIN.TOPLEFT;
@@ -24094,7 +24285,7 @@ return Q;
     },
     'export' : {
       template : 'templates/settings/export.html',
-      controller : ns.exportimage.ImageExportController
+      controller : ns.exportimage.ExportController
     },
     'import' : {
       template : 'templates/settings/import.html',
@@ -25450,17 +25641,30 @@ return Q;
 })();
 ;(function () {
   var ns = $.namespace('pskl.widgets');
-  ns.SizeInput = function (widthInput, heightInput, initWidth, initHeight) {
-    this.widthInput = widthInput;
-    this.heightInput = heightInput;
-    this.initWidth = initWidth;
-    this.initHeight = initHeight;
+
+  /**
+   * Synchronize two "number" inputs to stick to their initial ratio.
+   * The synchronization can be disabled/enabled on the fly.
+   *
+   * @param {Object} options
+   *        - {Element} widthInput
+   *        - {Element} heightInput
+   *        - {Number} initWidth
+   *        - {Number} initHeight
+   *        - {Function} onChange
+   */
+  ns.SizeInput = function (options) {
+    this.widthInput = options.widthInput;
+    this.heightInput = options.heightInput;
+    this.initWidth = options.initWidth;
+    this.initHeight = options.initHeight;
+    this.onChange = options.onChange;
 
     this.syncEnabled = true;
     this.lastInput = this.widthInput;
 
-    this.widthInput.value = initWidth;
-    this.heightInput.value = initHeight;
+    this.widthInput.value = this.initWidth;
+    this.heightInput.value = this.initHeight;
 
     pskl.utils.Event.addEventListener(this.widthInput, 'keyup', this.onSizeInputKeyUp_, this);
     pskl.utils.Event.addEventListener(this.heightInput, 'keyup', this.onSizeInputKeyUp_, this);
@@ -25481,6 +25685,16 @@ return Q;
 
   ns.SizeInput.prototype.disableSync = function () {
     this.syncEnabled = false;
+  };
+
+  ns.SizeInput.prototype.setWidth = function (width) {
+    this.widthInput.value = width;
+    this.synchronize_(this.widthInput);
+  };
+
+  ns.SizeInput.prototype.setHeight = function (height) {
+    this.heightInput.value = height;
+    this.synchronize_(this.heightInput);
   };
 
   ns.SizeInput.prototype.onSizeInputKeyUp_ = function (evt) {
@@ -25506,6 +25720,10 @@ return Q;
       this.heightInput.value = Math.round(value * this.initHeight / this.initWidth);
     } else if (sizeInput === this.heightInput) {
       this.widthInput.value = Math.round(value * this.initWidth / this.initHeight);
+    }
+
+    if (this.onChange) {
+      this.onChange();
     }
   };
 })();
@@ -26000,7 +26218,8 @@ return Q;
     var state = {
       action : action,
       frameIndex : action.state ? action.state.frameIndex : this.piskelController.currentFrameIndex,
-      layerIndex : action.state ? action.state.layerIndex : this.piskelController.currentLayerIndex
+      layerIndex : action.state ? action.state.layerIndex : this.piskelController.currentLayerIndex,
+      uuid: pskl.utils.Uuid.generate()
     };
 
     var isSnapshot = action.type === ns.HistoryService.SNAPSHOT;
@@ -26011,6 +26230,15 @@ return Q;
 
     this.stateQueue.push(state);
     $.publish(Events.HISTORY_STATE_SAVED);
+  };
+
+  ns.HistoryService.prototype.getCurrentStateId = function () {
+    var state = this.stateQueue[this.currentIndex];
+    if (!state) {
+      return false;
+    }
+
+    return state.uuid;
   };
 
   ns.HistoryService.prototype.undo = function () {
@@ -26607,46 +26835,32 @@ return Q;
 ;(function () {
   var ns = $.namespace('pskl.service');
 
-  ns.SavedStatusService = function (piskelController) {
+  ns.SavedStatusService = function (piskelController, historyService) {
     this.piskelController = piskelController;
+    this.historyService = historyService;
+    this.lastSavedStateIndex = '';
+
+    this.publishStatusUpdateEvent_ = this.publishStatusUpdateEvent_.bind(this);
   };
 
   ns.SavedStatusService.prototype.init = function () {
-    $.subscribe(Events.TOOL_RELEASED, this.onToolReleased.bind(this));
-    $.subscribe(Events.PISKEL_RESET, this.onPiskelReset.bind(this));
+    $.subscribe(Events.TOOL_RELEASED, this.publishStatusUpdateEvent_);
+    $.subscribe(Events.PISKEL_RESET, this.publishStatusUpdateEvent_);
     $.subscribe(Events.PISKEL_SAVED, this.onPiskelSaved.bind(this));
-  };
-
-  ns.SavedStatusService.prototype.onPiskelReset = function () {
-    var piskel = this.piskelController.getPiskel();
-    // A first PISKEL_RESET is triggered during the load of a new Piskel, it should be ignored
-    // putting a firstResetDone flag as a nasty workaround for this
-    if (piskel.firstResetDone_) {
-      this.updateDirtyStatus(true);
-    } else {
-      piskel.firstResetDone_ = true;
-    }
-  };
-
-  ns.SavedStatusService.prototype.onToolReleased = function () {
-    this.updateDirtyStatus(true);
+    this.lastSavedStateIndex = this.historyService.getCurrentStateId();
   };
 
   ns.SavedStatusService.prototype.onPiskelSaved = function () {
-    this.updateDirtyStatus(false);
+    this.lastSavedStateIndex = this.historyService.getCurrentStateId();
+    this.publishStatusUpdateEvent_();
   };
 
-  ns.SavedStatusService.prototype.updateDirtyStatus = function (status) {
-    var piskel = this.piskelController.getPiskel();
-    if (piskel.isDirty_ != status) {
-      piskel.isDirty_ = status;
-      $.publish(Events.PISKEL_SAVED_STATUS_UPDATE);
-    }
+  ns.SavedStatusService.prototype.publishStatusUpdateEvent_ = function () {
+    $.publish(Events.PISKEL_SAVED_STATUS_UPDATE);
   };
 
-  ns.SavedStatusService.prototype.isDirty = function (evt) {
-    var piskel = this.piskelController.getPiskel();
-    return piskel.isDirty_;
+  ns.SavedStatusService.prototype.isDirty = function () {
+    return (this.lastSavedStateIndex != this.historyService.getCurrentStateId());
   };
 })();
 ;(function () {
@@ -28882,6 +29096,25 @@ ns.ToolsHelper = {
 ;(function () {
   var ns = $.namespace('pskl.tools.transform');
 
+  ns.Center = function () {
+    this.toolId = 'tool-center';
+    this.helpText = 'Align image to the center';
+    this.tooltipDescriptors = [
+      {key : 'ctrl', description : 'Apply to all layers'},
+      {key : 'shift', description : 'Apply to all frames'}
+    ];
+  };
+
+  pskl.utils.inherit(ns.Center, ns.AbstractTransformTool);
+
+  ns.Center.prototype.applyToolOnFrame_ = function (frame) {
+    ns.TransformUtils.center(frame);
+  };
+
+})();
+;(function () {
+  var ns = $.namespace('pskl.tools.transform');
+
   ns.Clone = function () {
     this.toolId = 'tool-clone';
     this.helpText = 'Clone current layer to all frames';
@@ -29011,6 +29244,49 @@ ns.ToolsHelper = {
         // Convert the coordinates back to the rectangular grid
         x = x - xDelta;
         y = y - yDelta;
+        if (clone.containsPixel(x, y)) {
+          frame.pixels[_x][_y] = clone.getPixel(x, y);
+        } else {
+          frame.pixels[_x][_y] = Constants.TRANSPARENT_COLOR;
+        }
+      });
+      frame.version++;
+      return frame;
+    },
+
+    center : function(frame) {
+      // Figure out the boundary
+      var minx = frame.width;
+      var miny = frame.height;
+      var maxx = 0;
+      var maxy = 0;
+      frame.forEachPixel(function (color, x, y) {
+        if (color !== Constants.TRANSPARENT_COLOR) {
+          minx = Math.min(minx, x);
+          maxx = Math.max(maxx, x);
+          miny = Math.min(miny, y);
+          maxy = Math.max(maxy, y);
+        }
+      });
+
+      // Calculate how much to move the pixels
+      var bw = (maxx - minx + 1) / 2;
+      var bh = (maxy - miny + 1) / 2;
+      var fw = frame.width / 2;
+      var fh = frame.height / 2;
+
+      var dx = Math.floor(fw - bw - minx);
+      var dy = Math.floor(fh - bh - miny);
+
+      // Actually move the pixels
+      var clone = frame.clone();
+      frame.forEachPixel(function(color, x, y) {
+        var _x = x;
+        var _y = y;
+
+        x -= dx;
+        y -= dy;
+
         if (clone.containsPixel(x, y)) {
           frame.pixels[_x][_y] = clone.getPixel(x, y);
         } else {
@@ -29446,7 +29722,7 @@ ns.ToolsHelper = {
       this.imageUploadService = new pskl.service.ImageUploadService();
       this.imageUploadService.init();
 
-      this.savedStatusService = new pskl.service.SavedStatusService(this.piskelController);
+      this.savedStatusService = new pskl.service.SavedStatusService(this.piskelController, this.historyService);
       this.savedStatusService.init();
 
       this.backupService = new pskl.service.BackupService(this.piskelController);
