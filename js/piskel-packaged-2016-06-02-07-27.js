@@ -20975,7 +20975,6 @@ return Q;
 
   ns.DrawingController.prototype.onTouchstart_ = function (event) {
     this.onMousedown_(event);
-    event.preventDefault();
   };
 
   ns.DrawingController.prototype.onTouchmove_ = function (event) {
@@ -20985,7 +20984,6 @@ return Q;
 
   ns.DrawingController.prototype.onTouchend_ = function (event) {
     this.onMouseup_(event);
-    event.preventDefault();
   };
 
   /**
