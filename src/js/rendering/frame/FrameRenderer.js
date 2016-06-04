@@ -259,9 +259,9 @@
     );
 
     if (pskl.UserSettings.get('TILED_PREVIEW')) {
-      displayContext.clearRect(-1 * w  * z, -1 * h * z, 3 * w  * z, 3 * h * z);
+      displayContext.clearRect(-1 * w * z, -1 * h * z, 3 * w * z, 3 * h * z);
     } else {
-      displayContext.clearRect(0, 0, w  * z, h * z);
+      displayContext.clearRect(0, 0, w * z, h * z);
     }
 
     var gridWidth = this.computeGridWidthForDisplay_();
@@ -284,8 +284,13 @@
     displayContext.restore();
   };
 
+  /**
+   * Draw repeatedly the provided image around the main drawing area. Used for seamless
+   * drawing mode, to easily create seamless textures. A colored overlay is applied to
+   * differentiate those additional frames from the main frame.
+   */
   ns.FrameRenderer.prototype.drawTiledFrames_ = function (context, image, w, h, z) {
-    context.fillStyle = 'rgba(255,255,255,0.5)';
+    context.fillStyle = Constants.SEAMLESS_MODE_OVERLAY_COLOR;
     [[0, -1], [0, 1], [-1, -1], [-1, 0], [-1, 1], [1, -1], [1, 0], [1, 1]].forEach(function (d) {
       context.drawImage(image, d[0] * w * z, d[1] * h * z);
       context.fillRect(d[0] * w * z, d[1] * h * z, w * z, h * z);
