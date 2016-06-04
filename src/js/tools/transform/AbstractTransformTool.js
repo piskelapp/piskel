@@ -7,7 +7,7 @@
 
   ns.AbstractTransformTool.prototype.applyTransformation = function (evt) {
     var allFrames = evt.shiftKey;
-    var allLayers = evt.ctrlKey;
+    var allLayers = pskl.utils.UserAgent.isMac ?  evt.metaKey : evt.ctrlKey;
 
     this.applyTool_(evt.altKey, allFrames, allLayers);
 
