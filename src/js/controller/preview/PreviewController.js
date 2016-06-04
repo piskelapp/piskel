@@ -116,8 +116,8 @@
 
   ns.PreviewController.prototype.updateZoom_ = function () {
     var originalSizeEnabled = pskl.UserSettings.get(pskl.UserSettings.ORIGINAL_SIZE_PREVIEW);
-    var tiledPreviewEnabled = pskl.UserSettings.get(pskl.UserSettings.TILED_PREVIEW);
-    var useOriginalSize = originalSizeEnabled || tiledPreviewEnabled;
+    var seamlessModeEnabled = pskl.UserSettings.get(pskl.UserSettings.SEAMLESS_MODE);
+    var useOriginalSize = originalSizeEnabled || seamlessModeEnabled;
 
     var zoom = useOriginalSize ? 1 : this.calculateZoom_();
     this.renderer.setZoom(zoom);
@@ -208,12 +208,12 @@
   };
 
   ns.PreviewController.prototype.updateContainerDimensions_ = function () {
-    var isTiled = pskl.UserSettings.get(pskl.UserSettings.TILED_PREVIEW);
-    this.renderer.setRepeated(isTiled);
+    var isSeamless = pskl.UserSettings.get(pskl.UserSettings.SEAMLESS_MODE);
+    this.renderer.setRepeated(isSeamless);
 
     var height, width;
 
-    if (isTiled) {
+    if (isSeamless) {
       height = PREVIEW_SIZE;
       width = PREVIEW_SIZE;
     } else {

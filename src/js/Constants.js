@@ -21,6 +21,7 @@ var Constants = {
 
   DEFAULT_PEN_COLOR : '#000000',
   TRANSPARENT_COLOR : 'rgba(0, 0, 0, 0)',
+  SEAMLESS_MODE_OVERLAY_COLOR : 'rgba(255, 255, 255, 0.5)',
 
   CURRENT_COLORS_PALETTE_ID : '__current-colors',
 

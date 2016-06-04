@@ -4,6 +4,7 @@
       <div class="settings-title">
         General
       </div>
+
       <div class="settings-item">
         <label>Background</label>
         <div class="background-picker-wrapper">
@@ -23,7 +24,7 @@
       </div>
 
       <div class="settings-item">
-        <label for="grid-width">Grid</label>
+        <label for="grid-width">Pixel Grid</label>
         <select id="grid-width" class="grid-width-select">
           <option value="0">Disabled</option>
           <option value="1">1px</option>
@@ -34,31 +35,24 @@
       </div>
 
       <div class="settings-item">
-        <label for="tiled-preview">Layer Preview Opacity</label>
+        <label>Layer Opacity</label>
         <input type="range" class="layer-opacity-input" name="layer-opacity" min="0"  max="1" step="0.05"/>
         <span class="layer-opacity-text"></span>
       </div>
 
-    </div>
-
-    <div class="settings-section">
-      <div class="settings-title">
-        Preview
-      </div>
-
       <div class="settings-item">
         <label>
-          <input type="checkbox" value="1" class="tiled-preview-checkbox  checkbox-fix" name="tiled-preview-checkbox"/>
-          Repeated preview
+          Seamless drawing mode
+          <input type="checkbox" value="1" class="seamless-mode-checkbox" name="seamless-mode-checkbox"/>
         </label>
       </div>
 
       <div class="settings-item">
-        <label for="tiled-preview">Maximum FPS </label>
+        <label>Maximum FPS</label>
         <input type="text" class="textfield  textfield-small  max-fps-input" autocomplete="off" name="max-fps"/>
       </div>
 
-      <input type="submit" class="button button-primary" value="Save" />
+      <input type="submit" class="button button-primary" value="Apply settings" />
     </div>
   </form>
 </script>
