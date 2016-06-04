@@ -1,10 +1,14 @@
 {
-  "author": "Julian Descottes, Vincent Renaudin",
   "name": "piskel",
+  "version": "0.8.0-SNAPSHOT",
+  "description": "Pixel art editor",
+  "author": "Julian Descottes <julian.descottes@gmail.com>",
+  "contributors": [
+    "Vincent Renaudin"
+  ],
   "main": "./dest/prod/index.html",
-  "description": "Web based 2d animations editor",
-  "version": "0.7.0-SNAPSHOT",
   "homepage": "http://github.com/juliandescottes/piskel",
+  "license": "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "http://github.com/juliandescottes/piskel.git"
