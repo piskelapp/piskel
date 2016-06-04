@@ -3,42 +3,37 @@
 /*******************************/
 
 .background-picker-wrapper {
+  display: inline-block;
+  width: 130px;
   overflow: hidden;
-  padding: 5px 5px 2px 5px;
+  vertical-align: middle;
+  margin-left: 5px;
 }
 
 .background-picker {
   cursor: pointer;
   float: left;
-  height: 35px;
-  width: 35px;
+  height: 14px;
+  width: 14px;
   background-color: transparent;
-  margin-right: 15px;
+  margin-right: 5px;
   padding: 1px;
   position: relative;
+  border: #888 2px solid;
 }
 
-.background-picker:after {
-  content: " ";
-  position: absolute;
-  top: -2px;
-  right: -2px;
-  bottom: -2px;
-  left: -2px;
+.background-picker:hover {
+  border-color: #eee;
 }
 
-.background-picker:hover:after {
-  border: #eee 1px solid;
-}
-
-.background-picker.selected:after {
-  border: gold 1px solid;
+.background-picker.selected {
+  border-color: gold;
 }
 
 .layer-opacity-input {
   margin: 5px;
   vertical-align: middle;
-  width: 145px;
+  width: 100px;
 }
 
 .layer-opacity-text {
@@ -53,9 +48,10 @@
 }
 
 .grid-width-select {
-  margin: 5px;
+  margin: 5px 5px 0 5px;
 }
 
-.settings-section-application > .settings-item > label {
-  display: block;
+.settings-section-application > .settings-title {
+  /* Override the default 10px margin bottom for this panel */
+  margin-bottom: 15px;
 }
