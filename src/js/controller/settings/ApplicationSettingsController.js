@@ -26,13 +26,13 @@
 
     this.addEventListener(gridSelect, 'change', this.onGridWidthChange_);
 
-    // Tiled preview
-    var tiledPreview = pskl.UserSettings.get(pskl.UserSettings.TILED_PREVIEW);
-    var tiledPreviewCheckbox = document.querySelector('.tiled-preview-checkbox');
-    if (tiledPreview) {
-      tiledPreviewCheckbox.setAttribute('checked', tiledPreview);
+    // Seamless mode
+    var seamlessMode = pskl.UserSettings.get(pskl.UserSettings.SEAMLESS_MODE);
+    var seamlessModeCheckbox = document.querySelector('.seamless-mode-checkbox');
+    if (seamlessMode) {
+      seamlessModeCheckbox.setAttribute('checked', seamlessMode);
     }
-    this.addEventListener(tiledPreviewCheckbox, 'change', this.onTiledPreviewChange_);
+    this.addEventListener(seamlessModeCheckbox, 'change', this.onSeamlessModeChange_);
 
     // Max FPS
     var maxFpsInput = document.querySelector('.max-fps-input');
@@ -55,8 +55,8 @@
     pskl.UserSettings.set(pskl.UserSettings.GRID_WIDTH, width);
   };
 
-  ns.ApplicationSettingsController.prototype.onTiledPreviewChange_ = function (evt) {
-    pskl.UserSettings.set(pskl.UserSettings.TILED_PREVIEW, evt.currentTarget.checked);
+  ns.ApplicationSettingsController.prototype.onSeamlessModeChange_ = function (evt) {
+    pskl.UserSettings.set(pskl.UserSettings.SEAMLESS_MODE, evt.currentTarget.checked);
   };
 
   ns.ApplicationSettingsController.prototype.onBackgroundClick_ = function (evt) {

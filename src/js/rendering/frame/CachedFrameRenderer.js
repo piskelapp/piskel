@@ -34,7 +34,7 @@
     var serializedFrame = [
       this.getZoom(),
       this.getGridWidth(),
-      pskl.UserSettings.get('TILED_PREVIEW'),
+      pskl.UserSettings.get('SEAMLESS_MODE'),
       offset.x, offset.y,
       size.width, size.height,
       frame.getHash()

@@ -258,7 +258,7 @@
       this.margin.y - this.offset.y * z
     );
 
-    if (pskl.UserSettings.get('TILED_PREVIEW')) {
+    if (pskl.UserSettings.get('SEAMLESS_MODE')) {
       displayContext.clearRect(-1 * w * z, -1 * h * z, 3 * w * z, 3 * h * z);
     } else {
       displayContext.clearRect(0, 0, w * z, h * z);
@@ -268,14 +268,14 @@
     if (gridWidth > 0) {
       var scaled = pskl.utils.ImageResizer.resizeNearestNeighbour(this.canvas, z, gridWidth);
 
-      if (pskl.UserSettings.get('TILED_PREVIEW')) {
+      if (pskl.UserSettings.get('SEAMLESS_MODE')) {
         this.drawTiledFrames_(displayContext, scaled, w, h, z);
       }
       displayContext.drawImage(scaled, 0, 0);
     } else {
       displayContext.scale(z, z);
 
-      if (pskl.UserSettings.get('TILED_PREVIEW')) {
+      if (pskl.UserSettings.get('SEAMLESS_MODE')) {
         this.drawTiledFrames_(displayContext, this.canvas, w, h, 1);
       }
       displayContext.drawImage(this.canvas, 0, 0);
