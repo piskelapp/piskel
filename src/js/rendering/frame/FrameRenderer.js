@@ -75,9 +75,12 @@
   };
 
   ns.FrameRenderer.prototype.setZoom = function (zoom) {
-    if (zoom < Constants.MINIMUM_ZOOM) {
-      zoom = Constants.MINIMUM_ZOOM;
-    }
+    // Minimum zoom is one to ensure one sprite pixel occupies at least one pixel on screen.
+    var minimumZoom = 1;
+    // Maximum zoom is relative to the display dimensions to ensure at least 10 pixels can
+    // be drawn on screen.
+    var maximumZoom = Math.min(this.displayWidth, this.displayHeight) / 10;
+    zoom = pskl.utils.Math.minmax(zoom, minimumZoom, maximumZoom);
 
     if (zoom == this.zoom) {
       return;
