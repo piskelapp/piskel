@@ -171,82 +171,24 @@
   };
 
   ns.ImportImageController.prototype.importImageToPiskel_ = function () {
-    var image = this.importedImage_;
-    if (image) {
+    if (this.importedImage_) {
       if (window.confirm('You are about to create a new Piskel, unsaved changes will be lost.')) {
-        var gifLoader = new window.SuperGif({
-          gif : image
-        });
-
-        var resizeW = this.resizeWidth.val();
-        var resizeH = this.resizeHeight.val();
-
-        gifLoader.load({
-          success : function () {
-            var images = gifLoader.getFrames().map(function (frame) {
-              return pskl.utils.CanvasUtils.createFromImageData(frame.data);
-            });
-
-            if (this.getImportType_() === 'single' || images.length > 1) {
-              // Single image import or animated gif
-              this.createPiskelFromImages_(images, resizeW, resizeH);
-            } else {
-              // Spritesheet
-              this.createImagesFromSheet_(images[0]);
-            }
-            this.closeDialog();
-          }.bind(this),
-          error: function () {
-            if (this.getImportType_() === 'single') {
-              // Single image
-              this.createPiskelFromImages_([image], resizeW, resizeH);
-            } else {
-              // Spritesheet
-              this.createImagesFromSheet_(image);
-            }
-            this.closeDialog();
-          }.bind(this)
-        });
-
+        pskl.app.importService.newPiskelFromImage(
+          this.importedImage_,
+          {
+            importType: this.getImportType_(),
+            frameSizeX: this.getImportType_() === 'single' ?
+                this.resizeWidth.val() : this.sanitizeInputValue_(this.frameSizeX, 1),
+            frameSizeY: this.getImportType_() === 'single' ?
+                this.resizeHeight.val() : this.sanitizeInputValue_(this.frameSizeY, 1),
+            frameOffsetX: this.sanitizeInputValue_(this.frameOffsetX, 0),
+            frameOffsetY: this.sanitizeInputValue_(this.frameOffsetY, 0),
+            smoothing: !!this.smoothResize.prop('checked')
+          },
+          this.closeDialog.bind(this)
+        );
       }
     }
-  };
-
-  ns.ImportImageController.prototype.createImagesFromSheet_ = function (image) {
-    var x = this.sanitizeInputValue_(this.frameOffsetX, 0);
-    var y = this.sanitizeInputValue_(this.frameOffsetY, 0);
-    var w = this.sanitizeInputValue_(this.frameSizeX, 1);
-    var h = this.sanitizeInputValue_(this.frameSizeY, 1);
-
-    var images = pskl.utils.CanvasUtils.createFramesFromImage(
-      image,
-      x,
-      y,
-      w,
-      h,
-      /*useHorizonalStrips=*/ true,
-      /*ignoreEmptyFrames=*/ true);
-    this.createPiskelFromImages_(images, w, h);
-  };
-
-  ns.ImportImageController.prototype.createFramesFromImages_ = function (images, w, h) {
-    var smoothing = !!this.smoothResize.prop('checked');
-
-    var frames = images.map(function (image) {
-      var resizedImage = pskl.utils.ImageResizer.resize(image, w, h, smoothing);
-      return pskl.utils.FrameUtils.createFromImage(resizedImage);
-    });
-    return frames;
-  };
-
-  ns.ImportImageController.prototype.createPiskelFromImages_ = function (images, w, h) {
-    var frames = this.createFramesFromImages_(images, w, h);
-    var layer = pskl.model.Layer.fromFrames('Layer 1', frames);
-    var descriptor = new pskl.model.piskel.Descriptor('Imported piskel', '');
-    var piskel = pskl.model.Piskel.fromLayers([layer], descriptor);
-
-    pskl.app.piskelController.setPiskel(piskel);
-    pskl.app.previewController.setFPS(Constants.DEFAULT.FPS);
   };
 
   ns.ImportImageController.prototype.drawFrameGrid_ = function (frameX, frameY, frameW, frameH) {
