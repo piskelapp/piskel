@@ -27,7 +27,7 @@
    * @param {function} [onComplete]
    */
   ns.ImportService.prototype.newPiskelFromImage = function (image, options, onComplete) {
-    onComplete = onComplete || function () {};
+    onComplete = onComplete || Constants.EMPTY_FUNCTION;
     var importType = options.importType;
     var frameSizeX = options.frameSizeX;
     var frameSizeY = options.frameSizeY;
