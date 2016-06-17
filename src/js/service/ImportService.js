@@ -1,8 +1,8 @@
-/* Image and Animation import service supporting the import dialogs,
- * file dropper service, and headless import API. */
+/* @file Image and Animation import service supporting the import dialog. */
 (function () {
   var ns = $.namespace('pskl.service');
   /**
+   * Image an animation import service supporting the import dialog.
    * @param {!PiskelController} piskelController
    * @param {!PreviewController} previewController
    * @constructor
@@ -14,6 +14,8 @@
   };
 
   /**
+   * Given an image object and some options, create a new Piskel and open it
+   * for editing.
    * @param {!Image} image
    * @param {!Object} options
    * @param {!string} options.importType - 'single' if not spritesheet
