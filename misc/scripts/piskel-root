@@ -1,0 +1,4 @@
+#!/usr/bin/env node
+// Writes the absolute path to the release build root to stdout
+var path = require('path');
+process.stdout.write(path.resolve(__dirname, '../../dest/prod') + '\n');
