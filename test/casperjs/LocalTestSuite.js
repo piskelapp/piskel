@@ -1,4 +1,4 @@
-(typeof exports != "undefined" ? exports : pskl_exports).tests = [
+(typeof exports != 'undefined' ? exports : pskl_exports).tests = [
   'SmokeTest.js',
   'DrawingTest.js'
 ];

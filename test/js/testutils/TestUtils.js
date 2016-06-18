@@ -50,7 +50,7 @@
         expect(color).toBe(expected);
       }
     }
-  }
+  };
 
   ns.getRgbaAt = function (image, x, y) {
     var w = image.width;
@@ -66,7 +66,7 @@
       r : imageData[i],
       g : imageData[i + 1],
       b : imageData[i + 2],
-      a : imageData[i + 3]/255
+      a : imageData[i + 3] / 255
     };
-  }
+  };
 })();

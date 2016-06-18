@@ -3,21 +3,54 @@
 
   ns.Serializer = {
     serializePiskel : function (piskel, expanded) {
-      var serializedLayers = piskel.getLayers().map(function (l) {
+      if (!piskel.getDescriptor().description.isMultiPlane) {
+        var plane = piskel.getPlaneAt(0);
+        var serializedLayers = plane.getLayers().map(function (l) {
+          return pskl.utils.Serializer.serializeLayer(l, expanded);
+        });
+        return JSON.stringify({
+          modelVersion : Constants.MODEL_VERSION,
+          piskel : {
+            name : piskel.getDescriptor().name,
+            description : piskel.getDescriptor().description,
+            fps : pskl.app.piskelController.getFPS(),
+            height : piskel.getHeight(),
+            width : piskel.getWidth(),
+            layers : serializedLayers,
+            expanded : expanded
+          }
+        });
+      } else {
+        var serializedPlanes = piskel.getPlanes().map(function (p) {
+          return pskl.utils.Serializer.serializePlane(p, expanded);
+        });
+        return JSON.stringify({
+          modelVersion : Constants.MODEL_VERSION,
+          piskel : {
+            name : piskel.getDescriptor().name,
+            description : piskel.getDescriptor().description,
+            fps : pskl.app.piskelController.getFPS(),
+            height : piskel.getHeight(),
+            width : piskel.getWidth(),
+            planes : serializedPlanes,
+            expanded : expanded,
+            isMultiPlane: true
+          }
+        });
+      }
+    },
+
+    serializePlane : function (plane, expanded) {
+      var layers = plane.getLayers();
+      var serializedLayers = plane.getLayers().map(function (l) {
         return pskl.utils.Serializer.serializeLayer(l, expanded);
       });
-      return JSON.stringify({
-        modelVersion : Constants.MODEL_VERSION,
-        piskel : {
-          name : piskel.getDescriptor().name,
-          description : piskel.getDescriptor().description,
-          fps : pskl.app.piskelController.getFPS(),
-          height : piskel.getHeight(),
-          width : piskel.getWidth(),
-          layers : serializedLayers,
-          expanded : expanded
-        }
-      });
+      return {
+        name : plane.getName(),
+        offset : plane.getOffset(),
+        layerCount : layers.length,
+        layers : serializedLayers
+      };
     },
 
     serializeLayer : function (layer, expanded) {

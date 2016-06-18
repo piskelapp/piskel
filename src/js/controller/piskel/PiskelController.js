@@ -17,10 +17,12 @@
   ns.PiskelController.prototype.setPiskel = function (piskel, preserveState) {
     this.piskel = piskel;
     if (!preserveState) {
+      this.currentPlaneIndex = 0;
       this.currentLayerIndex = 0;
       this.currentFrameIndex = 0;
     }
 
+    this.planeIdCounter = 1;
     this.layerIdCounter = 1;
   };
 
@@ -35,6 +37,131 @@
     return this.piskel.getWidth();
   };
 
+  ns.PiskelController.prototype.getPlanes = function () {
+    return this.piskel.getPlanes();
+  };
+
+  ns.PiskelController.prototype.getCurrentPlane = function () {
+    return this.getPlaneAt(this.currentPlaneIndex);
+  };
+
+  ns.PiskelController.prototype.getPlaneAt = function (index) {
+    return this.piskel.getPlaneAt(index);
+  };
+
+  ns.PiskelController.prototype.hasPlaneAt = function (index) {
+    return !!this.getPlaneAt(index);
+  };
+
+  // FIXME ?? No added value compared to getPlaneAt ??
+  // Except normalizing to null if undefined ?? ==> To merge
+  ns.PiskelController.prototype.getPlaneByIndex = function (index) {
+    var planes = this.getPlanes();
+    if (planes[index]) {
+      return planes[index];
+    } else {
+      return null;
+    }
+  };
+
+  ns.PiskelController.prototype.getCurrentPlaneIndex = function () {
+    return this.currentPlaneIndex;
+  };
+
+  ns.PiskelController.prototype.setCurrentPlaneIndex = function (index) {
+    if (this.hasPlaneAt(index)) {
+      this.currentPlaneIndex = index;
+      this.setCurrentLayerIndex(0);
+    } else {
+      window.console.error('Could not set current plane index to ' + index);
+    }
+  };
+
+  ns.PiskelController.prototype.selectPlane = function (plane) {
+    var index = this.getPlanes().indexOf(plane);
+    if (index != -1) {
+      this.setCurrentPlaneIndex(index);
+    }
+  };
+
+  ns.PiskelController.prototype.renamePlaneAt = function (index, name) {
+    var plane = this.getPlaneByIndex(index);
+    if (plane) {
+      plane.setName(name);
+    }
+  };
+
+  ns.PiskelController.prototype.setPlaneOffsetAt = function (index, offset) {
+    var plane = this.getPlaneByIndex(index);
+    if (plane) {
+      plane.setOffset(offset);
+    }
+  };
+
+  ns.PiskelController.prototype.generatePlaneName_ = function () {
+    var name = 'Plane ' + this.planeIdCounter;
+    while (this.hasPlaneForName_(name)) {
+      this.planeIdCounter++;
+      name = 'Plane ' + this.planeIdCounter;
+    }
+    return name;
+  };
+
+  ns.PiskelController.prototype.createPlane = function (name) {
+    if (!name) {
+      name = this.generatePlaneName_();
+    }
+    if (!this.hasPlaneForName_(name)) {
+      var plane = new pskl.model.Plane(name);
+
+      for (var l = 0; l < this.getLayers().length; l++) {
+        var layer = new pskl.model.Layer('Layer ' + (l + 1));
+        for (var i = 0 ; i < this.getFrameCount() ; i++) {
+          layer.addFrame(this.createEmptyFrame_());
+        }
+        plane.addLayer(layer);
+      }
+
+      this.setCurrentLayerIndex(0);
+      this.piskel.addPlane(plane);
+      this.setCurrentPlaneIndex(this.piskel.getPlanes().length - 1);
+
+    } else {
+      throw 'Plane name should be unique';
+    }
+  };
+
+  ns.PiskelController.prototype.hasPlaneForName_ = function (name) {
+    return this.piskel.getPlanesByName(name).length > 0;
+  };
+
+  ns.PiskelController.prototype.movePlaneUp = function () {
+    var plane = this.getCurrentPlane();
+    this.piskel.movePlaneUp(plane);
+    this.selectPlane(plane);
+  };
+
+  ns.PiskelController.prototype.movePlaneDown = function () {
+    var plane = this.getCurrentPlane();
+    this.piskel.movePlaneDown(plane);
+    this.selectPlane(plane);
+  };
+
+  ns.PiskelController.prototype.removeCurrentPlane = function () {
+    var currentPlaneIndex = this.getCurrentPlaneIndex();
+    this.removePlaneAt(currentPlaneIndex);
+  };
+
+  ns.PiskelController.prototype.removePlaneAt = function (index) {
+    if (this.getPlanes().length > 1) {
+      var plane = this.getPlaneAt(index);
+      if (plane) {
+        this.piskel.removePlane(plane);
+        this.setCurrentPlaneIndex(0);
+      }
+    }
+  };
+
   /**
    * TODO : this should be removed
    * FPS should be stored in the Piskel model and not in the
@@ -47,19 +174,19 @@
   };
 
   ns.PiskelController.prototype.getLayers = function () {
-    return this.piskel.getLayers();
+    return this.getCurrentPlane().getLayers();
   };
 
   ns.PiskelController.prototype.getCurrentLayer = function () {
-    return this.getLayerAt(this.currentLayerIndex);
+    return this.getCurrentPlane().getLayerAt(this.currentLayerIndex);
   };
 
   ns.PiskelController.prototype.getLayerAt = function (index) {
-    return this.piskel.getLayerAt(index);
+    return this.getCurrentPlane().getLayerAt(index);
   };
 
   ns.PiskelController.prototype.hasLayerAt = function (index) {
-    return !!this.getLayerAt(index);
+    return !!this.getCurrentPlane().getLayerAt(index);
   };
 
   // FIXME ?? No added value compared to getLayerAt ??
@@ -96,9 +223,10 @@
     });
   };
 
-  ns.PiskelController.prototype.renderFrameAt = function (index, preserveOpacity) {
-    return pskl.utils.LayerUtils.flattenFrameAt(this.getLayers(), index, preserveOpacity);
-  };
+  ns.PiskelController.prototype.renderFrameAt =
+    function (index, preserveOpacity) {
+      return pskl.utils.LayerUtils.flattenFrameAt(this.getLayers(), index, preserveOpacity);
+    };
 
   ns.PiskelController.prototype.hasFrameAt = function (index) {
     return !!this.getCurrentLayer().getFrameAt(index);
@@ -113,9 +241,11 @@
   };
 
   ns.PiskelController.prototype.addFrameAt = function (index) {
-    this.getLayers().forEach(function (l) {
-      l.addFrameAt(this.createEmptyFrame_(), index);
-    }.bind(this));
+    this.getPlanes().forEach(function (p) {
+      p.getLayers().forEach(function (l) {
+        l.addFrameAt(this.createEmptyFrame_(), index);
+      }, this);
+    }, this);
 
     this.setCurrentFrameIndex(index);
   };
@@ -127,9 +257,12 @@
   };
 
   ns.PiskelController.prototype.removeFrameAt = function (index) {
-    this.getLayers().forEach(function (l) {
-      l.removeFrameAt(index);
-    });
+    this.getPlanes().forEach(function (p) {
+      p.getLayers().forEach(function (l) {
+        l.removeFrameAt(index);
+      }, this);
+    }, this);
+
     // Current frame index is impacted if the removed frame was before the current frame
     if (this.currentFrameIndex >= index && this.currentFrameIndex > 0) {
       this.setCurrentFrameIndex(this.currentFrameIndex - 1);
@@ -141,20 +274,25 @@
   };
 
   ns.PiskelController.prototype.duplicateFrameAt = function (index) {
-    this.getLayers().forEach(function (l) {
-      l.duplicateFrameAt(index);
-    });
+    this.getPlanes().forEach(function (p) {
+      p.getLayers().forEach(function (l) {
+        l.duplicateFrameAt(index);
+      }, this);
+    }, this);
+
     this.setCurrentFrameIndex(index + 1);
   };
 
   ns.PiskelController.prototype.moveFrame = function (fromIndex, toIndex) {
-    this.getLayers().forEach(function (l) {
-      l.moveFrame(fromIndex, toIndex);
-    });
+    this.getPlanes().forEach(function (p) {
+      p.getLayers().forEach(function (l) {
+        l.moveFrame(fromIndex, toIndex);
+      }, this);
+    }, this);
   };
 
   ns.PiskelController.prototype.getFrameCount = function () {
-    var layer = this.piskel.getLayerAt(0);
+    var layer = this.getCurrentPlane().getLayerAt(0);
     return layer.size();
   };
 
@@ -202,6 +340,13 @@
     }
   };
 
+  ns.PiskelController.prototype.setLayerOffsetAt = function (index, offset) {
+    var layer = this.getLayerByIndex(index);
+    if (layer) {
+      layer.setOffset(offset);
+    }
+  };
+
   ns.PiskelController.prototype.setLayerOpacityAt = function (index, opacity) {
     var layer = this.getLayerByIndex(index);
     if (layer) {
@@ -215,7 +360,7 @@
     if (layer && downLayer) {
       var mergedLayer = pskl.utils.LayerUtils.mergeLayers(layer, downLayer);
       this.removeLayerAt(index);
-      this.piskel.addLayerAt(mergedLayer, index);
+      this.getCurrentPlane().addLayerAt(mergedLayer, index);
       this.removeLayerAt(index - 1);
       this.selectLayer(mergedLayer);
     }
@@ -239,8 +384,8 @@
       for (var i = 0 ; i < this.getFrameCount() ; i++) {
         layer.addFrame(this.createEmptyFrame_());
       }
-      this.piskel.addLayer(layer);
-      this.setCurrentLayerIndex(this.piskel.getLayers().length - 1);
+      this.getCurrentPlane().addLayer(layer);
+      this.setCurrentLayerIndex(this.getCurrentPlane().getLayers().length - 1);
 
     } else {
       throw 'Layer name should be unique';
@@ -248,18 +393,18 @@
   };
 
   ns.PiskelController.prototype.hasLayerForName_ = function (name) {
-    return this.piskel.getLayersByName(name).length > 0;
+    return this.getCurrentPlane().getLayersByName(name).length > 0;
   };
 
   ns.PiskelController.prototype.moveLayerUp = function () {
     var layer = this.getCurrentLayer();
-    this.piskel.moveLayerUp(layer);
+    this.getCurrentPlane().moveLayerUp(layer);
     this.selectLayer(layer);
   };
 
   ns.PiskelController.prototype.moveLayerDown = function () {
     var layer = this.getCurrentLayer();
-    this.piskel.moveLayerDown(layer);
+    this.getCurrentPlane().moveLayerDown(layer);
     this.selectLayer(layer);
   };
 
@@ -272,7 +417,7 @@
     if (this.getLayers().length > 1) {
       var layer = this.getLayerAt(index);
       if (layer) {
-        this.piskel.removeLayer(layer);
+        this.getCurrentPlane().removeLayer(layer);
         this.setCurrentLayerIndex(0);
       }
     }

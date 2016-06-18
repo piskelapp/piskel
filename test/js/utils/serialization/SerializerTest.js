@@ -1,4 +1,4 @@
-describe("Serialization/Deserialization test", function() {
+describe('Serialization/Deserialization test', function() {
 
   beforeEach(function() {
     pskl.app.piskelController = {
@@ -11,20 +11,24 @@ describe("Serialization/Deserialization test", function() {
     delete pskl.app.piskelController;
   });
 
-  it("serializes layer opacity", function(done) {
-    var descriptor = new pskl.model.piskel.Descriptor('piskelName', 'piskelDesc');
+  it('serializes layer opacity', function(done) {
+    var descriptor = new pskl.model.piskel.Descriptor('piskelName',
+      'piskelDesc');
     var piskel = new pskl.model.Piskel(1, 1, descriptor);
+    var plane = new pskl.model.Plane('plane');
 
-    piskel.addLayer(new pskl.model.Layer('layer1'));
-    piskel.addLayer(new pskl.model.Layer('layer2'));
-    piskel.addLayer(new pskl.model.Layer('layer3'));
+    piskel.addPlane(plane);
 
-    piskel.getLayerAt(0).setOpacity(0);
-    piskel.getLayerAt(1).setOpacity(0.3);
-    piskel.getLayerAt(2).setOpacity(0.9);
+    plane.addLayer(new pskl.model.Layer('layer1'));
+    plane.addLayer(new pskl.model.Layer('layer2'));
+    plane.addLayer(new pskl.model.Layer('layer3'));
+
+    plane.getLayerAt(0).setOpacity(0);
+    plane.getLayerAt(1).setOpacity(0.3);
+    plane.getLayerAt(2).setOpacity(0.9);
 
     var frame = new pskl.model.Frame(1, 1);
-    piskel.getLayers().forEach(function (layer) {
+    plane.getLayers().forEach(function (layer) {
       layer.addFrame(frame);
     });
 
@@ -32,10 +36,11 @@ describe("Serialization/Deserialization test", function() {
 
     var deserializer = pskl.utils.serialization.Deserializer;
     deserializer.deserialize(JSON.parse(serializedPiskel), function (p) {
-      expect(p.getLayerAt(0).getOpacity()).toBe(0);
-      expect(p.getLayerAt(1).getOpacity()).toBe(0.3);
-      expect(p.getLayerAt(2).getOpacity()).toBe(0.9);
+      var plane = p.getPlaneAt(0);
+      expect(plane.getLayerAt(0).getOpacity()).toBe(0);
+      expect(plane.getLayerAt(1).getOpacity()).toBe(0.3);
+      expect(plane.getLayerAt(2).getOpacity()).toBe(0.9);
       done();
-    })
+    });
   });
 });

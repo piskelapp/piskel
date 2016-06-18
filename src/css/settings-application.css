@@ -30,6 +30,24 @@
   border-color: gold;
 }
 
+.plane-opacity-input {
+  margin: 5px;
+  vertical-align: middle;
+  width: 100px;
+}
+
+.plane-opacity-text {
+  height: 31px;
+  display: inline-block;
+  line-height: 30px;
+  width: 40px;
+  border: 1px solid grey;
+  box-sizing: border-box;
+  border-radius: 3px;
+  text-align: center;
+}
+
+
 .layer-opacity-input {
   margin: 5px;
   vertical-align: middle;

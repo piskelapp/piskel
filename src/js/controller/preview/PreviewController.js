@@ -25,9 +25,12 @@
      */
     this.fpsRangeInput = document.querySelector('#preview-fps');
     this.fpsCounterDisplay = document.querySelector('#display-fps');
-    this.openPopupPreview = document.querySelector('.open-popup-preview-button');
+    this.openPopupPreview = document
+      .querySelector('.open-popup-preview-button');
     this.originalSizeButton = document.querySelector('.original-size-button');
-    this.toggleOnionSkinButton = document.querySelector('.preview-toggle-onion-skin');
+    this.toggleOnionSkinButton = document
+      .querySelector('.preview-toggle-onion-skin');
+    this.resetCameraButton = document.querySelector('.reset-camera-button');
 
     /**
      * !! WARNING !! THIS SHOULD REMAIN HERE UNTIL, BECAUSE THE PREVIEW CONTROLLER
@@ -36,22 +39,60 @@
      */
     this.setFPS(Constants.DEFAULT.FPS);
 
-    this.renderer = new pskl.rendering.frame.BackgroundImageFrameRenderer(this.container);
+    this.prevPlanesData = {};
+
+    // check if we are in a test or not.
+    if (!this.isInTestMode_()) {
+      console.log('Not in test mode !');
+      this.renderer = new pskl.rendering.frame.Renderer3D(this.container);
+    } else {
+      console.log('In test mode !');
+      this.renderer = {
+        zoom: 0,
+        render: Constants.EMPTY_FUNCTION,
+        show: Constants.EMPTY_FUNCTION,
+        updatePlanes: Constants.EMPTY_FUNCTION,
+        getZoom: function () {return this.zoom;},
+        setZoom: function (zoom) {this.zoom = zoom;},
+        setRepeated: Constants.EMPTY_FUNCTION,
+        resetCamera: Constants.EMPTY_FUNCTION
+      };
+    }
+
     this.popupPreviewController = new ns.PopupPreviewController(piskelController);
   };
 
+  ns.PreviewController.prototype.isInTestMode_ = function () {
+    var href = document.location.href;
+
+    var testModeOn = href.indexOf('test=true') !== -1;
+    var runTestModeOn = href.indexOf('test-run=') !== -1;
+    var runSuiteModeOn = href.indexOf('test-suite=') !== -1;
+    return testModeOn || runTestModeOn || runSuiteModeOn;
+  };
+
   ns.PreviewController.prototype.init = function () {
-    this.fpsRangeInput.addEventListener('change', this.onFpsRangeInputUpdate_.bind(this));
-    this.fpsRangeInput.addEventListener('input', this.onFpsRangeInputUpdate_.bind(this));
+    this.fpsRangeInput.addEventListener('change',
+      this.onFpsRangeInputUpdate_.bind(this));
+    this.fpsRangeInput.addEventListener('input',
+      this.onFpsRangeInputUpdate_.bind(this));
 
-    document.querySelector('.right-column').style.width = Constants.ANIMATED_PREVIEW_WIDTH + 'px';
+    document.querySelector('.right-column').style.width =
+      Constants.ANIMATED_PREVIEW_WIDTH + 'px';
 
-    pskl.utils.Event.addEventListener(this.toggleOnionSkinButton, 'click', this.toggleOnionSkin_, this);
-    pskl.utils.Event.addEventListener(this.openPopupPreview, 'click', this.onOpenPopupPreviewClick_, this);
-    pskl.utils.Event.addEventListener(this.originalSizeButton, 'click', this.onOriginalSizeButtonClick_, this);
+    pskl.utils.Event.addEventListener(this.toggleOnionSkinButton, 'click',
+      this.toggleOnionSkin_, this);
+    pskl.utils.Event.addEventListener(this.openPopupPreview, 'click',
+      this.onOpenPopupPreviewClick_, this);
+    pskl.utils.Event.addEventListener(this.originalSizeButton, 'click',
+      this.onOriginalSizeButtonClick_, this);
+    pskl.utils.Event.addEventListener(this.resetCameraButton, 'click',
+      this.onResetCameraButtonClick_, this);
 
-    pskl.app.shortcutService.registerShortcut(this.onionSkinShortcut, this.toggleOnionSkin_.bind(this));
-    pskl.app.shortcutService.registerShortcut(this.originalSizeShortcut, this.onOriginalSizeButtonClick_.bind(this));
+    pskl.app.shortcutService.registerShortcut(this.onionSkinShortcut,
+        this.toggleOnionSkin_.bind(this));
+    pskl.app.shortcutService.registerShortcut(this.originalSizeShortcut,
+        this.onOriginalSizeButtonClick_.bind(this));
 
     $.subscribe(Events.FRAME_SIZE_CHANGED, this.onFrameSizeChange_.bind(this));
     $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
@@ -66,12 +107,18 @@
     this.updateOriginalSizeButton_();
     this.updateMaxFPS_();
     this.updateContainerDimensions_();
+
+    this.currentFrame_ = pskl.utils.LayerUtils.mergeFrameAt(this.piskelController.getLayers(), this.currentIndex);
+    this.currentFrames_ = this.getCurrentFrames_(0);
   };
 
   ns.PreviewController.prototype.initTooltips_ = function () {
-    var onionSkinTooltip = pskl.utils.TooltipFormatter.format('Toggle onion skin', this.onionSkinShortcut);
+    this.resetCameraButton.setAttribute('title', 'Reset camera');
+    var onionSkinTooltip = pskl.utils.TooltipFormatter
+      .format('Toggle onion skin', this.onionSkinShortcut);
     this.toggleOnionSkinButton.setAttribute('title', onionSkinTooltip);
-    var originalSizeTooltip = pskl.utils.TooltipFormatter.format('Original size preview', this.originalSizeShortcut);
+    var originalSizeTooltip = pskl.utils.TooltipFormatter
+      .format('Original size preview', this.originalSizeShortcut);
     this.originalSizeButton.setAttribute('title', originalSizeTooltip);
   };
 
@@ -80,21 +127,27 @@
   };
 
   ns.PreviewController.prototype.onOriginalSizeButtonClick_ = function () {
-    var isEnabled = pskl.UserSettings.get(pskl.UserSettings.ORIGINAL_SIZE_PREVIEW);
+    var isEnabled = pskl.UserSettings
+      .get(pskl.UserSettings.ORIGINAL_SIZE_PREVIEW);
     pskl.UserSettings.set(pskl.UserSettings.ORIGINAL_SIZE_PREVIEW, !isEnabled);
   };
 
-  ns.PreviewController.prototype.onUserSettingsChange_ = function (evt, name, value) {
-    if (name == pskl.UserSettings.ONION_SKIN) {
-      this.updateOnionSkinPreview_();
-    } else if (name == pskl.UserSettings.MAX_FPS) {
-      this.updateMaxFPS_();
-    } else {
-      this.updateZoom_();
-      this.updateOriginalSizeButton_();
-      this.updateContainerDimensions_();
-    }
+  ns.PreviewController.prototype.onResetCameraButtonClick_ = function () {
+    this.renderer.resetCamera();
   };
+
+  ns.PreviewController.prototype.onUserSettingsChange_ =
+    function (evt, name, value) {
+      if (name == pskl.UserSettings.ONION_SKIN) {
+        this.updateOnionSkinPreview_();
+      } else if (name == pskl.UserSettings.MAX_FPS) {
+        this.updateMaxFPS_();
+      } else {
+        this.updateZoom_();
+        this.updateOriginalSizeButton_();
+        this.updateContainerDimensions_();
+      }
+    };
 
   ns.PreviewController.prototype.updateOnionSkinPreview_ = function () {
     var enabledClassname = 'preview-toggle-onion-skin-enabled';
@@ -104,7 +157,8 @@
 
   ns.PreviewController.prototype.updateOriginalSizeButton_ = function () {
     var enabledClassname = 'original-size-button-enabled';
-    var isEnabled = pskl.UserSettings.get(pskl.UserSettings.ORIGINAL_SIZE_PREVIEW);
+    var isEnabled = pskl.UserSettings
+      .get(pskl.UserSettings.ORIGINAL_SIZE_PREVIEW);
     this.originalSizeButton.classList.toggle(enabledClassname, isEnabled);
   };
 
@@ -115,8 +169,10 @@
   };
 
   ns.PreviewController.prototype.updateZoom_ = function () {
-    var originalSizeEnabled = pskl.UserSettings.get(pskl.UserSettings.ORIGINAL_SIZE_PREVIEW);
-    var seamlessModeEnabled = pskl.UserSettings.get(pskl.UserSettings.SEAMLESS_MODE);
+    var originalSizeEnabled = pskl.UserSettings
+      .get(pskl.UserSettings.ORIGINAL_SIZE_PREVIEW);
+    var seamlessModeEnabled = pskl.UserSettings
+      .get(pskl.UserSettings.SEAMLESS_MODE);
     var useOriginalSize = originalSizeEnabled || seamlessModeEnabled;
 
     var zoom = useOriginalSize ? 1 : this.calculateZoom_();
@@ -166,16 +222,59 @@
   };
 
   ns.PreviewController.prototype.render = function (delta) {
+    if (this.shouldUpdatePlanes_()) {
+      this.renderer.updatePlanes(
+        this.piskelController.getPlanes(),
+        this.piskelController.getWidth(),
+        this.piskelController.getHeight(),
+        pskl.UserSettings.get(pskl.UserSettings.PLANE_PREVIEW)
+      );
+    }
+
     this.elapsedTime += delta;
     var index = this.getNextIndex_(delta);
+    var shouldUpdate = false;
+
     if (this.shouldRender_() || this.currentIndex != index) {
       this.currentIndex = index;
-      var frame = pskl.utils.LayerUtils.mergeFrameAt(this.piskelController.getLayers(), index);
-      this.renderer.render(frame);
+      this.currentFrame_ = pskl.utils.LayerUtils.mergeFrameAt(this.piskelController.getLayers(), index);
+      this.currentFrames_ = this.getCurrentFrames_(index);
       this.renderFlag = false;
-
-      this.popupPreviewController.render(frame);
+      this.popupPreviewController.render(this.currentFrame_);
+      shouldUpdate = true;
     }
+
+    this.renderer.render(this.currentFrames_, shouldUpdate);
+  };
+
+  ns.PreviewController.prototype.shouldUpdatePlanes_ = function () {
+    var newPlaneData = {
+      count: this.piskelController.getPlanes().length,
+      width: this.piskelController.getWidth(),
+      height: this.piskelController.getHeight(),
+      opacityHash: this.piskelController.getPlanes()
+        .map(function (p) {return p.getOffset();})
+        .join('-'),
+      transparent: pskl.UserSettings.get(pskl.UserSettings.PLANE_PREVIEW),
+      planeOpacity: pskl.UserSettings.get(pskl.UserSettings.PLANE_OPACITY)
+    };
+    var should =
+      this.prevPlanesData.count != newPlaneData.count ||
+      this.prevPlanesData.width != newPlaneData.width ||
+      this.prevPlanesData.height != newPlaneData.height ||
+      this.prevPlanesData.opacityHash != newPlaneData.opacityHash ||
+      this.prevPlanesData.transparent != newPlaneData.transparent ||
+      this.prevPlanesData.planeOpacity != newPlaneData.planeOpacity;
+    this.prevPlanesData = newPlaneData;
+    return should;
+  };
+
+  ns.PreviewController.prototype.getCurrentFrames_ = function (index) {
+    // ugly this-ref
+    var _this = this;
+    return this.piskelController.getPlanes().map(function (plane) {
+      return pskl.utils.LayerUtils.mergeFrameAt(plane.getLayers(), index);
+    });
   };
 
   ns.PreviewController.prototype.getNextIndex_ = function (delta) {
@@ -211,7 +310,8 @@
     var isSeamless = pskl.UserSettings.get(pskl.UserSettings.SEAMLESS_MODE);
     this.renderer.setRepeated(isSeamless);
 
-    var height, width;
+    var height;
+    var width;
 
     if (isSeamless) {
       height = PREVIEW_SIZE;
