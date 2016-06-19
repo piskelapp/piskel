@@ -51,25 +51,12 @@
     return piskel;
   };
 
-  /** If there are more than one plane, the piskel is set as multi-plane. */
-  ns.Piskel.prototype.checkMultiPlane_ = function () {
-    var multiPlane = (this.getPlanes().length != 1);
-
-    if (this.getDescriptor.isMultiPlane !== multiPlane) {
-      //TODO(thejohncrafter) Inform user through a custom dialog service ?
-      $.publish(Events.MULTIPLANE_CHANGED, multiPlane);
-    }
-
-    this.getDescriptor().isMultiPlane = multiPlane;
-  };
-
   ns.Piskel.prototype.getPlanes = function () {
     return this.planes;
   };
 
   ns.Piskel.prototype.addPlane = function (plane) {
     this.planes.push(plane);
-    this.checkMultiPlane_();
   };
 
   ns.Piskel.prototype.getPlanesByName = function (name) {
@@ -103,7 +90,6 @@
     if (index != -1) {
       this.planes.splice(index, 1);
     }
-    this.checkMultiPlane_();
   };
 
   ns.Piskel.prototype.removePlaneAt = function (index) {
@@ -112,7 +98,6 @@
 
   ns.Piskel.prototype.addPlaneAt = function (plane, index) {
     this.planes.splice(index, 0, plane);
-    this.checkMultiPlane_();
   };
 
   ns.Piskel.prototype.getHeight = function () {

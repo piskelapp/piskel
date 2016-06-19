@@ -43,10 +43,9 @@
 
     // check if we are in a test or not.
     if (!this.isInTestMode_()) {
-      console.log('Not in test mode !');
       this.renderer = new pskl.rendering.frame.Renderer3D(this.container);
     } else {
-      console.log('In test mode !');
+      //TODO(thejohncrafter) Mock Renderer3D in devtools/init.js
       this.renderer = {
         zoom: 0,
         render: Constants.EMPTY_FUNCTION,
@@ -55,7 +54,8 @@
         getZoom: function () {return this.zoom;},
         setZoom: function (zoom) {this.zoom = zoom;},
         setRepeated: Constants.EMPTY_FUNCTION,
-        resetCamera: Constants.EMPTY_FUNCTION
+        resetCamera: Constants.EMPTY_FUNCTION,
+        updateSize: Constants.EMPTY_FUNCTION
       };
     }
 

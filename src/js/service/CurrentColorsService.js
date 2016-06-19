@@ -66,8 +66,14 @@
   };
 
   ns.CurrentColorsService.prototype.updateCurrentColors_ = function () {
-    var layers = this.piskelController.getLayers();
-    var frames = layers.map(function (l) {return l.getFrames();}).reduce(function (p, n) {return p.concat(n);});
+    var planes = this.piskelController.getPlanes();
+    var frames = [];
+
+    planes.forEach(function (plane) {
+      var layers = plane.getLayers();
+      frames = frames.concat(layers.map(function (l) {return l.getFrames();})
+        .reduce(function (p, n) {return p.concat(n);}));
+    }, this);
 
     var job = function (frame) {
       return this.cachedFrameProcessor.get(frame);

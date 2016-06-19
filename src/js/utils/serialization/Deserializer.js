@@ -27,11 +27,11 @@
     var piskelData = data.piskel;
     name = name || 'Deserialized piskel';
 
-    var descriptor = new pskl.model.piskel.Descriptor(name, '', false, piskelData.isMultiPlane);
+    var descriptor = new pskl.model.piskel.Descriptor(name, '', false);
     this.piskel_ = new pskl.model.Piskel(piskelData.width, piskelData.height, descriptor);
 
     // previous dercriptor version
-    if (descriptor.isMultiPlane !== true) {
+    if (piskelData.layers !== undefined && piskelData.layers !== null) {
       this.plane_ = new pskl.model.Plane('Plane 1');
       this.planesToLoad_ = 1;
       this.layersToLoad_ = piskelData.layers.length;

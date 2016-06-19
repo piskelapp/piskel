@@ -166,7 +166,7 @@
   ns.DrawingTestPlayer.prototype.onTestEnd_ = function () {
     this.removeMouseShim_();
 
-    var renderer = new pskl.rendering.PiskelRenderer(pskl.app.piskelController);
+    var renderer = new pskl.rendering.PiskelRenderer(pskl.app.piskelController, true);
     var png = renderer.renderAsCanvas().toDataURL();
 
     var success = png === this.referencePng;

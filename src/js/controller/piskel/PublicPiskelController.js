@@ -79,7 +79,8 @@
   ns.PublicPiskelController.prototype.getStateInfo_ = function () {
     var stateInfo = {
       frameIndex : this.piskelController.currentFrameIndex,
-      layerIndex : this.piskelController.currentLayerIndex
+      layerIndex : this.piskelController.currentLayerIndex,
+      planeIndex : this.piskelController.currentPlaneIndex
     };
     return stateInfo;
   };
