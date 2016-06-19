@@ -223,10 +223,13 @@
     });
   };
 
-  ns.PiskelController.prototype.renderFrameAt =
-    function (index, preserveOpacity) {
-      return pskl.utils.LayerUtils.flattenFrameAt(this.getLayers(), index, preserveOpacity);
-    };
+  ns.PiskelController.prototype.renderFrameAt = function (index, preserveOpacity) {
+    return pskl.utils.LayerUtils.flattenFrameAt(this.getLayers(), index, preserveOpacity);
+  };
+
+  ns.PiskelController.prototype.renderPlaneFrameAt = function (plane, index, preserveOpacity) {
+    return pskl.utils.LayerUtils.flattenFrameAt(plane.getLayers(), index, preserveOpacity);
+  };
 
   ns.PiskelController.prototype.hasFrameAt = function (index) {
     return !!this.getCurrentLayer().getFrameAt(index);

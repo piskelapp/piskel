@@ -129,6 +129,14 @@
     return this.layers.length;
   };
 
+  ns.Plane.prototype.getFrameCount = function () {
+    return this.getLayerAt(0).size();
+  };
+
+  ns.Plane.prototype.hasLayerAt = function (index) {
+    return !!this.getLayerAt(index);
+  };
+
   ns.Plane.prototype.getHash = function () {
     return this.offset + ':' + this.layers.map(function (layer) {
       return layer.getHash();

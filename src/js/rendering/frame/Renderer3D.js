@@ -1,4 +1,5 @@
 /* globals THREE:false */
+// ^ for jscs ^
 (function () {
   var ns = $.namespace('pskl.rendering.frame');
   ns.Renderer3D = function (container, zoom) {
@@ -8,13 +9,11 @@
     var containerEl = container.get(0);
     var containerDocument = containerEl.ownerDocument;
 
+    //NOTE: Renderer & camera's size are set layer in updateSize()
     this.scene_ = new THREE.Scene();
-    this.camera_ = new THREE.PerspectiveCamera(75,
-      container.width() / container.width(), 0.1, 1000);
+    this.camera_ = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
     this.renderer_ = new THREE.WebGLRenderer({alpha: true, antialias: true});
 
-    //TODO: find another way to define the renderer's size !
-    this.renderer_.setSize(container.width(), container.width());
     this.renderer_.domElement.classList.add('background-image-frame-container');
     containerEl.appendChild(this.renderer_.domElement);
 
@@ -43,12 +42,17 @@
     this.preferedOpacity_ = 1;
   };
 
-  ns.Renderer3D.prototype.updatePlanes = function (planes, width, height, transparent) {
+  ns.Renderer3D.prototype.updateSize = function (width, height) {
+    this.renderer_.setSize(width, height);
+    this.camera_.aspect = width / height;
+    this.camera_.updateProjectionMatrix();
+  };
+
+  ns.Renderer3D.prototype.updatePlanes = function (planes, width, height) {
     this.planes_.forEach(function (plane) {
       this.scene_.remove(plane);
     }, this);
     this.planes_ = [];
-    this.preferedOpacity_ = transparent ? pskl.UserSettings.get(pskl.UserSettings.PLANE_OPACITY) : 1;
     planes.forEach(function (model) {
       var geometry = new THREE.PlaneGeometry(width / 10, height / 10);
       var material = new THREE.MeshBasicMaterial();
@@ -59,6 +63,11 @@
       this.planes_.push(plane);
       this.scene_.add(plane);
     }, this);
+  };
+
+  ns.Renderer3D.prototype.updateOpacity = function () {
+    this.preferedOpacity_ = pskl.UserSettings.get(pskl.UserSettings.PLANE_PREVIEW) ?
+      pskl.UserSettings.get(pskl.UserSettings.PLANE_OPACITY) : 1;
   };
 
   ns.Renderer3D.prototype.frameToDataUrl_ = function (frame) {
@@ -115,7 +124,7 @@
   };
 
   ns.Renderer3D.prototype.setRepeated = function (repeat) {
-    //TODO: implement !
+    //TODO(thejohncafter): implement !
   };
 
   ns.Renderer3D.prototype.resetCamera = function () {

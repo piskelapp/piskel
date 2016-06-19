@@ -1,4 +1,4 @@
-//TODO: planePreviewShortcut ?
+//TODO(thejohncrafter): planePreviewShortcut ?
 
 (function () {
   var ns = $.namespace('pskl.controller');

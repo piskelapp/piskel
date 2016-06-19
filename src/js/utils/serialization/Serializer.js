@@ -3,7 +3,7 @@
 
   ns.Serializer = {
     serializePiskel : function (piskel, expanded) {
-      if (!piskel.getDescriptor().description.isMultiPlane) {
+      if (!piskel.getDescriptor().isMultiPlane) {
         var plane = piskel.getPlaneAt(0);
         var serializedLayers = plane.getLayers().map(function (l) {
           return pskl.utils.Serializer.serializeLayer(l, expanded);

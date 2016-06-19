@@ -80,14 +80,10 @@
     document.querySelector('.right-column').style.width =
       Constants.ANIMATED_PREVIEW_WIDTH + 'px';
 
-    pskl.utils.Event.addEventListener(this.toggleOnionSkinButton, 'click',
-      this.toggleOnionSkin_, this);
-    pskl.utils.Event.addEventListener(this.openPopupPreview, 'click',
-      this.onOpenPopupPreviewClick_, this);
-    pskl.utils.Event.addEventListener(this.originalSizeButton, 'click',
-      this.onOriginalSizeButtonClick_, this);
-    pskl.utils.Event.addEventListener(this.resetCameraButton, 'click',
-      this.onResetCameraButtonClick_, this);
+    pskl.utils.Event.addEventListener(this.toggleOnionSkinButton, 'click', this.toggleOnionSkin_, this);
+    pskl.utils.Event.addEventListener(this.openPopupPreview, 'click', this.onOpenPopupPreviewClick_, this);
+    pskl.utils.Event.addEventListener(this.originalSizeButton, 'click', this.onOriginalSizeButtonClick_, this);
+    pskl.utils.Event.addEventListener(this.resetCameraButton, 'click', this.onResetCameraButtonClick_, this);
 
     pskl.app.shortcutService.registerShortcut(this.onionSkinShortcut,
         this.toggleOnionSkin_.bind(this));
@@ -114,11 +110,9 @@
 
   ns.PreviewController.prototype.initTooltips_ = function () {
     this.resetCameraButton.setAttribute('title', 'Reset camera');
-    var onionSkinTooltip = pskl.utils.TooltipFormatter
-      .format('Toggle onion skin', this.onionSkinShortcut);
+    var onionSkinTooltip = pskl.utils.TooltipFormatter.format('Toggle onion skin', this.onionSkinShortcut);
     this.toggleOnionSkinButton.setAttribute('title', onionSkinTooltip);
-    var originalSizeTooltip = pskl.utils.TooltipFormatter
-      .format('Original size preview', this.originalSizeShortcut);
+    var originalSizeTooltip = pskl.utils.TooltipFormatter.format('Original size preview', this.originalSizeShortcut);
     this.originalSizeButton.setAttribute('title', originalSizeTooltip);
   };
 
@@ -136,18 +130,21 @@
     this.renderer.resetCamera();
   };
 
-  ns.PreviewController.prototype.onUserSettingsChange_ =
-    function (evt, name, value) {
-      if (name == pskl.UserSettings.ONION_SKIN) {
-        this.updateOnionSkinPreview_();
-      } else if (name == pskl.UserSettings.MAX_FPS) {
-        this.updateMaxFPS_();
-      } else {
-        this.updateZoom_();
-        this.updateOriginalSizeButton_();
-        this.updateContainerDimensions_();
-      }
-    };
+  ns.PreviewController.prototype.onUserSettingsChange_ = function (evt, name, value) {
+    if (name == pskl.UserSettings.ONION_SKIN) {
+      this.updateOnionSkinPreview_();
+    } else if (name == pskl.UserSettings.MAX_FPS) {
+      this.updateMaxFPS_();
+    } else if (name == pskl.UserSettings.PLANE_PREVIEW ||
+      name == pskl.UserSettings.PLANE_OPACITY) {
+      this.renderer.updateOpacity();
+      this.setRenderFlag_(true);
+    } else {
+      this.updateZoom_();
+      this.updateOriginalSizeButton_();
+      this.updateContainerDimensions_();
+    }
+  };
 
   ns.PreviewController.prototype.updateOnionSkinPreview_ = function () {
     var enabledClassname = 'preview-toggle-onion-skin-enabled';
@@ -226,8 +223,7 @@
       this.renderer.updatePlanes(
         this.piskelController.getPlanes(),
         this.piskelController.getWidth(),
-        this.piskelController.getHeight(),
-        pskl.UserSettings.get(pskl.UserSettings.PLANE_PREVIEW)
+        this.piskelController.getHeight()
       );
     }
 
@@ -254,17 +250,13 @@
       height: this.piskelController.getHeight(),
       opacityHash: this.piskelController.getPlanes()
         .map(function (p) {return p.getOffset();})
-        .join('-'),
-      transparent: pskl.UserSettings.get(pskl.UserSettings.PLANE_PREVIEW),
-      planeOpacity: pskl.UserSettings.get(pskl.UserSettings.PLANE_OPACITY)
+        .join('-')
     };
     var should =
       this.prevPlanesData.count != newPlaneData.count ||
       this.prevPlanesData.width != newPlaneData.width ||
       this.prevPlanesData.height != newPlaneData.height ||
-      this.prevPlanesData.opacityHash != newPlaneData.opacityHash ||
-      this.prevPlanesData.transparent != newPlaneData.transparent ||
-      this.prevPlanesData.planeOpacity != newPlaneData.planeOpacity;
+      this.prevPlanesData.opacityHash != newPlaneData.opacityHash;
     this.prevPlanesData = newPlaneData;
     return should;
   };
@@ -334,6 +326,8 @@
     var verticalMargin = (PREVIEW_SIZE - width) / 2;
     containerEl.style.marginLeft = verticalMargin + 'px';
     containerEl.style.marginRight = verticalMargin + 'px';
+
+    this.renderer.updateSize(width, height);
   };
 
   ns.PreviewController.prototype.setRenderFlag_ = function (bool) {

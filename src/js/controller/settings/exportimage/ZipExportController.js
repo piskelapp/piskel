@@ -21,11 +21,13 @@
   ns.ZipExportController.prototype.onZipButtonClick_ = function () {
     var zip = new window.JSZip();
 
-    if (this.splitByLayersCheckbox.checked) {
-      this.splittedExport_(zip);
-    } else {
-      this.mergedExport_(zip);
-    }
+    this.piskelController.getPlanes().forEach(function (plane) {
+      if (this.splitByLayersCheckbox.checked) {
+        this.splittedExport_(zip, plane);
+      } else {
+        this.mergedExport_(zip, plane);
+      }
+    }, this);
 
     var fileName = this.getPiskelName_() + '.zip';
 
@@ -36,33 +38,33 @@
     pskl.utils.FileUtils.downloadAsFile(blob, fileName);
   };
 
-  ns.ZipExportController.prototype.mergedExport_ = function (zip) {
-    var paddingLength = ('' + this.piskelController.getFrameCount()).length;
+  ns.ZipExportController.prototype.mergedExport_ = function (zip, plane) {
+    var paddingLength = ('' + plane.getFrameCount()).length;
     var zoom = this.exportController.getExportZoom();
-    for (var i = 0; i < this.piskelController.getFrameCount(); i++) {
-      var render = this.piskelController.renderFrameAt(i, true);
+    for (var i = 0; i < plane.getFrameCount(); i++) {
+      var render = this.piskelController.renderPlaneFrameAt(plane, i, true);
       var canvas = pskl.utils.ImageResizer.scale(render, zoom);
       var basename = this.pngFilePrefixInput.value;
       var id = pskl.utils.StringUtils.leftPad(i, paddingLength, '0');
-      var filename = basename + id + '.png';
+      var filename = plane.getName() + '_' + basename + id + '.png';
       zip.file(filename, pskl.utils.CanvasUtils.getBase64FromCanvas(canvas) + '\n', {base64: true});
     }
   };
 
-  ns.ZipExportController.prototype.splittedExport_ = function (zip) {
-    var layers = this.piskelController.getLayers();
-    var framePaddingLength = ('' + this.piskelController.getFrameCount()).length;
+  ns.ZipExportController.prototype.splittedExport_ = function (zip, plane) {
+    var layers = plane.getLayers();
+    var framePaddingLength = ('' + plane.getFrameCount()).length;
     var layerPaddingLength = ('' + layers.length).length;
     var zoom = this.exportController.getExportZoom();
-    for (var j = 0; this.piskelController.hasLayerAt(j); j++) {
-      var layer = this.piskelController.getLayerAt(j);
+    for (var j = 0; plane.hasLayerAt(j); j++) {
+      var layer = plane.getLayerAt(j);
       var layerid = pskl.utils.StringUtils.leftPad(j, layerPaddingLength, '0');
-      for (var i = 0; i < this.piskelController.getFrameCount(); i++) {
+      for (var i = 0; i < plane.getFrameCount(); i++) {
         var render = pskl.utils.LayerUtils.renderFrameAt(layer, i, true);
         var canvas = pskl.utils.ImageResizer.scale(render, zoom);
         var basename = this.pngFilePrefixInput.value;
         var frameid = pskl.utils.StringUtils.leftPad(i + 1, framePaddingLength, '0');
-        var filename = 'l' + layerid + '_' + basename + frameid + '.png';
+        var filename = plane.getName() + '_' + 'l' + layerid + '_' + basename + frameid + '.png';
         zip.file(filename, pskl.utils.CanvasUtils.getBase64FromCanvas(canvas) + '\n', {base64: true});
       }
     }

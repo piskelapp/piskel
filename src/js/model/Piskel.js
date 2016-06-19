@@ -53,8 +53,14 @@
 
   /** If there are more than one plane, the piskel is set as multi-plane. */
   ns.Piskel.prototype.checkMultiPlane_ = function () {
-    this.getDescriptor().isMultiPlane = (this.getPlanes().length != 1);
-    //TODO Event : Change to multi-plane ?
+    var multiPlane = (this.getPlanes().length != 1);
+
+    if (this.getDescriptor.isMultiPlane !== multiPlane) {
+      //TODO(thejohncrafter) Inform user through a custom dialog service ?
+      $.publish(Events.MULTIPLANE_CHANGED, multiPlane);
+    }
+
+    this.getDescriptor().isMultiPlane = multiPlane;
   };
 
   ns.Piskel.prototype.getPlanes = function () {
