@@ -46,20 +46,10 @@
       this.renderer = new pskl.rendering.frame.Renderer3D(this.container);
     } else {
       //TODO(thejohncrafter) Mock Renderer3D in devtools/init.js
-      this.renderer = {
-        zoom: 0,
-        render: Constants.EMPTY_FUNCTION,
-        show: Constants.EMPTY_FUNCTION,
-        updatePlanes: Constants.EMPTY_FUNCTION,
-        getZoom: function () {return this.zoom;},
-        setZoom: function (zoom) {this.zoom = zoom;},
-        setRepeated: Constants.EMPTY_FUNCTION,
-        resetCamera: Constants.EMPTY_FUNCTION,
-        updateSize: Constants.EMPTY_FUNCTION
-      };
+      this.renderer = pskl.rendering.frame.Renderer3D.Mocked();
     }
 
-    this.popupPreviewController = new ns.PopupPreviewController(piskelController);
+    this.popupPreviewController = new ns.PopupPreviewController(piskelController, this.isInTestMode_());
   };
 
   ns.PreviewController.prototype.isInTestMode_ = function () {
@@ -219,7 +209,8 @@
   };
 
   ns.PreviewController.prototype.render = function (delta) {
-    if (this.shouldUpdatePlanes_()) {
+    var shouldUpdatePlanes = this.shouldUpdatePlanes_();
+    if (shouldUpdatePlanes) {
       this.renderer.updatePlanes(
         this.piskelController.getPlanes(),
         this.piskelController.getWidth(),
@@ -236,11 +227,11 @@
       this.currentFrame_ = pskl.utils.LayerUtils.mergeFrameAt(this.piskelController.getLayers(), index);
       this.currentFrames_ = this.getCurrentFrames_(index);
       this.renderFlag = false;
-      this.popupPreviewController.render(this.currentFrame_);
       shouldUpdate = true;
     }
 
-    this.renderer.render(this.currentFrames_, shouldUpdate);
+    this.popupPreviewController.render(this.currentFrames_, shouldUpdate);
+    this.renderer.render(this.currentFrames_, shouldUpdate, shouldUpdatePlanes);
   };
 
   ns.PreviewController.prototype.shouldUpdatePlanes_ = function () {
@@ -262,11 +253,9 @@
   };
 
   ns.PreviewController.prototype.getCurrentFrames_ = function (index) {
-    // ugly this-ref
-    var _this = this;
     return this.piskelController.getPlanes().map(function (plane) {
       return pskl.utils.LayerUtils.mergeFrameAt(plane.getLayers(), index);
-    });
+    }, this);
   };
 
   ns.PreviewController.prototype.getNextIndex_ = function (delta) {

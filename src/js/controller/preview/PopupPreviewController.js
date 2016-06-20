@@ -3,15 +3,20 @@
 
   var POPUP_TITLE = 'Piskel - preview';
 
-  ns.PopupPreviewController = function (piskelController) {
+  ns.PopupPreviewController = function (piskelController, useMocked) {
     this.piskelController = piskelController;
     this.popup = null;
     this.renderer = null;
     this.renderFlag = false;
+    this.useMocked = useMocked;
+    this.currentIndex = 0;
   };
 
   ns.PopupPreviewController.prototype.init = function () {
     pskl.utils.Event.addEventListener(window, 'unload', this.onMainWindowUnload_, this);
+
+    this.currentFrame_ = pskl.utils.LayerUtils.mergeFrameAt(this.piskelController.getLayers(), this.currentIndex);
+    this.currentFrames_ = this.getCurrentFrames_(0);
   };
 
   ns.PopupPreviewController.prototype.isOpen = function () {
@@ -33,15 +38,54 @@
     pskl.utils.Event.addEventListener(this.popup, 'resize', this.onWindowResize_, this);
     pskl.utils.Event.addEventListener(this.popup, 'unload', this.onPopupClosed_, this);
     var container = this.popup.document.querySelector('.preview-container');
-    this.renderer = new pskl.rendering.frame.BackgroundImageFrameRenderer($(container));
+
+    if (!this.useMocked) {
+      this.renderer = new pskl.rendering.frame.Renderer3D($(container));
+    } else {
+      this.renderer = pskl.rendering.frame.Mocked();
+    }
+
+    this.firstFrame = true;
     this.updateZoom_();
     this.renderFlag = true;
   };
 
-  ns.PopupPreviewController.prototype.render = function (frame) {
+  ns.PopupPreviewController.prototype.render = function (frames, shouldUpdate, shouldUpdatePlanes) {
     if (this.isOpen() && this.renderer) {
-      this.renderer.render(frame);
-      this.renderFlag = false;
+      if (this.firstFrame || shouldUpdatePlanes) {
+        this.renderer.updatePlanes(
+          this.piskelController.getPlanes(),
+          this.piskelController.getWidth(),
+          this.piskelController.getHeight()
+        );
+      }
+
+      if (this.firstFrame || shouldUpdate) {
+        this.currentFrames_ = frames;
+        this.renderFlag = false;
+      }
+
+      this.firstFrame = false;
+      this.renderer.render(this.currentFrames_, shouldUpdate);
+    }
+  };
+
+  ns.PopupPreviewController.prototype.getCurrentFrames_ = function (index) {
+    return this.piskelController.getPlanes().map(function (plane) {
+      return pskl.utils.LayerUtils.mergeFrameAt(plane.getLayers(), index);
+    }, this);
+  };
+
+  ns.PopupPreviewController.prototype.getNextIndex_ = function (delta) {
+    if (this.fps === 0) {
+      return this.piskelController.getCurrentFrameIndex();
+    } else {
+      var index = Math.floor(this.elapsedTime / (1000 / this.fps));
+      if (!this.piskelController.hasFrameAt(index)) {
+        this.elapsedTime = 0;
+        index = 0;
+      }
+      return index;
     }
   };
 
@@ -72,6 +116,8 @@
     var verticalMargin = (documentElement.clientWidth - width) / 2;
     container.style.marginLeft = verticalMargin + 'px';
     container.style.marginRight = verticalMargin + 'px';
+
+    this.renderer.updateSize(width, height);
   };
 
   ns.PopupPreviewController.prototype.onPopupClosed_ = function () {

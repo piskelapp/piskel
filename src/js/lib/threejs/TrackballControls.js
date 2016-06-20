@@ -76,6 +76,9 @@ THREE.TrackballControls = function ( object, domElement ) {
 	var endEvent = { type: 'end' };
 
 
+	// Bug-fix : document were not correctly set for pup-up windows.
+	var document = domElement.ownerDocument;
+
 	// methods
 
 	this.handleResize = function () {

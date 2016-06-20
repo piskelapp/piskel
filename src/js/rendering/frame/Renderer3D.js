@@ -2,7 +2,8 @@
 // ^ for jscs ^
 (function () {
   var ns = $.namespace('pskl.rendering.frame');
-  ns.Renderer3D = function (container, zoom) {
+
+  ns.Renderer3D = function (container, zoom, testMode) {
     this.container = container;
     this.setZoom(zoom);
 
@@ -40,6 +41,22 @@
     this.cachedFrameProcessor = new pskl.model.frame.CachedFrameProcessor();
     this.cachedFrameProcessor.setFrameProcessor(this.frameToDataUrl_.bind(this));
     this.preferedOpacity_ = 1;
+  };
+
+  // Mocked renderer for test tools
+  //TODO(thejohncafter) Mock this class elsewhere in the test code !
+  ns.Renderer3D.Mocked = function () {
+    return {
+      zoom: 0,
+      render: Constants.EMPTY_FUNCTION,
+      show: Constants.EMPTY_FUNCTION,
+      updatePlanes: Constants.EMPTY_FUNCTION,
+      getZoom: function () {return this.zoom;},
+      setZoom: function (zoom) {this.zoom = zoom;},
+      setRepeated: Constants.EMPTY_FUNCTION,
+      resetCamera: Constants.EMPTY_FUNCTION,
+      updateSize: Constants.EMPTY_FUNCTION
+    };
   };
 
   ns.Renderer3D.prototype.updateSize = function (width, height) {
@@ -133,6 +150,6 @@
   };
 
   ns.Renderer3D.prototype.dispose = function () {
-    this.shouldContinueAnimate_ = false;
+    this.controls_.enabled = false;
   };
 })();
