@@ -1,7 +1,9 @@
 (function () {
   var ns = $.namespace('pskl.controller.settings');
 
-  ns.ApplicationSettingsController = function () {};
+  ns.ApplicationSettingsController = function (piskelController) {
+    this.piskelController = piskelController;
+  };
 
   pskl.utils.inherit(ns.ApplicationSettingsController, pskl.controller.settings.AbstractSettingController);
 
@@ -51,6 +53,14 @@
     this.addEventListener(layerOpacityInput, 'change', this.onLayerOpacityChange_);
     this.updateLayerOpacityText_(layerOpacityInput.value);
 
+    // plane mode
+    var planeMode = pskl.UserSettings.get(pskl.UserSettings.PLANE_MODE);
+    this.planeModeCheckbox = document.querySelector('.plane-mode-checkbox');
+    if (planeMode) {
+      this.planeModeCheckbox.setAttribute('checked', planeMode);
+    }
+    this.addEventListener(this.planeModeCheckbox, 'change', this.onPlaneModeChange_);
+
     // Form
     this.applicationSettingsForm = document.querySelector('[name="application-settings-form"]');
     this.addEventListener(this.applicationSettingsForm, 'submit', this.onFormSubmit_);
@@ -63,6 +73,10 @@
 
   ns.ApplicationSettingsController.prototype.onSeamlessModeChange_ = function (evt) {
     pskl.UserSettings.set(pskl.UserSettings.SEAMLESS_MODE, evt.currentTarget.checked);
+  };
+
+  ns.ApplicationSettingsController.prototype.onPlaneModeChange_ = function (evt) {
+    pskl.UserSettings.set(pskl.UserSettings.PLANE_MODE, evt.currentTarget.checked);
   };
 
   ns.ApplicationSettingsController.prototype.onBackgroundClick_ = function (evt) {

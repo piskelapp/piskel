@@ -37,6 +37,9 @@
       this.piskelController = new pskl.controller.piskel.PublicPiskelController(this.corePiskelController);
       this.piskelController.init();
 
+      this.multiplaneDisplayService = new pskl.service.MultiplaneDisplayService(this.piskelController);
+      this.multiplaneDisplayService.init();
+
       this.paletteImportService = new pskl.service.palette.PaletteImportService();
       this.paletteService = new pskl.service.palette.PaletteService();
       this.paletteService.addDynamicPalette(new pskl.service.palette.CurrentColorsPalette());

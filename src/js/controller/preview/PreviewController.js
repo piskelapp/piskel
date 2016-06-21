@@ -25,11 +25,9 @@
      */
     this.fpsRangeInput = document.querySelector('#preview-fps');
     this.fpsCounterDisplay = document.querySelector('#display-fps');
-    this.openPopupPreview = document
-      .querySelector('.open-popup-preview-button');
+    this.openPopupPreview = document.querySelector('.open-popup-preview-button');
     this.originalSizeButton = document.querySelector('.original-size-button');
-    this.toggleOnionSkinButton = document
-      .querySelector('.preview-toggle-onion-skin');
+    this.toggleOnionSkinButton = document.querySelector('.preview-toggle-onion-skin');
     this.resetCameraButton = document.querySelector('.reset-camera-button');
 
     /**
@@ -43,10 +41,10 @@
 
     // check if we are in a test or not.
     if (!this.isInTestMode_()) {
-      this.renderer = new pskl.rendering.frame.Renderer3D(this.container);
+      //this.renderer = new pskl.rendering.frame.Renderer3D(this.container);
     } else {
       //TODO(thejohncrafter) Mock Renderer3D in devtools/init.js
-      this.renderer = pskl.rendering.frame.Renderer3D.Mocked();
+      //this.renderer = pskl.rendering.frame.Renderer3D.Mocked();
     }
 
     this.popupPreviewController = new ns.PopupPreviewController(piskelController, this.isInTestMode_());
@@ -62,31 +60,31 @@
   };
 
   ns.PreviewController.prototype.init = function () {
-    this.fpsRangeInput.addEventListener('change',
-      this.onFpsRangeInputUpdate_.bind(this));
-    this.fpsRangeInput.addEventListener('input',
-      this.onFpsRangeInputUpdate_.bind(this));
+    this.optionals_ = $('.preview-contextual-actions > .optional');
 
-    document.querySelector('.right-column').style.width =
-      Constants.ANIMATED_PREVIEW_WIDTH + 'px';
+    this.fpsRangeInput.addEventListener('change', this.onFpsRangeInputUpdate_.bind(this));
+    this.fpsRangeInput.addEventListener('input', this.onFpsRangeInputUpdate_.bind(this));
+
+    document.querySelector('.right-column').style.width = Constants.ANIMATED_PREVIEW_WIDTH + 'px';
 
     pskl.utils.Event.addEventListener(this.toggleOnionSkinButton, 'click', this.toggleOnionSkin_, this);
     pskl.utils.Event.addEventListener(this.openPopupPreview, 'click', this.onOpenPopupPreviewClick_, this);
     pskl.utils.Event.addEventListener(this.originalSizeButton, 'click', this.onOriginalSizeButtonClick_, this);
     pskl.utils.Event.addEventListener(this.resetCameraButton, 'click', this.onResetCameraButtonClick_, this);
 
-    pskl.app.shortcutService.registerShortcut(this.onionSkinShortcut,
-        this.toggleOnionSkin_.bind(this));
-    pskl.app.shortcutService.registerShortcut(this.originalSizeShortcut,
-        this.onOriginalSizeButtonClick_.bind(this));
+    pskl.app.shortcutService.registerShortcut(this.onionSkinShortcut, this.toggleOnionSkin_.bind(this));
+    pskl.app.shortcutService.registerShortcut(this.originalSizeShortcut, this.onOriginalSizeButtonClick_.bind(this));
 
     $.subscribe(Events.FRAME_SIZE_CHANGED, this.onFrameSizeChange_.bind(this));
     $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
     $.subscribe(Events.PISKEL_SAVE_STATE, this.setRenderFlag_.bind(this, true));
     $.subscribe(Events.PISKEL_RESET, this.setRenderFlag_.bind(this, true));
+    $.subscribe(Events.HISTORY_STATE_LOADED, $.proxy(this.updatePlaneMode_, this));
 
     this.initTooltips_();
     this.popupPreviewController.init();
+
+    this.useRenderer('Preview2D');
 
     this.updateZoom_();
     this.updateOnionSkinPreview_();
@@ -96,6 +94,8 @@
 
     this.currentFrame_ = pskl.utils.LayerUtils.mergeFrameAt(this.piskelController.getLayers(), this.currentIndex);
     this.currentFrames_ = this.getCurrentFrames_(0);
+
+    this.updatePlaneMode_();
   };
 
   ns.PreviewController.prototype.initTooltips_ = function () {
@@ -117,7 +117,16 @@
   };
 
   ns.PreviewController.prototype.onResetCameraButtonClick_ = function () {
-    this.renderer.resetCamera();
+    this.renderController_.resetCamera();
+  };
+
+  ns.PreviewController.prototype.updatePlaneMode_ = function () {
+    var planeMode = pskl.UserSettings.get(pskl.UserSettings.PLANE_MODE) || this.piskelController.isMultiPlane();
+    if (planeMode) {
+      this.useRenderer('Preview3D');
+    } else {
+      this.useRenderer('Preview2D');
+    }
   };
 
   ns.PreviewController.prototype.onUserSettingsChange_ = function (evt, name, value) {
@@ -127,8 +136,10 @@
       this.updateMaxFPS_();
     } else if (name == pskl.UserSettings.PLANE_PREVIEW ||
       name == pskl.UserSettings.PLANE_OPACITY) {
-      this.renderer.updateOpacity();
+      this.renderController_.updateOpacity();
       this.setRenderFlag_(true);
+    } else if (name == pskl.UserSettings.PLANE_MODE) {
+      this.updatePlaneMode_();
     } else {
       this.updateZoom_();
       this.updateOriginalSizeButton_();
@@ -156,14 +167,12 @@
   };
 
   ns.PreviewController.prototype.updateZoom_ = function () {
-    var originalSizeEnabled = pskl.UserSettings
-      .get(pskl.UserSettings.ORIGINAL_SIZE_PREVIEW);
-    var seamlessModeEnabled = pskl.UserSettings
-      .get(pskl.UserSettings.SEAMLESS_MODE);
+    var originalSizeEnabled = pskl.UserSettings.get(pskl.UserSettings.ORIGINAL_SIZE_PREVIEW);
+    var seamlessModeEnabled = pskl.UserSettings.get(pskl.UserSettings.SEAMLESS_MODE);
     var useOriginalSize = originalSizeEnabled || seamlessModeEnabled;
 
     var zoom = useOriginalSize ? 1 : this.calculateZoom_();
-    this.renderer.setZoom(zoom);
+    this.renderController_.setZoom(zoom);
     this.setRenderFlag_(true);
   };
 
@@ -209,15 +218,6 @@
   };
 
   ns.PreviewController.prototype.render = function (delta) {
-    var shouldUpdatePlanes = this.shouldUpdatePlanes_();
-    if (shouldUpdatePlanes) {
-      this.renderer.updatePlanes(
-        this.piskelController.getPlanes(),
-        this.piskelController.getWidth(),
-        this.piskelController.getHeight()
-      );
-    }
-
     this.elapsedTime += delta;
     var index = this.getNextIndex_(delta);
     var shouldUpdate = false;
@@ -230,26 +230,8 @@
       shouldUpdate = true;
     }
 
-    this.popupPreviewController.render(this.currentFrames_, shouldUpdate);
-    this.renderer.render(this.currentFrames_, shouldUpdate, shouldUpdatePlanes);
-  };
-
-  ns.PreviewController.prototype.shouldUpdatePlanes_ = function () {
-    var newPlaneData = {
-      count: this.piskelController.getPlanes().length,
-      width: this.piskelController.getWidth(),
-      height: this.piskelController.getHeight(),
-      opacityHash: this.piskelController.getPlanes()
-        .map(function (p) {return p.getOffset();})
-        .join('-')
-    };
-    var should =
-      this.prevPlanesData.count != newPlaneData.count ||
-      this.prevPlanesData.width != newPlaneData.width ||
-      this.prevPlanesData.height != newPlaneData.height ||
-      this.prevPlanesData.opacityHash != newPlaneData.opacityHash;
-    this.prevPlanesData = newPlaneData;
-    return should;
+    this.popupPreviewController.render(this.currentIndex, shouldUpdate);
+    this.renderController_.render(this.currentIndex, shouldUpdate);
   };
 
   ns.PreviewController.prototype.getCurrentFrames_ = function (index) {
@@ -289,7 +271,7 @@
 
   ns.PreviewController.prototype.updateContainerDimensions_ = function () {
     var isSeamless = pskl.UserSettings.get(pskl.UserSettings.SEAMLESS_MODE);
-    this.renderer.setRepeated(isSeamless);
+    this.renderController_.setRepeated(isSeamless);
 
     var height;
     var width;
@@ -316,11 +298,12 @@
     containerEl.style.marginLeft = verticalMargin + 'px';
     containerEl.style.marginRight = verticalMargin + 'px';
 
-    this.renderer.updateSize(width, height);
+    this.renderController_.updateSize(width, height);
   };
 
   ns.PreviewController.prototype.setRenderFlag_ = function (bool) {
     this.renderFlag = bool;
+    this.renderController_.setRenderFlag(bool);
   };
 
   ns.PreviewController.prototype.shouldRender_ = function () {
@@ -330,5 +313,28 @@
   ns.PreviewController.prototype.toggleOnionSkin_ = function () {
     var currentValue = pskl.UserSettings.get(pskl.UserSettings.ONION_SKIN);
     pskl.UserSettings.set(pskl.UserSettings.ONION_SKIN, !currentValue);
+  };
+
+  ns.PreviewController.prototype.useRenderer = function (name) {
+    if (pskl.controller.preview[name]) {
+      if (this.renderController_) {
+        this.renderController_.remove();
+      }
+
+      this.renderController_ =  new pskl.controller.preview[name]
+        (this.piskelController, this.container, this.isInTestMode_());
+      this.renderController_.init();
+      var used = this.renderController_.getToolButtons();
+      this.updateZoom_();
+      this.updateContainerDimensions_();
+
+      this.optionals_.hide();
+
+      used.forEach(function (className) {
+        this.optionals_.filter('.' + className).show();
+      }, this);
+    } else {
+      console.error('No such renderer class : ' + name);
+    }
   };
 })();

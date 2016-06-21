@@ -41,12 +41,6 @@
       </div>
 
       <div class="settings-item">
-        <label>Plane Opacity</label>
-        <input type="range" class="plane-opacity-input" name="plane-opacity" min="0"  max="1" step="0.05"/>
-        <span class="plane-opacity-text"></span>
-      </div>
-
-      <div class="settings-item">
         <label>
           Seamless drawing mode
           <input type="checkbox" value="1" class="seamless-mode-checkbox" name="seamless-mode-checkbox"/>
@@ -56,6 +50,19 @@
       <div class="settings-item">
         <label>Maximum FPS</label>
         <input type="text" class="textfield  textfield-small  max-fps-input" autocomplete="off" name="max-fps"/>
+      </div>
+
+      <div class="settings-item">
+        <label>
+          Use plane-based editor mode
+          <input type="checkbox" value="0" class="plane-mode-checkbox disable-multiplane" name="plane-mode-checkbox"/>
+        </label>
+      </div>
+
+      <div class="settings-item plane-options multiplane-only">
+        <label>Plane Opacity</label>
+        <input type="range" class="plane-opacity-input" name="plane-opacity" min="0"  max="1" step="0.05"/>
+        <span class="plane-opacity-text"></span>
       </div>
 
       <input type="submit" class="button button-primary" value="Apply settings" />

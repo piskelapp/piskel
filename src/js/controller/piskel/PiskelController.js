@@ -426,6 +426,10 @@
     }
   };
 
+  ns.PiskelController.prototype.isMultiPlane = function () {
+    return this.getPlanes().length > 1;
+  };
+
   ns.PiskelController.prototype.serialize = function (expanded) {
     return pskl.utils.Serializer.serializePiskel(this.piskel, expanded);
   };

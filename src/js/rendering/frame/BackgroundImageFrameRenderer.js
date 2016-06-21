@@ -53,4 +53,8 @@
     }
     this.frameContainer.style.backgroundRepeat = repeatValue;
   };
+
+  ns.BackgroundImageFrameRenderer.prototype.remove = function () {
+    $(this.frameContainer).remove();
+  };
 })();

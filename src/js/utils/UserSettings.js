@@ -19,6 +19,7 @@
     EXPORT_TAB: 'EXPORT_TAB',
     PEN_SIZE : 'PEN_SIZE',
     RESIZE_SETTINGS: 'RESIZE_SETTINGS',
+    PLANE_MODE: 'PLANE_MODE',
     KEY_TO_DEFAULT_VALUE_MAP_ : {
       'GRID_WIDTH' : 0,
       'MAX_FPS' : 24,
@@ -43,7 +44,8 @@
         maintainRatio : true,
         resizeContent : false,
         origin : 'TOPLEFT'
-      }
+      },
+      'PLANE_MODE': false
     },
 
     /**
@@ -81,8 +83,15 @@
      */
     readFromLocalStorage_ : function(key) {
       var value = window.localStorage[key];
-      if (typeof value != 'undefined') {
-        value = JSON.parse(value);
+      try {
+        if (typeof value != 'undefined') {
+          value = JSON.parse(value);
+        }
+      } catch (err) {
+        console.log('Local storage corrupted !');
+        console.log(err);
+        console.log(value);
+        return undefined;
       }
       return value;
     },

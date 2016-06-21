@@ -132,6 +132,14 @@
     }
   };
 
+  ns.Renderer3D.prototype.remove = function () {
+    $(this.renderer_.domElement).remove();
+    this.renderer_.forceContextLoss();
+    this.renderer_.context = null;
+    this.renderer_.domElement = null;
+    this.renderer_ = null;
+  };
+
   ns.Renderer3D.prototype.setZoom = function (zoom) {
     this.zoom = zoom;
   };
