@@ -98,6 +98,7 @@
     this.settingsContainer.classList.add(EXP_DRAWER_CLS);
 
     this.isExpanded = true;
+    $.publish(Events.OPEN_SETTINGS_MENU, settings);
   };
 
   ns.SettingsController.prototype.closeDrawer_ = function () {

@@ -47,6 +47,7 @@
       action : action,
       frameIndex : action.state ? action.state.frameIndex : this.piskelController.currentFrameIndex,
       layerIndex : action.state ? action.state.layerIndex : this.piskelController.currentLayerIndex,
+      planeIndex : action.state ? action.state.planeIndex : this.piskelController.currentPlaneIndex,
       uuid: pskl.utils.Uuid.generate()
     };
 
@@ -169,12 +170,14 @@
   ns.HistoryService.prototype.setupState = function (state) {
     this.piskelController.setCurrentFrameIndex(state.frameIndex);
     this.piskelController.setCurrentLayerIndex(state.layerIndex);
+    this.piskelController.setCurrentPlaneIndex(state.planeIndex);
   };
 
   ns.HistoryService.prototype.replayState = function (state) {
     var action = state.action;
     var type = action.type;
-    var layer = this.piskelController.getLayerAt(state.layerIndex);
+    var plane = this.piskelController.getPlaneAt(state.planeIndex);
+    var layer = plane.getLayerAt(state.layerIndex);
     var frame = layer.getFrameAt(state.frameIndex);
     action.scope.replay(frame, action.replay);
   };

@@ -1,0 +1,42 @@
+<div class="toolbox-container planes-list-container multiplane-only">
+  <h3 class="toolbox-title planes-title">Planes
+    <div rel="tooltip"
+         data-placement="left"
+         class="planes-toggle-preview piskel-icon-eye"></div>
+  </h3>
+  <div class="toolbox-buttons">
+    <button data-action="add"
+      class="button planes-button piskel-icon-plus"
+      title="Create a new plane" rel="tooltip" data-placement="top" ></button>
+
+    <button data-action="up"
+      class="button planes-button piskel-icon-arrow-up-fat"
+      title="Move plane up" rel="tooltip" data-placement="top" ></button>
+
+    <button data-action="down"
+      class="button planes-button piskel-icon-arrow-down-fat"
+      title="Move plane down" rel="tooltip" data-placement="top" ></button>
+
+    <button data-action="edit"
+      class="button planes-button piskel-icon-pencil"
+      title="Edit plane name" rel="tooltip" data-placement="top"></button>
+
+    <button data-action="delete"
+      class="button planes-button piskel-icon-close"
+      title="Delete selected plane" rel="tooltip" data-placement="top" ></button>
+
+  </div>
+
+  <ul class="planes-list"></ul>
+
+  <script type="text/template" id="plane-item-template">
+    <li class="plane-item {{isselected:current-plane-item}}"
+        data-plane-index="{{planeindex}}">
+        {{planename}}
+        <span class="plane-item-offset"
+          title="plane offset" rel="tooltip" data-placement="top">
+          {{offset}}
+        </span>
+    </li>
+  </script>
+</div>

@@ -11,9 +11,12 @@
     this.resetWrap_('setCurrentFrameIndex');
     this.resetWrap_('selectNextFrame');
     this.resetWrap_('selectPreviousFrame');
+    this.resetWrap_('setCurrentPlaneIndex');
     this.resetWrap_('setCurrentLayerIndex');
+    this.resetWrap_('selectPlane');
     this.resetWrap_('selectLayer');
     // DECORATED WITH SAVE, NO RESET
+    this.saveWrap_('renamePlaneAt', false);
     this.saveWrap_('renameLayerAt', false);
     // DECORATED WITH SAVE, WITH RESET
     this.saveWrap_('removeCurrentLayer', true);
@@ -24,6 +27,11 @@
     this.saveWrap_('duplicateCurrentFrame', true);
     this.saveWrap_('duplicateFrameAt', true);
     this.saveWrap_('moveFrame', true);
+    this.saveWrap_('createPlane', true);
+    this.saveWrap_('movePlaneUp', true);
+    this.saveWrap_('movePlaneDown', true);
+    this.saveWrap_('removeCurrentPlane', true);
+    this.saveWrap_('setPlaneOffsetAt', true);
     this.saveWrap_('createLayer', true);
     this.saveWrap_('mergeDownLayerAt', true);
     this.saveWrap_('moveLayerUp', true);
@@ -71,7 +79,8 @@
   ns.PublicPiskelController.prototype.getStateInfo_ = function () {
     var stateInfo = {
       frameIndex : this.piskelController.currentFrameIndex,
-      layerIndex : this.piskelController.currentLayerIndex
+      layerIndex : this.piskelController.currentLayerIndex,
+      planeIndex : this.piskelController.currentPlaneIndex
     };
     return stateInfo;
   };

@@ -11,7 +11,7 @@
   ns.Piskel = function (width, height, descriptor) {
     if (width && height && descriptor) {
       /** @type {Array} */
-      this.layers = [];
+      this.planes = [];
 
       /** @type {Number} */
       this.width = width;
@@ -25,7 +25,8 @@
       this.savePath = null;
 
     } else {
-      throw 'Missing arguments in Piskel constructor : ' + Array.prototype.join.call(arguments, ',');
+      throw 'Missing arguments in Piskel constructor : ' + Array.prototype
+        .join.call(arguments, ',');
     }
   };
 
@@ -37,18 +38,66 @@
    */
   ns.Piskel.fromLayers = function (layers, descriptor) {
     var piskel = null;
+    var plane = new pskl.model.Plane('Plane 1');
     if (layers.length > 0 && layers[0].size() > 0) {
       var sampleFrame = layers[0].getFrameAt(0);
       piskel = new pskl.model.Piskel(sampleFrame.getWidth(), sampleFrame.getHeight(), descriptor);
-      layers.forEach(piskel.addLayer.bind(piskel));
+      layers.forEach(plane.addLayer.bind(plane));
     } else {
-      throw 'Piskel.fromLayers expects array of non empty pskl.model.Layer as first argument';
+      throw 'Piskel.fromLayers expects array of non empty pskl.model.Layer' +
+         'as first argument';
     }
+    piskel.addPlane(plane);
     return piskel;
   };
 
-  ns.Piskel.prototype.getLayers = function () {
-    return this.layers;
+  ns.Piskel.prototype.getPlanes = function () {
+    return this.planes;
+  };
+
+  ns.Piskel.prototype.addPlane = function (plane) {
+    this.planes.push(plane);
+  };
+
+  ns.Piskel.prototype.getPlanesByName = function (name) {
+    return this.planes.filter(function (p) {
+      return p.getName() == name;
+    });
+  };
+
+  ns.Piskel.prototype.getPlaneAt = function (index) {
+    return this.planes[index];
+  };
+
+  ns.Piskel.prototype.movePlaneUp = function (plane) {
+    var index = this.planes.indexOf(plane);
+    if (index > -1 && index < this.planes.length - 1) {
+      this.planes[index] = this.planes[index + 1];
+      this.planes[index + 1] = plane;
+    }
+  };
+
+  ns.Piskel.prototype.movePlaneDown = function (plane) {
+    var index = this.planes.indexOf(plane);
+    if (index > 0) {
+      this.planes[index] = this.planes[index - 1];
+      this.planes[index - 1] = plane;
+    }
+  };
+
+  ns.Piskel.prototype.removePlane = function (plane) {
+    var index = this.planes.indexOf(plane);
+    if (index != -1) {
+      this.planes.splice(index, 1);
+    }
+  };
+
+  ns.Piskel.prototype.removePlaneAt = function (index) {
+    this.planes.splice(index, 1);
+  };
+
+  ns.Piskel.prototype.addPlaneAt = function (plane, index) {
+    this.planes.splice(index, 0, plane);
   };
 
   ns.Piskel.prototype.getHeight = function () {
@@ -57,55 +106,6 @@
 
   ns.Piskel.prototype.getWidth = function () {
     return this.width;
-  };
-
-  ns.Piskel.prototype.getLayers = function () {
-    return this.layers;
-  };
-
-  ns.Piskel.prototype.getLayerAt = function (index) {
-    return this.layers[index];
-  };
-
-  ns.Piskel.prototype.getLayersByName = function (name) {
-    return this.layers.filter(function (l) {
-      return l.getName() == name;
-    });
-  };
-
-  ns.Piskel.prototype.addLayer = function (layer) {
-    this.layers.push(layer);
-  };
-
-  ns.Piskel.prototype.addLayerAt = function (layer, index) {
-    this.layers.splice(index, 0, layer);
-  };
-
-  ns.Piskel.prototype.moveLayerUp = function (layer) {
-    var index = this.layers.indexOf(layer);
-    if (index > -1 && index < this.layers.length - 1) {
-      this.layers[index] = this.layers[index + 1];
-      this.layers[index + 1] = layer;
-    }
-  };
-
-  ns.Piskel.prototype.moveLayerDown = function (layer) {
-    var index = this.layers.indexOf(layer);
-    if (index > 0) {
-      this.layers[index] = this.layers[index - 1];
-      this.layers[index - 1] = layer;
-    }
-  };
-
-  ns.Piskel.prototype.removeLayer = function (layer) {
-    var index = this.layers.indexOf(layer);
-    if (index != -1) {
-      this.layers.splice(index, 1);
-    }
-  };
-
-  ns.Piskel.prototype.removeLayerAt = function (index) {
-    this.layers.splice(index, 1);
   };
 
   ns.Piskel.prototype.getDescriptor = function () {
@@ -123,8 +123,8 @@
   };
 
   ns.Piskel.prototype.getHash = function () {
-    return this.layers.map(function (layer) {
-      return layer.getHash();
+    return this.planes.map(function (plane) {
+      return plane.getHash();
     }).join('-');
   };
 

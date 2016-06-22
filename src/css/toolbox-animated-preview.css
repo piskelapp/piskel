@@ -98,6 +98,21 @@
   opacity: 1;
 }
 
+.reset-camera-button {
+  width : 18px;
+  height: 18px;
+  line-height: 18px;
+  margin: 0 5px;
+
+  border: 2px solid white;
+  background-color: rgba(0, 0, 0, 0.3);
+  color: white;
+
+  font-size: 10px;
+  font-weight: bold;
+  font-family: Tahoma;
+}
+
 .original-size-button {
   width : 18px;
   height: 18px;

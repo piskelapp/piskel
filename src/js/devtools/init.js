@@ -2,9 +2,15 @@
   var ns = $.namespace('pskl.devtools');
 
   ns.init = function () {
-    var href = document.location.href.toLowerCase();
-    // test tools
+    // We don't want this to be lower case because the test suites files are
+    // named in both lower and upper case !!!
+    var href = document.location.href;
+
     var testModeOn = href.indexOf('test=true') !== -1;
+    var runTestModeOn = href.indexOf('test-run=') !== -1;
+    var runSuiteModeOn = href.indexOf('test-suite=') !== -1;
+
+    // test tools
     if (testModeOn) {
       this.testRecorder = new pskl.devtools.DrawingTestRecorder(pskl.app.piskelController);
       this.testRecorder.init();
@@ -14,7 +20,6 @@
     }
 
     // test tools
-    var runTestModeOn = href.indexOf('test-run=') !== -1;
     if (runTestModeOn) {
       var testPath = href.split('test-run=')[1];
       this.testRunner = new pskl.devtools.DrawingTestRunner(testPath);
@@ -22,7 +27,6 @@
     }
 
     // test tools
-    var runSuiteModeOn = href.indexOf('test-suite=') !== -1;
     if (runSuiteModeOn) {
       var suitePath = href.split('test-suite=')[1];
       this.testSuiteController = new pskl.devtools.DrawingTestSuiteController(suitePath);

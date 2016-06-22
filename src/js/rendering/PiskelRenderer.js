@@ -2,11 +2,21 @@
 
   var ns = $.namespace('pskl.rendering');
 
-  ns.PiskelRenderer = function (piskelController) {
+  ns.PiskelRenderer = function (piskelController, renderPlanes) {
     var frames = [];
-    for (var i = 0 ; i < piskelController.getFrameCount() ; i++) {
-      frames.push(piskelController.renderFrameAt(i, true));
+
+    if (renderPlanes) {
+      piskelController.getPlanes().forEach(function (plane) {
+        plane.getLayerAt(0).getFrames().forEach(function (frame, index) {
+          frames.push(piskelController.renderPlaneFrameAt(plane, index));
+        }, this);
+      }, this);
+    } else {
+      for (var i = 0 ; i < piskelController.getFrameCount() ; i++) {
+        frames.push(piskelController.renderFrameAt(i, true));
+      }
     }
+
     this.piskelController = piskelController;
     this.frames = frames;
   };

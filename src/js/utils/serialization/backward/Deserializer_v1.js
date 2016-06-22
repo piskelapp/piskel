@@ -10,10 +10,12 @@
     var piskelData = this.data_.piskel;
     var descriptor = new pskl.model.piskel.Descriptor('Deserialized piskel', '');
     var piskel = new pskl.model.Piskel(piskelData.width, piskelData.height, descriptor);
+    var plane = new pskl.model.Plane('Plane 1');
+    piskel.addPlane(plane);
 
     piskelData.layers.forEach(function (serializedLayer) {
       var layer = this.deserializeLayer(serializedLayer);
-      piskel.addLayer(layer);
+      plane.addLayer(layer);
     }.bind(this));
 
     this.callback_(piskel);

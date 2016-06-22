@@ -22,17 +22,23 @@
       var descriptor = new pskl.model.piskel.Descriptor('New Piskel', '');
       var piskel = new pskl.model.Piskel(size.width, size.height, descriptor);
 
+      var plane = new pskl.model.Plane('Plane 1');
       var layer = new pskl.model.Layer('Layer 1');
       var frame = new pskl.model.Frame(size.width, size.height);
 
       layer.addFrame(frame);
-      piskel.addLayer(layer);
+      plane.addLayer(layer);
+      piskel.addPlane(plane);
 
-      this.corePiskelController = new pskl.controller.piskel.PiskelController(piskel);
+      this.corePiskelController = new pskl.controller.piskel
+        .PiskelController(piskel);
       this.corePiskelController.init();
 
       this.piskelController = new pskl.controller.piskel.PublicPiskelController(this.corePiskelController);
       this.piskelController.init();
+
+      this.multiplaneDisplayService = new pskl.service.MultiplaneDisplayService(this.piskelController);
+      this.multiplaneDisplayService.init();
 
       this.paletteImportService = new pskl.service.palette.PaletteImportService();
       this.paletteService = new pskl.service.palette.PaletteService();
@@ -81,6 +87,9 @@
 
       this.layersListController = new pskl.controller.LayersListController(this.piskelController);
       this.layersListController.init();
+
+      this.planesListController = new pskl.controller.PlanesListController(this.piskelController);
+      this.planesListController.init();
 
       this.settingsController = new pskl.controller.settings.SettingsController(this.piskelController);
       this.settingsController.init();
@@ -222,4 +231,3 @@
     }
   };
 })();
-

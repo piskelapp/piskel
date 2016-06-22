@@ -6,6 +6,7 @@
     this.data_ = data;
     this.callback_ = callback;
     this.piskel_ = null;
+    this.planes_ = [];
     this.layers_ = [];
   };
 
@@ -26,14 +27,37 @@
     var piskelData = data.piskel;
     name = name || 'Deserialized piskel';
 
-    var descriptor = new pskl.model.piskel.Descriptor(name, '');
+    var descriptor = new pskl.model.piskel.Descriptor(name, '', false);
     this.piskel_ = new pskl.model.Piskel(piskelData.width, piskelData.height, descriptor);
 
-    this.layersToLoad_ = piskelData.layers.length;
-    if (piskelData.expanded) {
-      piskelData.layers.forEach(this.loadExpandedLayer.bind(this));
+    // previous dercriptor version
+    if (piskelData.layers !== undefined && piskelData.layers !== null) {
+      this.plane_ = new pskl.model.Plane('Plane 1');
+      this.planesToLoad_ = 1;
+      this.layersToLoad_ = piskelData.layers.length;
+      if (piskelData.expanded) {
+        piskelData.layers.forEach(this.loadExpandedLayer.bind(this));
+      } else {
+        piskelData.layers.forEach(this.deserializeLayer.bind(this));
+      }
     } else {
-      piskelData.layers.forEach(this.deserializeLayer.bind(this));
+      this.planeIndex_ = 0;
+      this.planesToLoad_ = piskelData.planes.length;
+      this.deserializePlane(piskelData.planes[0]);
+    }
+  };
+
+  ns.Deserializer.prototype.deserializePlane = function (plane) {
+    var data = this.data_;
+    var piskelData = data.piskel;
+    this.plane_ = new pskl.model.Plane(plane.name);
+    this.plane_.setOffset(plane.offset);
+    this.layersToLoad_ = plane.layers.length;
+
+    if (piskelData.expanded) {
+      plane.layers.forEach(this.loadExpandedLayer.bind(this));
+    } else {
+      plane.layers.forEach(this.deserializeLayer.bind(this));
     }
   };
 
@@ -77,12 +101,28 @@
   };
 
   ns.Deserializer.prototype.onLayerLoaded_ = function () {
-    this.layersToLoad_ = this.layersToLoad_ - 1;
+    this.layersToLoad_--;
     if (this.layersToLoad_ === 0) {
       this.layers_.forEach(function (layer) {
-        this.piskel_.addLayer(layer);
+        this.plane_.addLayer(layer);
       }.bind(this));
+      this.layers_ = [];
+      this.planes_.push(this.plane_);
+      this.onPlaneLoaded_();
+    }
+  };
+
+  ns.Deserializer.prototype.onPlaneLoaded_ = function () {
+    this.planesToLoad_--;
+    if (this.planesToLoad_ === 0) {
+      // ugly this-ref
+      var _this = this;
+      this.planes_.forEach(function (plane) {
+        _this.piskel_.addPlane(plane);
+      });
       this.callback_(this.piskel_);
+    } else {
+      this.deserializePlane(this.data_.piskel.planes[++this.planeIndex_]);
     }
   };
 })();

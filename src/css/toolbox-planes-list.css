@@ -1,23 +1,23 @@
 
 /**
- * Layers container
+ * Planes container
  */
-.layers-list-container {
+.planes-list-container {
   min-height: 85px;
   display: flex;
   flex-direction: column;
 }
 
 /**
- * Layers title and toggle preview
+ * Planes title and toggle preview
  */
 
-.layers-title {
+.planes-title {
   position: relative;
   flex-shrink: 0;
 }
 
-.layers-toggle-preview {
+.planes-toggle-preview {
   position: absolute;
   top: 0.3em;
   right: 0.5em;
@@ -29,35 +29,35 @@
   transition: 0.2s linear;
 }
 
-.layers-toggle-preview:hover {
+.planes-toggle-preview:hover {
   color: white;
 }
 
-.layers-toggle-preview-enabled,
-.layers-toggle-preview-enabled:hover {
+.planes-toggle-preview-enabled,
+.planes-toggle-preview-enabled:hover {
   color : gold;
 }
 
 /**
- * Layers buttons
+ * Planes buttons
  */
 
-.layers-button {
+.planes-button {
   margin: 0;
-  width: 16.66667%;
+  width: 20%;
   float : left;
 }
 
 /**
- * Layers list
+ * Planes list
  */
 
-.layers-list {
+.planes-list {
   font-size : 12px;
   overflow: auto;
 }
 
-.layer-item {
+.plane-item {
   position: relative;
   height:24px;
   line-height: 24px;
@@ -66,17 +66,17 @@
   cursor: pointer;
 }
 
-.layer-item:hover {
+.plane-item:hover {
   background : #222;
 }
 
-.layer-item-opacity {
+.plane-item-offset {
   position: absolute;
   right: 8px;
 }
 
-.current-layer-item,
-.current-layer-item:hover {
+.current-plane-item,
+.current-plane-item:hover {
   background : #333;
   color: gold;
 }

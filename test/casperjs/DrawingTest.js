@@ -1,7 +1,7 @@
 (function () {
-  var tests = require('./test/drawing/DrawingTests.casper.js').tests;
+  var tests = require('../drawing/DrawingTests.casper.js').tests;
 
-  var baseUrl = casper.cli.get('baseUrl')+"?debug";
+  var baseUrl = casper.cli.get('baseUrl') + '?debug';
   var resultSelector = '#drawing-test-result';
 
   casper.start();
@@ -9,10 +9,11 @@
   var runTest = function (index) {
     var test = 'drawing/tests/' + tests[index];
 
-    casper.open(baseUrl + "&test-run=" + test);
+    casper.open(baseUrl + '&test-run=' + test);
 
     casper.then(function () {
       this.echo('Running test : ' + test);
+      this.echo('url: ' + baseUrl + '&test-run=' + test);
       this.wait(casper.cli.get('delay'));
     });
 
@@ -26,11 +27,11 @@
       }, function () {
         // onTimeout
         this.test.fail('Test timed out');
-      }, 60*1000);
+      }, 60 * 1000);
     })
     .run(function () {
-      if (tests[index+1]) {
-        runTest(index+1);
+      if (tests[index + 1]) {
+        runTest(index + 1);
       } else {
         this.test.done();
       }

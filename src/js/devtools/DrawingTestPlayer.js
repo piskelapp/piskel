@@ -36,11 +36,13 @@
   ns.DrawingTestPlayer.prototype.createPiskel_ = function (width, height) {
     var descriptor = new pskl.model.piskel.Descriptor('TestPiskel', '');
     var piskel = new pskl.model.Piskel(width, height, descriptor);
+    var plane = new pskl.model.Plane('Plane 1');
     var layer = new pskl.model.Layer('Layer 1');
     var frame = new pskl.model.Frame(width, height);
 
     layer.addFrame(frame);
-    piskel.addLayer(layer);
+    plane.addLayer(layer);
+    piskel.addPlane(plane);
 
     return piskel;
   };
@@ -164,7 +166,7 @@
   ns.DrawingTestPlayer.prototype.onTestEnd_ = function () {
     this.removeMouseShim_();
 
-    var renderer = new pskl.rendering.PiskelRenderer(pskl.app.piskelController);
+    var renderer = new pskl.rendering.PiskelRenderer(pskl.app.piskelController, true);
     var png = renderer.renderAsCanvas().toDataURL();
 
     var success = png === this.referencePng;

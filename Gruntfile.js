@@ -13,7 +13,7 @@ module.exports = function(grunt) {
 
   // create a version based on the build timestamp
   var dateFormat = require('dateformat');
-  var version = '-' + dateFormat(new Date(), "yyyy-mm-dd-hh-MM");
+  var version = '-' + dateFormat(new Date(), 'yyyy-mm-dd-hh-MM');
 
   /**
    * Helper to prefix all strings in provided array with the provided path
@@ -26,17 +26,17 @@ module.exports = function(grunt) {
 
   // get the list of scripts paths to include
   var scriptPaths = require('./src/piskel-script-list.js').scripts;
-  var piskelScripts = prefixPaths(scriptPaths, "src/").filter(function (path) {
+  var piskelScripts = prefixPaths(scriptPaths, 'src/').filter(function (path) {
     return path.indexOf('devtools') === -1;
   });
 
   // get the list of styles paths to include
   var stylePaths = require('./src/piskel-style-list.js').styles;
-  var piskelStyles = prefixPaths(stylePaths, "src/");
+  var piskelStyles = prefixPaths(stylePaths, 'src/');
 
   var getCasperConfig = function (suiteName, delay, host) {
     var testPaths = require('./test/casperjs/' + suiteName).tests;
-    var tests = prefixPaths(testPaths, "test/casperjs/");
+    var tests = prefixPaths(testPaths, 'test/casperjs/');
 
     return {
       filesSrc : tests,
@@ -86,21 +86,21 @@ module.exports = function(grunt) {
 
     leadingIndent : {
       options: {
-        indentation : "spaces"
+        indentation : 'spaces'
       },
       css : ['src/css/**/*.css']
     },
 
     jscs : {
       options : {
-        "config": ".jscsrc",
-        "maximumLineLength": 120,
-        "requireCamelCaseOrUpperCaseIdentifiers": "ignoreProperties",
-        "validateQuoteMarks": { "mark": "'", "escape": true },
-        "disallowMultipleVarDecl": "exceptUndefined",
-        "disallowSpacesInAnonymousFunctionExpression": null
+        'config': '.jscsrc',
+        'maximumLineLength': 120,
+        'requireCamelCaseOrUpperCaseIdentifiers': 'ignoreProperties',
+        'validateQuoteMarks': {'mark': '\'', 'escape': true},
+        'disallowMultipleVarDecl': 'exceptUndefined',
+        'disallowSpacesInAnonymousFunctionExpression': null
       },
-      js : [ 'src/js/**/*.js' , '!src/js/**/lib/**/*.js' ]
+      js : ['src/js/**/*.js' , '!src/js/**/lib/**/*.js']
     },
 
     jshint: {
@@ -110,7 +110,7 @@ module.exports = function(grunt) {
         browser : true,
         trailing : true,
         curly : true,
-        globals : {'$':true, 'jQuery' : true, 'pskl':true, 'Events':true, 'Constants':true, 'console' : true, 'module':true, 'require':true, 'Q':true}
+        globals : {'$': true, 'jQuery' : true, 'pskl': true, 'Events': true, 'Constants': true, 'console' : true, 'module': true, 'require': true, 'Q': true}
       },
       files: [
         'Gruntfile.js',
@@ -160,7 +160,7 @@ module.exports = function(grunt) {
      * BUILD STEPS
      */
 
-    sprite:{
+    sprite: {
       all : {
         src: 'src/img/icons/**/*.png',
         dest: 'src/img/icons.png',
@@ -211,16 +211,16 @@ module.exports = function(grunt) {
         options: {
           patterns: [{
               match: /^(.|[\r\n])*<!--body-main-start-->/,
-              replacement: "{% raw %}",
-              description : "Remove everything before body-main-start comment"
+              replacement: '{% raw %}',
+              description : 'Remove everything before body-main-start comment'
             },{
               match: /<!--body-main-end-->(.|[\r\n])*$/,
-              replacement: "{% endraw %}",
-              description : "Remove everything after body-main-end comment"
+              replacement: '{% endraw %}',
+              description : 'Remove everything after body-main-end comment'
             },{
               match: /([\r\n])  /g,
-              replacement: "$1",
-              description : "Decrease indentation by one"
+              replacement: '$1',
+              description : 'Decrease indentation by one'
             }
           ]
         },
@@ -278,21 +278,21 @@ module.exports = function(grunt) {
     nwjs: {
       windows : {
         options: {
-          version : "0.12.3",
+          version : '0.12.3',
           build_dir: './dest/desktop/', // destination folder of releases.
           win: true,
           linux32: true,
           linux64: true
         },
-        src: ['./dest/prod/**/*', "./package.json", "!./dest/desktop/"]
+        src: ['./dest/prod/**/*', './package.json', '!./dest/desktop/']
       },
       macos : {
         options: {
           osx64: true,
-          version : "0.12.3",
+          version : '0.12.3',
           build_dir: './dest/desktop/'
         },
-        src: ['./dest/prod/**/*', "./package.json", "!./dest/desktop/"]
+        src: ['./dest/prod/**/*', './package.json', '!./dest/desktop/']
       }
     }
   });

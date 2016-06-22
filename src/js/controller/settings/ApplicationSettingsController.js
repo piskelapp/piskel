@@ -1,7 +1,9 @@
 (function () {
   var ns = $.namespace('pskl.controller.settings');
 
-  ns.ApplicationSettingsController = function () {};
+  ns.ApplicationSettingsController = function (piskelController) {
+    this.piskelController = piskelController;
+  };
 
   pskl.utils.inherit(ns.ApplicationSettingsController, pskl.controller.settings.AbstractSettingController);
 
@@ -39,11 +41,25 @@
     maxFpsInput.value = pskl.UserSettings.get(pskl.UserSettings.MAX_FPS);
     this.addEventListener(maxFpsInput, 'change', this.onMaxFpsChange_);
 
+    // Plane preview opacity
+    var planeOpacityInput = document.querySelector('.plane-opacity-input');
+    planeOpacityInput.value = pskl.UserSettings.get(pskl.UserSettings.PLANE_OPACITY);
+    this.addEventListener(planeOpacityInput, 'change', this.onPlaneOpacityChange_);
+    this.updatePlaneOpacityText_(planeOpacityInput.value);
+
     // Layer preview opacity
     var layerOpacityInput = document.querySelector('.layer-opacity-input');
     layerOpacityInput.value = pskl.UserSettings.get(pskl.UserSettings.LAYER_OPACITY);
     this.addEventListener(layerOpacityInput, 'change', this.onLayerOpacityChange_);
     this.updateLayerOpacityText_(layerOpacityInput.value);
+
+    // plane mode
+    var planeMode = pskl.UserSettings.get(pskl.UserSettings.PLANE_MODE);
+    this.planeModeCheckbox = document.querySelector('.plane-mode-checkbox');
+    if (planeMode) {
+      this.planeModeCheckbox.setAttribute('checked', planeMode);
+    }
+    this.addEventListener(this.planeModeCheckbox, 'change', this.onPlaneModeChange_);
 
     // Form
     this.applicationSettingsForm = document.querySelector('[name="application-settings-form"]');
@@ -57,6 +73,10 @@
 
   ns.ApplicationSettingsController.prototype.onSeamlessModeChange_ = function (evt) {
     pskl.UserSettings.set(pskl.UserSettings.SEAMLESS_MODE, evt.currentTarget.checked);
+  };
+
+  ns.ApplicationSettingsController.prototype.onPlaneModeChange_ = function (evt) {
+    pskl.UserSettings.set(pskl.UserSettings.PLANE_MODE, evt.currentTarget.checked);
   };
 
   ns.ApplicationSettingsController.prototype.onBackgroundClick_ = function (evt) {
@@ -82,6 +102,18 @@
     }
   };
 
+  ns.ApplicationSettingsController.prototype.onPlaneOpacityChange_ = function (evt) {
+    var target = evt.target;
+    var opacity = parseFloat(target.value);
+    if (!isNaN(opacity)) {
+      pskl.UserSettings.set(pskl.UserSettings.PLANE_OPACITY, opacity);
+      pskl.UserSettings.set(pskl.UserSettings.PLANE_PREVIEW, opacity !== 0);
+      this.updatePlaneOpacityText_(opacity);
+    } else {
+      target.value = pskl.UserSettings.get(pskl.UserSettings.PLANE_OPACITY);
+    }
+  };
+
   ns.ApplicationSettingsController.prototype.onLayerOpacityChange_ = function (evt) {
     var target = evt.target;
     var opacity = parseFloat(target.value);
@@ -92,6 +124,11 @@
     } else {
       target.value = pskl.UserSettings.get(pskl.UserSettings.LAYER_OPACITY);
     }
+  };
+
+  ns.ApplicationSettingsController.prototype.updatePlaneOpacityText_ = function (opacity) {
+    var planeOpacityText = document.querySelector('.plane-opacity-text');
+    planeOpacityText.innerHTML = opacity;
   };
 
   ns.ApplicationSettingsController.prototype.updateLayerOpacityText_ = function (opacity) {
