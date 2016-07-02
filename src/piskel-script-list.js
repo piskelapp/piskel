@@ -142,6 +142,7 @@
   "js/widgets/ColorsList.js",
   "js/widgets/HslRgbColorPicker.js",
   "js/widgets/SizeInput.js",
+  "js/widgets/SynchronizedInputs.js",
 
   // Services
   "js/service/storage/StorageService.js",

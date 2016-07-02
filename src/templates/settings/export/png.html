@@ -1,22 +1,26 @@
 <script type="text/html" id="templates/settings/export/png.html">
   <div class="export-panel-png">
-    <div class="export-info">Export your animation as a PNG spritesheet containing all frames.</div>
+    <div class="export-panel-header export-info">Export your animation as a PNG spritesheet containing all frames.</div>
     <div class="export-panel-section  png-export-layout-section">
       <div style="color: gold; padding-bottom: 5px;">Spritesheet layout options:</div>
-      <div style="display: flex;">
-        <div style="flex: 1; line-height: 20px;">
+      <div style="display: flex; line-height: 20px;">
+        <div style="flex: 1;">
           <span>Columns</span>
-          <input type="number" class="textfield" id="png-export-columns" name="png-export-columns">
+          <input type="number" min="1" class="textfield" id="png-export-columns" name="png-export-columns">
         </div>
-        <div style="flex: 1; line-height: 20px;">
-          <label for="png-export-power-two">Power of 2</label>
-          <input type="checkbox" id="png-export-power-two" name="png-export-power-two">
+        <div style="flex: 1;">
+          <span>Rows</span>
+          <input readonly="true" class="textfield" id="png-export-rows" name="png-export-rows">
         </div>
       </div>
     </div>
     <div class="export-panel-section export-panel-row">
       <button type="button" class="button button-primary png-download-button">Download</button>
-      <span class="png-export-dimension-info"></span>
+      <span class="png-export-dimension-info export-info"></span>
+    </div>
+    <div class="export-panel-section export-panel-row png-export-datauri-section">
+      <button type="button" style="white-space: nowrap;" class="button button-primary datauri-open-button">To data-uri</button>
+      <span class="png-export-datauri-info export-info">Open the PNG export in your browser as a data-uri</span>
     </div>
   </div>
 </script>

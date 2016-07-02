@@ -137,11 +137,14 @@
   border-width: 1px;
 }
 
-.export-info {
+.export-panel-header {
   padding: 10px 5px 0px;
-  font-weight: normal;
-  text-shadow: none;
+}
+
+.export-info {
   font-style: italic;
+  text-shadow: none;
+  font-weight: normal;
 }
 
 .export-panel-section {
@@ -167,13 +170,13 @@
   width: 50px;
 }
 
-.png-export-dimension-info {
-  font-style: italic;
-  font-weight: normal;
+.png-export-dimension-info,
+.png-export-datauri-info {
   margin-left: 5px;
 }
 
-#png-export-columns {
+#png-export-columns,
+#png-export-rows {
   /* Override default textfield padding-right to keep the number spinners
      aligned to the right. */
   padding-right: 0;
