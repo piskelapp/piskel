@@ -543,6 +543,7 @@
     <div class="settings-title">
       General
     </div>
+
     <div class="settings-item">
       <label>Background</label>
       <div class="background-picker-wrapper">
@@ -562,7 +563,7 @@
     </div>
 
     <div class="settings-item">
-      <label for="grid-width">Grid</label>
+      <label for="grid-width">Pixel Grid</label>
       <select id="grid-width" class="grid-width-select">
         <option value="0">Disabled</option>
         <option value="1">1px</option>
@@ -573,31 +574,24 @@
     </div>
 
     <div class="settings-item">
-      <label for="tiled-preview">Layer Preview Opacity</label>
+      <label>Layer Opacity</label>
       <input type="range" class="layer-opacity-input" name="layer-opacity" min="0"  max="1" step="0.05"/>
       <span class="layer-opacity-text"></span>
     </div>
 
-  </div>
-
-  <div class="settings-section">
-    <div class="settings-title">
-      Preview
-    </div>
-
     <div class="settings-item">
       <label>
-        <input type="checkbox" value="1" class="tiled-preview-checkbox  checkbox-fix" name="tiled-preview-checkbox"/>
-        Repeated preview
+        Seamless drawing mode
+        <input type="checkbox" value="1" class="seamless-mode-checkbox" name="seamless-mode-checkbox"/>
       </label>
     </div>
 
     <div class="settings-item">
-      <label for="tiled-preview">Maximum FPS </label>
+      <label>Maximum FPS</label>
       <input type="text" class="textfield  textfield-small  max-fps-input" autocomplete="off" name="max-fps"/>
     </div>
 
-    <input type="submit" class="button button-primary" value="Save" />
+    <input type="submit" class="button button-primary" value="Apply settings" />
   </div>
 </form>
 </script>
@@ -794,7 +788,7 @@
 <script type="text/html" id="templates/settings/export.html">
 <div class="settings-section settings-section-export">
   <div class="settings-title">Export</div>
-  <div class="settings-item export-scale" title="Scale the exported PNG spritesheet"
+  <div class="settings-item export-scale" title="Scale the animation for export"
       rel="tooltip"
       data-placement="top">
     <label for="scale-input">Scale</label>
@@ -819,38 +813,42 @@
 
 <script type="text/html" id="templates/settings/export/png.html">
 <div class="export-panel-png">
-  <div class="export-info">Export your animation as a PNG spritesheet containing all frames.</div>
+  <div class="export-panel-header export-info">Export your animation as a PNG spritesheet containing all frames.</div>
   <div class="export-panel-section  png-export-layout-section">
     <div style="color: gold; padding-bottom: 5px;">Spritesheet layout options:</div>
-    <div style="display: flex;">
-      <div style="flex: 1; line-height: 20px;">
+    <div style="display: flex; line-height: 20px;">
+      <div style="flex: 1;">
         <span>Columns</span>
-        <input type="number" class="textfield" id="png-export-columns" name="png-export-columns">
+        <input type="number" min="1" class="textfield" id="png-export-columns" name="png-export-columns">
       </div>
-      <div style="flex: 1; line-height: 20px;">
-        <label for="png-export-power-two">Power of 2</label>
-        <input type="checkbox" id="png-export-power-two" name="png-export-power-two">
+      <div style="flex: 1;">
+        <span>Rows</span>
+        <input readonly="true" class="textfield" id="png-export-rows" name="png-export-rows">
       </div>
     </div>
   </div>
   <div class="export-panel-section export-panel-row">
     <button type="button" class="button button-primary png-download-button">Download</button>
-    <span class="png-export-dimension-info"></span>
+    <span class="png-export-dimension-info export-info"></span>
+  </div>
+  <div class="export-panel-section export-panel-row png-export-datauri-section">
+    <button type="button" style="white-space: nowrap;" class="button button-primary datauri-open-button">To data-uri</button>
+    <span class="png-export-datauri-info export-info">Open the PNG export in your browser as a data-uri</span>
   </div>
 </div>
 </script>
 <script type="text/html" id="templates/settings/export/gif.html">
 <div class="export-panel-gif">
-  <div class="export-info">
+  <div class="export-panel-header export-info">
     Convert your sprite to an animated GIF. Opacity will not be preserved. Colors might be resampled.
   </div>
   <div class="export-panel-section export-panel-row">
     <button type="button" class="button button-primary gif-download-button">Download</button>
-    <div>Download as an animated GIF.</div>
+    <div class="export-info">Download as an animated GIF.</div>
   </div>
   <div class="export-panel-section export-panel-row">
     <button type="button" class="button button-primary gif-upload-button">Upload</button>
-    <div>Upload as an animated GIF to a public URL.</div>
+    <div class="export-info">Upload as an animated GIF to a public URL.</div>
   </div>
   <div class="gif-upload">
     <div class="gif-export-preview"></div>
@@ -860,7 +858,7 @@
 </script>
 <script type="text/html" id="templates/settings/export/zip.html">
 <div class="export-panel-zip">
-  <div class="export-info">ZIP archive containing one PNG for each frame. File names will start with the prefix below.</div>
+  <div class="export-panel-header export-info">ZIP archive containing one PNG for each frame. File names will start with the prefix below.</div>
   <div class="export-panel-section">
     <div style="display: flex; line-height: 23px;">
       <label style="flex-shrink: 0; padding-right:5px;">Prefix</label>
@@ -877,13 +875,13 @@
 </script>
 <script type="text/html" id="templates/settings/export/misc.html">
 <div class="export-panel-misc">
-  <div class="export-info">
+  <div class="export-panel-header export-info">
     Less usual export formats. Feedback and improvements welcome.
   </div>
   <div class="export-panel-section">
     <div style="padding-bottom: 5px">
       <span style="color: gold;">Export as C File: </span>
-      <span style="font-weight: normal; text-shadow: none; font-style: italic">
+      <span class="export-info">
         C file with frame rendered as array.
       </span>
     </div>
@@ -896,9 +894,9 @@
   (function () {
 
 /**
- * See @Gruntfile.js => after build, -2016-06-02-07-27 is replaced by the build version
+ * See @Gruntfile.js => after build, -2016-07-14-11-42 is replaced by the build version
  */
-var version = '-2016-06-02-07-27';
+var version = '-2016-07-14-11-42';
 var versionHasNotBeenReplaced = version.indexOf('@@') === 0;
 if (versionHasNotBeenReplaced)  {
   version = '';
