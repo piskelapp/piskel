@@ -150,6 +150,7 @@
   ns.CheatsheetController.prototype.formatKey_ = function (key) {
     if (pskl.utils.UserAgent.isMac) {
       key = key.replace('ctrl', 'cmd');
+      key = key.replace('alt', 'option');
     }
     key = key.replace(/left/i, '&#65513;');
     key = key.replace(/up/i, '&#65514;');
