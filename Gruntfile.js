@@ -163,7 +163,9 @@ module.exports = function(grunt) {
     sprite:{
       all : {
         src: 'src/img/icons/**/*.png',
+        retinaSrcFilter: 'src/img/icons/**/*@2x.png',
         dest: 'src/img/icons.png',
+        retinaDest: 'src/img/icons@2x.png',
         destCss: 'src/css/icons.css'
       }
     },
