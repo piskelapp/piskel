@@ -31,6 +31,12 @@
     var layers = this.piskelController.getLayers();
     layers.forEach(this.addLayerItem.bind(this));
     this.updateButtonStatus_();
+
+    // Ensure the currently the selected layer is visible.
+    var currentLayerEl = this.layersListEl.querySelector('.current-layer-item');
+    if (currentLayerEl) {
+      currentLayerEl.scrollIntoView();
+    }
   };
 
   ns.LayersListController.prototype.initToggleLayerPreview_ = function () {
