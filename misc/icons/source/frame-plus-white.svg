@@ -9,14 +9,17 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="435"
-   height="409.28125"
-   id="svg3768"
+   width="52"
+   height="52"
+   id="svg2985"
    version="1.1"
    inkscape:version="0.48.4 r9939"
-   sodipodi:docname="New document 3">
+   sodipodi:docname="frame-plus-white.svg"
+   inkscape:export-filename="C:\Development\git\piskel\misc\icons\source\frame-dragndrop-white@2x.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
   <defs
-     id="defs3770" />
+     id="defs2987" />
   <sodipodi:namedview
      id="base"
      pagecolor="#ffffff"
@@ -24,23 +27,28 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.98994949"
-     inkscape:cx="87.95854"
-     inkscape:cy="195.23297"
-     inkscape:document-units="px"
+     inkscape:zoom="8"
+     inkscape:cx="28.16371"
+     inkscape:cy="14.767709"
      inkscape:current-layer="layer1"
-     showgrid="false"
-     fit-margin-top="0"
-     fit-margin-left="0"
-     fit-margin-right="0"
-     fit-margin-bottom="0"
+     showgrid="true"
+     inkscape:document-units="px"
+     inkscape:grid-bbox="true"
      inkscape:window-width="1920"
      inkscape:window-height="1148"
      inkscape:window-x="-8"
      inkscape:window-y="-8"
-     inkscape:window-maximized="1" />
+     inkscape:window-maximized="1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid2993"
+       empspacing="5"
+       visible="true"
+       enabled="true"
+       snapvisiblegridlinesonly="true" />
+  </sodipodi:namedview>
   <metadata
-     id="metadata3773">
+     id="metadata2990">
     <rdf:RDF>
       <cc:Work
          rdf:about="">
@@ -52,21 +60,24 @@
     </rdf:RDF>
   </metadata>
   <g
+     id="layer1"
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
-     id="layer1"
-     transform="translate(-151.0625,-197.71875)">
+     transform="translate(0,-12)">
     <rect
-       style="fill:none;stroke:#ffffff;stroke-width:35;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-       id="rect3784"
-       width="400"
-       height="374.28571"
-       x="168.57143"
-       y="215.21933" />
-    <path
        style="fill:#ffffff;fill-opacity:1;stroke:none"
-       d="m 368.5625,209.5 0,97.0625 c -18.16488,0.20304 -36.33513,0.39071 -54.5,0.59375 l 0,-51.1875 c -36.22093,27.13868 -72.43533,54.2988 -108.65625,81.4375 l 107.375,91.46875 1.28125,-53.5 54.5,0.96875 0,62.25 c 20.86255,0.2332 41.73121,0.45431 62.59375,0.6875 l 0,-51.1875 C 467.37718,415.23243 503.59158,442.3613 539.8125,469.5 l -107.40625,91.5 -1.25,-53.5 -62.59375,1.09375 0,75.1875 200,0 0,-365.71875 -200,-8.5625 z"
-       id="path4296"
-       inkscape:connector-curvature="0" />
+       id="rect4572"
+       width="8"
+       height="32"
+       x="22"
+       y="22" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke:none"
+       id="rect4572-5"
+       width="8"
+       height="32"
+       x="34"
+       y="-42"
+       transform="matrix(0,1,-1,0,0,0)" />
   </g>
 </svg>
