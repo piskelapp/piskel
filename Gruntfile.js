@@ -163,7 +163,9 @@ module.exports = function(grunt) {
     sprite:{
       all : {
         src: 'src/img/icons/**/*.png',
+        retinaSrcFilter: 'src/img/icons/**/*@2x.png',
         dest: 'src/img/icons.png',
+        retinaDest: 'src/img/icons@2x.png',
         destCss: 'src/css/icons.css'
       }
     },
@@ -228,6 +230,20 @@ module.exports = function(grunt) {
           // src/index.html should already have been moved by the includereplace task
           {src: ['dest/tmp/index.html'], dest: 'dest/prod/piskelapp-partials/main-partial.html'}
         ]
+      },
+      // remove the fake header from the desktop build
+      desktop: {
+        options: {
+          patterns: [{
+              match: /<!--standalone-start-->(?:.|[\r\n])*<!--standalone-end-->/,
+              replacement: "",
+              description : "Remove everything between standalone-start & standalone-end"
+            }
+          ]
+        },
+        files: [
+          {src: ['dest/prod/index.html'], dest: 'dest/prod/index.html'}
+        ]
       }
     },
 
@@ -278,7 +294,7 @@ module.exports = function(grunt) {
     nwjs: {
       windows : {
         options: {
-          version : "0.12.3",
+          version : "0.15.4",
           build_dir: './dest/desktop/', // destination folder of releases.
           win: true,
           linux32: true,
@@ -289,7 +305,7 @@ module.exports = function(grunt) {
       macos : {
         options: {
           osx64: true,
-          version : "0.12.3",
+          version : "0.15.4",
           build_dir: './dest/desktop/'
         },
         src: ['./dest/prod/**/*', "./package.json", "!./dest/desktop/"]
@@ -314,15 +330,15 @@ module.exports = function(grunt) {
 
   grunt.registerTask('build-index.html', ['includereplace']);
   grunt.registerTask('merge-statics', ['concat:js', 'concat:css', 'uglify']);
-  grunt.registerTask('build',  ['clean:prod', 'sprite', 'merge-statics', 'build-index.html', 'replace', 'copy:prod']);
+  grunt.registerTask('build',  ['clean:prod', 'sprite', 'merge-statics', 'build-index.html', 'replace:mainPartial', 'copy:prod']);
   grunt.registerTask('build-dev',  ['clean:dev', 'sprite', 'build-index.html', 'copy:dev']);
 
   // Validate & Build
   grunt.registerTask('default', ['lint', 'build']);
 
   // Build stand alone app with nodewebkit
-  grunt.registerTask('desktop', ['clean:desktop', 'default', 'nwjs:windows']);
-  grunt.registerTask('desktop-mac', ['clean:desktop', 'default', 'nwjs:macos']);
+  grunt.registerTask('desktop', ['clean:desktop', 'default', 'replace:desktop', 'nwjs:windows']);
+  grunt.registerTask('desktop-mac', ['clean:desktop', 'default', 'replace:desktop', 'nwjs:macos']);
 
   // Start webserver and watch for changes
   grunt.registerTask('serve', ['build', 'connect:prod', 'open:prod', 'watch:prod']);

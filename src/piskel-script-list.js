@@ -114,10 +114,11 @@
   // Settings sub-controllers
   "js/controller/settings/AbstractSettingController.js",
   "js/controller/settings/ApplicationSettingsController.js",
-  "js/controller/settings/exportimage/ImageExportController.js",
   "js/controller/settings/exportimage/GifExportController.js",
   "js/controller/settings/exportimage/PngExportController.js",
-  "js/controller/settings/exportimage/CExportController.js",
+  "js/controller/settings/exportimage/ZipExportController.js",
+  "js/controller/settings/exportimage/MiscExportController.js",
+  "js/controller/settings/exportimage/ExportController.js",
   "js/controller/settings/resize/AnchorWidget.js",
   "js/controller/settings/resize/ResizeController.js",
   "js/controller/settings/resize/DefaultSizeController.js",
@@ -141,6 +142,7 @@
   "js/widgets/ColorsList.js",
   "js/widgets/HslRgbColorPicker.js",
   "js/widgets/SizeInput.js",
+  "js/widgets/SynchronizedInputs.js",
 
   // Services
   "js/service/storage/StorageService.js",
@@ -168,6 +170,7 @@
   "js/service/keyboard/Shortcut.js",
   "js/service/keyboard/Shortcuts.js",
   "js/service/keyboard/ShortcutService.js",
+  "js/service/ImportService.js",
   "js/service/ImageUploadService.js",
   "js/service/CurrentColorsService.js",
   "js/service/FileDropperService.js",
@@ -201,6 +204,7 @@
   "js/tools/drawing/ColorSwap.js",
   "js/tools/drawing/DitheringTool.js",
   "js/tools/transform/AbstractTransformTool.js",
+  "js/tools/transform/Center.js",
   "js/tools/transform/Clone.js",
   "js/tools/transform/Flip.js",
   "js/tools/transform/Rotate.js",

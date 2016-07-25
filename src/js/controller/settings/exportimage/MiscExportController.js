@@ -3,19 +3,18 @@
 
   var BLACK = '#000000';
 
-  ns.CExportController = function (piskelController) {
+  ns.MiscExportController = function (piskelController) {
     this.piskelController = piskelController;
   };
 
-  pskl.utils.inherit(ns.CExportController, pskl.controller.settings.AbstractSettingController);
+  pskl.utils.inherit(ns.MiscExportController, pskl.controller.settings.AbstractSettingController);
 
-  ns.CExportController.prototype.init = function () {
-
-    var downloadButton = document.querySelector('.c-download-button');
-    this.addEventListener(downloadButton, 'click', this.onCDownloadButtonClick_);
+  ns.MiscExportController.prototype.init = function () {
+    var cDownloadButton = document.querySelector('.c-download-button');
+    this.addEventListener(cDownloadButton, 'click', this.onDownloadCFileClick_);
   };
 
-  ns.CExportController.prototype.onCDownloadButtonClick_ = function (evt) {
+  ns.MiscExportController.prototype.onDownloadCFileClick_ = function (evt) {
     var fileName = this.getPiskelName_() + '.c';
     var cName = this.getPiskelName_().replace(' ','_');
     var width = this.piskelController.getWidth();
@@ -62,11 +61,11 @@
     }.bind(this), 'application/text');
   };
 
-  ns.CExportController.prototype.getPiskelName_ = function () {
+  ns.MiscExportController.prototype.getPiskelName_ = function () {
     return this.piskelController.getPiskel().getDescriptor().name;
   };
 
-  ns.CExportController.prototype.rgbToCHex = function (r, g, b, a) {
+  ns.MiscExportController.prototype.rgbToCHex = function (r, g, b, a) {
     var hexStr = '0x';
     hexStr += ('00' + a.toString(16)).substr(-2);
     hexStr += ('00' + b.toString(16)).substr(-2);

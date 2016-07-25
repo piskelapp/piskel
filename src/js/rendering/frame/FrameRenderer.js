@@ -75,9 +75,12 @@
   };
 
   ns.FrameRenderer.prototype.setZoom = function (zoom) {
-    if (zoom < Constants.MINIMUM_ZOOM) {
-      zoom = Constants.MINIMUM_ZOOM;
-    }
+    // Minimum zoom is one to ensure one sprite pixel occupies at least one pixel on screen.
+    var minimumZoom = 1;
+    // Maximum zoom is relative to the display dimensions to ensure at least 10 pixels can
+    // be drawn on screen.
+    var maximumZoom = Math.min(this.displayWidth, this.displayHeight) / 10;
+    zoom = pskl.utils.Math.minmax(zoom, minimumZoom, maximumZoom);
 
     if (zoom == this.zoom) {
       return;
@@ -237,6 +240,10 @@
       this.canvas = pskl.utils.CanvasUtils.createCanvas(frame.getWidth(), frame.getHeight());
     }
 
+    var w = this.canvas.width;
+    var h = this.canvas.height;
+    var z = this.zoom;
+
     // Draw in canvas
     pskl.utils.FrameUtils.drawToCanvas(frame, this.canvas);
 
@@ -245,31 +252,51 @@
     var displayContext = this.displayCanvas.getContext('2d');
     displayContext.save();
 
-    var smallerHeight = this.canvas.height * this.zoom < this.displayCanvas.height;
-    var smallerWidth = this.canvas.width * this.zoom < this.displayCanvas.width;
-    if (smallerHeight || smallerWidth) {
-      displayContext.fillStyle = Constants.ZOOMED_OUT_BACKGROUND_COLOR;
-      displayContext.fillRect(0, 0, this.displayCanvas.width - 1, this.displayCanvas.height - 1);
-    }
+    // Draw background
+    displayContext.fillStyle = Constants.ZOOMED_OUT_BACKGROUND_COLOR;
+    displayContext.fillRect(0, 0, this.displayCanvas.width - 1, this.displayCanvas.height - 1);
 
     displayContext.translate(
-      this.margin.x - this.offset.x * this.zoom,
-      this.margin.y - this.offset.y * this.zoom
+      this.margin.x - this.offset.x * z,
+      this.margin.y - this.offset.y * z
     );
 
-    displayContext.clearRect(0, 0, this.canvas.width * this.zoom, this.canvas.height * this.zoom);
-
-    var isIE10 = pskl.utils.UserAgent.isIE && pskl.utils.UserAgent.version === 10;
+    if (pskl.UserSettings.get('SEAMLESS_MODE')) {
+      displayContext.clearRect(-1 * w * z, -1 * h * z, 3 * w * z, 3 * h * z);
+    } else {
+      displayContext.clearRect(0, 0, w * z, h * z);
+    }
 
     var gridWidth = this.computeGridWidthForDisplay_();
-    var isGridEnabled = gridWidth > 0;
-    if (isGridEnabled || isIE10) {
-      var scaled = pskl.utils.ImageResizer.resizeNearestNeighbour(this.canvas, this.zoom, gridWidth);
+    if (gridWidth > 0) {
+      var scaled = pskl.utils.ImageResizer.resizeNearestNeighbour(this.canvas, z, gridWidth);
+
+      if (pskl.UserSettings.get('SEAMLESS_MODE')) {
+        this.drawTiledFrames_(displayContext, scaled, w, h, z);
+      }
       displayContext.drawImage(scaled, 0, 0);
     } else {
-      displayContext.scale(this.zoom, this.zoom);
+      displayContext.scale(z, z);
+
+      if (pskl.UserSettings.get('SEAMLESS_MODE')) {
+        this.drawTiledFrames_(displayContext, this.canvas, w, h, 1);
+      }
       displayContext.drawImage(this.canvas, 0, 0);
     }
+
     displayContext.restore();
+  };
+
+  /**
+   * Draw repeatedly the provided image around the main drawing area. Used for seamless
+   * drawing mode, to easily create seamless textures. A colored overlay is applied to
+   * differentiate those additional frames from the main frame.
+   */
+  ns.FrameRenderer.prototype.drawTiledFrames_ = function (context, image, w, h, z) {
+    context.fillStyle = Constants.SEAMLESS_MODE_OVERLAY_COLOR;
+    [[0, -1], [0, 1], [-1, -1], [-1, 0], [-1, 1], [1, -1], [1, 0], [1, 1]].forEach(function (d) {
+      context.drawImage(image, d[0] * w * z, d[1] * h * z);
+      context.fillRect(d[0] * w * z, d[1] * h * z, w * z, h * z);
+    });
   };
 })();

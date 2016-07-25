@@ -11,11 +11,17 @@
     this.frames = frames;
   };
 
-  ns.PiskelRenderer.prototype.renderAsCanvas = function () {
-    var canvas = this.createCanvas_();
+  ns.PiskelRenderer.prototype.renderAsCanvas = function (columns) {
+    columns = columns || this.frames.length;
+    var rows = Math.ceil(this.frames.length / columns);
+
+    var canvas = this.createCanvas_(columns, rows);
+
     for (var i = 0 ; i < this.frames.length ; i++) {
       var frame = this.frames[i];
-      this.drawFrameInCanvas_(frame, canvas, i * this.piskelController.getWidth(), 0);
+      var posX = (i % columns) * this.piskelController.getWidth();
+      var posY = Math.floor(i / columns) * this.piskelController.getHeight();
+      this.drawFrameInCanvas_(frame, canvas, posX, posY);
     }
     return canvas;
   };
@@ -25,10 +31,9 @@
     context.drawImage(frame, offsetWidth, offsetHeight, frame.width, frame.height);
   };
 
-  ns.PiskelRenderer.prototype.createCanvas_ = function () {
-    var count = this.frames.length;
-    var width = count * this.piskelController.getWidth();
-    var height = this.piskelController.getHeight();
+  ns.PiskelRenderer.prototype.createCanvas_ = function (columns, rows) {
+    var width = columns * this.piskelController.getWidth();
+    var height = rows * this.piskelController.getHeight();
     return pskl.utils.CanvasUtils.createCanvas(width, height);
   };
 })();

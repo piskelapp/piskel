@@ -1,24 +1,37 @@
 {
-  "author": "Julian Descottes, Vincent Renaudin",
   "name": "piskel",
-  "main": "./dest/prod/index.html",
-  "description": "Web based 2d animations editor",
-  "version": "0.7.0-SNAPSHOT",
+  "version": "0.9.0-SNAPSHOT",
+  "description": "Pixel art editor",
+  "author": "Julian Descottes <julian.descottes@gmail.com>",
+  "contributors": [
+    "Vincent Renaudin"
+  ],
   "homepage": "http://github.com/juliandescottes/piskel",
+  "license": "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "http://github.com/juliandescottes/piskel.git"
   },
+  "files": [
+    "dest/prod",
+    "misc/scripts/piskel-root"
+  ],
+  "bin": {
+    "piskel-root": "./misc/scripts/piskel-root"
+  },
+  "main": "./dest/prod/index.html",
   "scripts": {
     "test": "grunt test",
-    "start": "nodewebkit"
+    "start": "nodewebkit",
+    "preversion": "grunt test-local build",
+    "postversion": "git push && git push --tags && npm publish"
   },
   "devDependencies": {
     "dateformat": "1.0.11",
-    "grunt": "1.0.1",
+    "grunt": "^0.4.5",
     "grunt-contrib-clean": "1.0.0",
     "grunt-contrib-concat": "1.0.1",
-    "grunt-contrib-connect": "1.0.0",
+    "grunt-contrib-connect": "1.0.2",
     "grunt-contrib-copy": "1.0.0",
     "grunt-contrib-jshint": "1.0.0",
     "grunt-contrib-uglify": "1.0.1",
@@ -26,16 +39,16 @@
     "grunt-ghost": "1.1.0",
     "grunt-include-replace": "4.0.1",
     "grunt-jscs": "2.8.0",
-    "grunt-karma": "0.12.1",
+    "grunt-karma": "1.0.0",
     "grunt-leading-indent": "0.2.0",
-    "grunt-nw-builder": "2.0.0",
+    "grunt-nw-builder": "2.0.3",
     "grunt-open": "0.2.3",
     "grunt-replace": "1.0.1",
     "grunt-spritesmith": "6.3.0",
     "jasmine-core": "2.1.0",
     "karma": "0.13.21",
-    "karma-chrome-launcher": "0.2.2",
-    "karma-jasmine": "0.3.7",
+    "karma-chrome-launcher": "1.0.1",
+    "karma-jasmine": "1.0.2",
     "karma-phantomjs-launcher": "0.2.3",
     "load-grunt-tasks": "3.5.0",
     "phantomjs": "1.9.19"

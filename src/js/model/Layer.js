@@ -44,7 +44,7 @@
   };
 
   ns.Layer.prototype.isTransparent = function () {
-    return this.opacity > 0 && this.opacity < 1;
+    return this.opacity < 1;
   };
 
   ns.Layer.prototype.getFrames = function () {

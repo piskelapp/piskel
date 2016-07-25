@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Generator: Adobe Illustrator 15.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   id="Layer_1"
+   x="0px"
+   y="0px"
+   width="92"
+   height="92"
+   viewBox="0 0 91.999998 91.999998"
+   enable-background="new 0 0 99.997 69.373"
+   xml:space="preserve"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="tool-eraser.svg"
+   inkscape:export-filename="C:\Development\git\piskel\misc\icons\source\tool-eraser.png"
+   inkscape:export-xdpi="45"
+   inkscape:export-ydpi="45"><metadata
+   id="metadata9"><rdf:RDF><cc:Work
+       rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
+         rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title></dc:title></cc:Work></rdf:RDF></metadata><defs
+   id="defs7" /><sodipodi:namedview
+   pagecolor="#ffffff"
+   bordercolor="#666666"
+   borderopacity="1"
+   objecttolerance="10"
+   gridtolerance="10"
+   guidetolerance="10"
+   inkscape:pageopacity="0"
+   inkscape:pageshadow="2"
+   inkscape:window-width="1920"
+   inkscape:window-height="1148"
+   id="namedview5"
+   showgrid="false"
+   inkscape:zoom="8"
+   inkscape:cx="65.852862"
+   inkscape:cy="36.923143"
+   inkscape:window-x="-8"
+   inkscape:window-y="-8"
+   inkscape:window-maximized="1"
+   inkscape:current-layer="Layer_1" />
+
+<path
+   style="fill:#ffffff;fill-opacity:1;stroke:none"
+   d="m 51.656249,23.781249 c -1.22299,0 -2.440125,0.471375 -3.375,1.40625 l -27.1875,27.1875 c -1.86975,1.86975 -1.86975,4.880249 0,6.75 l 9.09375,9.09375 0.6875,0 4.96875,0 9,0 5.28125,0 0.375,0 20.40625,-20.40625 c 1.86975,-1.86975 1.86975,-4.880249 0,-6.75 l -15.875,-15.875 c -0.934876,-0.934875 -2.15201,-1.40625 -3.375,-1.40625 z m -14.15625,17.8125 17,17 -5.65625,5.625 -17,0 -6.34375,-6.34375 c -1.172304,-1.172304 -1.046693,-3.203308 0.3125,-4.5625 l 11.6875,-11.71875 z"
+   id="rect4883"
+   inkscape:connector-curvature="0" /></svg>

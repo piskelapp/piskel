@@ -46,7 +46,8 @@
     var state = {
       action : action,
       frameIndex : action.state ? action.state.frameIndex : this.piskelController.currentFrameIndex,
-      layerIndex : action.state ? action.state.layerIndex : this.piskelController.currentLayerIndex
+      layerIndex : action.state ? action.state.layerIndex : this.piskelController.currentLayerIndex,
+      uuid: pskl.utils.Uuid.generate()
     };
 
     var isSnapshot = action.type === ns.HistoryService.SNAPSHOT;
@@ -57,6 +58,15 @@
 
     this.stateQueue.push(state);
     $.publish(Events.HISTORY_STATE_SAVED);
+  };
+
+  ns.HistoryService.prototype.getCurrentStateId = function () {
+    var state = this.stateQueue[this.currentIndex];
+    if (!state) {
+      return false;
+    }
+
+    return state.uuid;
   };
 
   ns.HistoryService.prototype.undo = function () {

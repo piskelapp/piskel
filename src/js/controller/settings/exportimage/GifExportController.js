@@ -3,49 +3,29 @@
 
   var URL_MAX_LENGTH = 30;
   var MAX_GIF_COLORS = 256;
-  var MAX_EXPORT_ZOOM = 20;
-  var DEFAULT_EXPORT_ZOOM = 10;
   var MAGIC_PINK = '#FF00FF';
   var WHITE = '#FFFFFF';
 
-  ns.GifExportController = function (piskelController) {
+  ns.GifExportController = function (piskelController, exportController) {
     this.piskelController = piskelController;
+    this.exportController = exportController;
   };
 
   pskl.utils.inherit(ns.GifExportController, pskl.controller.settings.AbstractSettingController);
-
-  /**
-   * List of Resolutions applicable for Gif export
-   * @static
-   * @type {Array} array of Objects {zoom:{Number}, default:{Boolean}}
-   */
-  ns.GifExportController.RESOLUTIONS = [];
-  for (var i = 1 ; i <= MAX_EXPORT_ZOOM ; i++) {
-    ns.GifExportController.RESOLUTIONS.push({
-      zoom : i
-    });
-  }
 
   ns.GifExportController.prototype.init = function () {
 
     this.uploadStatusContainerEl = document.querySelector('.gif-upload-status');
     this.previewContainerEl = document.querySelector('.gif-export-preview');
-    this.widthInput = document.querySelector('.export-gif-resize-width');
-    this.heightInput = document.querySelector('.export-gif-resize-height');
     this.uploadButton = document.querySelector('.gif-upload-button');
     this.downloadButton = document.querySelector('.gif-download-button');
-
-    this.sizeInputWidget = new pskl.widgets.SizeInput(
-      this.widthInput, this.heightInput,
-      this.piskelController.getWidth(), this.piskelController.getHeight());
 
     this.addEventListener(this.uploadButton, 'click', this.onUploadButtonClick_);
     this.addEventListener(this.downloadButton, 'click', this.onDownloadButtonClick_);
   };
 
-  ns.GifExportController.prototype.destroy = function () {
-    this.sizeInputWidget.destroy();
-    this.superclass.destroy.call(this);
+  ns.GifExportController.prototype.getZoom_ = function () {
+    return this.exportController.getExportZoom();
   };
 
   ns.GifExportController.prototype.onUploadButtonClick_ = function (evt) {
@@ -96,10 +76,6 @@
 
   ns.GifExportController.prototype.updatePreview_ = function (src) {
     this.previewContainerEl.innerHTML = '<div><img style="max-width:32px;" src="' + src + '"/></div>';
-  };
-
-  ns.GifExportController.prototype.getZoom_ = function () {
-    return parseInt(this.widthInput.value, 10) / this.piskelController.getWidth();
   };
 
   ns.GifExportController.prototype.renderAsImageDataAnimatedGIF = function(zoom, fps, cb) {
@@ -172,7 +148,6 @@
     return transparentColor;
   };
 
-  // FIXME : JD : HORRIBLE COPY/PASTA (JD later : where???)
   ns.GifExportController.prototype.updateStatus_ = function (imageUrl, error) {
     if (imageUrl) {
       var linkTpl = '<a class="image-link" href="{{link}}" target="_blank">{{shortLink}}</a>';

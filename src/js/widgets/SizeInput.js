@@ -1,44 +1,52 @@
 (function () {
   var ns = $.namespace('pskl.widgets');
-  ns.SizeInput = function (widthInput, heightInput, initWidth, initHeight) {
-    this.widthInput = widthInput;
-    this.heightInput = heightInput;
-    this.initWidth = initWidth;
-    this.initHeight = initHeight;
 
-    this.syncEnabled = true;
-    this.lastInput = this.widthInput;
+  /**
+   * Synchronize two "number" inputs to stick to their initial ratio.
+   * The synchronization can be disabled/enabled on the fly.
+   *
+   * @param {Object} options
+   *        - {Element} widthInput
+   *        - {Element} heightInput
+   *        - {Number} initWidth
+   *        - {Number} initHeight
+   *        - {Function} onChange
+   */
+  ns.SizeInput = function (options) {
+    this.widthInput = options.widthInput;
+    this.heightInput = options.heightInput;
+    this.initWidth = options.initWidth;
+    this.initHeight = options.initHeight;
+    this.onChange = options.onChange;
 
-    this.widthInput.value = initWidth;
-    this.heightInput.value = initHeight;
+    this.synchronizedInputs = new ns.SynchronizedInputs({
+      leftInput: this.widthInput,
+      rightInput: this.heightInput,
+      synchronize: this.synchronize_.bind(this)
+    });
 
-    pskl.utils.Event.addEventListener(this.widthInput, 'keyup', this.onSizeInputKeyUp_, this);
-    pskl.utils.Event.addEventListener(this.heightInput, 'keyup', this.onSizeInputKeyUp_, this);
+    this.disableSync = this.synchronizedInputs.disableSync.bind(this.synchronizedInputs);
+    this.enableSync = this.synchronizedInputs.enableSync.bind(this.synchronizedInputs);
+
+    this.widthInput.value = this.initWidth;
+    this.heightInput.value = this.initHeight;
   };
 
   ns.SizeInput.prototype.destroy = function () {
-    pskl.utils.Event.removeAllEventListeners(this);
+    this.synchronizedInputs.destroy();
 
     this.widthInput = null;
     this.heightInput = null;
-    this.lastInput = null;
   };
 
-  ns.SizeInput.prototype.enableSync = function () {
-    this.syncEnabled = true;
-    this.synchronize_(this.lastInput);
+  ns.SizeInput.prototype.setWidth = function (width) {
+    this.widthInput.value = width;
+    this.synchronize_(this.widthInput);
   };
 
-  ns.SizeInput.prototype.disableSync = function () {
-    this.syncEnabled = false;
-  };
-
-  ns.SizeInput.prototype.onSizeInputKeyUp_ = function (evt) {
-    var target = evt.target;
-    if (this.syncEnabled) {
-      this.synchronize_(target);
-    }
-    this.lastInput = target;
+  ns.SizeInput.prototype.setHeight = function (height) {
+    this.heightInput.value = height;
+    this.synchronize_(this.heightInput);
   };
 
   /**
@@ -56,6 +64,10 @@
       this.heightInput.value = Math.round(value * this.initHeight / this.initWidth);
     } else if (sizeInput === this.heightInput) {
       this.widthInput.value = Math.round(value * this.initWidth / this.initHeight);
+    }
+
+    if (this.onChange) {
+      this.onChange();
     }
   };
 })();

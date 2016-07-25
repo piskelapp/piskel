@@ -14,6 +14,10 @@
   height: 23px;
 }
 
+.textfield[readonly="true"] {
+  background: transparent;
+}
+
 .textfield[disabled=disabled] {
   background : #3a3a3a;
 }

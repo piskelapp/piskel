@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Generator: Adobe Illustrator 15.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   id="Layer_1"
+   x="0px"
+   y="0px"
+   width="92"
+   height="92"
+   viewBox="0 0 91.999998 91.999998"
+   enable-background="new 0 0 99.997 69.373"
+   xml:space="preserve"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="tool-colorpicker.svg"
+   inkscape:export-filename="C:\Development\git\piskel\misc\icons\source\tool-colorpicker@2x.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90"><metadata
+   id="metadata9"><rdf:RDF><cc:Work
+       rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
+         rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title></dc:title></cc:Work></rdf:RDF></metadata><defs
+   id="defs7" /><sodipodi:namedview
+   pagecolor="#ffffff"
+   bordercolor="#666666"
+   borderopacity="1"
+   objecttolerance="10"
+   gridtolerance="10"
+   guidetolerance="10"
+   inkscape:pageopacity="0"
+   inkscape:pageshadow="2"
+   inkscape:window-width="1920"
+   inkscape:window-height="1148"
+   id="namedview5"
+   showgrid="false"
+   inkscape:zoom="4.4690489"
+   inkscape:cx="-11.462522"
+   inkscape:cy="23.210237"
+   inkscape:window-x="-8"
+   inkscape:window-y="-8"
+   inkscape:window-maximized="1"
+   inkscape:current-layer="Layer_1" />
+
+<g
+   id="g4584"
+   transform="matrix(0.70710678,0.70710678,-0.70710678,0.70710678,46.899678,-18.681164)"
+   style="fill:#ffffff;fill-opacity:1"><path
+     sodipodi:nodetypes="cczcccccczcc"
+     inkscape:connector-curvature="0"
+     id="rect4410"
+     d="m 38.999999,35.970487 0,31.741537 c 0,0 5.388908,10.83265 7,10.832651 1.611092,-10e-7 7,-10.832651 7,-10.832651 l 0,-31.741538 z m 4,3.029512 c 0,-1.288277 5.999999,-1.288277 5.999999,0 0,9.795299 1e-6,17.407064 1e-6,27.202363 0,0 -2.092806,5.797636 -2.999999,5.797636 -0.907193,10e-7 -3,-5.797636 -3,-5.797636 -10e-7,-9.795299 0,-17.407064 -10e-7,-27.202363 z"
+     style="font-size:medium;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-indent:0;text-align:start;text-decoration:none;line-height:normal;letter-spacing:normal;word-spacing:normal;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;text-anchor:start;baseline-shift:baseline;color:#000000;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:2;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;font-family:Sans;-inkscape-font-specification:Sans" /><path
+     inkscape:connector-curvature="0"
+     id="rect4559"
+     d="m 35.898676,32 20.202645,0 c 1.051867,0 1.898677,0.705675 1.898677,1.582231 l 0,2.835538 C 57.999999,37.294325 57.153188,38 56.101322,38 L 35.898676,38 C 34.846809,38 34,37.294325 34,36.417769 l 0,-2.835538 C 34,32.705675 34.846809,32 35.898676,32 z"
+     style="fill:#ffffff;fill-opacity:1;stroke:none" /><path
+     sodipodi:nodetypes="sccsss"
+     inkscape:connector-curvature="0"
+     id="path4563"
+     d="m 53.999999,24.201011 c 0,2.264646 0,3.798988 0,3.798988 l -16,0 c 0,0 0,-1.534342 0,-3.798988 0,-4.529294 3.581721,-8.201012 7.999998,-8.201012 4.418279,0 8.000002,3.671718 8.000002,8.201012 z"
+     style="fill:#ffffff;fill-opacity:1;stroke:none" /></g></svg>
