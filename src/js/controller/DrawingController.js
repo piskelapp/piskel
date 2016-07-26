@@ -86,9 +86,10 @@
     window.addEventListener('mouseup', this.onMouseup_.bind(this));
     window.addEventListener('mousemove', this.onMousemove_.bind(this));
     window.addEventListener('keyup', this.onKeyup_.bind(this));
-    window.addEventListener('touchstart', this.onMousedown_.bind(this));
-    window.addEventListener('touchmove' , this.onMousemove_.bind(this));
-    window.addEventListener('touchend', this.onMouseup_.bind(this));
+    window.addEventListener('touchstart', this.onTouchstart_.bind(this));
+    window.addEventListener('touchmove' , this.onTouchmove_.bind(this));
+    window.addEventListener('touchend', this.onTouchend_.bind(this));
+
     // Deactivate right click:
     body.contextmenu(this.onCanvasContextMenu_);
 
@@ -134,6 +135,19 @@
     this.compositeRenderer.setZoom(this.calculateZoom_());
     this.compositeRenderer.setOffset(0, 0);
     $.publish(Events.ZOOM_CHANGED);
+  };
+
+  ns.DrawingController.prototype.onTouchstart_ = function (event) {
+    this.onMousedown_(event);
+  };
+
+  ns.DrawingController.prototype.onTouchmove_ = function (event) {
+    this.onMousemove_(event);
+    event.preventDefault();
+  };
+
+  ns.DrawingController.prototype.onTouchend_ = function (event) {
+    this.onMouseup_(event);
   };
 
   /**
