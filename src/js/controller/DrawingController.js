@@ -64,8 +64,8 @@
 
     var shortcuts = pskl.service.keyboard.Shortcuts;
     pskl.app.shortcutService.registerShortcut(shortcuts.MISC.RESET_ZOOM, this.resetZoom_.bind(this));
-    pskl.app.shortcutService.registerShortcut(shortcuts.MISC.INCREASE_ZOOM, this.increaseZoom_.bind(this, 1));
-    pskl.app.shortcutService.registerShortcut(shortcuts.MISC.DECREASE_ZOOM, this.decreaseZoom_.bind(this, 1));
+    pskl.app.shortcutService.registerShortcut(shortcuts.MISC.INCREASE_ZOOM, this.updateZoom_.bind(this, 1));
+    pskl.app.shortcutService.registerShortcut(shortcuts.MISC.DECREASE_ZOOM, this.updateZoom_.bind(this, -1));
 
     window.setTimeout(function () {
       this.afterWindowResize_();
@@ -231,7 +231,7 @@
     } else if (pskl.utils.UserAgent.isFirefox) {
       delta = -40 * evt.deltaY;
     }
-    var modifier = Math.abs(delta / 120);
+    var modifier = (delta / 120);
 
     if (pskl.utils.UserAgent.isMac ? evt.metaKey : evt.ctrlKey) {
       modifier = modifier * 5;
@@ -239,14 +239,10 @@
       evt.preventDefault();
     }
 
-    if (delta > 0) {
-      this.increaseZoom_(modifier);
-    } else if (delta < 0) {
-      this.decreaseZoom_(modifier);
-    }
+    this.updateZoom_(modifier);
   };
 
-  ns.DrawingController.prototype.increaseZoom_ = function (zoomMultiplier) {
+  ns.DrawingController.prototype.updateZoom_ = function (zoomMultiplier) {
     var coords = this.getSpriteCoordinates(this._clientX,this._clientY);
     var off = this.getOffset();
     var oldWidth = this.getContainerWidth_() / this.renderer.getZoom();
@@ -255,23 +251,6 @@
     var yRatio = (coords.y - off.y) / oldHeight;
     var step = (zoomMultiplier || 1) * this.getZoomStep_();
     this.setZoom_(this.renderer.getZoom() + step);
-    var newWidth = this.getContainerWidth_() / this.renderer.getZoom();
-    var newHeight = this.getContainerHeight_() / this.renderer.getZoom();
-    this.setOffset(
-      off.x + ((oldWidth - newWidth) * xRatio),
-      off.y + ((oldHeight - newHeight) * yRatio)
-    );
-  };
-
-  ns.DrawingController.prototype.decreaseZoom_ = function (zoomMultiplier) {
-    var coords = this.getSpriteCoordinates(this._clientX,this._clientY);
-    var off = this.getOffset();
-    var oldWidth = this.getContainerWidth_() / this.renderer.getZoom();
-    var oldHeight = this.getContainerHeight_() / this.renderer.getZoom();
-    var xRatio = (coords.x - off.x) / oldWidth;
-    var yRatio = (coords.y - off.y) / oldHeight;
-    var step = (zoomMultiplier || 1) * this.getZoomStep_();
-    this.setZoom_(this.renderer.getZoom() - step);
     var newWidth = this.getContainerWidth_() / this.renderer.getZoom();
     var newHeight = this.getContainerHeight_() / this.renderer.getZoom();
     this.setOffset(
