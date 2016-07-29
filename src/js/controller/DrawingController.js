@@ -253,24 +253,41 @@
       evt.preventDefault();
     }
 
-    this.updateZoom_(modifier);
+    var coords = this.getSpriteCoordinates(evt.clientX, evt.clientY);
+    this.updateZoom_(modifier, coords);
   };
 
-  ns.DrawingController.prototype.updateZoom_ = function (zoomMultiplier) {
-    var coords = this.getSpriteCoordinates(this._clientX,this._clientY);
+  /**
+   * Update the current zoom level by a given multiplier.
+   *
+   * @param {Number} zoomMultiplier: factor by which the zoom should be modified. Negative
+   *        values will decrease the zoom, positive values will increase it.
+   * @param {Object} centerCoords, optional:
+   *        - {Number} x: x coordinate of the desired center the zoomed canvas
+   *        - {Number} y: y coordinate of the desired center the zoomed canvas
+   */
+  ns.DrawingController.prototype.updateZoom_ = function (zoomMultiplier, centerCoords) {
+    if (zoomMultiplier === 0) {
+      return;
+    }
+
     var off = this.getOffset();
     var oldWidth = this.getContainerWidth_() / this.renderer.getZoom();
     var oldHeight = this.getContainerHeight_() / this.renderer.getZoom();
-    var xRatio = (coords.x - off.x) / oldWidth;
-    var yRatio = (coords.y - off.y) / oldHeight;
-    var step = (zoomMultiplier || 1) * this.getZoomStep_();
+
+    var step = zoomMultiplier * this.getZoomStep_();
     this.setZoom_(this.renderer.getZoom() + step);
-    var newWidth = this.getContainerWidth_() / this.renderer.getZoom();
-    var newHeight = this.getContainerHeight_() / this.renderer.getZoom();
-    this.setOffset(
-      off.x - ((newWidth - oldWidth) * xRatio),
-      off.y - ((newHeight - oldHeight) * yRatio)
-    );
+
+    if (centerCoords) {
+      var xRatio = (centerCoords.x - off.x) / oldWidth;
+      var yRatio = (centerCoords.y - off.y) / oldHeight;
+      var newWidth = this.getContainerWidth_() / this.renderer.getZoom();
+      var newHeight = this.getContainerHeight_() / this.renderer.getZoom();
+      this.setOffset(
+        off.x - ((newWidth - oldWidth) * xRatio),
+        off.y - ((newHeight - oldHeight) * yRatio)
+      );
+    }
   };
 
   /**
