@@ -8,8 +8,6 @@
 
   ns.AbstractDragSelect = function () {
     ns.BaseSelect.call(this);
-
-    this.hasSelection = false;
   };
 
   pskl.utils.inherit(ns.AbstractDragSelect, ns.BaseSelect);

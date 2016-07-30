@@ -18,6 +18,7 @@
     this.lastMoveRow = null;
 
     this.selection = null;
+    this.hasSelection = false;
 
     this.tooltipDescriptors = [
       {description : 'Drag the selection to move it. You may switch to other layers and frames.'},
@@ -95,16 +96,16 @@
         this.bodyRoot.removeClass(this.secondaryToolId);
       }
     }
+
+    if (!this.hasSelection) {
+      pskl.tools.drawing.BaseTool.prototype.moveUnactiveToolAt.apply(this, arguments);
+    }
   };
 
   ns.BaseSelect.prototype.isInSelection = function (col, row) {
     return this.selection && this.selection.pixels.some(function (pixel) {
       return pixel.col === col && pixel.row === row;
     });
-  };
-
-  ns.BaseSelect.prototype.hideHighlightedPixel = function() {
-    // there is no highlighted pixel for selection tools, do nothing
   };
 
   /**
