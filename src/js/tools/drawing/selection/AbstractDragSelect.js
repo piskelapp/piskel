@@ -18,6 +18,12 @@
   ns.AbstractDragSelect.prototype.onSelectStart_ = function (col, row, frame, overlay) {
     if (this.hasSelection) {
       this.hasSelection = false;
+
+      if (this.dragMode_) {
+        $.publish(Events.SELECTION_PASTE);
+        this.dragMode_ = false;
+      }
+
       overlay.clear();
       $.publish(Events.SELECTION_DISMISSED);
     } else {

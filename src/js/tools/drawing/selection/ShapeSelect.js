@@ -8,6 +8,7 @@
 
   ns.ShapeSelect = function() {
     ns.BaseSelect.call(this);
+    this.hasSelection = false;
 
     this.toolId = 'tool-shape-select';
     this.helpText = 'Shape selection';
@@ -22,16 +23,18 @@
    * @override
    */
   ns.ShapeSelect.prototype.onSelectStart_ = function (col, row, frame, overlay) {
-    // Clean previous selection:
-    $.publish(Events.SELECTION_DISMISSED);
-    overlay.clear();
+    if (this.hasSelection) {
+      this.hasSelection = false;
+      this.dismissSelection();
+    } else {
+      this.hasSelection = true;
+      // From the pixel cliked, get shape using an algorithm similar to the paintbucket one:
+      var pixels = pskl.PixelUtils.getSimilarConnectedPixelsFromFrame(frame, col, row);
+      this.selection = new pskl.selection.ShapeSelection(pixels);
 
-    // From the pixel cliked, get shape using an algorithm similar to the paintbucket one:
-    var pixels = pskl.PixelUtils.getSimilarConnectedPixelsFromFrame(frame, col, row);
-    this.selection = new pskl.selection.ShapeSelection(pixels);
-
-    $.publish(Events.SELECTION_CREATED, [this.selection]);
-    this.drawSelectionOnOverlay_(overlay);
+      $.publish(Events.SELECTION_CREATED, [this.selection]);
+      this.drawSelectionOnOverlay_(overlay);
+    }
   };
 
 })();

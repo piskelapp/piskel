@@ -48,6 +48,10 @@
       this.onSelectStart_(col, row, frame, overlay);
     } else {
       this.mode = 'moveSelection';
+      if (event.shiftKey && !this.dragMode_) {
+        this.dragMode_ = true;
+        $.publish(Events.SELECTION_CUT);
+      }
       this.onSelectionMoveStart_(col, row, frame, overlay);
     }
   };
@@ -101,6 +105,20 @@
 
   ns.BaseSelect.prototype.hideHighlightedPixel = function() {
     // there is no highlighted pixel for selection tools, do nothing
+  };
+
+  /**
+   * Protected method, should be called when the selection is dismissed.
+   */
+  ns.BaseSelect.prototype.dismissSelection = function () {
+    if (this.dragMode_) {
+      $.publish(Events.SELECTION_PASTE);
+      this.dragMode_ = false;
+    }
+
+    // Clean previous selection:
+    $.publish(Events.SELECTION_DISMISSED);
+    overlay.clear();
   };
 
   /**
