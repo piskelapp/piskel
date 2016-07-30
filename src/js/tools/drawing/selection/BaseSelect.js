@@ -49,8 +49,8 @@
       this.onSelectStart_(col, row, frame, overlay);
     } else {
       this.mode = 'moveSelection';
-      if (event.shiftKey && !this.dragMode_) {
-        this.dragMode_ = true;
+      if (event.shiftKey && !this.isMovingContent_) {
+        this.isMovingContent_ = true;
         $.publish(Events.SELECTION_CUT);
       }
       this.onSelectionMoveStart_(col, row, frame, overlay);
@@ -112,9 +112,9 @@
    * Protected method, should be called when the selection is dismissed.
    */
   ns.BaseSelect.prototype.dismissSelection = function () {
-    if (this.dragMode_) {
+    if (this.isMovingContent_) {
       $.publish(Events.SELECTION_PASTE);
-      this.dragMode_ = false;
+      this.isMovingContent_ = false;
     }
 
     // Clean previous selection:
