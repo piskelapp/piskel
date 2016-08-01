@@ -113,7 +113,7 @@
   /**
    * Protected method, should be called when the selection is dismissed.
    */
-  ns.BaseSelect.prototype.dismissSelection = function (overlay) {
+  ns.BaseSelect.prototype.commitSelection = function (overlay) {
     if (this.isMovingContent_) {
       $.publish(Events.SELECTION_PASTE);
       this.isMovingContent_ = false;

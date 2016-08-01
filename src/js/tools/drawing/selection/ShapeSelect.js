@@ -24,7 +24,7 @@
   ns.ShapeSelect.prototype.onSelectStart_ = function (col, row, frame, overlay) {
     if (this.hasSelection) {
       this.hasSelection = false;
-      this.dismissSelection(overlay);
+      this.commitSelection(overlay);
     } else {
       this.hasSelection = true;
       // From the pixel clicked, get shape using an algorithm similar to the paintbucket one:

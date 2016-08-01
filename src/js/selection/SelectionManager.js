@@ -112,7 +112,7 @@
   };
 
   /**
-   * If the currently selected tool is a selection tool, call dismissSelection handler on
+   * If the currently selected tool is a selection tool, call commitSelection handler on
    * the current tool instance.
    */
   ns.SelectionManager.prototype.commit = function() {
@@ -120,7 +120,7 @@
     var isSelectionTool = tool instanceof pskl.tools.drawing.selection.BaseSelect;
     if (isSelectionTool) {
       var overlay = pskl.app.drawingController.overlayFrame;
-      tool.dismissSelection(overlay);
+      tool.commitSelection(overlay);
     }
   };
 
