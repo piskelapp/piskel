@@ -26,6 +26,7 @@
     pskl.app.shortcutService.registerShortcut(shortcuts.SELECTION.CUT, this.cut.bind(this));
     pskl.app.shortcutService.registerShortcut(shortcuts.SELECTION.COPY, this.copy.bind(this));
     pskl.app.shortcutService.registerShortcut(shortcuts.SELECTION.DELETE, this.onDeleteShortcut_.bind(this));
+    pskl.app.shortcutService.registerShortcut(shortcuts.SELECTION.COMMIT, this.commit.bind(this));
 
     $.subscribe(Events.TOOL_SELECTED, $.proxy(this.onToolSelected_, this));
   };
@@ -108,6 +109,19 @@
         pixels : JSON.parse(JSON.stringify(pixels.slice(0)))
       }
     });
+  };
+
+  /**
+   * If the currently selected tool is a selection tool, call dismissSelection handler on
+   * the current tool instance.
+   */
+  ns.SelectionManager.prototype.commit = function() {
+    var tool = pskl.app.drawingController.currentToolBehavior;
+    var isSelectionTool = tool instanceof pskl.tools.drawing.selection.BaseSelect;
+    if (isSelectionTool) {
+      var overlay = pskl.app.drawingController.overlayFrame;
+      tool.dismissSelection(overlay);
+    }
   };
 
   ns.SelectionManager.prototype.replay = function (frame, replayData) {

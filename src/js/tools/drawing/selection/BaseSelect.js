@@ -23,7 +23,8 @@
     this.tooltipDescriptors = [
       {description : 'Drag the selection to move it. You may switch to other layers and frames.'},
       {key : 'ctrl+c', description : 'Copy the selected area'},
-      {key : 'ctrl+v', description : 'Paste the copied area'}
+      {key : 'ctrl+v', description : 'Paste the copied area'},
+      {key : 'shift', description : 'Hold to move the content'}
     ];
   };
 
@@ -52,6 +53,7 @@
       if (event.shiftKey && !this.isMovingContent_) {
         this.isMovingContent_ = true;
         $.publish(Events.SELECTION_CUT);
+        this.drawSelectionOnOverlay_(overlay);
       }
       this.onSelectionMoveStart_(col, row, frame, overlay);
     }

@@ -53,7 +53,18 @@
    * @return {Boolean} true if the shortcut can be updated
    */
   ns.Shortcut.prototype.isEditable = function () {
-    return this.getKeys().length < 2;
+    if (this.getKeys().length === 0) {
+      // No key defined: can be edited.
+      return true;
+    }
+
+    if (this.getKeys().length === 1) {
+      // Only one key defined, can be edited if it is not using a forbidden key.
+      return ns.Shortcuts.FORBIDDEN_KEYS.indexOf(this.getKeys()[0]) === -1;
+    }
+
+    // More than one key, can't be edited.
+    return false;
   };
 
   ns.Shortcut.prototype.isCustom = function () {
