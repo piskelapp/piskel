@@ -122,6 +122,7 @@
     // Clean previous selection:
     $.publish(Events.SELECTION_DISMISSED);
     overlay.clear();
+    this.hasSelection = false;
   };
 
   /**
