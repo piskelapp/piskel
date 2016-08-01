@@ -27,7 +27,7 @@
       this.dismissSelection(overlay);
     } else {
       this.hasSelection = true;
-      // From the pixel cliked, get shape using an algorithm similar to the paintbucket one:
+      // From the pixel clicked, get shape using an algorithm similar to the paintbucket one:
       var pixels = pskl.PixelUtils.getSimilarConnectedPixelsFromFrame(frame, col, row);
       this.selection = new pskl.selection.ShapeSelection(pixels);
 
