@@ -55,7 +55,7 @@
   },
   "window": {
     "title": "Piskel",
-    "icon": "dest/logo.png",
+    "icon": "dest/prod/logo.png",
     "toolbar": false,
     "width": 1000,
     "height": 500
