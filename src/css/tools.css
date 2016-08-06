@@ -47,7 +47,7 @@
 }
 
 .tool-lighten .drawing-canvas-container:hover {
-  cursor: url(../img/cursors/lighting.png) 1 15, pointer;
+  cursor: url(../img/cursors/lighten.png) 1 15, pointer;
 }
 
 .tool-eraser .drawing-canvas-container:hover {
