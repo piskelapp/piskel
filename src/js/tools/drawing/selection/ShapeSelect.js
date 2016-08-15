@@ -22,16 +22,18 @@
    * @override
    */
   ns.ShapeSelect.prototype.onSelectStart_ = function (col, row, frame, overlay) {
-    // Clean previous selection:
-    $.publish(Events.SELECTION_DISMISSED);
-    overlay.clear();
+    if (this.hasSelection) {
+      this.hasSelection = false;
+      this.commitSelection(overlay);
+    } else {
+      this.hasSelection = true;
+      // From the pixel clicked, get shape using an algorithm similar to the paintbucket one:
+      var pixels = pskl.PixelUtils.getSimilarConnectedPixelsFromFrame(frame, col, row);
+      this.selection = new pskl.selection.ShapeSelection(pixels);
 
-    // From the pixel cliked, get shape using an algorithm similar to the paintbucket one:
-    var pixels = pskl.PixelUtils.getSimilarConnectedPixelsFromFrame(frame, col, row);
-    this.selection = new pskl.selection.ShapeSelection(pixels);
-
-    $.publish(Events.SELECTION_CREATED, [this.selection]);
-    this.drawSelectionOnOverlay_(overlay);
+      $.publish(Events.SELECTION_CREATED, [this.selection]);
+      this.drawSelectionOnOverlay_(overlay);
+    }
   };
 
 })();

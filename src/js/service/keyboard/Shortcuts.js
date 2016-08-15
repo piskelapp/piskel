@@ -11,7 +11,7 @@
      * Or really custom shortcuts such as the 1-9 for color palette shorctus
      */
     FORBIDDEN_KEYS : ['1', '2', '3', '4', '5', '6', '7', '8', '9', '?', 'shift+?',
-      'del', 'back', 'ctrl+Y', 'ctrl+shift+Z'],
+      'DEL', 'BACK', 'ENTER', 'ctrl+Y', 'ctrl+shift+Z'],
 
     /**
      * Syntax : createShortcut(id, description, default key(s))
@@ -38,7 +38,8 @@
       CUT : createShortcut('selection-cut', 'Cut selection', 'ctrl+X'),
       COPY : createShortcut('selection-copy', 'Copy selection', 'ctrl+C'),
       PASTE : createShortcut('selection-paste', 'Paste selection', 'ctrl+V'),
-      DELETE : createShortcut('selection-delete', 'Delete selection', ['del', 'back'])
+      DELETE : createShortcut('selection-delete', 'Delete selection', ['DEL', 'BACK']),
+      COMMIT : createShortcut('selection-commit', 'Commit selection', ['ENTER'])
     },
 
     MISC : {

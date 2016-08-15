@@ -17,12 +17,16 @@
     $.subscribe(Events.SELECTION_CREATED, $.proxy(this.onSelectionCreated_, this));
     $.subscribe(Events.SELECTION_DISMISSED, $.proxy(this.onSelectionDismissed_, this));
     $.subscribe(Events.SELECTION_MOVE_REQUEST, $.proxy(this.onSelectionMoved_, this));
+    $.subscribe(Events.SELECTION_COPY, this.copy.bind(this));
+    $.subscribe(Events.SELECTION_CUT, this.cut.bind(this));
+    $.subscribe(Events.SELECTION_PASTE, this.paste.bind(this));
 
     var shortcuts = pskl.service.keyboard.Shortcuts;
     pskl.app.shortcutService.registerShortcut(shortcuts.SELECTION.PASTE, this.paste.bind(this));
     pskl.app.shortcutService.registerShortcut(shortcuts.SELECTION.CUT, this.cut.bind(this));
     pskl.app.shortcutService.registerShortcut(shortcuts.SELECTION.COPY, this.copy.bind(this));
     pskl.app.shortcutService.registerShortcut(shortcuts.SELECTION.DELETE, this.onDeleteShortcut_.bind(this));
+    pskl.app.shortcutService.registerShortcut(shortcuts.SELECTION.COMMIT, this.commit.bind(this));
 
     $.subscribe(Events.TOOL_SELECTED, $.proxy(this.onToolSelected_, this));
   };
@@ -105,6 +109,19 @@
         pixels : JSON.parse(JSON.stringify(pixels.slice(0)))
       }
     });
+  };
+
+  /**
+   * If the currently selected tool is a selection tool, call commitSelection handler on
+   * the current tool instance.
+   */
+  ns.SelectionManager.prototype.commit = function() {
+    var tool = pskl.app.drawingController.currentToolBehavior;
+    var isSelectionTool = tool instanceof pskl.tools.drawing.selection.BaseSelect;
+    if (isSelectionTool) {
+      var overlay = pskl.app.drawingController.overlayFrame;
+      tool.commitSelection(overlay);
+    }
   };
 
   ns.SelectionManager.prototype.replay = function (frame, replayData) {

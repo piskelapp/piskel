@@ -76,7 +76,7 @@
 }
 
 .tool-shape-select .drawing-canvas-container:hover {
-  cursor: url(../img/cursors/wand.png) 15 15, pointer;
+  cursor: url(../img/cursors/wand.png) 10 5, pointer;
 }
 
 .tool-colorpicker .drawing-canvas-container:hover {

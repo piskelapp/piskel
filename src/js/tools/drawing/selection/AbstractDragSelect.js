@@ -8,8 +8,6 @@
 
   ns.AbstractDragSelect = function () {
     ns.BaseSelect.call(this);
-
-    this.hasSelection = false;
   };
 
   pskl.utils.inherit(ns.AbstractDragSelect, ns.BaseSelect);
@@ -18,8 +16,7 @@
   ns.AbstractDragSelect.prototype.onSelectStart_ = function (col, row, frame, overlay) {
     if (this.hasSelection) {
       this.hasSelection = false;
-      overlay.clear();
-      $.publish(Events.SELECTION_DISMISSED);
+      this.commitSelection(overlay);
     } else {
       this.hasSelection = true;
       this.onDragSelectStart_(col, row);

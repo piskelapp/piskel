@@ -18,11 +18,13 @@
     this.lastMoveRow = null;
 
     this.selection = null;
+    this.hasSelection = false;
 
     this.tooltipDescriptors = [
       {description : 'Drag the selection to move it. You may switch to other layers and frames.'},
       {key : 'ctrl+c', description : 'Copy the selected area'},
-      {key : 'ctrl+v', description : 'Paste the copied area'}
+      {key : 'ctrl+v', description : 'Paste the copied area'},
+      {key : 'shift', description : 'Hold to move the content'}
     ];
   };
 
@@ -48,6 +50,11 @@
       this.onSelectStart_(col, row, frame, overlay);
     } else {
       this.mode = 'moveSelection';
+      if (event.shiftKey && !this.isMovingContent_) {
+        this.isMovingContent_ = true;
+        $.publish(Events.SELECTION_CUT);
+        this.drawSelectionOnOverlay_(overlay);
+      }
       this.onSelectionMoveStart_(col, row, frame, overlay);
     }
   };
@@ -91,6 +98,10 @@
         this.bodyRoot.removeClass(this.secondaryToolId);
       }
     }
+
+    if (!this.hasSelection) {
+      pskl.tools.drawing.BaseTool.prototype.moveUnactiveToolAt.apply(this, arguments);
+    }
   };
 
   ns.BaseSelect.prototype.isInSelection = function (col, row) {
@@ -99,8 +110,19 @@
     });
   };
 
-  ns.BaseSelect.prototype.hideHighlightedPixel = function() {
-    // there is no highlighted pixel for selection tools, do nothing
+  /**
+   * Protected method, should be called when the selection is dismissed.
+   */
+  ns.BaseSelect.prototype.commitSelection = function (overlay) {
+    if (this.isMovingContent_) {
+      $.publish(Events.SELECTION_PASTE);
+      this.isMovingContent_ = false;
+    }
+
+    // Clean previous selection:
+    $.publish(Events.SELECTION_DISMISSED);
+    overlay.clear();
+    this.hasSelection = false;
   };
 
   /**
