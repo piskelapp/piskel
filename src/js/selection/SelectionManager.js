@@ -166,10 +166,6 @@
   ns.SelectionManager.prototype.onSelectionMoved_ = function(evt, colDiff, rowDiff) {
     if (this.currentSelection) {
       this.currentSelection.move(colDiff, rowDiff);
-      if (evt.shiftKey) {
-        this.cut();
-        this.paste();
-      }
     } else {
       console.error('Bad state: No currentSelection set when trying to move it in SelectionManager');
     }
