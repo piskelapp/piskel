@@ -3,7 +3,7 @@
  */
 
 .main-wrapper {
-  position: absolute;
+  position: fixed;
   top: 5px;
   right: 0;
   bottom: 5px;
