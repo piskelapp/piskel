@@ -278,7 +278,7 @@
     var step = zoomMultiplier * this.getZoomStep_();
     this.setZoom_(this.renderer.getZoom() + step);
 
-    if (centerCoords) {
+    if (typeof centerCoords === 'object') {
       var xRatio = (centerCoords.x - off.x) / oldWidth;
       var yRatio = (centerCoords.y - off.y) / oldHeight;
       var newWidth = this.getContainerWidth_() / this.renderer.getZoom();
