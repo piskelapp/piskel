@@ -28,7 +28,7 @@
         frameCount : frames.length
       };
       if (expanded) {
-        layerToSerialize.grids = frames.map(function (f) {return f.pixels;});
+        layerToSerialize.grids = frames.map(function (f) {return Array.prototype.slice.call(f.pixels);});
         return layerToSerialize;
       } else {
         var renderer = new pskl.rendering.FramesheetRenderer(frames);

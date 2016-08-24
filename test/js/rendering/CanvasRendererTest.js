@@ -18,9 +18,9 @@ describe("Canvas Renderer test", function() {
 
     var frameFromCanvas = pskl.utils.FrameUtils.createFromImage(canvas);
 
-    expect(frameFromCanvas.getPixel(0,0)).toBe(BLACK);
-    expect(frameFromCanvas.getPixel(0,1)).toBe(WHITE);
-    expect(frameFromCanvas.getPixel(1,0)).toBe(WHITE);
-    expect(frameFromCanvas.getPixel(1,1)).toBe(BLACK);
+    test.testutils.colorEqualsColor(frameFromCanvas.getPixel(0,0), BLACK);
+    test.testutils.colorEqualsColor(frameFromCanvas.getPixel(0,1), WHITE);
+    test.testutils.colorEqualsColor(frameFromCanvas.getPixel(1,0), WHITE);
+    test.testutils.colorEqualsColor(frameFromCanvas.getPixel(1,1), BLACK);
   });
 });

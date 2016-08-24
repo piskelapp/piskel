@@ -1,6 +1,6 @@
 (function () {
   var ns = $.namespace('pskl.worker.framecolors');
-
+  
   if (Constants.TRANSPARENT_COLOR !== 'rgba(0, 0, 0, 0)') {
     throw 'Constants.TRANSPARENT_COLOR, please update FrameColorsWorker';
   }
@@ -36,10 +36,11 @@
 
     var getFrameColors = function (frame) {
       var frameColors = {};
-      for (var x = 0 ; x < frame.length ; x++) {
-        for (var y = 0 ; y < frame[x].length ; y++) {
-          var color = frame[x][y];
-          var hexColor = toHexString_(color);
+      var transparentColorInt = 0; // TODO: Fix magic number
+      for (var i = 0; i < frame.length; i++) {
+        var color = frame[i];
+        if (color !== transparentColorInt) {
+          var hexColor = rgbToHex(color & 0xff, color >> 16 & 0xff, color >> 8 & 0xff);
           frameColors[hexColor] = true;
         }
       }
@@ -48,8 +49,7 @@
 
     this.onmessage = function(event) {
       try {
-        var data = event.data;
-        var frame = JSON.parse(data.serializedFrame);
+        var frame = event.data;
         var colors = getFrameColors(frame);
         this.postMessage({
           type : 'SUCCESS',

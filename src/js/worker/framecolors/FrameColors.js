@@ -2,7 +2,7 @@
   var ns = $.namespace('pskl.worker.framecolors');
 
   ns.FrameColors = function (frame, onSuccess, onStep, onError) {
-    this.serializedFrame = JSON.stringify(frame.pixels);
+    this.pixels = frame.pixels;
 
     this.onStep = onStep;
     this.onSuccess = onSuccess;
@@ -13,9 +13,7 @@
   };
 
   ns.FrameColors.prototype.process = function () {
-    this.worker.postMessage({
-      serializedFrame : this.serializedFrame
-    });
+    this.worker.postMessage(this.pixels);
   };
 
   ns.FrameColors.prototype.onWorkerMessage = function (event) {

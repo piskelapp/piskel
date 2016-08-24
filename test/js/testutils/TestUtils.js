@@ -38,7 +38,7 @@
 
   ns.frameEqualsGrid = function (frame, grid) {
     frame.forEachPixel(function (color, col, row) {
-      expect(color).toBe(grid[row][col]);
+      ns.colorEqualsColor(color, grid[row][col]);
     });
   };
 
@@ -47,10 +47,18 @@
       for (var y = 0 ; y < grid[x].length ; y++) {
         var expected = tinycolor(grid[x][y]).toRgbString();
         var color = tinycolor(ns.getRgbaAt(image, x, y)).toRgbString();
-        expect(color).toBe(expected);
+        ns.colorEqualsColor(color, expected);
       }
     }
-  }
+  };
+
+  ns.compareColor = function(colorA, colorB) {
+    return pskl.utils.colorToInt(colorA) === pskl.utils.colorToInt(colorB);
+  };
+
+  ns.colorEqualsColor = function (color, expected) {
+    expect(pskl.utils.colorToInt(color)).toBe(pskl.utils.colorToInt(expected));
+  };
 
   ns.getRgbaAt = function (image, x, y) {
     var w = image.width;

@@ -60,10 +60,12 @@
   };
 
   ns.Deserializer.prototype.loadExpandedLayer = function (layerData, index) {
+    var width = this.piskel_.getWidth();
+    var height = this.piskel_.getHeight();
     var layer = new pskl.model.Layer(layerData.name);
     layer.setOpacity(layerData.opacity);
     var frames = layerData.grids.map(function (grid) {
-      return pskl.model.Frame.fromPixelGrid(grid);
+      return pskl.model.Frame.fromPixelGrid(grid, width, height);
     });
     this.addFramesToLayer(frames, layer, index);
     return layer;
