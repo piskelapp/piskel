@@ -3,6 +3,7 @@
 
   // Preview is a square of PREVIEW_SIZE x PREVIEW_SIZE
   var PREVIEW_SIZE = 200;
+  var RENDER_MINIMUM_DELAY = 1000;
 
   var ONION_SKIN_SHORTCUT = 'alt+O';
   var ORIGINAL_SIZE_SHORTCUT = 'alt+1';
@@ -17,6 +18,7 @@
     this.onionSkinShortcut = pskl.service.keyboard.Shortcuts.MISC.ONION_SKIN;
     this.originalSizeShortcut = pskl.service.keyboard.Shortcuts.MISC.X1_PREVIEW;
 
+    this.lastRenderTime = 0;
     this.renderFlag = true;
 
     /**
@@ -173,6 +175,7 @@
       var frame = pskl.utils.LayerUtils.mergeFrameAt(this.piskelController.getLayers(), index);
       this.renderer.render(frame);
       this.renderFlag = false;
+      this.lastRenderTime = Date.now();
 
       this.popupPreviewController.render(frame);
     }
@@ -241,7 +244,7 @@
   };
 
   ns.PreviewController.prototype.shouldRender_ = function () {
-    return this.renderFlag || this.popupPreviewController.renderFlag;
+    return (this.renderFlag || this.popupPreviewController.renderFlag) && (Date.now() - this.lastRenderTime > RENDER_MINIMUM_DELAY);
   };
 
   ns.PreviewController.prototype.toggleOnionSkin_ = function () {

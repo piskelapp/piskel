@@ -1,6 +1,8 @@
 (function () {
   var ns = $.namespace('pskl.controller');
 
+  var RENDER_MINIMUM_DELAY = 1000;
+
   var ACTION = {
     SELECT : 'select',
     CLONE : 'clone',
@@ -13,6 +15,7 @@
     this.container = container;
     this.refreshZoom_();
 
+    this.lastRenderTime = 0;
     this.redrawFlag = true;
 
     this.cachedFrameProcessor = new pskl.model.frame.CachedFrameProcessor();
@@ -41,9 +44,10 @@
   };
 
   ns.FramesListController.prototype.render = function () {
-    if (this.redrawFlag) {
+    if (this.redrawFlag && (Date.now() - this.lastRenderTime > RENDER_MINIMUM_DELAY)) {
       this.createPreviews_();
       this.redrawFlag = false;
+      this.lastRenderTime = Date.now();
     }
   };
 
