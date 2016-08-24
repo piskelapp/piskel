@@ -41,7 +41,6 @@
       frame.setPixels(buffer);
       return frame;
     } else {
-      console.error(pixels);
       throw 'Bad arguments in pskl.model.Frame.fromPixelGrid';
     }
   };
@@ -95,7 +94,6 @@
   ns.Frame.prototype.clear = function () {
     this.pixels = ns.Frame.createEmptyPixelGrid_(this.getWidth(), this.getHeight());
     this.version++;
-    // this.setPixels(pixels);
   };
 
   /**
@@ -103,9 +101,6 @@
    * @private
    */
   ns.Frame.prototype.clonePixels_ = function (pixels) {
-    //npixels = new Uint32Array(pixels.length);
-    //npixels.set(pixels);
-
     return new Uint32Array(pixels);
   };
 

@@ -80,10 +80,13 @@
         this.cacheHitLvl2_++;
         processedFrame = this.outputCloner(cache[frameAsString], frame);
       } else {
-        */processedFrame = this.frameProcessor(frame);/*
+      */
+      processedFrame = this.frameProcessor(frame);
+      /*
         cache[frameAsString] = processedFrame;
       }
-      cache[cacheKey] = processedFrame;*/
+      cache[cacheKey] = processedFrame;
+      */
     }
 
     return processedFrame;
