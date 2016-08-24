@@ -7,7 +7,7 @@ var Constants = {
     LAYER_OPACITY : 0.2
   },
 
-  MODEL_VERSION : 2,
+  MODEL_VERSION : 3,
 
   MAX_HEIGHT : 1024,
   MAX_WIDTH : 1024,
