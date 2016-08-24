@@ -14,28 +14,57 @@
     }
   };
 
-  ns.Frame.fromPixelGrid = function (pixels) {
-    if (pixels.length && pixels[0].length) {
-      var w = pixels.length;
-      var h = pixels[0].length;
+  ns.Frame.fromPixelGrid = function (pixels, width, height) {
+    if (pixels.length) {
+      if (pixels[0].length) {
+        var w = pixels.length;
+        var h = pixels[0].length;
+        var buffer = [];
+        for (var y = 0; y < h; y++) {
+          for (var x = 0; x < w; x++ ) {
+            if (typeof pixels[x][y] == 'string') {
+              buffer[y * w + x] = pskl.utils.colorToInt(pixels[x][y]);
+            } else {
+              buffer[y * w + x] = pixels[x][y];
+            }
+          }
+        }
+      } else if (width && height) {
+        var w = width;
+        var h = height;
+        buffer = pixels;
+      } else {
+        throw 'Bad arguments in pskl.model.frame.fromPixelGrid, missing width and height';
+      }
+      
       var frame = new pskl.model.Frame(w, h);
-      frame.setPixels(pixels);
+      frame.setPixels(buffer);
       return frame;
     } else {
-      throw 'Bad arguments in pskl.model.Frame.fromPixelGrid : ' + pixels;
+      console.error(pixels);
+      throw 'Bad arguments in pskl.model.Frame.fromPixelGrid';
     }
   };
 
+  var _emptyPixelGridCache = {};
   ns.Frame.createEmptyPixelGrid_ = function (width, height) {
-    var pixels = [];
-    for (var columnIndex = 0 ; columnIndex < width ; columnIndex++) {
-      var columnArray = [];
-      for (var heightIndex = 0 ; heightIndex < height ; heightIndex++) {
-        columnArray.push(Constants.TRANSPARENT_COLOR);
+    var pixels;
+    var key = width+"-"+height;
+    if (_emptyPixelGridCache[key]) {
+      pixels = _emptyPixelGridCache[key];
+    } else {
+      pixels = _emptyPixelGridCache[key] = new Uint32Array(width * height);
+      var transparentColorInt = pskl.utils.colorToInt(Constants.TRANSPARENT_COLOR);
+      if (!pixels.fill) { // PhantomJS ='(
+        for (var i = 0; i < width * height; i++) {
+          pixels[i] = transparentColorInt;
+        }
+      } else {
+        pixels.fill(transparentColorInt);
       }
-      pixels[columnIndex] = columnArray;
     }
-    return pixels;
+
+    return new Uint32Array(pixels);
   };
 
   ns.Frame.createEmptyFromFrame = function (frame) {
@@ -44,7 +73,7 @@
 
   ns.Frame.prototype.clone = function () {
     var clone = new ns.Frame(this.width, this.height);
-    clone.setPixels(this.getPixels());
+    clone.setPixels(this.pixels);
     return clone;
   };
 
@@ -64,8 +93,9 @@
   };
 
   ns.Frame.prototype.clear = function () {
-    var pixels = ns.Frame.createEmptyPixelGrid_(this.getWidth(), this.getHeight());
-    this.setPixels(pixels);
+    this.pixels = ns.Frame.createEmptyPixelGrid_(this.getWidth(), this.getHeight());
+    this.version++;
+    // this.setPixels(pixels);
   };
 
   /**
@@ -73,11 +103,10 @@
    * @private
    */
   ns.Frame.prototype.clonePixels_ = function (pixels) {
-    var clonedPixels = [];
-    for (var col = 0 ; col < pixels.length ; col++) {
-      clonedPixels[col] = pixels[col].slice(0 , pixels[col].length);
-    }
-    return clonedPixels;
+    //npixels = new Uint32Array(pixels.length);
+    //npixels.set(pixels);
+
+    return new Uint32Array(pixels);
   };
 
   ns.Frame.prototype.getHash = function () {
@@ -86,9 +115,14 @@
 
   ns.Frame.prototype.setPixel = function (x, y, color) {
     if (this.containsPixel(x, y)) {
-      var p = this.pixels[x][y];
+      var index = y * this.width + x;
+      var p = this.pixels[index];
+      if (typeof color === 'string') {
+        color = pskl.utils.colorToInt(color);
+      } 
+      
       if (p !== color) {
-        this.pixels[x][y] = color || Constants.TRANSPARENT_COLOR;
+        this.pixels[index] = color || pskl.utils.colorToInt(Constants.TRANSPARENT_COLOR);
         this.version++;
       }
     }
@@ -96,7 +130,7 @@
 
   ns.Frame.prototype.getPixel = function (x, y) {
     if (this.containsPixel(x, y)) {
-      return this.pixels[x][y];
+      return this.pixels[y * this.width + x];
     } else {
       return null;
     }
@@ -107,7 +141,7 @@
     var height = this.getHeight();
     for (var x = 0 ; x < width ; x++) {
       for (var y = 0 ; y < height ; y++) {
-        callback(this.pixels[x][y], x, y, this);
+        callback(this.pixels[y * this.width + x], x, y, this);
       }
     }
   };

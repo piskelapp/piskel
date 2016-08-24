@@ -1,6 +1,8 @@
 (function () {
   var ns = $.namespace('pskl.utils');
   var colorCache = {};
+  var offCanvasPool = {};
+  var imageDataPool = {};
   ns.FrameUtils = {
     /**
      * Render a Frame object as an image.
@@ -28,7 +30,12 @@
      * @param {String} globalAlpha (optional) global frame opacity
      */
     drawToCanvas : function (frame, canvas, transparentColor, globalAlpha) {
-      var context = canvas.getContext('2d');
+      var context;
+      if (canvas.context) {
+        context = canvas.context;
+      } else {
+        context = canvas.context = canvas.getContext('2d');
+      }
       globalAlpha = isNaN(globalAlpha) ? 1 : globalAlpha;
       context.globalAlpha = globalAlpha;
       transparentColor = transparentColor || Constants.TRANSPARENT_COLOR;
@@ -37,26 +44,49 @@
         context.fillRect(transparentColor, 0, 0, frame.getWidth(), frame.getHeight());
         context.drawImage(frame.getRenderedFrame(), 0, 0);
       } else {
-        for (var x = 0, width = frame.getWidth() ; x < width ; x++) {
-          for (var y = 0, height = frame.getHeight() ; y < height ; y++) {
-            var color = frame.getPixel(x, y);
+        var w = frame.getWidth();
+        var h = frame.getHeight();
+        var pixels = frame.pixels;
 
-            // accumulate all the pixels of the same color to speed up rendering
-            // by reducting fillRect calls
-            var w = 1;
-            while (color === frame.getPixel(x, y + w) && (y + w) < height) {
-              w++;
+        // Replace transparent color
+        var constantTransparentColorInt = pskl.utils.colorToInt(Constants.TRANSPARENT_COLOR);
+        var transparentColorInt = pskl.utils.colorToInt(transparentColor);
+        if (transparentColorInt != constantTransparentColorInt) {
+          pixels = frame.getPixels();
+          for (var i = 0; i < pixels.length; i++) {
+            if (pixels[i] == constantTransparentColorInt) {
+              pixels[i] = transparentColorInt;
             }
-
-            if (color == Constants.TRANSPARENT_COLOR) {
-              color = transparentColor;
-            }
-
-            pskl.utils.FrameUtils.renderLine_(color, x, y, w, context);
-            y = y + w - 1;
           }
         }
 
+        // Imagedata from cache
+        var imageDataKey = w+"-"+h;
+        var imageData;
+        if (!imageDataPool[imageDataKey]) {
+          imageData = imageDataPool[imageDataKey] = context.createImageData(w, h);
+        } else {
+          imageData = imageDataPool[imageDataKey];
+        }
+
+        // Convert to uint8 and set the data
+        var data = new Uint8ClampedArray(pixels.buffer);
+        var imgDataData = imageData.data;
+        imgDataData.set(data);
+
+        // Offcanvas from cache
+        var offCanvasKey = w+"-"+h;
+        var offCanvas;
+        if (!offCanvasPool[offCanvasKey]) {
+          offCanvas = offCanvasPool[offCanvasKey] = pskl.utils.CanvasUtils.createCanvas(w, h);
+          offCanvas.context = offCanvas.getContext('2d');
+        } else {
+          offCanvas = offCanvasPool[offCanvasKey];
+        }
+
+        // Put pixel data to offcanvas and draw the offcanvas onto the canvas
+        offCanvas.context.putImageData(imageData, 0, 0);
+        context.drawImage(offCanvas, 0, 0, w, h);
         context.globalAlpha = 1;
       }
     },
@@ -90,8 +120,9 @@
     },
 
     mergeFrames_ : function (frameA, frameB) {
+      var transparentColorInt = pskl.utils.colorToInt(Constants.TRANSPARENT_COLOR);
       frameB.forEachPixel(function (color, col, row) {
-        if (color != Constants.TRANSPARENT_COLOR) {
+        if (color != transparentColorInt) {
           frameA.setPixel(col, row, color);
         }
       });

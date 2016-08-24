@@ -15,7 +15,7 @@
         } else if (axis === ns.TransformUtils.HORIZONTAL) {
           y = h - y - 1;
         }
-        frame.pixels[x][y] = color;
+        frame.setPixel(x, y, color);
       });
       frame.version++;
       return frame;
@@ -55,9 +55,9 @@
         x = x - xDelta;
         y = y - yDelta;
         if (clone.containsPixel(x, y)) {
-          frame.pixels[_x][_y] = clone.getPixel(x, y);
+          frame.setPixel(_x, _y, clone.getPixel(x, y));
         } else {
-          frame.pixels[_x][_y] = Constants.TRANSPARENT_COLOR;
+          frame.setPixel(_x, _y, Constants.TRANSPARENT_COLOR);
         }
       });
       frame.version++;
@@ -70,8 +70,9 @@
       var miny = frame.height;
       var maxx = 0;
       var maxy = 0;
+      var transparentColorInt = pskl.utils.colorToInt(Constants.TRANSPARENT_COLOR);
       frame.forEachPixel(function (color, x, y) {
-        if (color !== Constants.TRANSPARENT_COLOR) {
+        if (color !== transparentColorInt) {
           minx = Math.min(minx, x);
           maxx = Math.max(maxx, x);
           miny = Math.min(miny, y);
@@ -98,9 +99,9 @@
         y -= dy;
 
         if (clone.containsPixel(x, y)) {
-          frame.pixels[_x][_y] = clone.getPixel(x, y);
+          frame.setPixel(_x, _y, clone.getPixel(x, y));
         } else {
-          frame.pixels[_x][_y] = Constants.TRANSPARENT_COLOR;
+          frame.setPixel(_x, _y, Constants.TRANSPARENT_COLOR);
         }
       });
       frame.version++;

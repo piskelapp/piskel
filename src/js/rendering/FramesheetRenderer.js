@@ -30,12 +30,11 @@
 
   ns.FramesheetRenderer.prototype.drawFrameInCanvas_ = function (frame, canvas, offsetWidth, offsetHeight) {
     var context = canvas.getContext('2d');
-    frame.forEachPixel(function (color, x, y) {
-      if (color != Constants.TRANSPARENT_COLOR) {
-        context.fillStyle = color;
-        context.fillRect(x + offsetWidth, y + offsetHeight, 1, 1);
-      }
-    });
+    var imageData = context.createImageData(frame.getWidth(), frame.getHeight());
+    var pixels = frame.getPixels();
+    var data = new Uint8ClampedArray(pixels.buffer);
+    imageData.data.set(data);
+    context.putImageData(imageData, offsetWidth, offsetHeight);
   };
 
   ns.FramesheetRenderer.prototype.createCanvas_ = function (columns, rows) {

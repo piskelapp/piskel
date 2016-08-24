@@ -198,7 +198,7 @@ describe("SelectionManager suite", function() {
 
   var checkContainsPixel = function (pixels, row, col, color) {
     var containsPixel = pixels.some(function (pixel) {
-      return pixel.row == row && pixel.col == col && pixel.color == color;
+      return pixel.row == row && pixel.col == col && test.testutils.compareColor(pixel.color, color);
     });
     expect(containsPixel).toBe(true);
   };

@@ -43,10 +43,10 @@
     var overlayColor = overlay.getPixel(col, row);
     var frameColor = frame.getPixel(col, row);
 
-    var isPixelModified = overlayColor !== Constants.TRANSPARENT_COLOR;
+    var isPixelModified = overlayColor !== pskl.utils.colorToInt(Constants.TRANSPARENT_COLOR);
     var pixelColor = isPixelModified ? overlayColor : frameColor;
 
-    var isTransparent = pixelColor === Constants.TRANSPARENT_COLOR;
+    var isTransparent = pixelColor === pskl.utils.colorToInt(Constants.TRANSPARENT_COLOR);
     if (isTransparent) {
       return Constants.TRANSPARENT_COLOR;
     }
@@ -61,9 +61,9 @@
 
     var color;
     if (isDarken) {
-      color = window.tinycolor.darken(pixelColor, step);
+      color = window.tinycolor.darken(pskl.utils.intToColor(pixelColor), step);
     } else {
-      color = window.tinycolor.lighten(pixelColor, step);
+      color = window.tinycolor.lighten(pskl.utils.intToColor(pixelColor), step);
     }
 
     // Convert tinycolor color to string format.
