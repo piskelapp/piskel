@@ -134,10 +134,9 @@
   ns.Frame.prototype.forEachPixel = function (callback) {
     var width = this.getWidth();
     var height = this.getHeight();
-    for (var x = 0 ; x < width ; x++) {
-      for (var y = 0 ; y < height ; y++) {
-        callback(this.pixels[y * this.width + x], x, y, this);
-      }
+    var length = width * height;
+    for (var i = 0; i < length ; ++i) {
+      callback(this.pixels[i], i % width, Math.floor(i / width), this);
     }
   };
 
