@@ -14,6 +14,14 @@
       reader.readAsDataURL(file);
     },
 
+    readFileAsArrayBuffer : function (file, callback) {
+      var reader = new FileReader();
+      reader.addEventListener("loadend", function() {
+        callback(reader.result);
+      });
+      reader.readAsArrayBuffer(file);
+    },
+
     readImageFile : function (file, callback) {
       ns.FileUtils.readFile(file, function (content) {
         var image = new Image();
@@ -28,7 +36,7 @@
         saveAs(content, filename);
       } else {
         var downloadLink = document.createElement('a');
-        content = window.URL.createObjectURL(content);
+        content = window.URL.createObjectURL(new Blob([content]));
         downloadLink.setAttribute('href', content);
         downloadLink.setAttribute('download', filename);
         document.body.appendChild(downloadLink);
