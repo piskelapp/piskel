@@ -79,10 +79,9 @@
 
   ns.ImportController.prototype.openPiskelFile_ = function (file) {
     if (this.isPiskel_(file)) {
-      pskl.utils.PiskelFileUtils.loadFromFile(file, function (piskel, descriptor, fps) {
-        piskel.setDescriptor(descriptor);
+      pskl.utils.PiskelFileUtils.loadFromFile(file, function (piskel, extra) {
         pskl.app.piskelController.setPiskel(piskel);
-        pskl.app.previewController.setFPS(fps);
+        pskl.app.previewController.setFPS(extra.fps);
       });
       this.closeDrawer_();
     }
