@@ -53,7 +53,7 @@
     var isSnapshot = action.type === ns.HistoryService.SNAPSHOT;
     var isAtAutoSnapshotInterval = this.currentIndex % ns.HistoryService.SNAPSHOT_PERIOD === 0;
     if (isSnapshot || isAtAutoSnapshotInterval) {
-      state.piskel = this.piskelController.serialize(true);
+      state.piskel = this.piskelController.serialize();
     }
 
     this.stateQueue.push(state);
@@ -124,13 +124,7 @@
     var state = this.stateQueue[stateIndex];
     var piskelSnapshot = state.piskel;
 
-    // If the snapshot is stringified, parse it and backup the result for faster access next time
-    // FIXME : Memory consumption might go crazy if we keep unpacking big piskels indefinitely
-    // ==> should ensure I remove some of them :)
-    if (typeof piskelSnapshot === 'string') {
-      piskelSnapshot = JSON.parse(piskelSnapshot);
-      state.piskel = piskelSnapshot;
-    }
+    state.piskel = piskelSnapshot;
 
     return piskelSnapshot;
   };
