@@ -175,11 +175,10 @@
       }
     },
 
-    loadPiskel_ : function (serializedPiskel, descriptor, fps) {
-      pskl.utils.serialization.Deserializer.deserialize(serializedPiskel, function (piskel) {
-        piskel.setDescriptor(descriptor);
+    loadPiskel_ : function (serializedPiskel) {
+      pskl.utils.serialization.Deserializer.deserialize(serializedPiskel, function (piskel, extra) {
         pskl.app.piskelController.setPiskel(piskel);
-        pskl.app.previewController.setFPS(fps);
+        pskl.app.previewController.setFPS(extra.fps);
       });
     },
 
