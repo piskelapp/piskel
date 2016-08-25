@@ -37,10 +37,13 @@
   };
 
   ns.Layer.prototype.setOpacity = function (opacity) {
+    if (typeof opacity == 'string') {
+      opacity = parseFloat(opacity);
+    }
     if (opacity === null || isNaN(opacity) || opacity < 0 || opacity > 1) {
       return;
     }
-    this.opacity = opacity;
+    this.opacity = +opacity.toFixed(3);
   };
 
   ns.Layer.prototype.isTransparent = function () {
