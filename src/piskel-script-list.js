@@ -43,6 +43,7 @@
   "js/utils/serialization/Deserializer.js",
   "js/utils/serialization/backward/Deserializer_v0.js",
   "js/utils/serialization/backward/Deserializer_v1.js",
+  "js/utils/serialization/backward/Deserializer_v2.js",
 
     // GIF Encoding libraries
   "js/lib/gif/gif.worker.js",
