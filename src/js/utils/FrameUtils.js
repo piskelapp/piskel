@@ -156,33 +156,9 @@
     },
 
     createFromImageData_ : function (imageData, width, height, preserveOpacity) {
-      // Draw the zoomed-up pixels to a different canvas context
-      var grid = [];
-      for (var x = 0 ; x < width ; x++) {
-        grid[x] = [];
-        for (var y = 0 ; y < height ; y++) {
-          // Find the starting index in the one-dimensional image data
-          var i = (y * width + x) * 4;
-          var r = imageData[i  ];
-          var g = imageData[i + 1];
-          var b = imageData[i + 2];
-          var a = imageData[i + 3];
-          if (preserveOpacity) {
-            if (a === 0) {
-              grid[x][y] = Constants.TRANSPARENT_COLOR;
-            } else {
-              grid[x][y] = 'rgba(' + [r, g, b, a / 255].join(',') + ')';
-            }
-          } else {
-            if (a < 125) {
-              grid[x][y] = Constants.TRANSPARENT_COLOR;
-            } else {
-              grid[x][y] = pskl.utils.rgbToHex(r, g, b);
-            }
-          }
-        }
-      }
-      return pskl.model.Frame.fromPixelGrid(grid);
+      var frame = new pskl.model.Frame(width, height);
+      frame.pixels = new Uint32Array(imageData.buffer);
+      return frame;
     },
 
     /**
