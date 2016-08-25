@@ -134,6 +134,11 @@
       return pskl.utils.FrameUtils.createFromImage(resizedImage);
     },
 
+    createFromCanvas : function (canvas, x, y, w, h, preserveOpacity) {
+      var imgData = canvas.getContext('2d').getImageData(x, y, w, h).data;
+      return pskl.utils.FrameUtils.createFromImageData_(imgData, w, h, preserveOpacity);
+    },
+
     /*
      * Create a pskl.model.Frame from an Image object. By default transparent
      * pixels will be converted to completely opaque or completely transparent
