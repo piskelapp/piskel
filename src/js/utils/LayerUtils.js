@@ -24,7 +24,7 @@
       for (var i = 0 ; i < frameCount ; i++) {
         context.clearRect(0, 0 , frameWidth, height);
         context.drawImage(image, frameWidth * i, 0, frameWidth, height, 0, 0, frameWidth, height);
-        var frame = pskl.utils.FrameUtils.createFromImage(canvas);
+        var frame = pskl.utils.FrameUtils.createFromCanvas(canvas, 0, 0, frameWidth, height);
         frames.push(frame);
       }
       return frames;
