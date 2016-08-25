@@ -121,11 +121,11 @@
 
     mergeFrames_ : function (frameA, frameB) {
       var transparentColorInt = pskl.utils.colorToInt(Constants.TRANSPARENT_COLOR);
-      frameB.forEachPixel(function (color, col, row) {
-        if (color != transparentColorInt) {
-          frameA.setPixel(col, row, color);
+      for (var i = 0, length = frameA.getWidth() * frameA.getHeight(); i < length; ++i) {
+        if (frameB.pixels[i] != transparentColorInt && frameA.pixels[i] != frameB.pixels[i]) {
+          frameA.pixels[i] = frameB.pixels[i];
         }
-      });
+      }
     },
 
     resize : function (frame, targetWidth, targetHeight, smoothing) {
