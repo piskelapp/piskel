@@ -51,8 +51,7 @@
       for (var i = 0; i < frame.length; i++) {
         var color = frame[i];
         if (color !== transparentColorInt) {
-          var hexColor = intToHex(color);
-          frameColors[hexColor] = true;
+          frameColors[color] = true;
         }
       }
       return frameColors;
