@@ -2,18 +2,39 @@
   var ns = $.namespace('pskl.utils.serialization');
 
   ns.Deserializer = function (data, callback) {
-    this.layersToLoad_ = 0;
     this.data_ = data;
     this.callback_ = callback;
-    this.piskel_ = null;
-    this.layers_ = [];
   };
 
   ns.Deserializer.deserialize = function (data, callback) {
+    var modelVersion;
+
+    var isJSON = false;
+    if (data instanceof ArrayBuffer) {
+      var uint8 = new Uint8Array(data);
+
+      // Backward compatibility for JSON (modelVersion < 3)
+      if (String.fromCharCode(uint8[0]) == '{') {
+        var data = "";
+        for (var i = 0; i < uint8.length; i++) {
+          data += String.fromCharCode(uint8[i]);
+        }
+        data = JSON.parse(data);
+        modelVersion = data.modelVersion;
+      } else {
+        var arr16 = new Uint16Array(data);
+        modelVersion = arr16[0];
+      }
+    } else {
+      throw 'Invalid data for deserializing: ' + data;
+    }
+
     var deserializer;
-    if (data.modelVersion == Constants.MODEL_VERSION) {
+    if (modelVersion == Constants.MODEL_VERSION) {
       deserializer = new ns.Deserializer(data, callback);
-    } else if (data.modelVersion == 1) {
+    } else if (modelVersion == 2) {
+      deserializer = new ns.backward.Deserializer_v2(data, callback);
+    } else if (modelVersion == 1) {
       deserializer = new ns.backward.Deserializer_v1(data, callback);
     } else {
       deserializer = new ns.backward.Deserializer_v0(data, callback);
@@ -22,69 +43,102 @@
   };
 
   ns.Deserializer.prototype.deserialize = function (name) {
-    var data = this.data_;
-    var piskelData = data.piskel;
-    name = name || 'Deserialized piskel';
+    var buffer = this.data_;
+    var arr8 = new Uint8Array(buffer);
+    var arr16 = new Uint16Array(buffer);
+    var sub;
 
-    var descriptor = new pskl.model.piskel.Descriptor(name, '');
-    this.piskel_ = new pskl.model.Piskel(piskelData.width, piskelData.height, descriptor);
+    /********/
+    /* META */
+    /********/
+    // Piskel meta
+    var modelVersion = arr16[0];
+    var width = arr16[1];
+    var height = arr16[2];
+    var fps = arr16[3];
 
-    this.layersToLoad_ = piskelData.layers.length;
-    if (piskelData.expanded) {
-      piskelData.layers.forEach(this.loadExpandedLayer.bind(this));
-    } else {
-      piskelData.layers.forEach(this.deserializeLayer.bind(this));
+    // Descriptor meta
+    var descriptorNameLength = arr16[4];
+    var descriptorDescriptionLength = arr16[5];
+
+    // Layers meta
+    var layerCount = arr16[6];
+
+    /********/
+    /* DATA */
+    /********/
+    // Descriptor name
+    var descriptorName = '';
+    for (var i = 0; i < descriptorNameLength; i++) {
+      descriptorName += String.fromCharCode(arr16[7 + i]);
     }
-  };
 
-  ns.Deserializer.prototype.deserializeLayer = function (layerString, index) {
-    var layerData = JSON.parse(layerString);
-    var layer = new pskl.model.Layer(layerData.name);
-    layer.setOpacity(layerData.opacity);
+    // Descriptor description
+    var descriptorDescription = '';
+    for (var i = 0; i < descriptorDescriptionLength; i++) {
+      descriptorDescription = String.fromCharCode(arr16[7 + descriptorNameLength + i]);
+    }
 
-    // 1 - create an image to load the base64PNG representing the layer
-    var base64PNG = layerData.base64PNG;
-    var image = new Image();
+    // Layers
+    var layerStartIndex = 7 + descriptorNameLength + descriptorDescriptionLength;
+    var layers = [];
+    for (var i = 0; i < layerCount; i++) {
+      var layer = {};
+      var frames = [];
 
-    // 2 - attach the onload callback that will be triggered asynchronously
-    image.onload = function () {
-      // 5 - extract the frames from the loaded image
-      var frames = pskl.utils.LayerUtils.createFramesFromSpritesheet(image, layerData.frameCount);
-      // 6 - add each image to the layer
-      this.addFramesToLayer(frames, layer, index);
-    }.bind(this);
+      // Meta
+      var layerNameLength = arr16[layerStartIndex];
+      var opacity =  arr16[layerStartIndex + 1] / 65535;
+      var frameCount = arr16[layerStartIndex + 2];
+      var dataUriLengthFirstHalf = arr16[layerStartIndex + 3];
+      var dataUriLengthSecondHalf = arr16[layerStartIndex + 4];
+      var dataUriLength = (dataUriLengthSecondHalf >>> 0) | (dataUriLengthFirstHalf << 16 >>> 0);
 
-    // 3 - set the source of the image
-    image.src = base64PNG;
-    return layer;
-  };
+      // Name
+      var layerName = '';
+      for (var j = 0; j < layerNameLength; j++) {
+        layerName += String.fromCharCode(arr16[layerStartIndex + 5 + j]);
+      }
 
-  ns.Deserializer.prototype.loadExpandedLayer = function (layerData, index) {
-    var width = this.piskel_.getWidth();
-    var height = this.piskel_.getHeight();
-    var layer = new pskl.model.Layer(layerData.name);
-    layer.setOpacity(layerData.opacity);
-    var frames = layerData.grids.map(function (grid) {
-      return pskl.model.Frame.fromPixelGrid(grid, width, height);
-    });
-    this.addFramesToLayer(frames, layer, index);
-    return layer;
-  };
+      // Data URI
+      var dataUri = '';
+      for (var j = 0; j < dataUriLength; j++) {
+        dataUri += String.fromCharCode(arr8[(layerStartIndex + 5 + layerNameLength) * 2 + j]);
+      }
+      dataUri = 'data:image/png;base64,' + btoa(dataUri);
 
-  ns.Deserializer.prototype.addFramesToLayer = function (frames, layer, index) {
-    frames.forEach(layer.addFrame.bind(layer));
+      layerStartIndex += Math.ceil(5 + layerNameLength + (dataUriLength / 2));
 
-    this.layers_[index] = layer;
-    this.onLayerLoaded_();
-  };
+      layer.name = layerName;
+      layer.opacity = opacity;
+      layer.frameCount = frameCount;
+      layer.dataUri = dataUri;
+      layers.push(layer);
+    }
 
-  ns.Deserializer.prototype.onLayerLoaded_ = function () {
-    this.layersToLoad_ = this.layersToLoad_ - 1;
-    if (this.layersToLoad_ === 0) {
-      this.layers_.forEach(function (layer) {
-        this.piskel_.addLayer(layer);
-      }.bind(this));
-      this.callback_(this.piskel_);
+    var descriptor = new pskl.model.piskel.Descriptor(descriptorName, descriptorDescription);
+    var piskel = new pskl.model.Piskel(width, height, descriptor);
+    var loadedLayers = 0;
+    for (var i = 0; i < layerCount; i++) {
+      var layer = layers[i];
+      var nlayer = new pskl.model.Layer(layer.name);
+      layer.model = nlayer;
+      nlayer.setOpacity(layer.opacity);
+      piskel.addLayer(nlayer);
+
+      var image = new Image();
+      (function(layer, cb) {
+        image.onload = function() {
+          var frames = pskl.utils.LayerUtils.createFramesFromSpritesheet(this, layer.frameCount);
+          frames.forEach(layer.model.addFrame.bind(layer.model));
+
+          loadedLayers++;
+          if (loadedLayers == layerCount) {
+            cb(piskel, {fps: fps});
+          }
+        };
+      })(layer, this.callback_);
+      image.src = layer.dataUri;
     }
   };
 })();
