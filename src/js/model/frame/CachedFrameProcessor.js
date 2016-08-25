@@ -82,10 +82,10 @@
       } else {
       */
       processedFrame = this.frameProcessor(frame);
+      cache[cacheKey] = processedFrame;
       /*
         cache[frameAsString] = processedFrame;
       }
-      cache[cacheKey] = processedFrame;
       */
     }
 

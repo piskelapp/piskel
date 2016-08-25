@@ -41,11 +41,11 @@
       var key2 = pskl.utils.hashCode(framePixels);
       if (cache[key2]) {
         processedFrame = this.outputCloner(cache[key2], frame);
-        cache[key1] = processedFrame;
       } else {
       */
       var callback = this.onProcessorComplete_.bind(this, deferred, cache, key1/*, key1*/);
       this.frameProcessor(frame, callback);
+      cache[key1] = processedFrame;
       /*
       }
       */
