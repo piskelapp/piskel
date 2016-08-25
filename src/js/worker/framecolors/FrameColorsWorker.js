@@ -34,13 +34,24 @@
       }
     };
 
+    var intHexCache = {};
+    var intToHex = function(int) {
+      if (intHexCache[int]) {
+        return intHexCache[int];
+      }
+
+      var hex = rgbToHex(int & 0xff, int >> 8 & 0xff, int >> 16 & 0xff);
+      intHexCache[int] = hex;
+      return hex;
+    };
+
     var getFrameColors = function (frame) {
       var frameColors = {};
       var transparentColorInt = 0; // TODO: Fix magic number
       for (var i = 0; i < frame.length; i++) {
         var color = frame[i];
         if (color !== transparentColorInt) {
-          var hexColor = rgbToHex(color & 0xff, color >> 16 & 0xff, color >> 8 & 0xff);
+          var hexColor = intToHex(color);
           frameColors[hexColor] = true;
         }
       }
