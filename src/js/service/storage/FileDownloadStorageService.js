@@ -5,21 +5,19 @@
   ns.FileDownloadStorageService.prototype.init = function () {};
 
   ns.FileDownloadStorageService.prototype.save = function (piskel) {
-    var serialized = pskl.utils.Serializer.serializePiskel(piskel, false);
+    var serialized = pskl.utils.Serializer.serializePiskel(piskel);
     var deferred = Q.defer();
 
-    pskl.utils.BlobUtils.stringToBlob(serialized, function(blob) {
-      var piskelName = piskel.getDescriptor().name;
-      var timestamp = pskl.utils.DateUtils.format(new Date(), '{{Y}}{{M}}{{D}}-{{H}}{{m}}{{s}}');
-      var fileName = piskelName + '-' + timestamp + '.piskel';
+    var piskelName = piskel.getDescriptor().name;
+    var timestamp = pskl.utils.DateUtils.format(new Date(), '{{Y}}{{M}}{{D}}-{{H}}{{m}}{{s}}');
+    var fileName = piskelName + '-' + timestamp + '.piskel';
 
-      try {
-        pskl.utils.FileUtils.downloadAsFile(blob, fileName);
-        deferred.resolve();
-      } catch (e) {
-        deferred.reject(e.message);
-      }
-    }.bind(this), 'application/piskel+json');
+    try {
+      pskl.utils.FileUtils.downloadAsFile(serialized, fileName);
+      deferred.resolve();
+    } catch (e) {
+      deferred.reject(e.message);
+    }
 
     return deferred.promise;
   };

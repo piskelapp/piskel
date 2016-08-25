@@ -13,7 +13,13 @@
   ns.LocalStorageService.prototype.save = function(piskel) {
     var name = piskel.getDescriptor().name;
     var description = piskel.getDescriptor().description;
-    var serialized = pskl.utils.Serializer.serializePiskel(piskel, false);
+    var serialized = pskl.utils.Serializer.serializePiskel(piskel);
+
+    var serializedString = '';
+    var uint16 = new Uint16Array(serialized);
+    for (var i = 0, length = uint16.length; i < length; i++) {
+      serializedString += String.fromCharCode(uint16[i]);
+    }
 
     if (pskl.app.localStorageService.getPiskel(name)) {
       var confirmOverwrite = window.confirm('There is already a piskel saved as ' + name + '. Overwrite ?');
@@ -25,7 +31,7 @@
     try {
       this.removeFromKeys_(name);
       this.addToKeys_(name, description, Date.now());
-      window.localStorage.setItem('piskel.' + name, serialized);
+      window.localStorage.setItem('piskel.' + name, serializedString);
       return Q.resolve();
     } catch (e) {
       return Q.reject(e.message);
@@ -35,16 +41,15 @@
   ns.LocalStorageService.prototype.load = function(name) {
     var piskelString = this.getPiskel(name);
     var key = this.getKey_(name);
-    var serializedPiskel = JSON.parse(piskelString);
-    // FIXME : should be moved to deserializer
-    // Deserializer should call callback with descriptor + fps information
-    var fps = serializedPiskel.piskel.fps;
-    var description = serializedPiskel.piskel.description;
+    
+    var serializedPiskel = new Uint16Array(piskelString.length);
+    for (var i = 0, length = piskelString.length; i < length; i++) {
+      serializedPiskel[i] = piskelString.charCodeAt(i);
+    }
 
-    pskl.utils.serialization.Deserializer.deserialize(serializedPiskel, function (piskel) {
-      piskel.setDescriptor(new pskl.model.piskel.Descriptor(name, description, true));
+    pskl.utils.serialization.Deserializer.deserialize(serializedPiskel.buffer, function (piskel, extra) {
       pskl.app.piskelController.setPiskel(piskel);
-      pskl.app.previewController.setFPS(fps);
+      pskl.app.previewController.setFPS(extra.fps);
     });
   };
 
