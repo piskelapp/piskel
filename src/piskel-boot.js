@@ -9,8 +9,8 @@
     version = '';
   }
 
-  if (!window.onPiskelReady) {
-    window.onPiskelReady = [];
+  if (!window.piskelReadyCallbacks) {
+    window.piskelReadyCallbacks = [];
   }
 
   window._onPiskelReady = function () {
@@ -24,8 +24,8 @@
     delete window.done;
 
     // Run Piskel ready callbacks
-    for (var i in window.onPiskelReady) {
-      window.onPiskelReady[i]();
+    for (var i = 0; i < window.piskelReadyCallbacks.length; i++) {
+      window.piskelReadyCallbacks[i]();
     }
   };
 
@@ -83,6 +83,6 @@
     }
 
     loadStyle('css/piskel-style-packaged' + version + '.css');
-    loadScript(script, "_onPiskelReady()");
+    loadScript(script, '_onPiskelReady()');
   }
 })();
