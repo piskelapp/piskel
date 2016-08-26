@@ -12,9 +12,10 @@
   ns.Deserializer_v2.prototype.deserialize = function (name) {
     var data = this.data_;
     var piskelData = data.piskel;
-    name = name || 'Deserialized piskel';
+    name = piskelData.name || 'Deserialized piskel';
+    description = piskelData.description || '';
 
-    var descriptor = new pskl.model.piskel.Descriptor(name, '');
+    var descriptor = new pskl.model.piskel.Descriptor(name, description);
     this.piskel_ = new pskl.model.Piskel(piskelData.width, piskelData.height, descriptor);
 
     this.layersToLoad_ = piskelData.layers.length;
