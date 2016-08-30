@@ -111,7 +111,7 @@
 
           if (lastColors) {
             Object.keys(lastColors).forEach(function(color) {
-              if (!colors[color]) {
+              if (!frameCache[hash][color]) {
                 delete colors[color];
               }
             });
@@ -122,8 +122,7 @@
       }
     }
 
-    var batchAllThen = function (results) {
-      var colors = {};
+    var batchAllThen = function (colors, results) {
       results.forEach(function (result) {
         Object.keys(result).forEach(function (color) {
           colors[color] = true;
@@ -139,7 +138,7 @@
       }
 
       this.setCurrentColors(hexColors);
-    }.bind(this)
+    }.bind(this, colors);
 
     if (framesToBatch.length == 0) {
       batchAllThen([colors]);
