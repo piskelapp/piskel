@@ -1,7 +1,7 @@
 (function () {
   var ns = $.namespace('pskl.controller');
 
-  var RENDER_MINIMUM_DELAY = 1000;
+  var RENDER_MINIMUM_DELAY = 500;
 
   var ACTION = {
     SELECT : 'select',
