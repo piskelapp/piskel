@@ -13,7 +13,10 @@
   };
 
   ns.FrameColors.prototype.process = function () {
-    this.worker.postMessage([pskl.utils.colorToInt(Constants.TRANSPARENT_COLOR), Constants.MAX_PALETTE_COLORS, this.pixels]);
+    this.worker.postMessage([
+      pskl.utils.colorToInt(Constants.TRANSPARENT_COLOR),
+      Constants.MAX_PALETTE_COLORS, this.pixels
+    ]);
   };
 
   ns.FrameColors.prototype.onWorkerMessage = function (event) {

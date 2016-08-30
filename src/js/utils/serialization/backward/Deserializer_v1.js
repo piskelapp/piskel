@@ -16,7 +16,7 @@
       piskel.addLayer(layer);
     }.bind(this));
 
-    this.callback_(piskel, { fps: Constants.DEFAULTS.FPS});
+    this.callback_(piskel, {fps: Constants.DEFAULTS.FPS});
   };
 
   ns.Deserializer_v1.prototype.deserializeLayer = function (layerString) {

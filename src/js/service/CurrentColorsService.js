@@ -96,10 +96,17 @@
 
     var colors = {};
     var framesToBatch = [];
+
+    var removeColorsIfNotInCurrent = function(hash, color) {
+      if (!frameCache[hash][color]) {
+        delete colors[color];
+      }
+    };
+
     for (var i = 0, length = frames.length; i < length; ++i) {
       var frame = frames[i];
       var hash = frame.getHash();
-      
+
       if (frameCache[hash]) {
         colors = Object.assign(colors, frameCache[hash]);
 
@@ -107,14 +114,10 @@
         var hashVersion = parseInt(hashParts.pop());
 
         if (hashVersion > 0) {
-          var lastColors = frameCache[hashParts.join('-')+'-'+(hashVersion - 1)];
+          var lastColors = frameCache[hashParts.join('-') + '-' + (hashVersion - 1)];
 
           if (lastColors) {
-            Object.keys(lastColors).forEach(function(color) {
-              if (!frameCache[hash][color]) {
-                delete colors[color];
-              }
-            });
+            Object.keys(lastColors).forEach(removeColorsIfNotInCurrent.bind(this, hash));
           }
         }
       } else {
@@ -140,7 +143,7 @@
       this.setCurrentColors(hexColors);
     }.bind(this, colors);
 
-    if (framesToBatch.length == 0) {
+    if (framesToBatch.length === 0) {
       batchAllThen([colors]);
     } else {
       batchAll(framesToBatch, job).then(batchAllThen);

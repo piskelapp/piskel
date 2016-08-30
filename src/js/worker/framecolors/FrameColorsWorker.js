@@ -1,6 +1,6 @@
 (function () {
   var ns = $.namespace('pskl.worker.framecolors');
-  
+
   if (Constants.TRANSPARENT_COLOR !== 'rgba(0, 0, 0, 0)') {
     throw 'Constants.TRANSPARENT_COLOR, please update FrameColorsWorker';
   }
@@ -52,7 +52,7 @@
       for (var i = 0, length = frame.length; i < length && colors < this.MAX_PALETTE_COLORS; i++) {
         var color = frame[i];
         if (color !== transparentColorInt) {
-         if (!frameColors[color]) {
+          if (!frameColors[color]) {
             frameColors[color] = true;
             colors++;
           }

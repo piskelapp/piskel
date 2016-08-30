@@ -13,7 +13,7 @@
     var data = this.data_;
     var piskelData = data.piskel;
     name = piskelData.name || 'Deserialized piskel';
-    description = piskelData.description || '';
+    var description = piskelData.description || '';
 
     var descriptor = new pskl.model.piskel.Descriptor(name, description);
     this.piskel_ = new pskl.model.Piskel(piskelData.width, piskelData.height, descriptor);

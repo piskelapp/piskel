@@ -71,22 +71,8 @@
       processedFrame = this.frameProcessor(frame);
       cache[cacheKey] = processedFrame;
     } else {
-      // TODO: Remove?
-      /*
-      // Float64Array.toString() is about 2.4x times faster compared to Uint32Array.toString()
-      var framePixels = new Float64Array(frame.pixels.buffer).toString();
-      var frameAsString = pskl.utils.hashCode(framePixels);
-      if (cache[frameAsString]) {
-        this.cacheHitLvl2_++;
-        processedFrame = this.outputCloner(cache[frameAsString], frame);
-      } else {
-      */
       processedFrame = this.frameProcessor(frame);
       cache[cacheKey] = processedFrame;
-      /*
-        cache[frameAsString] = processedFrame;
-      }
-      */
     }
 
     return processedFrame;

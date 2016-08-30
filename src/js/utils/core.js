@@ -91,13 +91,17 @@ if (!Function.prototype.bind) {
   };
 
   ns.hashCode = function(str) {
-    var hash = 0, i, chr, len;
-    if (str.length === 0) return hash;
-    for (i = 0, len = str.length; i < len; i++) {
-        chr   = str.charCodeAt(i);
-        hash  = hash * 31 + chr;
-        hash |= 0; // Convert to 32bit integer
+    var hash = 0;
+    if (str.length === 0) {
+      return hash;
     }
+
+    for (var i = 0, len = str.length, chr; i < len; i++) {
+      chr = str.charCodeAt(i);
+      hash = hash * 31 + chr;
+      hash |= 0; // Convert to 32bit integer
+    }
+
     return hash;
   };
 
@@ -120,6 +124,7 @@ if (!Function.prototype.bind) {
   };
 
   var colorCache = {};
+  var colorCacheReverse = {};
   ns.colorToInt = function (color) {
     if (typeof color === 'number') {
       return color;
@@ -130,26 +135,30 @@ if (!Function.prototype.bind) {
     }
 
     var intValue = 0;
+    var r;
+    var g;
+    var b;
+    var a;
 
     // Hexadecimal
     if ((color.length == 9 || color.length == 7 || color.length == 3) && color[0] == '#') {
-        var hex = parseInt(color.substr(1), 16);
-        if (color.length == 9) {
-          r = hex >> 24 & 0xff;
-          g = hex >> 16 & 0xff;
-          b = hex >> 8 & 0xff;
-          a = hex & 0xff;
-        } else if (color.length == 7) {
-          r = hex >> 16 & 0xff;
-          g = hex >> 8 & 0xff;
-          b = hex & 0xff;
-          a = 255;
-        } else {
-          r = hex >> 8 & 0xf * 16;
-          g = hex >> 4 & 0xf * 16;
-          b = hex & 0xf * 16;
-          a = 255;
-        }
+      var hex = parseInt(color.substr(1), 16);
+      if (color.length == 9) {
+        r = hex >> 24 & 0xff;
+        g = hex >> 16 & 0xff;
+        b = hex >> 8 & 0xff;
+        a = hex & 0xff;
+      } else if (color.length == 7) {
+        r = hex >> 16 & 0xff;
+        g = hex >> 8 & 0xff;
+        b = hex & 0xff;
+        a = 255;
+      } else {
+        r = hex >> 8 & 0xf * 16;
+        g = hex >> 4 & 0xf * 16;
+        b = hex & 0xf * 16;
+        a = 255;
+      }
     } else if (color.length > 5 && color.substr(0, 5) == 'rgba(') { // RGBA
       var rgba = color.substr(5).slice(0, -1).split(',');
       r = parseInt(rgba[0]);
@@ -161,13 +170,14 @@ if (!Function.prototype.bind) {
       r = parseInt(rgb[0]);
       g = parseInt(rgb[1]);
       b = parseInt(rgb[2]);
+      a = 255;
     } else { // NO HOPE
       // Determine color by using the browser itself
-      d = document.createElement("div");
+      var d = document.createElement('div');
       d.style.color = color;
       document.body.appendChild(d);
 
-      // Color in RGB 
+      // Color in RGB
       color = window.getComputedStyle(d).color;
       document.body.removeChild(d);
 
@@ -181,10 +191,9 @@ if (!Function.prototype.bind) {
     return intValue;
   };
 
-  var colorCacheReverse = {};
   ns.intToColor = function(intValue) {
-    if (typeof colorCache[color] !== 'undefined') {
-      return colorCache[color];
+    if (typeof intValue === 'string') {
+      return intValue;
     }
 
     if (typeof colorCacheReverse[intValue] !== 'undefined') {
@@ -195,7 +204,7 @@ if (!Function.prototype.bind) {
     var g = intValue >> 8 & 0xff;
     var b = intValue >> 16 & 0xff;
     var a = (intValue >> 24 >>> 0 & 0xff) / 255;
-    var color = 'rgba('+r+','+g+','+b+','+a+')';
+    var color = 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
 
     colorCache[color] = intValue;
     colorCacheReverse[intValue] = color;
