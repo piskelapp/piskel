@@ -28,7 +28,6 @@
 
       var allLayers = pskl.utils.UserAgent.isMac ?  event.metaKey : event.ctrlKey;
       var allFrames = event.shiftKey;
-
       this.swapColors_(oldColor, newColor, allLayers, allFrames);
 
       this.raiseSaveStateEvent({
@@ -56,8 +55,10 @@
   };
 
   ns.ColorSwap.prototype.applyToolOnFrame_ = function (frame, oldColor, newColor) {
+    oldColor = pskl.utils.colorToInt(oldColor);
+    newColor = pskl.utils.colorToInt(newColor);
     frame.forEachPixel(function (color, col, row) {
-      if (color && color == oldColor) {
+      if (color !== null && color == oldColor) {
         frame.setPixel(col, row, newColor);
       }
     });

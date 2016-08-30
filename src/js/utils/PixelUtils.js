@@ -146,6 +146,10 @@
        *  13. Continue looping until Q is exhausted.
        *  14. Return.
        */
+      if (typeof replacementColor == 'string') {
+        replacementColor = pskl.utils.colorToInt(replacementColor);
+      }
+
       var targetColor;
       try {
         targetColor = frame.getPixel(col, row);
@@ -153,7 +157,7 @@
         // Frame out of bound exception.
       }
 
-      if (targetColor == replacementColor) {
+      if (targetColor === null || targetColor == replacementColor) {
         return;
       }
 
@@ -162,7 +166,7 @@
         row : row
       };
       var paintedPixels = pskl.PixelUtils.visitConnectedPixels(startPixel, frame, function (pixel) {
-        if (frame.containsPixel(pixel.col, pixel.row) && frame.getPixel(pixel.col, pixel.row) == targetColor) {
+        if (frame.getPixel(pixel.col, pixel.row) == targetColor) {
           frame.setPixel(pixel.col, pixel.row, replacementColor);
           return true;
         }
