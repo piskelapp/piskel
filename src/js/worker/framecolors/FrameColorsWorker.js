@@ -47,11 +47,15 @@
 
     var getFrameColors = function (frame) {
       var frameColors = {};
-      var transparentColorInt = 0; // TODO: Fix magic number
-      for (var i = 0; i < frame.length; i++) {
+      var transparentColorInt = this.TRANSPARENT_COLOR;
+      var colors = 0;
+      for (var i = 0, length = frame.length; i < length && colors < this.MAX_PALETTE_COLORS; i++) {
         var color = frame[i];
         if (color !== transparentColorInt) {
-          frameColors[color] = true;
+         if (!frameColors[color]) {
+            frameColors[color] = true;
+            colors++;
+          }
         }
       }
       return frameColors;
@@ -59,7 +63,9 @@
 
     this.onmessage = function(event) {
       try {
-        var frame = event.data;
+        this.TRANSPARENT_COLOR = event.data[0];
+        this.MAX_PALETTE_COLORS = event.data[1];
+        var frame = event.data[2];
         var colors = getFrameColors(frame);
         this.postMessage({
           type : 'SUCCESS',

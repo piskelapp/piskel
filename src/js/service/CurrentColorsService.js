@@ -90,25 +90,46 @@
   ns.CurrentColorsService.prototype.updateCurrentColors_ = function () {
     var layers = this.piskelController.getLayers();
     var frames = layers.map(function (l) {return l.getFrames();}).reduce(function (p, n) {return p.concat(n);});
-
     var job = function (frame) {
       return this.cachedFrameProcessor.get(frame);
     }.bind(this);
 
-    // TODO: Cache frame -> color
-    for (var i = 0, length = frames.length; i < length; i++) {
+    var colors = {};
+    var framesToBatch = [];
+    for (var i = 0, length = frames.length; i < length; ++i) {
       var frame = frames[i];
       var hash = frame.getHash();
       
+      if (frameCache[hash]) {
+        colors = Object.assign(colors, frameCache[hash]);
+
+        var hashParts = hash.split('-');
+        var hashVersion = parseInt(hashParts.pop());
+
+        if (hashVersion > 0) {
+          var lastColors = frameCache[hashParts.join('-')+'-'+(hashVersion - 1)];
+
+          if (lastColors) {
+            Object.keys(lastColors).forEach(function(color) {
+              if (!colors[color]) {
+                delete colors[color];
+              }
+            });
+          }
+        }
+      } else {
+        framesToBatch.push(frame);
+      }
     }
 
-    batchAll(frames, job).then(function (results) {
+    var batchAllThen = function (results) {
       var colors = {};
       results.forEach(function (result) {
         Object.keys(result).forEach(function (color) {
           colors[color] = true;
         });
       });
+
       // Remove transparent color from used colors
       delete colors[pskl.utils.colorToInt(Constants.TRANSPARENT_COLOR)];
 
@@ -118,7 +139,13 @@
       }
 
       this.setCurrentColors(hexColors);
-    }.bind(this));
+    }.bind(this)
+
+    if (framesToBatch.length == 0) {
+      batchAllThen([colors]);
+    } else {
+      batchAll(framesToBatch, job).then(batchAllThen);
+    }
   };
 
   ns.CurrentColorsService.prototype.isCurrentColorsPaletteSelected_ = function () {
@@ -138,7 +165,7 @@
 
   ns.CurrentColorsService.prototype.getFrameColors_ = function (frame, processorCallback) {
     var frameColorsWorker = new pskl.worker.framecolors.FrameColors(frame,
-      function (event) {processorCallback(event.data.colors);},
+      function (event) {frameCache[frame.getHash()] = event.data.colors; processorCallback(event.data.colors);},
       function () {},
       function (event) {processorCallback({});}
     );
