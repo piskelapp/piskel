@@ -10,11 +10,11 @@
    * [1] = width
    * [2] = height
    * [3] = fps
-   * 
+   *
    * // Descriptor
    * [4] = name length
    * [5] = description length
-   * 
+   *
    * // Layers
    * [6] = layers count
    * [layer data index start] = layer name length
@@ -30,8 +30,7 @@
    * [name length..description length-1] = description
    * [layer data index start + 4..layer name length-1] = layer name
    * [layer name length..base 64 png data url length-1] = base 64 png data url
-   * 
-   * 
+   *
    */
 
   ns.Serializer = {
@@ -70,21 +69,27 @@
         bytes += 3 * 2;
         bytes += layers[i].name.length * 2;
         bytes += framesData[i].length;
-        if (bytes%2 == 1) {
+        if (bytes % 2 == 1) {
           bytes++;
-        }        
+        }
       }
 
       return bytes;
     },
 
     serializePiskel : function (piskel, expanded) {
+      var i;
+      var j;
+      var layers;
+      var dataUri;
+      var dataUriLength;
+
       // Render frames
       var framesData = [];
-      for (var i = 0, layers = piskel.getLayers(); i < layers.length; i++) {
+      for (i = 0, layers = piskel.getLayers(); i < layers.length; i++) {
         var renderer = new pskl.rendering.FramesheetRenderer(layers[i].getFrames());
-        var dataUri = atob(renderer.renderAsCanvas().toDataURL().split(',')[1]);
-        var dataUriLength = dataUri.length;
+        dataUri = atob(renderer.renderAsCanvas().toDataURL().split(',')[1]);
+        dataUriLength = dataUri.length;
         framesData.push({uri: dataUri, length: dataUriLength});
       }
 
@@ -122,18 +127,18 @@
       /* DATA */
       /********/
       // Descriptor name
-      for (var i = 0; i < descriptorNameLength; i++) {
+      for (i = 0; i < descriptorNameLength; i++) {
         arr16[7 + i] = descriptorName.charCodeAt(i);
       }
 
       // Descriptor description
-      for (var i = 0; i < descriptorDescriptionLength; i++) {
+      for (i = 0; i < descriptorDescriptionLength; i++) {
         arr16[7 + descriptorNameLength + i] = descriptorDescription.charCodeAt(i);
       }
 
       // Layers
       var layerStartIndex = 7 + descriptorNameLength + descriptorDescriptionLength;
-      for (var i = 0, layers = piskel.getLayers(); i < layers.length; i++) {
+      for (i = 0, layers = piskel.getLayers(); i < layers.length; i++) {
         var layer = layers[i];
         var frames = layer.getFrames();
 
@@ -142,8 +147,8 @@
         var opacity = layer.getOpacity();
         var frameCount = frames.length;
 
-        var dataUri = framesData[i].uri
-        var dataUriLength = framesData[i].length
+        dataUri = framesData[i].uri;
+        dataUriLength = framesData[i].length;
 
         // Meta
         arr16[layerStartIndex] = layerNameLength;
@@ -153,20 +158,19 @@
         arr16[layerStartIndex + 4] = ((dataUriLength & 0x0000ffff)) >>> 0;       // Lower 16
 
         // Name
-        for (var j = 0; j < layerNameLength; j++) {
+        for (j = 0; j < layerNameLength; j++) {
           arr16[layerStartIndex + 5 + j] = layerName.charCodeAt(j);
         }
 
         // Data URI
-        for (var j = 0; j < dataUriLength; j++) {
+        for (j = 0; j < dataUriLength; j++) {
           arr8[(layerStartIndex + 5 + layerNameLength) * 2 + j] = dataUri.charCodeAt(j);
         }
 
         layerStartIndex += Math.ceil(5 + layerNameLength + (dataUriLength / 2));
       }
 
-
       return buffer;
     }
-  }
+  };
 })();

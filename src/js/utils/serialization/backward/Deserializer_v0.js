@@ -14,6 +14,6 @@
     var descriptor = new pskl.model.piskel.Descriptor('Deserialized piskel', '');
     var layer = pskl.model.Layer.fromFrames('Layer 1', frames);
 
-    this.callback_(pskl.model.Piskel.fromLayers([layer], descriptor), { fps: Constants.DEFAULTS.FPS});
+    this.callback_(pskl.model.Piskel.fromLayers([layer], descriptor), {fps: Constants.DEFAULTS.FPS});
   };
 })();

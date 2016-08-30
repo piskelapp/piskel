@@ -244,7 +244,8 @@
   };
 
   ns.PreviewController.prototype.shouldRender_ = function () {
-    return (this.renderFlag || this.popupPreviewController.renderFlag) && (Date.now() - this.lastRenderTime > RENDER_MINIMUM_DELAY);
+    return (this.renderFlag || this.popupPreviewController.renderFlag) &&
+            (Date.now() - this.lastRenderTime > RENDER_MINIMUM_DELAY);
   };
 
   ns.PreviewController.prototype.toggleOnionSkin_ = function () {

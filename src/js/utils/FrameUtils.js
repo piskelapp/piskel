@@ -53,7 +53,7 @@
         var transparentColorInt = pskl.utils.colorToInt(transparentColor);
         if (transparentColorInt != constantTransparentColorInt) {
           pixels = frame.getPixels();
-          for (var i = 0; i < pixels.length; i++) {
+          for (var i = 0, length = pixels.length; i < length; i++) {
             if (pixels[i] == constantTransparentColorInt) {
               pixels[i] = transparentColorInt;
             }
@@ -61,7 +61,7 @@
         }
 
         // Imagedata from cache
-        var imageDataKey = w+"-"+h;
+        var imageDataKey = w + '-' + h;
         var imageData;
         if (!imageDataPool[imageDataKey]) {
           imageData = imageDataPool[imageDataKey] = context.createImageData(w, h);
@@ -75,7 +75,7 @@
         imgDataData.set(data);
 
         // Offcanvas from cache
-        var offCanvasKey = w+"-"+h;
+        var offCanvasKey = w + '-' + h;
         var offCanvas;
         if (!offCanvasPool[offCanvasKey]) {
           offCanvas = offCanvasPool[offCanvasKey] = pskl.utils.CanvasUtils.createCanvas(w, h);

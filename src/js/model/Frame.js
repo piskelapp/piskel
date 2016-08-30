@@ -16,12 +16,16 @@
 
   ns.Frame.fromPixelGrid = function (pixels, width, height) {
     if (pixels.length) {
+      var w;
+      var h;
+      var buffer;
+
       if (pixels[0].length) {
-        var w = pixels.length;
-        var h = pixels[0].length;
-        var buffer = [];
+        w = pixels.length;
+        h = pixels[0].length;
+        buffer = [];
         for (var y = 0; y < h; y++) {
-          for (var x = 0; x < w; x++ ) {
+          for (var x = 0; x < w; x++) {
             if (typeof pixels[x][y] == 'string') {
               buffer[y * w + x] = pskl.utils.colorToInt(pixels[x][y]);
             } else {
@@ -30,13 +34,13 @@
           }
         }
       } else if (width && height) {
-        var w = width;
-        var h = height;
+        w = width;
+        h = height;
         buffer = pixels;
       } else {
         throw 'Bad arguments in pskl.model.frame.fromPixelGrid, missing width and height';
       }
-      
+
       var frame = new pskl.model.Frame(w, h);
       frame.setPixels(buffer);
       return frame;
@@ -48,7 +52,7 @@
   var _emptyPixelGridCache = {};
   ns.Frame.createEmptyPixelGrid_ = function (width, height) {
     var pixels;
-    var key = width+"-"+height;
+    var key = width + '-' + height;
     if (_emptyPixelGridCache[key]) {
       pixels = _emptyPixelGridCache[key];
     } else {
@@ -114,8 +118,8 @@
       var p = this.pixels[index];
       if (typeof color === 'string') {
         color = pskl.utils.colorToInt(color);
-      } 
-      
+      }
+
       if (p !== color) {
         this.pixels[index] = color || pskl.utils.colorToInt(Constants.TRANSPARENT_COLOR);
         this.version++;

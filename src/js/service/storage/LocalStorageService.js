@@ -41,7 +41,7 @@
   ns.LocalStorageService.prototype.load = function(name) {
     var piskelString = this.getPiskel(name);
     var key = this.getKey_(name);
-    
+
     var serializedPiskel = new Uint16Array(piskelString.length);
     for (var i = 0, length = piskelString.length; i < length; i++) {
       serializedPiskel[i] = piskelString.charCodeAt(i);

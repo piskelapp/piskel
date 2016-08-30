@@ -16,7 +16,7 @@
 
     readFileAsArrayBuffer : function (file, callback) {
       var reader = new FileReader();
-      reader.addEventListener("loadend", function() {
+      reader.addEventListener('loadend', function() {
         callback(reader.result);
       });
       reader.readAsArrayBuffer(file);
