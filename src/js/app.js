@@ -176,8 +176,6 @@
 
       if (piskelData.newPiskelLink) {
         this.setNewPiskelLink(piskelData.newPiskelLink);
-      } else {
-        this.setNewPiskelLink(document.location);
       }
     },
 
@@ -227,16 +225,20 @@
       return framesheetCanvas.toDataURL('image/png');
     },
 
-    setNewPiskelLink : function(link) {
-      this.newPiskelLink = link;
+    setNewPiskelLink_ : function(link) {
+      this.newPiskelLink_ = link;
     },
 
-    getNewPiskelLink : function() {
-      return this.newPiskelLink;
+    getNewPiskelLink_ : function() {
+      return this.newPiskelLink_;
     },
 
     openNewPiskel : function() {
-      window.open(this.getNewPiskelLink(), '_blank');
+      if (this.getNewPiskelLink_()) {
+        window.open(this.getNewPiskelLink_(), '_blank');
+      } else {
+        window.open(document.location, '_blank');
+      }
     }
   };
 })();
