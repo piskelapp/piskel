@@ -173,6 +173,12 @@
         mb.createMacBuiltin('Piskel');
         gui.Window.get().menu = mb;
       }
+
+      if (piskelData.newPiskelLink) {
+        this.setNewPiskelLink(piskelData.newPiskelLink);
+      } else {
+        this.setNewPiskelLink(document.location);
+      }
     },
 
     loadPiskel_ : function (serializedPiskel, descriptor, fps) {
@@ -219,6 +225,18 @@
       var renderer = new pskl.rendering.PiskelRenderer(this.piskelController);
       var framesheetCanvas = renderer.renderAsCanvas();
       return framesheetCanvas.toDataURL('image/png');
+    },
+
+    setNewPiskelLink : function(link) {
+      this.newPiskelLink = link;
+    },
+
+    getNewPiskelLink : function() {
+      return this.newPiskelLink;
+    },
+
+    openNewPiskel : function() {
+      window.open(this.getNewPiskelLink(), '_blank');
     }
   };
 })();
