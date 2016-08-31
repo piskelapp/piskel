@@ -37,7 +37,7 @@
     "grunt-contrib-uglify": "1.0.1",
     "grunt-contrib-watch": "1.0.0",
     "grunt-ghost": "1.1.0",
-    "grunt-include-replace": "4.0.1",
+    "grunt-include-replace": "5.0.0",
     "grunt-jscs": "2.8.0",
     "grunt-karma": "1.0.0",
     "grunt-leading-indent": "0.2.0",
