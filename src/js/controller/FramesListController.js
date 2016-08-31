@@ -54,7 +54,7 @@
         this.addFrameTile = null;
         this.createPreviews_();
       }
-      
+
       this.updatePreviews_();
       this.redrawFlag = false;
     }
@@ -125,11 +125,17 @@
       this.tiles[i].querySelector('.tile-count').innerHTML = (i + 1);
 
       // Check if any tile is updated
-      if (this.tiles[i].getAttribute('data-tile-hash') !== this.piskelController.getCurrentLayer().getFrameAt(i).getHash()) {
+      var hash = this.piskelController.getCurrentLayer().getFrameAt(i).getHash();
+      if (this.tiles[i].getAttribute('data-tile-hash') !== hash) {
         if (this.tiles[i].querySelector('canvas')) {
-          this.tiles[i].querySelector('.canvas-container').replaceChild(this.getCanvasForFrame(this.piskelController.getCurrentLayer().getFrameAt(i)), this.tiles[i].querySelector('canvas'));
+          this.tiles[i].querySelector('.canvas-container').replaceChild(
+            this.getCanvasForFrame(this.piskelController.getCurrentLayer().getFrameAt(i)),
+            this.tiles[i].querySelector('canvas')
+          );
         } else {
-          this.tiles[i].querySelector('.canvas-container').appendChild(this.getCanvasForFrame(this.piskelController.getCurrentLayer().getFrameAt(i)));
+          this.tiles[i].querySelector('.canvas-container').appendChild(
+            this.getCanvasForFrame(this.piskelController.getCurrentLayer().getFrameAt(i))
+          );
         }
       }
     }
@@ -166,7 +172,7 @@
       '</div><div class="label">Add new frame</div>';
     this.container.append(newFrameButton);
     this.addFrameTile = newFrameButton;
-    
+
     this.updateScrollerOverflows();
     this.domInitialized = true;
   };
