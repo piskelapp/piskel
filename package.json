@@ -51,12 +51,8 @@
     "karma-jasmine": "1.0.2",
     "karma-phantomjs-launcher": "0.2.3",
     "load-grunt-tasks": "3.5.0",
-<<<<<<< HEAD
-    "phantomjs": "1.9.19",
+    "phantomjs": "2.1.7",
     "phantomjs-polyfill-object-assign": "0.0.2"
-=======
-    "phantomjs": "2.1.7"
->>>>>>> adee70c... Update phantomjs to 2.1.7
   },
   "window": {
     "title": "Piskel",
