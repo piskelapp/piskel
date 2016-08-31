@@ -116,7 +116,10 @@
   };
 
   ns.FramesListController.prototype.updatePreviews_ = function () {
-    for (var i = 0, length = this.tiles.length; i < length; i++) {
+    var i;
+    var length;
+
+    for (i = 0, length = this.tiles.length; i < length; i++) {
       // Remove selected class
       this.tiles[i].classList.remove('selected');
 
@@ -143,7 +146,7 @@
     // Hide/Show buttons if needed
     var buttons = this.container.get(0).querySelectorAll('.delete-frame-action, .dnd-action');
     var display = (this.piskelController.getFrameCount() > 1) ? 'block' : 'none';
-    for (var i = 0, length = buttons.length; i < length; i++) {
+    for (i = 0, length = buttons.length; i < length; i++) {
       buttons[i].style.display = display;
     }
 
