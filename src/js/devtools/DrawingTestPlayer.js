@@ -121,8 +121,8 @@
 
   ns.DrawingTestPlayer.prototype.playKeyboardEvent_ = function (recordEvent) {
     var event = recordEvent.event;
-    if (pskl.utils.UserAgent.isMac && event.ctrlKey) {
-      event.metaKey = true;
+    if (pskl.utils.UserAgent.isMac) {
+      event.metaKey = event.ctrlKey;
     }
 
     event.preventDefault = function () {};
