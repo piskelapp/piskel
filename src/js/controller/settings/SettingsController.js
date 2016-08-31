@@ -25,6 +25,9 @@
     'save' : {
       template : 'templates/settings/save.html',
       controller : ns.SaveController
+    },
+    'new' : {
+      controller : ns.NewPiskelController
     }
   };
 
@@ -79,7 +82,9 @@
   };
 
   ns.SettingsController.prototype.loadSetting_ = function (setting) {
-    this.drawerContainer.innerHTML = pskl.utils.Template.get(settings[setting].template);
+    if (settings[setting].template) {
+      this.drawerContainer.innerHTML = pskl.utils.Template.get(settings[setting].template);
+    }
 
     // when switching settings controller, destroy previously loaded controller
     this.destroyCurrentController_();
@@ -88,16 +93,20 @@
     this.currentController = new settings[setting].controller(this.piskelController);
     this.currentController.init();
 
-    pskl.app.shortcutService.registerShortcut(this.closeDrawerShortcut, this.closeDrawer_.bind(this));
+    if (settings[setting].template) {
+      pskl.app.shortcutService.registerShortcut(this.closeDrawerShortcut, this.closeDrawer_.bind(this));
 
-    pskl.utils.Dom.removeClass(SEL_SETTING_CLS);
-    var selectedSettingButton = document.querySelector('[data-setting=' + setting + ']');
-    if (selectedSettingButton) {
-      selectedSettingButton.classList.add(SEL_SETTING_CLS);
+      pskl.utils.Dom.removeClass(SEL_SETTING_CLS);
+      var selectedSettingButton = document.querySelector('[data-setting=' + setting + ']');
+      if (selectedSettingButton) {
+        selectedSettingButton.classList.add(SEL_SETTING_CLS);
+      }
+      this.settingsContainer.classList.add(EXP_DRAWER_CLS);
+
+      this.isExpanded = true;
+    } else {
+      this.currentController.run();
     }
-    this.settingsContainer.classList.add(EXP_DRAWER_CLS);
-
-    this.isExpanded = true;
   };
 
   ns.SettingsController.prototype.closeDrawer_ = function () {
