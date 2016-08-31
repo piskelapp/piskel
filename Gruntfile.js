@@ -39,19 +39,18 @@ module.exports = function(grunt) {
     var tests = prefixPaths(testPaths, "test/casperjs/");
 
     return {
-      filesSrc : tests,
+      files : {src: tests},
       options : {
-        args : {
-          baseUrl : 'http://' + host + ':' + PORT.TEST,
-          mode : DEV_MODE,
-          delay : delay
-        },
-        async : false,
-        direct : false,
-        logLevel : 'info',
-        printCommand : false,
-        printFilePaths : true
-      }
+        casperjsOptions: [
+          '--baseUrl=http://' + host + ':' + PORT.TEST,
+          '--mode=' + DEV_MODE,
+          '--delay=' + delay,
+          '--verbose=false',
+          '--log-level=info',
+          '--print-command=false',
+          '--print-file-paths=true',
+        ]
+      },
     };
   };
 
@@ -282,7 +281,7 @@ module.exports = function(grunt) {
       }
     },
 
-    ghost : {
+    casperjs : {
       'travis' : getCasperConfig('TravisTestSuite.js', 10000, hostname),
       'local' : getCasperConfig('LocalTestSuite.js', 50, hostname)
     },
@@ -320,10 +319,10 @@ module.exports = function(grunt) {
   grunt.registerTask('unit-test', ['karma']);
 
   // Validate & Test
-  grunt.registerTask('test-travis', ['lint', 'unit-test', 'build-dev', 'connect:test', 'ghost:travis']);
+  grunt.registerTask('test-travis', ['lint', 'unit-test', 'build-dev', 'connect:test', 'casperjs:travis']);
   // Validate & Test (faster version) will NOT work on travis !!
-  grunt.registerTask('test-local', ['lint', 'unit-test', 'build-dev', 'connect:test', 'ghost:local']);
-  grunt.registerTask('test-local-nolint', ['unit-test', 'build-dev', 'connect:test', 'ghost:local']);
+  grunt.registerTask('test-local', ['lint', 'unit-test', 'build-dev', 'connect:test', 'casperjs:local']);
+  grunt.registerTask('test-local-nolint', ['unit-test', 'build-dev', 'connect:test', 'casperjs:local']);
 
   grunt.registerTask('test', ['test-travis']);
   grunt.registerTask('precommit', ['test-local']);
