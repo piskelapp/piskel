@@ -8,6 +8,9 @@ module.exports = function(config) {
   var piskelScripts = require('./src/piskel-script-list.js').scripts.map(mapToSrcFolder);
   piskelScripts.push('test/js/testutils/**/*.js');
   piskelScripts.push('test/js/**/*.js');
+
+  // Polyfill for Object.assign (missing in PhantomJS)
+  piskelScripts.push('./node_modules/phantomjs-polyfill-object-assign/object-assign-polyfill.js');
   
   config.set({
 
