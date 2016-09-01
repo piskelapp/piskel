@@ -9,7 +9,11 @@
     version = '';
   }
 
-  window.onPiskelReady = function () {
+  if (!window.piskelReadyCallbacks) {
+    window.piskelReadyCallbacks = [];
+  }
+
+  window._onPiskelReady = function () {
     var loadingMask = document.getElementById('loading-mask');
     loadingMask.style.opacity = 0;
     window.setTimeout(function () {loadingMask.parentNode.removeChild(loadingMask);}, 600);
@@ -18,6 +22,11 @@
     delete window.pskl_exports;
     delete window.loadDebugScripts;
     delete window.done;
+
+    // Run Piskel ready callbacks
+    for (var i = 0; i < window.piskelReadyCallbacks.length; i++) {
+      window.piskelReadyCallbacks[i]();
+    }
   };
 
   var prefixPath = function (path) {
@@ -50,7 +59,7 @@
     var scriptIndex = 0;
     window.loadNextScript = function () {
       if (scriptIndex == window.pskl_exports.scripts.length) {
-        window.onPiskelReady();
+        window._onPiskelReady();
       } else {
         loadScript(window.pskl_exports.scripts[scriptIndex], 'loadNextScript()');
         scriptIndex ++;
@@ -74,6 +83,6 @@
     }
 
     loadStyle('css/piskel-style-packaged' + version + '.css');
-    loadScript(script, 'onPiskelReady()');
+    loadScript(script, '_onPiskelReady()');
   }
 })();
