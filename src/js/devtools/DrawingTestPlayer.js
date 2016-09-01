@@ -15,7 +15,7 @@
   ns.DrawingTestPlayer.prototype.start = function () {
     this.setupInitialState_();
     this.createMouseShim_();
-    this.regenerateReferencePng().then(function () {
+    this.regenerateReferencePng(function () {
       this.playEvent_(0);
     }.bind(this));
   };
@@ -45,21 +45,13 @@
     return piskel;
   };
 
-  ns.DrawingTestPlayer.prototype.regenerateReferencePng = function () {
+  ns.DrawingTestPlayer.prototype.regenerateReferencePng = function (callback) {
     var image = new Image();
-    var then = function () {};
-
     image.onload = function () {
-      this.referencePng = pskl.utils.CanvasUtils.createFromImage(image).toDataURL();
-      then();
+      this.referenceCanvas = pskl.utils.CanvasUtils.createFromImage(image);
+      callback();
     }.bind(this);
     image.src = this.referencePng;
-
-    return {
-      then : function (cb) {
-        then = cb;
-      }
-    };
   };
 
   /**
@@ -129,8 +121,8 @@
 
   ns.DrawingTestPlayer.prototype.playKeyboardEvent_ = function (recordEvent) {
     var event = recordEvent.event;
-    if (pskl.utils.UserAgent.isMac && event.ctrlKey) {
-      event.metaKey = true;
+    if (pskl.utils.UserAgent.isMac) {
+      event.metaKey = event.ctrlKey;
     }
 
     event.preventDefault = function () {};
@@ -164,14 +156,26 @@
   ns.DrawingTestPlayer.prototype.onTestEnd_ = function () {
     this.removeMouseShim_();
 
+    // Retrieve the imageData corresponding to the spritesheet created by the test.
     var renderer = new pskl.rendering.PiskelRenderer(pskl.app.piskelController);
-    var png = renderer.renderAsCanvas().toDataURL();
+    var canvas = renderer.renderAsCanvas();
+    var testData = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height);
 
-    var success = png === this.referencePng;
+    // Retrieve the reference imageData corresponding to the reference data-url png stored for this test.
+    var refCanvas = this.referenceCanvas;
+    this.referenceData = refCanvas.getContext('2d').getImageData(0, 0, refCanvas.width, refCanvas.height);
 
-    $.publish(Events.TEST_RECORD_END, [success, png, this.referencePng]);
+    // Compare the two imageData arrays.
+    var success = true;
+    for (var i = 0 ; i < this.referenceData.data.length ; i++) {
+      if (this.referenceData.data[i] != testData.data[i]) {
+        success = false;
+      }
+    }
+
+    $.publish(Events.TEST_RECORD_END, [success]);
     this.callbacks.forEach(function (callback) {
-      callback(success, png, this.referencePng);
+      callback(success);
     });
   };
 

@@ -18,10 +18,6 @@
 
       casper.then(function () {
         this.echo('Running test : ' + currentTest);
-        this.wait(casper.cli.get('delay'));
-      });
-
-      casper.then(function () {
         this.echo('... Waiting for test result : ' + resultSelector);
         this.waitForSelector(resultSelector, function () {
           // then

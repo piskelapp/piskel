@@ -44,7 +44,7 @@
     testPlayer.start();
   };
 
-  ns.DrawingTestSuiteRunner.prototype.onTestEnd_ = function (success, png, referencePng) {
+  ns.DrawingTestSuiteRunner.prototype.onTestEnd_ = function (success) {
     var path = this.testPaths[this.currentIndex];
     this.testStatus[path] = success;
     $.publish(Events.TEST_CASE_END, [path, success]);

@@ -23,7 +23,7 @@
   "scripts": {
     "test": "grunt test",
     "start": "nodewebkit",
-    "preversion": "grunt test-local build",
+    "preversion": "grunt test build",
     "postversion": "git push && git push --tags && npm publish"
   },
   "devDependencies": {
