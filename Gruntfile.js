@@ -311,6 +311,7 @@ module.exports = function(grunt) {
   grunt.registerTask('unit-test', ['karma']);
   // Run linting, unit tests and drawing tests
   grunt.registerTask('test', ['lint', 'unit-test', 'build-dev', 'connect:test', 'casperjs']);
+
   // Run the tests, even if the linting fails
   grunt.registerTask('test-nolint', ['unit-test', 'build-dev', 'connect:test', 'casperjs']);
   // Used by optional precommit hook
@@ -328,9 +329,13 @@ module.exports = function(grunt) {
   // Start webserver and watch for changes
   grunt.registerTask('serve', ['build', 'connect:prod', 'open:prod', 'watch:prod']);
   // Start webserver on src folder, in debug mode
-  grunt.registerTask('serve-dev', ['build-dev', 'connect:dev', 'open:dev', 'watch:dev']);
-  grunt.registerTask('serve-debug', ['serve-dev']);
-  grunt.registerTask('play', ['serve-dev']);
+  grunt.registerTask('play', ['build-dev', 'connect:dev', 'open:dev', 'watch:dev']);
+
+  // ALIASES, kept for backward compatibility
+  grunt.registerTask('serve-debug', ['play']);
+  grunt.registerTask('serve-dev', ['play']);
+  grunt.registerTask('test-travis', ['test']);
+  grunt.registerTask('test-local', ['test']);
 
   // Default task
   grunt.registerTask('default', ['lint', 'build']);
