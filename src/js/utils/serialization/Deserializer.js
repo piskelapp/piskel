@@ -10,7 +10,7 @@
     var modelVersion;
 
     var isJSON = false;
-    if (data instanceof ArrayBuffer) {
+    if (data instanceof ArrayBuffer || data instanceof Array) {
       var uint8 = new Uint8Array(data);
 
       // Backward compatibility for JSON (modelVersion < 3)
@@ -22,7 +22,7 @@
         data = JSON.parse(data);
         modelVersion = data.modelVersion;
       } else {
-        var arr16 = new Uint16Array(data);
+        var arr16 = new Uint16Array(uint8.buffer);
         modelVersion = arr16[0];
       }
     } else {
@@ -47,7 +47,7 @@
     var j;
     var buffer = this.data_;
     var arr8 = new Uint8Array(buffer);
-    var arr16 = new Uint16Array(buffer);
+    var arr16 = new Uint16Array(arr8.buffer);
     var sub;
 
     /********/

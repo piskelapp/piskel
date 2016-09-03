@@ -12,7 +12,7 @@
     var deferred = Q.defer();
 
     var data = {
-      framesheet : this.piskelController.serialize(),
+      framesheet : '[' + new Uint8Array(this.piskelController.serialize()) + ']',
       fps : this.piskelController.getFPS(),
       name : descriptor.name,
       description : descriptor.description,
