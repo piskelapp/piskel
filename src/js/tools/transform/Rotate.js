@@ -4,10 +4,12 @@
   ns.Rotate = function () {
     this.toolId = 'tool-rotate';
     this.helpText = 'Counter-clockwise rotation';
-    this.tooltipDescriptors = [
-      {key : 'alt', description : 'Clockwise rotation'},
-      {key : 'ctrl', description : 'Apply to all layers'},
-      {key : 'shift', description : 'Apply to all frames'}];
+
+    this.tooltipDescriptors = [{key : 'alt', description : 'Clockwise rotation'}];
+    if (Constants.ENABLE_MULTIPLE_LAYERS) {
+      this.tooltipDescriptors.push({key : 'ctrl', description : 'Apply to all layers'});
+    }
+    this.tooltipDescriptors.push({key : 'shift', description : 'Apply to all frames'});
   };
 
   pskl.utils.inherit(ns.Rotate, ns.AbstractTransformTool);

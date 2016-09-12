@@ -10,10 +10,11 @@
     this.helpText = 'Paint all pixels of the same color';
     this.shortcut = pskl.service.keyboard.Shortcuts.TOOL.COLORSWAP;
 
-    this.tooltipDescriptors = [
-      {key : 'ctrl', description : 'Apply to all layers'},
-      {key : 'shift', description : 'Apply to all frames'}
-    ];
+    this.tooltipDescriptors = [];
+    if (Constants.ENABLE_MULTIPLE_LAYERS) {
+      this.tooltipDescriptors.push({key : 'ctrl', description : 'Apply to all layers'});
+    }
+    this.tooltipDescriptors.push({key : 'shift', description : 'Apply to all frames'});
   };
 
   pskl.utils.inherit(ns.ColorSwap, ns.BaseTool);

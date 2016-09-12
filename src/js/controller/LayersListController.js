@@ -24,6 +24,15 @@
 
     $.subscribe(Events.PISKEL_RESET, this.renderLayerList_.bind(this));
     $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
+
+    if (!Constants.ENABLE_MULTIPLE_LAYERS) {
+      this.rootEl.style.padding = '0px';
+      this.rootEl.style.visibility = 'hidden';
+      this.rootEl.style.height = '0px';
+      this.rootEl.style.width = '0px';
+      this.rootEl.style.margin = '0px';
+      this.rootEl.style.minHeight = '0px';
+    }
   };
 
   ns.LayersListController.prototype.renderLayerList_ = function () {
