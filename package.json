@@ -45,7 +45,7 @@
     "grunt-open": "0.2.3",
     "grunt-replace": "1.0.1",
     "grunt-spritesmith": "6.3.0",
-    "jasmine-core": "2.1.0",
+    "jasmine-core": "2.5.2",
     "karma": "0.13.21",
     "karma-chrome-launcher": "1.0.1",
     "karma-jasmine": "1.0.2",
