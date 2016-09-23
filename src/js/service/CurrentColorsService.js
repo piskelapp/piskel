@@ -144,7 +144,10 @@
 
   ns.CurrentColorsService.prototype.getFrameColors_ = function (frame, processorCallback) {
     var frameColorsWorker = new pskl.worker.framecolors.FrameColors(frame,
-      function (event) {frameCache[frame.getHash()] = event.data.colors; processorCallback(event.data.colors);},
+      function (event) {
+        frameCache[frame.getHash()] = event.data.colors;
+        processorCallback(event.data.colors);
+      },
       function () {},
       function (event) {processorCallback({});}
     );
