@@ -108,7 +108,7 @@
       for (j = 0; j < dataUriLength; j++) {
         dataUri += String.fromCharCode(arr8[(layerStartIndex + 5 + layerNameLength) * 2 + j]);
       }
-      dataUri = 'data:image/png;base64,' + btoa(dataUri);
+      dataUri = 'data:image/png;base64,' + dataUri;
 
       layerStartIndex += Math.ceil(5 + layerNameLength + (dataUriLength / 2));
 
