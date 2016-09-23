@@ -30,12 +30,7 @@
      * @param {String} globalAlpha (optional) global frame opacity
      */
     drawToCanvas : function (frame, canvas, transparentColor, globalAlpha) {
-      var context;
-      if (canvas.context) {
-        context = canvas.context;
-      } else {
-        context = canvas.context = canvas.getContext('2d');
-      }
+      var context = canvas.getContext('2d');
       globalAlpha = isNaN(globalAlpha) ? 1 : globalAlpha;
       context.globalAlpha = globalAlpha;
       transparentColor = transparentColor || Constants.TRANSPARENT_COLOR;
