@@ -58,13 +58,7 @@
     } else {
       pixels = _emptyPixelGridCache[key] = new Uint32Array(width * height);
       var transparentColorInt = pskl.utils.colorToInt(Constants.TRANSPARENT_COLOR);
-      if (!pixels.fill) { // PhantomJS ='(
-        for (var i = 0; i < width * height; i++) {
-          pixels[i] = transparentColorInt;
-        }
-      } else {
-        pixels.fill(transparentColorInt);
-      }
+      pixels.fill(transparentColorInt);
     }
 
     return new Uint32Array(pixels);
