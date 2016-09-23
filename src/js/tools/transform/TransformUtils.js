@@ -60,7 +60,7 @@
           frame.setPixel(_x, _y, Constants.TRANSPARENT_COLOR);
         }
       });
-      frame.version++;
+
       return frame;
     },
 
@@ -104,7 +104,7 @@
           frame.setPixel(_x, _y, Constants.TRANSPARENT_COLOR);
         }
       });
-      frame.version++;
+
       return frame;
     }
   };

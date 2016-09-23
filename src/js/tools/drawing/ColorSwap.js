@@ -62,6 +62,5 @@
         frame.setPixel(col, row, newColor);
       }
     });
-    frame.version++;
   };
 })();
