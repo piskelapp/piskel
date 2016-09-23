@@ -66,7 +66,7 @@
 
       // Layers
       for (var i = 0, layers = piskel.getLayers(); i < layers.length; i++) {
-        bytes += 3 * 2;
+        bytes += 5 * 2;
         bytes += layers[i].name.length * 2;
         bytes += framesData[i].length;
         if (bytes % 2 == 1) {
