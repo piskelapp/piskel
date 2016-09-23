@@ -36,7 +36,7 @@
         saveAs(content, filename);
       } else {
         var downloadLink = document.createElement('a');
-        content = window.URL.createObjectURL(new Blob([content]));
+        content = window.URL.createObjectURL(content);
         downloadLink.setAttribute('href', content);
         downloadLink.setAttribute('download', filename);
         document.body.appendChild(downloadLink);
