@@ -3,7 +3,7 @@
 
   // Preview is a square of PREVIEW_SIZE x PREVIEW_SIZE
   var PREVIEW_SIZE = 200;
-  var RENDER_MINIMUM_DELAY = 1000;
+  var RENDER_MINIMUM_DELAY = 300;
 
   var ONION_SKIN_SHORTCUT = 'alt+O';
   var ORIGINAL_SIZE_SHORTCUT = 'alt+1';
