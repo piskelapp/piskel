@@ -253,4 +253,26 @@ if (!Uint32Array.prototype.fill) {
     return string;
   };
 
+  ns.convertBufferToString = function (inputBuffer) {
+    if (typeof inputBuffer.buffer !== 'undefined') {
+      inputBuffer = inputBuffer.buffer;
+    }
+
+    var buffer;
+
+    if (inputBuffer.byteLength % 2 === 1) {
+      buffer = ArrayBuffer.transfer(inputBuffer, inputBuffer.byteLength + 1);
+    } else {
+      buffer = inputBuffer;
+    }
+
+    var string = '';
+    var uint16 = new Uint16Array(buffer);
+    for (var i = 0, length = uint16.length; i < length; i++) {
+      string += String.fromCharCode(uint16[i]);
+    }
+
+    return string;
+  };
+
 })();
