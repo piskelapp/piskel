@@ -15,11 +15,7 @@
     var description = piskel.getDescriptor().description;
     var serialized = pskl.utils.Serializer.serializePiskel(piskel);
 
-    var serializedString = '';
-    var uint16 = new Uint16Array(serialized);
-    for (var i = 0, length = uint16.length; i < length; i++) {
-      serializedString += String.fromCharCode(uint16[i]);
-    }
+    var serializedString = pskl.utils.convertBufferToString(serialized);
 
     if (pskl.app.localStorageService.getPiskel(name)) {
       var confirmOverwrite = window.confirm('There is already a piskel saved as ' + name + '. Overwrite ?');
