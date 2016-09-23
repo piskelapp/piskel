@@ -11,10 +11,10 @@
   ns.FramesListController = function (piskelController, container) {
     this.piskelController = piskelController;
     this.container = container;
-    this.domInitialized = false;
     this.refreshZoom_();
 
     this.redrawFlag = true;
+    this.regenerateDomFlag = true;
 
     this.cachedFrameProcessor = new pskl.model.frame.CachedFrameProcessor();
     this.cachedFrameProcessor.setFrameProcessor(this.frameToPreviewCanvas_.bind(this));
@@ -35,11 +35,11 @@
     this.updateScrollerOverflows();
   };
 
-  ns.FramesListController.prototype.flagForRedraw_ = function (reinitializeDom) {
+  ns.FramesListController.prototype.flagForRedraw_ = function (regenerateDom) {
     this.redrawFlag = true;
 
-    if (reinitializeDom) {
-      this.domInitialized = false;
+    if (regenerateDom) {
+      this.regenerateDomFlag = true;
     }
   };
 
@@ -49,10 +49,12 @@
 
   ns.FramesListController.prototype.render = function () {
     if (this.redrawFlag) {
-      if (!this.domInitialized) {
+      if (this.regenerateDomFlag) {
         this.tiles = [];
         this.addFrameTile = null;
         this.createPreviews_();
+
+        this.regenerateDomFlag = false;
       }
 
       this.updatePreviews_();
@@ -177,7 +179,6 @@
     this.addFrameTile = newFrameButton;
 
     this.updateScrollerOverflows();
-    this.domInitialized = true;
   };
 
   /**
