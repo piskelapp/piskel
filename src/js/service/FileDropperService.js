@@ -52,11 +52,10 @@
     pskl.UserSettings.set(pskl.UserSettings.SELECTED_PALETTE, palette.id);
   };
 
-  ns.FileDropperService.prototype.onPiskelFileLoaded_ = function (piskel, descriptor, fps) {
+  ns.FileDropperService.prototype.onPiskelFileLoaded_ = function (piskel, extra) {
     if (window.confirm('This will replace your current animation')) {
-      piskel.setDescriptor(descriptor);
       pskl.app.piskelController.setPiskel(piskel);
-      pskl.app.previewController.setFPS(fps);
+      pskl.app.previewController.setFPS(extra.fps);
     }
   };
 
