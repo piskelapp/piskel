@@ -30,14 +30,9 @@
     var key1 = frame.getHash();
     if (cache[key1]) {
       processedFrame = cache[key1];
-    } else if (frame instanceof pskl.model.frame.RenderedFrame) {
-      // Cannot use 2nd level cache with rendered frames
-      var callbackFirstLvlCacheOnly = this.onProcessorComplete_.bind(this, deferred, cache, key1);
-      this.frameProcessor(frame, callbackFirstLvlCacheOnly);
     } else {
       var callback = this.onProcessorComplete_.bind(this, deferred, cache, key1);
       this.frameProcessor(frame, callback);
-      cache[key1] = processedFrame;
     }
 
     if (processedFrame) {
