@@ -39,6 +39,28 @@ if (!Function.prototype.bind) {
 }
 
 /**
+ * Polyfill for typedarrays' fill method for PhantomJS
+ */
+if (!Uint32Array.prototype.fill) {
+  Uint32Array.prototype.fill = function (value, start, end) {
+    start = typeof start === 'undefined' ? 0 : start;
+    end = typeof end === 'undefined' ? this.length : end;
+
+    if (start < 0) {
+      start = this.length + start;
+    }
+
+    if (end < 0) {
+      end = this.length + end;
+    }
+
+    for (var i = start; i < end; i++) {
+      this[i] = value;
+    }
+  };
+}
+
+/**
  * @provide pskl.utils
  *
  * @require Constants
