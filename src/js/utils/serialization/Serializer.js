@@ -88,7 +88,7 @@
       var framesData = [];
       for (i = 0, layers = piskel.getLayers(); i < layers.length; i++) {
         var renderer = new pskl.rendering.FramesheetRenderer(layers[i].getFrames());
-        dataUri = atob(renderer.renderAsCanvas().toDataURL().split(',')[1]);
+        dataUri = renderer.renderAsCanvas().toDataURL().split(',')[1];
         dataUriLength = dataUri.length;
         framesData.push({uri: dataUri, length: dataUriLength});
       }
