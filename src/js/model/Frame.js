@@ -110,9 +110,7 @@
     if (this.containsPixel(x, y)) {
       var index = y * this.width + x;
       var p = this.pixels[index];
-      if (typeof color === 'string') {
-        color = pskl.utils.colorToInt(color);
-      }
+      color = pskl.utils.colorToInt(color);
 
       if (p !== color) {
         this.pixels[index] = color || pskl.utils.colorToInt(Constants.TRANSPARENT_COLOR);
