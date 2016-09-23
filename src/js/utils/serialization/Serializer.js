@@ -98,7 +98,6 @@
       var buffer = new ArrayBuffer(bytes);
       var arr8 = new Uint8Array(buffer);
       var arr16 = new Uint16Array(buffer);
-      var sub;
 
       var width = piskel.getWidth();
       var height = piskel.getHeight();
