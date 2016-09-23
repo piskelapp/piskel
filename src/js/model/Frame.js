@@ -131,7 +131,7 @@
     var width = this.getWidth();
     var height = this.getHeight();
     var length = width * height;
-    for (var i = 0; i < length ; ++i) {
+    for (var i = 0; i < length ; i++) {
       callback(this.pixels[i], i % width, Math.floor(i / width), this);
     }
   };
