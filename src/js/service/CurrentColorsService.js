@@ -65,27 +65,6 @@
     return result;
   };
 
-  // TODO Move to utils
-  var componentToHex = function (c) {
-    var hex = c.toString(16);
-    return hex.length == 1 ? '0' + hex : hex;
-  };
-
-  var rgbToHex = function (r, g, b) {
-    return '#' + componentToHex(r) + componentToHex(g) + componentToHex(b);
-  };
-
-  var intHexCache = {};
-  var intToHex = function(int) {
-    if (intHexCache[int]) {
-      return intHexCache[int];
-    }
-
-    var hex = rgbToHex(int & 0xff, int >> 8 & 0xff, int >> 16 & 0xff);
-    intHexCache[int] = hex;
-    return hex;
-  };
-
   var frameCache = {};
   ns.CurrentColorsService.prototype.updateCurrentColors_ = function () {
     var layers = this.piskelController.getLayers();
@@ -135,11 +114,9 @@
       // Remove transparent color from used colors
       delete colors[pskl.utils.colorToInt(Constants.TRANSPARENT_COLOR)];
 
-      var hexColors = [];
-      for (var i in colors) {
-        hexColors.push(intToHex(i));
-      }
-
+      var hexColors = Object.keys(colors).map(function (color) {
+        return pskl.utils.intToHex(color);
+      });
       this.setCurrentColors(hexColors);
     }.bind(this, colors);
 

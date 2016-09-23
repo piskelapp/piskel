@@ -90,6 +90,17 @@ if (!Uint32Array.prototype.fill) {
     return hex.length == 1 ? '0' + hex : hex;
   };
 
+  var intHexCache = {};
+  ns.intToHex = function(int) {
+    if (intHexCache[int]) {
+      return intHexCache[int];
+    }
+
+    var hex = ns.rgbToHex(int & 0xff, int >> 8 & 0xff, int >> 16 & 0xff);
+    intHexCache[int] = hex;
+    return hex;
+  };
+
   ns.normalize = function (value, def) {
     if (typeof value === 'undefined' || value === null) {
       return def;
