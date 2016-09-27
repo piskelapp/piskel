@@ -17,7 +17,7 @@
         }
         frame.setPixel(x, y, color);
       });
-      frame.version++;
+
       return frame;
     },
 
