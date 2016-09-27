@@ -275,4 +275,14 @@ if (!Uint32Array.prototype.fill) {
     return string;
   };
 
+  ns.convertStringToBuffer = function(inputString) {
+    var uint16 = new Uint16Array(inputString.length);
+
+    for (var i = 0, length = inputString.length; i < length; i++) {
+      uint16[i] = inputString.charCodeAt(i);
+    }
+
+    return uint16.buffer;
+  };
+
 })();

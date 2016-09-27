@@ -38,12 +38,9 @@
     var piskelString = this.getPiskel(name);
     var key = this.getKey_(name);
 
-    var serializedPiskel = new Uint16Array(piskelString.length);
-    for (var i = 0, length = piskelString.length; i < length; i++) {
-      serializedPiskel[i] = piskelString.charCodeAt(i);
-    }
+    var serializedPiskel = pskl.utils.convertStringToBuffer(piskelString);
 
-    pskl.utils.serialization.Deserializer.deserialize(serializedPiskel.buffer, function (piskel, extra) {
+    pskl.utils.serialization.Deserializer.deserialize(serializedPiskel, function (piskel, extra) {
       pskl.app.piskelController.setPiskel(piskel);
       pskl.app.previewController.setFPS(extra.fps);
     });
