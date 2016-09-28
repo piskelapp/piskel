@@ -12,6 +12,9 @@
   ns.MiscExportController.prototype.init = function () {
     var cDownloadButton = document.querySelector('.c-download-button');
     this.addEventListener(cDownloadButton, 'click', this.onDownloadCFileClick_);
+
+    var selectedFrameDownloadButton = document.querySelector('.selected-frame-download-button');
+    this.addEventListener(selectedFrameDownloadButton, 'click', this.onDownloadSelectedFrameClick_);
   };
 
   ns.MiscExportController.prototype.onDownloadCFileClick_ = function (evt) {
@@ -72,5 +75,15 @@
     hexStr += ('00' + g.toString(16)).substr(-2);
     hexStr += ('00' + r.toString(16)).substr(-2);
     return hexStr;
+  };
+
+  ns.MiscExportController.prototype.onDownloadSelectedFrameClick_ = function (evt) {
+    var frameIndex = this.piskelController.getCurrentFrameIndex();
+    var fileName = this.getPiskelName_() + '-' + (frameIndex + 1) + '.png';
+    var canvas = this.piskelController.renderFrameAt(frameIndex, true);
+
+    pskl.utils.BlobUtils.canvasToBlob(canvas, function(blob) {
+      pskl.utils.FileUtils.downloadAsFile(blob, fileName);
+    });
   };
 })();
