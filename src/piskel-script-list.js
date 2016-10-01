@@ -53,6 +53,9 @@
   // JSZip https://github.com/Stuk/jszip
   "js/lib/jszip/jszip.min.js",
 
+  // Smoothscroll: https://github.com/iamdustan/smoothscroll
+  "js/lib/smoothscroll/smoothscroll.js",
+
   // Spectrum color-picker library
   "js/lib/spectrum/spectrum.js",
 
