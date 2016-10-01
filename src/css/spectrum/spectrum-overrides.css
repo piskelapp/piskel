@@ -110,7 +110,7 @@
   background: #111;
   border-radius: 2px;
   color: #D3D3D3;
-  font-family: Courier!important;
+  font-family: monospace!important;
 }
 
 .sp-input.sp-validation-error {
