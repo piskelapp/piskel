@@ -8,6 +8,8 @@
     this.step = step || this.initialState.step || ns.DrawingTestPlayer.DEFAULT_STEP;
     this.callbacks = [];
     this.shim = null;
+    this.performance = 0;
+
   };
 
   ns.DrawingTestPlayer.DEFAULT_STEP = 50;
@@ -15,6 +17,15 @@
   ns.DrawingTestPlayer.prototype.start = function () {
     this.setupInitialState_();
     this.createMouseShim_();
+
+    // Override the main drawing loop to record the time spent rendering.
+    this.loopBackup = pskl.app.drawingLoop.loop;
+    pskl.app.drawingLoop.loop = function () {
+      var before = window.performance.now();
+      this.loopBackup.call(pskl.app.drawingLoop);
+      this.performance += window.performance.now() - before;
+    }.bind(this);
+
     this.regenerateReferencePng(function () {
       this.playEvent_(0);
     }.bind(this));
@@ -76,11 +87,13 @@
     this.timer = window.setTimeout(function () {
       var recordEvent = this.events[index];
 
+      // All events have already been replayed, finish the test.
       if (!recordEvent) {
         this.onTestEnd_();
         return;
       }
 
+      var before = window.performance.now();
       if (recordEvent.type === 'mouse-event') {
         this.playMouseEvent_(recordEvent);
       } else if (recordEvent.type === 'keyboard-event') {
@@ -96,6 +109,9 @@
       } else if (recordEvent.type === 'instrumented-event') {
         this.playInstrumentedEvent_(recordEvent);
       }
+
+      // Record the time spent replaying the event
+      this.performance += window.performance.now() - before;
 
       this.playEvent_(index + 1);
     }.bind(this), this.step);
@@ -155,6 +171,8 @@
 
   ns.DrawingTestPlayer.prototype.onTestEnd_ = function () {
     this.removeMouseShim_();
+    // Restore the original drawing loop.
+    pskl.app.drawingLoop.loop = this.loopBackup;
 
     // Retrieve the imageData corresponding to the spritesheet created by the test.
     var renderer = new pskl.rendering.PiskelRenderer(pskl.app.piskelController);
@@ -175,8 +193,11 @@
 
     $.publish(Events.TEST_RECORD_END, [success]);
     this.callbacks.forEach(function (callback) {
-      callback(success);
-    });
+      callback({
+        success: success,
+        performance: this.performance
+      });
+    }.bind(this));
   };
 
   ns.DrawingTestPlayer.prototype.addEndTestCallback = function (callback) {

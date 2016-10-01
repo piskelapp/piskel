@@ -152,9 +152,9 @@
         document.querySelector('#drawing-canvas-container'));
       this.fileDropperService.init();
 
-      var drawingLoop = new pskl.rendering.DrawingLoop();
-      drawingLoop.addCallback(this.render, this);
-      drawingLoop.start();
+      this.drawingLoop = new pskl.rendering.DrawingLoop();
+      this.drawingLoop.addCallback(this.render, this);
+      this.drawingLoop.start();
 
       this.initTooltips_();
 

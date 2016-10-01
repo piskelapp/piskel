@@ -44,20 +44,25 @@
     testPlayer.start();
   };
 
-  ns.DrawingTestSuiteRunner.prototype.onTestEnd_ = function (success) {
+  ns.DrawingTestSuiteRunner.prototype.onTestEnd_ = function (data /* {success, performance} */) {
     var path = this.testPaths[this.currentIndex];
-    this.testStatus[path] = success;
-    $.publish(Events.TEST_CASE_END, [path, success]);
+    this.testStatus[path] = data;
+
+    $.publish(Events.TEST_CASE_END, [path, data.success, data.performance]);
 
     this.runTest(this.currentIndex + 1);
   };
 
   ns.DrawingTestSuiteRunner.prototype.onTestSuiteEnd_ = function () {
     var success = this.testPaths.every(function (path) {
-      return this.testStatus[path];
+      return this.testStatus[path].success;
     }.bind(this));
 
+    var performance = this.testPaths.reduce(function (p, path) {
+      return this.testStatus[path].performance + p;
+    }.bind(this), 0);
+
     this.status = success ? ns.DrawingTestSuiteRunner.STATUS.SUCCESS : ns.DrawingTestSuiteRunner.STATUS.ERROR;
-    $.publish(Events.TEST_SUITE_END, [this.status]);
+    $.publish(Events.TEST_SUITE_END, [this.status, performance]);
   };
 })();

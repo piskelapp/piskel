@@ -47,25 +47,33 @@
     this.testSuiteRunner.start();
   };
 
-  ns.DrawingTestSuiteController.prototype.onTestCaseEnd_ = function (evt, testPath, status) {
+  ns.DrawingTestSuiteController.prototype.onTestCaseEnd_ = function (evt, testPath, success, performance) {
     var testCaseStatus = document.createElement('li');
 
     testCaseStatus.innerHTML = pskl.utils.Template.replace(
-      '[{{path}}] finished : <b style="color:{{color}}">{{status}}</b>',
-      {path : this.shortenPath_(testPath), status : status ? 'OK' : 'KO', color : status ? 'green' : 'red'}
+      '[{{path}}] finished : <b style="color:{{color}}">{{status}} ({{performance}})</b>',
+      {
+        path : this.shortenPath_(testPath),
+        status : success ? 'OK' : 'KO',
+        color : success ? 'green' : 'red',
+        performance: performance.toFixed(2)
+      }
     );
     this.testListElt.appendChild(testCaseStatus);
   };
 
-  ns.DrawingTestSuiteController.prototype.onTestSuiteEnd_ = function (evt, status) {
-    console.log('on test suite end');
+  ns.DrawingTestSuiteController.prototype.onTestSuiteEnd_ = function (evt, status, performance) {
     var elapsed = Date.now() - this.startTime_;
     elapsed = (elapsed / 1000).toFixed(4);
 
     var testSuiteStatus = document.createElement('li');
     testSuiteStatus.innerHTML = pskl.utils.Template.replace(
-      '<b>Test finished : {{status}}</b> ({{elapsed}} seconds)',
-      {status : status, elapsed : elapsed}
+      '<b>Test finished : {{status}}</b> ({{elapsed}}s, performance: {{performance}})',
+      {
+        status : status,
+        elapsed : elapsed,
+        performance: performance.toFixed(2)
+      }
     );
     this.testListElt.appendChild(testSuiteStatus);
   };

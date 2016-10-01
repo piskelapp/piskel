@@ -15,6 +15,7 @@
       scope : scope,
       args : args
     };
+
     this.callbacks.push(callbackObj);
     return callbackObj;
   };
