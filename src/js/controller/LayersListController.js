@@ -1,3 +1,26 @@
+var scrollIndex = 0; // Keep track of which scroll is the current one.
+function smoothScroll_(element, scrollTo, index) {
+  if (index < scrollIndex)  {
+    return; // A newer scroll has been started, end this one.
+  }
+  var y = element.scrollTop;
+  // Halve the distance to the destination.
+  y += (scrollTo - y) * 0.5;
+  // If we are close enough, end it now.
+  if (Math.abs(y - scrollTo) < 2) {
+    element.scrollTop = scrollTo;
+    return;
+  }
+  element.scrollTop = y;
+  // Recurse in 40ms.
+  setTimeout(smoothScroll_, 40, element, scrollTo, index);
+}
+
+function smoothScroll(element, scrollTo) {
+  scrollIndex += 1;
+  smoothScroll_(element, scrollTo, scrollIndex);
+}
+
 (function () {
   var ns = $.namespace('pskl.controller');
 
@@ -35,7 +58,20 @@
     // Ensure the currently the selected layer is visible.
     var currentLayerEl = this.layersListEl.querySelector('.current-layer-item');
     if (currentLayerEl) {
-      currentLayerEl.scrollIntoView();
+      // Check if the layer item is out of view
+
+      // Layer item top relative to the scrollable list content
+      var layerTop = currentLayerEl.offsetTop - this.layersListEl.offsetTop;
+      var layerBottom = layerTop + currentLayerEl.scrollHeight;
+      var scrollBottom = this.layersListEl.scrollTop + this.layersListEl.offsetHeight;
+      if (layerTop < this.layersListEl.scrollTop) {
+        // Scroll up to item
+        smoothScroll(this.layersListEl, layerTop);
+      }
+      if (layerBottom > scrollBottom) {
+        // Scroll down to item
+        smoothScroll(this.layersListEl, layerBottom - this.layersListEl.offsetHeight);
+      }
     }
   };
 
