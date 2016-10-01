@@ -935,6 +935,15 @@
       </div>
       <button type="button" class="button button-primary c-download-button">Download C file</button>
     </div>
+    <div class="export-panel-section">
+      <div style="padding-bottom: 5px">
+        <span style="color: gold;">Export selected frame as PNG File: </span>
+        <span class="export-info">
+          PNG export of the currently selected frame.
+        </span>
+      </div>
+      <button type="button" class="button button-primary selected-frame-download-button">Download</button>
+    </div>
   </div>
 </script>
 
@@ -942,15 +951,19 @@
     (function () {
 
   /**
-   * See @Gruntfile.js => after build, -2016-07-24-05-08 is replaced by the build version
+   * See @Gruntfile.js => after build, -2016-10-01-02-48 is replaced by the build version
    */
-  var version = '-2016-07-24-05-08';
+  var version = '-2016-10-01-02-48';
   var versionHasNotBeenReplaced = version.indexOf('@@') === 0;
   if (versionHasNotBeenReplaced)  {
     version = '';
   }
 
-  window.onPiskelReady = function () {
+  if (!window.piskelReadyCallbacks) {
+    window.piskelReadyCallbacks = [];
+  }
+
+  window._onPiskelReady = function () {
     var loadingMask = document.getElementById('loading-mask');
     loadingMask.style.opacity = 0;
     window.setTimeout(function () {loadingMask.parentNode.removeChild(loadingMask);}, 600);
@@ -959,6 +972,11 @@
     delete window.pskl_exports;
     delete window.loadDebugScripts;
     delete window.done;
+
+    // Run Piskel ready callbacks
+    for (var i = 0; i < window.piskelReadyCallbacks.length; i++) {
+      window.piskelReadyCallbacks[i]();
+    }
   };
 
   var prefixPath = function (path) {
@@ -991,7 +1009,7 @@
     var scriptIndex = 0;
     window.loadNextScript = function () {
       if (scriptIndex == window.pskl_exports.scripts.length) {
-        window.onPiskelReady();
+        window._onPiskelReady();
       } else {
         loadScript(window.pskl_exports.scripts[scriptIndex], 'loadNextScript()');
         scriptIndex ++;
@@ -1015,7 +1033,7 @@
     }
 
     loadStyle('css/piskel-style-packaged' + version + '.css');
-    loadScript(script, 'onPiskelReady()');
+    loadScript(script, '_onPiskelReady()');
   }
 })();
   </script>
