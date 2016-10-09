@@ -48,7 +48,7 @@
       overlay.clear();
     }
 
-    var frameColor = frame.getPixel(col, row);
+    var frameColor = pskl.utils.intToColor(frame.getPixel(col, row));
     var highlightColor = this.getHighlightColor_(frameColor);
     var size = this.supportsDynamicPenSize() ? pskl.app.penSizeService.getPenSize() : 1;
     pskl.PixelUtils.resizePixel(col, row, size).forEach(function (point) {

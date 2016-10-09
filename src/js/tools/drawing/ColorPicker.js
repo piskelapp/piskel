@@ -19,7 +19,7 @@
    */
   ns.ColorPicker.prototype.applyToolAt = function(col, row, frame, overlay, event) {
     if (frame.containsPixel(col, row)) {
-      var sampledColor = frame.getPixel(col, row);
+      var sampledColor = pskl.utils.intToColor(frame.getPixel(col, row));
       if (pskl.app.mouseStateService.isLeftButtonPressed()) {
         $.publish(Events.SELECT_PRIMARY_COLOR, [sampledColor]);
       } else if (pskl.app.mouseStateService.isRightButtonPressed()) {
