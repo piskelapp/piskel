@@ -13,10 +13,11 @@
     if (data instanceof ArrayBuffer || data instanceof Array) {
       var uint8 = new Uint8Array(data);
 
-      // Backward compatibility for JSON (modelVersion < 3)
+      // Backward compatibility for modelVersion < 3 for LocalStorage, FileImport etc... which
+      // now always serve the serialized sprites as strings and no longer as objects
       if (String.fromCharCode(uint8[0]) == '{') {
         data = '';
-        for (var i = 0; i < uint8.length; i++) {
+        for (var i = 0 ; i < uint8.length ; i++) {
           data += String.fromCharCode(uint8[i]);
         }
         data = JSON.parse(data);
@@ -25,6 +26,9 @@
         var arr16 = new Uint16Array(uint8.buffer);
         modelVersion = arr16[0];
       }
+    } else if (typeof data == 'object') {
+      // Backward Compatibility for sprites served from piskelapp.com with modelVersion < 3
+      modelVersion = data.modelVersion;
     } else {
       throw 'Invalid data for deserializing: ' + data;
     }

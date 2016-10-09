@@ -32,6 +32,5 @@
         onSuccess(piskel, extra);
       });
     }
-
   };
 })();
