@@ -311,7 +311,8 @@
         if (this.dragHandler.isDragging()) {
           this.dragHandler.stopDrag();
         } else if (frame.containsPixel(coords.x, coords.y)) {
-          $.publish(Events.SELECT_PRIMARY_COLOR, [frame.getPixel(coords.x, coords.y)]);
+          var color = pskl.utils.intToColor(frame.getPixel(coords.x, coords.y));
+          $.publish(Events.SELECT_PRIMARY_COLOR, [color]);
         }
       } else {
         this.currentToolBehavior.releaseToolAt(
