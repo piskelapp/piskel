@@ -46,7 +46,7 @@
     deserializer.deserialize();
   };
 
-  ns.Deserializer.prototype.deserialize = function (name) {
+  ns.Deserializer.prototype.deserialize = function () {
     var i;
     var j;
     var buffer = this.data_;

@@ -9,10 +9,10 @@
     this.layers_ = [];
   };
 
-  ns.Deserializer_v2.prototype.deserialize = function (name) {
+  ns.Deserializer_v2.prototype.deserialize = function () {
     var data = this.data_;
     var piskelData = data.piskel;
-    name = piskelData.name || 'Deserialized piskel';
+    var name = piskelData.name || 'Deserialized piskel';
     var description = piskelData.description || '';
 
     var descriptor = new pskl.model.piskel.Descriptor(name, description);

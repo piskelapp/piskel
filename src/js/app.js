@@ -160,7 +160,7 @@
 
       var piskelData = this.getPiskelInitData_();
       if (piskelData && piskelData.piskel) {
-        this.loadPiskel_(piskelData.piskel, piskelData.descriptor, piskelData.fps);
+        this.loadPiskel_(piskelData);
       }
 
       if (pskl.devtools) {
@@ -175,10 +175,17 @@
       }
     },
 
-    loadPiskel_ : function (serializedPiskel) {
+    loadPiskel_ : function (piskelData) {
+      var serializedPiskel = piskelData.piskel;
       pskl.utils.serialization.Deserializer.deserialize(serializedPiskel, function (piskel, extra) {
+        var fps = extra.fps;
+        if (piskelData.descriptor) {
+          // Backward compatibility for v2 or older
+          piskel.setDescriptor(piskelData.descriptor);
+          fps = piskelData.fps;
+        }
         pskl.app.piskelController.setPiskel(piskel);
-        pskl.app.previewController.setFPS(extra.fps);
+        pskl.app.previewController.setFPS(fps);
       });
     },
 
