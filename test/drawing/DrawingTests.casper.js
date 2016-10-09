@@ -1,5 +1,6 @@
 (typeof exports != "undefined" ? exports : pskl_exports).tests = [
   "pen.drawing.json",
+  "color.picker.2.json",
   "color.picker.json",
   "frames.fun.json",
   "history.basic.json",

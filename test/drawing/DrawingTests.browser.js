@@ -1,6 +1,7 @@
 {"tests" : [
   "pen.drawing.json",
   "bucket.drawing.json",
+  "color.picker.2.json",
   "color.picker.json",
   "frames.fun.json",
   "history.basic.json",
