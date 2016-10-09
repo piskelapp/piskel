@@ -129,6 +129,17 @@
       return pskl.utils.FrameUtils.createFromImage(resizedImage);
     },
 
+    removeTransparency : function (frame) {
+      frame.forEachPixel(function (color, x, y) {
+        var alpha = color >> 24 >>> 0 & 0xff;
+        if (alpha && alpha !== 255) {
+          var rounded = Math.round(alpha / 255) * 255;
+          var roundedColor = color - (alpha << 24 >>> 0) + (rounded << 24 >>> 0);
+          frame.setPixel(x, y, roundedColor);
+        }
+      });
+    },
+
     createFromCanvas : function (canvas, x, y, w, h, preserveOpacity) {
       var imgData = canvas.getContext('2d').getImageData(x, y, w, h).data;
       return pskl.utils.FrameUtils.createFromImageData_(imgData, w, h, preserveOpacity);
@@ -158,6 +169,10 @@
     createFromImageData_ : function (imageData, width, height, preserveOpacity) {
       var frame = new pskl.model.Frame(width, height);
       frame.pixels = new Uint32Array(imageData.buffer);
+      if (!preserveOpacity) {
+        pskl.utils.FrameUtils.removeTransparency(frame);
+      }
+
       return frame;
     },
 
