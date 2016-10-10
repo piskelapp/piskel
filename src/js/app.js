@@ -178,13 +178,13 @@
     loadPiskel_ : function (piskelData) {
       var serializedPiskel = piskelData.piskel;
       pskl.utils.serialization.Deserializer.deserialize(serializedPiskel, function (piskel, extra) {
+        pskl.app.piskelController.setPiskel(piskel);
         var fps = extra.fps;
         if (piskelData.descriptor) {
           // Backward compatibility for v2 or older
           piskel.setDescriptor(piskelData.descriptor);
           fps = piskelData.fps;
         }
-        pskl.app.piskelController.setPiskel(piskel);
         pskl.app.previewController.setFPS(fps);
       });
     },
