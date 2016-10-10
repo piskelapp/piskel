@@ -13,7 +13,7 @@
     var fileName = piskelName + '-' + timestamp + '.piskel';
 
     try {
-      pskl.utils.FileUtils.downloadAsFile(new Blob([serialized]), fileName);
+      pskl.utils.FileUtils.downloadAsFile(new Blob([serialized], {type : 'application/piskel+json'}), fileName);
       deferred.resolve();
     } catch (e) {
       deferred.reject(e.message);

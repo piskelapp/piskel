@@ -8,9 +8,9 @@
   ns.FileUtils = {
     readFile : function (file, callback) {
       var reader = new FileReader();
-      reader.onload = function (event) {
-        callback(event.target.result);
-      };
+      reader.addEventListener('loadend', function() {
+        callback(reader.result);
+      });
       reader.readAsDataURL(file);
     },
 
