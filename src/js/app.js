@@ -179,6 +179,7 @@
       var serializedPiskel = piskelData.piskel;
       pskl.utils.serialization.Deserializer.deserialize(serializedPiskel, function (piskel, extra) {
         pskl.app.piskelController.setPiskel(piskel);
+        $.publish(Events.PISKEL_SAVED);
         var fps = extra.fps;
         if (piskelData.descriptor) {
           // Backward compatibility for v2 or older
