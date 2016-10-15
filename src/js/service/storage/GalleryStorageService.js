@@ -11,8 +11,10 @@
     var descriptor = piskel.getDescriptor();
     var deferred = Q.defer();
 
+    var serialized = pskl.utils.StringSerializer.serializePiskel(piskel);
+
     var data = {
-      framesheet : '[' + new Uint8Array(this.piskelController.serialize()) + ']',
+      framesheet : serialized,
       fps : this.piskelController.getFPS(),
       name : descriptor.name,
       description : descriptor.description,

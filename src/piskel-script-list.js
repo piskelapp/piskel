@@ -40,6 +40,7 @@
   "js/utils/WorkerUtils.js",
   "js/utils/Xhr.js",
   "js/utils/serialization/Serializer.js",
+  "js/utils/serialization/StringSerializer.js",
   "js/utils/serialization/Deserializer.js",
   "js/utils/serialization/backward/Deserializer_v0.js",
   "js/utils/serialization/backward/Deserializer_v1.js",

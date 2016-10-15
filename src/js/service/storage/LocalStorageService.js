@@ -13,10 +13,8 @@
   ns.LocalStorageService.prototype.save = function(piskel) {
     var name = piskel.getDescriptor().name;
     var description = piskel.getDescriptor().description;
-    var serialized = pskl.utils.Serializer.serializePiskel(piskel);
 
-    var serializedString = pskl.utils.convertBufferToString(serialized);
-
+    var serialized = pskl.utils.StringSerializer.serializePiskel(piskel);
     if (pskl.app.localStorageService.getPiskel(name)) {
       var confirmOverwrite = window.confirm('There is already a piskel saved as ' + name + '. Overwrite ?');
       if (!confirmOverwrite) {
@@ -27,7 +25,7 @@
     try {
       this.removeFromKeys_(name);
       this.addToKeys_(name, description, Date.now());
-      window.localStorage.setItem('piskel.' + name, serializedString);
+      window.localStorage.setItem('piskel.' + name, serialized);
       return Q.resolve();
     } catch (e) {
       return Q.reject(e.message);
@@ -38,9 +36,7 @@
     var piskelString = this.getPiskel(name);
     var key = this.getKey_(name);
 
-    var serializedPiskel = pskl.utils.convertStringToBuffer(piskelString);
-
-    pskl.utils.serialization.Deserializer.deserialize(serializedPiskel, function (piskel, extra) {
+    pskl.utils.serialization.Deserializer.deserialize(JSON.parse(piskelString), function (piskel, extra) {
       pskl.app.piskelController.setPiskel(piskel);
       pskl.app.previewController.setFPS(extra.fps);
     });

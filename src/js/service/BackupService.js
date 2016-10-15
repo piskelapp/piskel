@@ -34,7 +34,7 @@
     // Do not save an unchanged piskel
     if (hash !== this.lastHash) {
       this.lastHash = hash;
-      var serializedPiskel = pskl.utils.convertBufferToString(this.piskelController.serialize());
+      var serializedPiskel = pskl.utils.StringSerializer.serializePiskel(piskel);
       this.savePiskel_('next', serializedPiskel, JSON.stringify(info));
     }
   };
@@ -51,7 +51,7 @@
     var previousPiskel = window.localStorage.getItem('bkp.prev.piskel');
     var previousInfo = window.localStorage.getItem('bkp.prev.info');
 
-    previousPiskel = pskl.utils.convertStringToBuffer(previousPiskel);
+    previousPiskel = JSON.parse(previousPiskel);
     previousInfo = JSON.parse(previousInfo);
 
     pskl.utils.serialization.Deserializer.deserialize(previousPiskel, function (piskel) {
