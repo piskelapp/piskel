@@ -2,6 +2,14 @@
   var ns = $.namespace('pskl.utils.serialization.arraybuffer');
 
   /**
+   * The array buffer serialization-deserialization should only be used when when backing
+   * up the animation in memory. If you actually need to dump the animation to a string
+   * use the regular serialization helpers.
+   *
+   * This is due to the lacking support on TypedArray::toString on some browsers.
+   * Will revisit the option of using this across the whole project when the APIs are less
+   * green.
+   *
    *********
    *  META *
    *********
