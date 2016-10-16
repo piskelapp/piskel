@@ -1,7 +1,7 @@
 module.exports = function(grunt) {
 
   // Update this variable if you don't want or can't serve on localhost
-  var hostname = 'localhost';
+  var hostname = 'piskel';
 
   var PORT = {
     PROD : 9001,
