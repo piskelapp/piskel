@@ -28,10 +28,10 @@ describe("Serialization/Deserialization test", function() {
       layer.addFrame(frame);
     });
 
-    var serializedPiskel = pskl.utils.Serializer.serializePiskel(piskel);
+    var serializedPiskel = pskl.utils.serialization.Serializer.serialize(piskel);
 
     var deserializer = pskl.utils.serialization.Deserializer;
-    deserializer.deserialize(serializedPiskel, function (p) {
+    deserializer.deserialize(JSON.parse(serializedPiskel), function (p) {
       expect(p.getLayerAt(0).getOpacity()).toBe(0);
       expect(p.getLayerAt(1).getOpacity()).toBe(0.3);
       expect(p.getLayerAt(2).getOpacity()).toBe(0.9);

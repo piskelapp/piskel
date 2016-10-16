@@ -5,7 +5,7 @@
   ns.FileDownloadStorageService.prototype.init = function () {};
 
   ns.FileDownloadStorageService.prototype.save = function (piskel) {
-    var serialized = pskl.utils.StringSerializer.serializePiskel(piskel, false);
+    var serialized = pskl.utils.serialization.Serializer.serialize(piskel);
     var deferred = Q.defer();
 
     pskl.utils.BlobUtils.stringToBlob(serialized, function(blob) {

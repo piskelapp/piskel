@@ -40,11 +40,11 @@
   "js/utils/WorkerUtils.js",
   "js/utils/Xhr.js",
   "js/utils/serialization/Serializer.js",
-  "js/utils/serialization/StringSerializer.js",
   "js/utils/serialization/Deserializer.js",
+  "js/utils/serialization/arraybuffer/ArrayBufferDeserializer.js",
+  "js/utils/serialization/arraybuffer/ArrayBufferSerializer.js",
   "js/utils/serialization/backward/Deserializer_v0.js",
   "js/utils/serialization/backward/Deserializer_v1.js",
-  "js/utils/serialization/backward/Deserializer_v2.js",
 
     // GIF Encoding libraries
   "js/lib/gif/gif.worker.js",

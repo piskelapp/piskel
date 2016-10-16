@@ -24,7 +24,7 @@
       return Q.reject('Invalid file name');
     }
 
-    var serialized = pskl.utils.StringSerializer.serializePiskel(piskel);
+    var serialized = pskl.utils.serialization.Serializer.serialize(piskel);
     savePath = this.addExtensionIfNeeded_(savePath);
     piskel.savePath = savePath;
     piskel.setName(this.extractFilename_(savePath));

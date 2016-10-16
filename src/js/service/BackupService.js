@@ -34,7 +34,7 @@
     // Do not save an unchanged piskel
     if (hash !== this.lastHash) {
       this.lastHash = hash;
-      var serializedPiskel = pskl.utils.StringSerializer.serializePiskel(piskel);
+      var serializedPiskel = pskl.utils.serialization.Serializer.serialize(piskel);
       this.savePiskel_('next', serializedPiskel, JSON.stringify(info));
     }
   };

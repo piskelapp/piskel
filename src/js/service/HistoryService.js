@@ -1,10 +1,11 @@
 (function () {
   var ns = $.namespace('pskl.service');
 
-  ns.HistoryService = function (piskelController, shortcutService, deserializer) {
+  ns.HistoryService = function (piskelController, shortcutService, deserializer, serializer) {
     this.piskelController = piskelController || pskl.app.piskelController;
     this.shortcutService = shortcutService || pskl.app.shortcutService;
-    this.deserializer = deserializer || pskl.utils.serialization.Deserializer;
+    this.deserializer = deserializer || pskl.utils.serialization.arraybuffer.ArrayBufferDeserializer;
+    this.serializer = serializer || pskl.utils.serialization.arraybuffer.ArrayBufferSerializer;
 
     this.stateQueue = [];
     this.currentIndex = -1;
@@ -53,7 +54,8 @@
     var isSnapshot = action.type === ns.HistoryService.SNAPSHOT;
     var isAtAutoSnapshotInterval = this.currentIndex % ns.HistoryService.SNAPSHOT_PERIOD === 0;
     if (isSnapshot || isAtAutoSnapshotInterval) {
-      state.piskel = this.piskelController.serialize();
+      var piskel = this.piskelController.getPiskel();
+      state.piskel = this.serializer.serialize(piskel);
     }
 
     this.stateQueue.push(state);
