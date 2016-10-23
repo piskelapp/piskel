@@ -238,13 +238,15 @@
     var evt = jQueryEvent.originalEvent;
     // Ratio between wheelDeltaY (mousewheel event) and deltaY (wheel event) is -40
     var delta;
-    if (pskl.utils.UserAgent.isChrome) {
-      delta = evt.wheelDeltaY;
-    } else if (pskl.utils.UserAgent.isIE11) {
+    if (pskl.utils.UserAgent.isIE11) {
       delta = evt.wheelDelta;
     } else if (pskl.utils.UserAgent.isFirefox) {
       delta = -40 * evt.deltaY;
+    } else {
+      delta = evt.wheelDeltaY;
     }
+
+    delta = delta || 0;
     var modifier = (delta / 120);
 
     if (pskl.utils.UserAgent.isMac ? evt.metaKey : evt.ctrlKey) {
