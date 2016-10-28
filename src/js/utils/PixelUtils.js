@@ -76,33 +76,20 @@
      *
      * @param  {Number} row  x-coordinate of the original pixel
      * @param  {Number} col  y-coordinate of the original pixel
-     * @param  {Number} size >= 1 && <= 4
+     * @param  {Number} size >= 1 && <= 1000000
      * @return {Array}  array of arrays of 2 Numbers (eg. [[0,0], [0,1], [1,0], [1,1]])
      */
     resizePixel : function (col, row, size) {
-      if (size == 1) {
-        return [[col, row]];
-      } else if (size == 2) {
-        return [
-          [col, row], [col + 1, row],
-          [col, row + 1], [col + 1, row + 1]
-        ];
-      } else if (size == 3) {
-        return [
-          [col - 1, row - 1], [col, row - 1], [col + 1, row - 1],
-          [col - 1, row + 0], [col, row + 0], [col + 1, row + 0],
-          [col - 1, row + 1], [col, row + 1], [col + 1, row + 1],
-        ];
-      } else if (size == 4) {
-        return [
-          [col - 1, row - 1], [col, row - 1], [col + 1, row - 1], [col + 2, row - 1],
-          [col - 1, row + 0], [col, row + 0], [col + 1, row + 0], [col + 2, row + 0],
-          [col - 1, row + 1], [col, row + 1], [col + 1, row + 1], [col + 2, row + 1],
-          [col - 1, row + 2], [col, row + 2], [col + 1, row + 2], [col + 2, row + 2],
-        ];
-      } else {
-        console.error('Unsupported size : ' + size);
+      var pixels = [];
+      if(size > 1000000) size = 1000000;
+
+      for(j = 0; j < size; j++) {
+        for(i = 0; i < size; i++) {
+          pixels.push([col-Math.floor(size/2)+i,row-Math.floor(size/2)+j]);
+        }
       }
+
+      return pixels;
     },
 
     /**
