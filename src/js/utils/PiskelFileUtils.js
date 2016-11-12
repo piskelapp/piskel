@@ -37,6 +37,5 @@
         onSuccess(piskel, descriptor, fps);
       });
     }
-
   };
 })();
