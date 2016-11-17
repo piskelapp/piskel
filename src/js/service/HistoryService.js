@@ -24,6 +24,9 @@
   // Interval/buffer (in milliseconds) between two state load (ctrl+z/y spamming)
   ns.HistoryService.LOAD_STATE_INTERVAL = 50;
 
+  // Maximum number of states that can be recorded.
+  ns.HistoryService.MAX_SAVED_STATES = 500;
+
   ns.HistoryService.prototype.init = function () {
     $.subscribe(Events.PISKEL_SAVE_STATE, this.onSaveStateEvent.bind(this));
 
@@ -41,7 +44,6 @@
   };
 
   ns.HistoryService.prototype.saveState = function (action) {
-    this.stateQueue = this.stateQueue.slice(0, this.currentIndex + 1);
     this.currentIndex = this.currentIndex + 1;
 
     var state = {
@@ -58,6 +60,13 @@
       state.piskel = this.serializer.serialize(piskel);
     }
 
+    // If the new state pushes over MAX_SAVED_STATES, erase all states between the first and
+    // second snapshot states.
+    if (this.stateQueue.length > ns.HistoryService.MAX_SAVED_STATES) {
+      var firstSnapshotIndex = this.getNextSnapshotIndex_(1);
+      this.stateQueue.splice(0, firstSnapshotIndex);
+      this.currentIndex = this.currentIndex - firstSnapshotIndex;
+    }
     this.stateQueue.push(state);
     $.publish(Events.HISTORY_STATE_SAVED);
   };
@@ -88,6 +97,13 @@
   ns.HistoryService.prototype.getPreviousSnapshotIndex_ = function (index) {
     while (this.stateQueue[index] && !this.stateQueue[index].piskel) {
       index = index - 1;
+    }
+    return index;
+  };
+
+  ns.HistoryService.prototype.getNextSnapshotIndex_ = function (index) {
+    while (this.stateQueue[index] && !this.stateQueue[index].piskel) {
+      index = index + 1;
     }
     return index;
   };
