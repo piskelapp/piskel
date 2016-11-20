@@ -115,6 +115,7 @@
   "js/controller/NotificationController.js",
   "js/controller/TransformationsController.js",
   "js/controller/CanvasBackgroundController.js",
+  "js/controller/UserWarningController.js",
 
   // Settings sub-controllers
   "js/controller/settings/AbstractSettingController.js",
@@ -181,6 +182,8 @@
   "js/service/FileDropperService.js",
   "js/service/SelectedColorsService.js",
   "js/service/MouseStateService.js",
+  "js/service/performance/PerformanceReport.js",
+  "js/service/performance/PerformanceReportService.js",
   "js/service/storage/LocalStorageService.js",
   "js/service/storage/GalleryStorageService.js",
   "js/service/storage/DesktopStorageService.js",
