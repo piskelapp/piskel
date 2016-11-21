@@ -56,7 +56,7 @@ describe("PenSize test suite", function() {
 
     penSizeService.init();
     // MAX_VALUE is 4
-    penSizeService.setPenSize(5);
+    penSizeService.setPenSize(33);
     expect(penSizeService.getPenSize()).toBe(1);
     // MIN_VALUE is 1
     penSizeService.setPenSize(0);

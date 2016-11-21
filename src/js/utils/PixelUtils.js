@@ -76,7 +76,7 @@
      *
      * @param  {Number} row  x-coordinate of the original pixel
      * @param  {Number} col  y-coordinate of the original pixel
-     * @param  {Number} size >= 1 && <= 1000000
+     * @param  {Number} size >= 1 && <= 32
      * @return {Array}  array of arrays of 2 Numbers (eg. [[0,0], [0,1], [1,0], [1,1]])
      */
     resizePixel : function (col, row, size) {
@@ -84,11 +84,9 @@
       var i;
       var j;
 
-      if (size > 1000000) { size = 1000000; }
-
       for (j = 0; j < size; j++) {
         for (i = 0; i < size; i++) {
-          pixels.push([col - Math.floor(size / 2) + i,row - Math.floor(size / 2) + j]);
+          pixels.push([col - Math.floor(size / 2) + i, row - Math.floor(size / 2) + j]);
         }
       }
 

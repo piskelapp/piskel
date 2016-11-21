@@ -2,7 +2,7 @@
   var ns = $.namespace('pskl.service.pensize');
 
   var MIN_PENSIZE = 1;
-  var MAX_PENSIZE = 1000000;
+  var MAX_PENSIZE = 32;
 
   /**
    * Service to retrieve and modify the current pen size.
