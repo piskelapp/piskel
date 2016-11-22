@@ -5,8 +5,11 @@
   var PREVIEW_SIZE = 200;
   var RENDER_MINIMUM_DELAY = 300;
 
-  var ONION_SKIN_SHORTCUT = 'alt+O';
-  var ORIGINAL_SIZE_SHORTCUT = 'alt+1';
+  var PREVIEW = {
+    ORIGINAL: 'original',
+    BEST: 'best',
+    FULL: 'full'
+  };
 
   ns.PreviewController = function (piskelController, container) {
     this.piskelController = piskelController;
@@ -17,6 +20,8 @@
 
     this.onionSkinShortcut = pskl.service.keyboard.Shortcuts.MISC.ONION_SKIN;
     this.originalSizeShortcut = pskl.service.keyboard.Shortcuts.MISC.X1_PREVIEW;
+    this.bestSizeShortcut = pskl.service.keyboard.Shortcuts.MISC.BEST_PREVIEW;
+    this.fullSizeShortcut = pskl.service.keyboard.Shortcuts.MISC.FULL_PREVIEW;
 
     this.lastRenderTime = 0;
     this.renderFlag = true;
@@ -29,6 +34,8 @@
     this.fpsCounterDisplay = document.querySelector('#display-fps');
     this.openPopupPreview = document.querySelector('.open-popup-preview-button');
     this.originalSizeButton = document.querySelector('.original-size-button');
+    this.bestSizeButton = document.querySelector('.best-size-button');
+    this.fullSizeButton = document.querySelector('.full-size-button');
     this.toggleOnionSkinButton = document.querySelector('.preview-toggle-onion-skin');
 
     /**
@@ -50,10 +57,15 @@
 
     pskl.utils.Event.addEventListener(this.toggleOnionSkinButton, 'click', this.toggleOnionSkin_, this);
     pskl.utils.Event.addEventListener(this.openPopupPreview, 'click', this.onOpenPopupPreviewClick_, this);
-    pskl.utils.Event.addEventListener(this.originalSizeButton, 'click', this.onOriginalSizeButtonClick_, this);
+    var previewSizeFunc = this.onChangePreviewSize_;
+    pskl.utils.Event.addEventListener(this.originalSizeButton, 'click', previewSizeFunc, this, PREVIEW.ORIGINAL);
+    pskl.utils.Event.addEventListener(this.bestSizeButton, 'click', previewSizeFunc, this, PREVIEW.BEST);
+    pskl.utils.Event.addEventListener(this.fullSizeButton, 'click', previewSizeFunc, this, PREVIEW.FULL);
 
     pskl.app.shortcutService.registerShortcut(this.onionSkinShortcut, this.toggleOnionSkin_.bind(this));
-    pskl.app.shortcutService.registerShortcut(this.originalSizeShortcut, this.onOriginalSizeButtonClick_.bind(this));
+    pskl.app.shortcutService.registerShortcut(this.originalSizeShortcut, previewSizeFunc.bind(this, PREVIEW.ORIGINAL));
+    pskl.app.shortcutService.registerShortcut(this.bestSizeShortcut, previewSizeFunc.bind(this, PREVIEW.BEST));
+    pskl.app.shortcutService.registerShortcut(this.fullSizeShortcut, previewSizeFunc.bind(this, PREVIEW.FULL));
 
     $.subscribe(Events.FRAME_SIZE_CHANGED, this.onFrameSizeChange_.bind(this));
     $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
@@ -61,6 +73,7 @@
     $.subscribe(Events.PISKEL_RESET, this.setRenderFlag_.bind(this, true));
 
     this.initTooltips_();
+    this.initDynamicPreviewSize_();
     this.popupPreviewController.init();
 
     this.updateZoom_();
@@ -75,15 +88,22 @@
     this.toggleOnionSkinButton.setAttribute('title', onionSkinTooltip);
     var originalSizeTooltip = pskl.utils.TooltipFormatter.format('Original size preview', this.originalSizeShortcut);
     this.originalSizeButton.setAttribute('title', originalSizeTooltip);
+    var bestSizeTooltip = pskl.utils.TooltipFormatter.format('Round factor size preview', this.bestSizeShortcut);
+    this.bestSizeButton.setAttribute('title', bestSizeTooltip);
+    var fullSizeTooltip = pskl.utils.TooltipFormatter.format('Biggest factor size preview', this.fullSizeShortcut);
+    this.fullSizeButton.setAttribute('title', fullSizeTooltip);
+  };
+
+  ns.PreviewController.prototype.initDynamicPreviewSize_ = function () {
+    this.bestSizeButton.textContent = this.calculateZoom_(true) + 'x';
   };
 
   ns.PreviewController.prototype.onOpenPopupPreviewClick_ = function () {
     this.popupPreviewController.open();
   };
 
-  ns.PreviewController.prototype.onOriginalSizeButtonClick_ = function () {
-    var isEnabled = pskl.UserSettings.get(pskl.UserSettings.ORIGINAL_SIZE_PREVIEW);
-    pskl.UserSettings.set(pskl.UserSettings.ORIGINAL_SIZE_PREVIEW, !isEnabled);
+  ns.PreviewController.prototype.onChangePreviewSize_ = function (choice) {
+    pskl.UserSettings.set(pskl.UserSettings.PREVIEW_SIZE, choice);
   };
 
   ns.PreviewController.prototype.onUserSettingsChange_ = function (evt, name, value) {
@@ -105,9 +125,26 @@
   };
 
   ns.PreviewController.prototype.updateOriginalSizeButton_ = function () {
-    var enabledClassname = 'original-size-button-enabled';
-    var isEnabled = pskl.UserSettings.get(pskl.UserSettings.ORIGINAL_SIZE_PREVIEW);
-    this.originalSizeButton.classList.toggle(enabledClassname, isEnabled);
+    var enabledClassname = 'size-button-selected';
+    var currentlySelected = document.querySelector('.' + enabledClassname);
+    if (currentlySelected) {
+      currentlySelected.classList.remove(enabledClassname);
+    }
+
+    var previewSize = pskl.UserSettings.get(pskl.UserSettings.PREVIEW_SIZE);
+    var button;
+    switch (previewSize) {
+      case PREVIEW.ORIGINAL:
+        button = this.originalSizeButton;
+        break;
+      case PREVIEW.BEST:
+        button = this.bestSizeButton;
+        break;
+      case PREVIEW.FULL:
+        button = this.fullSizeButton;
+        break;
+    }
+    button.classList.add(enabledClassname);
   };
 
   ns.PreviewController.prototype.updateMaxFPS_ = function () {
@@ -117,11 +154,22 @@
   };
 
   ns.PreviewController.prototype.updateZoom_ = function () {
-    var originalSizeEnabled = pskl.UserSettings.get(pskl.UserSettings.ORIGINAL_SIZE_PREVIEW);
+    var choosedPreviewSize = pskl.UserSettings.get(pskl.UserSettings.PREVIEW_SIZE);
     var seamlessModeEnabled = pskl.UserSettings.get(pskl.UserSettings.SEAMLESS_MODE);
-    var useOriginalSize = originalSizeEnabled || seamlessModeEnabled;
 
-    var zoom = useOriginalSize ? 1 : this.calculateZoom_();
+    var zoom;
+    switch (choosedPreviewSize) {
+      case PREVIEW.ORIGINAL:
+        zoom = 1;
+        break;
+      case PREVIEW.BEST:
+        zoom = this.calculateZoom_(true);
+        break;
+      case PREVIEW.FULL:
+        zoom = this.calculateZoom_(false);
+        break;
+    }
+
     this.renderer.setZoom(zoom);
     this.setRenderFlag_(true);
   };
@@ -197,10 +245,15 @@
   /**
    * Calculate the preview zoom depending on the framesheet size
    */
-  ns.PreviewController.prototype.calculateZoom_ = function () {
+  ns.PreviewController.prototype.calculateZoom_ = function (noFloat) {
     var frame = this.piskelController.getCurrentFrame();
     var hZoom = PREVIEW_SIZE / frame.getHeight();
     var wZoom = PREVIEW_SIZE / frame.getWidth();
+
+    if (noFloat) {
+      hZoom = Math.floor(hZoom);
+      wZoom = Math.floor(wZoom);
+    }
 
     return Math.min(hZoom, wZoom);
   };
