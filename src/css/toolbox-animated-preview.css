@@ -115,6 +115,10 @@
   font-family: Tahoma;
 }
 
+.preview-contextual-action-disabled {
+  display: none;
+}
+
 .preview-contextual-action:hover {
   color: gold;
   border-color: gold;
