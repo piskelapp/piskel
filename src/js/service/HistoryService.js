@@ -44,6 +44,7 @@
   };
 
   ns.HistoryService.prototype.saveState = function (action) {
+    this.stateQueue = this.stateQueue.slice(0, this.currentIndex + 1);
     this.currentIndex = this.currentIndex + 1;
 
     var state = {
