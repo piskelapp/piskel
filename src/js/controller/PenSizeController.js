@@ -25,9 +25,17 @@
   };
 
   ns.PenSizeController.prototype.updateSelectedOption_ = function () {
+    pskl.utils.Dom.removeClass('labeled', this.container);
     pskl.utils.Dom.removeClass('selected', this.container);
     var size = pskl.app.penSizeService.getPenSize();
-    var selectedOption = this.container.querySelector('[data-size="' + size + '"]');
+    var selectedOption;
+    if (size <= 4) {
+      selectedOption = this.container.querySelector('[data-size="' + size + '"]');
+    } else {
+      selectedOption = this.container.querySelector('[data-size="4"]');
+      selectedOption.classList.add('labeled');
+      selectedOption.setAttribute('real-pen-size', size);
+    }
     if (selectedOption) {
       selectedOption.classList.add('selected');
     }
