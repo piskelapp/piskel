@@ -140,6 +140,7 @@
   "js/controller/dialogs/ImportImageController.js",
   "js/controller/dialogs/BrowseLocalController.js",
   "js/controller/dialogs/CheatsheetController.js",
+  "js/controller/dialogs/PerformanceInfoController.js",
 
   // Dialogs controller
   "js/controller/dialogs/DialogsController.js",

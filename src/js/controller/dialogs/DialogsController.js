@@ -17,6 +17,10 @@
     'import-image' : {
       template : 'templates/dialogs/import-image.html',
       controller : ns.ImportImageController
+    },
+    'performance-info' : {
+      template : 'templates/dialogs/performance-info.html',
+      controller : ns.PerformanceInfoController
     }
   };
 

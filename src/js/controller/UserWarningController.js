@@ -4,32 +4,52 @@
   ns.UserWarningController = function (piskelController, currentColorsService) {
     this.piskelController = piskelController;
     this.currentColorsService = currentColorsService;
-    this.isWarningDisplayed = false;
+  };
+
+  // This method is not attached to the prototype because we want to trigger it
+  // from markup generated for a notification message.
+  ns.UserWarningController.showPerformanceInfoDialog = function () {
+    $.publish(Events.DIALOG_DISPLAY, {
+      dialogId: 'performance-info'
+    });
   };
 
   ns.UserWarningController.prototype.init = function () {
     $.subscribe(Events.PERFORMANCE_REPORT_CHANGED, this.onPerformanceReportChanged_.bind(this));
+
+    this.performanceLinkEl = document.querySelector('.performance-link');
+    pskl.utils.Event.addEventListener(
+      this.performanceLinkEl,
+      'click',
+      ns.UserWarningController.showPerformanceInfoDialog,
+      this
+    );
+  };
+
+  ns.UserWarningController.prototype.destroy = function () {
+    pskl.utils.Event.removeAllEventListeners(this);
+    this.performanceLinkEl = null;
   };
 
   ns.UserWarningController.prototype.onPerformanceReportChanged_ = function (event, report) {
-    console.log(report);
-
     var shouldDisplayWarning = report.hasProblem();
-    if (shouldDisplayWarning && !this.isWarningDisplayed) {
-      // show a notification
-      // show the warning bubble
+
+    // Check if a performance warning is already displayed.
+    var isWarningDisplayed = this.performanceLinkEl.classList.contains('visible');
+
+    // Show/hide the performance warning link depending on the received report.
+    this.performanceLinkEl.classList.toggle('visible', shouldDisplayWarning);
+
+    // Show a notification message if the new report indicates a performance issue
+    // and we were not displaying a warning before.
+    if (shouldDisplayWarning && !isWarningDisplayed) {
       $.publish(Events.SHOW_NOTIFICATION, [{
-        'content': 'performance problem notification',
+        'content': 'performance problem notification ' +
+                   '<a href="#" style="color:red;"' +
+                       'onclick="pskl.controller.UserWarningController.showPerformanceInfoDialog()">' +
+                      'learn more?</a>',
         'hideDelay' : 5000
       }]);
-      console.log('should show a performance notification');
-      this.isWarningDisplayed = true;
-    }
-
-    if (!shouldDisplayWarning && this.isWarningDisplayed) {
-      // hide the warning bubble
-      console.log('should hide a performance notification');
-      this.isWarningDisplayed = false;
     }
   };
 })();
