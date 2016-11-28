@@ -81,11 +81,9 @@
      */
     resizePixel : function (col, row, size) {
       var pixels = [];
-      var i;
-      var j;
 
-      for (j = 0; j < size; j++) {
-        for (i = 0; i < size; i++) {
+      for (var j = 0; j < size; j++) {
+        for (var i = 0; i < size; i++) {
           pixels.push([col - Math.floor(size / 2) + i, row - Math.floor(size / 2) + j]);
         }
       }
