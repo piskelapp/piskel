@@ -131,13 +131,29 @@
   float: left;
 
   width : 22px;
-  line-height: 18px;
+  min-height: 22px;
   margin: 0 5px;
+}
+
+.preview-drop-down.preview-drop-down-disabled {
+  opacity: 0.5;
+}
+
+.preview-disable-overlay{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: none;
+}
+
+.preview-drop-down.preview-drop-down-disabled .preview-disable-overlay {
+  display: block;
+  z-index: 10;
 }
 
 .preview-drop-down .preview-contextual-action {
   position: relative;
-  margin: -100% 0 0 0;
+  margin: 0 0 -100% 0;
   opacity: 0;
   transition: opacity linear .2s,
               margin linear .2s;
@@ -152,7 +168,6 @@
 }
 
 .preview-drop-down .size-button-selected {
-  margin: 0;
   opacity: 1;
   color: gold;
   border-color: gold;

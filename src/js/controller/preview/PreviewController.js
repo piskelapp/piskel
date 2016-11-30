@@ -24,9 +24,11 @@
     this.fpsRangeInput = document.querySelector('#preview-fps');
     this.fpsCounterDisplay = document.querySelector('#display-fps');
     this.openPopupPreview = document.querySelector('.open-popup-preview-button');
+    this.previewSizeDropdown = document.querySelector('.preview-drop-down');
     this.previewSize = {
       original: {
         name: 'original',
+        zoom: 1,
         button: document.querySelector('.original-size-button'),
         shortcut: pskl.service.keyboard.Shortcuts.MISC.X1_PREVIEW,
         tooltip: 'Original size preview',
@@ -34,19 +36,22 @@
       },
       best: {
         name: 'best',
+        zoom: this.calculateZoom_.bind(this, true),
         button: document.querySelector('.best-size-button'),
         shortcut: pskl.service.keyboard.Shortcuts.MISC.BEST_PREVIEW,
-        tooltip: 'Round factor size preview',
+        tooltip: 'Biggest round factor size preview',
         enabled: true
       },
       full: {
         name: 'full',
+        zoom: this.calculateZoom_.bind(this, false),
         button: document.querySelector('.full-size-button'),
         shortcut: pskl.service.keyboard.Shortcuts.MISC.FULL_PREVIEW,
         tooltip: 'Biggest factor size preview',
         enabled: true
       }
     };
+    this.selectedPreviewSize = pskl.UserSettings.get(pskl.UserSettings.PREVIEW_SIZE);
     this.toggleOnionSkinButton = document.querySelector('.preview-toggle-onion-skin');
 
     /**
@@ -86,6 +91,9 @@
       }
     }
 
+    var disableTooltip = pskl.utils.TooltipFormatter.format('I\'m disabled');
+    document.querySelector('.preview-disable-overlay').setAttribute('title', disableTooltip);
+
     $.subscribe(Events.FRAME_SIZE_CHANGED, this.onFrameSizeChange_.bind(this));
     $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
     $.subscribe(Events.PISKEL_SAVE_STATE, this.setRenderFlag_.bind(this, true));
@@ -103,39 +111,48 @@
 
   ns.PreviewController.prototype.updatePreviewSizeButtons_ = function () {
     var fullZoom = this.calculateZoom_();
+    var bestZoom = Math.floor(fullZoom);
     var seamlessModeEnabled = pskl.UserSettings.get(pskl.UserSettings.SEAMLESS_MODE);
+    var shouldDisable = true;
 
-    if (seamlessModeEnabled) {
-      this.togglePreviewSizeButtonState_(this.previewSize.best, false);
-      this.togglePreviewSizeButtonState_(this.previewSize.full, false);
-      this.onChangePreviewSize_(this.previewSize.original.name);
-    } else {
-      if (Number.isInteger(fullZoom)) {
-        this.togglePreviewSizeButtonState_(this.previewSize.full, false);
-        if (pskl.UserSettings.get(pskl.UserSettings.PREVIEW_SIZE) === this.previewSize.full.name) {
+    // Hard-coded options collision
+    if (fullZoom < 1) {
+      this.togglePreviewWidget_(this.previewSize.full.name);
+    } else if (seamlessModeEnabled || (fullZoom === 1 && bestZoom === 1)) {
+      this.togglePreviewWidget_(this.previewSize.original.name);
+    } else { // widget not disabled
+      this.togglePreviewWidget_(!shouldDisable);
+      if (fullZoom === bestZoom) {
+        if (this.togglePreviewSizeButtonState_(this.previewSize.full, shouldDisable)) {
           this.onChangePreviewSize_(this.previewSize.best.name);
         }
-      } else if (fullZoom <= 1) {
-        this.togglePreviewSizeButtonState_(this.previewSize.best, false);
-        if (fullZoom < 1) {
-          this.togglePreviewSizeButtonState_(this.previewSize.original, false);
-          this.onChangePreviewSize_(this.previewSize.full.name);
-        } else {
+      } else if (bestZoom === 1) {
+        if (this.togglePreviewSizeButtonState_(this.previewSize.best, shouldDisable)) {
           this.onChangePreviewSize_(this.previewSize.original.name);
         }
-      } else {
-        this.togglePreviewSizeButtonState_(this.previewSize.original, true);
-        this.togglePreviewSizeButtonState_(this.previewSize.best, true);
-        this.togglePreviewSizeButtonState_(this.previewSize.full, true);
       }
     }
+
     this.previewSize.best.button.textContent = Math.floor(fullZoom) + 'x';
   };
 
-  ns.PreviewController.prototype.togglePreviewSizeButtonState_ = function (wrapper, enable) {
+  ns.PreviewController.prototype.togglePreviewWidget_ = function (disable) {
+    this.previewSizeDropdown.classList.toggle('preview-drop-down-disabled', disable);
+    for (var size in this.previewSize) {
+      if (this.previewSize.hasOwnProperty(size)) {
+        this.togglePreviewSizeButtonState_(this.previewSize[size], disable && size !== disable);
+      }
+    }
+    if (disable) {
+      this.onChangePreviewSize_(disable);
+    }
+  };
+
+  ns.PreviewController.prototype.togglePreviewSizeButtonState_ = function (wrapper, disable) {
     var disabledClassname = 'preview-contextual-action-disabled';
-    wrapper.button.classList.toggle(disabledClassname, !enable);
-    wrapper.enabled = enable;
+    wrapper.button.classList.toggle(disabledClassname, disable);
+    wrapper.enabled = !disable;
+    return disable && wrapper.name === this.selectedPreviewSize;
   };
 
   ns.PreviewController.prototype.onOpenPopupPreviewClick_ = function () {
@@ -144,6 +161,7 @@
 
   ns.PreviewController.prototype.onChangePreviewSize_ = function (choice) {
     if (this.previewSize[choice].enabled) {
+      this.selectedPreviewSize = choice;
       pskl.UserSettings.set(pskl.UserSettings.PREVIEW_SIZE, choice);
     }
   };
@@ -153,10 +171,6 @@
       this.updateOnionSkinPreview_();
     } else if (name == pskl.UserSettings.MAX_FPS) {
       this.updateMaxFPS_();
-    } else if (name == pskl.UserSettings.SEAMLESS_MODE) {
-      this.onChangePreviewSize_(this.previewSize.original.name);
-      this.togglePreviewSizeButtonState_(this.previewSize.best, !value);
-      this.togglePreviewSizeButtonState_(this.previewSize.full, !value);
     } else {
       this.updateZoom_();
       this.selectPreviewSizeButton_();
@@ -177,9 +191,8 @@
       currentlySelected.classList.remove(enabledClassname);
     }
 
-    var previewSize = pskl.UserSettings.get(pskl.UserSettings.PREVIEW_SIZE);
-    var button = this.previewSize[previewSize].button;
-    button.classList.add(enabledClassname);
+    var option = this.previewSize[this.selectedPreviewSize];
+    option.button.classList.add(enabledClassname);
   };
 
   ns.PreviewController.prototype.updateMaxFPS_ = function () {
@@ -191,20 +204,9 @@
   ns.PreviewController.prototype.updateZoom_ = function () {
     var chosenPreviewSize = pskl.UserSettings.get(pskl.UserSettings.PREVIEW_SIZE);
 
-    var zoom;
-    switch (chosenPreviewSize) {
-      case this.previewSize.original.name:
-        zoom = 1;
-        break;
-      case this.previewSize.best.name:
-        zoom = this.calculateZoom_(true);
-        break;
-      case this.previewSize.full.name:
-        zoom = this.calculateZoom_(false);
-        break;
-    }
+    var zoom = this.previewSize[chosenPreviewSize].zoom;
 
-    this.renderer.setZoom(zoom);
+    this.renderer.setZoom($.isFunction(zoom) ? zoom() : zoom);
     this.setRenderFlag_(true);
   };
 
