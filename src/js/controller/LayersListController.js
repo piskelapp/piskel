@@ -106,8 +106,8 @@
     var index;
     if (el.classList.contains('button')) {
       this.onButtonClick_(el);
-    } else if (el.classList.contains('layer-item')) {
-      index = el.dataset.layerIndex;
+    } else if (el.classList.contains('layer-name')) {
+      index = pskl.utils.Dom.getData(el, 'layerIndex');
       this.piskelController.setCurrentLayerIndex(parseInt(index, 10));
     } else if (el.classList.contains('layer-item-opacity')) {
       index = pskl.utils.Dom.getData(el, 'layerIndex');
