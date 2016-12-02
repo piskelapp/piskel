@@ -70,6 +70,8 @@
   padding: 0 0 0 10px;
   flex: 1 auto;
   white-space: nowrap;
+}
+.layer-item .layer-name.overflowing-name {
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -79,7 +81,7 @@
 }
 
 .layer-item-opacity {
-  margin-right: 8px;
+  padding-right: 8px;
 }
 
 .current-layer-item,
