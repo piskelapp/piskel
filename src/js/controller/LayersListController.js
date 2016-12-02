@@ -99,6 +99,12 @@
     });
     var layerItem = pskl.utils.Template.createFromHTML(layerItemHtml);
     this.layersListEl.insertBefore(layerItem, this.layersListEl.firstChild);
+    if (layerItem.offsetWidth < layerItem.scrollWidth) {
+      $(layerItem).find('.layer-name')
+        .addClass('overflowing-name')
+        .attr('title', pskl.utils.TooltipFormatter.format(layer.getName()))
+        .tooltip();
+    }
   };
 
   ns.LayersListController.prototype.onClick_ = function (evt) {
