@@ -93,7 +93,11 @@
 
   ns.SelectionManager.prototype.paste = function() {
     if (!this.currentSelection || !this.currentSelection.hasPastedContent) {
-      return;
+      if (window.localStorage.getItem('piskel.clipboard')) {
+        this.currentSelection = JSON.parse(window.localStorage.getItem('piskel.clipboard'));
+      }else{
+        return;
+      }
     }
 
     var pixels = this.currentSelection.pixels;
@@ -146,6 +150,7 @@
   ns.SelectionManager.prototype.copy = function() {
     if (this.currentSelection && this.piskelController.getCurrentFrame()) {
       this.currentSelection.fillSelectionFromFrame(this.piskelController.getCurrentFrame());
+      window.localStorage.setItem('piskel.clipboard', JSON.stringify(this.currentSelection));
     }
   };
 
