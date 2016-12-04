@@ -95,7 +95,7 @@
     if (!this.currentSelection || !this.currentSelection.hasPastedContent) {
       if (window.localStorage.getItem('piskel.clipboard')) {
         this.currentSelection = JSON.parse(window.localStorage.getItem('piskel.clipboard'));
-      }else{
+      } else {
         return;
       }
     }
