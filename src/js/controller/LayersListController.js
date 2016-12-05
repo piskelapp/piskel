@@ -102,7 +102,7 @@
     if (layerItem.offsetWidth < layerItem.scrollWidth) {
       $(layerItem).find('.layer-name')
         .addClass('overflowing-name')
-        .attr('title', pskl.utils.TooltipFormatter.format(layer.getName()))
+        .attr('title', layer.getName())
         .tooltip();
     }
   };
