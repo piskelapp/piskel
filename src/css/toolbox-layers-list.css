@@ -71,6 +71,7 @@
   flex: 1 auto;
   white-space: nowrap;
 }
+
 .layer-item .layer-name.overflowing-name {
   overflow: hidden;
   text-overflow: ellipsis;
