@@ -99,6 +99,12 @@
     });
     var layerItem = pskl.utils.Template.createFromHTML(layerItemHtml);
     this.layersListEl.insertBefore(layerItem, this.layersListEl.firstChild);
+    if (layerItem.offsetWidth < layerItem.scrollWidth) {
+      $(layerItem).find('.layer-name')
+        .addClass('overflowing-name')
+        .attr('title', layer.getName())
+        .tooltip();
+    }
   };
 
   ns.LayersListController.prototype.onClick_ = function (evt) {
@@ -106,8 +112,8 @@
     var index;
     if (el.classList.contains('button')) {
       this.onButtonClick_(el);
-    } else if (el.classList.contains('layer-item')) {
-      index = el.dataset.layerIndex;
+    } else if (el.classList.contains('layer-name')) {
+      index = pskl.utils.Dom.getData(el, 'layerIndex');
       this.piskelController.setCurrentLayerIndex(parseInt(index, 10));
     } else if (el.classList.contains('layer-item-opacity')) {
       index = pskl.utils.Dom.getData(el, 'layerIndex');
