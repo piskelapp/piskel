@@ -1,22 +1,19 @@
-### Reporting a bug
+Bug description
 
-As much as possible, a bug report should include:
-* exact steps to reproduce (STRs)
-* screenshot of the application after the bug
-* setup details:
-  * operating system
-  * browser used
-  * (or if offline application: application version)
-* for crashes / performance issues also include:
-  * number of frames
-  * sprite resolution
-  * session duration
+(this template is intended for bug reports, erase it when requesting features/enhancements)
 
-Feel free to include a .piskel file of the sprite where you faced the bug if it can help to reproduce the problem.
+### Steps to reproduce the bug
+1. go to piskelapp.com
+2. select a tool
+3. ...
 
-### Feature or enhancement request
+### Environment details
+* operating system:
+* browser (or offline application version):
 
-Great ways to illustrate feature requests are for instance:
-* mock ups
-* screenshots / GIF (from another sof)
-* step by step flow
+### Sprite details
+* number of frames:
+* sprite resolution:
+* session duration:
+
+Feel free to include a screenshot of the bug, a .piskel file of the sprite or anything else that can help us investigate.
