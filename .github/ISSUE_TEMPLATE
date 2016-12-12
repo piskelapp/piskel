@@ -1,21 +1,22 @@
-To make sure your feature request or bug report is properly handled, follow the guidelines below.
-
 ### Reporting a bug
 
-When reporting a bug, make sure to include your setup:
-* operating system (Windows/OSX/Linux)
-* if website: browser used (name and version if possible)
-* if offline application: application version
+As much as possible, a bug report should include:
+* exact steps to reproduce (STRs)
+* screenshot of the application after the bug
+* setup details:
+  * operating system
+  * browser used
+  * (or if offline application: application version)
+* for crashes / performance issues also include:
+  * number of frames
+  * sprite resolution
+  * session duration
 
-If possible try to include exact steps to reproduce (STRs) that can be used by anyone else to reproduce the bug.
-
-When reporting a __crash__ or a __performance issue__ please also include:
-* the number of frames of the sprite
-* the resolution of the sprite
-* the estimated session duration
+Feel free to include a .piskel file of the sprite where you faced the bug if it can help to reproduce the problem.
 
 ### Feature or enhancement request
 
-These don't necessarily need to be as detailed as bug reports, but the more detailed they are, the easier it will be to get started.
-
-If the feature request is inspired by a feature from another software, a few screenshots or a GIF are great to illustrate the request.
+Great ways to illustrate feature requests are for instance:
+* mock ups
+* screenshots / GIF (from another sof)
+* step by step flow
