@@ -22,11 +22,13 @@
 
 #dialog-container.performance-info {
   width: 500px;
-  height: 525px;
+  height: 520px;
   top : 50%;
   left : 50%;
   position : absolute;
   margin-left: -250px;
+  margin-top: -260px;
+
 }
 
 .dialog-performance-info-body {
