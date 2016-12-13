@@ -8,21 +8,14 @@
    * @param {String} name
    * @param {String} description
    */
-  ns.Piskel = function (width, height, descriptor) {
+  ns.Piskel = function (width, height, fps, descriptor) {
     if (width && height && descriptor) {
-      /** @type {Array} */
       this.layers = [];
-
-      /** @type {Number} */
       this.width = width;
-
-      /** @type {Number} */
       this.height = height;
-
       this.descriptor = descriptor;
-
-      /** @type {String} */
       this.savePath = null;
+      this.fps = fps;
 
     } else {
       throw 'Missing arguments in Piskel constructor : ' + Array.prototype.join.call(arguments, ',');
@@ -35,11 +28,11 @@
    * @param  {Array<pskl.model.Layer>} layers
    * @return {pskl.model.Piskel}
    */
-  ns.Piskel.fromLayers = function (layers, descriptor) {
+  ns.Piskel.fromLayers = function (layers, fps, descriptor) {
     var piskel = null;
     if (layers.length > 0 && layers[0].size() > 0) {
       var sampleFrame = layers[0].getFrameAt(0);
-      piskel = new pskl.model.Piskel(sampleFrame.getWidth(), sampleFrame.getHeight(), descriptor);
+      piskel = new pskl.model.Piskel(sampleFrame.getWidth(), sampleFrame.getHeight(), fps, descriptor);
       layers.forEach(piskel.addLayer.bind(piskel));
     } else {
       throw 'Piskel.fromLayers expects array of non empty pskl.model.Layer as first argument';
@@ -57,6 +50,10 @@
 
   ns.Piskel.prototype.getWidth = function () {
     return this.width;
+  };
+
+  ns.Piskel.prototype.getFPS = function () {
+    return this.fps;
   };
 
   ns.Piskel.prototype.getLayers = function () {

@@ -26,7 +26,6 @@
     var info = {
       name : descriptor.name,
       description : descriptor.info,
-      fps : this.piskelController.getFPS(),
       date : Date.now(),
       hash : hash
     };
@@ -47,16 +46,11 @@
   };
 
   ns.BackupService.prototype.load = function() {
-
     var previousPiskel = window.localStorage.getItem('bkp.prev.piskel');
-    var previousInfo = window.localStorage.getItem('bkp.prev.info');
-
     previousPiskel = JSON.parse(previousPiskel);
-    previousInfo = JSON.parse(previousInfo);
 
     pskl.utils.serialization.Deserializer.deserialize(previousPiskel, function (piskel) {
       pskl.app.piskelController.setPiskel(piskel);
-      pskl.app.previewController.setFPS(previousInfo.fps);
     });
   };
 

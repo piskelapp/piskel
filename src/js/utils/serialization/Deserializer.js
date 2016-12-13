@@ -28,7 +28,7 @@
     var description = piskelData.description || '';
 
     var descriptor = new pskl.model.piskel.Descriptor(name, description);
-    this.piskel_ = new pskl.model.Piskel(piskelData.width, piskelData.height, descriptor);
+    this.piskel_ = new pskl.model.Piskel(piskelData.width, piskelData.height, piskelData.fps, descriptor);
 
     this.layersToLoad_ = piskelData.layers.length;
     if (piskelData.expanded) {
@@ -85,7 +85,7 @@
       this.layers_.forEach(function (layer) {
         this.piskel_.addLayer(layer);
       }.bind(this));
-      this.callback_(this.piskel_, {fps: this.data_.piskel.fps});
+      this.callback_(this.piskel_);
     }
   };
 })();

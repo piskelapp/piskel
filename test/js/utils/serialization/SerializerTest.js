@@ -13,7 +13,7 @@ describe("Serialization/Deserialization test", function() {
 
   it("serializes layer opacity", function(done) {
     var descriptor = new pskl.model.piskel.Descriptor('piskelName', 'piskelDesc');
-    var piskel = new pskl.model.Piskel(1, 1, descriptor);
+    var piskel = new pskl.model.Piskel(1, 1, 1, descriptor);
 
     piskel.addLayer(new pskl.model.Layer('layer1'));
     piskel.addLayer(new pskl.model.Layer('layer2'));

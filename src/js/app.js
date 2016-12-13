@@ -19,8 +19,9 @@
       this.shortcutService.init();
 
       var size = pskl.UserSettings.get(pskl.UserSettings.DEFAULT_SIZE);
+      var fps = Constants.DEFAULT.FPS;
       var descriptor = new pskl.model.piskel.Descriptor('New Piskel', '');
-      var piskel = new pskl.model.Piskel(size.width, size.height, descriptor);
+      var piskel = new pskl.model.Piskel(size.width, size.height, fps, descriptor);
 
       var layer = new pskl.model.Layer('Layer 1');
       var frame = new pskl.model.Frame(size.width, size.height);
@@ -177,16 +178,13 @@
 
     loadPiskel_ : function (piskelData) {
       var serializedPiskel = piskelData.piskel;
-      pskl.utils.serialization.Deserializer.deserialize(serializedPiskel, function (piskel, extra) {
+      pskl.utils.serialization.Deserializer.deserialize(serializedPiskel, function (piskel) {
         pskl.app.piskelController.setPiskel(piskel);
         $.publish(Events.PISKEL_SAVED);
-        var fps = extra.fps;
         if (piskelData.descriptor) {
           // Backward compatibility for v2 or older
           piskel.setDescriptor(piskelData.descriptor);
-          fps = piskelData.fps;
         }
-        pskl.app.previewController.setFPS(fps);
       });
     },
 

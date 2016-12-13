@@ -35,15 +35,16 @@
     return this.piskel.getWidth();
   };
 
-  /**
-   * TODO : this should be removed
-   * FPS should be stored in the Piskel model and not in the
-   * previewController
-   * Then piskelController should be able to return this information
-   * @return {Number} Frames per second for the current animation
-   */
   ns.PiskelController.prototype.getFPS = function () {
-    return pskl.app.previewController.getFPS();
+    return this.piskel.fps;
+  };
+
+  ns.PiskelController.prototype.setFPS = function (fps) {
+    if (typeof fps !== 'number') {
+      return;
+    }
+    this.piskel.fps = fps;
+    $.publish(Events.FPS_CHANGED);
   };
 
   ns.PiskelController.prototype.getLayers = function () {

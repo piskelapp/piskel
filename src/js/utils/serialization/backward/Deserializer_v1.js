@@ -9,14 +9,14 @@
   ns.Deserializer_v1.prototype.deserialize = function () {
     var piskelData = this.data_.piskel;
     var descriptor = new pskl.model.piskel.Descriptor('Deserialized piskel', '');
-    var piskel = new pskl.model.Piskel(piskelData.width, piskelData.height, descriptor);
+    var piskel = new pskl.model.Piskel(piskelData.width, piskelData.height, Constants.DEFAULTS.FPS, descriptor);
 
     piskelData.layers.forEach(function (serializedLayer) {
       var layer = this.deserializeLayer(serializedLayer);
       piskel.addLayer(layer);
     }.bind(this));
 
-    this.callback_(piskel, {fps: Constants.DEFAULTS.FPS});
+    this.callback_(piskel);
   };
 
   ns.Deserializer_v1.prototype.deserializeLayer = function (layerString) {

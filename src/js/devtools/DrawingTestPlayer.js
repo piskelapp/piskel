@@ -46,7 +46,7 @@
 
   ns.DrawingTestPlayer.prototype.createPiskel_ = function (width, height) {
     var descriptor = new pskl.model.piskel.Descriptor('TestPiskel', '');
-    var piskel = new pskl.model.Piskel(width, height, descriptor);
+    var piskel = new pskl.model.Piskel(width, height, 12, descriptor);
     var layer = new pskl.model.Layer('Layer 1');
     var frame = new pskl.model.Frame(width, height);
 
