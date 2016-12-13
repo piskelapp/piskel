@@ -90,7 +90,7 @@
       }
 
       var descriptor = new pskl.model.piskel.Descriptor(descriptorName, descriptorDescription);
-      var piskel = new pskl.model.Piskel(width, height, descriptor);
+      var piskel = new pskl.model.Piskel(width, height, fps, descriptor);
       var loadedLayers = 0;
 
       var loadLayerImage = function(layer, cb) {
@@ -103,7 +103,7 @@
 
           loadedLayers++;
           if (loadedLayers == layerCount) {
-            cb(piskel, {fps: fps});
+            cb(piskel);
           }
         };
         image.src = layer.dataUri;

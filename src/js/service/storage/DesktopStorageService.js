@@ -37,11 +37,10 @@
 
   ns.DesktopStorageService.prototype.load = function (savePath) {
     pskl.utils.FileUtilsDesktop.readFile(savePath).then(function (content) {
-      pskl.utils.PiskelFileUtils.decodePiskelFile(content, function (piskel, extra) {
+      pskl.utils.PiskelFileUtils.decodePiskelFile(content, function (piskel) {
         // store save path so we can re-save without opening the save dialog
         piskel.savePath = savePath;
         pskl.app.piskelController.setPiskel(piskel);
-        pskl.app.previewController.setFPS(extra.fps);
       });
     });
   };

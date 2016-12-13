@@ -51,6 +51,7 @@
       action : action,
       frameIndex : action.state ? action.state.frameIndex : this.piskelController.currentFrameIndex,
       layerIndex : action.state ? action.state.layerIndex : this.piskelController.currentLayerIndex,
+      fps : this.piskelController.getFPS(),
       uuid: pskl.utils.Uuid.generate()
     };
 
@@ -182,6 +183,7 @@
   ns.HistoryService.prototype.setupState = function (state) {
     this.piskelController.setCurrentFrameIndex(state.frameIndex);
     this.piskelController.setCurrentLayerIndex(state.layerIndex);
+    this.piskelController.setFPS(state.fps);
   };
 
   ns.HistoryService.prototype.replayState = function (state) {
