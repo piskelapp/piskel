@@ -4,13 +4,11 @@
   /**
    * Image an animation import service supporting the import dialog.
    * @param {!PiskelController} piskelController
-   * @param {!PreviewController} previewController
    * @constructor
    */
   ns.ImportService =
-      function (piskelController, previewController) {
+      function (piskelController) {
     this.piskelController_ = piskelController;
-    this.previewController_ = previewController;
   };
 
   /**

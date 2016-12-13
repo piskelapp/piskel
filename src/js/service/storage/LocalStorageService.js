@@ -36,9 +36,8 @@
     var piskelString = this.getPiskel(name);
     var key = this.getKey_(name);
 
-    pskl.utils.serialization.Deserializer.deserialize(JSON.parse(piskelString), function (piskel, extra) {
+    pskl.utils.serialization.Deserializer.deserialize(JSON.parse(piskelString), function (piskel) {
       pskl.app.piskelController.setPiskel(piskel);
-      pskl.app.previewController.setFPS(extra.fps);
     });
   };
 
