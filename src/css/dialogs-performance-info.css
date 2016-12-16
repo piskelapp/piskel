@@ -22,11 +22,33 @@
 
 #dialog-container.performance-info {
   width: 500px;
-  height: 600px;
+  height: 575px;
   top : 50%;
   left : 50%;
   position : absolute;
   margin-left: -250px;
+}
+
+.dialog-performance-info-body {
+  font-size: 13px;
+  letter-spacing: 1px;
+  padding: 10px 20px;
+}
+
+.dialog-performance-info-body ul {
+  border: 1px solid #666;
+  padding: 5px;
+  border-radius: 3px;
+}
+
+.dialog-performance-info-body li {
+  list-style-type: initial;
+  margin: 0 20px;
+}
+
+.dialog-performance-info-body sup {
+  color: gold;
+  cursor: pointer;
 }
 
 .show #dialog-container.performance-info {
