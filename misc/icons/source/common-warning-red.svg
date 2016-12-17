@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Generator: Adobe Illustrator 15.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   id="Layer_1"
+   x="0px"
+   y="0px"
+   width="42"
+   height="42"
+   viewBox="0 0 41.999999 41.999999"
+   enable-background="new 0 0 99.997 69.373"
+   xml:space="preserve"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="common-warning-red.svg"
+   inkscape:export-filename="C:\Development\git\piskel\misc\icons\source\tool-move.png"
+   inkscape:export-xdpi="45"
+   inkscape:export-ydpi="45"><metadata
+   id="metadata9"><rdf:RDF><cc:Work
+       rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
+         rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title></dc:title></cc:Work></rdf:RDF></metadata><defs
+   id="defs7" /><sodipodi:namedview
+   pagecolor="#ffffff"
+   bordercolor="#666666"
+   borderopacity="1"
+   objecttolerance="10"
+   gridtolerance="10"
+   guidetolerance="10"
+   inkscape:pageopacity="0"
+   inkscape:pageshadow="2"
+   inkscape:window-width="1920"
+   inkscape:window-height="1148"
+   id="namedview5"
+   showgrid="false"
+   inkscape:zoom="4"
+   inkscape:cx="85.612634"
+   inkscape:cy="3.0742543"
+   inkscape:window-x="-8"
+   inkscape:window-y="-8"
+   inkscape:window-maximized="1"
+   inkscape:current-layer="Layer_1" />
+
+<path
+   style="font-size:medium;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-indent:0;text-align:start;text-decoration:none;line-height:normal;letter-spacing:normal;word-spacing:normal;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;text-anchor:start;baseline-shift:baseline;color:#000000;fill:#ff0000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:4;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;font-family:Sans;-inkscape-font-specification:Sans"
+   d="m 21,4.2499995 c -0.868171,0 -1.517453,0.2705716 -2,1.03125 L 3.9999999,34.999999 c -0.6703157,1.211185 0.6156981,2.999959 2,3 l 29.9999991,0 c 1.377219,0.0098 2.645421,-1.78334 2,-3 l -15,-29.6874995 C 22.632848,4.6114627 21.868171,4.2499995 21,4.2499995 z m 0,6.2187495 11.999999,23.53125 -23.9999992,0 z"
+   id="rect3765"
+   inkscape:connector-curvature="0"
+   sodipodi:nodetypes="zcccccczcccc" /><path
+   style="font-size:medium;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-indent:0;text-align:start;text-decoration:none;line-height:normal;letter-spacing:normal;word-spacing:normal;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;text-anchor:start;baseline-shift:baseline;color:#000000;fill:#ff0000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:4;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;font-family:Sans;-inkscape-font-specification:Sans"
+   d="m 20.572432,16.003047 c -0.858253,0.109012 -1.577503,1.040604 -1.572402,2.036618 L 20,25.963381 c 9.2e-5,1.066342 -0.158856,2.036512 0.765534,2.036618 l 0.468961,0 c 0.92439,-1.06e-4 0.765412,-0.970276 0.765504,-2.036618 l 1,-7.923716 c -9.2e-5,-1.066342 -0.841114,-2.036512 -1.765504,-2.036618 l -0.468961,0 c -0.0643,-0.0041 -0.128799,-0.0041 -0.193102,0 z"
+   id="rect3772"
+   inkscape:connector-curvature="0"
+   sodipodi:nodetypes="cccccccccc" /><path
+   style="fill:#ff0000;fill-opacity:1;stroke:#00ffff;stroke-width:0;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dashoffset:1.60000000000000010"
+   d="m 20.999298,29.000086 c 0.620953,-0.006 0.971639,0.298697 0.999273,1.499911 0.02763,1.201212 -0.347092,1.493936 -0.999273,1.499909 -0.65218,0.006 -1.002864,-0.275261 -0.999271,-1.499909 0.0036,-1.22465 0.378318,-1.493938 0.999271,-1.499911 z"
+   inkscape:connector-curvature="0"
+   sodipodi:nodetypes="zzzzz" /></svg>

@@ -22,7 +22,7 @@
 
 #dialog-container.performance-info {
   width: 500px;
-  height: 575px;
+  height: 525px;
   top : 50%;
   left : 50%;
   position : absolute;
@@ -53,4 +53,14 @@
 
 .show #dialog-container.performance-info {
   margin-top: -300px;
+}
+
+.dialog-performance-info-body .warning-icon {
+  float: left;
+  margin-top: 10px;
+}
+
+.dialog-performance-info-body .warning-icon-info {
+  overflow: hidden;
+  margin-left: 30px;
 }
