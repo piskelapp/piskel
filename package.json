@@ -52,7 +52,8 @@
     "karma-phantomjs-launcher": "0.2.3",
     "load-grunt-tasks": "3.5.0",
     "phantomjs": "2.1.7",
-    "phantomjs-polyfill-object-assign": "0.0.2"
+    "phantomjs-polyfill-object-assign": "0.0.2",
+    "promise-polyfill": "6.0.2"
   },
   "window": {
     "title": "Piskel",

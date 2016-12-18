@@ -31,11 +31,7 @@
     this.piskel_ = new pskl.model.Piskel(piskelData.width, piskelData.height, piskelData.fps, descriptor);
 
     this.layersToLoad_ = piskelData.layers.length;
-    if (piskelData.expanded) {
-      piskelData.layers.forEach(this.loadExpandedLayer.bind(this));
-    } else {
-      piskelData.layers.forEach(this.deserializeLayer.bind(this));
-    }
+    piskelData.layers.forEach(this.deserializeLayer.bind(this));
   };
 
   ns.Deserializer.prototype.deserializeLayer = function (layerString, index) {
@@ -43,40 +39,41 @@
     var layer = new pskl.model.Layer(layerData.name);
     layer.setOpacity(layerData.opacity);
 
-    // 1 - create an image to load the base64PNG representing the layer
-    var base64PNG = layerData.base64PNG;
-    var image = new Image();
+    // Backward compatibility: if the layerData is not chunked but contains a single base64PNG,
+    // create a fake chunk, expected to represent all frames side-by-side.
+    if (typeof layerData.chunks === 'undefined' && layerData.base64PNG) {
+      this.normalizeLayerData_(layerData);
+    }
 
-    // 2 - attach the onload callback that will be triggered asynchronously
-    image.onload = function () {
-      // 5 - extract the frames from the loaded image
-      var frames = pskl.utils.LayerUtils.createFramesFromSpritesheet(image, layerData.frameCount);
-      // 6 - add each image to the layer
-      this.addFramesToLayer(frames, layer, index);
-    }.bind(this);
+    var chunks = layerData.chunks;
 
-    // 3 - set the source of the image
-    image.src = base64PNG;
-    return layer;
-  };
-
-  ns.Deserializer.prototype.loadExpandedLayer = function (layerData, index) {
-    var width = this.piskel_.getWidth();
-    var height = this.piskel_.getHeight();
-    var layer = new pskl.model.Layer(layerData.name);
-    layer.setOpacity(layerData.opacity);
-    var frames = layerData.grids.map(function (grid) {
-      return pskl.model.Frame.fromPixelGrid(grid, width, height);
+    // Prepare a frames array to store frame objects extracted from the chunks.
+    var frames = [];
+    Promise.all(chunks.map(function (chunk) {
+      // Create a promise for each chunk.
+      return new Promise(function (resolve, reject) {
+        var image = new Image();
+        // Load the chunk image in an Image object.
+        image.onload = function () {
+          // extract the chunkFrames from the chunk image
+          var chunkFrames = pskl.utils.FrameUtils.createFramesFromChunk(image, chunk.layout);
+          // add each image to the frames array, at the extracted index
+          chunkFrames.forEach(function (chunkFrame) {
+            frames[chunkFrame.index] = chunkFrame.frame;
+          });
+          resolve();
+        };
+        image.src = chunk.base64PNG;
+      });
+    })).then(function () {
+      frames.forEach(layer.addFrame.bind(layer));
+      this.layers_[index] = layer;
+      this.onLayerLoaded_();
+    }.bind(this)).catch(function () {
+      console.error('Failed to deserialize layer');
     });
-    this.addFramesToLayer(frames, layer, index);
+
     return layer;
-  };
-
-  ns.Deserializer.prototype.addFramesToLayer = function (frames, layer, index) {
-    frames.forEach(layer.addFrame.bind(layer));
-
-    this.layers_[index] = layer;
-    this.onLayerLoaded_();
   };
 
   ns.Deserializer.prototype.onLayerLoaded_ = function () {
@@ -87,5 +84,20 @@
       }.bind(this));
       this.callback_(this.piskel_);
     }
+  };
+
+  /**
+   * Backward comptibility only. Create a chunk for layerData objects that only contain
+   * an single base64PNG without chunk/layout information.
+   */
+  ns.Deserializer.prototype.normalizeLayerData_ = function (layerData) {
+    var layout = [];
+    for (var i = 0 ; i < layerData.frameCount ; i++) {
+      layout.push([i]);
+    }
+    layerData.chunks = [{
+      base64PNG : layerData.base64PNG,
+      layout : layout
+    }];
   };
 })();

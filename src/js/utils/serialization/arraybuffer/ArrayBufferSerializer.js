@@ -85,7 +85,7 @@
       return bytes;
     },
 
-    serialize : function (piskel, expanded) {
+    serialize : function (piskel) {
       var i;
       var j;
       var layers;
