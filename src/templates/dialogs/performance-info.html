@@ -1,0 +1,32 @@
+<script type="text/template" id="templates/dialogs/performance-info.html">
+  <div class="dialog-wrapper">
+    <h3 class="dialog-head">
+      Performance issues
+      <span class="dialog-close">X</span>
+    </h3>
+    <div class="dialog-performance-info-body">
+      <p>The current sprite may exceed the recommendations for Piskel.</p>
+      <p>You can ignore this warning and continue working with your sprite but you might experience the following issues:</p>
+      <ul>
+        <li>saving failures</li>
+        <li>slowdowns</li>
+        <li>crashes</li>
+      </ul>
+      <p>If you ignore this warning, please save often!</p>
+      <p>To fix the issue, try adjusting your sprite settings:</p>
+       <ul>
+        <li>sprite resolution <sup title="recommended: lower than 256x256, max: 512x512" rel="tooltip" data-placement="top">?</sup></li>
+        <li>number of layers <sup title="recommended: lower than 5, max: 20" rel="tooltip" data-placement="top">?</sup></li>
+        <li>number of frames <sup title="recommended: lower than 25, max: 100" rel="tooltip" data-placement="top">?</sup></li>
+        <li>number of colors <sup title="max: 100" rel="tooltip" data-placement="top">?</sup></li>
+      </ul>
+      <p>We strive to improve Piskel, its performances and stability, but this is a personal project with limited time and resources.
+         We prefer to warn you early rather than having you lose your work.</p>
+      <p>Feedback welcome at <a href="https://github.com/juliandescottes/piskel" target="_blank">https://github.com/juliandescottes/piskel</a></p>
+      <p>
+        <div class="warning-icon icon-common-warning-red">&nbsp;</div>
+        <div class="warning-icon-info">This icon will remain on the top-bottom of the application until the performance issue is fixed. You can click on it at anytime to display this information again.</div>
+      </p>
+    </div>
+  </div>
+</script>

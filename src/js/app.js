@@ -153,6 +153,13 @@
         document.querySelector('#drawing-canvas-container'));
       this.fileDropperService.init();
 
+      this.userWarningController = new pskl.controller.UserWarningController(this.piskelController);
+      this.userWarningController.init();
+
+      this.performanceReportService = new pskl.service.performance.PerformanceReportService(
+        this.piskelController, this.currentColorsService);
+      this.performanceReportService.init();
+
       this.drawingLoop = new pskl.rendering.DrawingLoop();
       this.drawingLoop.addCallback(this.render, this);
       this.drawingLoop.start();
