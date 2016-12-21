@@ -42,8 +42,19 @@
         frameCount : frames.length
       };
 
+      // A layer spritesheet data can be chunked in case the spritesheet PNG is to big to be
+      // converted to a dataURL.
+      // Frames are divided equally amongst chunks and each chunk is converted to a spritesheet
+      // PNG. If any chunk contains an invalid base64 PNG, we increase the number of chunks and
+      // retry.
       var chunks = [];
       while (!areChunksValid(chunks)) {
+        if (chunks.length > frames.length) {
+          // Something went horribly wrong.
+          chunks = [];
+          break;
+        }
+
         // Chunks are invalid, increase the number of chunks by one, and chunk the frames array.
         var frameChunks = pskl.utils.Array.chunk(frames, chunks.length + 1);
 
