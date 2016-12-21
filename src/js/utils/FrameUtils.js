@@ -221,8 +221,9 @@
         var row = layout[i];
         for (var j = 0 ; j < row.length ; j++) {
           context.clearRect(0, 0 , frameWidth, frameHeight);
-          context.drawImage(image, frameWidth * i, frameHeight * j, frameWidth, frameHeight, 0, 0, frameWidth, height);
-          var frame = pskl.utils.FrameUtils.createFromCanvas(canvas, 0, 0, frameWidth, height);
+          context.drawImage(image, frameWidth * i, frameHeight * j,
+                            frameWidth, frameHeight, 0, 0, frameWidth, frameHeight);
+          var frame = pskl.utils.FrameUtils.createFromCanvas(canvas, 0, 0, frameWidth, frameHeight);
           chunkFrames.push({
             index : layout[i][j],
             frame : frame
