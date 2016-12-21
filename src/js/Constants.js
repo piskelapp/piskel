@@ -49,6 +49,9 @@ var Constants = {
   // TESTS
   DRAWING_TEST_FOLDER : 'drawing',
 
+  // Maximum size of a sprite that can be saved on piskelapp datastore.
+  APPENGINE_SAVE_LIMIT : 1000,
+
   // SERVICE URLS
   APPENGINE_SAVE_URL : 'save',
   IMAGE_SERVICE_UPLOAD_URL : 'http://piskel-imgstore-b.appspot.com/__/upload',
