@@ -90,13 +90,15 @@ module.exports = function(grunt) {
         browser : true,
         trailing : true,
         curly : true,
-        globals : {'$':true, 'jQuery' : true, 'pskl':true, 'Events':true, 'Constants':true, 'console' : true, 'module':true, 'require':true, 'Q':true}
+        globals : {'$':true, 'jQuery' : true, 'pskl':true, 'Events':true, 'Constants':true, 'console' : true, 'module':true, 'require':true, 'Q':true, 'Promise': true}
       },
       files: [
+        // Includes
         'Gruntfile.js',
         'package.json',
         'src/js/**/*.js',
-        '!src/js/**/lib/**/*.js' // Exclude lib folder (note the leading !)
+        // Excludes
+        '!src/js/**/lib/**/*.js'
       ]
     },
 

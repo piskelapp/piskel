@@ -96,7 +96,7 @@
       var loadLayerImage = function(layer, cb) {
         var image = new Image();
         image.onload = function() {
-          var frames = pskl.utils.LayerUtils.createFramesFromSpritesheet(this, layer.frameCount);
+          var frames = pskl.utils.FrameUtils.createFramesFromSpritesheet(this, layer.frameCount);
           frames.forEach(function (frame) {
             layer.model.addFrame(frame);
           });
