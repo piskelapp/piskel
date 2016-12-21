@@ -21,6 +21,10 @@
     'performance-info' : {
       template : 'templates/dialogs/performance-info.html',
       controller : ns.PerformanceInfoController
+    },
+    'unsupported-browser' : {
+      template : 'templates/dialogs/unsupported-browser.html',
+      controller : ns.UnsupportedBrowserController
     }
   };
 

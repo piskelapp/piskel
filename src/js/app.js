@@ -181,6 +181,12 @@
         mb.createMacBuiltin('Piskel');
         gui.Window.get().menu = mb;
       }
+
+      if (pskl.utils.UserAgent.isUnsupported()) {
+        $.publish(Events.DIALOG_DISPLAY, {
+          dialogId : 'unsupported-browser'
+        });
+      }
     },
 
     loadPiskel_ : function (piskelData) {
