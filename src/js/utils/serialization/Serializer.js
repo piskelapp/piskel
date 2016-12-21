@@ -7,10 +7,10 @@
     });
   };
 
-  var createColumnLayout = function (size, offset) {
-    var layout = [[]];
+  var createLineLayout = function (size, offset) {
+    var layout = [];
     for (var i = 0 ; i < size ; i++) {
-      layout[0].push(i + offset);
+      layout.push([i + offset]);
     }
 
     return layout;
@@ -56,10 +56,9 @@
           var chunkFrames = frameChunks[i];
           var renderer = new pskl.rendering.FramesheetRenderer(chunkFrames);
           chunks.push({
-            // renderAsCanvas with 1 column
-            base64PNG : renderer.renderAsCanvas(1).toDataURL(),
+            base64PNG : renderer.renderAsCanvas().toDataURL(),
             // create a layout array, containing the indices of the frames extracted in this chunk
-            layout : createColumnLayout(chunkFrames.length, offset),
+            layout : createLineLayout(chunkFrames.length, offset),
           });
 
           offset += chunkFrames.length;
