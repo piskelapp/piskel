@@ -2,7 +2,7 @@
   var ns = $.namespace('pskl.utils.serialization');
 
   var areChunksValid = function (chunks) {
-    return chunks.every(function (chunk) {
+    return chunks.length && chunks.every(function (chunk) {
       return chunk.base64PNG;
     });
   };

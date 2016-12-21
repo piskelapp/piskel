@@ -69,8 +69,9 @@
       frames.forEach(layer.addFrame.bind(layer));
       this.layers_[index] = layer;
       this.onLayerLoaded_();
-    }.bind(this)).catch(function () {
+    }.bind(this)).catch(function (error) {
       console.error('Failed to deserialize layer');
+      console.error(error);
     });
 
     return layer;
