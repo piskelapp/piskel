@@ -121,6 +121,7 @@
   cursor: pointer;
   padding: 5px;
   border: 1px solid transparent;
+  border-radius: 2px 2px 0 0;
   /* Make sure the tab and its border are positioned above the :after element; */
   position: relative;
   z-index: 1;
