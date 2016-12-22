@@ -19,8 +19,6 @@
    * @public
    */
   ns.SaveController.prototype.init = function () {
-    this.getPiskelSize_().then(this.onPiskelSizeCalculated_.bind(this));
-
     this.saveForm = document.querySelector('.save-form');
     this.insertSavePartials_();
 
@@ -48,38 +46,17 @@
       this.disableSaveButtons_();
     }
 
+    this.updateSaveToGalleryMessage_();
+
     $.subscribe(Events.BEFORE_SAVING_PISKEL, this.disableSaveButtons_.bind(this));
     $.subscribe(Events.AFTER_SAVING_PISKEL, this.enableSaveButtons_.bind(this));
   };
 
-  /**
-   * Retrieve the size of the spritesheet that will be saved.
-   * Not completely accurate, as the size canbe impacted by whatever the user enters
-   * in the name and description fields on the save panel, but should give a rough idea.
-   *
-   * @return {Promise} promise that will resolve the spritesheet size {Number}
-   */
-  ns.SaveController.prototype.getPiskelSize_ = function () {
-    var piskelController = this.piskelController;
-    return new Promise(function (resolve, reject) {
-      window.setTimeout(function () {
-        try {
-          var spritesheetSize = JSON.stringify(piskelController.serialize()).length;
-          resolve(spritesheetSize);
-        } catch (e) {
-          reject(e);
-        }
-      }, 100);
-    });
-  };
-
-  ns.SaveController.prototype.onPiskelSizeCalculated_ = function (spritesheetSize) {
-    if (this.saveGalleryButton && spritesheetSize > Constants.APPENGINE_SAVE_LIMIT) {
-      this.saveGalleryButton.setAttribute('disabled', true);
+  ns.SaveController.prototype.updateSaveToGalleryMessage_ = function (spritesheetSize) {
+    if (pskl.app.performanceReportService.hasProblem()) {
       document.querySelector('.save-online-status').innerHTML =
-        '<div class="icon-common-warning-red" style="float:left; margin-top: 10px">&nbsp;</div>' +
-        '<div style="overflow: hidden; padding-left: 10px">This sprite is too big to be saved on the gallery. ' +
-        'Try saving it as a .piskel file.</div>';
+        '<div class="icon-common-warning-red" style="float:left; margin-top: 5px">&nbsp;</div>' +
+        '<div style="overflow: hidden; padding-left: 10px">Saving to the gallery might fail due to the sprite size.</div>';
     }
   };
 
@@ -99,7 +76,7 @@
     }
 
     // Uncomment this line to test the online save section locally.
-    // return [PARTIALS.FILEDOWNLOAD, PARTIALS.LOCALSTORAGE, PARTIALS.GALLERY];
+    return [PARTIALS.FILEDOWNLOAD, PARTIALS.LOCALSTORAGE, PARTIALS.GALLERY];
     return [PARTIALS.FILEDOWNLOAD, PARTIALS.LOCALSTORAGE, PARTIALS.GALLERY_UNAVAILABLE];
   };
 
