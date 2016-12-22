@@ -43,7 +43,7 @@
   padding: 10px;
   width: 360px;
   border-top-right-radius: 2px;
-  border: gold 2px solid;
+  border: var(--highlight-color) 2px solid;
   border-left: 0;
   border-bottom: 0;
   background-color: #444;
@@ -69,6 +69,6 @@
   margin-top: 8px;
   height : 4px;
   width : 300px;
-  background : linear-gradient(to left, gold, gold) no-repeat -300px 0;
+  background : linear-gradient(to left, var(--highlight-color), var(--highlight-color)) no-repeat -300px 0;
   background-color : black;
 }

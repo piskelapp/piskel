@@ -50,11 +50,11 @@
 .button:hover {
   text-decoration: none;
   background-color: #484848;
-  color: gold;
+  color: var(--highlight-color);
 }
 
 .button-primary {
-  background-color: rgb(255,215,0); /* gold */
+  background-color: var(--highlight-color);
 
   border-color: rgb(179, 164, 0);
   border-top-color: white;

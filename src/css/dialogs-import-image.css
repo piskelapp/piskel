@@ -81,7 +81,7 @@
   font-style: italic;
   font-weight: normal;
   text-shadow: none;
-  color: gold;
+  color: var(--highlight-color);
 }
 
 [name=smooth-resize-checkbox] {

@@ -35,7 +35,7 @@
 
 .layers-toggle-preview-enabled,
 .layers-toggle-preview-enabled:hover {
-  color : gold;
+  color : var(--highlight-color);
 }
 
 /**
@@ -88,5 +88,5 @@
 .current-layer-item,
 .current-layer-item:hover {
   background : #333;
-  color: gold;
+  color: var(--highlight-color);
 }

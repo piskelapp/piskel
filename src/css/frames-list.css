@@ -79,7 +79,7 @@
 }
 
 .add-frame-action:hover {
-  border-color: gold;
+  border-color: var(--highlight-color);
 }
 
 .preview-tile {
@@ -153,7 +153,7 @@
 }
 
 .preview-tile.selected {
-  border-color: gold;
+  border-color: var(--highlight-color);
 }
 
 .preview-tile.selected:after {
@@ -162,7 +162,7 @@
   top: 38px;
   right: -9px;
   border: transparent 4px solid;
-  border-left-color: gold;
+  border-left-color: var(--highlight-color);
   border-width: 6px 0 6px 6px;
   border-style: solid;
 }
@@ -173,6 +173,6 @@
  */
 
 .preview-tile-drop-proxy {
-  border: 3px dashed gold;
+  border: 3px dashed var(--highlight-color);
   background-color: rgba(255, 215,0, 0.2);
 }

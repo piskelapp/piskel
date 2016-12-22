@@ -3,7 +3,7 @@
   bottom: 10px;
   left: 10px;
 
-  color : gold;
+  color : var(--highlight-color);
   font-weight: bold;
   font-size : 1.25em;
   line-height: 20px;
@@ -113,8 +113,8 @@
 }
 
 .cheatsheet-shortcut-editable .cheatsheet-key {
-  border-color: gold;
-  color: gold;
+  border-color: var(--highlight-color);
+  color: var(--highlight-color);
 }
 
 .cheatsheet-shortcut-editing .cheatsheet-key {
@@ -140,7 +140,7 @@
   padding : 10px;
   overflow: hidden;
 
-  background-color : gold;
+  background-color : var(--highlight-color);
 }
 
 .cheatsheet-helptext {

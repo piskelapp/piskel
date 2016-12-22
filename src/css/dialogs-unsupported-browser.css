@@ -28,5 +28,5 @@
 }
 
 #current-user-agent {
-  color: gold;
+  color: var(--highlight-color);
 }

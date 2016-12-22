@@ -27,7 +27,7 @@
 }
 
 .background-picker.selected {
-  border-color: gold;
+  border-color: var(--highlight-color);
 }
 
 .layer-opacity-input {

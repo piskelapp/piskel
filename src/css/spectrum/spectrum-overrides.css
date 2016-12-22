@@ -100,8 +100,8 @@
 }
 
 .sp-palette .sp-thumb-el.sp-thumb-active {
-  border-color: gold;
-  box-shadow: 0 0 0px 1px gold;
+  border-color: var(--highlight-color);
+  box-shadow: 0 0 0px 1px var(--highlight-color);
 }
 
 .sp-input {

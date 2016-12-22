@@ -44,11 +44,11 @@
 }
 
 .pen-size-option.selected:before {
-  background-color: gold;
+  background-color: var(--highlight-color);
 }
 
 .pen-size-option.selected {
-  border-color: gold;
+  border-color: var(--highlight-color);
 }
 
 .pen-size-option.labeled:before {

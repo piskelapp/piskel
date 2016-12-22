@@ -49,7 +49,7 @@
 }
 
 .dialog-performance-info-body sup {
-  color: gold;
+  color: var(--highlight-color);
   cursor: pointer;
 }
 
