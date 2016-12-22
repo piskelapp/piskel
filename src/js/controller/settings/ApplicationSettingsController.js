@@ -43,7 +43,15 @@
     var layerOpacityInput = document.querySelector('.layer-opacity-input');
     layerOpacityInput.value = pskl.UserSettings.get(pskl.UserSettings.LAYER_OPACITY);
     this.addEventListener(layerOpacityInput, 'change', this.onLayerOpacityChange_);
+    this.addEventListener(layerOpacityInput, 'input', this.onLayerOpacityChange_);
     this.updateLayerOpacityText_(layerOpacityInput.value);
+
+    // Seamless mask opacity
+    var seamlessOpacityInput = document.querySelector('.seamless-opacity-input');
+    seamlessOpacityInput.value = pskl.UserSettings.get(pskl.UserSettings.SEAMLESS_OPACITY);
+    this.addEventListener(seamlessOpacityInput, 'change', this.onSeamlessOpacityChange_);
+    this.addEventListener(seamlessOpacityInput, 'input', this.onSeamlessOpacityChange_);
+    this.updateSeamlessOpacityText_(seamlessOpacityInput.value);
 
     // Form
     this.applicationSettingsForm = document.querySelector('[name="application-settings-form"]');
@@ -94,9 +102,25 @@
     }
   };
 
+  ns.ApplicationSettingsController.prototype.onSeamlessOpacityChange_ = function (evt) {
+    var target = evt.target;
+    var opacity = parseFloat(target.value);
+    if (!isNaN(opacity)) {
+      pskl.UserSettings.set(pskl.UserSettings.SEAMLESS_OPACITY, opacity);
+      this.updateSeamlessOpacityText_(opacity);
+    } else {
+      target.value = pskl.UserSettings.get(pskl.UserSettings.SEAMLESS_OPACITY);
+    }
+  };
+
   ns.ApplicationSettingsController.prototype.updateLayerOpacityText_ = function (opacity) {
     var layerOpacityText = document.querySelector('.layer-opacity-text');
     layerOpacityText.innerHTML = opacity;
+  };
+
+  ns.ApplicationSettingsController.prototype.updateSeamlessOpacityText_ = function (opacity) {
+    var seamlessOpacityText = document.querySelector('.seamless-opacity-text');
+    seamlessOpacityText.innerHTML = opacity;
   };
 
   ns.ApplicationSettingsController.prototype.onFormSubmit_ = function (evt) {

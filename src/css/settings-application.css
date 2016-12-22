@@ -30,13 +30,20 @@
   border-color: var(--highlight-color);
 }
 
-.layer-opacity-input {
+.settings-opacity-input {
   margin: 5px;
   vertical-align: middle;
+}
+
+.layer-opacity-input {
   width: 100px;
 }
 
-.layer-opacity-text {
+.seamless-opacity-input {
+  width: 75px;
+}
+
+.settings-opacity-text {
   height: 31px;
   display: inline-block;
   line-height: 30px;
@@ -54,4 +61,8 @@
 .settings-section-application > .settings-title {
   /* Override the default 10px margin bottom for this panel */
   margin-bottom: 15px;
+}
+
+.settings-section-application .button-primary {
+  margin-top: 10px;
 }

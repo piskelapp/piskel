@@ -293,7 +293,9 @@
    * differentiate those additional frames from the main frame.
    */
   ns.FrameRenderer.prototype.drawTiledFrames_ = function (context, image, w, h, z) {
-    context.fillStyle = Constants.SEAMLESS_MODE_OVERLAY_COLOR;
+    var opacity = pskl.UserSettings.get('SEAMLESS_OPACITY');
+    opacity = pskl.utils.Math.minmax(opacity, 0, 1);
+    context.fillStyle = 'rgba(255, 255, 255, ' + opacity + ')';
     [[0, -1], [0, 1], [-1, -1], [-1, 0], [-1, 1], [1, -1], [1, 0], [1, 1]].forEach(function (d) {
       context.drawImage(image, d[0] * w * z, d[1] * h * z);
       context.fillRect(d[0] * w * z, d[1] * h * z, w * z, h * z);
