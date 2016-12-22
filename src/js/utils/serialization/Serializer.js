@@ -3,7 +3,7 @@
 
   var areChunksValid = function (chunks) {
     return chunks.length && chunks.every(function (chunk) {
-      return chunk.base64PNG;
+      return chunk.base64PNG && chunk.base64PNG !== "data:,";
     });
   };
 
@@ -49,7 +49,7 @@
       // retry.
       var chunks = [];
       while (!areChunksValid(chunks)) {
-        if (chunks.length > frames.length) {
+        if (chunks.length >= frames.length) {
           // Something went horribly wrong.
           chunks = [];
           break;
@@ -65,11 +65,10 @@
         var offset = 0;
         for (var i = 0 ; i < frameChunks.length ; i++) {
           var chunkFrames = frameChunks[i];
-          var renderer = new pskl.rendering.FramesheetRenderer(chunkFrames);
           chunks.push({
-            base64PNG : renderer.renderAsCanvas().toDataURL(),
             // create a layout array, containing the indices of the frames extracted in this chunk
             layout : createLineLayout(chunkFrames.length, offset),
+            base64PNG : ns.Serializer.serializeFramesToBase64(chunkFrames),
           });
 
           offset += chunkFrames.length;
@@ -78,6 +77,15 @@
 
       layerToSerialize.chunks = chunks;
       return JSON.stringify(layerToSerialize);
+    },
+
+    serializeFramesToBase64 : function (frames) {
+      try {
+        var renderer = new pskl.rendering.FramesheetRenderer(frames);
+        return renderer.renderAsCanvas().toDataURL();
+      } catch (e) {
+        return "";
+      }
     }
   };
 })();
