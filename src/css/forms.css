@@ -22,6 +22,11 @@
   background : #3a3a3a;
 }
 
+.textfield:focus {
+  border-color: var(--highlight-color);
+  outline: none;
+}
+
 .textfield-small {
   width : 50px;
 }
