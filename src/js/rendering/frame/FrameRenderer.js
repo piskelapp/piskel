@@ -261,27 +261,31 @@
       this.margin.y - this.offset.y * z
     );
 
+    // Scale up to draw the canvas content
+    displayContext.scale(z, z);
+
     if (pskl.UserSettings.get('SEAMLESS_MODE')) {
-      displayContext.clearRect(-1 * w * z, -1 * h * z, 3 * w * z, 3 * h * z);
+      displayContext.clearRect(-1 * w, -1 * h, 3 * w, 3 * h);
     } else {
-      displayContext.clearRect(0, 0, w * z, h * z);
+      displayContext.clearRect(0, 0, w, h);
     }
 
+    if (pskl.UserSettings.get('SEAMLESS_MODE')) {
+      this.drawTiledFrames_(displayContext, this.canvas, w, h, 1);
+    }
+    displayContext.drawImage(this.canvas, 0, 0);
+
+    // Draw grid.
     var gridWidth = this.computeGridWidthForDisplay_();
     if (gridWidth > 0) {
-      var scaled = pskl.utils.ImageResizer.resizeNearestNeighbour(this.canvas, z, gridWidth);
-
-      if (pskl.UserSettings.get('SEAMLESS_MODE')) {
-        this.drawTiledFrames_(displayContext, scaled, w, h, z);
+      // Scale out before drawing the grid.
+      displayContext.scale(1 / z, 1 / z);
+      for (var i = 1 ; i < frame.getWidth() ; i++) {
+        displayContext.clearRect((i * z) - (gridWidth / 2), 0, gridWidth, h * z);
       }
-      displayContext.drawImage(scaled, 0, 0);
-    } else {
-      displayContext.scale(z, z);
-
-      if (pskl.UserSettings.get('SEAMLESS_MODE')) {
-        this.drawTiledFrames_(displayContext, this.canvas, w, h, 1);
+      for (var i = 1 ; i < frame.getHeight() ; i++) {
+        displayContext.clearRect(0, (i * z) - (gridWidth / 2), w * z, gridWidth);
       }
-      displayContext.drawImage(this.canvas, 0, 0);
     }
 
     displayContext.restore();
