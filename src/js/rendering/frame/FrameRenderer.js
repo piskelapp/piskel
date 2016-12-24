@@ -280,11 +280,13 @@
     if (gridWidth > 0) {
       // Scale out before drawing the grid.
       displayContext.scale(1 / z, 1 / z);
+      // Clear vertical lines.
       for (var i = 1 ; i < frame.getWidth() ; i++) {
         displayContext.clearRect((i * z) - (gridWidth / 2), 0, gridWidth, h * z);
       }
-      for (var i = 1 ; i < frame.getHeight() ; i++) {
-        displayContext.clearRect(0, (i * z) - (gridWidth / 2), w * z, gridWidth);
+      // Clear horizontal lines.
+      for (var j = 1 ; j < frame.getHeight() ; j++) {
+        displayContext.clearRect(0, (j * z) - (gridWidth / 2), w * z, gridWidth);
       }
     }
 
