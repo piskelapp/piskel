@@ -3,7 +3,7 @@
 
   var areChunksValid = function (chunks) {
     return chunks.length && chunks.every(function (chunk) {
-      return chunk.base64PNG && chunk.base64PNG !== "data:,";
+      return chunk.base64PNG && chunk.base64PNG !== 'data:,';
     });
   };
 
@@ -84,7 +84,7 @@
         var renderer = new pskl.rendering.FramesheetRenderer(frames);
         return renderer.renderAsCanvas().toDataURL();
       } catch (e) {
-        return "";
+        return '';
       }
     }
   };

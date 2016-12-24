@@ -54,9 +54,8 @@
 
   ns.SaveController.prototype.updateSaveToGalleryMessage_ = function (spritesheetSize) {
     if (pskl.app.performanceReportService.hasProblem()) {
-      document.querySelector('.save-online-status').innerHTML =
-        '<div class="icon-common-warning-red" style="float:left; margin-top: 5px">&nbsp;</div>' +
-        '<div style="overflow: hidden; padding-left: 10px">Saving to the gallery might fail due to the sprite size.</div>';
+      var warningPartial = pskl.utils.Template.get('save-gallery-warning-partial');
+      document.querySelector('.save-online-status').innerHTML = warningPartial;
     }
   };
 
@@ -76,7 +75,6 @@
     }
 
     // Uncomment this line to test the online save section locally.
-    return [PARTIALS.FILEDOWNLOAD, PARTIALS.LOCALSTORAGE, PARTIALS.GALLERY];
     return [PARTIALS.FILEDOWNLOAD, PARTIALS.LOCALSTORAGE, PARTIALS.GALLERY_UNAVAILABLE];
   };
 
