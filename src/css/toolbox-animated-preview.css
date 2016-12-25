@@ -132,9 +132,16 @@
 }
 
 /**
- * The regular image is provided bby the sprite icons.png+icons.css
+ * The regular image is provided by the sprite icons.png+icons.css
  */
 .icon-minimap-popup-preview-arrow-white:hover {
-  background-image: url(../img/icons/minimap/minimap-popup-preview-arrow-var(--highlight-color).png);
+  background-image: url(../img/icons/minimap/minimap-popup-preview-arrow-gold.png);
   background-position: 0 0;
+  background-size: 18px 18px;
+}
+
+@media (-webkit-min-device-pixel-ratio: 2),
+       (min-resolution: 192dpi) {
+  background-image: url(../img/icons/minimap/minimap-popup-preview-arrow-gold@2x.png);
+
 }
