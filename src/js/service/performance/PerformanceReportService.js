@@ -22,4 +22,8 @@
       this.currentReport = report;
     }
   };
+
+  ns.PerformanceReportService.prototype.hasProblem = function () {
+    return this.currentReport && this.currentReport.hasProblem();
+  };
 })();

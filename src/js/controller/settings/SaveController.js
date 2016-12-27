@@ -46,8 +46,17 @@
       this.disableSaveButtons_();
     }
 
+    this.updateSaveToGalleryMessage_();
+
     $.subscribe(Events.BEFORE_SAVING_PISKEL, this.disableSaveButtons_.bind(this));
     $.subscribe(Events.AFTER_SAVING_PISKEL, this.enableSaveButtons_.bind(this));
+  };
+
+  ns.SaveController.prototype.updateSaveToGalleryMessage_ = function (spritesheetSize) {
+    if (pskl.app.performanceReportService.hasProblem()) {
+      var warningPartial = pskl.utils.Template.get('save-gallery-warning-partial');
+      document.querySelector('.save-online-status').innerHTML = warningPartial;
+    }
   };
 
   ns.SaveController.prototype.insertSavePartials_ = function () {

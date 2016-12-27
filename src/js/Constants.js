@@ -49,6 +49,12 @@ var Constants = {
   // TESTS
   DRAWING_TEST_FOLDER : 'drawing',
 
+  // Maximum size of a sprite that can be saved on piskelapp datastore.
+  // This size will be compared to the length of the stringified serialization of the sprite.
+  // This is an approximation at best but gives correct results in most cases.
+  // The datastore limit is 1 MiB, which we roughly approximate to 1 million characters.
+  APPENGINE_SAVE_LIMIT : 1 * 1000 * 1000,
+
   // SERVICE URLS
   APPENGINE_SAVE_URL : 'save',
   IMAGE_SERVICE_UPLOAD_URL : 'http://piskel-imgstore-b.appspot.com/__/upload',

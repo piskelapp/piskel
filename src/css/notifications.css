@@ -6,12 +6,12 @@
   max-width: 300px;
 
   border-top-left-radius: 7px;
-  border: #F0C36D 1px solid;
+  border: #e1a325 2px solid;
   border-right: 0;
   border-bottom: 0;
 
   color: #222;
-  background-color: #F9EDBE;
+  background-color: var(--highlight-color);
 
   font-weight: bold;
   font-size: 13px;
@@ -23,8 +23,6 @@
   position: absolute;
   top: 6px;
   right: 17px;
-
-  color: gray;
 
   font-size: 18px;
   font-weight: bold;
