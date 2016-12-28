@@ -17,6 +17,7 @@
     EXPORT_TAB: 'EXPORT_TAB',
     PEN_SIZE : 'PEN_SIZE',
     RESIZE_SETTINGS: 'RESIZE_SETTINGS',
+    COLOR_FORMAT: 'COLOR_FORMAT',
     KEY_TO_DEFAULT_VALUE_MAP_ : {
       'GRID_WIDTH' : 0,
       'MAX_FPS' : 24,
@@ -39,7 +40,8 @@
         maintainRatio : true,
         resizeContent : false,
         origin : 'TOPLEFT'
-      }
+      },
+      COLOR_FORMAT: 0,
     },
 
     /**
