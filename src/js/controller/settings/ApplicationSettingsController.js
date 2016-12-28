@@ -39,6 +39,16 @@
     maxFpsInput.value = pskl.UserSettings.get(pskl.UserSettings.MAX_FPS);
     this.addEventListener(maxFpsInput, 'change', this.onMaxFpsChange_);
 
+    // Color format
+    var colorFormat = pskl.UserSettings.get(pskl.UserSettings.COLOR_FORMAT);
+    var colorFormatSelect = document.querySelector('.color-format-select');
+    var selectedColorFormatOption = colorFormatSelect.querySelector('option[value="' + colorFormat + '"]');
+    if (selectedColorFormatOption) {
+      selectedColorFormatOption.setAttribute('selected', 'selected');
+    }
+
+    this.addEventListener(colorFormatSelect, 'change', this.onColorFormatChange_);
+
     // Layer preview opacity
     var layerOpacityInput = document.querySelector('.layer-opacity-input');
     layerOpacityInput.value = pskl.UserSettings.get(pskl.UserSettings.LAYER_OPACITY);
@@ -61,6 +71,10 @@
   ns.ApplicationSettingsController.prototype.onGridWidthChange_ = function (evt) {
     var width = parseInt(evt.target.value, 10);
     pskl.UserSettings.set(pskl.UserSettings.GRID_WIDTH, width);
+  };
+
+  ns.ApplicationSettingsController.prototype.onColorFormatChange_ = function (evt) {
+    pskl.UserSettings.set(pskl.UserSettings.COLOR_FORMAT, evt.target.value);
   };
 
   ns.ApplicationSettingsController.prototype.onSeamlessModeChange_ = function (evt) {

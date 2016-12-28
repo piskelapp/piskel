@@ -671,7 +671,8 @@
 
             // Update the text entry input as it changes happen
             if (opts.showInput) {
-                textInput.val(realColor.toString(format));
+                var displayFormat = pskl.UserSettings.get(pskl.UserSettings.COLOR_FORMAT);
+                textInput.val(realColor.toString(displayFormat));
             }
 
             if (opts.showPalette) {
