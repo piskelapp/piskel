@@ -15,6 +15,7 @@
 
     this.redrawFlag = true;
     this.regenerateDomFlag = true;
+    this.justDropped = false;
 
     this.cachedFrameProcessor = new pskl.model.frame.CachedFrameProcessor();
     this.cachedFrameProcessor.setFrameProcessor(this.frameToPreviewCanvas_.bind(this));
@@ -104,7 +105,7 @@
       this.container.get(0).removeChild(this.tiles[index]);
       this.tiles.splice(index, 1);
       this.updateScrollerOverflows();
-    } else if (action === ACTION.SELECT) {
+    } else if (action === ACTION.SELECT && !this.justDropped) {
       this.piskelController.setCurrentFrameIndex(index);
     } else if (action === ACTION.NEW_FRAME) {
       this.piskelController.addFrame();
@@ -189,6 +190,7 @@
     $('#preview-list').sortable({
       placeholder: 'preview-tile preview-tile-drop-proxy',
       update: $.proxy(this.onUpdate_, this),
+      stop: $.proxy(this.onSortableStop_, this),
       items: '.preview-tile',
       axis: 'y',
       tolerance: 'pointer'
@@ -209,6 +211,17 @@
     var tile = this.tiles.splice(originFrameId, 1)[0];
     this.tiles.splice(targetInsertionId, 0, tile);
     this.flagForRedraw_();
+  };
+
+  /**
+   * @private
+   */
+  ns.FramesListController.prototype.onSortableStop_ = function (event, ui) {
+    this.justDropped = true;
+
+    this.resizeTimer = window.setTimeout($.proxy(function() {
+      this.justDropped = false;
+    }, this), 200);
   };
 
   /**

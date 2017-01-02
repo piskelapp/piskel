@@ -54,7 +54,8 @@
   text-align: center;
 }
 
-.grid-width-select {
+.grid-width-select,
+.color-format-select {
   margin: 5px 5px 0 5px;
 }
 
