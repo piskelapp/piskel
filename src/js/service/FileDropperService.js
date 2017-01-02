@@ -1,9 +1,8 @@
 (function () {
   var ns = $.namespace('pskl.service');
 
-  ns.FileDropperService = function (piskelController, drawingAreaContainer) {
+  ns.FileDropperService = function (piskelController) {
     this.piskelController = piskelController;
-    this.drawingAreaContainer = drawingAreaContainer;
     this.dropPosition_ = null;
   };
 

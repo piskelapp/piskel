@@ -148,9 +148,7 @@
       this.penSizeController = new pskl.controller.PenSizeController();
       this.penSizeController.init();
 
-      this.fileDropperService = new pskl.service.FileDropperService(
-        this.piskelController,
-        document.querySelector('#drawing-canvas-container'));
+      this.fileDropperService = new pskl.service.FileDropperService(this.piskelController);
       this.fileDropperService.init();
 
       this.userWarningController = new pskl.controller.UserWarningController(this.piskelController);
