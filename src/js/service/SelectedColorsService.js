@@ -2,7 +2,8 @@
   var ns = $.namespace('pskl.service');
 
   ns.SelectedColorsService = function () {
-    this.reset();
+    this.primaryColor_ = Constants.DEFAULT_PEN_COLOR;
+    this.secondaryColor_ = Constants.TRANSPARENT_COLOR;
   };
 
   ns.SelectedColorsService.prototype.init = function () {
@@ -16,11 +17,6 @@
 
   ns.SelectedColorsService.prototype.getSecondaryColor = function () {
     return this.secondaryColor_;
-  };
-
-  ns.SelectedColorsService.prototype.reset = function () {
-    this.primaryColor_ = Constants.DEFAULT_PEN_COLOR;
-    this.secondaryColor_ = Constants.TRANSPARENT_COLOR;
   };
 
   ns.SelectedColorsService.prototype.onPrimaryColorUpdate_ = function (evt, color) {
