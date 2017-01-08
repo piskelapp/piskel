@@ -1,18 +1,5 @@
 casper.test.begin('Test resize panel width/height inputs are synchronized', 28 , function(test) {
   test.timeout = test.fail.bind(test, ['Test timed out']);
-  function getValue(selector) {
-    return casper.evaluate(
-      'function () { \
-        return document.querySelector(\'' + selector + '\').value;\
-      }');
-  };
-
-  function isDrawerExpanded() {
-    return casper.evaluate(function () {
-      var settingsElement = document.querySelector('[data-pskl-controller="settings"]');
-      return settingsElement.classList.contains('expanded');
-    });
-  }
 
   function onTestStart() {
     test.assertExists('#drawing-canvas-container canvas', 'Piskel ready, test starting');

@@ -37,13 +37,11 @@ module.exports = function(grunt) {
     '--baseUrl=http://' + hostname + ':' + PORT.TEST,
     '--mode=?debug',
     '--verbose=false',
+    '--includes=test/casperjs/integration/include.js',
     '--log-level=info',
     '--print-command=false',
     '--print-file-paths=true',
   ];
-
-  var drawingTestPaths = require('./test/casperjs/TestSuite.js').tests;
-  var drawingTests = prefixPaths(drawingTestPaths, "test/casperjs/");
 
   var integrationTestPaths = require('./test/casperjs/integration/IntegrationSuite.js').tests;
   var integrationTests = prefixPaths(integrationTestPaths, "test/casperjs/integration/");
@@ -280,7 +278,7 @@ module.exports = function(grunt) {
     casperjs : {
       drawing : {
         files : {
-          src: drawingTests
+          src: ['test/casperjs/DrawingTest.js']
         },
         options : {
           casperjsOptions: casperjsOptions
@@ -328,7 +326,7 @@ module.exports = function(grunt) {
   // Run unit-tests
   grunt.registerTask('unit-test', ['karma']);
   // Run integration tests
-  grunt.registerTask('test-integration', ['build-dev', 'connect:test', 'casperjs:integration']);
+  grunt.registerTask('integration-test', ['build-dev', 'connect:test', 'casperjs:integration']);
   // Run linting, unit tests, drawing tests and integration tests
   grunt.registerTask('test', ['lint', 'unit-test', 'build-dev', 'connect:test', 'casperjs:drawing', 'casperjs:integration']);
 

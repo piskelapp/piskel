@@ -1,18 +1,5 @@
 casper.test.begin('Test updating default size works', 14 , function(test) {
   test.timeout = test.fail.bind(test, ['Test timed out']);
-  function getValue(selector) {
-    return casper.evaluate(
-      'function () { \
-        return document.querySelector(\'' + selector + '\').value;\
-      }');
-  };
-
-  function isDrawerExpanded() {
-    return casper.evaluate(function () {
-      var settingsElement = document.querySelector('[data-pskl-controller="settings"]');
-      return settingsElement.classList.contains('expanded');
-    });
-  }
 
   function onTestStart() {
     test.assertExists('#drawing-canvas-container canvas', 'Piskel ready, test starting');
@@ -53,13 +40,11 @@ casper.test.begin('Test updating default size works', 14 , function(test) {
   function onDrawerClosed() {
     test.assert(!isDrawerExpanded(), 'settings drawer is closed');
 
-    test.assertEquals(casper.evaluate(function () {
-      return pskl.UserSettings.get('DEFAULT_SIZE').width;
-    }), 321, 'Piskel width is now 321 pixels');
+    test.assertEquals(evalLine('pskl.UserSettings.get("DEFAULT_SIZE").width'),
+      321, 'Piskel width is now 321 pixels');
 
-    test.assertEquals(casper.evaluate(function () {
-      return pskl.UserSettings.get('DEFAULT_SIZE').height;
-    }), 322, 'Piskel default height is now 322 pixels');
+    test.assertEquals(evalLine('pskl.UserSettings.get("DEFAULT_SIZE").height'),
+      322, 'Piskel height is now 322 pixels');
   }
 
   casper
