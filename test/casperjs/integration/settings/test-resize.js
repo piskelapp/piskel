@@ -47,13 +47,8 @@ casper.test.begin('Test resize feature works', 16 , function(test) {
   function onDrawerClosed() {
     test.assert(!isDrawerExpanded(), 'settings drawer is closed');
 
-    test.assertEquals(casper.evaluate(function () {
-      return pskl.app.piskelController.getPiskel().getWidth();
-    }), 320, 'Piskel width is now 320 pixels');
-
-    test.assertEquals(casper.evaluate(function () {
-      return pskl.app.piskelController.getPiskel().getHeight();
-    }), 320, 'Piskel height is now 320 pixels');
+    test.assertEquals(evalLine('pskl.app.piskelController.getPiskel().getWidth()'), 320, 'Piskel width is now 320 pixels');
+    test.assertEquals(evalLine('pskl.app.piskelController.getPiskel().getHeight()'), 320, 'Piskel height is now 320 pixels');
   }
 
   casper
