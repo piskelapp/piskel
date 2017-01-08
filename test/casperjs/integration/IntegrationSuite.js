@@ -1,0 +1,6 @@
+(typeof exports != "undefined" ? exports : pskl_exports).tests = [
+  'settings/test-resize-default-size.js',
+  'settings/test-resize-input-synchronization.js',
+  'settings/test-resize.js',
+  'settings/test-settings-open-panels-on-click.js',
+];

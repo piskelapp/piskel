@@ -32,8 +32,11 @@ module.exports = function(grunt) {
   var stylePaths = require('./src/piskel-style-list.js').styles;
   var piskelStyles = prefixPaths(stylePaths, "src/");
 
-  var casperTestPaths = require('./test/casperjs/TestSuite.js').tests;
-  var casperTests = prefixPaths(casperTestPaths, "test/casperjs/");
+  var drawingTestPaths = require('./test/casperjs/TestSuite.js').tests;
+  var drawingTests = prefixPaths(drawingTestPaths, "test/casperjs/");
+
+  var integrationTestPaths = require('./test/casperjs/integration/IntegrationSuite.js').tests;
+  var integrationTests = prefixPaths(integrationTestPaths, "test/casperjs/integration/");
 
   var getConnectConfig = function (base, port, host) {
     if (typeof base === 'string') {
@@ -265,19 +268,36 @@ module.exports = function(grunt) {
     },
 
     casperjs : {
-      files : {
-        src: casperTests
+      drawing : {
+        files : {
+          src: drawingTests
+        },
+        options : {
+          casperjsOptions: [
+            '--baseUrl=http://' + hostname + ':' + PORT.TEST,
+            '--mode=?debug',
+            '--verbose=false',
+            '--log-level=info',
+            '--print-command=false',
+            '--print-file-paths=true',
+          ]
+        }
       },
-      options : {
-        casperjsOptions: [
-          '--baseUrl=http://' + hostname + ':' + PORT.TEST,
-          '--mode=?debug',
-          '--verbose=false',
-          '--log-level=info',
-          '--print-command=false',
-          '--print-file-paths=true',
-        ]
-      },
+      integration : {
+        files : {
+          src: integrationTests
+        },
+        options : {
+          casperjsOptions: [
+            '--baseUrl=http://' + hostname + ':' + PORT.TEST,
+            '--mode=?debug',
+            '--verbose=false',
+            '--log-level=info',
+            '--print-command=false',
+            '--print-file-paths=true',
+          ]
+        }
+      }
     },
 
     /**
@@ -311,11 +331,14 @@ module.exports = function(grunt) {
   grunt.registerTask('lint', ['jscs:js', 'leadingIndent:css', 'jshint']);
   // Run unit-tests
   grunt.registerTask('unit-test', ['karma']);
-  // Run linting, unit tests and drawing tests
-  grunt.registerTask('test', ['lint', 'unit-test', 'build-dev', 'connect:test', 'casperjs']);
+  // Run integration tests
+  grunt.registerTask('test-integration', ['build-dev', 'connect:test', 'casperjs:integration']);
+  // Run linting, unit tests, drawing tests and integration tests
+  grunt.registerTask('test', ['lint', 'unit-test', 'build-dev', 'connect:test', 'casperjs:drawing', 'casperjs:integration']);
 
   // Run the tests, even if the linting fails
-  grunt.registerTask('test-nolint', ['unit-test', 'build-dev', 'connect:test', 'casperjs']);
+  grunt.registerTask('test-nolint', ['unit-test', 'build-dev', 'connect:test', 'casperjs:drawing', 'casperjs:integration']);
+
   // Used by optional precommit hook
   grunt.registerTask('precommit', ['test']);
 
