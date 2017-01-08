@@ -1,3 +1,5 @@
+/* globals casper, setPiskelFromGrid, isDrawerExpanded, getValue, isChecked, evalLine */
+
 casper.test.begin('Test resize feature works', 16 , function(test) {
   test.timeout = test.fail.bind(test, ['Test timed out']);
 

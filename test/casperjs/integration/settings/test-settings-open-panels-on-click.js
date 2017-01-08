@@ -1,3 +1,5 @@
+/* globals casper, setPiskelFromGrid, isDrawerExpanded, getValue, isChecked, evalLine */
+
 casper.test.begin('Settings Test', 18, function(test) {
   test.timeout = test.fail.bind(test, ['Test timed out']);
 

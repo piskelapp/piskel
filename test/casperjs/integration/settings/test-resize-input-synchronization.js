@@ -1,3 +1,5 @@
+/* globals casper, setPiskelFromGrid, isDrawerExpanded, getValue, isChecked, evalLine */
+
 casper.test.begin('Test resize panel width/height inputs are synchronized', 28 , function(test) {
   test.timeout = test.fail.bind(test, ['Test timed out']);
 

@@ -1,6 +1,6 @@
 /* globals casper, setPiskelFromGrid, piskelFrameEqualsGrid, isDrawerExpanded, getValue, isChecked, evalLine */
 
-casper.test.begin('Test resize feature works, and check the output', 19, function(test) {
+casper.test.begin('Test resize feature works, and check the output', 20, function(test) {
   test.timeout = test.fail.bind(test, ['Test timed out']);
 
   function onTestStart() {
@@ -45,6 +45,16 @@ casper.test.begin('Test resize feature works, and check the output', 19, functio
     test.assertExists('.resize-content-checkbox', 'Check if resize ratio checkbox is available');
     test.assert(!isChecked('.resize-content-checkbox'), 'Keep content checkbox is unchecked');
 
+    // Check that the default origin selected is top left.
+    var selectedOrigin = evalLine('document.querySelector(".resize-origin-option.selected").getAttribute("data-origin")');
+    test.assertEquals(selectedOrigin, 'TOPLEFT');
+
+    // Change the origin to bottom right.
+    casper.click('[data-origin="BOTTOMRIGHT"]');
+    casper.waitForSelector('[data-origin="BOTTOMRIGHT"].selected', onBottomRightOriginSelected, test.timeout, 10000);
+  }
+
+  function onBottomRightOriginSelected() {
     casper.click('.resize-button');
     // Resizing the piskel should close the panel automatically
     casper.waitForSelector('[data-pskl-controller="settings"]:not(.expanded)', onDrawerClosed, test.timeout, 10000);
@@ -56,12 +66,11 @@ casper.test.begin('Test resize feature works, and check the output', 19, functio
     test.assertEquals(evalLine('pskl.app.piskelController.getPiskel().getWidth()'), 4, 'Piskel width is now 4 pixels');
     test.assertEquals(evalLine('pskl.app.piskelController.getPiskel().getHeight()'), 4, 'Piskel height is now 4 pixels');
 
-    // Check that the piskel content has been resized.
     test.assert(piskelFrameEqualsGrid('[\
-      [B, T, T, T],                     \
-      [T, B, T, T],                     \
       [T, T, T, T],                     \
       [T, T, T, T],                     \
+      [T, T, B, T],                     \
+      [T, T, T, B],                     \
     ]', 0, 0), 'Resized piskel content is as expected');
   }
 
