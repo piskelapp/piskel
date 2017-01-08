@@ -3,11 +3,9 @@
 
   var dimensionInfoPattern = '{{width}} x {{height}} px, {{frames}}<br/>{{columns}}, {{rows}}.';
 
-  // Shortcut to pskl.utils.Template.replace
   var replace = pskl.utils.Template.replace;
 
-  // Helper to return "X items" or "1 item" if X is 1. Can be cnsidered as an overkill,
-  // but the one-liner equivalent is hard to read.
+  // Helper to return "X items" or "1 item" if X is 1.
   var pluralize = function (word, count) {
     if (count === 1) {
       return '1 ' + word;
@@ -120,7 +118,7 @@
       value = 1;
     }
 
-    // Force the value to be in bounds, in the user tried to update it by directly typing
+    // Force the value to be in bounds, if the user tried to update it by directly typing
     // a value.
     value = pskl.utils.Math.minmax(value, 1, this.piskelController.getFrameCount());
     this.columnsInput.value = value;
