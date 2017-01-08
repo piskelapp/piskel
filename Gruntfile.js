@@ -32,6 +32,16 @@ module.exports = function(grunt) {
   var stylePaths = require('./src/piskel-style-list.js').styles;
   var piskelStyles = prefixPaths(stylePaths, "src/");
 
+  // Casper JS tests
+  var casperjsOptions = [
+    '--baseUrl=http://' + hostname + ':' + PORT.TEST,
+    '--mode=?debug',
+    '--verbose=false',
+    '--log-level=info',
+    '--print-command=false',
+    '--print-file-paths=true',
+  ];
+
   var drawingTestPaths = require('./test/casperjs/TestSuite.js').tests;
   var drawingTests = prefixPaths(drawingTestPaths, "test/casperjs/");
 
@@ -273,14 +283,7 @@ module.exports = function(grunt) {
           src: drawingTests
         },
         options : {
-          casperjsOptions: [
-            '--baseUrl=http://' + hostname + ':' + PORT.TEST,
-            '--mode=?debug',
-            '--verbose=false',
-            '--log-level=info',
-            '--print-command=false',
-            '--print-file-paths=true',
-          ]
+          casperjsOptions: casperjsOptions
         }
       },
       integration : {
@@ -288,14 +291,7 @@ module.exports = function(grunt) {
           src: integrationTests
         },
         options : {
-          casperjsOptions: [
-            '--baseUrl=http://' + hostname + ':' + PORT.TEST,
-            '--mode=?debug',
-            '--verbose=false',
-            '--log-level=info',
-            '--print-command=false',
-            '--print-file-paths=true',
-          ]
+          casperjsOptions: casperjsOptions
         }
       }
     },
