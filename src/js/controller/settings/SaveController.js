@@ -53,9 +53,10 @@
   };
 
   ns.SaveController.prototype.updateSaveToGalleryMessage_ = function (spritesheetSize) {
-    if (pskl.app.performanceReportService.hasProblem()) {
+    var saveToGalleryStatus = document.querySelector('.save-online-status');
+    if (saveToGalleryStatus && pskl.app.performanceReportService.hasProblem()) {
       var warningPartial = pskl.utils.Template.get('save-gallery-warning-partial');
-      document.querySelector('.save-online-status').innerHTML = warningPartial;
+      saveToGalleryStatus.innerHTML = warningPartial;
     }
   };
 
