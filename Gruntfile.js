@@ -301,7 +301,7 @@ module.exports = function(grunt) {
     nwjs: {
       windows : {
         options: {
-          version : "0.18.8",
+          version : "0.19.4",
           build_dir: './dest/desktop/', // destination folder of releases.
           win: true,
           linux32: true,
@@ -312,7 +312,7 @@ module.exports = function(grunt) {
       macos : {
         options: {
           osx64: true,
-          version : "0.18.8",
+          version : "0.19.4",
           build_dir: './dest/desktop/'
         },
         src: ['./dest/prod/**/*', "./package.json", "!./dest/desktop/"]
