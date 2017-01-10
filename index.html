@@ -95,6 +95,7 @@
   </script>
 </div>
 
+
     <div id="column-wrapper" class="column-wrapper">
       <div class='column left-column'>
         <div id="preview-list-wrapper" class="preview-list-wrapper">
@@ -173,7 +174,7 @@
   <script type="text/template" id="layer-item-template">
     <li class="layer-item {{isselected:current-layer-item}}"
         data-layer-index="{{layerindex}}">
-        {{layername}}
+        <span class="layer-name" data-placement="top">{{layername}}</span>
         <span class="layer-item-opacity"
               title="Layer opacity" rel="tooltip" data-placement="top">
           {{opacity}}&#945;
@@ -224,35 +225,35 @@
   <div
     data-setting="user"
     class="tool-icon icon-settings-gear-white"
-    title="<span style='color:gold'>PREFERENCES</span></br>"
+    title="<span class='highlight'>PREFERENCES</span></br>"
     rel="tooltip" data-placement="left">
   </div>
 
   <div
     data-setting="resize"
     class="tool-icon  icon-settings-resize-white"
-    title="<span style='color:gold'>RESIZE</span></br>Resize the drawing area"
+    title="<span class='highlight'>RESIZE</span></br>Resize the drawing area"
     rel="tooltip" data-placement="left">
   </div>
 
   <div
     data-setting="save"
     class="tool-icon  icon-settings-save-white"
-    title="<span style='color:gold'>SAVE</span></br>Save to your gallery, save locally<br/>or export as a file"
+    title="<span class='highlight'>SAVE</span></br>Save to your gallery, save locally<br/>or export as a file"
     rel="tooltip" data-placement="left" >
   </div>
 
   <div
     data-setting="export"
     class="tool-icon  icon-settings-export-white"
-    title="<span style='color:gold'>EXPORT</span></br>Export as Image, as Spritesheet<br/>or as Animated GIF"
+    title="<span class='highlight'>EXPORT</span></br>Export as Image, as Spritesheet<br/>or as Animated GIF"
     rel="tooltip" data-placement="left">
   </div>
 
   <div
     data-setting="import"
     class="tool-icon  icon-settings-open-folder-white"
-    title="<span style='color:gold'>IMPORT</span></br>Import an existing image,<br/>an animated GIF or a .piskel file"
+    title="<span class='highlight'>IMPORT</span></br>Import an existing image,<br/>an animated GIF or a .piskel file"
     rel="tooltip" data-placement="left">
   </div>
 
@@ -367,7 +368,10 @@
   </script>
 </div>
 
-  <span class="cheatsheet-link icon-common-keyboard-gold" rel="tooltip" data-placement="right" title="Keyboard shortcuts">&nbsp;</span>
+  <span class="cheatsheet-link icon-common-keyboard-gold"
+        rel="tooltip" data-placement="right" title="Keyboard shortcuts">&nbsp;</span>
+  <div class="performance-link icon-common-warning-red"
+       rel="tooltip" data-placement="left" title="Performance problem detected, learn more.">&nbsp;</div>
 
   <!-- dialogs partials -->
   <script type="text/template" id="templates/dialogs/create-palette.html">
@@ -583,6 +587,56 @@
     <span class="cheatsheet-description">{{description}}</span>
   </li>
 </script>
+  <script type="text/template" id="templates/dialogs/performance-info.html">
+  <div class="dialog-wrapper">
+    <h3 class="dialog-head">
+      Performance issues
+      <span class="dialog-close">X</span>
+    </h3>
+    <div class="dialog-performance-info-body">
+      <p>The current sprite may exceed the recommendations for Piskel.</p>
+      <p>You can ignore this warning and continue working with your sprite but you might experience the following issues:</p>
+      <ul>
+        <li>saving failures</li>
+        <li>slowdowns</li>
+        <li>crashes</li>
+      </ul>
+      <p>If you ignore this warning, please save often!</p>
+      <p>To fix the issue, try adjusting your sprite settings:</p>
+       <ul>
+        <li>sprite resolution <sup title="recommended: lower than 256x256, max: 512x512" rel="tooltip" data-placement="top">?</sup></li>
+        <li>number of layers <sup title="recommended: lower than 5, max: 20" rel="tooltip" data-placement="top">?</sup></li>
+        <li>number of frames <sup title="recommended: lower than 25, max: 100" rel="tooltip" data-placement="top">?</sup></li>
+        <li>number of colors <sup title="max: 100" rel="tooltip" data-placement="top">?</sup></li>
+      </ul>
+      <p>We strive to improve Piskel, its performances and stability, but this is a personal project with limited time and resources.
+         We prefer to warn you early rather than having you lose your work.</p>
+      <p>Feedback welcome at <a href="https://github.com/juliandescottes/piskel" target="_blank">https://github.com/juliandescottes/piskel</a></p>
+      <p>
+        <div class="warning-icon icon-common-warning-red">&nbsp;</div>
+        <div class="warning-icon-info">This icon will remain on the top-bottom of the application until the performance issue is fixed. You can click on it at anytime to display this information again.</div>
+      </p>
+    </div>
+  </div>
+</script>
+  <script type="text/template" id="templates/dialogs/unsupported-browser.html">
+  <div class="dialog-wrapper">
+    <h3 class="dialog-head">
+      Browser not supported
+      <span class="dialog-close">X</span>
+    </h3>
+    <div class="dialog-content">
+      <p>Your current browser (<span id="current-user-agent"></span>) is not supported.</p>
+      <p>Piskel is currently tested for:</p>
+      <ul class="supported-browser-list">
+        <li>Google Chrome <a href="https://www.google.com/chrome/browser/desktop/" target="_blank">https://www.google.com/chrome/browser/desktop/</a></li>
+        <li>Mozilla Firefox <a href="https://www.mozilla.org/en-US/firefox/" target="_blank">https://www.mozilla.org/en-US/firefox/</a></li>
+        <li>Microsoft Edge <a href="https://www.microsoft.com/en-us/windows/microsoft-edge" target="_blank">https://www.microsoft.com/en-us/windows/microsoft-edge</a></li>
+      </ul>
+      <p>This browser has not been tested with Piskel, you might experience unknown bugs and crashes if you decide to continue.</p>
+    </div>
+  </div>
+</script>
 
   <!-- settings-panel partials -->
   <script type="text/html" id="templates/settings/application.html">
@@ -611,7 +665,7 @@
       </div>
 
       <div class="settings-item">
-        <label for="grid-width">Pixel Grid</label>
+        <label for="grid-width">Pixel grid</label>
         <select id="grid-width" class="grid-width-select">
           <option value="0">Disabled</option>
           <option value="1">1px</option>
@@ -622,9 +676,9 @@
       </div>
 
       <div class="settings-item">
-        <label>Layer Opacity</label>
-        <input type="range" class="layer-opacity-input" name="layer-opacity" min="0"  max="1" step="0.05"/>
-        <span class="layer-opacity-text"></span>
+        <label>Layer opacity</label>
+        <input type="range" class="settings-opacity-input layer-opacity-input" name="layer-opacity" min="0"  max="1" step="0.05"/>
+        <span class="settings-opacity-text layer-opacity-text"></span>
       </div>
 
       <div class="settings-item">
@@ -635,8 +689,22 @@
       </div>
 
       <div class="settings-item">
+        <label>Seamless opacity</label>
+        <input type="range" class="settings-opacity-input seamless-opacity-input" name="seamless-opacity" min="0"  max="0.5" step="0.01"/>
+        <span class="settings-opacity-text seamless-opacity-text"></span>
+      </div>
+
+      <div class="settings-item">
         <label>Maximum FPS</label>
         <input type="text" class="textfield  textfield-small  max-fps-input" autocomplete="off" name="max-fps"/>
+      </div>
+
+      <div class="settings-item">
+        <label for="color-format">Color format</label>
+        <select id="color-format" class="color-format-select">
+          <option value="hex">Hex</option>
+          <option value="rgb">RGB</option>
+        </select>
       </div>
 
       <input type="submit" class="button button-primary" value="Apply settings" />
@@ -707,7 +775,7 @@
           <input type="text" class="textfield resize-size-field" autocomplete="off" name="default-height"/>
           <span>px</span>
         </div>
-        <input type="submit" class="button button-primary resize-button" value="Set default" />
+        <input type="submit" class="button button-primary default-size-button" value="Set default" />
       </form>
     </div>
   </div>
@@ -741,8 +809,13 @@
   <div class="settings-title">Save online</div>
   <div class="settings-item">
     <input type="button" class="button button-primary" id="save-gallery-button" value="Save to your gallery" />
-    <div class="save-status">Your piskel will be stored online in your gallery.</div>
+    <div class="save-status save-online-status">Your piskel will be stored online in your gallery.</div>
   </div>
+</script>
+
+<script type="text/template" id="save-gallery-warning-partial">
+  <div class="save-status-warning-icon icon-common-warning-red">&nbsp;</div>
+  <div class="save-status-warning-text">Saving to the gallery might fail due to the sprite size.</div>
 </script>
 
 <!-- save-gallery-unavailable-partial -->
@@ -827,7 +900,7 @@
 
 <script type="text/template" id="previous-session-info-template">
   <div>
-    Restore a backup of <span style="color:gold">{{name}}</span>, saved at <span style="color:white">{{date}}</span> ?
+    Restore a backup of <span class="highlight">{{name}}</span>, saved at <span style="color:white">{{date}}</span> ?
     <div style="margin-top:10px;">
       <button type="button" class="button  button-primary restore-session-button">Restore</button>
     </div>
@@ -863,7 +936,7 @@
   <div class="export-panel-png">
     <div class="export-panel-header export-info">Export your animation as a PNG spritesheet containing all frames.</div>
     <div class="export-panel-section  png-export-layout-section">
-      <div style="color: gold; padding-bottom: 5px;">Spritesheet layout options:</div>
+      <div class="highlight" style="padding-bottom: 5px;">Spritesheet layout options:</div>
       <div style="display: flex; line-height: 20px;">
         <div style="flex: 1;">
           <span>Columns</span>
@@ -883,8 +956,21 @@
       <button type="button" style="white-space: nowrap;" class="button button-primary datauri-open-button">To data-uri</button>
       <span class="png-export-datauri-info export-info">Open the PNG export in your browser as a data-uri</span>
     </div>
+
+    <div class="export-panel-section">
+      <div style="padding-bottom: 5px">
+        <span class="highlight export-panel-row">Export for PixiJS Movie: </span>
+      </div>
+      <div class="export-panel-row">
+        <button type="button" class="button button-primary png-pixi-download-button"/>Download</button>
+        <span class="png-export-dimension-info export-info">Spritesheet with JSON metadata</span>
+      </div>
+
+    </div>
+
   </div>
 </script>
+
   <script type="text/html" id="templates/settings/export/gif.html">
   <div class="export-panel-gif">
     <div class="export-panel-header export-info">
@@ -928,7 +1014,7 @@
     </div>
     <div class="export-panel-section">
       <div style="padding-bottom: 5px">
-        <span style="color: gold;">Export as C File: </span>
+        <span class="highlight">Export as C File: </span>
         <span class="export-info">
           C file with frame rendered as array.
         </span>
@@ -937,7 +1023,7 @@
     </div>
     <div class="export-panel-section">
       <div style="padding-bottom: 5px">
-        <span style="color: gold;">Export selected frame as PNG File: </span>
+        <span class="highlight">Export selected frame as PNG File: </span>
         <span class="export-info">
           PNG export of the currently selected frame.
         </span>
@@ -951,9 +1037,9 @@
     (function () {
 
   /**
-   * See @Gruntfile.js => after build, -2016-10-10-12-12 is replaced by the build version
+   * See @Gruntfile.js => after build, -2017-01-10-04-26 is replaced by the build version
    */
-  var version = '-2016-10-10-12-12';
+  var version = '-2017-01-10-04-26';
   var versionHasNotBeenReplaced = version.indexOf('@@') === 0;
   if (versionHasNotBeenReplaced)  {
     version = '';
