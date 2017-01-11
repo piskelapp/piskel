@@ -129,7 +129,7 @@
  */
 .preview-drop-down {
   float: left;
-
+  position: relative;
   width : 22px;
   min-height: 22px;
   margin: 0 5px;

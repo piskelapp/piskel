@@ -25,7 +25,7 @@
     this.fpsCounterDisplay = document.querySelector('#display-fps');
     this.openPopupPreview = document.querySelector('.open-popup-preview-button');
     this.previewSizeDropdown = document.querySelector('.preview-drop-down');
-    this.previewSize = {
+    this.previewSizes = {
       original: {
         name: 'original',
         zoom: 1,
@@ -81,18 +81,18 @@
     var onionSkinTooltip = pskl.utils.TooltipFormatter.format('Toggle onion skin', this.onionSkinShortcut);
     this.toggleOnionSkinButton.setAttribute('title', onionSkinTooltip);
 
-    for (var size in this.previewSize) {
-      if (this.previewSize.hasOwnProperty(size)) {
-        var wrapper = this.previewSize[size];
+    for (var size in this.previewSizes) {
+      if (this.previewSizes.hasOwnProperty(size)) {
+        var wrapper = this.previewSizes[size];
         addEvent(wrapper.button, 'click', this.onChangePreviewSize_, this, wrapper.name);
         registerShortcut(wrapper.shortcut, this.onChangePreviewSize_.bind(this, wrapper.name));
         var tooltip = pskl.utils.TooltipFormatter.format(wrapper.tooltip, wrapper.shortcut);
         wrapper.button.setAttribute('title', tooltip);
       }
     }
-
-    var disableTooltip = pskl.utils.TooltipFormatter.format('I\'m disabled');
-    document.querySelector('.preview-disable-overlay').setAttribute('title', disableTooltip);
+    
+    // TODO : Change the disabled message
+    document.querySelector('.preview-disable-overlay').setAttribute('title', 'Widget disabled.');
 
     $.subscribe(Events.FRAME_SIZE_CHANGED, this.onFrameSizeChange_.bind(this));
     $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
@@ -115,32 +115,32 @@
     var seamlessModeEnabled = pskl.UserSettings.get(pskl.UserSettings.SEAMLESS_MODE);
     var shouldDisable = true;
 
-    // Hard-coded options collision
+    // Hard-coded options removal
     if (fullZoom < 1) {
-      this.togglePreviewWidget_(this.previewSize.full.name);
+      this.togglePreviewWidget_(this.previewSizes.full.name);
     } else if (seamlessModeEnabled || (fullZoom === 1 && bestZoom === 1)) {
-      this.togglePreviewWidget_(this.previewSize.original.name);
+      this.togglePreviewWidget_(this.previewSizes.original.name);
     } else { // widget not disabled
       this.togglePreviewWidget_(!shouldDisable);
       if (fullZoom === bestZoom) {
-        if (this.togglePreviewSizeButtonState_(this.previewSize.full, shouldDisable)) {
-          this.onChangePreviewSize_(this.previewSize.best.name);
+        if (this.togglePreviewSizeButtonState_(this.previewSizes.full, shouldDisable)) {
+          this.onChangePreviewSize_(this.previewSizes.best.name);
         }
       } else if (bestZoom === 1) {
-        if (this.togglePreviewSizeButtonState_(this.previewSize.best, shouldDisable)) {
-          this.onChangePreviewSize_(this.previewSize.original.name);
+        if (this.togglePreviewSizeButtonState_(this.previewSizes.best, shouldDisable)) {
+          this.onChangePreviewSize_(this.previewSizes.original.name);
         }
       }
     }
 
-    this.previewSize.best.button.textContent = Math.floor(fullZoom) + 'x';
+    this.previewSizes.best.button.textContent = Math.floor(fullZoom) + 'x';
   };
 
   ns.PreviewController.prototype.togglePreviewWidget_ = function (disable) {
     this.previewSizeDropdown.classList.toggle('preview-drop-down-disabled', disable);
-    for (var size in this.previewSize) {
-      if (this.previewSize.hasOwnProperty(size)) {
-        this.togglePreviewSizeButtonState_(this.previewSize[size], disable && size !== disable);
+    for (var size in this.previewSizes) {
+      if (this.previewSizes.hasOwnProperty(size)) {
+        this.togglePreviewSizeButtonState_(this.previewSizes[size], disable && size !== disable);
       }
     }
     if (disable) {
@@ -160,7 +160,7 @@
   };
 
   ns.PreviewController.prototype.onChangePreviewSize_ = function (choice) {
-    if (this.previewSize[choice].enabled) {
+    if (this.previewSizes[choice].enabled) {
       this.selectedPreviewSize = choice;
       pskl.UserSettings.set(pskl.UserSettings.PREVIEW_SIZE, choice);
     }
@@ -171,6 +171,8 @@
       this.updateOnionSkinPreview_();
     } else if (name == pskl.UserSettings.MAX_FPS) {
       this.updateMaxFPS_();
+    } else if (name === pskl.UserSettings.SEAMLESS_MODE) {
+      this.onFrameSizeChange_();
     } else {
       this.updateZoom_();
       this.selectPreviewSizeButton_();
@@ -191,7 +193,7 @@
       currentlySelected.classList.remove(enabledClassname);
     }
 
-    var option = this.previewSize[this.selectedPreviewSize];
+    var option = this.previewSizes[this.selectedPreviewSize];
     option.button.classList.add(enabledClassname);
   };
 
@@ -204,7 +206,7 @@
   ns.PreviewController.prototype.updateZoom_ = function () {
     var chosenPreviewSize = pskl.UserSettings.get(pskl.UserSettings.PREVIEW_SIZE);
 
-    var zoom = this.previewSize[chosenPreviewSize].zoom;
+    var zoom = this.previewSizes[chosenPreviewSize].zoom;
 
     this.renderer.setZoom($.isFunction(zoom) ? zoom() : zoom);
     this.setRenderFlag_(true);
