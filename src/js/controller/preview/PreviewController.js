@@ -79,7 +79,7 @@
         wrapper.button.setAttribute('title', tooltip);
       }
     }
-    
+
     // TODO : Change the disabled message
     document.querySelector('.preview-disable-overlay').setAttribute('title', 'Widget disabled.');
 
