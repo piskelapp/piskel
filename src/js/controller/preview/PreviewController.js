@@ -5,9 +5,6 @@
   var PREVIEW_SIZE = 200;
   var RENDER_MINIMUM_DELAY = 300;
 
-  var ONION_SKIN_SHORTCUT = 'alt+O';
-  var ORIGINAL_SIZE_SHORTCUT = 'alt+1';
-
   ns.PreviewController = function (piskelController, container) {
     this.piskelController = piskelController;
     this.container = container;
@@ -16,7 +13,6 @@
     this.currentIndex = 0;
 
     this.onionSkinShortcut = pskl.service.keyboard.Shortcuts.MISC.ONION_SKIN;
-    this.originalSizeShortcut = pskl.service.keyboard.Shortcuts.MISC.X1_PREVIEW;
 
     this.lastRenderTime = 0;
     this.renderFlag = true;
@@ -24,7 +20,34 @@
     this.fpsRangeInput = document.querySelector('#preview-fps');
     this.fpsCounterDisplay = document.querySelector('#display-fps');
     this.openPopupPreview = document.querySelector('.open-popup-preview-button');
-    this.originalSizeButton = document.querySelector('.original-size-button');
+    this.previewSizeDropdown = document.querySelector('.preview-drop-down');
+    this.previewSizes = {
+      original: {
+        name: 'original',
+        zoom: 1,
+        button: document.querySelector('.original-size-button'),
+        shortcut: pskl.service.keyboard.Shortcuts.MISC.X1_PREVIEW,
+        tooltip: 'Original size preview',
+        enabled: true
+      },
+      best: {
+        name: 'best',
+        zoom: this.calculateZoom_.bind(this, true),
+        button: document.querySelector('.best-size-button'),
+        shortcut: pskl.service.keyboard.Shortcuts.MISC.BEST_PREVIEW,
+        tooltip: 'Biggest round factor size preview',
+        enabled: true
+      },
+      full: {
+        name: 'full',
+        zoom: this.calculateZoom_.bind(this, false),
+        button: document.querySelector('.full-size-button'),
+        shortcut: pskl.service.keyboard.Shortcuts.MISC.FULL_PREVIEW,
+        tooltip: 'Biggest factor size preview',
+        enabled: true
+      }
+    };
+    this.selectedPreviewSize = pskl.UserSettings.get(pskl.UserSettings.PREVIEW_SIZE);
     this.toggleOnionSkinButton = document.querySelector('.preview-toggle-onion-skin');
 
     this.renderer = new pskl.rendering.frame.BackgroundImageFrameRenderer(this.container);
@@ -37,12 +60,28 @@
 
     document.querySelector('.right-column').style.width = Constants.ANIMATED_PREVIEW_WIDTH + 'px';
 
-    pskl.utils.Event.addEventListener(this.toggleOnionSkinButton, 'click', this.toggleOnionSkin_, this);
-    pskl.utils.Event.addEventListener(this.openPopupPreview, 'click', this.onOpenPopupPreviewClick_, this);
-    pskl.utils.Event.addEventListener(this.originalSizeButton, 'click', this.onOriginalSizeButtonClick_, this);
+    var addEvent = pskl.utils.Event.addEventListener;
+    addEvent(this.toggleOnionSkinButton, 'click', this.toggleOnionSkin_, this);
+    addEvent(this.openPopupPreview, 'click', this.onOpenPopupPreviewClick_, this);
 
-    pskl.app.shortcutService.registerShortcut(this.onionSkinShortcut, this.toggleOnionSkin_.bind(this));
-    pskl.app.shortcutService.registerShortcut(this.originalSizeShortcut, this.onOriginalSizeButtonClick_.bind(this));
+    var registerShortcut = pskl.app.shortcutService.registerShortcut.bind(pskl.app.shortcutService);
+    registerShortcut(this.onionSkinShortcut, this.toggleOnionSkin_.bind(this));
+
+    var onionSkinTooltip = pskl.utils.TooltipFormatter.format('Toggle onion skin', this.onionSkinShortcut);
+    this.toggleOnionSkinButton.setAttribute('title', onionSkinTooltip);
+
+    for (var size in this.previewSizes) {
+      if (this.previewSizes.hasOwnProperty(size)) {
+        var wrapper = this.previewSizes[size];
+        addEvent(wrapper.button, 'click', this.onChangePreviewSize_, this, wrapper.name);
+        registerShortcut(wrapper.shortcut, this.onChangePreviewSize_.bind(this, wrapper.name));
+        var tooltip = pskl.utils.TooltipFormatter.format(wrapper.tooltip, wrapper.shortcut);
+        wrapper.button.setAttribute('title', tooltip);
+      }
+    }
+
+    // TODO : Change the disabled message
+    document.querySelector('.preview-disable-overlay').setAttribute('title', 'Widget disabled.');
 
     $.subscribe(Events.FRAME_SIZE_CHANGED, this.onFrameSizeChange_.bind(this));
     $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
@@ -52,31 +91,72 @@
     $.subscribe(Events.PISKEL_RESET, this.setRenderFlag_.bind(this, true));
     $.subscribe(Events.PISKEL_RESET, this.updateFPS_.bind(this));
 
-    this.initTooltips_();
+    this.updatePreviewSizeButtons_();
     this.popupPreviewController.init();
 
     this.updateZoom_();
     this.updateOnionSkinPreview_();
-    this.updateOriginalSizeButton_();
+    this.selectPreviewSizeButton_();
     this.updateFPS_();
     this.updateMaxFPS_();
     this.updateContainerDimensions_();
   };
 
-  ns.PreviewController.prototype.initTooltips_ = function () {
-    var onionSkinTooltip = pskl.utils.TooltipFormatter.format('Toggle onion skin', this.onionSkinShortcut);
-    this.toggleOnionSkinButton.setAttribute('title', onionSkinTooltip);
-    var originalSizeTooltip = pskl.utils.TooltipFormatter.format('Original size preview', this.originalSizeShortcut);
-    this.originalSizeButton.setAttribute('title', originalSizeTooltip);
+  ns.PreviewController.prototype.updatePreviewSizeButtons_ = function () {
+    var fullZoom = this.calculateZoom_();
+    var bestZoom = Math.floor(fullZoom);
+    var seamlessModeEnabled = pskl.UserSettings.get(pskl.UserSettings.SEAMLESS_MODE);
+    var shouldDisable = true;
+
+    // Hard-coded options removal
+    if (fullZoom < 1) {
+      this.togglePreviewWidget_(this.previewSizes.full.name);
+    } else if (seamlessModeEnabled || (fullZoom === 1 && bestZoom === 1)) {
+      this.togglePreviewWidget_(this.previewSizes.original.name);
+    } else { // widget not disabled
+      this.togglePreviewWidget_(!shouldDisable);
+      if (fullZoom === bestZoom) {
+        if (this.togglePreviewSizeButtonState_(this.previewSizes.full, shouldDisable)) {
+          this.onChangePreviewSize_(this.previewSizes.best.name);
+        }
+      } else if (bestZoom === 1) {
+        if (this.togglePreviewSizeButtonState_(this.previewSizes.best, shouldDisable)) {
+          this.onChangePreviewSize_(this.previewSizes.original.name);
+        }
+      }
+    }
+
+    this.previewSizes.best.button.textContent = Math.floor(fullZoom) + 'x';
+  };
+
+  ns.PreviewController.prototype.togglePreviewWidget_ = function (disable) {
+    this.previewSizeDropdown.classList.toggle('preview-drop-down-disabled', disable);
+    for (var size in this.previewSizes) {
+      if (this.previewSizes.hasOwnProperty(size)) {
+        this.togglePreviewSizeButtonState_(this.previewSizes[size], disable && size !== disable);
+      }
+    }
+    if (disable) {
+      this.onChangePreviewSize_(disable);
+    }
+  };
+
+  ns.PreviewController.prototype.togglePreviewSizeButtonState_ = function (wrapper, disable) {
+    var disabledClassname = 'preview-contextual-action-disabled';
+    wrapper.button.classList.toggle(disabledClassname, disable);
+    wrapper.enabled = !disable;
+    return disable && wrapper.name === this.selectedPreviewSize;
   };
 
   ns.PreviewController.prototype.onOpenPopupPreviewClick_ = function () {
     this.popupPreviewController.open();
   };
 
-  ns.PreviewController.prototype.onOriginalSizeButtonClick_ = function () {
-    var isEnabled = pskl.UserSettings.get(pskl.UserSettings.ORIGINAL_SIZE_PREVIEW);
-    pskl.UserSettings.set(pskl.UserSettings.ORIGINAL_SIZE_PREVIEW, !isEnabled);
+  ns.PreviewController.prototype.onChangePreviewSize_ = function (choice) {
+    if (this.previewSizes[choice].enabled) {
+      this.selectedPreviewSize = choice;
+      pskl.UserSettings.set(pskl.UserSettings.PREVIEW_SIZE, choice);
+    }
   };
 
   ns.PreviewController.prototype.onUserSettingsChange_ = function (evt, name, value) {
@@ -84,9 +164,11 @@
       this.updateOnionSkinPreview_();
     } else if (name == pskl.UserSettings.MAX_FPS) {
       this.updateMaxFPS_();
+    } else if (name === pskl.UserSettings.SEAMLESS_MODE) {
+      this.onFrameSizeChange_();
     } else {
       this.updateZoom_();
-      this.updateOriginalSizeButton_();
+      this.selectPreviewSizeButton_();
       this.updateContainerDimensions_();
     }
   };
@@ -97,10 +179,15 @@
     this.toggleOnionSkinButton.classList.toggle(enabledClassname, isEnabled);
   };
 
-  ns.PreviewController.prototype.updateOriginalSizeButton_ = function () {
-    var enabledClassname = 'original-size-button-enabled';
-    var isEnabled = pskl.UserSettings.get(pskl.UserSettings.ORIGINAL_SIZE_PREVIEW);
-    this.originalSizeButton.classList.toggle(enabledClassname, isEnabled);
+  ns.PreviewController.prototype.selectPreviewSizeButton_ = function () {
+    var enabledClassname = 'size-button-selected';
+    var currentlySelected = document.querySelector('.' + enabledClassname);
+    if (currentlySelected) {
+      currentlySelected.classList.remove(enabledClassname);
+    }
+
+    var option = this.previewSizes[this.selectedPreviewSize];
+    option.button.classList.add(enabledClassname);
   };
 
   ns.PreviewController.prototype.updateMaxFPS_ = function () {
@@ -110,12 +197,11 @@
   };
 
   ns.PreviewController.prototype.updateZoom_ = function () {
-    var originalSizeEnabled = pskl.UserSettings.get(pskl.UserSettings.ORIGINAL_SIZE_PREVIEW);
-    var seamlessModeEnabled = pskl.UserSettings.get(pskl.UserSettings.SEAMLESS_MODE);
-    var useOriginalSize = originalSizeEnabled || seamlessModeEnabled;
+    var chosenPreviewSize = pskl.UserSettings.get(pskl.UserSettings.PREVIEW_SIZE);
 
-    var zoom = useOriginalSize ? 1 : this.calculateZoom_();
-    this.renderer.setZoom(zoom);
+    var zoom = this.previewSizes[chosenPreviewSize].zoom;
+
+    this.renderer.setZoom($.isFunction(zoom) ? zoom() : zoom);
     this.setRenderFlag_(true);
   };
 
@@ -188,10 +274,15 @@
   /**
    * Calculate the preview zoom depending on the framesheet size
    */
-  ns.PreviewController.prototype.calculateZoom_ = function () {
+  ns.PreviewController.prototype.calculateZoom_ = function (noFloat) {
     var frame = this.piskelController.getCurrentFrame();
     var hZoom = PREVIEW_SIZE / frame.getHeight();
     var wZoom = PREVIEW_SIZE / frame.getWidth();
+
+    if (noFloat) {
+      hZoom = Math.floor(hZoom);
+      wZoom = Math.floor(wZoom);
+    }
 
     return Math.min(hZoom, wZoom);
   };
@@ -199,6 +290,7 @@
   ns.PreviewController.prototype.onFrameSizeChange_ = function () {
     this.updateZoom_();
     this.updateContainerDimensions_();
+    this.updatePreviewSizeButtons_();
   };
 
   ns.PreviewController.prototype.updateContainerDimensions_ = function () {
