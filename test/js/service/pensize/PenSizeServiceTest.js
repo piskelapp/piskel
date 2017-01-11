@@ -51,12 +51,12 @@ describe("PenSize test suite", function() {
   });
 
   it("skips invalid value (outside of [1, 4])", function() {
-    console.log('[PenSizeService] skips invalid value (outside of [1, 4])');
+    console.log('[PenSizeService] skips invalid value (outside of [1, 32])');
     userSettingsPenSize = 1;
 
     penSizeService.init();
-    // MAX_VALUE is 4
-    penSizeService.setPenSize(5);
+    // MAX_VALUE is 32
+    penSizeService.setPenSize(33);
     expect(penSizeService.getPenSize()).toBe(1);
     // MIN_VALUE is 1
     penSizeService.setPenSize(0);

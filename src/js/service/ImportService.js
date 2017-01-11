@@ -4,13 +4,11 @@
   /**
    * Image an animation import service supporting the import dialog.
    * @param {!PiskelController} piskelController
-   * @param {!PreviewController} previewController
    * @constructor
    */
   ns.ImportService =
-      function (piskelController, previewController) {
+      function (piskelController) {
     this.piskelController_ = piskelController;
-    this.previewController_ = previewController;
   };
 
   /**
@@ -101,10 +99,9 @@
     var frames = this.createFramesFromImages_(images, frameSizeX, frameSizeY, smoothing);
     var layer = pskl.model.Layer.fromFrames('Layer 1', frames);
     var descriptor = new pskl.model.piskel.Descriptor('Imported piskel', '');
-    var piskel = pskl.model.Piskel.fromLayers([layer], descriptor);
+    var piskel = pskl.model.Piskel.fromLayers([layer], Constants.DEFAULT.FPS, descriptor);
 
     this.piskelController_.setPiskel(piskel);
-    this.previewController_.setFPS(Constants.DEFAULT.FPS);
   };
 
   /**

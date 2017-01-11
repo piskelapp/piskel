@@ -27,16 +27,23 @@
 }
 
 .background-picker.selected {
-  border-color: gold;
+  border-color: var(--highlight-color);
+}
+
+.settings-opacity-input {
+  margin: 5px;
+  vertical-align: middle;
 }
 
 .layer-opacity-input {
-  margin: 5px;
-  vertical-align: middle;
   width: 100px;
 }
 
-.layer-opacity-text {
+.seamless-opacity-input {
+  width: 75px;
+}
+
+.settings-opacity-text {
   height: 31px;
   display: inline-block;
   line-height: 30px;
@@ -47,11 +54,16 @@
   text-align: center;
 }
 
-.grid-width-select {
+.grid-width-select,
+.color-format-select {
   margin: 5px 5px 0 5px;
 }
 
 .settings-section-application > .settings-title {
   /* Override the default 10px margin bottom for this panel */
   margin-bottom: 15px;
+}
+
+.settings-section-application .button-primary {
+  margin-top: 10px;
 }

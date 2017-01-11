@@ -1,8 +1,8 @@
 .minimap-crop-frame {
-  position:absolute;
-  border:1px solid rgba(255,255,255,0.5);
-  z-index:100;
-  box-sizing : border-box;
-  -moz-box-sizing : border-box;
-  cursor : pointer;
+  position: absolute;
+  border: 2px solid gold;
+  z-index: 100;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  cursor: pointer;
 }

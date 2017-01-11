@@ -17,11 +17,11 @@ body {
 }
 
 .no-overflow {
-  overflow : hidden;
+  overflow: hidden;
 }
 
-.image-link {
-  color : gold;
+.highlight {
+  color: var(--highlight-color);
 }
 
 .pull-top,
@@ -59,7 +59,7 @@ body {
  * TOOLTIPS
  */
 .tooltip-shortcut {
-  color:gold;
+  color: var(--highlight-color);
 }
 
 .tooltip-container {

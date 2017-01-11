@@ -64,7 +64,8 @@
     var resizedLayers = this.piskelController.getLayers().map(this.resizeLayer_.bind(this));
 
     var currentPiskel = this.piskelController.getPiskel();
-    var piskel = pskl.model.Piskel.fromLayers(resizedLayers, currentPiskel.getDescriptor());
+    var fps = this.piskelController.getFPS();
+    var piskel = pskl.model.Piskel.fromLayers(resizedLayers, fps, currentPiskel.getDescriptor());
     // propagate savepath to new Piskel
     piskel.savePath = currentPiskel.savePath;
 

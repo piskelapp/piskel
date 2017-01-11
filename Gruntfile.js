@@ -32,8 +32,19 @@ module.exports = function(grunt) {
   var stylePaths = require('./src/piskel-style-list.js').styles;
   var piskelStyles = prefixPaths(stylePaths, "src/");
 
-  var casperTestPaths = require('./test/casperjs/TestSuite.js').tests;
-  var casperTests = prefixPaths(casperTestPaths, "test/casperjs/");
+  // Casper JS tests
+  var casperjsOptions = [
+    '--baseUrl=http://' + hostname + ':' + PORT.TEST,
+    '--mode=?debug',
+    '--verbose=false',
+    '--includes=test/casperjs/integration/include.js',
+    '--log-level=info',
+    '--print-command=false',
+    '--print-file-paths=true',
+  ];
+
+  var integrationTestPaths = require('./test/casperjs/integration/IntegrationSuite.js').tests;
+  var integrationTests = prefixPaths(integrationTestPaths, "test/casperjs/integration/");
 
   var getConnectConfig = function (base, port, host) {
     if (typeof base === 'string') {
@@ -90,13 +101,15 @@ module.exports = function(grunt) {
         browser : true,
         trailing : true,
         curly : true,
-        globals : {'$':true, 'jQuery' : true, 'pskl':true, 'Events':true, 'Constants':true, 'console' : true, 'module':true, 'require':true, 'Q':true}
+        globals : {'$':true, 'jQuery' : true, 'pskl':true, 'Events':true, 'Constants':true, 'console' : true, 'module':true, 'require':true, 'Q':true, 'Promise': true}
       },
       files: [
+        // Includes
         'Gruntfile.js',
         'package.json',
         'src/js/**/*.js',
-        '!src/js/**/lib/**/*.js' // Exclude lib folder (note the leading !)
+        // Excludes
+        '!src/js/**/lib/**/*.js'
       ]
     },
 
@@ -160,7 +173,7 @@ module.exports = function(grunt) {
       },
       css : {
         src : piskelStyles,
-        dest : 'dest/prod/css/piskel-style-packaged' + version + '.css'
+        dest : 'dest/tmp/css/piskel-style-packaged' + version + '.css'
       }
     },
 
@@ -210,6 +223,19 @@ module.exports = function(grunt) {
           // src/index.html should already have been moved by the includereplace task
           {src: ['dest/tmp/index.html'], dest: 'dest/prod/piskelapp-partials/main-partial.html'}
         ]
+      },
+
+      css: {
+        options: {
+          patterns: [{
+            match: /var\(--highlight-color\)/g,
+            replacement: "gold",
+          }]
+        },
+        files: [{
+          src: ['dest/tmp/css/piskel-style-packaged' + version + '.css'],
+          dest: 'dest/prod/css/piskel-style-packaged' + version + '.css'
+        }]
       },
       // remove the fake header from the desktop build
       desktop: {
@@ -263,19 +289,22 @@ module.exports = function(grunt) {
     },
 
     casperjs : {
-      files : {
-        src: casperTests
+      drawing : {
+        files : {
+          src: ['test/casperjs/DrawingTest.js']
+        },
+        options : {
+          casperjsOptions: casperjsOptions
+        }
       },
-      options : {
-        casperjsOptions: [
-          '--baseUrl=http://' + hostname + ':' + PORT.TEST,
-          '--mode=?debug',
-          '--verbose=false',
-          '--log-level=info',
-          '--print-command=false',
-          '--print-file-paths=true',
-        ]
-      },
+      integration : {
+        files : {
+          src: integrationTests
+        },
+        options : {
+          casperjsOptions: casperjsOptions
+        }
+      }
     },
 
     /**
@@ -285,7 +314,8 @@ module.exports = function(grunt) {
     nwjs: {
       windows : {
         options: {
-          version : "0.15.4",
+          downloadUrl: 'https://dl.nwjs.io/',
+          version : "0.19.4",
           build_dir: './dest/desktop/', // destination folder of releases.
           win: true,
           linux32: true,
@@ -295,8 +325,9 @@ module.exports = function(grunt) {
       },
       macos : {
         options: {
+          downloadUrl: 'https://dl.nwjs.io/',
           osx64: true,
-          version : "0.15.4",
+          version : "0.19.4",
           build_dir: './dest/desktop/'
         },
         src: ['./dest/prod/**/*', "./package.json", "!./dest/desktop/"]
@@ -309,18 +340,21 @@ module.exports = function(grunt) {
   grunt.registerTask('lint', ['jscs:js', 'leadingIndent:css', 'jshint']);
   // Run unit-tests
   grunt.registerTask('unit-test', ['karma']);
-  // Run linting, unit tests and drawing tests
-  grunt.registerTask('test', ['lint', 'unit-test', 'build-dev', 'connect:test', 'casperjs']);
+  // Run integration tests
+  grunt.registerTask('integration-test', ['build-dev', 'connect:test', 'casperjs:integration']);
+  // Run linting, unit tests, drawing tests and integration tests
+  grunt.registerTask('test', ['lint', 'unit-test', 'build-dev', 'connect:test', 'casperjs:drawing', 'casperjs:integration']);
 
   // Run the tests, even if the linting fails
-  grunt.registerTask('test-nolint', ['unit-test', 'build-dev', 'connect:test', 'casperjs']);
+  grunt.registerTask('test-nolint', ['unit-test', 'build-dev', 'connect:test', 'casperjs:drawing', 'casperjs:integration']);
+
   // Used by optional precommit hook
   grunt.registerTask('precommit', ['test']);
 
   // BUILD TASKS
   grunt.registerTask('build-index.html', ['includereplace']);
   grunt.registerTask('merge-statics', ['concat:js', 'concat:css', 'uglify']);
-  grunt.registerTask('build',  ['clean:prod', 'sprite', 'merge-statics', 'build-index.html', 'replace:mainPartial', 'copy:prod']);
+  grunt.registerTask('build',  ['clean:prod', 'sprite', 'merge-statics', 'build-index.html', 'replace:mainPartial', 'replace:css', 'copy:prod']);
   grunt.registerTask('build-dev',  ['clean:dev', 'sprite', 'build-index.html', 'copy:dev']);
   grunt.registerTask('desktop', ['clean:desktop', 'default', 'replace:desktop', 'nwjs:windows']);
   grunt.registerTask('desktop-mac', ['clean:desktop', 'default', 'replace:desktop', 'nwjs:macos']);

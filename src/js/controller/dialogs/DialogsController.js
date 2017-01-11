@@ -17,6 +17,14 @@
     'import-image' : {
       template : 'templates/dialogs/import-image.html',
       controller : ns.ImportImageController
+    },
+    'performance-info' : {
+      template : 'templates/dialogs/performance-info.html',
+      controller : ns.PerformanceInfoController
+    },
+    'unsupported-browser' : {
+      template : 'templates/dialogs/unsupported-browser.html',
+      controller : ns.UnsupportedBrowserController
     }
   };
 

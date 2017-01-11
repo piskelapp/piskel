@@ -2,7 +2,7 @@
   <div class="export-panel-png">
     <div class="export-panel-header export-info">Export your animation as a PNG spritesheet containing all frames.</div>
     <div class="export-panel-section  png-export-layout-section">
-      <div style="color: gold; padding-bottom: 5px;">Spritesheet layout options:</div>
+      <div class="highlight" style="padding-bottom: 5px;">Spritesheet layout options:</div>
       <div style="display: flex; line-height: 20px;">
         <div style="flex: 1;">
           <span>Columns</span>
@@ -22,5 +22,17 @@
       <button type="button" style="white-space: nowrap;" class="button button-primary datauri-open-button">To data-uri</button>
       <span class="png-export-datauri-info export-info">Open the PNG export in your browser as a data-uri</span>
     </div>
+
+    <div class="export-panel-section">
+      <div style="padding-bottom: 5px">
+        <span class="highlight export-panel-row">Export for PixiJS Movie: </span>
+      </div>
+      <div class="export-panel-row">
+        <button type="button" class="button button-primary png-pixi-download-button"/>Download</button>
+        <span class="png-export-dimension-info export-info">Spritesheet with JSON metadata</span>
+      </div>
+
+    </div>
+
   </div>
 </script>

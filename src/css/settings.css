@@ -52,7 +52,7 @@
   background-color: #444;
   margin-right: 0;
   padding-right: 2px;
-  border-left : 3px solid gold;
+  border-left : 3px solid var(--highlight-color);
 }
 
 /************************************************************************************************/
@@ -64,7 +64,6 @@
   font-size: 12px;
   font-weight: bold;
   color: #ccc;
-  text-shadow: 1px 1px #000;
 }
 
 .settings-section .button {
@@ -77,7 +76,7 @@
   text-transform: uppercase;
   border-bottom: 1px #aaa solid;
   padding-bottom: 5px;
-  color: gold;
+  color: var(--highlight-color);
 }
 
 .settings-description {

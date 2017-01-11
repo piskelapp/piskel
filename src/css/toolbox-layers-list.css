@@ -35,7 +35,7 @@
 
 .layers-toggle-preview-enabled,
 .layers-toggle-preview-enabled:hover {
-  color : gold;
+  color : var(--highlight-color);
 }
 
 /**
@@ -59,11 +59,22 @@
 
 .layer-item {
   position: relative;
+  display: flex;
   height:24px;
   line-height: 24px;
-  padding: 0 0 0 10px;
   border-top: 1px solid #444;
   cursor: pointer;
+}
+
+.layer-item .layer-name {
+  padding: 0 0 0 10px;
+  flex: 1 auto;
+  white-space: nowrap;
+}
+
+.layer-item .layer-name.overflowing-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .layer-item:hover {
@@ -71,12 +82,11 @@
 }
 
 .layer-item-opacity {
-  position: absolute;
-  right: 8px;
+  padding-right: 8px;
 }
 
 .current-layer-item,
 .current-layer-item:hover {
   background : #333;
-  color: gold;
+  color: var(--highlight-color);
 }

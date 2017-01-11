@@ -29,7 +29,7 @@
 
 .local-piskel-list-head {
   font-weight: bold;
-  color: gold;
+  color: var(--highlight-color);
 }
 
 .local-piskel-load-button,

@@ -16,16 +16,16 @@
 }
 
 .pen-size-option[data-size='1'] {
-  padding: 6px;
-}
-.pen-size-option[data-size='2'] {
   padding: 5px;
 }
-.pen-size-option[data-size='3'] {
+.pen-size-option[data-size='2'] {
   padding: 4px;
 }
-.pen-size-option[data-size='4'] {
+.pen-size-option[data-size='3'] {
   padding: 3px;
+}
+.pen-size-option[data-size='4'] {
+  padding: 2px;
 }
 
 .pen-size-option:before {
@@ -34,6 +34,9 @@
   height: 100%;
   background-color: white;
   display: block;
+  text-align: center;
+  line-height: 12px;
+  font-size: 90%;
 }
 
 .pen-size-option:hover {
@@ -41,9 +44,13 @@
 }
 
 .pen-size-option.selected:before {
-  background-color: gold;
+  background-color: var(--highlight-color);
 }
 
 .pen-size-option.selected {
-  border-color: gold;
+  border-color: var(--highlight-color);
+}
+
+.pen-size-option.labeled:before {
+  content: attr(real-pen-size);
 }

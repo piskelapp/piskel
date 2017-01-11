@@ -19,8 +19,9 @@
       this.shortcutService.init();
 
       var size = pskl.UserSettings.get(pskl.UserSettings.DEFAULT_SIZE);
+      var fps = Constants.DEFAULT.FPS;
       var descriptor = new pskl.model.piskel.Descriptor('New Piskel', '');
-      var piskel = new pskl.model.Piskel(size.width, size.height, descriptor);
+      var piskel = new pskl.model.Piskel(size.width, size.height, fps, descriptor);
 
       var layer = new pskl.model.Layer('Layer 1');
       var frame = new pskl.model.Frame(size.width, size.height);
@@ -124,7 +125,7 @@
       this.storageService = new pskl.service.storage.StorageService(this.piskelController);
       this.storageService.init();
 
-      this.importService = new pskl.service.ImportService(this.piskelController, this.previewController);
+      this.importService = new pskl.service.ImportService(this.piskelController);
 
       this.imageUploadService = new pskl.service.ImageUploadService();
       this.imageUploadService.init();
@@ -147,10 +148,15 @@
       this.penSizeController = new pskl.controller.PenSizeController();
       this.penSizeController.init();
 
-      this.fileDropperService = new pskl.service.FileDropperService(
-        this.piskelController,
-        document.querySelector('#drawing-canvas-container'));
+      this.fileDropperService = new pskl.service.FileDropperService(this.piskelController);
       this.fileDropperService.init();
+
+      this.userWarningController = new pskl.controller.UserWarningController(this.piskelController);
+      this.userWarningController.init();
+
+      this.performanceReportService = new pskl.service.performance.PerformanceReportService(
+        this.piskelController, this.currentColorsService);
+      this.performanceReportService.init();
 
       this.drawingLoop = new pskl.rendering.DrawingLoop();
       this.drawingLoop.addCallback(this.render, this);
@@ -173,20 +179,23 @@
         mb.createMacBuiltin('Piskel');
         gui.Window.get().menu = mb;
       }
+
+      if (pskl.utils.UserAgent.isUnsupported()) {
+        $.publish(Events.DIALOG_DISPLAY, {
+          dialogId : 'unsupported-browser'
+        });
+      }
     },
 
     loadPiskel_ : function (piskelData) {
       var serializedPiskel = piskelData.piskel;
-      pskl.utils.serialization.Deserializer.deserialize(serializedPiskel, function (piskel, extra) {
+      pskl.utils.serialization.Deserializer.deserialize(serializedPiskel, function (piskel) {
         pskl.app.piskelController.setPiskel(piskel);
         $.publish(Events.PISKEL_SAVED);
-        var fps = extra.fps;
         if (piskelData.descriptor) {
           // Backward compatibility for v2 or older
           piskel.setDescriptor(piskelData.descriptor);
-          fps = piskelData.fps;
         }
-        pskl.app.previewController.setFPS(fps);
       });
     },
 

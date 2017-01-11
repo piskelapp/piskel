@@ -24,3 +24,13 @@
     color: white;
     font-style: normal;
 }
+
+.save-status-warning-icon {
+  float: left;
+  margin-top: 5px;
+}
+
+.save-status-warning-icon {
+  overflow: hidden;
+  padding-left: 10px;
+}

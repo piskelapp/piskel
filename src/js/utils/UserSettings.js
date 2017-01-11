@@ -7,6 +7,7 @@
     DEFAULT_SIZE : 'DEFAULT_SIZE',
     CANVAS_BACKGROUND : 'CANVAS_BACKGROUND',
     SELECTED_PALETTE : 'SELECTED_PALETTE',
+    SEAMLESS_OPACITY : 'SEAMLESS_OPACITY',
     SEAMLESS_MODE : 'SEAMLESS_MODE',
     PREVIEW_SIZE : 'PREVIEW_SIZE',
     ONION_SKIN : 'ONION_SKIN',
@@ -16,6 +17,7 @@
     EXPORT_TAB: 'EXPORT_TAB',
     PEN_SIZE : 'PEN_SIZE',
     RESIZE_SETTINGS: 'RESIZE_SETTINGS',
+    COLOR_FORMAT: 'COLOR_FORMAT',
     KEY_TO_DEFAULT_VALUE_MAP_ : {
       'GRID_WIDTH' : 0,
       'MAX_FPS' : 24,
@@ -25,6 +27,7 @@
       },
       'CANVAS_BACKGROUND' : 'lowcont-dark-canvas-background',
       'SELECTED_PALETTE' : Constants.CURRENT_COLORS_PALETTE_ID,
+      'SEAMLESS_OPACITY' : 0.30,
       'SEAMLESS_MODE' : false,
       'PREVIEW_SIZE' : 'original',
       'ONION_SKIN' : false,
@@ -37,7 +40,8 @@
         maintainRatio : true,
         resizeContent : false,
         origin : 'TOPLEFT'
-      }
+      },
+      COLOR_FORMAT: 'hex',
     },
 
     /**

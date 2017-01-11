@@ -17,10 +17,6 @@
     this.lastRenderTime = 0;
     this.renderFlag = true;
 
-    /**
-     * !! WARNING !! ALL THE INITIALISATION BELOW SHOULD BE MOVED TO INIT()
-     * IT WILL STAY HERE UNTIL WE CAN REMOVE SETFPS (see comment below)
-     */
     this.fpsRangeInput = document.querySelector('#preview-fps');
     this.fpsCounterDisplay = document.querySelector('#display-fps');
     this.openPopupPreview = document.querySelector('.open-popup-preview-button');
@@ -53,13 +49,6 @@
     };
     this.selectedPreviewSize = pskl.UserSettings.get(pskl.UserSettings.PREVIEW_SIZE);
     this.toggleOnionSkinButton = document.querySelector('.preview-toggle-onion-skin');
-
-    /**
-     * !! WARNING !! THIS SHOULD REMAIN HERE UNTIL, BECAUSE THE PREVIEW CONTROLLER
-     * IS THE SOURCE OF TRUTH AT THE MOMENT WHEN IT COMES TO FPSs
-     * IT WILL BE QUERIED BY OTHER OBJECTS SO DEFINE IT AS SOON AS POSSIBLE
-     */
-    this.setFPS(Constants.DEFAULT.FPS);
 
     this.renderer = new pskl.rendering.frame.BackgroundImageFrameRenderer(this.container);
     this.popupPreviewController = new ns.PopupPreviewController(piskelController);
@@ -97,7 +86,10 @@
     $.subscribe(Events.FRAME_SIZE_CHANGED, this.onFrameSizeChange_.bind(this));
     $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
     $.subscribe(Events.PISKEL_SAVE_STATE, this.setRenderFlag_.bind(this, true));
+    $.subscribe(Events.FPS_CHANGED, this.updateFPS_.bind(this));
+    // On PISKEL_RESET, set the render flag and update the FPS input
     $.subscribe(Events.PISKEL_RESET, this.setRenderFlag_.bind(this, true));
+    $.subscribe(Events.PISKEL_RESET, this.updateFPS_.bind(this));
 
     this.updatePreviewSizeButtons_();
     this.popupPreviewController.init();
@@ -105,6 +97,7 @@
     this.updateZoom_();
     this.updateOnionSkinPreview_();
     this.selectPreviewSizeButton_();
+    this.updateFPS_();
     this.updateMaxFPS_();
     this.updateContainerDimensions_();
   };
@@ -200,7 +193,7 @@
   ns.PreviewController.prototype.updateMaxFPS_ = function () {
     var maxFps = pskl.UserSettings.get(pskl.UserSettings.MAX_FPS);
     this.fpsRangeInput.setAttribute('max', maxFps);
-    this.setFPS(Math.min(this.fps, maxFps));
+    this.piskelController.setFPS(Math.min(maxFps, this.piskelController.getFPS()));
   };
 
   ns.PreviewController.prototype.updateZoom_ = function () {
@@ -231,15 +224,17 @@
    * Event handler triggered on 'input' or 'change' events.
    */
   ns.PreviewController.prototype.onFpsRangeInputUpdate_ = function (evt) {
-    this.setFPS(parseInt(this.fpsRangeInput.value, 10));
+    var fps = parseInt(this.fpsRangeInput.value, 10);
+    this.piskelController.setFPS(fps);
     // blur only on 'change' events, as blurring on 'input' breaks on Firefox
     if (evt.type === 'change') {
       this.fpsRangeInput.blur();
     }
   };
 
-  ns.PreviewController.prototype.setFPS = function (fps) {
-    if (typeof fps === 'number') {
+  ns.PreviewController.prototype.updateFPS_ = function () {
+    var fps = this.piskelController.getFPS();
+    if (fps !== this.fps) {
       this.fps = fps;
       // reset
       this.fpsRangeInput.value = 0;
@@ -247,10 +242,6 @@
       this.fpsRangeInput.value = this.fps;
       this.fpsCounterDisplay.innerHTML = this.fps + ' FPS';
     }
-  };
-
-  ns.PreviewController.prototype.getFPS = function () {
-    return this.fps;
   };
 
   ns.PreviewController.prototype.render = function (delta) {

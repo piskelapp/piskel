@@ -79,7 +79,7 @@
 
 .preview-toggle-onion-skin-enabled,
 .preview-toggle-onion-skin-enabled:hover {
-  color : gold;
+  color : var(--highlight-color);
 }
 
 .preview-contextual-actions {
@@ -120,8 +120,8 @@
 }
 
 .preview-contextual-action:hover {
-  color: gold;
-  border-color: gold;
+  color: var(--highlight-color);
+  border-color: var(--highlight-color);
 }
 
 /**
@@ -181,13 +181,20 @@
 }
 
 .open-popup-preview-button:hover {
-  border-color: gold;
+  border-color: var(--highlight-color);
 }
 
 /**
- * The regular image is provided bby the sprite icons.png+icons.css
+ * The regular image is provided by the sprite icons.png+icons.css
  */
 .icon-minimap-popup-preview-arrow-white:hover {
   background-image: url(../img/icons/minimap/minimap-popup-preview-arrow-gold.png);
   background-position: 0 0;
+  background-size: 18px 18px;
+}
+
+@media (-webkit-min-device-pixel-ratio: 2),
+       (min-resolution: 192dpi) {
+  background-image: url(../img/icons/minimap/minimap-popup-preview-arrow-gold@2x.png);
+
 }

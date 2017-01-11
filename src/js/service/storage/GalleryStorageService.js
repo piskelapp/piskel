@@ -23,6 +23,10 @@
       framesheet_as_png : pskl.app.getFramesheetAsPng()
     };
 
+    if (serialized.length > Constants.APPENGINE_SAVE_LIMIT) {
+      deferred.reject('This sprite is too big to be saved on the gallery. Try saving it as a .piskel file.');
+    }
+
     if (descriptor.isPublic) {
       data.public = true;
     }

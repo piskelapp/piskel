@@ -90,20 +90,20 @@
       }
 
       var descriptor = new pskl.model.piskel.Descriptor(descriptorName, descriptorDescription);
-      var piskel = new pskl.model.Piskel(width, height, descriptor);
+      var piskel = new pskl.model.Piskel(width, height, fps, descriptor);
       var loadedLayers = 0;
 
       var loadLayerImage = function(layer, cb) {
         var image = new Image();
         image.onload = function() {
-          var frames = pskl.utils.LayerUtils.createFramesFromSpritesheet(this, layer.frameCount);
+          var frames = pskl.utils.FrameUtils.createFramesFromSpritesheet(this, layer.frameCount);
           frames.forEach(function (frame) {
             layer.model.addFrame(frame);
           });
 
           loadedLayers++;
           if (loadedLayers == layerCount) {
-            cb(piskel, {fps: fps});
+            cb(piskel);
           }
         };
         image.src = layer.dataUri;

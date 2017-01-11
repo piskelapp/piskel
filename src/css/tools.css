@@ -17,7 +17,7 @@
   position : absolute;
   height : 100%;
   width : 100%;
-  border: 3px solid gold;
+  border: 3px solid var(--highlight-color);
   box-sizing: border-box;
 }
 

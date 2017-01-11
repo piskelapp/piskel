@@ -1,6 +1,7 @@
 // This list is used both by the grunt build and index.html (in debug mode)
 
 (typeof exports != "undefined" ? exports : pskl_exports).styles = [
+  "css/variables.css",
   "css/reset.css",
   "css/style.css",
   "css/animations.css",
@@ -22,6 +23,8 @@
   "css/dialogs-cheatsheet.css",
   "css/dialogs-create-palette.css",
   "css/dialogs-import-image.css",
+  "css/dialogs-performance-info.css",
+  "css/dialogs-unsupported-browser.css",
   "css/notifications.css",
   "css/toolbox.css",
   "css/toolbox-layers-list.css",

@@ -92,7 +92,8 @@
   };
 
   ns.PaletteController.prototype.resetColors = function () {
-    pskl.app.selectedColorsService.reset();
+    this.setPrimaryColor_(Constants.DEFAULT_PEN_COLOR);
+    this.setSecondaryColor_(Constants.TRANSPARENT_COLOR);
   };
 
   /**

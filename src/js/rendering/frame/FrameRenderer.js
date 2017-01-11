@@ -261,27 +261,33 @@
       this.margin.y - this.offset.y * z
     );
 
+    // Scale up to draw the canvas content
+    displayContext.scale(z, z);
+
     if (pskl.UserSettings.get('SEAMLESS_MODE')) {
-      displayContext.clearRect(-1 * w * z, -1 * h * z, 3 * w * z, 3 * h * z);
+      displayContext.clearRect(-1 * w, -1 * h, 3 * w, 3 * h);
     } else {
-      displayContext.clearRect(0, 0, w * z, h * z);
+      displayContext.clearRect(0, 0, w, h);
     }
 
+    if (pskl.UserSettings.get('SEAMLESS_MODE')) {
+      this.drawTiledFrames_(displayContext, this.canvas, w, h, 1);
+    }
+    displayContext.drawImage(this.canvas, 0, 0);
+
+    // Draw grid.
     var gridWidth = this.computeGridWidthForDisplay_();
     if (gridWidth > 0) {
-      var scaled = pskl.utils.ImageResizer.resizeNearestNeighbour(this.canvas, z, gridWidth);
-
-      if (pskl.UserSettings.get('SEAMLESS_MODE')) {
-        this.drawTiledFrames_(displayContext, scaled, w, h, z);
+      // Scale out before drawing the grid.
+      displayContext.scale(1 / z, 1 / z);
+      // Clear vertical lines.
+      for (var i = 1 ; i < frame.getWidth() ; i++) {
+        displayContext.clearRect((i * z) - (gridWidth / 2), 0, gridWidth, h * z);
       }
-      displayContext.drawImage(scaled, 0, 0);
-    } else {
-      displayContext.scale(z, z);
-
-      if (pskl.UserSettings.get('SEAMLESS_MODE')) {
-        this.drawTiledFrames_(displayContext, this.canvas, w, h, 1);
+      // Clear horizontal lines.
+      for (var j = 1 ; j < frame.getHeight() ; j++) {
+        displayContext.clearRect(0, (j * z) - (gridWidth / 2), w * z, gridWidth);
       }
-      displayContext.drawImage(this.canvas, 0, 0);
     }
 
     displayContext.restore();
@@ -293,7 +299,9 @@
    * differentiate those additional frames from the main frame.
    */
   ns.FrameRenderer.prototype.drawTiledFrames_ = function (context, image, w, h, z) {
-    context.fillStyle = Constants.SEAMLESS_MODE_OVERLAY_COLOR;
+    var opacity = pskl.UserSettings.get('SEAMLESS_OPACITY');
+    opacity = pskl.utils.Math.minmax(opacity, 0, 1);
+    context.fillStyle = 'rgba(255, 255, 255, ' + opacity + ')';
     [[0, -1], [0, 1], [-1, -1], [-1, 0], [-1, 1], [1, -1], [1, 0], [1, 1]].forEach(function (d) {
       context.drawImage(image, d[0] * w * z, d[1] * h * z);
       context.fillRect(d[0] * w * z, d[1] * h * z, w * z, h * z);

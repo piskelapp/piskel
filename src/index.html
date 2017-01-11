@@ -71,13 +71,18 @@
   @@include('templates/misc-templates.html', {})
   @@include('templates/popup-preview.html', {})
 
-  <span class="cheatsheet-link icon-common-keyboard-gold" rel="tooltip" data-placement="right" title="Keyboard shortcuts">&nbsp;</span>
+  <span class="cheatsheet-link icon-common-keyboard-gold"
+        rel="tooltip" data-placement="right" title="Keyboard shortcuts">&nbsp;</span>
+  <div class="performance-link icon-common-warning-red"
+       rel="tooltip" data-placement="left" title="Performance problem detected, learn more.">&nbsp;</div>
 
   <!-- dialogs partials -->
   @@include('templates/dialogs/create-palette.html', {})
   @@include('templates/dialogs/import-image.html', {})
   @@include('templates/dialogs/browse-local.html', {})
   @@include('templates/dialogs/cheatsheet.html', {})
+  @@include('templates/dialogs/performance-info.html', {})
+  @@include('templates/dialogs/unsupported-browser.html', {})
 
   <!-- settings-panel partials -->
   @@include('templates/settings/application.html', {})

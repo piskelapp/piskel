@@ -80,7 +80,10 @@
   };
 
   ns.StorageService.prototype.onSaveSuccess_ = function () {
-    $.publish(Events.SHOW_NOTIFICATION, [{'content': 'Successfully saved !'}]);
+    $.publish(Events.SHOW_NOTIFICATION, [{
+      content : 'Successfully saved !',
+      hideDelay : 3000
+    }]);
     $.publish(Events.PISKEL_SAVED);
     this.afterSaving_();
   };
@@ -90,14 +93,16 @@
     if (errorMessage) {
       errorText += ' : ' + errorMessage;
     }
-    $.publish(Events.SHOW_NOTIFICATION, [{'content': errorText}]);
+    $.publish(Events.SHOW_NOTIFICATION, [{
+      content : errorText,
+      hideDelay : 10000
+    }]);
     this.afterSaving_();
     return Q.reject(errorMessage);
   };
 
   ns.StorageService.prototype.afterSaving_ = function () {
     $.publish(Events.AFTER_SAVING_PISKEL);
-    window.setTimeout($.publish.bind($, Events.HIDE_NOTIFICATION), 5000);
   };
 
   ns.StorageService.prototype.setSavingFlag_ = function (savingFlag) {

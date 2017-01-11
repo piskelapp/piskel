@@ -86,7 +86,7 @@ describe("FrameUtils suite", function() {
     var spritesheet = pskl.utils.FrameUtils.toImage(frame);
 
     // split the spritesheet by 4
-    var frames = pskl.utils.LayerUtils.createFramesFromSpritesheet(spritesheet, 4);
+    var frames = pskl.utils.FrameUtils.createFramesFromSpritesheet(spritesheet, 4);
 
     // expect 4 frames of 1x2
     expect(frames.length).toBe(4);

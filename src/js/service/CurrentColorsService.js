@@ -10,11 +10,16 @@
     this.cachedFrameProcessor = new pskl.model.frame.AsyncCachedFrameProcessor();
     this.cachedFrameProcessor.setFrameProcessor(this.getFrameColors_.bind(this));
 
+    this.throttledUpdateCurrentColors_ = pskl.utils.FunctionUtils.throttle(
+      this.updateCurrentColors_.bind(this),
+      1000
+    );
+
     this.paletteService = pskl.app.paletteService;
   };
 
   ns.CurrentColorsService.prototype.init = function () {
-    $.subscribe(Events.HISTORY_STATE_SAVED, this.updateCurrentColors_.bind(this));
+    $.subscribe(Events.HISTORY_STATE_SAVED, this.throttledUpdateCurrentColors_);
     $.subscribe(Events.HISTORY_STATE_LOADED, this.loadColorsFromCache_.bind(this));
   };
 

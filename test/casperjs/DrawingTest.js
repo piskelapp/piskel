@@ -27,7 +27,7 @@
         }, function () {
           // onTimeout
           test.fail('Test timed out');
-        }, 15*1000);
+        }, 30 * 1000);
       })
       .run(function () {
         if (tests[index+1]) {
@@ -40,5 +40,4 @@
 
     runTest(0);
   });
-
 })();

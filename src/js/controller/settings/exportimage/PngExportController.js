@@ -3,11 +3,9 @@
 
   var dimensionInfoPattern = '{{width}} x {{height}} px, {{frames}}<br/>{{columns}}, {{rows}}.';
 
-  // Shortcut to pskl.utils.Template.replace
   var replace = pskl.utils.Template.replace;
 
-  // Helper to return "X items" or "1 item" if X is 1. Can be cnsidered as an overkill,
-  // but the one-liner equivalent is hard to read.
+  // Helper to return "X items" or "1 item" if X is 1.
   var pluralize = function (word, count) {
     if (count === 1) {
       return '1 ' + word;
@@ -31,6 +29,7 @@
     this.columnsInput = document.querySelector('#png-export-columns');
 
     var downloadButton = document.querySelector('.png-download-button');
+    var downloadPixiButton = document.querySelector('.png-pixi-download-button');
     var dataUriButton = document.querySelector('.datauri-open-button');
 
     this.initLayoutSection_();
@@ -38,6 +37,7 @@
 
     this.addEventListener(this.columnsInput, 'input', this.onColumnsInput_);
     this.addEventListener(downloadButton, 'click', this.onDownloadClick_);
+    this.addEventListener(downloadPixiButton, 'click', this.onPixiDownloadClick_);
     this.addEventListener(dataUriButton, 'click', this.onDataUriClick_);
     $.subscribe(Events.EXPORT_SCALE_CHANGED, this.onScaleChanged_);
   };
@@ -118,7 +118,7 @@
       value = 1;
     }
 
-    // Force the value to be in bounds, in the user tried to update it by directly typing
+    // Force the value to be in bounds, if the user tried to update it by directly typing
     // a value.
     value = pskl.utils.Math.minmax(value, 1, this.piskelController.getFrameCount());
     this.columnsInput.value = value;
@@ -154,6 +154,52 @@
     pskl.utils.BlobUtils.canvasToBlob(canvas, function(blob) {
       pskl.utils.FileUtils.downloadAsFile(blob, fileName);
     });
+  };
+
+  ns.PngExportController.prototype.onPixiDownloadClick_ = function () {
+    var zip = new window.JSZip();
+
+    // Create PNG export.
+    var canvas = this.createPngSpritesheet_();
+    var name = this.piskelController.getPiskel().getDescriptor().name;
+
+    zip.file(name + '.png', pskl.utils.CanvasUtils.getBase64FromCanvas(canvas) + '\n', {base64: true});
+
+    var width = canvas.width / this.getColumns_();
+    var height = canvas.height / this.getRows_();
+
+    var numFrames = this.piskelController.getFrameCount();
+    var frames = {};
+    for (var i = 0; i < numFrames; i++) {
+      var column = i % this.getColumns_();
+      var row = (i - column) / this.getColumns_();
+      var frame = {
+        'frame': {'x': width * column,'y': height * row,'w': width,'h': height},
+        'rotated': false,
+        'trimmed': false,
+        'spriteSourceSize': {'x': 0,'y': 0,'w': width,'h': height},
+        'sourceSize': {'w': width,'h': height}
+      };
+      frames[name + i + '.png'] = frame;
+    }
+
+    var json = {
+      'frames': frames,
+      'meta': {
+        'app': 'https://github.com/juliandescottes/piskel/',
+        'version': '1.0',
+        'image': name + '.png',
+        'format': 'RGBA8888',
+        'size': {'w': canvas.width,'h': canvas.height}
+      }
+    };
+    zip.file(name + '.json', JSON.stringify(json));
+
+    var blob = zip.generate({
+      type : 'blob'
+    });
+
+    pskl.utils.FileUtils.downloadAsFile(blob, name + '.zip');
   };
 
   ns.PngExportController.prototype.onDataUriClick_ = function (evt) {

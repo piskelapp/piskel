@@ -1,9 +1,8 @@
 (function () {
   var ns = $.namespace('pskl.service');
 
-  ns.FileDropperService = function (piskelController, drawingAreaContainer) {
+  ns.FileDropperService = function (piskelController) {
     this.piskelController = piskelController;
-    this.drawingAreaContainer = drawingAreaContainer;
     this.dropPosition_ = null;
   };
 
@@ -52,10 +51,9 @@
     pskl.UserSettings.set(pskl.UserSettings.SELECTED_PALETTE, palette.id);
   };
 
-  ns.FileDropperService.prototype.onPiskelFileLoaded_ = function (piskel, extra) {
+  ns.FileDropperService.prototype.onPiskelFileLoaded_ = function (piskel) {
     if (window.confirm('This will replace your current animation')) {
       pskl.app.piskelController.setPiskel(piskel);
-      pskl.app.previewController.setFPS(extra.fps);
     }
   };
 

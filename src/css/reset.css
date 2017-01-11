@@ -47,5 +47,5 @@ input[type="range"] {
 }
 
 a, a:visited {
-  color:gold;
+  color: var(--highlight-color);
 }

@@ -22,6 +22,11 @@
   background : #3a3a3a;
 }
 
+.textfield:focus {
+  border-color: var(--highlight-color);
+  outline: none;
+}
+
 .textfield-small {
   width : 50px;
 }
@@ -29,17 +34,13 @@
 .button {
   box-sizing: border-box;
   height: 24px;
-
-  background-color: #3f3f3f;
-  border: 1px solid #333;
-  border-top-color: #666;
-  border-bottom-color: #222;
-
+  background-color: #666;
+  border-style: none;
+  border-radius: 2px;
   cursor: pointer;
   text-decoration: none;
 
   color: white;
-  text-shadow: 0 -1px 0 black;
   font-weight: bold;
   font-size: 1rem;
   text-align: center;
@@ -48,25 +49,17 @@
 }
 
 .button:hover {
-  text-decoration: none;
-  background-color: #484848;
-  color: gold;
+  color: var(--highlight-color);
 }
 
 .button-primary {
-  background-color: rgb(255,215,0); /* gold */
-
-  border-color: rgb(179, 164, 0);
-  border-top-color: white;
-  border-bottom-color: rgb(151, 133, 0);
-
+  background-color: var(--highlight-color);
   color: black;
-  text-shadow: 0 1px 0 #fff;
 }
 
 .button-primary:hover {
-  background-color: rgb(255,235,20);
-  color: #333;
+  background-color: white;
+  color: black;
 }
 
 .button[disabled],
@@ -74,10 +67,6 @@
   cursor:default;
   background-color: #aaa;
   color: #777;
-  text-shadow: 0 1px 0 #bbb;
-  border-color: #666;
-  border-top-color: #999;
-  border-bottom-color: #555;
 }
 
 .import-size-field,
