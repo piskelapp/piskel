@@ -173,7 +173,7 @@ module.exports = function(grunt) {
       },
       css : {
         src : piskelStyles,
-        dest : 'dest/prod/css/piskel-style-packaged' + version + '.css'
+        dest : 'dest/tmp/css/piskel-style-packaged' + version + '.css'
       }
     },
 
@@ -223,6 +223,19 @@ module.exports = function(grunt) {
           // src/index.html should already have been moved by the includereplace task
           {src: ['dest/tmp/index.html'], dest: 'dest/prod/piskelapp-partials/main-partial.html'}
         ]
+      },
+
+      css: {
+        options: {
+          patterns: [{
+            match: /var\(--highlight-color\)/g,
+            replacement: "gold",
+          }]
+        },
+        files: [{
+          src: ['dest/tmp/css/piskel-style-packaged' + version + '.css'],
+          dest: 'dest/prod/css/piskel-style-packaged' + version + '.css'
+        }]
       },
       // remove the fake header from the desktop build
       desktop: {
@@ -341,7 +354,7 @@ module.exports = function(grunt) {
   // BUILD TASKS
   grunt.registerTask('build-index.html', ['includereplace']);
   grunt.registerTask('merge-statics', ['concat:js', 'concat:css', 'uglify']);
-  grunt.registerTask('build',  ['clean:prod', 'sprite', 'merge-statics', 'build-index.html', 'replace:mainPartial', 'copy:prod']);
+  grunt.registerTask('build',  ['clean:prod', 'sprite', 'merge-statics', 'build-index.html', 'replace:mainPartial', 'replace:css', 'copy:prod']);
   grunt.registerTask('build-dev',  ['clean:dev', 'sprite', 'build-index.html', 'copy:dev']);
   grunt.registerTask('desktop', ['clean:desktop', 'default', 'replace:desktop', 'nwjs:windows']);
   grunt.registerTask('desktop-mac', ['clean:desktop', 'default', 'replace:desktop', 'nwjs:macos']);
