@@ -35,7 +35,7 @@
         zoom: this.calculateZoom_.bind(this, true),
         button: document.querySelector('.best-size-button'),
         shortcut: pskl.service.keyboard.Shortcuts.MISC.BEST_PREVIEW,
-        tooltip: 'Biggest round factor size preview',
+        tooltip: 'Best size preview',
         enabled: true
       },
       full: {
@@ -43,7 +43,7 @@
         zoom: this.calculateZoom_.bind(this, false),
         button: document.querySelector('.full-size-button'),
         shortcut: pskl.service.keyboard.Shortcuts.MISC.FULL_PREVIEW,
-        tooltip: 'Biggest factor size preview',
+        tooltip: 'Full size preview',
         enabled: true
       }
     };
@@ -80,8 +80,8 @@
       }
     }
 
-    // TODO : Change the disabled message
-    document.querySelector('.preview-disable-overlay').setAttribute('title', 'Widget disabled.');
+    // The .preview-disable-overlay is displayed on top of the preview size widget
+    document.querySelector('.preview-disable-overlay').setAttribute('title', 'Disabled for seamless mode');
 
     $.subscribe(Events.FRAME_SIZE_CHANGED, this.onFrameSizeChange_.bind(this));
     $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
