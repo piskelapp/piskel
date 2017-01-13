@@ -64,44 +64,22 @@
   };
 
   ns.FileDropperService.prototype.onImageLoaded_ = function () {
-    var droppedFrame = pskl.utils.FrameUtils.createFromImage(this.importedImage_);
     var currentFrame = this.piskelController.getCurrentFrame();
+    // Convert client coordinates to sprite coordinates
+    var spriteDropPosition = pskl.app.drawingController.getSpriteCoordinates(
+      this.dropPosition_.x,
+      this.dropPosition_.y
+    );
 
-    var origin = this.adjustDropPosition_(this.dropPosition_, droppedFrame);
-    droppedFrame.forEachPixel(function (color, x, y) {
-      if (color != pskl.utils.colorToInt(Constants.TRANSPARENT_COLOR)) {
-        currentFrame.setPixel(origin.x + x, origin.y + y, color);
-      }
-    });
+    var x = spriteDropPosition.x;
+    var y = spriteDropPosition.y;
+
+    pskl.utils.FrameUtils.addImageToFrame(currentFrame, this.importedImage_, x, y);
 
     $.publish(Events.PISKEL_RESET);
     $.publish(Events.PISKEL_SAVE_STATE, {
       type : pskl.service.HistoryService.SNAPSHOT
     });
-  };
-
-  ns.FileDropperService.prototype.adjustDropPosition_ = function (position, droppedFrame) {
-    var framePosition = pskl.app.drawingController.getSpriteCoordinates(position.x, position.y);
-
-    var xCoord = framePosition.x - Math.floor(droppedFrame.width / 2);
-    var yCoord = framePosition.y - Math.floor(droppedFrame.height / 2);
-
-    xCoord = Math.max(0, xCoord);
-    yCoord = Math.max(0, yCoord);
-
-    var currentFrame = this.piskelController.getCurrentFrame();
-    if (droppedFrame.width <= currentFrame.width) {
-      xCoord = Math.min(xCoord, currentFrame.width - droppedFrame.width);
-    }
-
-    if (droppedFrame.height <= currentFrame.height) {
-      yCoord = Math.min(yCoord, currentFrame.height - droppedFrame.height);
-    }
-
-    return {
-      x : xCoord,
-      y : yCoord
-    };
   };
 
 })();

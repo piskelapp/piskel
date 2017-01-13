@@ -123,6 +123,33 @@
       }
     },
 
+    /**
+     * Insert the provided image in the provided frame, at the x, y sprite coordinates.
+     * Coordinates will be adjusted so that the image fits in the frame, if possible.
+     */
+    addImageToFrame: function (frame, image, x, y) {
+      var imageFrame = pskl.utils.FrameUtils.createFromImage(image);
+      x = x - Math.floor(imageFrame.width / 2);
+      y = y - Math.floor(imageFrame.height / 2);
+
+      x = Math.max(0, x);
+      y = Math.max(0, y);
+
+      if (imageFrame.width <= frame.width) {
+        x = Math.min(x, frame.width - imageFrame.width);
+      }
+
+      if (imageFrame.height <= frame.height) {
+        y = Math.min(y, frame.height - imageFrame.height);
+      }
+
+      imageFrame.forEachPixel(function (color, frameX, frameY) {
+        if (color != pskl.utils.colorToInt(Constants.TRANSPARENT_COLOR)) {
+          frame.setPixel(x + frameX, y + frameY, color);
+        }
+      });
+    },
+
     resize : function (frame, targetWidth, targetHeight, smoothing) {
       var image = pskl.utils.FrameUtils.toImage(frame);
       var resizedImage = pskl.utils.ImageResizer.resize(image, targetWidth, targetHeight, smoothing);
