@@ -167,45 +167,20 @@ if (!Uint32Array.prototype.fill) {
       return colorCache[color];
     }
 
-    var intValue = 0;
-    var r;
-    var g;
-    var b;
-    var a;
-
-    // Hexadecimal
-    if ((color.length == 9 || color.length == 7 || color.length == 3) && color[0] == '#') {
-      var hex = parseInt(color.substr(1), 16);
-      if (color.length == 9) {
-        r = hex >> 24 & 0xff;
-        g = hex >> 16 & 0xff;
-        b = hex >> 8 & 0xff;
-        a = hex & 0xff;
-      } else if (color.length == 7) {
-        r = hex >> 16 & 0xff;
-        g = hex >> 8 & 0xff;
-        b = hex & 0xff;
-        a = 255;
-      } else {
-        r = hex >> 8 & 0xf * 16;
-        g = hex >> 4 & 0xf * 16;
-        b = hex & 0xf * 16;
-        a = 255;
+    var tc = window.tinycolor(color);
+    if (tc && tc.ok) {
+      var rgb = tc.toRgb();
+      var a = Math.round(rgb.a * 255);
+      var intValue = (a << 24 >>> 0) + (rgb.b << 16) + (rgb.g << 8) + rgb.r;
+      if (a === 0) {
+        // assign all 'transparent' colors to 0, theoretically mapped to rgba(0,0,0,0) only
+        intValue = 0;
       }
-    } else if (color.length > 5 && color.substr(0, 5) == 'rgba(') { // RGBA
-      var rgba = color.substr(5).slice(0, -1).split(',');
-      r = parseInt(rgba[0]);
-      g = parseInt(rgba[1]);
-      b = parseInt(rgba[2]);
-      a = Math.floor(parseFloat(rgba[3]) * 255);
-    } else if (color.length > 4 && color.substr(0, 4) == 'rgb(') { // RGB
-      var rgb = color.substr(4).slice(0, -1).split(',');
-      r = parseInt(rgb[0]);
-      g = parseInt(rgb[1]);
-      b = parseInt(rgb[2]);
-      a = 255;
-    } else { // NO HOPE
-      // Determine color by using the browser itself
+      colorCache[color] = intValue;
+      colorCacheReverse[intValue] = color;
+      return intValue;
+    } else {
+      // If tinycolor failed, determine color by using the browser
       var d = document.createElement('div');
       d.style.color = color;
       document.body.appendChild(d);
@@ -216,12 +191,6 @@ if (!Uint32Array.prototype.fill) {
 
       return pskl.utils.colorToInt(color);
     }
-
-    intValue = (a << 24 >>> 0) + (b << 16) + (g << 8) + r;
-
-    colorCache[color] = intValue;
-    colorCacheReverse[intValue] = color;
-    return intValue;
   };
 
   ns.intToColor = function(intValue) {
