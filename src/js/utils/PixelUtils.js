@@ -60,14 +60,25 @@
      * @return an array of the pixel coordinates paint with the replacement color
      */
     getSimilarConnectedPixelsFromFrame: function(frame, col, row) {
-      // To get the list of connected (eg the same color) pixels, we will use the paintbucket algorithm
-      // in a fake cloned frame. The returned pixels by the paintbucket algo are the painted pixels
-      // and are as well connected.
-      var fakeFrame = frame.clone(); // We just want to
-      var fakeFillColor = 'sdfsdfsdf'; // A fake color that will never match a real color.
-      var paintedPixels = this.paintSimilarConnectedPixelsFromFrame(fakeFrame, col, row, fakeFillColor);
+      var targetColor = frame.getPixel(col, row);
+      if (targetColor === null) {
+        return;
+      }
 
-      return paintedPixels;
+      var startPixel = {
+        col : col,
+        row : row
+      };
+
+      var visited = {};
+      return pskl.PixelUtils.visitConnectedPixels(startPixel, frame, function (pixel) {
+        var key = pixel.col + '-' + pixel.row;
+        if (visited[key]) {
+          return false;
+        }
+        visited[key] = true;
+        return frame.getPixel(pixel.col, pixel.row) == targetColor;
+      });
     },
 
     /**
