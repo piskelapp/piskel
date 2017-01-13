@@ -67,12 +67,10 @@
     var droppedFrame = pskl.utils.FrameUtils.createFromImage(this.importedImage_);
     var currentFrame = this.piskelController.getCurrentFrame();
 
-    var dropCoordinates = this.adjustDropPosition_(this.dropPosition_, droppedFrame);
-
-    currentFrame.forEachPixel(function (color, x, y) {
-      var fColor = droppedFrame.getPixel(x - dropCoordinates.x, y - dropCoordinates.y);
-      if (fColor && fColor != Constants.TRANSPARENT_COLOR) {
-        currentFrame.setPixel(x, y, fColor);
+    var origin = this.adjustDropPosition_(this.dropPosition_, droppedFrame);
+    droppedFrame.forEachPixel(function (color, x, y) {
+      if (color != pskl.utils.colorToInt(Constants.TRANSPARENT_COLOR)) {
+        currentFrame.setPixel(origin.x + x, origin.y + y, color);
       }
     });
 
