@@ -62,7 +62,7 @@
     getSimilarConnectedPixelsFromFrame: function(frame, col, row) {
       var targetColor = frame.getPixel(col, row);
       if (targetColor === null) {
-        return;
+        return [];
       }
 
       var startPixel = {
