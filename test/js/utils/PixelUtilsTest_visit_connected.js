@@ -14,7 +14,6 @@ describe("PixelUtils visitor methods tests", function() {
   };
 
   it("getSimilarConnectedPixelsFromFrame works", function() {
-    // single point
     var frame = pskl.model.Frame.fromPixelGrid(test.testutils.toFrameGrid([
       [T, T, B],
       [B, T, B],
@@ -42,6 +41,5 @@ describe("PixelUtils visitor methods tests", function() {
     expect(containsPixel(pixels, 2, 0)).toBe(true);
     expect(containsPixel(pixels, 2, 1)).toBe(true);
     expect(containsPixel(pixels, 2, 2)).toBe(true);
-
   });
 });
