@@ -36,6 +36,8 @@
       this.piskelController.init();
 
       this.paletteImportService = new pskl.service.palette.PaletteImportService();
+      this.paletteImportService.init();
+
       this.paletteService = new pskl.service.palette.PaletteService();
       this.paletteService.addDynamicPalette(new pskl.service.palette.CurrentColorsPalette());
 
@@ -95,7 +97,7 @@
       this.selectionManager = new pskl.selection.SelectionManager(this.piskelController);
       this.selectionManager.init();
 
-      this.historyService = new pskl.service.HistoryService(this.corePiskelController);
+      this.historyService = new pskl.service.HistoryService(this.piskelController);
       this.historyService.init();
 
       this.notificationController = new pskl.controller.NotificationController();
@@ -131,7 +133,9 @@
       this.imageUploadService = new pskl.service.ImageUploadService();
       this.imageUploadService.init();
 
-      this.savedStatusService = new pskl.service.SavedStatusService(this.piskelController, this.historyService);
+      this.savedStatusService = new pskl.service.SavedStatusService(
+        this.piskelController,
+        this.historyService);
       this.savedStatusService.init();
 
       this.backupService = new pskl.service.BackupService(this.piskelController);
@@ -140,7 +144,9 @@
       this.beforeUnloadService = new pskl.service.BeforeUnloadService(this.piskelController);
       this.beforeUnloadService.init();
 
-      this.headerController = new pskl.controller.HeaderController(this.piskelController, this.savedStatusService);
+      this.headerController = new pskl.controller.HeaderController(
+        this.piskelController,
+        this.savedStatusService);
       this.headerController.init();
 
       this.penSizeService = new pskl.service.pensize.PenSizeService();
@@ -156,7 +162,8 @@
       this.userWarningController.init();
 
       this.performanceReportService = new pskl.service.performance.PerformanceReportService(
-        this.piskelController, this.currentColorsService);
+        this.piskelController,
+        this.currentColorsService);
       this.performanceReportService.init();
 
       this.drawingLoop = new pskl.rendering.DrawingLoop();

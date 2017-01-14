@@ -22,7 +22,16 @@ describe("History Service suite", function() {
   };
 
   var createMockHistoryService = function () {
-    var mockPiskelController = { getPiskel : function () {}, getFPS : function () { return 12; } };
+    var mockPiskelController = {
+      getWrappedPiskelController: function () {
+        return {
+          getPiskel : function () {},
+          getFPS : function () {
+            return 12;
+          }
+        }
+      }
+    };
     var mockShortcutService = {
       registerShortcuts : function () {},
       registerShortcut : function () {}

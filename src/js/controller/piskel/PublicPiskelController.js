@@ -1,6 +1,12 @@
 (function () {
   var ns = $.namespace('pskl.controller.piskel');
 
+  /**
+   * The PublicPiskelController is a decorator on PiskelController, provides the same API
+   * but will fire RESET/SAVE events when appropriate so that other objects get notified
+   * when important changes are made on the current Piskel.
+   * @param {PiskelController} piskelController the wrapped PiskelController
+   */
   ns.PublicPiskelController = function (piskelController) {
     this.piskelController = piskelController;
     pskl.utils.wrap(this, this.piskelController);
@@ -36,6 +42,10 @@
     pskl.app.shortcutService.registerShortcut(shortcuts.MISC.NEXT_FRAME, this.selectNextFrame.bind(this));
     pskl.app.shortcutService.registerShortcut(shortcuts.MISC.NEW_FRAME, this.addFrameAtCurrentIndex.bind(this));
     pskl.app.shortcutService.registerShortcut(shortcuts.MISC.DUPLICATE_FRAME, this.duplicateCurrentFrame.bind(this));
+  };
+
+  ns.PublicPiskelController.prototype.getWrappedPiskelController = function () {
+    return this.piskelController;
   };
 
   ns.PublicPiskelController.prototype.setPiskel = function (piskel, preserveState) {

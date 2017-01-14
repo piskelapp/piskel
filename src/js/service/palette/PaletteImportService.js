@@ -9,6 +9,7 @@
   };
 
   ns.PaletteImportService = function () {};
+  ns.PaletteImportService.prototype.init = function () {};
 
   ns.PaletteImportService.prototype.read = function (file, onSuccess, onError) {
     var reader = this.getReader_(file, onSuccess, onError);

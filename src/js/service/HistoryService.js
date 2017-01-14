@@ -2,7 +2,9 @@
   var ns = $.namespace('pskl.service');
 
   ns.HistoryService = function (piskelController, shortcutService, deserializer, serializer) {
-    this.piskelController = piskelController || pskl.app.piskelController;
+    // Use the real piskel controller that will not fire events when calling setters
+    this.piskelController = piskelController.getWrappedPiskelController();
+
     this.shortcutService = shortcutService || pskl.app.shortcutService;
     this.deserializer = deserializer || pskl.utils.serialization.arraybuffer.ArrayBufferDeserializer;
     this.serializer = serializer || pskl.utils.serialization.arraybuffer.ArrayBufferSerializer;
