@@ -2,6 +2,12 @@
   var ns = $.namespace('pskl.utils');
 
   ns.PiskelFileUtils = {
+    FAILURE : {
+      EMPTY : 'No data found in piskel file',
+      INVALID : 'Invalid piskel file, contact us on twitter @piskelapp',
+      DESERIALIZATION : 'Piskel data deserialization failed'
+    },
+
     /**
      * Load a piskel from a piskel file.
      * After deserialization is successful, the provided success callback will be called.
@@ -29,10 +35,22 @@
     },
 
     decodePiskelFile : function (rawPiskel, onSuccess, onError) {
-      var serializedPiskel = JSON.parse(rawPiskel);
+      var serializedPiskel;
+      if (rawPiskel.length === 0) {
+        onError(ns.PiskelFileUtils.FAILURE.EMPTY);
+        return;
+      }
+
+      try {
+        serializedPiskel = JSON.parse(rawPiskel);
+      } catch (e) {
+        onError(ns.PiskelFileUtils.FAILURE.INVALID);
+        return;
+      }
+
       var piskel = serializedPiskel.piskel;
-      pskl.utils.serialization.Deserializer.deserialize(serializedPiskel, function (piskel) {
-        onSuccess(piskel);
+      pskl.utils.serialization.Deserializer.deserialize(serializedPiskel, onSuccess, function () {
+        onError(ns.PiskelFileUtils.FAILURE.DESERIALIZATION);
       });
     }
   };

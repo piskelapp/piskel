@@ -79,9 +79,15 @@
 
   ns.ImportController.prototype.openPiskelFile_ = function (file) {
     if (this.isPiskel_(file)) {
-      pskl.utils.PiskelFileUtils.loadFromFile(file, function (piskel) {
-        pskl.app.piskelController.setPiskel(piskel);
-      });
+      pskl.utils.PiskelFileUtils.loadFromFile(file,
+        // onSuccess
+        function (piskel) {
+          pskl.app.piskelController.setPiskel(piskel);
+        },
+        // onError
+        function (reason) {
+          $.publish(Events.PISKEL_FILE_IMPORT_FAILED, [reason]);
+        });
       this.closeDrawer_();
     }
   };
