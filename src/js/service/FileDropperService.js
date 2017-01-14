@@ -35,7 +35,7 @@
       if (isImage) {
         this.readImageFile_(file);
       } else if (isPiskel) {
-        pskl.utils.PiskelFileUtils.loadFromFile(file, this.onPiskelFileLoaded_);
+        pskl.utils.PiskelFileUtils.loadFromFile(file, this.onPiskelFileLoaded_, this.onPiskelFileError_);
       } else if (isPalette) {
         pskl.app.paletteImportService.read(file, this.onPaletteLoaded_.bind(this));
       }
@@ -55,6 +55,10 @@
     if (window.confirm('This will replace your current animation')) {
       pskl.app.piskelController.setPiskel(piskel);
     }
+  };
+
+  ns.FileDropperService.prototype.onPiskelFileError_ = function (reason) {
+    $.publish(Events.PISKEL_FILE_IMPORT_FAILED, [reason]);
   };
 
   ns.FileDropperService.prototype.processImageSource_ = function (imageSource) {

@@ -6,9 +6,23 @@
    * @param {!PiskelController} piskelController
    * @constructor
    */
-  ns.ImportService =
-      function (piskelController) {
+  ns.ImportService = function (piskelController) {
     this.piskelController_ = piskelController;
+  };
+
+  ns.ImportService.prototype.init = function () {
+    $.subscribe(Events.PISKEL_FILE_IMPORT_FAILED, this.onPiskelFileImportFailed_);
+  };
+
+  /**
+   * Called when a piskel load failed event is published. Display an appropriate error message.
+   * TODO: for some failure reasons, we might want to display a dialog with more details.
+   */
+  ns.ImportService.prototype.onPiskelFileImportFailed_ = function (evt, reason) {
+    $.publish(Events.SHOW_NOTIFICATION, [{
+      'content': 'Piskel file import failed (' + reason + ')',
+      'hideDelay' : 10000
+    }]);
   };
 
   /**

@@ -9,16 +9,20 @@
     this.layers_ = [];
   };
 
-  ns.Deserializer.deserialize = function (data, callback) {
-    var deserializer;
-    if (data.modelVersion == Constants.MODEL_VERSION) {
-      deserializer = new ns.Deserializer(data, callback);
-    } else if (data.modelVersion == 1) {
-      deserializer = new ns.backward.Deserializer_v1(data, callback);
-    } else {
-      deserializer = new ns.backward.Deserializer_v0(data, callback);
+  ns.Deserializer.deserialize = function (data, onSuccess, onError) {
+    try {
+      var deserializer;
+      if (data.modelVersion == Constants.MODEL_VERSION) {
+        deserializer = new ns.Deserializer(data, onSuccess);
+      } else if (data.modelVersion == 1) {
+        deserializer = new ns.backward.Deserializer_v1(data, onSuccess);
+      } else {
+        deserializer = new ns.backward.Deserializer_v0(data, onSuccess);
+      }
+      deserializer.deserialize();
+    } catch (e) {
+      onError(e);
     }
-    deserializer.deserialize();
   };
 
   ns.Deserializer.prototype.deserialize = function () {
