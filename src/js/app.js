@@ -61,7 +61,6 @@
 
       this.drawingController = new pskl.controller.DrawingController(
         this.piskelController,
-        this.paletteController,
         $('#drawing-canvas-container'));
       this.drawingController.init();
 

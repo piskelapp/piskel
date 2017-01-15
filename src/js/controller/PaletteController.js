@@ -1,6 +1,10 @@
 (function () {
   var ns = $.namespace('pskl.controller');
 
+  /**
+   * The PaletteController is responsible for handling the two color picker
+   * widgets found in the left column, below the tools.
+   */
   ns.PaletteController = function () {};
 
   /**

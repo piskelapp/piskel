@@ -2,13 +2,11 @@
 
   var ns = $.namespace('pskl.controller');
 
-  ns.DrawingController = function (piskelController, paletteController, container) {
+  ns.DrawingController = function (piskelController, container) {
     /**
      * @public
      */
     this.piskelController = piskelController;
-
-    this.paletteController = paletteController;
 
     this.dragHandler = new ns.drawing.DragHandler(this);
 
