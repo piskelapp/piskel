@@ -53,4 +53,5 @@
 
 .pen-size-option.labeled:before {
   content: attr(real-pen-size);
+  color: black;
 }
