@@ -188,7 +188,7 @@
       }
 
       if (pskl.utils.UserAgent.isUnsupported()) {
-        $.publish(Events.DIALOG_DISPLAY, {
+        $.publish(Events.DIALOG_SHOW, {
           dialogId : 'unsupported-browser'
         });
       }

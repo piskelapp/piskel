@@ -71,7 +71,7 @@
   };
 
   ns.ImportController.prototype.onBrowseLocalClick_ = function (evt) {
-    $.publish(Events.DIALOG_DISPLAY, {
+    $.publish(Events.DIALOG_SHOW, {
       dialogId : 'browse-local'
     });
     this.closeDrawer_();
@@ -79,38 +79,37 @@
 
   ns.ImportController.prototype.openPiskelFile_ = function (file) {
     if (this.isPiskel_(file)) {
-      pskl.utils.PiskelFileUtils.loadFromFile(file,
-        // onSuccess
-        function (piskel) {
-          pskl.app.piskelController.setPiskel(piskel);
-        },
-        // onError
-        function (reason) {
-          $.publish(Events.PISKEL_FILE_IMPORT_FAILED, [reason]);
-        });
+      $.publish(Events.DIALOG_SHOW, {
+        dialogId : 'import',
+        initArgs : {
+          rawFiles: [file]
+        }
+      });
       this.closeDrawer_();
+    } else {
+      this.closeDrawer_();
+      console.error('The selected file is not a piskel file');
     }
   };
 
   ns.ImportController.prototype.importPictureFromFile_ = function () {
     var files = this.hiddenFileInput.files;
-    if (files.length == 1) {
-      var file = files[0];
-      if (this.isImage_(file)) {
-        $.publish(Events.DIALOG_DISPLAY, {
-          dialogId : 'import-image',
-          initArgs : file
-        });
-        this.closeDrawer_();
-      } else {
-        this.closeDrawer_();
-        console.error('File is not an image : ' + file.type);
-      }
+    // TODO : Simply filter and remove stuff
+    var areImages = Array.prototype.every.call(files, function (file) {
+      return file.type.indexOf('image') === 0;
+    });
+    if (areImages) {
+      $.publish(Events.DIALOG_SHOW, {
+        dialogId : 'import',
+        initArgs : {
+          rawFiles: files
+        }
+      });
+      this.closeDrawer_();
+    } else {
+      this.closeDrawer_();
+      console.error('Some files are not images');
     }
-  };
-
-  ns.ImportController.prototype.isImage_ = function (file) {
-    return file.type.indexOf('image') === 0;
   };
 
   ns.ImportController.prototype.isPiskel_ = function (file) {

@@ -139,14 +139,14 @@
   };
 
   ns.PalettesListController.prototype.onCreatePaletteClick_ = function (evt) {
-    $.publish(Events.DIALOG_DISPLAY, {
+    $.publish(Events.DIALOG_SHOW, {
       dialogId : 'create-palette'
     });
   };
 
   ns.PalettesListController.prototype.onEditPaletteClick_ = function (evt) {
     var paletteId = this.colorPaletteSelect_.value;
-    $.publish(Events.DIALOG_DISPLAY, {
+    $.publish(Events.DIALOG_SHOW, {
       dialogId : 'create-palette',
       initArgs : paletteId
     });

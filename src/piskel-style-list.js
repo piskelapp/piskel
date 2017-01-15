@@ -22,7 +22,7 @@
   "css/dialogs-browse-local.css",
   "css/dialogs-cheatsheet.css",
   "css/dialogs-create-palette.css",
-  "css/dialogs-import-image.css",
+  "css/dialogs-import.css",
   "css/dialogs-performance-info.css",
   "css/dialogs-unsupported-browser.css",
   "css/notifications.css",
@@ -36,5 +36,8 @@
   "css/bootstrap/bootstrap.css",
   "css/bootstrap/bootstrap-tooltip-custom.css",
   "css/frames-list.css",
-  "css/minimap.css"
+  "css/minimap.css",
+  "css/widgets-anchor.css",
+  "css/widgets-frame-picker.css",
+  "css/widgets-wizard.css"
 ];

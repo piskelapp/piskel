@@ -15,6 +15,15 @@
       return templates[templateId];
     },
 
+    getAsHTML : function (templateId) {
+      var template = ns.Template.get(templateId);
+      if (!template) {
+        return;
+      }
+
+      return ns.Template.createFromHTML(template);
+    },
+
     createFromHTML : function (html) {
       var dummyEl = ns.Template._getDummyEl();
       dummyEl.innerHTML = html;
@@ -48,6 +57,15 @@
         }
       }
       return template;
+    },
+
+    getAndReplace : function (templateId, dict) {
+      var result = '';
+      var tpl = pskl.utils.Template.get(templateId);
+      if (tpl) {
+        result = pskl.utils.Template.replace(tpl, dict);
+      }
+      return result;
     },
 
     /**

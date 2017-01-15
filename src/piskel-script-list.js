@@ -30,8 +30,10 @@
   "js/utils/FrameUtils.js",
   "js/utils/ImageResizer.js",
   "js/utils/LayerUtils.js",
+  "js/utils/MergeUtils.js",
   "js/utils/PixelUtils.js",
   "js/utils/PiskelFileUtils.js",
+  "js/utils/ResizeUtils.js",
   "js/utils/StringUtils.js",
   "js/utils/Template.js",
   "js/utils/TooltipFormatter.js",
@@ -126,7 +128,6 @@
   "js/controller/settings/exportimage/ZipExportController.js",
   "js/controller/settings/exportimage/MiscExportController.js",
   "js/controller/settings/exportimage/ExportController.js",
-  "js/controller/settings/resize/AnchorWidget.js",
   "js/controller/settings/resize/ResizeController.js",
   "js/controller/settings/resize/DefaultSizeController.js",
   "js/controller/settings/SaveController.js",
@@ -138,9 +139,14 @@
   // Dialogs sub-controllers
   "js/controller/dialogs/AbstractDialogController.js",
   "js/controller/dialogs/CreatePaletteController.js",
-  "js/controller/dialogs/ImportImageController.js",
   "js/controller/dialogs/BrowseLocalController.js",
   "js/controller/dialogs/CheatsheetController.js",
+  "js/controller/dialogs/importwizard/steps/AbstractImportStep.js",
+  "js/controller/dialogs/importwizard/steps/AdjustSize.js",
+  "js/controller/dialogs/importwizard/steps/ImageImport.js",
+  "js/controller/dialogs/importwizard/steps/InsertLocation.js",
+  "js/controller/dialogs/importwizard/steps/SelectMode.js",
+  "js/controller/dialogs/importwizard/ImportWizard.js",
   "js/controller/dialogs/PerformanceInfoController.js",
   "js/controller/dialogs/UnsupportedBrowserController.js",
 
@@ -148,10 +154,13 @@
   "js/controller/dialogs/DialogsController.js",
 
   // Widgets
+  "js/widgets/AnchorWidget.js",
   "js/widgets/ColorsList.js",
+  "js/widgets/FramePicker.js",
   "js/widgets/HslRgbColorPicker.js",
   "js/widgets/SizeInput.js",
   "js/widgets/SynchronizedInputs.js",
+  "js/widgets/Wizard.js",
 
   // Services
   "js/service/storage/StorageService.js",
