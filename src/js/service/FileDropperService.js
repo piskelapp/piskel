@@ -35,17 +35,19 @@
       var isPiskel = /\.piskel$/i.test(file.name);
       var isPalette = /\.(gpl|txt|pal)$/i.test(file.name);
       if (isImage) {
-        this.readImageFile_(file);
+        $.publish(Events.DIALOG_SHOW, {
+          dialogId : 'import',
+          initArgs : {
+            rawFiles: [file]
+          }
+        });
+        // pskl.utils.FileUtils.readImageFile(file, this.onImageLoaded_.bind(this));
       } else if (isPiskel) {
         pskl.utils.PiskelFileUtils.loadFromFile(file, this.onPiskelFileLoaded_, this.onPiskelFileError_);
       } else if (isPalette) {
         pskl.app.paletteImportService.read(file, this.onPaletteLoaded_.bind(this));
       }
     }
-  };
-
-  ns.FileDropperService.prototype.readImageFile_ = function (imageFile) {
-    pskl.utils.FileUtils.readFile(imageFile, this.processImageSource_.bind(this));
   };
 
   ns.FileDropperService.prototype.onPaletteLoaded_ = function (palette) {
@@ -61,12 +63,6 @@
 
   ns.FileDropperService.prototype.onPiskelFileError_ = function (reason) {
     $.publish(Events.PISKEL_FILE_IMPORT_FAILED, [reason]);
-  };
-
-  ns.FileDropperService.prototype.processImageSource_ = function (imageSource) {
-    var importedImage = new Image();
-    importedImage.onload = this.onImageLoaded_.bind(this, importedImage);
-    importedImage.src = imageSource;
   };
 
   ns.FileDropperService.prototype.onImageLoaded_ = function (importedImage) {

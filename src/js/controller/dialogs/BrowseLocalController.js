@@ -1,8 +1,7 @@
 (function () {
   var ns = $.namespace('pskl.controller.dialogs');
 
-  ns.BrowseLocalController = function (piskelController) {
-  };
+  ns.BrowseLocalController = function (piskelController) {};
 
   pskl.utils.inherit(ns.BrowseLocalController, ns.AbstractDialogController);
 

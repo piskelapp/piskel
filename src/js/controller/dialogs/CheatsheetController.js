@@ -13,11 +13,12 @@
     this.cheatsheetEl = document.getElementById('cheatsheetContainer');
     this.eventTrapInput = document.getElementById('cheatsheetEventTrap');
 
-    pskl.utils.Event.addEventListener('.cheatsheet-restore-defaults', 'click', this.onRestoreDefaultsClick_, this);
-    pskl.utils.Event.addEventListener(this.cheatsheetEl, 'click', this.onCheatsheetClick_, this);
-    pskl.utils.Event.addEventListener(this.eventTrapInput, 'keydown', this.onEventTrapKeydown_, this);
+    this.addEventListener('.cheatsheet-restore-defaults', 'click', this.onRestoreDefaultsClick_);
+    this.addEventListener(this.cheatsheetEl, 'click', this.onCheatsheetClick_);
+    this.addEventListener(this.eventTrapInput, 'keydown', this.onEventTrapKeydown_);
 
-    $.subscribe(Events.SHORTCUTS_CHANGED, this.onShortcutsChanged_.bind(this));
+    this.onShortcutsChanged_ = this.onShortcutsChanged_.bind(this);
+    $.subscribe(Events.SHORTCUTS_CHANGED, this.onShortcutsChanged_);
 
     this.initMarkup_();
     document.querySelector('.cheatsheet-helptext').setAttribute('title', this.getHelptextTitle_());
@@ -25,8 +26,11 @@
 
   ns.CheatsheetController.prototype.destroy = function () {
     this.eventTrapInput.blur();
-    pskl.utils.Event.removeAllEventListeners();
+
+    $.unsubscribe(Events.SHORTCUTS_CHANGED, this.onShortcutsChanged_);
     this.cheatsheetEl = null;
+
+    this.superclass.destroy.call(this);
   };
 
   ns.CheatsheetController.prototype.onRestoreDefaultsClick_ = function () {

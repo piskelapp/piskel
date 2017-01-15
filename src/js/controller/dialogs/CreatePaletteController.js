@@ -19,12 +19,12 @@
     var downloadButton = document.querySelector('.create-palette-download-button');
     var importFileButton = document.querySelector('.create-palette-import-button');
 
-    this.nameInput.addEventListener('input', this.onNameInputChange_.bind(this));
-    this.hiddenFileInput.addEventListener('change', this.onFileInputChange_.bind(this));
+    this.addEventListener(this.nameInput, 'input', this.onNameInputChange_);
+    this.addEventListener(this.hiddenFileInput, 'change', this.onFileInputChange_);
 
-    buttonsContainer.addEventListener('click', this.onButtonClick_.bind(this));
-    downloadButton.addEventListener('click', this.onDownloadButtonClick_.bind(this));
-    importFileButton.addEventListener('click', this.onImportFileButtonClick_.bind(this));
+    this.addEventListener(buttonsContainer, 'click', this.onButtonClick_);
+    this.addEventListener(downloadButton, 'click', this.onDownloadButtonClick_);
+    this.addEventListener(importFileButton, 'click', this.onImportFileButtonClick_);
 
     var colorsListContainer = document.querySelector('.colors-container');
     this.colorsListWidget = new pskl.widgets.ColorsList(colorsListContainer);
@@ -66,7 +66,10 @@
 
   ns.CreatePaletteController.prototype.destroy = function () {
     this.colorsListWidget.destroy();
+    this.superclass.destroy.call(this);
+
     this.nameInput = null;
+    this.hiddenFileInput = null;
   };
 
   ns.CreatePaletteController.prototype.onButtonClick_ = function (evt) {

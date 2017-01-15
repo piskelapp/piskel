@@ -38,11 +38,11 @@ casper.test.begin('Test resize content works, and check the output', 18, functio
 
     test.assertExists('.resize-content-checkbox', 'Check if resize ratio checkbox is available');
     test.assert(!isChecked('.resize-content-checkbox'), 'Keep content checkbox is unchecked');
-    test.assertExists('.resize-origin-container:not(.disabled)', 'Check the resize origin widget is currently disabled');
+    test.assertExists('.anchor-wrapper:not(.disabled)', 'Check the resize anchor widget is currently disabled');
 
     casper.click('.resize-content-checkbox');
-    // Enabling "Resize content" will disabled the resize origin widget.
-    casper.waitForSelector('.resize-origin-container.disabled', onResizeOriginDisabled, test.timeout, 10000);
+    // Enabling "Resize content" will disabled the resize anchor widget.
+    casper.waitForSelector('.anchor-wrapper.disabled', onResizeOriginDisabled, test.timeout, 10000);
   }
 
   function onResizeOriginDisabled() {

@@ -3,6 +3,19 @@
 /* Browse local piskels panel                                                                   */
 /************************************************************************************************/
 
+#dialog-container.browse-local {
+  width: 700px;
+  height: 500px;
+  top : 50%;
+  left : 50%;
+  position : absolute;
+  margin-left: -350px;
+}
+
+.show #dialog-container.browse-local {
+  margin-top: -250px;
+}
+
 .local-piskel-list {
   width: 100%;
 }

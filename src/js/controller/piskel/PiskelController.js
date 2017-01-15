@@ -155,8 +155,7 @@
   };
 
   ns.PiskelController.prototype.getFrameCount = function () {
-    var layer = this.piskel.getLayerAt(0);
-    return layer.size();
+    return this.piskel.getFrameCount();
   };
 
   ns.PiskelController.prototype.setCurrentFrameIndex = function (index) {

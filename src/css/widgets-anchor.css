@@ -1,0 +1,98 @@
+/*****************/
+/* ANCHOR WIDGET */
+/*****************/
+
+.anchor-wrapper {
+  overflow: hidden;
+  width: 70px;
+}
+
+/* When transitioning between enabled and disabled states */
+.transition .anchor-option,
+.transition .anchor-option:before {
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.anchor-option {
+  float: left;
+  position: relative;
+
+  box-sizing: border-box;
+  margin: 0 1px 1px 0;
+  width: 20px;
+  height: 20px;
+
+  background : #888;
+
+  font-size: 8px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.disabled .anchor-option {
+  cursor: default;
+  background : #555;
+  border-color: #555 !important;
+}
+
+.anchor-option:hover {
+  border : 3px solid white;
+}
+
+.anchor-option.selected {
+  border : 3px solid var(--highlight-color);
+}
+
+.anchor-option:before {
+  content: '';
+  position: absolute;
+  display: block;
+  top: 50%;
+  left: 50%;
+  margin: -2px;
+}
+
+.anchor-option.selected:before {
+  content: '';
+  width: 4px;
+  height: 4px;
+  background: var(--highlight-color);
+}
+
+.disabled .anchor-option.selected:before {
+  background: #555;
+}
+
+.disabled .anchor-option[data-neighbor]:before {
+  border-color: #555 !important;
+}
+
+.anchor-option[data-neighbor]:before {
+  width: 0;
+  height: 0;
+  border-width: 4px;
+  border-style: solid;
+  border-color: transparent;
+}
+
+.anchor-option[data-neighbor="bottom"]:before {
+  border-top-color: var(--highlight-color);
+  margin-left: -4px;
+}
+
+.anchor-option[data-neighbor="left"]:before {
+  border-right-color: var(--highlight-color);
+  margin-top: -4px;
+  margin-left: -6px;
+}
+
+.anchor-option[data-neighbor="top"]:before {
+  border-bottom-color: var(--highlight-color);
+  margin-top: -6px;
+  margin-left: -4px;
+}
+
+.anchor-option[data-neighbor="right"]:before {
+  border-left-color: var(--highlight-color);
+  margin-top: -4px;
+}

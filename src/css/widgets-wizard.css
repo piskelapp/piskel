@@ -1,0 +1,32 @@
+.wizard-wrapper {
+  z-index: 1;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.wizard-step {
+  z-index: -1;
+  margin-left: calc(100% + 5px);
+  position: absolute;
+}
+
+.current-step {
+  z-index: 1;
+  margin-left: 0;
+}
+
+.current-step-in,
+.current-step-out {
+  z-index: 10;
+  transition: margin-left 200ms;
+}
+
+.current-step-in {
+  margin-left: 0;
+}
+
+.current-step-out {
+  margin-left: 100%;
+}

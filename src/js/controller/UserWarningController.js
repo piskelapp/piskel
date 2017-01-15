@@ -9,7 +9,7 @@
   // This method is not attached to the prototype because we want to trigger it
   // from markup generated for a notification message.
   ns.UserWarningController.showPerformanceInfoDialog = function () {
-    $.publish(Events.DIALOG_DISPLAY, {
+    $.publish(Events.DIALOG_SHOW, {
       dialogId: 'performance-info'
     });
   };

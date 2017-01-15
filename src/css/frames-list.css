@@ -54,6 +54,9 @@
 }
 
 .add-frame-action {
+  display: flex;
+  align-items: center;
+
   margin-top: 8px;
   padding: 6px 0;
   overflow: hidden;
@@ -71,6 +74,7 @@
 .add-frame-action-icon {
   margin: 3px;
   float: left;
+  flex-shrink: 0;
 }
 
 .add-frame-action .label {
