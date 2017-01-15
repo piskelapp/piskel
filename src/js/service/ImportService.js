@@ -45,6 +45,7 @@
     var frameSizeY = options.frameSizeY;
     var frameOffsetX = options.frameOffsetX;
     var frameOffsetY = options.frameOffsetY;
+    var smoothing = options.smoothing;
 
     var gifLoader = new window.SuperGif({
       gif: image
@@ -56,26 +57,28 @@
           return pskl.utils.CanvasUtils.createFromImageData(frame.data);
         });
 
+        var piskel;
         if (importType === 'single' || images.length > 1) {
           // Single image import or animated gif
-          this.createPiskelFromImages_(images, frameSizeX, frameSizeY, options.smoothing);
+          piskel = this.createPiskelFromImages_(images, frameSizeX, frameSizeY, smoothing);
         } else {
           // Spritesheet
           var frameImages = this.createImagesFromSheet_(images[0], frameSizeX, frameSizeY, frameOffsetX, frameOffsetY);
-          this.createPiskelFromImages_(frameImages, frameSizeX, frameSizeY, options.smoothing);
+          piskel = this.createPiskelFromImages_(frameImages, frameSizeX, frameSizeY, smoothing);
         }
-        onComplete();
+        onComplete(piskel);
       }.bind(this),
       error: function () {
+        var piskel;
         if (importType === 'single') {
           // Single image
-          this.createPiskelFromImages_([image], frameSizeX, frameSizeY, options.smoothing);
+          piskel = this.createPiskelFromImages_([image], frameSizeX, frameSizeY, smoothing);
         } else {
           // Spritesheet
           var frameImages = this.createImagesFromSheet_(image, frameSizeX, frameSizeY, frameOffsetX, frameOffsetY);
-          this.createPiskelFromImages_(frameImages, frameSizeX, frameSizeY, options.smoothing);
+          piskel = this.createPiskelFromImages_(frameImages, frameSizeX, frameSizeY, smoothing);
         }
-        onComplete();
+        onComplete(piskel);
       }.bind(this)
     });
   };
@@ -113,9 +116,7 @@
     var frames = this.createFramesFromImages_(images, frameSizeX, frameSizeY, smoothing);
     var layer = pskl.model.Layer.fromFrames('Layer 1', frames);
     var descriptor = new pskl.model.piskel.Descriptor('Imported piskel', '');
-    var piskel = pskl.model.Piskel.fromLayers([layer], Constants.DEFAULT.FPS, descriptor);
-
-    this.piskelController_.setPiskel(piskel);
+    return pskl.model.Piskel.fromLayers([layer], Constants.DEFAULT.FPS, descriptor);
   };
 
   /**

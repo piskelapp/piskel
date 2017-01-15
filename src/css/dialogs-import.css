@@ -1,0 +1,263 @@
+#dialog-container.import {
+  width: 500px;
+  height: 350px;
+  top : 50%;
+  left : 50%;
+  position : absolute;
+  margin-left: -250px;
+  margin-top: -175px;
+}
+
+.import .dialog-content {
+  font-size: 1.3em;
+}
+
+.import-step-container {
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+  box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.5);
+  background: #444;
+}
+
+.import-step-buttons {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  text-align: right;
+}
+
+.import-first-step .import-back-button {
+  display: none;
+}
+
+/**
+ * IMAGE IMPORT STEP
+ */
+
+.import-image-loading {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.import-image-loading::after {
+  content: 'loading image';
+
+  position: absolute;
+  width: 100%;
+  top: 0;
+  left: 0;
+  margin-top: 110px;
+
+  text-align: center;
+  font-size: 3em;
+  color: white;
+  text-shadow: 0 0 60px black;
+}
+
+.import-subsection {
+  margin-left: 25px;
+}
+
+.import-section:not(.import-subsection) > .dialog-section-title {
+  width: 50px;
+}
+
+.import-section-preview-title {
+  position: absolute;
+  margin-left: 50%;
+  margin-top: -28px;
+}
+
+.import-section-preview {
+  position: absolute;
+  display: inline-block;
+  border: 1px dashed #999;
+  border-radius: 3px;
+  margin-left: 50%;
+  top: 10px;
+
+  width: 220px;
+  height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.import-section-preview img {
+  max-width: 100%;
+  max-height: 100%;
+  display: block;
+}
+
+.import-section-preview canvas {
+  position: absolute;
+}
+
+.dialog-section-title {
+  display : inline-block;
+  width: 80px;
+}
+
+.dialog-section-radio {
+  margin-top: 15px;
+  vertical-align: sub;
+}
+
+.import-size-field:nth-of-type(2) {
+  margin-left: 5px;
+}
+
+.import-image-file-name {
+  display: inline-block;
+  overflow: hidden;
+
+  width: 200px;
+  vertical-align: middle;
+
+  word-break : break-all;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+
+  font-style: italic;
+  font-weight: normal;
+  text-shadow: none;
+  color: var(--highlight-color);
+}
+
+[name=smooth-resize-checkbox] {
+  margin : 0 8px;
+}
+
+.dialog-import-body {
+  padding: 10px 20px;
+  font-size:1.3em
+}
+
+.import-button {
+  font-size: 1em;
+  height: 28px;
+  padding: 0px 10px;
+  margin-top: 15px;
+}
+
+/**
+ * SELECT MODE
+ */
+
+.import-info {
+  display: flex;
+}
+
+.import-preview canvas {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.import-meta {
+  width: 50%;
+  padding-left: 10px;
+  box-sizing: border-box;
+
+  /*center meta information horizontally*/
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.import-meta > div {
+  height: 22px;
+  display: flex;
+  margin-bottom: 5px;
+}
+
+.import-meta-value,
+.import-meta-label {
+  padding: 2px 4px;
+  border: 1px solid gold;
+}
+
+.import-meta-label {
+  border-radius: 2px 0 0 2px;
+  color: var(--highlight-color);
+  border-right-width: 0;
+}
+
+.import-meta-title .import-meta-label {
+  border-right-width: 1px;
+  border-radius: 2px;
+}
+
+.import-meta-value {
+  border-radius: 0 2px 2px 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.import-missing {
+  text-align: center;
+  line-height: 70px;
+  font-style: italic;
+  color: #aaa;
+}
+
+.import-mode {
+  margin: 15px 0 20px 0;
+}
+
+.import-mode-title {
+  margin-bottom: 10px
+}
+
+.import-mode-option,
+.import-resize-option,
+.insert-mode-option {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.import-mode-option :checked + span,
+.import-resize-option :checked + span,
+.insert-mode-option :checked + span {
+  color: var(--highlight-color);
+}
+
+/**
+ * ADJUST SIZE
+ */
+.import-resize-info {
+  margin: 10px 0 20px 0;
+}
+
+.import-resize-anchor-info,
+.import-resize-option-label,
+.insert-mode-option-label {
+  margin-bottom: 10px;
+}
+
+.import-resize-section {
+  margin-bottom: 10px;
+}
+
+.import-resize-option :checked + span {
+  color: var(--highlight-color);
+}
+
+.import-resize-warning {
+  color: var(--highlight-color);
+}
+
+/**
+ * INSERT LOCATION
+ */
+
+.insert-mode-container {
+  margin-bottom: 10px;
+}
+
+.insert-frame-container {
+  margin: 10px 0;
+}

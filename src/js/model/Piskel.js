@@ -70,6 +70,10 @@
     });
   };
 
+  ns.Piskel.prototype.getFrameCount = function () {
+    return this.getLayerAt(0).size();
+  };
+
   ns.Piskel.prototype.addLayer = function (layer) {
     this.layers.push(layer);
   };

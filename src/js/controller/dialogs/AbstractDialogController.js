@@ -4,14 +4,19 @@
   ns.AbstractDialogController = function () {};
 
   ns.AbstractDialogController.prototype.init = function () {
-    this.closeButton = document.querySelector('.dialog-close');
-    this.closeButton.addEventListener('click', this.closeDialog.bind(this));
+    var closeButton = document.querySelector('.dialog-close');
+    this.addEventListener(closeButton, 'click', this.closeDialog);
   };
 
-  ns.AbstractDialogController.prototype.destroy = function () {};
+  ns.AbstractDialogController.prototype.addEventListener = function (el, type, cb) {
+    pskl.utils.Event.addEventListener(el, type, cb, this);
+  };
+
+  ns.AbstractDialogController.prototype.destroy = function () {
+    pskl.utils.Event.removeAllEventListeners(this);
+  };
 
   ns.AbstractDialogController.prototype.closeDialog = function () {
-    this.destroy();
     $.publish(Events.DIALOG_HIDE);
   };
 
