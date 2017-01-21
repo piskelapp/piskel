@@ -20,10 +20,19 @@
    * @override
    */
   ns.Rectangle.prototype.draw = function (col, row, color, targetFrame, penSize) {
-    var rectanglePixels = pskl.PixelUtils.getBoundRectanglePixels(this.startCol, this.startRow, col, row);
+    var rectangle = pskl.PixelUtils.getOrderedRectangleCoordinates(this.startCol, this.startRow, col, row);
 
-    pskl.PixelUtils.resizePixels(rectanglePixels, penSize).forEach(function (point) {
-      targetFrame.setPixel(point[0], point[1], color);
-    });
+    for (var x = rectangle.x0; x <= rectangle.x1; x++) {
+      for (var y = rectangle.y0; y <= rectangle.y1; y++) {
+        if (
+          x > rectangle.x1 - penSize ||
+          x < rectangle.x0 + penSize ||
+          y > rectangle.y1 - penSize ||
+          y < rectangle.y0 + penSize
+        ) {
+          targetFrame.setPixel(x, y, color);
+        }
+      }
+    }
   };
 })();
