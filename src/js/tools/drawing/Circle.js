@@ -29,6 +29,8 @@
     var coords = pskl.PixelUtils.getOrderedRectangleCoordinates(x0, y0, x1, y1);
     var xC = Math.round((coords.x0 + coords.x1) / 2);
     var yC = Math.round((coords.y0 + coords.y1) / 2);
+    var evenX = (coords.x0 + coords.x1) % 2;
+    var evenY = (coords.y0 + coords.y1) % 2;
 
     var rX = coords.x1 - xC;
     var rY = coords.y1 - yC;
@@ -54,9 +56,9 @@
           r < rX * rY / Math.sqrt(rY * rY * Math.pow(Math.cos(angle), 2) + rX * rX * Math.pow(Math.sin(angle), 2)) +
           0.5) {
           pixels.push([xC + x, yC + y]);
-          pixels.push([xC - x, yC + y]);
-          pixels.push([xC + x, yC - y]);
-          pixels.push([xC - x, yC - y]);
+          pixels.push([xC - x - evenX, yC + y]);
+          pixels.push([xC + x, yC - y - evenY]);
+          pixels.push([xC - x - evenX, yC - y - evenY]);
         }
       }
     }
