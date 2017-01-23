@@ -27,6 +27,8 @@
     };
 
     var files = event.dataTransfer.files;
+    this.isMultipleFiles_ = (files.length > 1);
+
     for (var i = 0; i < files.length ; i++) {
       var file = files[i];
       var isImage = file.type.indexOf('image') === 0;
@@ -62,12 +64,17 @@
   };
 
   ns.FileDropperService.prototype.processImageSource_ = function (imageSource) {
-    this.importedImage_ = new Image();
-    this.importedImage_.onload = this.onImageLoaded_.bind(this);
-    this.importedImage_.src = imageSource;
+    var importedImage = new Image();
+    importedImage.onload = this.onImageLoaded_.bind(this, importedImage);
+    importedImage.src = imageSource;
   };
 
-  ns.FileDropperService.prototype.onImageLoaded_ = function () {
+  ns.FileDropperService.prototype.onImageLoaded_ = function (importedImage) {
+    if (this.isMultipleFiles_) {
+      this.piskelController.addFrameAtCurrentIndex();
+      this.piskelController.selectNextFrame();
+    }
+
     var currentFrame = this.piskelController.getCurrentFrame();
     // Convert client coordinates to sprite coordinates
     var spriteDropPosition = pskl.app.drawingController.getSpriteCoordinates(
@@ -78,7 +85,7 @@
     var x = spriteDropPosition.x;
     var y = spriteDropPosition.y;
 
-    pskl.utils.FrameUtils.addImageToFrame(currentFrame, this.importedImage_, x, y);
+    pskl.utils.FrameUtils.addImageToFrame(currentFrame, importedImage, x, y);
 
     $.publish(Events.PISKEL_RESET);
     $.publish(Events.PISKEL_SAVE_STATE, {
