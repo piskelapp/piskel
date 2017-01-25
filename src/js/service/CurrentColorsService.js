@@ -70,52 +70,26 @@
     return result;
   };
 
-  var frameCache = {};
   ns.CurrentColorsService.prototype.updateCurrentColors_ = function () {
     var layers = this.piskelController.getLayers();
-    var frames = layers.map(function (l) {return l.getFrames();}).reduce(function (p, n) {return p.concat(n);});
-    var job = function (frame) {
+
+    // Concatenate all frames in a single array.
+    var frames = layers.map(function (l) {
+      return l.getFrames();
+    }).reduce(function (p, n) {
+      return p.concat(n);
+    });
+
+    batchAll(frames, function (frame) {
       return this.cachedFrameProcessor.get(frame);
-    }.bind(this);
-
-    var colors = {};
-    var framesToBatch = [];
-
-    var removeColorsIfNotInCurrent = function(hash, color) {
-      if (!frameCache[hash][color]) {
-        delete colors[color];
-      }
-    };
-
-    for (var i = 0, length = frames.length; i < length; ++i) {
-      var frame = frames[i];
-      var hash = frame.getHash();
-
-      if (frameCache[hash]) {
-        colors = Object.assign(colors, frameCache[hash]);
-
-        var hashParts = hash.split('-');
-        var hashVersion = parseInt(hashParts.pop());
-
-        if (hashVersion > 0) {
-          var lastColors = frameCache[hashParts.join('-') + '-' + (hashVersion - 1)];
-
-          if (lastColors) {
-            Object.keys(lastColors).forEach(removeColorsIfNotInCurrent.bind(this, hash));
-          }
-        }
-      } else {
-        framesToBatch.push(frame);
-      }
-    }
-
-    var batchAllThen = function (colors, results) {
+    }.bind(this))
+    .then(function (results) {
+      var colors = {};
       results.forEach(function (result) {
         Object.keys(result).forEach(function (color) {
           colors[color] = true;
         });
       });
-
       // Remove transparent color from used colors
       delete colors[pskl.utils.colorToInt(Constants.TRANSPARENT_COLOR)];
 
@@ -123,13 +97,7 @@
         return pskl.utils.intToHex(color);
       });
       this.setCurrentColors(hexColors);
-    }.bind(this, colors);
-
-    if (framesToBatch.length === 0) {
-      batchAllThen([colors]);
-    } else {
-      batchAll(framesToBatch, job).then(batchAllThen);
-    }
+    }.bind(this));
   };
 
   ns.CurrentColorsService.prototype.isCurrentColorsPaletteSelected_ = function () {
@@ -150,7 +118,6 @@
   ns.CurrentColorsService.prototype.getFrameColors_ = function (frame, processorCallback) {
     var frameColorsWorker = new pskl.worker.framecolors.FrameColors(frame,
       function (event) {
-        frameCache[frame.getHash()] = event.data.colors;
         processorCallback(event.data.colors);
       },
       function () {},
