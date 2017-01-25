@@ -15,7 +15,7 @@
   ns.FrameColors.prototype.process = function () {
     this.worker.postMessage([
       pskl.utils.colorToInt(Constants.TRANSPARENT_COLOR),
-      Constants.MAX_PALETTE_COLORS, this.pixels
+      Constants.MAX_WORKER_COLORS, this.pixels
     ]);
   };
 

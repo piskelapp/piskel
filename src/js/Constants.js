@@ -13,6 +13,9 @@ var Constants = {
   MAX_WIDTH : 1024,
 
   MAX_PALETTE_COLORS : 100,
+  // allow current colors service to get up to 256 colors.
+  // GIF generation is different if the color count goes over 256.
+  MAX_WORKER_COLORS : 256,
 
   PREVIEW_FILM_SIZE : 96,
   ANIMATED_PREVIEW_WIDTH : 200,
