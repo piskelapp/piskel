@@ -49,7 +49,7 @@
       var frameColors = {};
       var transparentColorInt = this.TRANSPARENT_COLOR;
       var colors = 0;
-      for (var i = 0, length = frame.length; i < length && colors < this.MAX_PALETTE_COLORS; i++) {
+      for (var i = 0, length = frame.length; i < length && colors < this.MAX_WORKER_COLORS; i++) {
         var color = frame[i];
         if (color !== transparentColorInt) {
           if (!frameColors[color]) {
@@ -64,7 +64,7 @@
     this.onmessage = function(event) {
       try {
         this.TRANSPARENT_COLOR = event.data[0];
-        this.MAX_PALETTE_COLORS = event.data[1];
+        this.MAX_WORKER_COLORS = event.data[1];
         var frame = event.data[2];
         var colors = getFrameColors(frame);
         this.postMessage({
