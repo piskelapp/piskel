@@ -26,14 +26,37 @@
   };
 
   ns.Circle.prototype.getCirclePixels_ = function (x0, y0, x1, y1, penSize) {
+
     var coords = pskl.PixelUtils.getOrderedRectangleCoordinates(x0, y0, x1, y1);
+    var pixels = [];
     var xC = Math.round((coords.x0 + coords.x1) / 2);
     var yC = Math.round((coords.y0 + coords.y1) / 2);
     var evenX = (coords.x0 + coords.x1) % 2;
     var evenY = (coords.y0 + coords.y1) % 2;
-
     var rX = coords.x1 - xC;
     var rY = coords.y1 - yC;
+    var x, y, angle, r;
+
+    if (penSize == 1) {
+      for (x = coords.x0 ; x <= xC ; x++) {
+        angle = Math.acos((x - xC) / rX);
+        y = Math.round(rY * Math.sin(angle) + yC);
+        pixels.push([x - evenX, y]);
+        pixels.push([x - evenX, 2 * yC - y - evenY]);
+        pixels.push([2 * xC - x, y]);
+        pixels.push([2 * xC - x, 2 * yC - y - evenY]);
+      }
+      for (y = coords.y0 ; y <= yC ; y++) {
+        angle = Math.asin((y - yC) / rY);
+        x = Math.round(rX * Math.cos(angle) + xC);
+        pixels.push([x, y - evenY]);
+        pixels.push([2 * xC - x - evenX, y - evenY]);
+        pixels.push([x, 2 * yC - y]);
+        pixels.push([2 * xC - x - evenX, 2 * yC - y]);
+      }
+      return pixels;
+    }
+
     var iX = rX - penSize;
     var iY = rY - penSize;
     if (iX < 0) {
@@ -43,9 +66,6 @@
       iY = 0;
     }
 
-    var pixels = [];
-
-    var x, y, angle, r;
     for (x = 0 ; x <= rX ; x++) {
       for (y = 0 ; y <= rY ; y++) {
         angle = Math.atan(y / x);
