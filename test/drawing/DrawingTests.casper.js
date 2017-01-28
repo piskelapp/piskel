@@ -14,6 +14,7 @@
   "stroke.json",
   "verticalpen.drawing.json",
   "dithering.basic.json",
+  "transform.center.json",
   "transform.clone.once.json",
   "transform.clone.twice.undo.once.json",
   "transform.rotate.once.alt.json",

@@ -64,7 +64,7 @@
       events : this.events,
       initialState : this.initialState,
       png : png
-    });
+    }, null, ' ');
 
     this.reset();
 
