@@ -145,7 +145,11 @@
   ns.PngExportController.prototype.onDownloadClick_ = function (evt) {
     // Create PNG export.
     var canvas = this.createPngSpritesheet_();
+    this.downloadCanvas_(canvas);
+  };
 
+  // Used and overridden in casper integration tests.
+  ns.PngExportController.prototype.downloadCanvas_ = function (canvas) {
     // Generate file name
     var name = this.piskelController.getPiskel().getDescriptor().name;
     var fileName = name + '.png';
