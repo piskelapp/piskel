@@ -21,7 +21,10 @@
       }
       deserializer.deserialize();
     } catch (e) {
-      onError(e);
+      console.error(e);
+      if (typeof onError === 'function') {
+        onError(e);
+      }
     }
   };
 
