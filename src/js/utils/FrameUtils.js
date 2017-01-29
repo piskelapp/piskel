@@ -172,6 +172,16 @@
       return pskl.utils.FrameUtils.createFromImageData_(imgData, w, h, preserveOpacity);
     },
 
+    createFromImageSrc : function (src, preserveOpacity, cb) {
+      var image = new Image();
+      image.addEventListener('load', function onImageLoaded() {
+        image.removeEventListener('load', onImageLoaded);
+        var frame = ns.FrameUtils.createFromImage(image, preserveOpacity);
+        cb(frame);
+      });
+      image.src = src;
+    },
+
     /*
      * Create a pskl.model.Frame from an Image object. By default transparent
      * pixels will be converted to completely opaque or completely transparent

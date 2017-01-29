@@ -56,3 +56,36 @@ function isDrawerExpanded() {
     return settingsElement.classList.contains('expanded');
   });
 }
+
+function waitForEvent(eventName, onSuccess, onError) {
+  var cleanup = function () {
+    casper.evaluate(
+    'function () {\
+      document.body.removeChild(document.getElementById("casper-' + eventName +'"));\
+    }');
+  };
+
+  casper.echo("Waiting for casper element");
+  casper.waitForSelector('#casper-' + eventName, function () {
+    // success
+    casper.echo("Successfully received event", eventName);
+    cleanup();
+    onSuccess();
+  }, function () {
+    // error
+    casper.echo("Failed to receive event", eventName);
+    cleanup();
+    onError();
+  }, 10000);
+
+  casper.echo("Subscribe to event:", eventName);
+  casper.evaluate(
+    'function () {\
+      $.subscribe("' + eventName + '", function onCasperEvent() {\
+        $.unsubscribe("' + eventName + '", onCasperEvent);\
+        var el = document.createElement("div");\
+        el.id = "casper-' + eventName +'";\
+        document.body.appendChild(el);\
+      });\
+    }');
+}

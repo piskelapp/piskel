@@ -1,4 +1,5 @@
 (typeof exports != "undefined" ? exports : pskl_exports).tests = [
+  'settings/test-export-gif.js',
   'settings/test-resize-complete.js',
   'settings/test-resize-content-complete.js',
   'settings/test-resize-default-size.js',
