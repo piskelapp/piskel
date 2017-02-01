@@ -21,4 +21,5 @@ exclude_paths:
   - .github/
   - bin/
   - misc/
+  - src/js/lib/
   - test/
