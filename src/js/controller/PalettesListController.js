@@ -100,7 +100,7 @@
   ns.PalettesListController.prototype.getCurrentColorIndex_ = function () {
     var currentIndex = 0;
     var selectedColor = document.querySelector('.' + PRIMARY_COLOR_CLASSNAME);
-    if (selectedColor) {
+    if (selectedColor) {
       currentIndex = parseInt(selectedColor.dataset.colorIndex, 10);
     }
     return currentIndex;
