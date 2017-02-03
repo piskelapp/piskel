@@ -146,7 +146,7 @@
   ns.LayersListController.prototype.openCurrentLayerRenameForm_ = function() {
     var layer = this.piskelController.getCurrentLayer();
     this.currentLayerEl.classList.add('edit-name');
-    
+
     var form = this.currentLayerEl.querySelector('.rename-layer-form');
     pskl.utils.Event.addEventListener(form, 'submit', function(evt) {
       evt.preventDefault();
