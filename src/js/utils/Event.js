@@ -7,6 +7,7 @@
     if (typeof el === 'string') {
       el = document.querySelector(el);
     }
+    scope = scope || this;
 
     var listener = {
       el : el,

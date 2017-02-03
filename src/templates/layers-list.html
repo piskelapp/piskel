@@ -7,15 +7,15 @@
   <div class="toolbox-buttons">
     <button data-action="add"
       class="button layers-button piskel-icon-plus"
-      title="Create a new layer" rel="tooltip" data-placement="top" ></button>
+      title="Create a new layer" rel="tooltip" data-placement="top"></button>
 
     <button data-action="up"
       class="button layers-button piskel-icon-arrow-up-fat"
-      title="Move layer up" rel="tooltip" data-placement="top" ></button>
+      title="Move layer up" rel="tooltip" data-placement="top"></button>
 
     <button data-action="down"
       class="button layers-button piskel-icon-arrow-down-fat"
-      title="Move layer down" rel="tooltip" data-placement="top" ></button>
+      title="Move layer down" rel="tooltip" data-placement="top"></button>
 
     <button data-action="edit"
       class="button layers-button piskel-icon-pencil"
@@ -23,11 +23,11 @@
 
     <button data-action="merge"
       class="button layers-button piskel-icon-merge"
-      title="Merge with layer below" rel="tooltip" data-placement="top" ></button>
+      title="Merge with layer below" rel="tooltip" data-placement="top"></button>
 
     <button data-action="delete"
       class="button layers-button piskel-icon-close"
-      title="Delete selected layer" rel="tooltip" data-placement="top" ></button>
+      title="Delete selected layer" rel="tooltip" data-placement="top"></button>
 
   </div>
 
@@ -37,6 +37,13 @@
     <li class="layer-item {{isselected:current-layer-item}}"
         data-layer-index="{{layerindex}}">
         <span class="layer-name" data-placement="top">{{layername}}</span>
+        <form action="" method="POST" class="rename-layer-form">
+          <input type="text" autocomplete="off"
+                 class="textfield rename-layer-input-text"
+                 name="layerName" />
+          <input type="submit"
+                 class="rename-layer-input-submit" />
+        </form>
         <span class="layer-item-opacity"
               title="Layer opacity" rel="tooltip" data-placement="top">
           {{opacity}}&#945;

@@ -1,4 +1,3 @@
-
 /**
  * Layers container
  */
@@ -79,6 +78,32 @@
 
 .layer-item:hover {
   background : #222;
+}
+
+/**
+ * Rename layer form
+ */
+
+.layer-item .rename-layer-form {
+  flex: 1 auto;
+  display: none;
+  padding: 0 10px 0 0;
+}
+
+.rename-layer-form .rename-layer-input-text {
+  width: 100%;
+}
+
+.rename-layer-form .rename-layer-input-submit {
+  display: none;
+}
+
+.edit-name .rename-layer-form {
+  display: block;
+}
+
+.edit-name .layer-name {
+  display: none;
 }
 
 .layer-item-opacity {
