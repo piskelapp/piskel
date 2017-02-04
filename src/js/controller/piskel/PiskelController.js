@@ -270,12 +270,16 @@
   };
 
   ns.PiskelController.prototype.removeLayerAt = function (index) {
-    if (this.getLayers().length > 1) {
-      var layer = this.getLayerAt(index);
-      if (layer) {
-        this.piskel.removeLayer(layer);
-        this.setCurrentLayerIndex(0);
-      }
+    if (!this.hasLayerAt(index)) {
+      return;
+    }
+
+    var layer = this.getLayerAt(index);
+    this.piskel.removeLayer(layer);
+
+    // Update the selected layer if needed.
+    if (this.getCurrentLayerIndex() === index) {
+      this.setCurrentLayerIndex(Math.max(0, index - 1));
     }
   };
 
