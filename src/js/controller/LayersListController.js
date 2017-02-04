@@ -27,15 +27,21 @@
   };
 
   ns.LayersListController.prototype.renderLayerList_ = function () {
+    // Backup scroll before refresh.
+    var scrollTop = this.layersListEl.scrollTop;
+
     this.layersListEl.innerHTML = '';
     var layers = this.piskelController.getLayers();
     layers.forEach(this.addLayerItem.bind(this));
     this.updateButtonStatus_();
 
+    // Restore scroll
+    this.layersListEl.scrollTop = scrollTop;
+
     // Ensure the currently the selected layer is visible.
     var currentLayerEl = this.layersListEl.querySelector('.current-layer-item');
     if (currentLayerEl) {
-      currentLayerEl.scrollIntoView();
+      currentLayerEl.scrollIntoViewIfNeeded(false);
     }
   };
 

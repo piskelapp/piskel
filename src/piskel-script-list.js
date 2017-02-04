@@ -54,6 +54,7 @@
   // JSZip https://github.com/Stuk/jszip
   "js/lib/jszip/jszip.min.js",
 
+  "js/lib/scrollifneeded/scrollifneeded.js",
   // Smoothscroll: https://github.com/iamdustan/smoothscroll
   "js/lib/smoothscroll/smoothscroll.js",
 
