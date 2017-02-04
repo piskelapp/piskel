@@ -87,7 +87,7 @@
     if (background) {
       pskl.UserSettings.set(pskl.UserSettings.CANVAS_BACKGROUND, background);
       var selected = this.backgroundContainer.querySelector('.selected');
-      if (selected) {
+      if (selected) {
         selected.classList.remove('selected');
       }
       target.classList.add('selected');

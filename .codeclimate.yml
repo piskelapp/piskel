@@ -1,0 +1,25 @@
+engines:
+  csslint:
+    enabled: true
+  duplication:
+    enabled: true
+    config:
+      languages:
+        - javascript
+  eslint:
+    enabled: true
+    checks:
+      wrap-iife:
+        enabled: false
+  fixme:
+    enabled: true
+ratings:
+  paths:
+    - "**.css"
+    - "**.js"
+exclude_paths:
+  - .github/
+  - bin/
+  - misc/
+  - src/js/lib/
+  - test/
