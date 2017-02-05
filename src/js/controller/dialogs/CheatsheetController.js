@@ -152,10 +152,10 @@
       key = key.replace('ctrl', 'cmd');
       key = key.replace('alt', 'option');
     }
-    key = key.replace(/left/i, '&#65513;');
-    key = key.replace(/up/i, '&#65514;');
-    key = key.replace(/right/i, '&#65515;');
-    key = key.replace(/down/i, '&#65516;');
+    key = key.replace(/left/i, '&larr;');
+    key = key.replace(/up/i, '&uarr;');
+    key = key.replace(/right/i, '&rarr;');
+    key = key.replace(/down/i, '&darr;');
     key = key.replace(/>/g, '&gt;');
     key = key.replace(/</g, '&lt;');
     // add spaces around '+' delimiters
