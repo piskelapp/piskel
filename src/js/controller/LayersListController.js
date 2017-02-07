@@ -110,7 +110,7 @@
   };
 
   ns.LayersListController.prototype.onClick_ = function (evt) {
-    var el = evt.target || evt.srcElement;
+    var el = evt.target;
     var index;
     if (el.classList.contains('button')) {
       this.onButtonClick_(el);
@@ -137,7 +137,7 @@
   };
 
   ns.LayersListController.prototype.onDoubleClick_ = function(evt) {
-    var el = evt.target || evt.srcElement;
+    var el = evt.target;
     if (el.classList.contains('layer-name')) {
       this.openCurrentLayerRenameForm_();
     }
@@ -149,12 +149,12 @@
 
     var form = this.currentLayerEl.querySelector('.rename-layer-form');
     pskl.utils.Event.addEventListener(form, 'submit', function(evt) {
-      evt.preventDefault();
-      var form = evt.target || evt.srcElement;
+      var form = evt.target;
       var index = this.piskelController.getCurrentLayerIndex();
       this.piskelController.renameLayerAt(index, form.layerName.value);
       this.renderLayerList_();
-      return false;
+      
+      evt.preventDefault();
     }, this);
 
     var input = this.currentLayerEl.querySelector('.rename-layer-input-text');
@@ -190,9 +190,7 @@
       this.mergeDownCurrentLayer_();
     } else if (action == 'edit') {
       this.openCurrentLayerRenameForm_();
-      return;
     }
-    this.renderLayerList_();
   };
 
   ns.LayersListController.prototype.toggleLayerPreview_ = function () {
