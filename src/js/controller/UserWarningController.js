@@ -38,7 +38,11 @@
     var isWarningDisplayed = this.performanceLinkEl.classList.contains('visible');
 
     // Show/hide the performance warning link depending on the received report.
-    this.performanceLinkEl.classList.toggle('visible', shouldDisplayWarning);
+    if (shouldDisplayWarning) {
+      this.performanceLinkEl.classList.add('visible');
+    } else {
+      this.performanceLinkEl.classList.remove('visible');
+    }
 
     // Show a notification message if the new report indicates a performance issue
     // and we were not displaying a warning before.

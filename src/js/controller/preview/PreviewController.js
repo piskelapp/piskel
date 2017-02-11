@@ -124,7 +124,13 @@
       if (this.previewSizes.hasOwnProperty(size)) {
         var previewSize = this.previewSizes[size];
         var isSizeEnabled = validSizes.indexOf(size) != -1;
-        previewSize.button.classList.toggle('preview-contextual-action-hidden', !isSizeEnabled);
+
+        // classList.toggle is not available on IE11.
+        if (isSizeEnabled) {
+          previewSize.button.classList.remove('preview-contextual-action-hidden');
+        } else {
+          previewSize.button.classList.add('preview-contextual-action-hidden');
+        }
       }
     }
 
@@ -174,7 +180,13 @@
   ns.PreviewController.prototype.updateOnionSkinPreview_ = function () {
     var enabledClassname = 'preview-toggle-onion-skin-enabled';
     var isEnabled = pskl.UserSettings.get(pskl.UserSettings.ONION_SKIN);
-    this.toggleOnionSkinButton.classList.toggle(enabledClassname, isEnabled);
+
+    // classList.toggle is not available on IE11.
+    if (isEnabled) {
+      this.toggleOnionSkinButton.classList.add(enabledClassname);
+    } else {
+      this.toggleOnionSkinButton.classList.remove(enabledClassname);
+    }
   };
 
   ns.PreviewController.prototype.selectPreviewSizeButton_ = function () {
