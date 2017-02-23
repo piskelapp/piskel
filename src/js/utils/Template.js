@@ -16,23 +16,12 @@
     },
 
     createFromHTML : function (html) {
-      var dummyEl = document.createElement('div');
+      var dummyEl = ns.Template._getDummyEl();
       dummyEl.innerHTML = html;
-      return dummyEl.children[0];
-    },
+      var element = dummyEl.children[0];
+      dummyEl.innerHTML = '';
 
-    insert : function (parent, position, templateId, dict) {
-      var html = pskl.utils.Template.getAndReplace(templateId, dict);
-      parent.insertAdjacentHTML(position, html);
-    },
-
-    getAndReplace : function (templateId, dict) {
-      var result = '';
-      var tpl = pskl.utils.Template.get(templateId);
-      if (tpl) {
-        result = pskl.utils.Template.replace(tpl, dict);
-      }
-      return result;
+      return element;
     },
 
     replace : function (template, dict) {
@@ -49,10 +38,38 @@
               value = '';
             }
           }
+
+          // Sanitize all values expect if the key is surrounded by `!`
+          if (!/^!.*!$/.test(key)) {
+            value = ns.Template.sanitize(value);
+          }
+
           template = template.replace(new RegExp('\\{\\{' + key + '\\}\\}', 'g'), value);
         }
       }
       return template;
+    },
+
+    /**
+     * Sanitize the provided string to make it safer for using in templates.
+     */
+    sanitize : function (string) {
+      var dummyEl = ns.Template._getDummyEl();
+
+      // Apply the unsafe string as text content and
+      dummyEl.textContent = string;
+      var sanitizedString = dummyEl.innerHTML;
+
+      dummyEl.innerHTML = '';
+
+      return sanitizedString;
+    },
+
+    _getDummyEl : function () {
+      if (!ns.Template._dummyEl) {
+        ns.Template._dummyEl = document.createElement('div');
+      }
+      return ns.Template._dummyEl;
     }
   };
 })();
