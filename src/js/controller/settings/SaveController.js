@@ -62,7 +62,7 @@
 
   ns.SaveController.prototype.insertSavePartials_ = function () {
     this.getPartials_().forEach(function (partial) {
-      pskl.utils.Template.insert(this.saveForm, 'beforeend', partial);
+      this.saveForm.insertAdjacentHTML('beforeend', pskl.utils.Template.get(partial));
     }.bind(this));
   };
 
