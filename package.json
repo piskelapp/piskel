@@ -36,7 +36,7 @@
     "grunt-contrib-connect": "1.0.2",
     "grunt-contrib-copy": "1.0.0",
     "grunt-contrib-jshint": "1.1.0",
-    "grunt-contrib-uglify": "1.0.1",
+    "grunt-contrib-uglify": "2.2.0",
     "grunt-contrib-watch": "1.0.0",
     "grunt-include-replace": "4.0.1",
     "grunt-jscs": "2.8.0",
