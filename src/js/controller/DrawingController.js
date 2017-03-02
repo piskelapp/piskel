@@ -163,6 +163,9 @@
 
     if (event.button === Constants.MIDDLE_BUTTON) {
       this.dragHandler.startDrag(event.clientX, event.clientY);
+    } else if (event.altKey && !this.currentToolBehavior.supportsAlt()) {
+      this.currentToolBehavior.hideHighlightedPixel(this.overlayFrame);
+      this.isPickingColor = true;
     } else {
       this.currentToolBehavior.hideHighlightedPixel(this.overlayFrame);
       $.publish(Events.TOOL_PRESSED);
@@ -210,6 +213,8 @@
     if (this.isClicked) {
       if (pskl.app.mouseStateService.isMiddleButtonPressed()) {
         this.dragHandler.updateDrag(x, y);
+      } else if (this.isPickingColor) {
+        // Nothing to do on mousemove when picking a color with ALT+click.
       } else {
         $.publish(Events.MOUSE_EVENT, [event, this]);
         this.currentToolBehavior.moveToolAt(
@@ -294,39 +299,63 @@
    * @private
    */
   ns.DrawingController.prototype.onMouseup_ = function (event) {
-    var frame = this.piskelController.getCurrentFrame();
+    if (!this.isClicked) {
+      return;
+    }
+
     var coords = this.getSpriteCoordinates(event.clientX, event.clientY);
     if (event.changedTouches && event.changedTouches[0]) {
       coords = this.getSpriteCoordinates(event.changedTouches[0].clientX, event.changedTouches[0].clientY);
     }
-    if (this.isClicked) {
-      // A mouse button was clicked on the drawing canvas before this mouseup event,
-      // the user was probably drawing on the canvas.
-      // Note: The mousemove movement (and the mouseup) may end up outside
-      // of the drawing canvas.
 
-      this.isClicked = false;
+    // A mouse button was clicked on the drawing canvas before this mouseup event,
+    // the user was probably drawing on the canvas.
+    // Note: The mousemove movement (and the mouseup) may end up outside
+    // of the drawing canvas.
 
-      if (pskl.app.mouseStateService.isMiddleButtonPressed()) {
-        if (this.dragHandler.isDragging()) {
-          this.dragHandler.stopDrag();
-        } else if (frame.containsPixel(coords.x, coords.y)) {
-          var color = pskl.utils.intToColor(frame.getPixel(coords.x, coords.y));
-          $.publish(Events.SELECT_PRIMARY_COLOR, [color]);
-        }
-      } else {
-        this.currentToolBehavior.releaseToolAt(
-          coords.x,
-          coords.y,
-          this.piskelController.getCurrentFrame(),
-          this.overlayFrame,
-          event
-        );
+    this.isClicked = false;
 
-        $.publish(Events.TOOL_RELEASED);
-      }
-      $.publish(Events.MOUSE_EVENT, [event, this]);
+    var isMiddleButton = pskl.app.mouseStateService.isMiddleButtonPressed();
+    var isMiddleClick = isMiddleButton && !this.dragHandler.isDragging();
+    var isMiddleDrag = isMiddleButton && this.dragHandler.isDragging();
+
+    if (this.isPickingColor || isMiddleClick) {
+      // Picking color after ALT+click or middle mouse button click.
+      this.pickColorAt_(coords);
+      this.isPickingColor = false;
+    } else if (isMiddleDrag) {
+      // Stop the drag handler after a middle button drag action.
+      this.dragHandler.stopDrag();
+    } else {
+      // Regular tool click, release the current tool.
+      this.currentToolBehavior.releaseToolAt(
+        coords.x,
+        coords.y,
+        this.piskelController.getCurrentFrame(),
+        this.overlayFrame,
+        event
+      );
+      $.publish(Events.TOOL_RELEASED);
     }
+
+    $.publish(Events.MOUSE_EVENT, [event, this]);
+  };
+
+  /**
+   * Send a COLOR selection event for the color contained at the provided coordinates.
+   * No-op if the coordinate is outside of the drawing canvas.
+   * @param  {Object} coords {x: Number, y: Number}
+   */
+  ns.DrawingController.prototype.pickColorAt_ = function (coords) {
+    var frame = this.piskelController.getCurrentFrame();
+    if (!frame.containsPixel(coords.x, coords.y)) {
+      return;
+    }
+
+    var color = pskl.utils.intToColor(frame.getPixel(coords.x, coords.y));
+    var isRightButton = pskl.app.mouseStateService.isRightButtonPressed();
+    var evt = isRightButton ? Events.SELECT_SECONDARY_COLOR : Events.SELECT_PRIMARY_COLOR;
+    $.publish(evt, [color]);
   };
 
   /**
