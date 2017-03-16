@@ -28,7 +28,7 @@
   },
   "devDependencies": {
     "dateformat": "2.0.0",
-    "fs-extra": "1.0.0",
+    "fs-extra": "2.1.2",
     "grunt": "^0.4.5",
     "grunt-casperjs": "^2.2.1",
     "grunt-contrib-clean": "1.0.0",
