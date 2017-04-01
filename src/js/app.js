@@ -78,7 +78,7 @@
 
       this.framesListController = new pskl.controller.FramesListController(
         this.piskelController,
-        $('#preview-list'));
+        $('#preview-list-wrapper').get(0));
       this.framesListController.init();
 
       this.layersListController = new pskl.controller.LayersListController(this.piskelController);
