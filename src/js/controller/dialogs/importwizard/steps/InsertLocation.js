@@ -15,13 +15,13 @@
   ns.InsertLocation.prototype.init = function () {
     this.superclass.init.call(this);
     this.framePreview = this.container.querySelector('.insert-frame-preview');
-    this.framePickerWidget = new pskl.widgets.FramePicker(
+    this.currentPiskelFramePickerWidget = new pskl.widgets.FramePicker(
       this.piskelController.getPiskel(), this.framePreview);
-    this.framePickerWidget.init();
+    this.currentPiskelFramePickerWidget.init();
 
     var currentFrameIndex = this.piskelController.getCurrentFrameIndex();
-    this.framePickerWidget.setFrameIndex(currentFrameIndex + 1);
-    this.framePickerWidget.setFirstFrameIndex(0);
+    this.currentPiskelFramePickerWidget.setFrameIndex(currentFrameIndex + 1);
+    this.currentPiskelFramePickerWidget.setFirstFrameIndex(0);
 
     this.insertModeContainer = this.container.querySelector('.insert-mode-container');
     this.addEventListener(this.insertModeContainer, 'change', this.onInsertModeChange_);
@@ -33,25 +33,25 @@
     this.mergeData.insertMode = value;
 
     if (this.mergeData.insertMode === ns.InsertLocation.MODES.ADD) {
-      this.framePickerWidget.setFirstFrameIndex(0);
+      this.currentPiskelFramePickerWidget.setFirstFrameIndex(0);
     } else {
-      this.framePickerWidget.setFirstFrameIndex(1);
+      this.currentPiskelFramePickerWidget.setFirstFrameIndex(1);
     }
   };
 
   ns.InsertLocation.prototype.onShow = function () {
-    var count = this.mergeData.mergePiskel.getFrameCount();
-    this.container.querySelector('.insert-frames-count').innerText = count;
+    // Nothing to do here!
+    this.superclass.onShow.call(this);
   };
 
   ns.InsertLocation.prototype.onNextClick = function () {
-    var insertIndex = this.framePickerWidget.getFrameIndex();
+    var insertIndex = this.currentPiskelFramePickerWidget.getFrameIndex();
     this.mergeData.insertIndex = insertIndex;
     this.superclass.onNextClick.call(this);
   };
 
   ns.InsertLocation.prototype.destroy = function () {
-    this.framePickerWidget.destroy();
+    this.currentPiskelFramePickerWidget.destroy();
     this.superclass.destroy.call(this);
   };
 })();

@@ -38,6 +38,30 @@
     this.importController.back(this);
   };
 
-  ns.AbstractImportStep.prototype.onShow = Constants.EMPTY_FUNCTION;
+  ns.AbstractImportStep.prototype.onShow = function () {
+    var mergePiskel = this.mergeData.mergePiskel;
+    if (!mergePiskel) {
+      return;
+    }
+
+    if (!this.framePickerWidget) {
+      var framePickerContainer = this.container.querySelector('.import-preview');
+      this.framePickerWidget = new pskl.widgets.FramePicker(mergePiskel, framePickerContainer);
+      this.framePickerWidget.init();
+    } else if (this.framePickerWidget.piskel != mergePiskel) {
+      // If the piskel displayed by the frame picker is different from the previous one,
+      // refresh the widget.
+      this.framePickerWidget.piskel = mergePiskel;
+      this.framePickerWidget.setFrameIndex(1);
+    }
+
+    var metaHtml = pskl.utils.Template.getAndReplace('import-meta-content', {
+      name : mergePiskel.getDescriptor().name,
+      dimensions : pskl.utils.StringUtils.formatSize(mergePiskel.getWidth(), mergePiskel.getHeight()),
+      frames : mergePiskel.getFrameCount(),
+      layers : mergePiskel.getLayers().length
+    });
+    this.container.querySelector('.import-meta').innerHTML = metaHtml;
+  };
 
 })();

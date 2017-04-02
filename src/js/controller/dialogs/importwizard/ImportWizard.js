@@ -52,6 +52,7 @@
     if (this.hasSingleImage_()) {
       this.wizard.goTo('IMAGE_IMPORT');
     } else if (this.hasSinglePiskelFile_()) {
+      // If a piskel file was provided we can directly go to
       pskl.utils.PiskelFileUtils.loadFromFile(this.mergeData.rawFiles[0],
         // onSuccess
         function (piskel) {
@@ -70,12 +71,12 @@
     }
   };
 
-  ns.ImportWizard.prototype.back = function (stepInstance) {
+  ns.ImportWizard.prototype.back = function () {
     this.wizard.back();
     this.wizard.getCurrentStep().instance.onShow();
   };
 
-  ns.ImportWizard.prototype.next = function (stepInstance) {
+  ns.ImportWizard.prototype.next = function () {
     var step = this.wizard.getCurrentStep();
 
     if (step.name === 'IMAGE_IMPORT') {
@@ -149,11 +150,7 @@
         this.piskelController.setPiskel(piskel);
         this.closeDialog();
       }
-    } else if (mode === ns.steps.SelectMode.MODES.NEW) {
-      console.log('import as new: not implemented yet');
     } else if (mode === ns.steps.SelectMode.MODES.MERGE) {
-      // Need to also fetch resize options
-      // and insert location option
       var merge = pskl.utils.MergeUtils.merge(this.piskelController.getPiskel(), piskel, {
         insertIndex: this.mergeData.insertIndex,
         insertMode: this.mergeData.insertMode,

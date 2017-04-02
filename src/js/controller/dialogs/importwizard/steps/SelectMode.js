@@ -6,7 +6,6 @@
   };
 
   ns.SelectMode.MODES = {
-    NEW : 'new',
     REPLACE : 'replace',
     MERGE : 'merge'
   };
@@ -25,6 +24,7 @@
 
   ns.SelectMode.prototype.onShow = function () {
     this.refresh_();
+    this.superclass.onShow.call(this);
   };
 
   ns.SelectMode.prototype.destroy = function () {
@@ -37,7 +37,6 @@
   ns.SelectMode.prototype.refresh_ = function () {
     var mergePiskel = this.mergeData.mergePiskel;
     if (mergePiskel) {
-      this.updateMergeFilePreview_();
       this.nextButton.removeAttribute('disabled');
     } else {
       this.nextButton.setAttribute('disabled', true);
@@ -50,32 +49,6 @@
       // Otherwise this is the last step, update the button text.
       this.nextButton.textContent = 'import';
     }
-  };
-
-  ns.SelectMode.prototype.updateMergeFilePreview_ = function () {
-    var mergePiskel = this.mergeData.mergePiskel;
-
-    var previewFrame = pskl.utils.LayerUtils.mergeFrameAt(mergePiskel.getLayers(), 0);
-    var image = pskl.utils.FrameUtils.toImage(previewFrame);
-
-    if (!this.framePickerWidget) {
-      var framePickerContainer = this.container.querySelector('.import-preview');
-      this.framePickerWidget = new pskl.widgets.FramePicker(mergePiskel, framePickerContainer);
-      this.framePickerWidget.init();
-    } else if (this.framePickerWidget.piskel != mergePiskel) {
-      // If the piskel displayed by the frame picker is different from the previous one,
-      // refresh the widget.
-      this.framePickerWidget.piskel = mergePiskel;
-      this.framePickerWidget.setFrameIndex(1);
-    }
-
-    var metaHtml = pskl.utils.Template.getAndReplace('import-meta-content', {
-      name : mergePiskel.getDescriptor().name,
-      dimensions : pskl.utils.StringUtils.formatSize(mergePiskel.getWidth(), mergePiskel.getHeight()),
-      frames : mergePiskel.getFrameCount(),
-      layers : mergePiskel.getLayers().length
-    });
-    this.container.querySelector('.import-meta').innerHTML = metaHtml;
   };
 
   ns.SelectMode.prototype.onImportModeChange_ = function () {
