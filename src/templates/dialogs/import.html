@@ -9,48 +9,46 @@
 </script>
 
 <script type="text/template" id="import-image-import">
-<div class="import-step-container">
-  <div>
-    <form action="" method="POST" name="import-image-form">
-      <div class="import-section">
-        <span class="dialog-section-title">Name :</span><span class="import-image-file-name"></span>
-      </div>
-      <div class="import-section">
-        <div class="import-section-preview"></div>
-      </div>
-      <div class="import-section">
-        <label class="dialog-section-radio-label">
-          <input class="dialog-section-radio" name="import-type" value="single" type="radio" checked="checked">
-          Import as single image
-        </label>
-      </div>
-      <div class="import-section import-subsection">
-        <span class="dialog-section-title">Resize to</span>
-        <input type="text" class="textfield import-size-field" name="resize-width"/>x
-        <input type="text" class="textfield import-size-field" name="resize-height"/>
-      </div>
-      <div class="import-section import-subsection">
-        <span class="import-section-title">Smooth resize</span>
-        <input type="checkbox" class="checkbox-fix" checked="checked" name="smooth-resize-checkbox" value="1"/>
-      </div>
-      <div class="import-section">
-        <label class="dialog-section-radio-label">
-          <input class="dialog-section-radio" name="import-type" value="sheet" type="radio">
-          Import as spritesheet
-        </label>
-      </div>
-      <div class="import-section import-subsection">
-        <span class="dialog-section-title">Frame size</span>
-        <input type="text" class="textfield import-size-field" name="frame-size-x"/>x
-        <input type="text" class="textfield import-size-field" name="frame-size-y"/>
-      </div>
-      <div class="import-section import-subsection">
-        <span class="dialog-section-title">Offset</span>
-        <input type="text" class="textfield import-size-field" name="frame-offset-x"/>x
-        <input type="text" class="textfield import-size-field" name="frame-offset-y"/>
-      </div>
-    </form>
-  </div>
+<div class="import-step-container import-image-container">
+  <form action="" method="POST" name="import-image-form">
+    <div class="import-section">
+      <span class="dialog-section-title">Name :</span><span class="import-image-file-name"></span>
+    </div>
+    <div class="import-section">
+      <div class="import-section-preview"></div>
+    </div>
+    <div class="import-section">
+      <label class="dialog-section-radio-label">
+        <input class="dialog-section-radio" name="import-type" value="single" type="radio" checked="checked">
+        Import as single image
+      </label>
+    </div>
+    <div class="import-section import-subsection">
+      <span class="dialog-section-title">Resize to</span>
+      <input type="text" class="textfield import-size-field" name="resize-width"/>x
+      <input type="text" class="textfield import-size-field" name="resize-height"/>
+    </div>
+    <div class="import-section import-subsection">
+      <span class="import-section-title">Smooth resize</span>
+      <input type="checkbox" class="checkbox-fix" checked="checked" name="smooth-resize-checkbox" value="1"/>
+    </div>
+    <div class="import-section">
+      <label class="dialog-section-radio-label">
+        <input class="dialog-section-radio" name="import-type" value="sheet" type="radio">
+        Import as spritesheet
+      </label>
+    </div>
+    <div class="import-section import-subsection">
+      <span class="dialog-section-title">Frame size</span>
+      <input type="text" class="textfield import-size-field" name="frame-size-x"/>x
+      <input type="text" class="textfield import-size-field" name="frame-size-y"/>
+    </div>
+    <div class="import-section import-subsection">
+      <span class="dialog-section-title">Offset</span>
+      <input type="text" class="textfield import-size-field" name="frame-offset-x"/>x
+      <input type="text" class="textfield import-size-field" name="frame-offset-y"/>
+    </div>
+  </form>
   <div class="import-step-buttons">
     <button class="import-cancel-button button">cancel</button>
     <button class="import-back-button button">back</button>
@@ -61,40 +59,34 @@
 
 <script type="text/template" id="import-select-mode">
 <div class="import-step-container">
-  <div class="import-mode-title">Preview the imported image</div>
   <div class="import-info">
     <div class="import-preview"></div>
     <div class="import-meta"></div>
   </div>
 
-  <div class="import-mode">
-    <div class="import-mode-title">How do you want to import the new content?</div>
-    <label class="import-mode-option">
-      <input type="radio" checked="checked" name="import-mode" id="select-mode-replace" value="replace"/>
-      <span>Replace your current sprite</span>
-    </label>
-    <!-- label class="import-mode-option">
-      <input type="radio" name="import-mode" id="select-mode-new" value="new"/>
-      <span>Create a new sprite</span>
-    </label -->
-    <label class="import-mode-option">
-      <input type="radio" name="import-mode" id="select-mode-import" value="merge"/>
-      <span>Merge with your existing sprite</span>
-    </label>
-  </div>
+  <div class="import-step-content">
+    <div class="import-mode">
+      <div class="import-mode-title">How do you want to import the new content?</div>
+      <label class="import-mode-option">
+        <input type="radio" checked="checked" name="import-mode" id="select-mode-replace" value="replace"/>
+        <span>Replace your current sprite</span>
+      </label>
+      <label class="import-mode-option">
+        <input type="radio" name="import-mode" id="select-mode-import" value="merge"/>
+        <span>Merge with your current sprite</span>
+      </label>
+    </div>
 
-  <div class="import-step-buttons">
-    <button class="import-cancel-button button">cancel</button>
-    <button class="import-back-button button">back</button>
-    <button class="import-next-button button button-primary">next</button>
+    <div class="import-step-buttons">
+      <button class="import-cancel-button button">cancel</button>
+      <button class="import-back-button button">back</button>
+      <button class="import-next-button button button-primary">next</button>
+    </div>
   </div>
 </div>
 </script>
 
 <script type="text/template" id="import-meta-content">
-  <div class="import-meta-title">
-    <span class="import-meta-label">Imported content details</span>
-  </div>
   <div class="import-name">
     <span class="import-meta-label">Name</span>
     <span class="import-meta-value" title={{name}}>{{name}}</span>
@@ -115,15 +107,23 @@
 
 <script type="text/template" id="import-adjust-size">
 <div class="import-step-container">
-  <div class="import-resize-info"></div>
-  <div class="import-resize-anchor import-resize-section">
-    <div class="import-resize-anchor-info"></div>
-    <div class="import-resize-anchor-container"></div>
+
+  <div class="import-info">
+    <div class="import-preview"></div>
+    <div class="import-meta"></div>
   </div>
-  <div class="import-step-buttons">
-    <button class="import-cancel-button button">cancel</button>
-    <button class="import-back-button button">back</button>
-    <button class="import-next-button button button-primary">next</button>
+
+  <div class="import-step-content">
+    <div class="import-resize-info"></div>
+    <div class="import-resize-anchor import-resize-section">
+      <div class="import-resize-anchor-info"></div>
+      <div class="import-resize-anchor-container"></div>
+    </div>
+    <div class="import-step-buttons">
+      <button class="import-cancel-button button">cancel</button>
+      <button class="import-back-button button">back</button>
+      <button class="import-next-button button button-primary">next</button>
+    </div>
   </div>
 </div>
 </script>
@@ -159,29 +159,32 @@
 
 <script type="text/template" id="import-insert-location">
 <div class="import-step-container">
-  <div class="insert-mode-container">
-    <div class="insert-mode-option-label">
-      The imported animation contains <span class="insert-frames-count">X</span> frames.
-      Select how the new frames should be inserted:
-    </div>
-    <label class="insert-mode-option">
-      <input type="radio" name="insert-mode" id="insert-mode-add" value="add" checked="checked"/>
-      <span>Add new frames</span>
-    </label>
-    <label class="insert-mode-option">
-      <input type="radio" name="insert-mode" id="insert-mode-insert" value="insert"/>
-      <span>Insert in existing frames</span>
-    </label>
+  <div class="import-info">
+    <div class="import-preview"></div>
+    <div class="import-meta"></div>
   </div>
-  <div>Select the frame from which the new content will be added</div>
-  <div class="insert-frame-container">
+
+  <div class="import-step-content">
+    <div>Select a frame in your current sprite:</div>
     <div class="insert-frame-preview"></div>
-    <div class="insert-frame-meta"></div>
-  </div>
-  <div class="import-step-buttons">
-    <button class="import-cancel-button button">cancel</button>
-    <button class="import-back-button button">back</button>
-    <button class="import-next-button button button-primary">import</button>
+    <div class="insert-mode-container">
+      <div class="insert-mode-option-label">
+        How should the imported frames be inserted:
+      </div>
+      <label class="insert-mode-option">
+        <input type="radio" name="insert-mode" id="insert-mode-add" value="add" checked="checked"/>
+        <span>Add new frames</span>
+      </label>
+      <label class="insert-mode-option">
+        <input type="radio" name="insert-mode" id="insert-mode-insert" value="insert"/>
+        <span>Insert in existing frames</span>
+      </label>
+    </div>
+    <div class="import-step-buttons">
+      <button class="import-cancel-button button">cancel</button>
+      <button class="import-back-button button">back</button>
+      <button class="import-next-button button button-primary">import</button>
+    </div>
   </div>
 </div>
 </script>
