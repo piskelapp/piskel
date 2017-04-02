@@ -34,6 +34,7 @@
 
   ns.AdjustSize.prototype.onShow = function () {
     this.refresh_();
+    this.superclass.onShow.call(this);
   };
 
   ns.AdjustSize.prototype.refresh_ = function () {
