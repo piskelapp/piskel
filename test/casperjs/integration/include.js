@@ -111,7 +111,7 @@ function replaceFunction(test, path, method) {
   // Check the path provided corresponds to an existing method, otherwise the
   // test probably needs to be updated.
   test.assertEquals(evalLine('typeof ' + path),'function',
-    'The prototype of GifExportController still contains downloadImageData_ as a function');
+    path + ' is still a function');
 
   // Replace the method in content.
   casper.evaluate('function () {' + path + ' = ' + method + '}');

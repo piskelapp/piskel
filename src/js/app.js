@@ -187,7 +187,7 @@
         gui.Window.get().menu = mb;
       }
 
-      if (pskl.utils.UserAgent.isUnsupported()) {
+      if (!pskl.utils.Environment.isIntegrationTest() && pskl.utils.UserAgent.isUnsupported()) {
         $.publish(Events.DIALOG_SHOW, {
           dialogId : 'unsupported-browser'
         });
