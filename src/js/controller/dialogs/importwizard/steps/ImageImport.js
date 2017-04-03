@@ -57,6 +57,9 @@
   };
 
   ns.ImageImport.prototype.createPiskelFromImage = function () {
+    var name = this.extractFileNameFromPath_(this.file_.name);
+    // Remove extension from filename.
+    name = name.replace(/\.[a-zA-Z]+$/, '');
     return new Promise(function (resolve, reject) {
       pskl.app.importService.newPiskelFromImage(
         this.importedImage_,
@@ -68,7 +71,8 @@
               this.resizeHeight.value : this.sanitizeInputValue_(this.frameSizeY, 1),
           frameOffsetX: this.sanitizeInputValue_(this.frameOffsetX, 0),
           frameOffsetY: this.sanitizeInputValue_(this.frameOffsetY, 0),
-          smoothing: !!this.smoothResize.checked
+          smoothing: !!this.smoothResize.checked,
+          name: name
         },
         resolve
       );
