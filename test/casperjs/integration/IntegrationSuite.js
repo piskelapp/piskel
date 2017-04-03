@@ -3,6 +3,7 @@
   'settings/test-export-gif-simple.js',
   'settings/test-export-png.js',
   'settings/test-export-png-scale.js',
+  'settings/test-import-image.js',
   'settings/test-resize-complete.js',
   'settings/test-resize-content-complete.js',
   'settings/test-resize-default-size.js',

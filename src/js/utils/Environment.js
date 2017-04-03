@@ -19,6 +19,10 @@
         }
       }
       return isNodeWebkit;
+    },
+
+    isIntegrationTest : function () {
+      return new window.URL(window.location).searchParams.has('integration-test');
     }
   };
 
