@@ -74,7 +74,7 @@ casper.test.begin('Complex GIF export test', 11, function(test) {
     .start(casper.cli.get('baseUrl')+"/?debug")
     .then(function () {
       casper.echo("URL loaded");
-      casper.waitForSelector('#drawing-canvas-container canvas', onTestStart, test.timeout, 10000);
+      casper.waitForSelector('#drawing-canvas-container canvas', onTestStart, test.timeout, 20000);
     })
     .run(function () {
       test.done();

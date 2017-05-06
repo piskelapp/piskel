@@ -1,7 +1,7 @@
 /* globals casper, setPiskelFromGrid, isDrawerExpanded, getValue, isChecked,
    evalLine, waitForEvent, replaceFunction, setPiskelFromImageSrc */
 
-casper.test.begin('Simple Image import test', 29, function(test) {
+casper.test.begin('Double Image import test', 29, function(test) {
   test.timeout = test.fail.bind(test, ['Test timed out']);
 
   // Helper to retrieve the text content of the provided selector
@@ -194,7 +194,7 @@ casper.test.begin('Simple Image import test', 29, function(test) {
     .start(casper.cli.get('baseUrl')+"/?debug&integration-test")
     .then(function () {
       casper.echo("URL loaded");
-      casper.waitForSelector('#drawing-canvas-container canvas', onTestStart, test.timeout, 10000);
+      casper.waitForSelector('#drawing-canvas-container canvas', onTestStart, test.timeout, 20000);
     })
     .run(function () {
       test.done();

@@ -53,7 +53,7 @@ casper.test.begin('Test updating default size works', 14 , function(test) {
     .start(casper.cli.get('baseUrl')+"/?debug")
     .then(function () {
       this.echo("URL loaded");
-      this.waitForSelector('#drawing-canvas-container canvas', onTestStart, test.timeout, 10000);
+      this.waitForSelector('#drawing-canvas-container canvas', onTestStart, test.timeout, 20000);
     })
     .run(function () {
       test.done();
