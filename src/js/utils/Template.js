@@ -83,11 +83,17 @@
       return sanitizedString;
     },
 
-    _getDummyEl : function () {
-      if (!ns.Template._dummyEl) {
-        ns.Template._dummyEl = document.createElement('div');
-      }
-      return ns.Template._dummyEl;
-    }
+    _getDummyEl : pskl.utils.UserAgent.isIE11 ?
+      // IE11 specific implementation
+        function () {
+          return document.createElement('div');
+        }
+      // Normal, sane browsers implementation.
+      : function () {
+          if (!ns.Template._dummyEl) {
+            ns.Template._dummyEl = document.createElement('div');
+          }
+          return ns.Template._dummyEl;
+        }
   };
 })();
