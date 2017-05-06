@@ -252,14 +252,24 @@
     var displayContext = this.displayCanvas.getContext('2d');
     displayContext.save();
 
-    // Draw background
-    displayContext.fillStyle = Constants.ZOOMED_OUT_BACKGROUND_COLOR;
-    displayContext.fillRect(0, 0, this.displayCanvas.width - 1, this.displayCanvas.height - 1);
+    var translateX = this.margin.x - this.offset.x * z;
+    var translateY = this.margin.y - this.offset.y * z;
 
-    displayContext.translate(
-      this.margin.x - this.offset.x * z,
-      this.margin.y - this.offset.y * z
-    );
+    var isZoomedOut = translateX > 0 || translateY > 0;
+    // Draw the background / zoomed-out color only if needed. Otherwise the clearRect
+    // happening after that will clear "out of bounds" and seems to be doing nothing
+    // on some chromebooks (cf https://github.com/juliandescottes/piskel/issues/651)
+    if (isZoomedOut) {
+      // Draw background
+      displayContext.fillStyle = Constants.ZOOMED_OUT_BACKGROUND_COLOR;
+      // The -1 on the width and height here is a workaround for a Chrome-only bug
+      // that was potentially fixed, but is very hardware dependant. Seems to be
+      // triggered when doing clear rect or fill rect using the full width & height
+      // of a canvas. (https://bugs.chromium.org/p/chromium/issues/detail?id=469906)
+      displayContext.fillRect(0, 0, this.displayCanvas.width - 1, this.displayCanvas.height - 1);
+    }
+
+    displayContext.translate(translateX, translateY);
 
     // Scale up to draw the canvas content
     displayContext.scale(z, z);
