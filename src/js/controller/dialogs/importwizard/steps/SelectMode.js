@@ -28,9 +28,6 @@
   };
 
   ns.SelectMode.prototype.destroy = function () {
-    if (this.framePickerWidget) {
-      this.framePickerWidget.destroy();
-    }
     this.superclass.destroy.call(this);
   };
 

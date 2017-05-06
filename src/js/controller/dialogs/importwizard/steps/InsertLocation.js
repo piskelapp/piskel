@@ -35,7 +35,10 @@
   };
 
   ns.InsertLocation.prototype.onShow = function () {
+    // Initialize the frame picker on show, to be able to calculate correctly the
+    // container's offsetWidth and offsetHeight.
     this.currentPiskelFramePickerWidget.init();
+
     var currentFrameIndex = this.piskelController.getCurrentFrameIndex();
     this.currentPiskelFramePickerWidget.setFrameIndex(currentFrameIndex + 1);
     this.currentPiskelFramePickerWidget.setFirstFrameIndex(0);
