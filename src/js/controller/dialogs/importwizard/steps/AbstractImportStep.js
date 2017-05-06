@@ -23,6 +23,10 @@
   };
 
   ns.AbstractImportStep.prototype.destroy = function () {
+    if (this.framePickerWidget) {
+      this.framePickerWidget.destroy();
+    }
+
     pskl.utils.Event.removeAllEventListeners(this);
   };
 
