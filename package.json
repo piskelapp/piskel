@@ -49,7 +49,7 @@
     "jasmine-core": "2.6.1",
     "karma": "1.7.0",
     "karma-jasmine": "1.1.0",
-    "karma-phantomjs-launcher": "0.2.3",
+    "karma-phantomjs-launcher": "1.0.4",
     "load-grunt-tasks": "3.5.0",
     "phantomjs": "2.1.7",
     "phantomjs-polyfill-object-assign": "0.0.2",
