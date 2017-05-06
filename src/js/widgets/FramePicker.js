@@ -59,7 +59,10 @@
   };
 
   ns.FramePicker.prototype.destroy = function () {
-    this.container.removeChild(this.wrapper);
+    if (this.wrapper.parentNode) {
+      this.wrapper.parentNode.removeChild(this.wrapper);
+    }
+
     pskl.utils.Event.removeAllEventListeners(this);
   };
 
