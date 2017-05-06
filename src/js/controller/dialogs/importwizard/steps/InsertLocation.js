@@ -17,11 +17,6 @@
     this.framePreview = this.container.querySelector('.insert-frame-preview');
     this.currentPiskelFramePickerWidget = new pskl.widgets.FramePicker(
       this.piskelController.getPiskel(), this.framePreview);
-    this.currentPiskelFramePickerWidget.init();
-
-    var currentFrameIndex = this.piskelController.getCurrentFrameIndex();
-    this.currentPiskelFramePickerWidget.setFrameIndex(currentFrameIndex + 1);
-    this.currentPiskelFramePickerWidget.setFirstFrameIndex(0);
 
     this.insertModeContainer = this.container.querySelector('.insert-mode-container');
     this.addEventListener(this.insertModeContainer, 'change', this.onInsertModeChange_);
@@ -40,7 +35,11 @@
   };
 
   ns.InsertLocation.prototype.onShow = function () {
-    // Nothing to do here!
+    this.currentPiskelFramePickerWidget.init();
+    var currentFrameIndex = this.piskelController.getCurrentFrameIndex();
+    this.currentPiskelFramePickerWidget.setFrameIndex(currentFrameIndex + 1);
+    this.currentPiskelFramePickerWidget.setFirstFrameIndex(0);
+
     this.superclass.onShow.call(this);
   };
 
