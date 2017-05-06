@@ -70,7 +70,7 @@ casper.test.begin('Test resize content works, and check the output', 18, functio
     .start(casper.cli.get('baseUrl')+"/?debug")
     .then(function () {
       this.echo("URL loaded");
-      this.waitForSelector('#drawing-canvas-container canvas', onTestStart, test.timeout, 10000);
+      this.waitForSelector('#drawing-canvas-container canvas', onTestStart, test.timeout, 20000);
     })
     .run(function () {
       test.done();

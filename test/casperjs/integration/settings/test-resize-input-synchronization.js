@@ -89,7 +89,7 @@ casper.test.begin('Test resize panel width/height inputs are synchronized', 28 ,
     .start(casper.cli.get('baseUrl')+"/?debug")
     .then(function () {
       this.echo("URL loaded");
-      this.waitForSelector('#drawing-canvas-container canvas', onTestStart, test.timeout, 10000);
+      this.waitForSelector('#drawing-canvas-container canvas', onTestStart, test.timeout, 20000);
     })
     .run(function () {
       test.done();
