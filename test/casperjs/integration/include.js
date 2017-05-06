@@ -110,7 +110,7 @@ function waitForEvent(eventName, onSuccess, onError) {
 function replaceFunction(test, path, method) {
   // Check the path provided corresponds to an existing method, otherwise the
   // test probably needs to be updated.
-  test.assertEquals(evalLine('typeof ' + path),'function',
+  test.assertEquals(evalLine('typeof ' + path), 'function',
     path + ' is still a function');
 
   // Replace the method in content.
