@@ -22,7 +22,7 @@
     },
 
     isIntegrationTest : function () {
-      return new window.URL(window.location).searchParams.has('integration-test');
+      return window.location.href.indexOf('integration-test') !== -1;
     }
   };
 
