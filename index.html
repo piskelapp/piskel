@@ -117,7 +117,12 @@
         <div id="animated-preview-container" class="preview-container">
   <div class="canvas-container-wrapper minimap-container">
     <div class="preview-contextual-actions">
-      <div class="preview-contextual-action  original-size-button" rel="tooltip" data-placement="bottom">1x</div>
+      <div class="preview-drop-down">
+        <div class="preview-disable-overlay" rel="tooltip" data-placement="left"></div>
+        <div class="preview-contextual-action  original-size-button" rel="tooltip" data-placement="left">1x</div>
+        <div class="preview-contextual-action  best-size-button" rel="tooltip" data-placement="left"></div>
+        <div class="preview-contextual-action  full-size-button" rel="tooltip" data-placement="left">Full</div>
+      </div>
       <div class="preview-contextual-action  open-popup-preview-button  icon-minimap-popup-preview-arrow-white"
            title="Open preview in popup" rel="tooltip" data-placement="bottom"></div>
     </div>
@@ -284,7 +289,7 @@
   <script type="text/template" id="tooltip-container-template">
     <div class='tooltip-container'>
       <div>{{helptext}} <span class='tooltip-shortcut'>{{shortcut}}</span></div>
-      {{descriptors}}
+      {{!descriptors!}}
     </div>
   </script>
 
@@ -458,57 +463,6 @@
     <div class="create-palette-remove-color">X</div>
   </li>
 </script>
-  <script type="text/template" id="templates/dialogs/import-image.html">
-  <div class="dialog-wrapper">
-    <h3 class="dialog-head">
-      Import Image
-      <span class="dialog-close">X</span>
-    </h3>
-    <div class="dialog-import-body">
-      <form action="" method="POST" name="import-image-form">
-        <div class="import-section">
-          <span class="dialog-section-title">Name :</span><span class="import-image-file-name"></span>
-        </div>
-        <div class="import-section">
-          <div class="import-section-preview-title">Preview :</div>
-          <div class="import-section-preview"></div>
-        </div>
-        <div class="import-section">
-          <label class="dialog-section-radio-label">
-            <input class="dialog-section-radio" name="import-type" value="single" type="radio" checked="checked">
-            Import as single image
-          </label>
-        </div>
-        <div class="import-section import-subsection">
-          <span class="dialog-section-title">Resize to</span>
-          <input type="text" class="textfield import-size-field" name="resize-width"/>x
-          <input type="text" class="textfield import-size-field" name="resize-height"/>
-        </div>
-        <div class="import-section import-subsection">
-          <span class="import-section-title">Smooth resize</span>
-          <input type="checkbox" class="checkbox-fix" checked="checked" name="smooth-resize-checkbox" value="1"/>
-        </div>
-        <div class="import-section">
-          <label class="dialog-section-radio-label">
-            <input class="dialog-section-radio" name="import-type" value="sheet" type="radio">
-            Import as spritesheet
-          </label>
-        </div>
-        <div class="import-section import-subsection">
-          <span class="dialog-section-title">Frame size</span>
-          <input type="text" class="textfield import-size-field" name="frame-size-x"/>x
-          <input type="text" class="textfield import-size-field" name="frame-size-y"/>
-        </div>
-        <div class="import-section import-subsection">
-          <span class="dialog-section-title">Offset</span>
-          <input type="text" class="textfield import-size-field" name="frame-offset-x"/>x
-          <input type="text" class="textfield import-size-field" name="frame-offset-y"/>
-        </div>
-        <input type="submit" name="import-submit" class="button button-primary import-button" value="Import"/>
-      </form>
-    </div>
-  </div>
-</script>
   <script type="text/template" id="templates/dialogs/browse-local.html">
   <div class="dialog-wrapper">
     <h3 class="dialog-head">
@@ -587,6 +541,208 @@
     <span class="cheatsheet-description">{{description}}</span>
   </li>
 </script>
+  <script type="text/template" id="templates/dialogs/import.html">
+  <div class="dialog-wrapper">
+    <h3 class="dialog-head">
+      Import and Merge
+      <span class="dialog-close">X</span>
+    </h3>
+    <div class="dialog-content import-wizard-container"></div>
+  </div>
+</script>
+
+<script type="text/template" id="import-image-import">
+<div class="import-step-container import-image-container">
+  <form action="" method="POST" name="import-image-form">
+    <div class="import-section">
+      <span class="dialog-section-title">Name :</span><span class="import-image-file-name"></span>
+    </div>
+    <div class="import-section">
+      <div class="import-section-preview"></div>
+    </div>
+    <div class="import-section">
+      <label class="dialog-section-radio-label">
+        <input class="dialog-section-radio" name="import-type" value="single" type="radio" checked="checked">
+        Import as single image
+      </label>
+    </div>
+    <div class="import-section import-subsection">
+      <span class="dialog-section-title">Resize to</span>
+      <input type="text" class="textfield import-size-field" name="resize-width"/>x
+      <input type="text" class="textfield import-size-field" name="resize-height"/>
+    </div>
+    <div class="import-section import-subsection">
+      <span class="import-section-title">Smooth resize</span>
+      <input type="checkbox" class="checkbox-fix" checked="checked" name="smooth-resize-checkbox" value="1"/>
+    </div>
+    <div class="import-section">
+      <label class="dialog-section-radio-label">
+        <input class="dialog-section-radio" name="import-type" value="sheet" type="radio">
+        Import as spritesheet
+      </label>
+    </div>
+    <div class="import-section import-subsection">
+      <span class="dialog-section-title">Frame size</span>
+      <input type="text" class="textfield import-size-field" name="frame-size-x"/>x
+      <input type="text" class="textfield import-size-field" name="frame-size-y"/>
+    </div>
+    <div class="import-section import-subsection">
+      <span class="dialog-section-title">Offset</span>
+      <input type="text" class="textfield import-size-field" name="frame-offset-x"/>x
+      <input type="text" class="textfield import-size-field" name="frame-offset-y"/>
+    </div>
+  </form>
+  <div class="import-step-buttons">
+    <button class="import-cancel-button button">cancel</button>
+    <button class="import-back-button button">back</button>
+    <button class="import-next-button button button-primary">next</button>
+  </div>
+</div>
+</script>
+
+<script type="text/template" id="import-select-mode">
+<div class="import-step-container">
+  <div class="import-info">
+    <div class="import-preview"></div>
+    <div class="import-meta"></div>
+  </div>
+
+  <div class="import-step-content">
+    <div class="import-mode">
+      <div class="import-mode-title">How do you want to import the new content?</div>
+      <label class="import-mode-option">
+        <input type="radio" checked="checked" name="import-mode" id="select-mode-replace" value="replace"/>
+        <span>Replace your current sprite</span>
+      </label>
+      <label class="import-mode-option">
+        <input type="radio" name="import-mode" id="select-mode-merge" value="merge"/>
+        <span>Merge with your current sprite</span>
+      </label>
+    </div>
+
+    <div class="import-step-buttons">
+      <button class="import-cancel-button button">cancel</button>
+      <button class="import-back-button button">back</button>
+      <button class="import-next-button button button-primary">next</button>
+    </div>
+  </div>
+</div>
+</script>
+
+<script type="text/template" id="import-meta-content">
+  <div class="import-name">
+    <span class="import-meta-label">Name</span>
+    <span class="import-meta-value" title="{{name}}">{{name}}</span>
+  </div>
+  <div class="import-dimensions">
+    <span class="import-meta-label">Dimensions</span>
+    <span class="import-meta-value">{{dimensions}}</span>
+  </div>
+  <div class="import-frames">
+    <span class="import-meta-label">Frames</span>
+    <span class="import-meta-value">{{frames}}</span>
+  </div>
+  <div class="import-layers">
+    <span class="import-meta-label">Layers</span>
+    <span class="import-meta-value">{{layers}}</span>
+  </div>
+</script>
+
+<script type="text/template" id="import-adjust-size">
+<div class="import-step-container">
+
+  <div class="import-info">
+    <div class="import-preview"></div>
+    <div class="import-meta"></div>
+  </div>
+
+  <div class="import-step-content">
+    <div class="import-resize-info"></div>
+    <div class="import-resize-anchor import-resize-section">
+      <div class="import-resize-anchor-info"></div>
+      <div class="import-resize-anchor-container"></div>
+    </div>
+    <div class="import-step-buttons">
+      <button class="import-cancel-button button">cancel</button>
+      <button class="import-back-button button">back</button>
+      <button class="import-next-button button button-primary">next</button>
+    </div>
+  </div>
+</div>
+</script>
+
+<script type="text/template" id="import-resize-bigger-partial">
+<div class="import-resize-bigger">
+  <div class="import-resize-section">
+    The imported image is bigger than the current sprite.
+  </div>
+  <div class="import-resize-section">
+    <div class="import-resize-option-label">
+      How do you want to proceed?
+    </div>
+    <label class="import-resize-option">
+      <input type="radio" name="resize-mode" id="resize-option-expand" value="expand" {{expandChecked}}/>
+      <span>Expand canvas to {{newSize}}</span>
+    </label>
+    <label class="import-resize-option">
+      <input type="radio" name="resize-mode" id="resize-option-keep" value="keep" {{keepChecked}}/>
+      <span>Keep canvas size at {{size}}</span>
+    </label>
+  </div>
+</div>
+</script>
+
+<script type="text/template" id="import-resize-smaller-partial">
+<div class="import-resize-smaller">
+  <div class="import-resize-section">
+    The image being imported is smaller ({{newSize}}) than the canvas size ({{size}}).
+  </div>
+</div>
+</script>
+
+<script type="text/template" id="import-insert-location">
+<div class="import-step-container">
+  <div class="import-info">
+    <div class="import-preview"></div>
+    <div class="import-meta"></div>
+  </div>
+
+  <div class="import-step-content">
+    <div>Select a frame in your current sprite:</div>
+    <div class="insert-frame-preview"></div>
+    <div class="insert-mode-container">
+      <div class="insert-mode-option-label">
+        How should the imported frames be inserted:
+      </div>
+      <label class="insert-mode-option">
+        <input type="radio" name="insert-mode" id="insert-mode-add" value="add" checked="checked"/>
+        <span>Add new frames</span>
+      </label>
+      <label class="insert-mode-option">
+        <input type="radio" name="insert-mode" id="insert-mode-insert" value="insert"/>
+        <span>Insert in existing frames</span>
+      </label>
+    </div>
+    <div class="import-step-buttons">
+      <button class="import-cancel-button button">cancel</button>
+      <button class="import-back-button button">back</button>
+      <button class="import-next-button button button-primary">import</button>
+    </div>
+  </div>
+</div>
+</script>
+
+<script type="text/template" id="import-invalid-file">
+<div class="import-step-container">
+  <div>THIS IS AN INVALID FILEZ</div>
+  <div class="import-step-buttons">
+    <button class="import-cancel-button button">cancel</button>
+    <button class="import-back-button button">back</button>
+    <button class="import-next-button button button-primary">next</button>
+  </div>
+</div>
+</script>
+
   <script type="text/template" id="templates/dialogs/performance-info.html">
   <div class="dialog-wrapper">
     <h3 class="dialog-head">
@@ -609,12 +765,12 @@
         <li>number of frames <sup title="recommended: lower than 25, max: 100" rel="tooltip" data-placement="top">?</sup></li>
         <li>number of colors <sup title="max: 100" rel="tooltip" data-placement="top">?</sup></li>
       </ul>
-      <p>We strive to improve Piskel, its performances and stability, but this is a personal project with limited time and resources.
+      <p>We strive to improve Piskel, its performance and stability, but this is a personal project with limited time and resources.
          We prefer to warn you early rather than having you lose your work.</p>
       <p>Feedback welcome at <a href="https://github.com/juliandescottes/piskel" target="_blank">https://github.com/juliandescottes/piskel</a></p>
       <p>
         <div class="warning-icon icon-common-warning-red">&nbsp;</div>
-        <div class="warning-icon-info">This icon will remain on the top-bottom of the application until the performance issue is fixed. You can click on it at anytime to display this information again.</div>
+        <div class="warning-icon-info">This icon will remain on the bottom-right of the application until the performance issue is fixed. You can click on it at anytime to display this information again.</div>
       </p>
     </div>
   </div>
@@ -744,17 +900,7 @@
         </div>
         <div class="resize-section">
           <span  class="resize-section-title">Anchor</span>
-          <div class="resize-origin-container">
-            <div class="resize-origin-option"  title="top left"      data-origin="TOPLEFT"></div>
-            <div class="resize-origin-option"  title="top"           data-origin="TOP"></div>
-            <div class="resize-origin-option"  title="top right"     data-origin="TOPRIGHT"></div>
-            <div class="resize-origin-option"  title="middle left"   data-origin="MIDDLELEFT"></div>
-            <div class="resize-origin-option"  title="middle"        data-origin="MIDDLE"></div>
-            <div class="resize-origin-option"  title="middle right"  data-origin="MIDDLERIGHT"></div>
-            <div class="resize-origin-option"  title="bottom left"   data-origin="BOTTOMLEFT"></div>
-            <div class="resize-origin-option"  title="bottom"        data-origin="BOTTOM"></div>
-            <div class="resize-origin-option"  title="bottom right"  data-origin="BOTTOMRIGHT"></div>
-          </div>
+          <div class="resize-anchor-container"></div>
         </div>
         <input type="submit" class="button button-primary resize-button" value="Resize" />
       </form>
@@ -1037,9 +1183,9 @@
     (function () {
 
   /**
-   * See @Gruntfile.js => after build, -2017-01-10-04-26 is replaced by the build version
+   * See @Gruntfile.js => after build, -2017-05-06-11-54 is replaced by the build version
    */
-  var version = '-2017-01-10-04-26';
+  var version = '-2017-05-06-11-54';
   var versionHasNotBeenReplaced = version.indexOf('@@') === 0;
   if (versionHasNotBeenReplaced)  {
     version = '';
