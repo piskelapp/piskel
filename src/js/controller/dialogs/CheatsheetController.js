@@ -140,7 +140,8 @@
       title : title,
       icon : descriptor.iconClass,
       description : description,
-      key : this.formatKey_(shortcut.getDisplayKey()),
+      // Avoid sanitization
+      '!key!' : this.formatKey_(shortcut.getDisplayKey()),
       className : shortcutClasses.join(' ')
     });
 
