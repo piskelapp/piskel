@@ -6,6 +6,8 @@ const fse = require('fs-extra');
 const PISKEL_PATH = path.resolve(__dirname, '..');
 const PISKELAPP_PATH = path.resolve(__dirname, '../../piskel-website');
 
+var pjson = require('../package.json');
+
 // Callbacks sorted by call sequence.
 function onCopy(err) {
   if (err) {
@@ -52,6 +54,17 @@ function onDeleteTempPartial(err) {
   }
 
   console.log('Temporary main partial deleted...');
+
+  fs.writeFile(path.resolve(PISKELAPP_PATH, "static/editor/VERSION"), pjson.version, onVersionFileCreated);
+}
+
+function onVersionFileCreated(err) {
+  if (err) {
+    console.error('Failed to create temporary main partial...');
+    return console.error(err);
+  }
+
+  console.log('Version file created...');
   console.log('Finished!');
 }
 
