@@ -50,7 +50,6 @@
     </div>
   </form>
   <div class="import-step-buttons">
-    <button class="import-cancel-button button">cancel</button>
     <button class="import-back-button button">back</button>
     <button class="import-next-button button button-primary">next</button>
   </div>
@@ -67,20 +66,19 @@
   <div class="import-step-content">
     <div class="import-mode">
       <div class="import-mode-title">How do you want to import the new content?</div>
-      <label class="import-mode-option">
-        <input type="radio" checked="checked" name="import-mode" id="select-mode-replace" value="replace"/>
-        <span>Replace your current sprite</span>
-      </label>
-      <label class="import-mode-option">
-        <input type="radio" name="import-mode" id="select-mode-merge" value="merge"/>
-        <span>Merge with your current sprite</span>
-      </label>
+      <div class="import-mode-section">
+        <span class="import-mode-section-description">Combine the imported content and your existing sprite.</span>
+        <button class="import-mode-merge-button button-primary button">Merge</button>
+      </div>
+      <div class="import-mode-section">
+        <span class="import-mode-section-description">Replace your current sprite by the imported content.</span>
+        <button class="import-mode-replace-button button-primary button">Replace</button>
+      </div>
     </div>
 
     <div class="import-step-buttons">
-      <button class="import-cancel-button button">cancel</button>
       <button class="import-back-button button">back</button>
-      <button class="import-next-button button button-primary">next</button>
+      <button style="display: none" class="import-next-button button button-primary">next</button>
     </div>
   </div>
 </div>
@@ -120,7 +118,6 @@
       <div class="import-resize-anchor-container"></div>
     </div>
     <div class="import-step-buttons">
-      <button class="import-cancel-button button">cancel</button>
       <button class="import-back-button button">back</button>
       <button class="import-next-button button button-primary">next</button>
     </div>
@@ -181,7 +178,6 @@
       </label>
     </div>
     <div class="import-step-buttons">
-      <button class="import-cancel-button button">cancel</button>
       <button class="import-back-button button">back</button>
       <button class="import-next-button button button-primary">import</button>
     </div>
@@ -193,7 +189,6 @@
 <div class="import-step-container">
   <div>THIS IS AN INVALID FILEZ</div>
   <div class="import-step-buttons">
-    <button class="import-cancel-button button">cancel</button>
     <button class="import-back-button button">back</button>
     <button class="import-next-button button button-primary">next</button>
   </div>

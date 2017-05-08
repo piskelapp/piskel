@@ -222,6 +222,29 @@
   margin-bottom: 10px
 }
 
+.import-mode-section {
+  display: flex;
+  border: 3px solid #666;
+  border-radius: 3px;
+  padding: 10px;
+  margin-bottom: 10px;
+  align-items: center;
+}
+
+.import-mode-section .button {
+  width: 90px;
+  height: 40px;
+  font-size: 16px;
+  margin-left: 10px;
+
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+
+.import-mode-section-description {
+  flex-grow: 1;
+}
+
 .import-mode-option,
 .import-resize-option,
 .insert-mode-option {
