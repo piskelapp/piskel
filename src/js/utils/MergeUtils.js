@@ -12,7 +12,7 @@
      *         - index: {Number} index where the new frames should be appended
      *         - resize: {String} either "expand" or "keep"
      *         - origin: {String} can be any of the existing AnchorWidget origins.
-     *         - addFrames: {Boolean} true if all the imported frames should be added as new frames.
+     *         - insertMode: {String} either "insert" or "add"
      *
      * @return {Piskel} The new Piskel instance created
      */
