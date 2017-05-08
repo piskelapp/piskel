@@ -17,11 +17,15 @@
      * @return {Piskel} The new Piskel instance created
      */
     merge : function (piskel, importedPiskel, options) {
+      var isImportedPiskelBigger =
+          importedPiskel.getWidth() > piskel.getWidth() ||
+          importedPiskel.getHeight() > piskel.getHeight();
+
       // First make sure both the piskel and the imported piskel use the target dimensions.
-      if (options.resize === 'expand') {
+      if (isImportedPiskelBigger && options.resize === 'expand') {
         piskel = pskl.utils.ResizeUtils.resizePiskel(piskel, {
-          width : importedPiskel.getWidth(),
-          height : importedPiskel.getHeight(),
+          width : Math.max(piskel.getWidth(), importedPiskel.getWidth()),
+          height : Math.max(piskel.getHeight(), importedPiskel.getHeight()),
           origin : options.origin,
           resizeContent: false
         });
