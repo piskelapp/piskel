@@ -158,6 +158,12 @@
         resize: this.mergeData.resize
       });
       this.piskelController.setPiskel(merge);
+
+      // Set the first imported layer as selected.
+      var importedLayers = piskel.getLayers().length;
+      var currentLayers = this.piskelController.getLayers().length;
+      this.piskelController.setCurrentLayerIndex(currentLayers - importedLayers);
+
       this.closeDialog();
     }
   };
