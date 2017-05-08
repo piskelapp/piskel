@@ -143,13 +143,6 @@
   font-size:1.3em
 }
 
-.import-button {
-  font-size: 1em;
-  height: 28px;
-  padding: 0px 10px;
-  margin-top: 15px;
-}
-
 /**
  * SELECT MODE
  */
@@ -245,7 +238,6 @@
   flex-grow: 1;
 }
 
-.import-mode-option,
 .import-resize-option,
 .insert-mode-option {
   display: flex;
@@ -253,7 +245,6 @@
   margin-bottom: 5px;
 }
 
-.import-mode-option :checked + span,
 .import-resize-option :checked + span,
 .insert-mode-option :checked + span {
   color: var(--highlight-color);
@@ -263,8 +254,7 @@
  * ADJUST SIZE
  */
 .import-resize-anchor-info,
-.import-resize-option-label,
-.insert-mode-option-label {
+.import-resize-option-label {
   margin-bottom: 10px;
 }
 
