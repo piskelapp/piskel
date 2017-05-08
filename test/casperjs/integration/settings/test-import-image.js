@@ -1,7 +1,7 @@
 /* globals casper, setPiskelFromGrid, isDrawerExpanded, getValue, isChecked,
    evalLine, waitForEvent, replaceFunction, setPiskelFromImageSrc */
 
-casper.test.begin('Simple Image import test', 29, function(test) {
+casper.test.begin('Simple Image import test', 26, function(test) {
   test.timeout = test.fail.bind(test, ['Test timed out']);
 
   // Helper to retrieve the text content of the provided selector
@@ -102,24 +102,8 @@ casper.test.begin('Simple Image import test', 29, function(test) {
     casper.echo('Select Mode step is displayed');
     checkImportPreview(test);
 
-    test.assertEquals(evalLine('document.querySelector("#select-mode-replace").checked'), true,
-      'The default import mode is the REPLACE mode');
-    test.assertEquals(getTextContent('.import-next-button'), 'import',
-      'Next button found and has the expected text content (import)');
-
-    // Click on export again to close the settings drawer.
-    casper.echo('Click on merge mode and wait for the next-button text to update');
-    casper.waitForSelectorTextChange('.current-step .import-next-button', onModeSelected, test.timeout, 10000);
-    casper.click('#select-mode-merge');
-  }
-
-  function onModeSelected() {
-    casper.echo('New mode was selected, check that the text of the next-button now reads "next"');
-    test.assertEquals(getTextContent('.import-next-button'), 'next',
-      'Next button found and has the expected text content (next) ');
-
     casper.echo('Go to next step (adjust size)');
-    casper.click('.current-step .import-next-button');
+    casper.click('.current-step .import-mode-merge-button');
     casper.waitForSelector('.current-step .import-resize-info', onAdjustSizeReady, test.timeout, 10000);
   }
 

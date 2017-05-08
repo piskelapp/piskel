@@ -1,7 +1,7 @@
 /* globals casper, setPiskelFromGrid, isDrawerExpanded, getValue, isChecked,
    evalLine, waitForEvent, replaceFunction, setPiskelFromImageSrc */
 
-casper.test.begin('Double Image import test', 29, function(test) {
+casper.test.begin('Double Image import test', 25, function(test) {
   test.timeout = test.fail.bind(test, ['Test timed out']);
 
   // Helper to retrieve the text content of the provided selector
@@ -109,13 +109,8 @@ casper.test.begin('Double Image import test', 29, function(test) {
   function onSelectModeReady() {
     casper.echo('Select Mode step is displayed');
 
-    test.assertEquals(evalLine('document.querySelector("#select-mode-replace").checked'), true,
-      'The default import mode is the REPLACE mode');
-    test.assertEquals(getTextContent('.import-next-button'), 'import',
-      'Next button found and has the expected text content (import)');
-
-    casper.echo('Click on next-button and wait for popup to close');
-    casper.click('.current-step .import-next-button');
+    casper.echo('Click on replace-button and wait for popup to close');
+    casper.click('.current-step .import-mode-replace-button');
     casper.waitForSelector('#dialog-container-wrapper:not(.show)', onPopupClosed, test.timeout, 10000);
   }
 
@@ -172,13 +167,8 @@ casper.test.begin('Double Image import test', 29, function(test) {
   function onSelectModeReady2() {
     casper.echo('Select Mode step is displayed (again)');
 
-    test.assertEquals(evalLine('document.querySelector("#select-mode-replace").checked'), true,
-      'The default import mode is the REPLACE mode');
-    test.assertEquals(getTextContent('.import-next-button'), 'import',
-      'Next button found and has the expected text content (import)');
-
-    casper.echo('Click on next-button and wait for popup to close');
-    casper.click('.current-step .import-next-button');
+    casper.echo('Click on replace-button and wait for popup to close');
+    casper.click('.current-step .import-mode-replace-button');
     casper.waitForSelector('#dialog-container-wrapper:not(.show)', onPopupClosed2, test.timeout, 10000);
   }
 
