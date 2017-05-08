@@ -15,15 +15,14 @@
   ns.SelectMode.prototype.init = function () {
     this.superclass.init.call(this);
 
-    this.importMode = this.container.querySelector('.import-mode');
-    this.addEventListener(this.importMode, 'change', this.onImportModeChange_);
+    var replaceButton = this.container.querySelector('.import-mode-replace-button');
+    var mergeButton = this.container.querySelector('.import-mode-merge-button');
 
-    // Set the initial importMode value in the merge data.
-    this.mergeData.importMode = this.getSelectedMode_();
+    this.addEventListener(replaceButton, 'click', this.onReplaceButtonClick_);
+    this.addEventListener(mergeButton, 'click', this.onMergeButtonClick_);
   };
 
   ns.SelectMode.prototype.onShow = function () {
-    this.refresh_();
     this.superclass.onShow.call(this);
   };
 
@@ -31,29 +30,13 @@
     this.superclass.destroy.call(this);
   };
 
-  ns.SelectMode.prototype.refresh_ = function () {
-    var mergePiskel = this.mergeData.mergePiskel;
-    if (mergePiskel) {
-      this.nextButton.removeAttribute('disabled');
-    } else {
-      this.nextButton.setAttribute('disabled', true);
-    }
-
-    if (this.mergeData.importMode === ns.SelectMode.MODES.MERGE) {
-      // If the user wants to merge with the existing content, there are more steps ahead.
-      this.nextButton.textContent = 'next';
-    } else {
-      // Otherwise this is the last step, update the button text.
-      this.nextButton.textContent = 'import';
-    }
+  ns.SelectMode.prototype.onReplaceButtonClick_ = function () {
+    this.mergeData.importMode = ns.SelectMode.MODES.REPLACE;
+    this.onNextClick();
   };
 
-  ns.SelectMode.prototype.onImportModeChange_ = function () {
-    this.mergeData.importMode = this.getSelectedMode_();
-    this.refresh_();
-  };
-
-  ns.SelectMode.prototype.getSelectedMode_ = function () {
-    return this.importMode.querySelector(':checked').value;
+  ns.SelectMode.prototype.onMergeButtonClick_ = function () {
+    this.mergeData.importMode = ns.SelectMode.MODES.MERGE;
+    this.onNextClick();
   };
 })();

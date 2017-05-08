@@ -49,7 +49,9 @@
     this.createPiskelFromImage().then(function (piskel) {
       this.mergeData.mergePiskel = piskel;
       this.superclass.onNextClick.call(this);
-    }.bind(this));
+    }.bind(this)).catch(function (e) {
+      console.error(e);
+    });
   };
 
   ns.ImageImport.prototype.onShow = function () {

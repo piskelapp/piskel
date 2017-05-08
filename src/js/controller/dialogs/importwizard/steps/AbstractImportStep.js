@@ -11,10 +11,8 @@
   ns.AbstractImportStep.prototype.init = function () {
     this.nextButton = this.container.querySelector('.import-next-button');
     this.backButton = this.container.querySelector('.import-back-button');
-    this.cancelButton = this.container.querySelector('.import-cancel-button');
 
     this.addEventListener(this.nextButton, 'click', this.onNextClick);
-    this.addEventListener(this.cancelButton, 'click', this.onCancelClick);
     this.addEventListener(this.backButton, 'click', this.onBackClick);
   };
 
@@ -28,10 +26,6 @@
     }
 
     pskl.utils.Event.removeAllEventListeners(this);
-  };
-
-  ns.AbstractImportStep.prototype.onCancelClick = function () {
-    this.importController.closeDialog();
   };
 
   ns.AbstractImportStep.prototype.onNextClick = function () {
