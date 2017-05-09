@@ -97,8 +97,35 @@
       linePixels = pskl.PixelUtils.getLinePixels(col, this.startCol, row, this.startRow);
     }
 
-    pskl.PixelUtils.resizePixels(linePixels, penSize).forEach(function (point) {
-      targetFrame.setPixel(point[0], point[1], color);
+    var bump = (penSize + 1) % 2;
+    for (var j = 0; j < penSize / 2; j++) {
+      for (var i = 0; i < penSize / 2; i++) {
+        if (i + j < penSize / 2) {
+          targetFrame.setPixel(linePixels[0].col + i,
+            linePixels[0].row + j, color);
+          targetFrame.setPixel(linePixels[0].col - bump - i,
+            linePixels[0].row + j, color);
+          targetFrame.setPixel(linePixels[0].col + i,
+            linePixels[0].row - bump - j, color);
+          targetFrame.setPixel(linePixels[0].col - bump - i,
+            linePixels[0].row - bump - j, color);
+          targetFrame.setPixel(linePixels[linePixels.length - 1].col + i,
+            linePixels[linePixels.length - 1].row + j, color);
+          targetFrame.setPixel(linePixels[linePixels.length - 1].col - bump - i,
+            linePixels[linePixels.length - 1].row + j, color);
+          targetFrame.setPixel(linePixels[linePixels.length - 1].col + i,
+            linePixels[linePixels.length - 1].row - bump - j, color);
+          targetFrame.setPixel(linePixels[linePixels.length - 1].col - bump - i,
+            linePixels[linePixels.length - 1].row - bump - j, color);
+        }
+      }
+    }
+
+    linePixels.forEach(function (point) {
+      for (var i = 0; i < penSize; i++) {
+        targetFrame.setPixel(point.col - Math.floor(penSize / 2) + i, point.row, color);
+        targetFrame.setPixel(point.col, point.row - Math.floor(penSize / 2) + i, color);
+      }
     });
   };
 
