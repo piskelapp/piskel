@@ -61,7 +61,7 @@
           this.createPiskelFromImages_(images, frameSizeX, frameSizeY, options.smoothing);
         } else {
           // Spritesheet
-          var frameImages = this.createImagesFromSheet_(images[0]);
+          var frameImages = this.createImagesFromSheet_(images[0], frameSizeX, frameSizeY, frameOffsetX, frameOffsetY);
           this.createPiskelFromImages_(frameImages, frameSizeX, frameSizeY, options.smoothing);
         }
         onComplete();
