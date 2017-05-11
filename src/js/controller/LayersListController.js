@@ -17,6 +17,7 @@
     this.rootEl.addEventListener('click', this.onClick_.bind(this));
     this.toggleLayerPreviewEl.addEventListener('click', this.toggleLayerPreview_.bind(this));
 
+    this.initCreateLayerButton_();
     this.initToggleLayerPreview_();
 
     this.renderLayerList_();
@@ -43,6 +44,14 @@
     if (currentLayerEl) {
       currentLayerEl.scrollIntoViewIfNeeded(false);
     }
+  };
+
+  ns.LayersListController.prototype.initCreateLayerButton_ = function () {
+    var tooltip = pskl.utils.TooltipFormatter.format('Create a layer', null, [
+      {key : 'shift', description : 'Clone current layer'}
+    ]);
+    var addButton = this.rootEl.querySelector('[data-action="add"]');
+    addButton.setAttribute('title', tooltip);
   };
 
   ns.LayersListController.prototype.initToggleLayerPreview_ = function () {
@@ -117,7 +126,7 @@
     var el = evt.target || evt.srcElement;
     var index;
     if (el.classList.contains('button')) {
-      this.onButtonClick_(el);
+      this.onButtonClick_(el, evt);
     } else if (el.classList.contains('layer-name')) {
       index = pskl.utils.Dom.getData(el, 'layerIndex');
       this.piskelController.setCurrentLayerIndex(parseInt(index, 10));
@@ -145,14 +154,18 @@
     this.renderLayerList_();
   };
 
-  ns.LayersListController.prototype.onButtonClick_ = function (button) {
+  ns.LayersListController.prototype.onButtonClick_ = function (button, evt) {
     var action = button.getAttribute('data-action');
     if (action == 'up') {
       this.piskelController.moveLayerUp();
     } else if (action == 'down') {
       this.piskelController.moveLayerDown();
     } else if (action == 'add') {
-      this.piskelController.createLayer();
+      if (evt.shiftKey) {
+        this.piskelController.duplicateCurrentLayer();
+      } else {
+        this.piskelController.createLayer();
+      }
     } else if (action == 'delete') {
       this.piskelController.removeCurrentLayer();
     } else if (action == 'merge') {
