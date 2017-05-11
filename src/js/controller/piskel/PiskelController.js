@@ -231,6 +231,13 @@
     return name;
   };
 
+  ns.PiskelController.prototype.duplicateCurrentLayer = function () {
+    var layer = this.getCurrentLayer();
+    var clone = pskl.utils.LayerUtils.clone(layer);
+    this.piskel.addLayer(clone);
+    this.setCurrentLayerIndex(this.piskel.getLayers().length - 1);
+  };
+
   ns.PiskelController.prototype.createLayer = function (name) {
     if (!name) {
       name = this.generateLayerName_();

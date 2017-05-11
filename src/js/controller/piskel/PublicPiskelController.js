@@ -31,6 +31,7 @@
     this.saveWrap_('duplicateFrameAt', true);
     this.saveWrap_('moveFrame', true);
     this.saveWrap_('createLayer', true);
+    this.saveWrap_('duplicateCurrentLayer', true);
     this.saveWrap_('mergeDownLayerAt', true);
     this.saveWrap_('moveLayerUp', true);
     this.saveWrap_('moveLayerDown', true);

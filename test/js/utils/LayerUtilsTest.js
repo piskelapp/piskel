@@ -53,4 +53,30 @@ describe("LayerUtils test", function() {
       ['rgba(255,0,0,0.5)', B]
     ]);
   });
+
+  it("clones a layer", function() {
+    var grid1 = [
+      [B, T],
+      [T, B]
+    ];
+
+    var grid2 = [
+      [R, B],
+      [B, R]
+    ];
+
+    // when
+    var layer = new pskl.model.Layer('l1');
+    layer.addFrame(pskl.model.Frame.fromPixelGrid(grid1));
+    layer.addFrame(pskl.model.Frame.fromPixelGrid(grid2));
+
+    // then
+    var clone = pskl.utils.LayerUtils.clone(layer);
+    var clonedFrame = clone.getFrameAt(0);
+
+    // verify
+    frameEqualsGrid(clone.getFrameAt(0), grid1);
+    frameEqualsGrid(clone.getFrameAt(1), grid2);
+    expect(clone.getName()).toBe('l1 (clone)');
+  });
 });
