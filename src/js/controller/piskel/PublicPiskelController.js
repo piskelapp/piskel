@@ -17,7 +17,6 @@
     this.resetWrap_('setCurrentFrameIndex');
     this.resetWrap_('selectNextFrame');
     this.resetWrap_('selectPreviousFrame');
-    this.resetWrap_('setCurrentLayerIndex');
     this.resetWrap_('selectLayer');
     // DECORATED WITH SAVE, NO RESET
     this.saveWrap_('renameLayerAt', false);
