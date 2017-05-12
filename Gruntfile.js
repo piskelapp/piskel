@@ -319,7 +319,8 @@ module.exports = function(grunt) {
           build_dir: './dest/desktop/', // destination folder of releases.
           win: true,
           linux32: true,
-          linux64: true
+          linux64: true,
+          flavor: "normal",
         },
         src: ['./dest/prod/**/*', "./package.json", "!./dest/desktop/"]
       },
@@ -328,7 +329,8 @@ module.exports = function(grunt) {
           downloadUrl: 'https://dl.nwjs.io/',
           osx64: true,
           version : "0.19.4",
-          build_dir: './dest/desktop/'
+          build_dir: './dest/desktop/',
+          flavor: "normal",
         },
         src: ['./dest/prod/**/*', "./package.json", "!./dest/desktop/"]
       },
