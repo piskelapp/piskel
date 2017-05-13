@@ -97,34 +97,27 @@
       linePixels = pskl.PixelUtils.getLinePixels(col, this.startCol, row, this.startRow);
     }
 
-    var bump = (penSize + 1) % 2;
-    for (var j = 0; j < penSize / 2; j++) {
-      for (var i = 0; i < penSize / 2; i++) {
-        if (i + j < penSize / 2) {
-          targetFrame.setPixel(linePixels[0].col + i,
-            linePixels[0].row + j, color);
-          targetFrame.setPixel(linePixels[0].col - bump - i,
-            linePixels[0].row + j, color);
-          targetFrame.setPixel(linePixels[0].col + i,
-            linePixels[0].row - bump - j, color);
-          targetFrame.setPixel(linePixels[0].col - bump - i,
-            linePixels[0].row - bump - j, color);
-          targetFrame.setPixel(linePixels[linePixels.length - 1].col + i,
-            linePixels[linePixels.length - 1].row + j, color);
-          targetFrame.setPixel(linePixels[linePixels.length - 1].col - bump - i,
-            linePixels[linePixels.length - 1].row + j, color);
-          targetFrame.setPixel(linePixels[linePixels.length - 1].col + i,
-            linePixels[linePixels.length - 1].row - bump - j, color);
-          targetFrame.setPixel(linePixels[linePixels.length - 1].col - bump - i,
-            linePixels[linePixels.length - 1].row - bump - j, color);
-        }
-      }
-    }
+    pskl.PixelUtils.resizePixel(linePixels[0].col, linePixels[0].row, penSize)
+      .forEach(function (point) {targetFrame.setPixel(point[0], point[1], color);});
+    pskl.PixelUtils.resizePixel(linePixels[linePixels.length - 1].col, linePixels[linePixels.length - 1].row, penSize)
+      .forEach(function (point) {targetFrame.setPixel(point[0], point[1],color);});
 
     linePixels.forEach(function (point) {
       for (var i = 0; i < penSize; i++) {
-        targetFrame.setPixel(point.col - Math.floor(penSize / 2) + i, point.row, color);
-        targetFrame.setPixel(point.col, point.row - Math.floor(penSize / 2) + i, color);
+        targetFrame.setPixel(
+          point.col - Math.floor(penSize / 2) + i, point.row - Math.floor(penSize / 2) + i, color
+        );
+        targetFrame.setPixel(
+          point.col - Math.floor(penSize / 2) + i, point.row + Math.ceil(penSize / 2) - i - 1, color
+        );
+        if (i !== 0) {
+          targetFrame.setPixel(
+            point.col - Math.floor(penSize / 2) + i, point.row - Math.floor(penSize / 2) + i - 1, color
+          );
+          targetFrame.setPixel(
+            point.col - Math.floor(penSize / 2) + i, point.row + Math.ceil(penSize / 2) - i, color
+          );
+        }
       }
     });
   };
