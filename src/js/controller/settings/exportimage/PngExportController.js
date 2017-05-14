@@ -190,7 +190,7 @@
     var json = {
       'frames': frames,
       'meta': {
-        'app': 'https://github.com/juliandescottes/piskel/',
+        'app': 'https://github.com/piskelapp/piskel/',
         'version': '1.0',
         'image': name + '.png',
         'format': 'RGBA8888',

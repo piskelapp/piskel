@@ -258,7 +258,7 @@
     var isZoomedOut = translateX > 0 || translateY > 0;
     // Draw the background / zoomed-out color only if needed. Otherwise the clearRect
     // happening after that will clear "out of bounds" and seems to be doing nothing
-    // on some chromebooks (cf https://github.com/juliandescottes/piskel/issues/651)
+    // on some chromebooks (cf https://github.com/piskelapp/piskel/issues/651)
     if (isZoomedOut) {
       // Draw background
       displayContext.fillStyle = Constants.ZOOMED_OUT_BACKGROUND_COLOR;
