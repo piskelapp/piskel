@@ -24,7 +24,8 @@
     "test": "grunt test",
     "start": "nodewebkit",
     "preversion": "grunt test build",
-    "postversion": "git push && git push --tags && npm publish"
+    "postversion": "git push && git push --tags && npm publish",
+    "release": "grunt && node ./bin/copy-to-piskel-website"
   },
   "devDependencies": {
     "dateformat": "2.0.0",
