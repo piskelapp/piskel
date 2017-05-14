@@ -12,17 +12,17 @@ describe("Serialization/Deserialization test", function() {
     delete pskl.app.piskelController;
   });
 
-  if("serializes frames correctly", function () {
+  it("serializes frames correctly", function (done) {
     // Create piskel.
     var descriptor = new pskl.model.piskel.Descriptor('piskelName', 'piskelDesc');
     var piskel = new pskl.model.Piskel(1, 1, 1, descriptor);
     // Add layer.
     piskel.addLayer(new pskl.model.Layer('layer1'));
     // Add frame.
-    piskel.getLayerAt(0).addFrame(pskl.model.Frame.fromPixelGrid([
+    piskel.getLayerAt(0).addFrame(pskl.model.Frame.fromPixelGrid(test.testutils.toFrameGrid([
       ["red", "black"],
       ["blue", "green"]
-    ]));
+    ])));
 
     // Verify the frame is successfully added in the layer.
     expect(piskel.getLayerAt(0).getFrames().length).toBe(1);
@@ -34,13 +34,13 @@ describe("Serialization/Deserialization test", function() {
       // Check the frame has been properly deserialized
       expect(p.getLayerAt(0).getFrames().length).toBe(1);
       var frame = p.getLayerAt(0).getFrameAt(0);
-      test.testutils.frameEqualsGrid(flattened, [
+      test.testutils.frameEqualsGrid(frame, [
         ["red", "black"],
         ["blue", "green"]
       ]);
       done();
     });
-  })
+  });
 
   it("serializes layer opacity", function(done) {
     var descriptor = new pskl.model.piskel.Descriptor('piskelName', 'piskelDesc');
