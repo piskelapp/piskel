@@ -1,5 +1,5 @@
 <script type="text/html" id="templates/settings/application.html">
-  <form action="" method="POST" name="application-settings-form">
+  <form action="" method="POST" name="application-settings-form" class="application-settings-form">
     <div class="settings-section settings-section-application">
       <div class="settings-title">
         General
@@ -64,6 +64,14 @@
           <option value="hex">Hex</option>
           <option value="rgb">RGB</option>
         </select>
+      </div>
+
+      <div class="settings-version-info">
+        Piskel
+        <span rel="tooltip" data-placement="bottom" title="View release notes">
+          <a  class="settings-version" target="_blank"
+              href="https://github.com/piskelapp/piskel/releases/tag/v@@releaseVersion">v@@releaseVersion</a>
+        </span>
       </div>
 
       <input type="submit" class="button button-primary" value="Apply settings" />
