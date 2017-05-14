@@ -28,7 +28,10 @@
       var dummyEl = ns.Template._getDummyEl();
       dummyEl.innerHTML = html;
       var element = dummyEl.children[0];
-      dummyEl.innerHTML = '';
+
+      if (!pskl.utils.UserAgent.isIE11) {
+        dummyEl.innerHTML = '';
+      }
 
       return element;
     },
@@ -78,7 +81,9 @@
       dummyEl.textContent = string;
       var sanitizedString = dummyEl.innerHTML;
 
-      dummyEl.innerHTML = '';
+      if (!pskl.utils.UserAgent.isIE11) {
+        dummyEl.innerHTML = '';
+      }
 
       return sanitizedString;
     },
