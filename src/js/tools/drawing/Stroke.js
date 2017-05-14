@@ -97,11 +97,13 @@
       linePixels = pskl.PixelUtils.getLinePixels(col, this.startCol, row, this.startRow);
     }
 
+    //draw the square ends of the line
     pskl.PixelUtils.resizePixel(linePixels[0].col, linePixels[0].row, penSize)
       .forEach(function (point) {targetFrame.setPixel(point[0], point[1], color);});
     pskl.PixelUtils.resizePixel(linePixels[linePixels.length - 1].col, linePixels[linePixels.length - 1].row, penSize)
       .forEach(function (point) {targetFrame.setPixel(point[0], point[1],color);});
 
+    //for each step along the line, draw an x centered on that pixel of size penSize
     linePixels.forEach(function (point) {
       for (var i = 0; i < penSize; i++) {
         targetFrame.setPixel(
@@ -110,6 +112,7 @@
         targetFrame.setPixel(
           point.col - Math.floor(penSize / 2) + i, point.row + Math.ceil(penSize / 2) - i - 1, color
         );
+        //draw an additional x directly next to the first to prevent unwanted dithering
         if (i !== 0) {
           targetFrame.setPixel(
             point.col - Math.floor(penSize / 2) + i, point.row - Math.floor(penSize / 2) + i - 1, color
