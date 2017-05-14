@@ -18,6 +18,7 @@
     loadingMask.style.opacity = 0;
     window.setTimeout(function () {loadingMask.parentNode.removeChild(loadingMask);}, 600);
     pskl.app.init();
+    pskl._releaseVersion = '@@releaseVersion';
     // cleanup
     delete window.pskl_exports;
     delete window.loadDebugScripts;

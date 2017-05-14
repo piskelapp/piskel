@@ -12,6 +12,7 @@ module.exports = function(grunt) {
   // create a version based on the build timestamp
   var dateFormat = require('dateformat');
   var version = '-' + dateFormat(new Date(), "yyyy-mm-dd-hh-MM");
+  var releaseVersion = require('./package.json').version;
 
   /**
    * Helper to prefix all strings in provided array with the provided path
@@ -194,7 +195,8 @@ module.exports = function(grunt) {
         dest: 'dest/tmp/index.html',
         options : {
           globals : {
-            'version' : version
+            'version' : version,
+            'releaseVersion' : releaseVersion
           }
         }
       }
