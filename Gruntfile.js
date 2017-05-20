@@ -356,6 +356,8 @@ module.exports = function(grunt) {
   grunt.registerTask('unit-test', ['karma']);
   // Run integration tests
   grunt.registerTask('integration-test', ['build-dev', 'connect:test', 'casperjs:integration']);
+  // Run drawing tests
+  grunt.registerTask('drawing-test', ['build-dev', 'connect:test', 'casperjs:drawing']);
   // Run linting, unit tests, drawing tests and integration tests
   grunt.registerTask('test', ['lint', 'unit-test', 'build-dev', 'connect:test', 'casperjs:drawing', 'casperjs:integration']);
 
