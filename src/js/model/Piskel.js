@@ -82,20 +82,28 @@
     this.layers.splice(index, 0, layer);
   };
 
-  ns.Piskel.prototype.moveLayerUp = function (layer) {
+  ns.Piskel.prototype.moveLayerUp = function (layer, toTop) {
     var index = this.layers.indexOf(layer);
-    if (index > -1 && index < this.layers.length - 1) {
-      this.layers[index] = this.layers[index + 1];
-      this.layers[index + 1] = layer;
-    }
+    var toIndex = toTop ? this.layers.length - 1 : index + 1;
+    this.moveLayer_(index, toIndex);
   };
 
-  ns.Piskel.prototype.moveLayerDown = function (layer) {
+  ns.Piskel.prototype.moveLayerDown = function (layer, toBottom) {
     var index = this.layers.indexOf(layer);
-    if (index > 0) {
-      this.layers[index] = this.layers[index - 1];
-      this.layers[index - 1] = layer;
+    var toIndex = toBottom ? 0 : index - 1;
+    this.moveLayer_(index, toIndex);
+  };
+
+  /**
+   * Move the layer at the provided index to the provided toIndex.
+   */
+  ns.Piskel.prototype.moveLayer_ = function (fromIndex, toIndex) {
+    if (fromIndex == -1 || toIndex == -1 || fromIndex == toIndex) {
+      return;
     }
+    toIndex = pskl.utils.Math.minmax(toIndex, 0, this.layers.length - 1);
+    var layer = this.layers.splice(fromIndex, 1)[0];
+    this.layers.splice(toIndex, 0, layer);
   };
 
   ns.Piskel.prototype.removeLayer = function (layer) {
