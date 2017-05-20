@@ -1,0 +1,461 @@
+{
+ "events": [
+  {
+   "event": {
+    "type": "mousedown",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 0,
+    "y": 0
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 0,
+    "y": 0
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 1,
+    "y": 0
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 1,
+    "y": 1
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 0,
+    "y": 1
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mouseup",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 0,
+    "y": 1
+   },
+   "type": "mouse-event"
+  },
+  {
+   "type": "instrumented-event",
+   "methodName": "createLayer",
+   "args": []
+  },
+  {
+   "type": "color-event",
+   "color": "#ff0000",
+   "isPrimary": true
+  },
+  {
+   "event": {
+    "type": "mousedown",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": -4,
+    "y": -1
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": -4,
+    "y": -1
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mouseup",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": -4,
+    "y": -1
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousedown",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 0,
+    "y": 1
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 0,
+    "y": 1
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 0,
+    "y": 0
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 1,
+    "y": 0
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mouseup",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 1,
+    "y": 0
+   },
+   "type": "mouse-event"
+  },
+  {
+   "type": "instrumented-event",
+   "methodName": "createLayer",
+   "args": []
+  },
+  {
+   "type": "color-event",
+   "color": "#4700ff",
+   "isPrimary": true
+  },
+  {
+   "event": {
+    "type": "mousedown",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": -3,
+    "y": 1
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mouseup",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": -3,
+    "y": 1
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousedown",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 0,
+    "y": 0
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 0,
+    "y": 0
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 0,
+    "y": 1
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 1,
+    "y": 1
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mouseup",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 1,
+    "y": 1
+   },
+   "type": "mouse-event"
+  },
+  {
+   "type": "instrumented-event",
+   "methodName": "createLayer",
+   "args": []
+  },
+  {
+   "type": "color-event",
+   "color": "#00ff8e",
+   "isPrimary": true
+  },
+  {
+   "type": "color-event",
+   "color": "#00ff34",
+   "isPrimary": true
+  },
+  {
+   "event": {
+    "type": "mousedown",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 0,
+    "y": 0
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 0,
+    "y": 0
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 1,
+    "y": 0
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 1,
+    "y": 1
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mouseup",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 1,
+    "y": 1
+   },
+   "type": "mouse-event"
+  },
+  {
+   "type": "instrumented-event",
+   "methodName": "moveLayerDown",
+   "args": [
+    true
+   ]
+  },
+  {
+   "type": "instrumented-event",
+   "methodName": "setCurrentLayerIndex",
+   "args": [
+    1
+   ]
+  },
+  {
+   "type": "instrumented-event",
+   "methodName": "setCurrentLayerIndex",
+   "args": [
+    0
+   ]
+  },
+  {
+   "type": "instrumented-event",
+   "methodName": "setCurrentLayerIndex",
+   "args": [
+    1
+   ]
+  },
+  {
+   "type": "instrumented-event",
+   "methodName": "moveLayerUp",
+   "args": [
+    true
+   ]
+  },
+  {
+   "type": "keyboard-event",
+   "event": {
+    "which": 90,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": true,
+    "target": {
+     "nodeName": "BODY"
+    }
+   }
+  }
+ ],
+ "initialState": {
+  "size": {
+   "width": 2,
+   "height": 2
+  },
+  "primaryColor": "#000000",
+  "secondaryColor": "rgba(0, 0, 0, 0)",
+  "selectedTool": "tool-pen",
+  "penSize": 1
+ },
+ "png": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAFklEQVQYV2N0Z/j/fwcDIwMjiMEABAA4VwVGSC5gMgAAAABJRU5ErkJggg=="
+}

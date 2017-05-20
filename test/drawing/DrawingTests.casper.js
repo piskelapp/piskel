@@ -7,6 +7,7 @@
   "layers.duplicate.json",
   "layers.fun.json",
   "layers.merge.json",
+  "layers.top.bottom.json",
   "move.json",
   "move-alllayers-allframes.json",
   "pen.secondary.color.json",
