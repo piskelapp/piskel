@@ -64,32 +64,34 @@
       return frame;
     },
 
-    center : function(frame) {
-      // Figure out the boundary
-      var minx = frame.width;
-      var miny = frame.height;
+    getBoundaries : function(frames) {
+      var minx = frames[0].width;
+      var miny = frames[0].height;
       var maxx = 0;
       var maxy = 0;
+
       var transparentColorInt = pskl.utils.colorToInt(Constants.TRANSPARENT_COLOR);
-      frame.forEachPixel(function (color, x, y) {
-        if (color !== transparentColorInt) {
-          minx = Math.min(minx, x);
-          maxx = Math.max(maxx, x);
-          miny = Math.min(miny, y);
-          maxy = Math.max(maxy, y);
-        }
+
+      frames.forEach(function (frame) {
+        frame.forEachPixel(function (color, x, y) {
+          if (color !== transparentColorInt) {
+            minx = Math.min(minx, x);
+            maxx = Math.max(maxx, x);
+            miny = Math.min(miny, y);
+            maxy = Math.max(maxy, y);
+          }
+        });
       });
 
-      // Calculate how much to move the pixels
-      var bw = (maxx - minx + 1) / 2;
-      var bh = (maxy - miny + 1) / 2;
-      var fw = frame.width / 2;
-      var fh = frame.height / 2;
+      return {
+        minx: minx,
+        maxx: maxx,
+        miny: miny,
+        maxy: maxy,
+      };
+    },
 
-      var dx = Math.floor(fw - bw - minx);
-      var dy = Math.floor(fh - bh - miny);
-
-      // Actually move the pixels
+    moveFramePixels : function (frame, dx, dy) {
       var clone = frame.clone();
       frame.forEachPixel(function(color, x, y) {
         var _x = x;
@@ -104,7 +106,24 @@
           frame.setPixel(_x, _y, Constants.TRANSPARENT_COLOR);
         }
       });
+    },
 
+    center : function(frame) {
+      // Figure out the boundary
+      var boundaries = ns.TransformUtils.getBoundaries([frame]);
+
+      // Calculate how much to move the pixels
+      var bw = (boundaries.maxx - boundaries.minx + 1) / 2;
+      var bh = (boundaries.maxy - boundaries.miny + 1) / 2;
+      var fw = frame.width / 2;
+      var fh = frame.height / 2;
+
+      var dx = Math.floor(fw - bw - boundaries.minx);
+      var dy = Math.floor(fh - bh - boundaries.miny);
+
+      // Actually move the pixels
+
+      ns.TransformUtils.moveFramePixels(frame, dx, dy);
       return frame;
     }
   };

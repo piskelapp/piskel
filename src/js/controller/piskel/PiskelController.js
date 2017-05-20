@@ -12,11 +12,15 @@
   /**
    * Set the current piskel. Will reset the selected frame and layer unless specified
    * @param {Object} piskel
-   * @param {Boolean} preserveState if true, keep the selected frame and layer
+   * @param {Object} options:
+   *                 preserveState {Boolean} if true, keep the selected frame and layer
+   *                 noSnapshot {Boolean} if true, do not save a snapshot in the piskel
+   *                            history for this call to setPiskel
    */
-  ns.PiskelController.prototype.setPiskel = function (piskel, preserveState) {
+  ns.PiskelController.prototype.setPiskel = function (piskel, options) {
     this.piskel = piskel;
-    if (!preserveState) {
+    options = options || {};
+    if (!options.preserveState) {
       this.currentLayerIndex = 0;
       this.currentFrameIndex = 0;
     }
