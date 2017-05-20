@@ -69,7 +69,9 @@
       resizeContent: this.resizeContentCheckbox.checked
     });
 
-    pskl.app.piskelController.setPiskel(piskel, true);
+    pskl.app.piskelController.setPiskel(piskel, {
+      preserveState: true
+    });
 
     $.publish(Events.CLOSE_SETTINGS_DRAWER);
   };

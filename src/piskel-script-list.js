@@ -226,6 +226,7 @@
   "js/tools/transform/AbstractTransformTool.js",
   "js/tools/transform/Center.js",
   "js/tools/transform/Clone.js",
+  "js/tools/transform/Crop.js",
   "js/tools/transform/Flip.js",
   "js/tools/transform/Rotate.js",
   "js/tools/transform/TransformUtils.js",
