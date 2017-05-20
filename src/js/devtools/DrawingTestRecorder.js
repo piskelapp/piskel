@@ -85,7 +85,7 @@
         which : domEvent.which,
         shiftKey : domEvent.shiftKey,
         altKey : domEvent.altKey,
-        ctrlKey : domEvent.ctrlKey,
+        ctrlKey : domEvent.ctrlKey || domEvent.metaKey,
         target : {
           nodeName : domEvent.target.nodeName
         }
