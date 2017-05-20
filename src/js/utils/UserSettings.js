@@ -18,6 +18,7 @@
     PEN_SIZE : 'PEN_SIZE',
     RESIZE_SETTINGS: 'RESIZE_SETTINGS',
     COLOR_FORMAT: 'COLOR_FORMAT',
+    TRANSFORM_SHOW_MORE: 'TRANSFORM_SHOW_MORE',
     KEY_TO_DEFAULT_VALUE_MAP_ : {
       'GRID_WIDTH' : 0,
       'MAX_FPS' : 24,
@@ -42,6 +43,7 @@
         origin : 'TOPLEFT'
       },
       COLOR_FORMAT: 'hex',
+      TRANSFORM_SHOW_MORE: false,
     },
 
     /**
