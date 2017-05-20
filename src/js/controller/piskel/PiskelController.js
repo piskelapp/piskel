@@ -258,15 +258,15 @@
     return this.piskel.getLayersByName(name).length > 0;
   };
 
-  ns.PiskelController.prototype.moveLayerUp = function () {
+  ns.PiskelController.prototype.moveLayerUp = function (toTop) {
     var layer = this.getCurrentLayer();
-    this.piskel.moveLayerUp(layer);
+    this.piskel.moveLayerUp(layer, toTop);
     this.selectLayer(layer);
   };
 
-  ns.PiskelController.prototype.moveLayerDown = function () {
+  ns.PiskelController.prototype.moveLayerDown = function (toBottom) {
     var layer = this.getCurrentLayer();
-    this.piskel.moveLayerDown(layer);
+    this.piskel.moveLayerDown(layer, toBottom);
     this.selectLayer(layer);
   };
 

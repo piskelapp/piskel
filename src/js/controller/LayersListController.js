@@ -17,7 +17,7 @@
     this.rootEl.addEventListener('click', this.onClick_.bind(this));
     this.toggleLayerPreviewEl.addEventListener('click', this.toggleLayerPreview_.bind(this));
 
-    this.initCreateLayerButton_();
+    this.createButtonTooltips_();
     this.initToggleLayerPreview_();
 
     this.renderLayerList_();
@@ -46,12 +46,24 @@
     }
   };
 
-  ns.LayersListController.prototype.initCreateLayerButton_ = function () {
-    var tooltip = pskl.utils.TooltipFormatter.format('Create a layer', null, [
+  ns.LayersListController.prototype.createButtonTooltips_ = function () {
+    var addTooltip = pskl.utils.TooltipFormatter.format('Create a layer', null, [
       {key : 'shift', description : 'Clone current layer'}
     ]);
     var addButton = this.rootEl.querySelector('[data-action="add"]');
-    addButton.setAttribute('title', tooltip);
+    addButton.setAttribute('title', addTooltip);
+
+    var moveDownTooltip = pskl.utils.TooltipFormatter.format('Move layer down', null, [
+      {key : 'shift', description : 'Move to the bottom'}
+    ]);
+    var moveDownButton = this.rootEl.querySelector('[data-action="down"]');
+    moveDownButton.setAttribute('title', moveDownTooltip);
+
+    var moveUpTooltip = pskl.utils.TooltipFormatter.format('Move layer up', null, [
+      {key : 'shift', description : 'Move to the top'}
+    ]);
+    var moveUpButton = this.rootEl.querySelector('[data-action="up"]');
+    moveUpButton.setAttribute('title', moveUpTooltip);
   };
 
   ns.LayersListController.prototype.initToggleLayerPreview_ = function () {
@@ -157,9 +169,9 @@
   ns.LayersListController.prototype.onButtonClick_ = function (button, evt) {
     var action = button.getAttribute('data-action');
     if (action == 'up') {
-      this.piskelController.moveLayerUp();
+      this.piskelController.moveLayerUp(evt.shiftKey);
     } else if (action == 'down') {
-      this.piskelController.moveLayerDown();
+      this.piskelController.moveLayerDown(evt.shiftKey);
     } else if (action == 'add') {
       if (evt.shiftKey) {
         this.piskelController.duplicateCurrentLayer();
