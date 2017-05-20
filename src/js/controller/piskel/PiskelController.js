@@ -233,8 +233,9 @@
   ns.PiskelController.prototype.duplicateCurrentLayer = function () {
     var layer = this.getCurrentLayer();
     var clone = pskl.utils.LayerUtils.clone(layer);
-    this.piskel.addLayer(clone);
-    this.setCurrentLayerIndex(this.piskel.getLayers().length - 1);
+    var currentLayerIndex = this.getCurrentLayerIndex();
+    this.piskel.addLayerAt(clone, currentLayerIndex + 1);
+    this.setCurrentLayerIndex(currentLayerIndex + 1);
   };
 
   ns.PiskelController.prototype.createLayer = function (name) {
@@ -246,9 +247,9 @@
       for (var i = 0 ; i < this.getFrameCount() ; i++) {
         layer.addFrame(this.createEmptyFrame_());
       }
-      this.piskel.addLayer(layer);
-      this.setCurrentLayerIndex(this.piskel.getLayers().length - 1);
-
+      var currentLayerIndex = this.getCurrentLayerIndex();
+      this.piskel.addLayerAt(layer, currentLayerIndex + 1);
+      this.setCurrentLayerIndex(currentLayerIndex + 1);
     } else {
       throw 'Layer name should be unique';
     }
