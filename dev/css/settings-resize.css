@@ -1,0 +1,12 @@
+.resize-section-title {
+  vertical-align: top;
+  display: inline-block;
+  padding-top: 5px;
+  width: 25%;
+}
+
+.resize-anchor-container {
+  position: relative;
+  margin-top: 5px;
+  display: inline-block;
+}

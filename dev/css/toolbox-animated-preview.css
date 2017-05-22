@@ -1,0 +1,200 @@
+/**
+ * Animated preview styles.
+ */
+
+.preview-container {
+  flex-shrink: 0;
+
+  border : 0 Solid black;
+  border-radius:5px 0 0 5px;
+  box-shadow : 0 0 2px rgba(0,0,0,0.2);
+  font-size: 0;
+}
+
+.preview-container .canvas-container {
+  overflow : hidden;
+}
+
+.preview-container canvas {
+  border : 0 Solid transparent;
+}
+
+.canvas-container .animated-preview-canvas-background {
+  position : relative;
+  height: 100%;
+}
+
+#animated-preview-container {
+  background: #333;
+  border-radius : 0 0 2px 2px;
+  overflow : hidden;
+}
+
+.canvas-container-wrapper {
+  height :200px;
+  width : 200px;
+  overflow:hidden;
+}
+
+.preview-container .background-image-frame-container {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  background-position: center;
+}
+
+.display-fps {
+  float: left;
+  color: #aaa;
+  font-size: 12px;
+  min-width: 55px;
+  vertical-align: bottom;
+  line-height: 26px;
+}
+
+.range-fps {
+  overflow: hidden;
+  width: 100px;
+  height : 26px;
+  margin : 0;
+  box-sizing: border-box;
+}
+
+.preview-toggle-onion-skin {
+  font-size: 2rem;
+  color: #aaa;
+  float: left;
+  line-height: 26px;
+  height: 100%;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-right: 1px solid #222;
+  transition: 0.2s linear;
+  cursor:pointer;
+}
+
+.preview-toggle-onion-skin:hover {
+  color : white;
+}
+
+.preview-toggle-onion-skin-enabled,
+.preview-toggle-onion-skin-enabled:hover {
+  color : var(--highlight-color);
+}
+
+.preview-contextual-actions {
+  position : absolute;
+  z-index: 500;
+  right : 10px;
+  top : 10px;
+
+  cursor : pointer;
+
+  opacity: 0;
+  transition: 0.3s opacity, 0.3s border-color;
+}
+
+.minimap-container:hover .preview-contextual-actions {
+  opacity: 1;
+}
+
+.preview-contextual-action {
+  float: left;
+
+  width : 18px;
+  height: 18px;
+  line-height: 18px;
+  margin: 0 5px;
+
+  border: 2px solid white;
+  background-color: rgba(0, 0, 0, 0.3);
+  color: white;
+
+  font-size: 10px;
+  font-weight: bold;
+  font-family: Tahoma;
+}
+
+.preview-contextual-action-hidden {
+  display: none;
+}
+
+.preview-contextual-action:hover {
+  color: var(--highlight-color);
+  border-color: var(--highlight-color);
+}
+
+/**
+ * Drop-down in preview size selection
+ */
+.preview-drop-down {
+  float: left;
+  position: relative;
+  width : 22px;
+  min-height: 22px;
+  margin: 0 5px;
+}
+
+.preview-drop-down.preview-drop-down-disabled {
+  opacity: 0.5;
+}
+
+.preview-disable-overlay{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: none;
+}
+
+.preview-drop-down.preview-drop-down-disabled .preview-disable-overlay {
+  display: block;
+  z-index: 10;
+}
+
+.preview-drop-down .preview-contextual-action {
+  position: relative;
+  margin: 0 0 -100% 0;
+  opacity: 0;
+  transition: opacity linear .2s,
+              margin linear .2s;
+  transition-delay: 0s, .2s;
+  z-index: 1;
+}
+
+.preview-drop-down:hover .preview-contextual-action {
+  margin: 0 0 5px 0;
+  opacity: 1;
+  transition-delay: 0s, 0s;
+}
+
+.preview-drop-down .size-button-selected {
+  opacity: 1;
+  color: gold;
+  border-color: gold;
+  z-index: 5;
+}
+
+
+.open-popup-preview-button {
+  border : 2px solid white;
+  background-color : rgba(0,0,0,0.3);
+}
+
+.open-popup-preview-button:hover {
+  border-color: var(--highlight-color);
+}
+
+/**
+ * The regular image is provided by the sprite icons.png+icons.css
+ */
+.icon-minimap-popup-preview-arrow-white:hover {
+  background-image: url(../img/icons/minimap/minimap-popup-preview-arrow-gold.png);
+  background-position: 0 0;
+  background-size: 18px 18px;
+}
+
+@media (-webkit-min-device-pixel-ratio: 2),
+       (min-resolution: 192dpi) {
+  background-image: url(../img/icons/minimap/minimap-popup-preview-arrow-gold@2x.png);
+
+}

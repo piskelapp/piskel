@@ -1,0 +1,78 @@
+.row {
+  display: block;
+}
+
+.textfield {
+  box-sizing:border-box;
+
+  background : black;
+  border : 1px solid #888;
+  border-radius : 2px;
+  padding : 3px 10px;
+  color : white;
+
+  height: 23px;
+}
+
+.textfield[readonly="true"] {
+  background: transparent;
+}
+
+.textfield[disabled=disabled] {
+  background : #3a3a3a;
+}
+
+.textfield:focus {
+  border-color: var(--highlight-color);
+  outline: none;
+}
+
+.textfield-small {
+  width : 50px;
+}
+
+.button {
+  box-sizing: border-box;
+  height: 24px;
+  background-color: #666;
+  border-style: none;
+  border-radius: 2px;
+  cursor: pointer;
+  text-decoration: none;
+
+  color: white;
+  font-weight: bold;
+  font-size: 1rem;
+  text-align: center;
+
+  transition: background-color 0.2s linear;
+}
+
+.button:hover {
+  color: var(--highlight-color);
+}
+
+.button-primary {
+  background-color: var(--highlight-color);
+  color: black;
+}
+
+.button-primary:hover {
+  background-color: white;
+  color: black;
+}
+
+.button[disabled],
+.button[disabled]:hover {
+  cursor:default;
+  background-color: #aaa;
+  color: #777;
+}
+
+.import-size-field,
+.resize-size-field,
+.export-size-field  {
+  width: 50px;
+  margin-right: 8px;
+  text-align: right;
+}

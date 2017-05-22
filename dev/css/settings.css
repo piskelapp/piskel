@@ -1,0 +1,96 @@
+
+/** Righty sticky drawer expanded state. */
+
+.right-sticky-section.sticky-section {
+  right: 0;
+  width: 47px;
+
+  -webkit-transition: all 200ms ease-out;
+  -moz-transition: all 200ms ease-out;
+  -ms-transition: all 200ms ease-out;
+  -o-transition: all 200ms ease-out;
+  transition: all 200ms ease-out;
+}
+
+.right-sticky-section.expanded {
+  right: 280px;
+}
+
+.right-sticky-section .tool-icon {
+  float: right;
+  margin-right: 0;
+}
+
+.tool-icon .label {
+  position: absolute;
+  left: 0;
+  bottom: 4px;
+  right: 0;
+  font-size: 11px;
+  text-transform: uppercase;
+  color: #fff;
+  text-align: center;
+}
+
+.drawer-content {
+  overflow: hidden;
+  background-color: #444;
+  height: 550px;
+  max-height: 100%;
+  width: 280px;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+  box-shadow: 0 0 5px 0 black;
+}
+
+.right-sticky-section.expanded .tool-icon {
+  padding-right: 1px;
+}
+
+.right-sticky-section .tool-icon.has-expanded-drawer {
+  position: relative;
+  background-color: #444;
+  margin-right: 0;
+  padding-right: 2px;
+  border-left : 3px solid var(--highlight-color);
+}
+
+/************************************************************************************************/
+/* Common settings classes                                                                      */
+/************************************************************************************************/
+
+.settings-section {
+  margin: 10px 20px;
+  font-size: 12px;
+  font-weight: bold;
+  color: #ccc;
+}
+
+.settings-section .button {
+  margin: 0;
+}
+
+.settings-title {
+  margin-top: 20px;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  border-bottom: 1px #aaa solid;
+  padding-bottom: 5px;
+  color: var(--highlight-color);
+}
+
+.settings-description {
+  margin : 0 0 10px 0;
+}
+
+.settings-form-section {
+  margin-bottom: 10px;
+}
+
+.settings-item {
+  margin : 10px 0;
+}
+
+[name*=checkbox] {
+  vertical-align: middle;
+}

@@ -1,0 +1,227 @@
+.cheatsheet-link {
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+
+  color : var(--highlight-color);
+  font-weight: bold;
+  font-size : 1.25em;
+  line-height: 20px;
+
+  cursor: pointer;
+
+  opacity: 0.5;
+  z-index: 11000;
+  transition : opacity 0.3s;
+}
+
+.cheatsheet-link:hover {
+  opacity: 1;
+}
+
+.cheatsheet-container {
+  box-sizing: border-box;
+  display: block;
+
+  bottom: 46px;
+  padding: 20px 3%;
+  border-radius: 3px;
+  background-color: rgba(0,0,0,0.9);
+  overflow: auto;
+}
+
+.cheatsheet-container .cheatsheet-title {
+  font-size:24px;
+  margin-top: 30px;
+}
+
+.cheatsheet-container .cheatsheet-title:nth-of-type(1) {
+  margin-top: 0;
+}
+
+.cheatsheet-section {
+  box-sizing: border-box;
+  float: left;
+
+  vertical-align: top;
+  padding : 0 20px 20px 20px;
+  min-width: 300px;
+}
+
+.cheatsheet-boxes {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+
+  float: left;
+}
+
+@media (min-width: 1300px) {
+  .cheatsheet-container > div {
+    width: 33%;
+  }
+  .cheatsheet-boxes {
+    flex-direction: column;
+  }
+}
+
+.cheatsheet-shortcut {
+  overflow: hidden;
+  margin: 10px 0;
+}
+
+.cheatsheet-icon.tool-icon {
+  float: left;
+
+  height: 30px;
+  width: 30px;
+  margin: 0 10px 0 0;
+  background-size: 30px 30px;
+}
+
+.cheatsheet-description {
+  color: white;
+  font-size : 14px;
+  margin-left: 10px;
+  line-height : 30px;
+}
+
+.cheatsheet-key {
+  box-sizing: border-box;
+  display : inline-block;
+  height: 30px;
+  line-height: 26px;
+  padding: 0 10px;
+
+  border : 2px solid white;
+  border-radius: 2px;
+
+  text-align: center;
+  font-family: monospace;
+  font-weight: bold;
+  font-size : 18px;
+  color: white;
+}
+
+.cheatsheet-shorcut-conflict .cheatsheet-key {
+  border-color: red;
+  color: red;
+}
+
+.cheatsheet-shortcut-editable {
+  cursor : pointer;
+}
+
+.cheatsheet-shortcut-editable .cheatsheet-key {
+  border-color: var(--highlight-color);
+  color: var(--highlight-color);
+}
+
+.cheatsheet-shortcut-editing .cheatsheet-key {
+  animation: fade .5s infinite;
+}
+
+.cheatsheet-shortcut-undefined .cheatsheet-key {
+  border-color: red;
+  color: red;
+}
+
+/*Cheatsheet actions*/
+
+.cheatsheet-actions {
+  position: absolute;
+  box-sizing: border-box;
+
+  bottom : 0;
+  left : 0;
+  right : 0;
+  height : 46px;
+
+  padding : 10px;
+  overflow: hidden;
+
+  background-color : var(--highlight-color);
+}
+
+.cheatsheet-helptext {
+  font-size: 14px;
+  height : 26px;
+  line-height : 26px;
+  color: black;
+}
+
+.cheatsheet-helptext-tooltip {
+  text-align: left;
+}
+
+.cheatsheet-helptext-tooltip-item {
+  line-height: 0.9em;
+  margin: 10px 0;
+}
+
+.cheatsheet-button {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+}
+
+
+.cheatsheet-icon-tool-circle {
+  background-image: url(../img/icons/tools/tool-circle.png);
+}
+
+.cheatsheet-icon-tool-colorpicker {
+  background-image: url(../img/icons/tools/tool-colorpicker.png);
+}
+
+.cheatsheet-icon-tool-colorswap {
+  background-image: url(../img/icons/tools/tool-colorswap.png);
+}
+
+.cheatsheet-icon-tool-dithering {
+  background-image: url(../img/icons/tools/tool-dithering.png);
+}
+
+.cheatsheet-icon-tool-eraser {
+  background-image: url(../img/icons/tools/tool-eraser.png);
+}
+
+.cheatsheet-icon-tool-lasso-select {
+  background-image: url(../img/icons/tools/tool-lasso-select.png);
+}
+
+.cheatsheet-icon-tool-lighten {
+  background-image: url(../img/icons/tools/tool-lighten.png);
+}
+
+.cheatsheet-icon-tool-move {
+  background-image: url(../img/icons/tools/tool-move.png);
+}
+
+.cheatsheet-icon-tool-paint-bucket {
+  background-image: url(../img/icons/tools/tool-paint-bucket.png);
+}
+
+.cheatsheet-icon-tool-pen {
+  background-image: url(../img/icons/tools/tool-pen.png);
+}
+
+.cheatsheet-icon-tool-rectangle-select {
+  background-image: url(../img/icons/tools/tool-rectangle-select.png);
+}
+
+.cheatsheet-icon-tool-rectangle {
+  background-image: url(../img/icons/tools/tool-rectangle.png);
+}
+
+.cheatsheet-icon-tool-shape-select {
+  background-image: url(../img/icons/tools/tool-shape-select.png);
+}
+
+.cheatsheet-icon-tool-stroke {
+  background-image: url(../img/icons/tools/tool-stroke.png);
+}
+
+.cheatsheet-icon-tool-vertical-mirror-pen {
+  background-image: url(../img/icons/tools/tool-vertical-mirror-pen.png);
+}

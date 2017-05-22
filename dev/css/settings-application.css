@@ -1,0 +1,94 @@
+/*******************************/
+/*  Application Setting panel  */
+/*******************************/
+.application-settings-form {
+  height: 100%;
+}
+
+.settings-section-application {
+  position: relative;
+  overflow: hidden;
+  margin: 0 20px;
+  height: 100%;
+}
+
+.background-picker-wrapper {
+  display: inline-block;
+  width: 130px;
+  overflow: hidden;
+  vertical-align: middle;
+  margin-left: 5px;
+}
+
+.background-picker {
+  cursor: pointer;
+  float: left;
+  height: 14px;
+  width: 14px;
+  background-color: transparent;
+  margin-right: 5px;
+  padding: 1px;
+  position: relative;
+  border: #888 2px solid;
+}
+
+.background-picker:hover {
+  border-color: #eee;
+}
+
+.background-picker.selected {
+  border-color: var(--highlight-color);
+}
+
+.settings-opacity-input {
+  margin: 5px;
+  vertical-align: middle;
+}
+
+.layer-opacity-input {
+  width: 100px;
+}
+
+.seamless-opacity-input {
+  width: 75px;
+}
+
+.settings-opacity-text {
+  height: 31px;
+  display: inline-block;
+  line-height: 30px;
+  width: 40px;
+  border: 1px solid grey;
+  box-sizing: border-box;
+  border-radius: 3px;
+  text-align: center;
+}
+
+.grid-width-select,
+.color-format-select {
+  margin: 5px 5px 0 5px;
+}
+
+.settings-section-application > .settings-title {
+  /* Override the default 10px margin bottom for this panel */
+  margin-bottom: 15px;
+}
+
+.settings-section-application .button-primary {
+  margin-top: 10px;
+}
+
+.settings-version-info {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  color: #888;
+}
+
+/* Override default link styles for the release notes link
+   It doesn't need to popout too much */
+.settings-version,
+.settings-version:hover {
+  color: white !important;
+  text-decoration: none !important;
+}

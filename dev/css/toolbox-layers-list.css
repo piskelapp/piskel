@@ -1,0 +1,92 @@
+
+/**
+ * Layers container
+ */
+.layers-list-container {
+  min-height: 85px;
+  display: flex;
+  flex-direction: column;
+}
+
+/**
+ * Layers title and toggle preview
+ */
+
+.layers-title {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.layers-toggle-preview {
+  position: absolute;
+  top: 0.3em;
+  right: 0.5em;
+
+  color: #999;
+  font-size: 1.3em;
+  cursor: pointer;
+
+  transition: 0.2s linear;
+}
+
+.layers-toggle-preview:hover {
+  color: white;
+}
+
+.layers-toggle-preview-enabled,
+.layers-toggle-preview-enabled:hover {
+  color : var(--highlight-color);
+}
+
+/**
+ * Layers buttons
+ */
+
+.layers-button {
+  margin: 0;
+  width: 16.66667%;
+  float : left;
+}
+
+/**
+ * Layers list
+ */
+
+.layers-list {
+  font-size : 12px;
+  overflow: auto;
+}
+
+.layer-item {
+  position: relative;
+  display: flex;
+  height:24px;
+  line-height: 24px;
+  border-top: 1px solid #444;
+  cursor: pointer;
+}
+
+.layer-item .layer-name {
+  padding: 0 0 0 10px;
+  flex: 1 auto;
+  white-space: nowrap;
+}
+
+.layer-item .layer-name.overflowing-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.layer-item:hover {
+  background : #222;
+}
+
+.layer-item-opacity {
+  padding-right: 8px;
+}
+
+.current-layer-item,
+.current-layer-item:hover {
+  background : #333;
+  color: var(--highlight-color);
+}

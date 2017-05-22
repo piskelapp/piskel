@@ -1,0 +1,84 @@
+#dialog-container-wrapper {
+  position: absolute;
+  z-index: 20000;
+
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+
+  padding: 50px 150px;
+  overflow: hidden;
+
+  box-sizing: border-box;
+  -moz-box-sizing : border-box;
+
+  background-color: rgba(0,0,0,0.8);
+  opacity: 0;
+  pointer-events: none;
+
+  color: white;
+}
+
+#dialog-container-wrapper.animated {
+  transition: opacity 0.2s;
+}
+
+#dialog-container-wrapper.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+#dialog-container {
+  width: 100%;
+  height:  100%;
+
+  margin-top: -1500px;
+
+  box-sizing: border-box;
+  -moz-box-sizing : border-box;
+
+  border-radius: 3px;
+  border : 3px solid var(--highlight-color);
+  background: #444;
+  overflow: auto;
+}
+
+.show #dialog-container {
+  margin-top: 0;
+}
+
+.dialog-wrapper {
+  height: 100%;
+  position : relative;
+}
+
+.dialog-content {
+  position: absolute;
+  top: 45px;
+  bottom: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.dialog-head {
+  width: 100%;
+  background: var(--highlight-color);
+  margin: 0;
+  padding: 10px;
+  color: black;
+  font-size: 1.8em;
+  height: 45px;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+}
+
+.dialog-close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  line-height: 45px;
+  margin-right: 10px;
+  font-size: 1.3em;
+  cursor: pointer;
+}

@@ -1,0 +1,51 @@
+
+/************************************************************************************************/
+/* Browse local piskels panel                                                                   */
+/************************************************************************************************/
+
+#dialog-container.browse-local {
+  width: 700px;
+  height: 500px;
+  top : 50%;
+  left : 50%;
+  position : absolute;
+  margin-left: -350px;
+}
+
+.show #dialog-container.browse-local {
+  margin-top: -250px;
+}
+
+.local-piskel-list {
+  width: 100%;
+}
+
+.local-piskel-item {
+  height: 3em;
+}
+
+.local-piskel-name {
+  width: 40%;
+}
+
+.local-piskel-save-date {
+  font-weight : normal;
+}
+
+.local-piskel-list a {
+  text-decoration: none;
+}
+
+.local-piskel-list a:hover {
+  text-decoration: underline;
+}
+
+.local-piskel-list-head {
+  font-weight: bold;
+  color: var(--highlight-color);
+}
+
+.local-piskel-load-button,
+.local-piskel-delete-button {
+  width : 75px;
+}

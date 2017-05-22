@@ -1,0 +1,52 @@
+html, body {
+  height : 100%; width: 100%;
+  margin : 0;
+  overflow: hidden;
+  cursor : default;
+  font-family: Arial;
+  font-size: 11px;
+  line-height: 1.1;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+ul, li {
+  margin : 0;
+  padding : 0;
+  list-style-type: none;
+}
+
+/** Firefox overrides this with -moz-use-system-font */
+button,
+input,
+input[type="submit"] {
+  font-family: Arial;
+}
+
+/* IE11 applies a big default margin for range inputs */
+input[type="range"] {
+  padding: 0;
+}
+
+/* Force apparition of scrollbars on leopard */
+::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 2px;
+    background-color: #666;
+}
+
+::-webkit-scrollbar-track {
+   background-color: rgba(50, 50, 50, 0.4);
+}
+
+a, a:visited {
+  color: var(--highlight-color);
+}

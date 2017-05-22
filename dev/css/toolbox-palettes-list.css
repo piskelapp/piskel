@@ -1,0 +1,174 @@
+.palettes-list-container {
+  min-height: 100px;
+  display: flex;
+  flex-direction: column;
+}
+
+.palettes-title {
+  flex-shrink: 0;
+  background-size: 22px;
+  background-repeat: no-repeat;
+  background-position: 97%;
+}
+
+/**
+ * Palettes action buttons
+ */
+
+.palettes-list-container .toolbox-buttons {
+  background-color: #3f3f3f;
+  height: 24px;
+  padding: 0;
+}
+
+.palettes-list-button,
+.palettes-list-select {
+  margin: 0;
+  float: left;
+}
+
+.palettes-list-button {
+  width: 16.66667%;
+}
+
+.palettes-list-select {
+  width: 66.66667%;
+  height: 100%;
+  padding: 0 5px 0 5px;
+
+  color: #aaa;
+  font-size : 0.75em;
+
+  text-align:left;
+  font-weight: normal;
+
+  transition : background-color 0.3s, color 0.3s;
+  cursor:pointer;
+}
+
+.palettes-list-select:hover,
+.palettes-list-select:focus {
+  background-color: #484848;
+  color: white;
+}
+
+.palettes-list-select:focus {
+  outline: none;
+}
+
+/*
+ * Palette colors list
+ */
+
+.palettes-list-colors {
+  height: 100%;
+  max-height: 160px;
+  overflow: auto;
+  padding-top: 5px;
+}
+
+.palettes-list-color {
+  cursor: pointer;
+  float: left;
+  margin: 0 0 5px 5px;
+  width: calc((100% - 30px) / 5);
+  height: 32px;
+  position: relative;
+}
+
+.palettes-list-color div {
+  height: 100%;
+}
+
+/*
+ * Placeholder when no color is available in the current palette
+ */
+
+.palettes-list-no-colors {
+  height: 35px;
+  line-height: 35px;
+  width: 100%;
+  color: gray;
+  font-size: 0.7em;
+  font-style: italic;
+  text-align: center
+}
+
+/*
+ * Primary and secondary color markers
+ */
+
+.palettes-list-primary-color:before, .palettes-list-secondary-color:before {
+  content: "";
+  position: absolute;
+  bottom: 1px;
+  display: inline-block;
+  background: url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20height%3D%2215%22%20width%3D%2215%22%3E%3Cpath%20stroke%3D%22gold%22%20stroke-width%3D%222%22%20d%3D%22M1%203v10h10z%22/%3E%3C/svg%3E');
+  width: 14px;
+  height: 14px;
+}
+
+.palettes-list-primary-color:before {
+  left: 1px;
+}
+
+.palettes-list-secondary-color:before {
+  right: 1px;
+  background: url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20height%3D%2215%22%20width%3D%2215%22%3E%3Cpath%20stroke%3D%22gold%22%20stroke-width%3D%222%22%20d%3D%22M3%2013h10V3z%22/%3E%3C/svg%3E');
+}
+
+/*
+ * Color index for the 9 first colors
+ */
+
+.palettes-list-color:nth-child(-n+10):after {
+  position: absolute;
+  top: 0;
+  right: 0;
+
+  background-color: black;
+  color: var(--highlight-color);
+
+  font-family: Tahoma;
+  font-size: 0.5em;
+  font-weight: bold;
+
+  padding: 2px 3px 2px 3px;
+  border-radius: 0 0 0 2px;
+}
+
+.palettes-list-color:nth-child(1):after {
+  content: "1";
+}
+
+.palettes-list-color:nth-child(2):after {
+  content: "2";
+}
+
+.palettes-list-color:nth-child(3):after {
+  content: "3";
+}
+
+.palettes-list-color:nth-child(4):after {
+  content: "4";
+}
+
+.palettes-list-color:nth-child(5):after {
+  content: "5";
+}
+
+.palettes-list-color:nth-child(6):after {
+  content: "6";
+}
+
+.palettes-list-color:nth-child(7):after {
+  content: "7";
+}
+
+.palettes-list-color:nth-child(8):after {
+  content: "8";
+}
+
+.palettes-list-color:nth-child(9):after {
+  content: "9";
+}

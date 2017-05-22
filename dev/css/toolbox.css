@@ -1,0 +1,44 @@
+.toolbox-container {
+  border: 2px solid #888;
+  font-size: medium;
+  color: white;
+  text-align: left;
+  border-radius: 2px;
+  margin-top: 5px;
+  overflow: hidden;
+}
+
+.toolbox-title {
+  padding: 8px;
+  margin: 0;
+  font-size: 15px;
+  /* reset for firefox */
+  height: 16px;
+  background: #222;
+}
+
+.toolbox-buttons {
+  flex-shrink: 0;
+  overflow: hidden;
+  border-top: 1px solid #666;
+  border-bottom: 1px solid #222;
+}
+
+.toolbox-buttons .button {
+  /* Override border propery on .button elements from form.css */
+  border-style: solid;
+  border-color: #333;
+  border-width: 0 1px 0 0;
+  border-radius: 0;
+
+  background-color: #3f3f3f;
+}
+
+.toolbox-buttons .button[disabled],
+.toolbox-buttons .button[disabled]:hover {
+  background-color: #aaa;
+}
+
+.toolbox-buttons button:last-child {
+  border-right-width: 0;
+}

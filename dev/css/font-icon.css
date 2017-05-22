@@ -1,0 +1,96 @@
+@font-face {
+  font-family: 'piskel';
+  src:url('fonts/icomoon.eot?-3olv93');
+  src:url('fonts/icomoon.eot?#iefix-3olv93') format('embedded-opentype'),
+    url('fonts/icomoon.woff?-3olv93') format('woff'),
+    url('fonts/icomoon.ttf?-3olv93') format('truetype'),
+    url('fonts/icomoon.svg?-3olv93#icomoon') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+[class^="piskel-icon-"], [class*=" piskel-icon-"] {
+  font-family: 'piskel';
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.piskel-icon-eye:before {
+  content: "\e602";
+}
+
+.piskel-icon-onion:before {
+  content: "\e601";
+}
+
+.piskel-icon-download:before {
+  content: "\e600";
+}
+
+.piskel-icon-rotateleft:before {
+  content: "\e603";
+}
+
+.piskel-icon-rotateright:before {
+  content: "\e604";
+}
+
+.piskel-icon-fliph:before {
+  content: "\e605";
+}
+
+.piskel-icon-flipv:before {
+  content: "\e606";
+}
+
+.piskel-icon-trashplain:before {
+  content: "\e607";
+}
+
+.piskel-icon-trash:before {
+  content: "\e608";
+}
+
+.piskel-icon-merge:before {
+  content: "\e609";
+}
+
+.piskel-icon-pencil:before {
+  content: "\e610";
+}
+
+.piskel-icon-close:before {
+  content: "\e611";
+}
+
+.piskel-icon-minus:before {
+  content: "\e60a";
+}
+
+.piskel-icon-plus:before {
+  content: "\e60b";
+}
+
+.piskel-icon-arrow-up-fat:before {
+  content: "\e60c";
+}
+
+.piskel-icon-arrow-down-fat:before {
+  content: "\e60d";
+}
+
+.piskel-icon-arrow-up-thin:before {
+  content: "\e60e";
+}
+
+.piskel-icon-arrow-down-thin:before {
+  content: "\e60f";
+}

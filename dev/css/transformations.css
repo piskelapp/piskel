@@ -1,0 +1,40 @@
+.transformations-container {
+  flex-shrink: 0;
+}
+
+.transformations-container .tool-icon {
+  margin: 0 0 5px 0;
+}
+
+.transformations-container .tools-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  height: 46px;
+
+  /* Override the float:left set on tools-wrapper in layout.css; */
+  float: initial;
+}
+
+.transformations-container.show-more .tools-wrapper {
+  height: auto;
+  /* Compensate the 5px bottom-margin coming from the tool-icon */
+  margin-bottom: -5px;
+}
+
+.transformations-show-more-link {
+  position: absolute;
+  color: #999;
+  right: 8px;
+  font-weight: normal;
+  cursor: pointer;
+  transition: 0.2s linear;
+}
+
+.transformations-show-more-link:hover {
+  color: white;
+}
+
+.show-more .transformations-show-more-link {
+  color: gold;
+}

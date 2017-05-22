@@ -1,0 +1,167 @@
+.tool-icon {
+  position : relative;
+  cursor : pointer;
+  width: 46px;
+  height: 46px;
+  margin: 1px;
+  background-color: #3a3a3a;
+}
+
+.tool-icon.selected {
+  cursor: default;
+  background-color: #444;
+}
+
+.tool-icon.selected:before {
+  content:"";
+  position : absolute;
+  height : 100%;
+  width : 100%;
+  border: 3px solid var(--highlight-color);
+  box-sizing: border-box;
+}
+
+.tool-icon:hover {
+  background-color: #444;
+}
+
+/*
+ * Tool cursors:
+ */
+
+.tool-paint-bucket .drawing-canvas-container:hover,
+.tool-colorswap .drawing-canvas-container:hover {
+  cursor: url(../img/cursors/paint-bucket.png) 14 14, pointer;
+}
+
+.tool-vertical-mirror-pen .drawing-canvas-container:hover {
+  cursor: url(../img/cursors/vertical-mirror-pen.png) 5 15, pointer;
+}
+
+.tool-pen .drawing-canvas-container:hover {
+  cursor: url(../img/cursors/pen.png) 1 14, pointer;
+}
+
+.tool-dithering .drawing-canvas-container:hover {
+  cursor: url(../img/cursors/dither.png) 1 14, pointer;
+}
+
+.tool-lighten .drawing-canvas-container:hover {
+  cursor: url(../img/cursors/lighten.png) 1 15, pointer;
+}
+
+.tool-eraser .drawing-canvas-container:hover {
+  cursor: url(../img/cursors/eraser.png) 3 14, pointer;
+}
+
+.tool-stroke .drawing-canvas-container:hover {
+  cursor: url(../img/cursors/stroke.png) 1 14, pointer;
+}
+
+.tool-rectangle .drawing-canvas-container:hover {
+  cursor: url(../img/cursors/rectangle.png) 5 15, pointer;
+}
+
+.tool-circle .drawing-canvas-container:hover {
+  cursor: url(../img/cursors/circle.png) 5 15, pointer;
+}
+
+.tool-move .drawing-canvas-container:hover {
+  cursor: url(../img/cursors/hand.png) 7 7, pointer;
+}
+
+.tool-rectangle-select .drawing-canvas-container:hover,
+.tool-lasso-select .drawing-canvas-container:hover {
+  cursor: crosshair;
+}
+
+.tool-shape-select .drawing-canvas-container:hover {
+  cursor: url(../img/cursors/wand.png) 10 5, pointer;
+}
+
+.tool-colorpicker .drawing-canvas-container:hover {
+  cursor: url(../img/cursors/dropper.png) 2 15, pointer;
+}
+
+.swap-colors-button {
+  position: relative;
+  top: 50px;
+  left: 6px;
+  height: 18px;
+  width: 18px;
+
+  opacity : 0.3;
+
+  cursor : pointer;
+}
+
+.swap-colors-button:hover {
+  opacity : 1;
+}
+
+.tool-color-picker {
+  position:relative;
+}
+
+.tool-color-picker:nth-child(1) {
+  z-index : 100;
+}
+
+.tool-color-picker:nth-child(2) {
+  z-index : 90;
+  margin-top: 25px;
+  margin-left:-20px;
+}
+
+.tool-color-picker input {
+  width: 16px;
+  height: 16px;
+  text-indent: -10000px;
+  border: 1px solid black;
+  background: white;
+  cursor: pointer;
+  position : relative;
+  top: 10px;
+  margin-left: 2px;
+}
+
+.tool-color-picker .secondary-color-picker {
+  top : 18px;
+  margin-left: 0;
+}
+
+.palette-wrapper {
+  margin-top: 10px;
+  margin-left: 10px;
+}
+
+.palette-color[data-color=TRANSPARENT] {
+  position: relative;
+  top: 10px;
+  left: 10px;
+  background-color: white;
+  height : 16px;
+  width : 16px;
+  border: 2px solid #000;
+  background-size: 16px 16px;
+  background-position: 0 0;
+  background-image: -webkit-gradient(
+    linear,
+    left top,
+    right bottom,
+    color-stop(0, #fff),
+    color-stop(0.45, #fff),
+    color-stop(0.5, #ff0000),
+    color-stop(0.55, #fff),
+    color-stop(1, #fff)
+  );
+  background-image: -moz-linear-gradient(
+      left top,
+      #fff 0%,
+      #fff 45%,
+      #f00 50%,
+      #fff 55%,
+      #fff 100%
+  );
+}
+

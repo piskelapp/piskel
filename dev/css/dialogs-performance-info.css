@@ -1,0 +1,68 @@
+.performance-link {
+  display: none;
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  z-index: 11000;
+  cursor: pointer;
+  opacity: 0;
+  transition : opacity 0.3s;
+}
+
+.performance-link.visible {
+  display: block;
+  opacity: 0.66;
+  animation: glow 2s infinite;
+}
+
+.performance-link.visible:hover {
+  opacity: 1;
+  animation: none;
+}
+
+#dialog-container.performance-info {
+  width: 500px;
+  height: 525px;
+  top : 50%;
+  left : 50%;
+  position : absolute;
+  margin-left: -250px;
+  margin-top: -260px;
+
+}
+
+.dialog-performance-info-body {
+  font-size: 13px;
+  letter-spacing: 1px;
+  padding: 10px 20px;
+}
+
+.dialog-performance-info-body ul {
+  border: 1px solid #666;
+  padding: 5px;
+  border-radius: 3px;
+}
+
+.dialog-performance-info-body li {
+  list-style-type: initial;
+  margin: 0 20px;
+}
+
+.dialog-performance-info-body sup {
+  color: var(--highlight-color);
+  cursor: pointer;
+}
+
+.show #dialog-container.performance-info {
+  margin-top: -300px;
+}
+
+.dialog-performance-info-body .warning-icon {
+  float: left;
+  margin-top: 10px;
+}
+
+.dialog-performance-info-body .warning-icon-info {
+  overflow: hidden;
+  margin-left: 30px;
+}
