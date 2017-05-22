@@ -40,7 +40,7 @@
     "grunt-contrib-uglify": "2.3.0",
     "grunt-contrib-watch": "1.0.0",
     "grunt-include-replace": "4.0.1",
-    "grunt-jscs": "2.8.0",
+    "grunt-jscs": "3.0.1",
     "grunt-karma": "1.0.0",
     "grunt-leading-indent": "0.2.0",
     "grunt-nw-builder": "3.1.0",
