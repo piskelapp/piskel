@@ -142,6 +142,12 @@
       recordEvent.type = 'instrumented-event';
       recordEvent.methodName = methodName;
       recordEvent.args = Array.prototype.slice.call(args, 0);
+
+      if (methodName === 'setPiskel' && args[1].noSnapshot) {
+        // Skip recording calls to setPiskel that don't trigger a save.
+        return;
+      }
+
       this.events.push(recordEvent);
     }
   };

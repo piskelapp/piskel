@@ -1,0 +1,185 @@
+{
+ "events": [
+  {
+   "event": {
+    "type": "mousedown",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 1,
+    "y": 1
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mouseup",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 1,
+    "y": 1
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousedown",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 1,
+    "y": 3
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mouseup",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 1,
+    "y": 3
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousedown",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 2,
+    "y": 3
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mouseup",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 2,
+    "y": 3
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousedown",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 3,
+    "y": 1
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mouseup",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 3,
+    "y": 1
+   },
+   "type": "mouse-event"
+  },
+  {
+   "type": "transformtool-event",
+   "toolId": "tool-crop",
+   "event": {
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   }
+  },
+  {
+   "event": {
+    "type": "mousedown",
+    "button": 2,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 2,
+    "y": 0
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mouseup",
+    "button": 2,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 2,
+    "y": 0
+   },
+   "type": "mouse-event"
+  },
+  {
+   "type": "transformtool-event",
+   "toolId": "tool-crop",
+   "event": {
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   }
+  },
+  {
+   "type": "keyboard-event",
+   "event": {
+    "which": 90,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": true,
+    "target": {
+     "nodeName": "BODY"
+    }
+   }
+  }
+ ],
+ "initialState": {
+  "size": {
+   "width": 4,
+   "height": 4
+  },
+  "primaryColor": "#000000",
+  "secondaryColor": "rgba(0, 0, 0, 0)",
+  "selectedTool": "tool-pen",
+  "penSize": 1
+ },
+ "png": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAMAAAADCAYAAABWKLW/AAAAG0lEQVQYV2NkYGD4z8DAwMgAI0AMGAckA2YDACxpAgQTZnIjAAAAAElFTkSuQmCC"
+}

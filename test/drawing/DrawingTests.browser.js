@@ -21,6 +21,8 @@
   "transform.center.json",
   "transform.clone.once.json",
   "transform.clone.twice.undo.once.json",
+  "transform.crop.json",
+  "transform.crop.selection.json",
   "transform.rotate.once.alt.json",
   "transform.rotate.twice.undo.once.json",
   "transform.rotate.alt.twice.undo.once.json",
