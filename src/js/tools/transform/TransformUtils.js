@@ -65,8 +65,8 @@
     },
 
     getBoundaries : function(frames) {
-      var minx = frames[0].width;
-      var miny = frames[0].height;
+      var minx = +Infinity;
+      var miny = +Infinity;
       var maxx = 0;
       var maxy = 0;
 
