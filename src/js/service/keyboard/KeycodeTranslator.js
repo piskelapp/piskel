@@ -3,6 +3,7 @@
     8 : 'back',
     13 : 'enter',
     27 : 'esc',
+    32 : 'space',
     37 : 'left',
     38 : 'up',
     39 : 'right',
