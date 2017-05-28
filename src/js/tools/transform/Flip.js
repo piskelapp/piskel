@@ -4,11 +4,12 @@
   ns.Flip = function () {
     this.toolId = 'tool-flip';
     this.helpText = 'Flip vertically';
-    this.tooltipDescriptors = [
-      {key : 'alt', description : 'Flip horizontally'},
-      {key : 'ctrl', description : 'Apply to all layers'},
-      {key : 'shift', description : 'Apply to all frames'}
-    ];
+
+    this.tooltipDescriptors = [{key : 'alt', description : 'Flip horizontally'}];
+    if (Constants.ENABLE_MULTIPLE_LAYERS) {
+      this.tooltipDescriptors.push({key : 'ctrl', description : 'Apply to all layers'});
+    }
+    this.tooltipDescriptors.push({key : 'shift', description : 'Apply to all frames'});
   };
 
   pskl.utils.inherit(ns.Flip, ns.AbstractTransformTool);

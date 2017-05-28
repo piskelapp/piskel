@@ -17,6 +17,15 @@
     this.toolsContainer = container.querySelector('.tools-wrapper');
     container.addEventListener('click', this.onTransformationClick_.bind(this));
     this.createToolsDom_();
+
+    var cloneEl = document.querySelector('.icon-tool-clone');
+    if (!Constants.ENABLE_MULTIPLE_LAYERS) {
+      cloneEl.style.padding = '0px';
+      cloneEl.style.visibility = 'hidden';
+      cloneEl.style.height = '0px';
+      cloneEl.style.width = '0px';
+      cloneEl.style.margin = '0px';
+    }
   };
 
   ns.TransformationsController.prototype.applyTool = function (toolId, evt) {

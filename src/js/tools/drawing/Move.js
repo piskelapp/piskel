@@ -11,11 +11,12 @@
     this.helpText = 'Move tool';
     this.shortcut = pskl.service.keyboard.Shortcuts.TOOL.MOVE;
 
-    this.tooltipDescriptors = [
-      {key : 'ctrl', description : 'Apply to all layers'},
-      {key : 'shift', description : 'Apply to all frames'},
-      {key : 'alt', description : 'Wrap canvas borders'}
-    ];
+    this.tooltipDescriptors = [];
+    if (Constants.ENABLE_MULTIPLE_LAYERS) {
+      this.tooltipDescriptors.push({key : 'ctrl', description : 'Apply to all layers'});
+    }
+    this.tooltipDescriptors.push({key : 'shift', description : 'Apply to all frames'});
+    this.tooltipDescriptors.push({key : 'alt', description : 'Wrap canvas borders'});
 
     // Stroke's first point coordinates (set in applyToolAt)
     this.startCol = null;
