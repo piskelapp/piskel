@@ -238,20 +238,6 @@ module.exports = function(grunt) {
           src: ['dest/tmp/css/piskel-style-packaged' + version + '.css'],
           dest: 'dest/prod/css/piskel-style-packaged' + version + '.css'
         }]
-      },
-      // remove the fake header from the desktop build
-      desktop: {
-        options: {
-          patterns: [{
-              match: /<!--standalone-start-->(?:.|[\r\n])*<!--standalone-end-->/,
-              replacement: "",
-              description : "Remove everything between standalone-start & standalone-end"
-            }
-          ]
-        },
-        files: [
-          {src: ['dest/prod/index.html'], dest: 'dest/prod/index.html'}
-        ]
       }
     },
 
@@ -372,8 +358,8 @@ module.exports = function(grunt) {
   grunt.registerTask('merge-statics', ['concat:js', 'concat:css', 'uglify']);
   grunt.registerTask('build',  ['clean:prod', 'sprite', 'merge-statics', 'build-index.html', 'replace:mainPartial', 'replace:css', 'copy:prod']);
   grunt.registerTask('build-dev',  ['clean:dev', 'sprite', 'build-index.html', 'copy:dev']);
-  grunt.registerTask('desktop', ['clean:desktop', 'default', 'replace:desktop', 'nwjs:windows']);
-  grunt.registerTask('desktop-mac', ['clean:desktop', 'default', 'replace:desktop', 'nwjs:macos']);
+  grunt.registerTask('desktop', ['clean:desktop', 'default', 'nwjs:windows']);
+  grunt.registerTask('desktop-mac', ['clean:desktop', 'default', 'nwjs:macos']);
   grunt.registerTask('desktop-mac-old', ['clean:desktop', 'default', 'replace:desktop', 'nwjs:macos_old']);
 
   // SERVER TASKS
