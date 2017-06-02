@@ -4,16 +4,48 @@
   }
 
   .fake-piskelapp-header {
+    position: relative;
     text-align: center;
     height: 40px;
     line-height: 40px;
     font-size: 24px;
     background: black;
     color: gold;
+    z-index: 100;
   }
 
   .piskel-name.piskel-name-saving {
     color: red;
   }
+
+  .new-piskel-desktop {
+    position: absolute;
+
+    display: flex;
+    top: 7px;
+    right: 7px;
+
+    height: 26px;
+    width: 26px;
+
+    border-radius: 3px;
+    font-size: 22px;
+    color: black;
+    background: gold;
+    text-decoration: none;
+
+    align-items: center;
+    justify-content: center;
+  }
 </style>
-<div class="fake-piskelapp-header"><span class="piskel-name"></span></div>
+<div class="fake-piskelapp-header">
+  <a
+    href="index.html"
+    target="_blank"
+    class="new-piskel-desktop button button-primary"
+    title="Create a new sprite"
+    rel="tooltip"
+    data-placement="left"
+    >+</a>
+  <span class="piskel-name"></span>
+</div>
