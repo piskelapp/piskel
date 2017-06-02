@@ -32,7 +32,7 @@
   ns.BeforeUnloadService.prototype.onBeforeUnload = function (evt) {
     pskl.app.backupService.backup();
     if (pskl.app.savedStatusService.isDirty()) {
-      var confirmationMessage = 'Your Piskel seems to have unsaved changes';
+      var confirmationMessage = 'Your current sprite has unsaved changes. Are you sure you want to quit?';
 
       evt = evt || window.event;
       if (evt) {
