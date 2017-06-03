@@ -76,6 +76,11 @@
   position: relative;
 }
 
+.palettes-list-colors.tiny > .palettes-list-color {
+  width: calc((100% - 35px) / 10);
+  height: 16px;
+}
+
 .palettes-list-color div {
   height: 100%;
 }
@@ -121,7 +126,8 @@
  * Color index for the 9 first colors
  */
 
-.palettes-list-color:nth-child(-n+10):after {
+:not(.tiny) > .palettes-list-color:nth-child(-n+10):after {
+  content: attr(data-color-index);
   position: absolute;
   top: 0;
   right: 0;
@@ -135,40 +141,4 @@
 
   padding: 2px 3px 2px 3px;
   border-radius: 0 0 0 2px;
-}
-
-.palettes-list-color:nth-child(1):after {
-  content: "1";
-}
-
-.palettes-list-color:nth-child(2):after {
-  content: "2";
-}
-
-.palettes-list-color:nth-child(3):after {
-  content: "3";
-}
-
-.palettes-list-color:nth-child(4):after {
-  content: "4";
-}
-
-.palettes-list-color:nth-child(5):after {
-  content: "5";
-}
-
-.palettes-list-color:nth-child(6):after {
-  content: "6";
-}
-
-.palettes-list-color:nth-child(7):after {
-  content: "7";
-}
-
-.palettes-list-color:nth-child(8):after {
-  content: "8";
-}
-
-.palettes-list-color:nth-child(9):after {
-  content: "9";
 }
