@@ -57,7 +57,8 @@
       var html = colors.map(function (color, index) {
         return pskl.utils.Template.replace(this.paletteColorTemplate_, {
           color : color,
-          index : index + 1
+          index : index + 1,
+          title : color.toUpperCase()
         });
       }.bind(this)).join('');
       this.colorListContainer_.innerHTML = html;
