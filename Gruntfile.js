@@ -85,6 +85,7 @@ module.exports = function(grunt) {
 
     jscs : {
       options : {
+        "fix": true,
         "config": ".jscsrc",
         "maximumLineLength": 120,
         "requireCamelCaseOrUpperCaseIdentifiers": "ignoreProperties",
