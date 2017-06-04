@@ -1,11 +1,9 @@
 /*******************************/
 /*  Application Setting panel  */
 /*******************************/
-.application-settings-form {
-  height: 100%;
-}
 
 .settings-section-application {
+  height: 100%;
   position: relative;
   overflow: hidden;
   margin: 0 20px;

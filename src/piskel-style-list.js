@@ -39,5 +39,6 @@
   "css/minimap.css",
   "css/widgets-anchor.css",
   "css/widgets-frame-picker.css",
+  "css/widgets-tabs.css",
   "css/widgets-wizard.css"
 ];
