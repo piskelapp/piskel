@@ -1,0 +1,42 @@
+/*****************/
+/*  TABS WIDGET  */
+/*****************/
+
+.tab-list {
+  overflow: hidden;
+  position: relative;
+}
+
+.tab-list:after {
+  content: "";
+  display: block;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 1px;
+  z-index: 0;
+  background-color: var(--highlight-color);
+}
+
+.tab-item {
+  float: left;
+  cursor: pointer;
+  padding: 5px;
+  border: 1px solid transparent;
+  border-radius: 2px 2px 0 0;
+  /* Make sure the tab and its border are positioned above the :after element; */
+  position: relative;
+  z-index: 1;
+}
+
+.tab-item.selected,
+.tab-item:hover {
+  color: var(--highlight-color);
+}
+
+.tab-item.selected {
+  border-color: var(--highlight-color);
+  border-bottom-color: #444;
+  border-style: solid;
+  border-width: 1px;
+}
