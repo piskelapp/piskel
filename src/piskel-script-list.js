@@ -162,6 +162,7 @@
   "js/widgets/FramePicker.js",
   "js/widgets/HslRgbColorPicker.js",
   "js/widgets/SizeInput.js",
+  "js/widgets/SizePicker.js",
   "js/widgets/SynchronizedInputs.js",
   "js/widgets/Tabs.js",
   "js/widgets/Wizard.js",

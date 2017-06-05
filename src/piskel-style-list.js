@@ -15,7 +15,6 @@
   "css/settings-resize.css",
   "css/settings-save.css",
   "css/tools.css",
-  "css/pensize.css",
   "css/icons.css",
   "css/color-picker-slider.css",
   "css/dialogs.css",
@@ -39,6 +38,7 @@
   "css/minimap.css",
   "css/widgets-anchor.css",
   "css/widgets-frame-picker.css",
+  "css/widgets-size-picker.css",
   "css/widgets-tabs.css",
   "css/widgets-wizard.css"
 ];

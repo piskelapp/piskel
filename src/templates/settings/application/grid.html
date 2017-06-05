@@ -1,13 +1,31 @@
 <script type="text/html" id="templates/settings/application/grid.html">
   <div class="application-panel-grid">
     <div class="settings-item">
-      <label for="grid-width">Pixel grid</label>
-      <select id="grid-width" class="grid-width-select">
-        <option value="0">Disabled</option>
-        <option value="1">1px</option>
-        <option value="2">2px</option>
-        <option value="3">3px</option>
-        <option value="4">4px</option>
+      <label>
+        Enable grid
+        <input type="checkbox" value="1" class="enable-grid-checkbox" name="enable-grid-checkbox"/>
+      </label>
+    </div>
+    <div class="settings-item settings-item-grid-size">
+      <label>Grid size</label>
+      <div class="grid-size-container size-picker-container">
+        <div class="grid-size-option size-picker-option"
+          title="1px" rel="tooltip" data-placement="top" data-size="1"></div>
+        <div class="grid-size-option size-picker-option"
+          title="2px" rel="tooltip" data-placement="top" data-size="2"></div>
+        <div class="grid-size-option size-picker-option"
+          title="3px" rel="tooltip" data-placement="top" data-size="3"></div>
+        <div class="grid-size-option size-picker-option"
+          title="4px" rel="tooltip" data-placement="top" data-size="4"></div>
+      </div>
+    </div>
+    <div class="settings-item">
+      <label for="grid-color">Grid color</label>
+      <select id="grid-color" class="grid-color-select">
+        <option value="transparent">transparent</option>
+        <option value="blue">blue</option>
+        <option value="red">red</option>
+        <option value="green">green</option>
       </select>
     </div>
   </div>

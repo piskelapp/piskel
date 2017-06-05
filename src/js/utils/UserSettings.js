@@ -2,6 +2,7 @@
   var ns = $.namespace('pskl');
 
   ns.UserSettings = {
+    GRID_ENABLED : 'GRID_ENABLED',
     GRID_WIDTH : 'GRID_WIDTH',
     MAX_FPS : 'MAX_FPS',
     DEFAULT_SIZE : 'DEFAULT_SIZE',
@@ -21,7 +22,8 @@
     TRANSFORM_SHOW_MORE: 'TRANSFORM_SHOW_MORE',
     APPLICATION_SETTINGS_TAB: 'APPLICATION_SETTINGS_TAB',
     KEY_TO_DEFAULT_VALUE_MAP_ : {
-      'GRID_WIDTH' : 0,
+      'GRID_ENABLED' : false,
+      'GRID_WIDTH' : 1,
       'MAX_FPS' : 24,
       'DEFAULT_SIZE' : {
         width : Constants.DEFAULT.WIDTH,
@@ -81,7 +83,7 @@
     /**
      * @private
      */
-    readFromLocalStorage_ : function(key) {
+    readFromLocalStorage_ : function (key) {
       var value = window.localStorage[key];
       if (typeof value != 'undefined') {
         value = JSON.parse(value);
@@ -92,7 +94,7 @@
     /**
      * @private
      */
-    writeToLocalStorage_ : function(key, value) {
+    writeToLocalStorage_ : function (key, value) {
       // TODO(grosbouddha): Catch storage exception here.
       window.localStorage[key] = JSON.stringify(value);
     },
@@ -107,7 +109,7 @@
     /**
      * @private
      */
-    checkKeyValidity_ : function(key) {
+    checkKeyValidity_ : function (key) {
       if (key.indexOf(pskl.service.keyboard.Shortcut.USER_SETTINGS_PREFIX) === 0) {
         return true;
       }
@@ -116,6 +118,22 @@
       if (!isValidKey) {
         console.error('UserSettings key <' + key + '> not found in supported keys.');
       }
+    }
+  };
+
+  // Migration script for version 11 to version 12. Initialize the GRID_ENABLED pref from
+  // the current GRID_WIDTH and update the stored grid width to 1 if it was set to 0.
+  // SHOULD BE REMOVED FOR RELEASE 13.
+  ns.UserSettings.migrate_to_v0_12 = function () {
+    var storedGridEnabled = ns.UserSettings.readFromLocalStorage_('GRID_ENABLED');
+    if (typeof storedGridEnabled === 'undefined' || storedGridEnabled === null) {
+      var gridWidth = ns.UserSettings.get('GRID_WIDTH');
+      ns.UserSettings.writeToLocalStorage_('GRID_ENABLED', gridWidth > 0);
+    }
+
+    var storedGridWidth = ns.UserSettings.readFromLocalStorage_('GRID_WIDTH');
+    if (storedGridWidth === 0) {
+      ns.UserSettings.writeToLocalStorage_('GRID_WIDTH', 1);
     }
   };
 })();
