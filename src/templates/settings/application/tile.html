@@ -3,14 +3,15 @@
     <div class="settings-item">
       <label>
         Enable tile mode
-        <input type="checkbox" value="1" class="seamless-mode-checkbox" name="seamless-mode-checkbox"/>
+        <input type="checkbox" value="1" class="tile-mode-checkbox" name="tile-mode-checkbox"/>
       </label>
     </div>
 
     <div class="settings-item">
-      <label>Tiles opacity</label>
-      <input type="range" class="settings-opacity-input seamless-opacity-input" name="seamless-opacity" min="0"  max="0.5" step="0.01"/>
-      <span class="settings-opacity-text seamless-opacity-text"></span>
+      <label>Mask opacity</label>
+      <input type="range" min="0" max="0.5" step="0.01"
+        class="settings-opacity-input tile-mask-opacity-input" name="tile-mask-opacity"/>
+      <span class="settings-opacity-text tile-mask-opacity-text"></span>
     </div>
   </div>
 </script>
