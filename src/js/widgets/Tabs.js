@@ -1,19 +1,6 @@
 (function () {
   var ns = $.namespace('pskl.widgets');
 
-  /**
-   * Simple layout widget to display one step element (DOM Element) at a time.
-   * When switching to another step, the new step element will slide over the
-   * current step element. When going back to the previous step, the current
-   * step element will slide out from the container to reveal the previous one.
-   *
-   * @param {Object} steps map of step descriptions with the step name as the key.
-   *        Each step description contains:
-   *        - el {Element} the DOM Element corresponding to this step
-   *        - name {String} the name of the step (redundant with the key)
-   * @param {Element} container the DOM Element in which the wizard should be
-   *        displayed.
-   */
   ns.Tabs = function (tabs, parentController, settingsName) {
     this.tabs = tabs;
     this.parentController = parentController;

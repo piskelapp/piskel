@@ -55,7 +55,7 @@
     this.displayCanvas = null;
     this.setDisplaySize(renderingOptions.width, renderingOptions.height);
 
-    this.setGridWidth(pskl.UserSettings.get(pskl.UserSettings.GRID_WIDTH));
+    this.setGridWidth(this.getUserGridWidth_());
 
     $.subscribe(Events.USER_SETTINGS_CHANGED, this.onUserSettingsChange_.bind(this));
   };
@@ -180,9 +180,16 @@
   };
 
   ns.FrameRenderer.prototype.onUserSettingsChange_ = function (evt, settingName, settingValue) {
-    if (settingName == pskl.UserSettings.GRID_WIDTH) {
-      this.setGridWidth(settingValue);
+    var settings = pskl.UserSettings;
+    if (settingName == settings.GRID_WIDTH || settingName == settings.GRID_ENABLED) {
+      this.setGridWidth(this.getUserGridWidth_());
     }
+  };
+
+  ns.FrameRenderer.prototype.getUserGridWidth_ = function () {
+    var gridEnabled = pskl.UserSettings.get(pskl.UserSettings.GRID_ENABLED);
+    var width = pskl.UserSettings.get(pskl.UserSettings.GRID_WIDTH);
+    return gridEnabled ? width : 0;
   };
 
   /**
