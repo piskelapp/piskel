@@ -9,39 +9,39 @@
   pskl.utils.inherit(ns.TileApplicationController, pskl.controller.settings.AbstractSettingController);
 
   ns.TileApplicationController.prototype.init = function () {
-    // Seamless mode
-    var seamlessMode = pskl.UserSettings.get(pskl.UserSettings.SEAMLESS_MODE);
-    var seamlessModeCheckbox = document.querySelector('.seamless-mode-checkbox');
-    if (seamlessMode) {
-      seamlessModeCheckbox.setAttribute('checked', seamlessMode);
+    // Tile mode
+    var tileMode = pskl.UserSettings.get(pskl.UserSettings.SEAMLESS_MODE);
+    var tileModeCheckbox = document.querySelector('.tile-mode-checkbox');
+    if (tileMode) {
+      tileModeCheckbox.setAttribute('checked', tileMode);
     }
-    this.addEventListener(seamlessModeCheckbox, 'change', this.onSeamlessModeChange_);
+    this.addEventListener(tileModeCheckbox, 'change', this.onTileModeChange_);
 
-    // Seamless mask opacity
-    var seamlessOpacityInput = document.querySelector('.seamless-opacity-input');
-    seamlessOpacityInput.value = pskl.UserSettings.get(pskl.UserSettings.SEAMLESS_OPACITY);
-    this.addEventListener(seamlessOpacityInput, 'change', this.onSeamlessOpacityChange_);
-    this.addEventListener(seamlessOpacityInput, 'input', this.onSeamlessOpacityChange_);
-    this.updateSeamlessOpacityText_(seamlessOpacityInput.value);
+    // Tile mask opacity
+    var tileMaskOpacityInput = document.querySelector('.tile-mask-opacity-input');
+    tileMaskOpacityInput.value = pskl.UserSettings.get(pskl.UserSettings.SEAMLESS_OPACITY);
+    this.addEventListener(tileMaskOpacityInput, 'change', this.onTileMaskOpacityChange_);
+    this.addEventListener(tileMaskOpacityInput, 'input', this.onTileMaskOpacityChange_);
+    this.updateTileMaskOpacityText_(tileMaskOpacityInput.value);
   };
 
-  ns.TileApplicationController.prototype.onSeamlessModeChange_ = function (evt) {
+  ns.TileApplicationController.prototype.onTileModeChange_ = function (evt) {
     pskl.UserSettings.set(pskl.UserSettings.SEAMLESS_MODE, evt.currentTarget.checked);
   };
 
-  ns.TileApplicationController.prototype.onSeamlessOpacityChange_ = function (evt) {
+  ns.TileApplicationController.prototype.onTileMaskOpacityChange_ = function (evt) {
     var target = evt.target;
     var opacity = parseFloat(target.value);
     if (!isNaN(opacity)) {
       pskl.UserSettings.set(pskl.UserSettings.SEAMLESS_OPACITY, opacity);
-      this.updateSeamlessOpacityText_(opacity);
+      this.updateTileMaskOpacityText_(opacity);
     } else {
       target.value = pskl.UserSettings.get(pskl.UserSettings.SEAMLESS_OPACITY);
     }
   };
 
-  ns.TileApplicationController.prototype.updateSeamlessOpacityText_ = function (opacity) {
-    var seamlessOpacityText = document.querySelector('.seamless-opacity-text');
+  ns.TileApplicationController.prototype.updateTileMaskOpacityText_ = function (opacity) {
+    var seamlessOpacityText = document.querySelector('.tile-mask-opacity-text');
     seamlessOpacityText.innerHTML = (opacity * 1).toFixed(2);
   };
 })();
