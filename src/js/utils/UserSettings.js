@@ -2,6 +2,7 @@
   var ns = $.namespace('pskl');
 
   ns.UserSettings = {
+    GRID_COLOR : 'GRID_COLOR',
     GRID_ENABLED : 'GRID_ENABLED',
     GRID_WIDTH : 'GRID_WIDTH',
     MAX_FPS : 'MAX_FPS',
@@ -22,6 +23,7 @@
     TRANSFORM_SHOW_MORE: 'TRANSFORM_SHOW_MORE',
     APPLICATION_SETTINGS_TAB: 'APPLICATION_SETTINGS_TAB',
     KEY_TO_DEFAULT_VALUE_MAP_ : {
+      'GRID_COLOR' : Constants.TRANSPARENT_COLOR,
       'GRID_ENABLED' : false,
       'GRID_WIDTH' : 1,
       'MAX_FPS' : 24,

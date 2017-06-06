@@ -138,6 +138,10 @@
     this.offset.y = y;
   };
 
+  ns.FrameRenderer.prototype.getGridColor = function () {
+    return pskl.UserSettings.get(pskl.UserSettings.GRID_COLOR);
+  };
+
   ns.FrameRenderer.prototype.setGridWidth = function (value) {
     this.gridWidth_ = value;
   };
@@ -295,15 +299,25 @@
     // Draw grid.
     var gridWidth = this.computeGridWidthForDisplay_();
     if (gridWidth > 0) {
+      var gridColor = this.getGridColor();
       // Scale out before drawing the grid.
       displayContext.scale(1 / z, 1 / z);
-      // Clear vertical lines.
-      for (var i = 1 ; i < frame.getWidth() ; i++) {
-        displayContext.clearRect((i * z) - (gridWidth / 2), 0, gridWidth, h * z);
+
+      var drawOrClear;
+      if (gridColor === Constants.TRANSPARENT_COLOR) {
+        drawOrClear = displayContext.clearRect.bind(displayContext);
+      } else {
+        displayContext.fillStyle = gridColor;
+        drawOrClear = displayContext.fillRect.bind(displayContext);
       }
-      // Clear horizontal lines.
+
+      // Draw or clear vertical lines.
+      for (var i = 1 ; i < frame.getWidth() ; i++) {
+        drawOrClear((i * z) - (gridWidth / 2), 0, gridWidth, h * z);
+      }
+      // Draw or clear horizontal lines.
       for (var j = 1 ; j < frame.getHeight() ; j++) {
-        displayContext.clearRect(0, (j * z) - (gridWidth / 2), w * z, gridWidth);
+        drawOrClear(0, (j * z) - (gridWidth / 2), w * z, gridWidth);
       }
     }
 

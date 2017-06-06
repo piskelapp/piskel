@@ -19,14 +19,17 @@
           title="4px" rel="tooltip" data-placement="top" data-size="4"></div>
       </div>
     </div>
-    <div class="settings-item">
-      <label for="grid-color">Grid color</label>
-      <select id="grid-color" class="grid-color-select">
-        <option value="transparent">transparent</option>
-        <option value="blue">blue</option>
-        <option value="red">red</option>
-        <option value="green">green</option>
-      </select>
+    <div class="settings-item settings-item-grid-color">
+      <label>Grid color</label>
+      <div class="grid-colors-list"></div>
+      <script type="text/template" id="color-list-item-template">
+        <div class="grid-colors-item {{:selected}}"
+             data-color="{{color}}"
+             data-color-index="{{index}}"
+             style="background:{{background}}"
+             title="{{title}}">
+        </div>
+      </script>
     </div>
   </div>
 </script>
