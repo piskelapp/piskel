@@ -102,7 +102,7 @@
       this.disablePreviewSizeWidget_('No other option available');
       validSizes = ['original'];
     } else if (seamlessModeEnabled) {
-      this.disablePreviewSizeWidget_('Disabled in seamless mode');
+      this.disablePreviewSizeWidget_('Disabled in tile mode');
       validSizes = ['original'];
     } else {
       this.enablePreviewSizeWidget_();
