@@ -1,7 +1,7 @@
 /* globals casper, setPiskelFromGrid, isDrawerExpanded, getValue, isChecked,
    evalLine, waitForEvent, replaceFunction, piskelFrameEqualsGrid, setPiskelFromImageSrc */
 
-casper.test.begin('Simple GIF (<256 colors) export test, with 2x scaling', 16, function(test) {
+casper.test.begin('Simple GIF (<256 colors) export test, with 2x scaling', 18, function(test) {
   test.timeout = test.fail.bind(test, ['Test timed out']);
 
   function onTestStart() {
