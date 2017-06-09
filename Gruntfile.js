@@ -83,33 +83,12 @@ module.exports = function(grunt) {
       css : ['src/css/**/*.css']
     },
 
-    jscs : {
-      options : {
-        "config": ".jscsrc",
-        "maximumLineLength": 120,
-        "requireCamelCaseOrUpperCaseIdentifiers": "ignoreProperties",
-        "validateQuoteMarks": { "mark": "'", "escape": true },
-        "disallowMultipleVarDecl": "exceptUndefined",
-        "disallowSpacesInAnonymousFunctionExpression": null
-      },
-      js : [ 'src/js/**/*.js' , '!src/js/**/lib/**/*.js' ]
-    },
-
-    jshint: {
-      options: {
-        undef : true,
-        latedef : true,
-        browser : true,
-        trailing : true,
-        curly : true,
-        globals : {'$':true, 'jQuery' : true, 'pskl':true, 'Events':true, 'Constants':true, 'console' : true, 'module':true, 'require':true, 'Q':true, 'Promise': true}
-      },
+    eslint: {
       files: [
         // Includes
-        'Gruntfile.js',
-        'package.json',
         'src/js/**/*.js',
-        // Excludes
+        // Exludes
+        // TODO: remove this (for now we still get warnings from the lib folder)
         '!src/js/**/lib/**/*.js'
       ]
     },
@@ -337,7 +316,7 @@ module.exports = function(grunt) {
 
   // TEST TASKS
   // Run linting
-  grunt.registerTask('lint', ['jscs:js', 'leadingIndent:css', 'jshint']);
+  grunt.registerTask('lint', ['eslint', 'leadingIndent:css']);
   // Run unit-tests
   grunt.registerTask('unit-test', ['karma']);
   // Run integration tests
