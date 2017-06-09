@@ -90,15 +90,15 @@
 
     _getDummyEl : pskl.utils.UserAgent.isIE11 ?
       // IE11 specific implementation
-        function () {
-          return document.createElement('div');
-        }
+      function () {
+        return document.createElement('div');
+      } :
       // Normal, sane browsers implementation.
-      : function () {
-          if (!ns.Template._dummyEl) {
-            ns.Template._dummyEl = document.createElement('div');
-          }
-          return ns.Template._dummyEl;
+      function () {
+        if (!ns.Template._dummyEl) {
+          ns.Template._dummyEl = document.createElement('div');
         }
+        return ns.Template._dummyEl;
+      }
   };
 })();

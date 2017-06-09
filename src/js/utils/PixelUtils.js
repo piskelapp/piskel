@@ -182,7 +182,7 @@
       var loopCount = 0;
       var cellCount = frame.getWidth() * frame.getHeight();
       while (queue.length > 0) {
-        loopCount ++;
+        loopCount++;
 
         var currentItem = queue.pop();
 

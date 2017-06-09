@@ -21,7 +21,8 @@
      * every X milliseconds, where X is the provided interval.
      */
     throttle : function (fn, interval) {
-      var last, timer;
+      var last;
+      var timer;
       return function () {
         var now = Date.now();
         if (last && now < last + interval) {

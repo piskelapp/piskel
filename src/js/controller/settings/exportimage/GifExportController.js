@@ -85,7 +85,8 @@
     var isTransparent = layers.some(function (l) {return l.isTransparent();});
     var preserveColors = !isTransparent && currentColors.length < MAX_GIF_COLORS;
 
-    var transparentColor, transparent;
+    var transparentColor;
+    var transparent;
     // transparency only supported if preserveColors is true, see Issue #357
     if (preserveColors) {
       transparentColor = this.getTransparentColor(currentColors);
