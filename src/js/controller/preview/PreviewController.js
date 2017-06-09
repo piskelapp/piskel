@@ -309,7 +309,8 @@
     var isSeamless = pskl.UserSettings.get(pskl.UserSettings.SEAMLESS_MODE);
     this.renderer.setRepeated(isSeamless);
 
-    var height, width;
+    var width;
+    var height;
 
     if (isSeamless) {
       height = PREVIEW_SIZE;

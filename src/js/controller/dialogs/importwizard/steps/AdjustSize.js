@@ -70,7 +70,7 @@
     if (isBigger && keep) {
       anchorInfo.innerHTML = [
         '<span class="import-resize-warning">',
-          'Imported content will be cropped!',
+        '  Imported content will be cropped!',
         '</span>',
         ' ',
         'Select crop origin'
