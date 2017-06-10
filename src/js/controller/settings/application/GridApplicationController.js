@@ -55,7 +55,6 @@
       }
       markup += pskl.utils.Template.replace(colorListItemTemplate, {
         color: colorsMap[key],
-        index: index,
         title: key,
         background: background,
         ':selected': gridColor === colorsMap[key]
