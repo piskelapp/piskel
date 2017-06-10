@@ -1,5 +1,6 @@
 (typeof exports != "undefined" ? exports : pskl_exports).tests = [
   'palettes/test-tiny-palettes.js',
+  'settings/test-application-main.js',
   'settings/test-export-gif.js',
   'settings/test-export-gif-scale.js',
   'settings/test-export-gif-simple.js',
