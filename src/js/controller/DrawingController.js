@@ -64,6 +64,10 @@
     pskl.app.shortcutService.registerShortcut(shortcuts.MISC.RESET_ZOOM, this.resetZoom_.bind(this));
     pskl.app.shortcutService.registerShortcut(shortcuts.MISC.INCREASE_ZOOM, this.updateZoom_.bind(this, 1));
     pskl.app.shortcutService.registerShortcut(shortcuts.MISC.DECREASE_ZOOM, this.updateZoom_.bind(this, -1));
+    pskl.app.shortcutService.registerShortcut(shortcuts.MISC.OFFSET_UP, this.updateOffset_.bind(this, 'up'));
+    pskl.app.shortcutService.registerShortcut(shortcuts.MISC.OFFSET_RIGHT, this.updateOffset_.bind(this, 'right'));
+    pskl.app.shortcutService.registerShortcut(shortcuts.MISC.OFFSET_DOWN, this.updateOffset_.bind(this, 'down'));
+    pskl.app.shortcutService.registerShortcut(shortcuts.MISC.OFFSET_LEFT, this.updateOffset_.bind(this, 'left'));
 
     window.setTimeout(function () {
       this.afterWindowResize_();
@@ -260,6 +264,29 @@
 
     var coords = this.getSpriteCoordinates(evt.clientX, evt.clientY);
     this.updateZoom_(modifier, coords);
+  };
+
+  /**
+   * Update the current viewport offset of 1 pixel in the provided direction.
+   * Direction can be one of 'up', 'right', 'down', 'left'.
+   * Callback for the OFFSET_${DIR} shortcuts.
+   */
+  ns.DrawingController.prototype.updateOffset_ = function (direction) {
+    var off = this.getOffset();
+    if (direction === 'up') {
+      off.y -= 1;
+    } else if (direction === 'right') {
+      off.x += 1;
+    } else if (direction === 'down') {
+      off.y += 1;
+    } else if (direction === 'left') {
+      off.x -= 1;
+    }
+
+    this.setOffset(
+      off.x,
+      off.y
+    );
   };
 
   /**

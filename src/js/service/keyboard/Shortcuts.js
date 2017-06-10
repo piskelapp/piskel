@@ -61,7 +61,11 @@
       ONION_SKIN : createShortcut('onion-skin', 'Toggle onion skin', 'alt+O'),
       LAYER_PREVIEW : createShortcut('layer-preview', 'Toggle layer preview', 'alt+L'),
       MERGE_ANIMATION : createShortcut('import-animation', 'Open merge animation popup', 'ctrl+shift+M'),
-      CLOSE_POPUP : createShortcut('close-popup', 'Close an opened popup', 'ESC')
+      CLOSE_POPUP : createShortcut('close-popup', 'Close an opened popup', 'ESC'),
+      OFFSET_UP : createShortcut('move-up', 'Move viewport up', 'shift+up'),
+      OFFSET_RIGHT : createShortcut('move-right', 'Move viewport right', 'shift+right'),
+      OFFSET_DOWN : createShortcut('move-down', 'Move viewport down', 'shift+down'),
+      OFFSET_LEFT : createShortcut('move-left', 'Move viewport left', 'shift+left'),
     },
 
     STORAGE : {
