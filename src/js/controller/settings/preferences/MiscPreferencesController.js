@@ -1,14 +1,14 @@
 (function () {
-  var ns = $.namespace('pskl.controller.settings.application');
+  var ns = $.namespace('pskl.controller.settings.preferences');
 
-  ns.MainApplicationController = function (piskelController, applicationController) {
+  ns.MiscPreferencesController = function (piskelController, preferencesController) {
     this.piskelController = piskelController;
-    this.applicationController = applicationController;
+    this.preferencesController = preferencesController;
   };
 
-  pskl.utils.inherit(ns.MainApplicationController, pskl.controller.settings.AbstractSettingController);
+  pskl.utils.inherit(ns.MiscPreferencesController, pskl.controller.settings.AbstractSettingController);
 
-  ns.MainApplicationController.prototype.init = function () {
+  ns.MiscPreferencesController.prototype.init = function () {
 
     this.backgroundContainer = document.querySelector('.background-picker-wrapper');
     this.addEventListener(this.backgroundContainer, 'click', this.onBackgroundClick_);
@@ -42,7 +42,7 @@
     this.updateLayerOpacityText_(layerOpacityInput.value);
   };
 
-  ns.MainApplicationController.prototype.onBackgroundClick_ = function (evt) {
+  ns.MiscPreferencesController.prototype.onBackgroundClick_ = function (evt) {
     var target = evt.target;
     var background = target.dataset.background;
     if (background) {
@@ -55,11 +55,11 @@
     }
   };
 
-  ns.MainApplicationController.prototype.onColorFormatChange_ = function (evt) {
+  ns.MiscPreferencesController.prototype.onColorFormatChange_ = function (evt) {
     pskl.UserSettings.set(pskl.UserSettings.COLOR_FORMAT, evt.target.value);
   };
 
-  ns.MainApplicationController.prototype.onMaxFpsChange_ = function (evt) {
+  ns.MiscPreferencesController.prototype.onMaxFpsChange_ = function (evt) {
     var target = evt.target;
     var fps = parseInt(target.value, 10);
     if (fps && !isNaN(fps)) {
@@ -69,7 +69,7 @@
     }
   };
 
-  ns.MainApplicationController.prototype.onLayerOpacityChange_ = function (evt) {
+  ns.MiscPreferencesController.prototype.onLayerOpacityChange_ = function (evt) {
     var target = evt.target;
     var opacity = parseFloat(target.value);
     if (!isNaN(opacity)) {
@@ -81,7 +81,7 @@
     }
   };
 
-  ns.MainApplicationController.prototype.updateLayerOpacityText_ = function (opacity) {
+  ns.MiscPreferencesController.prototype.updateLayerOpacityText_ = function (opacity) {
     var layerOpacityText = document.querySelector('.layer-opacity-text');
     layerOpacityText.innerHTML = (opacity * 1).toFixed(2);
   };

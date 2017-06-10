@@ -3,8 +3,8 @@
 
   var settings = {
     'user' : {
-      template : 'templates/settings/application.html',
-      controller : ns.ApplicationSettingsController
+      template : 'templates/settings/preferences.html',
+      controller : ns.PreferencesController
     },
     'resize' : {
       template : 'templates/settings/resize.html',

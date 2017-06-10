@@ -18,16 +18,16 @@ casper.test.begin('Settings Test', 18, function(test) {
     test.assert(isDrawerExpanded(), 'settings drawer is expanded');
     test.assertExists('.settings-section-resize', 'Check if resize panel is opened');
 
-    // Open application settings panel.
-    test.assertDoesntExist('.settings-section-application', 'Check if application settings panel is closed');
+    // Open preferences settings panel.
+    test.assertDoesntExist('.settings-section-preferences', 'Check if preferences settings panel is closed');
     this.click('[data-setting="user"]');
 
-    this.waitForSelector('.settings-section-application', onApplicationPanelReady, test.timeout, 10000);
+    this.waitForSelector('.settings-section-preferences', onPreferencesPanelReady, test.timeout, 10000);
   }
 
-  function onApplicationPanelReady() {
+  function onPreferencesPanelReady() {
     test.assert(isDrawerExpanded(), 'settings drawer is expanded');
-    test.assertExists('.settings-section-application', 'Check if application settings panel is opened');
+    test.assertExists('.settings-section-preferences', 'Check if preferences settings panel is opened');
 
     // Open save panel.
     test.assertDoesntExist('.settings-section-save', 'Check if save panel is closed');

@@ -1,8 +1,8 @@
-/*******************************/
-/*  Application Setting panel  */
-/*******************************/
+/********************************/
+/*  Preferences Settings panel  */
+/********************************/
 
-.settings-section-application {
+.settings-section-preferences {
   height: 100%;
   position: relative;
   overflow: hidden;
@@ -109,12 +109,12 @@
   border-color: gold;
 }
 
-.settings-section-application > .settings-title {
+.settings-section-preferences > .settings-title {
   /* Override the default 10px margin bottom for this panel */
   margin-bottom: 15px;
 }
 
-.settings-section-application .button-primary {
+.settings-section-preferences .button-primary {
   margin-top: 10px;
 }
 
