@@ -122,10 +122,10 @@
 
   // Settings sub-controllers
   "js/controller/settings/AbstractSettingController.js",
-  "js/controller/settings/application/GridApplicationController.js",
-  "js/controller/settings/application/MainApplicationController.js",
-  "js/controller/settings/application/TileApplicationController.js",
-  "js/controller/settings/ApplicationSettingsController.js",
+  "js/controller/settings/preferences/GridPreferencesController.js",
+  "js/controller/settings/preferences/MiscPreferencesController.js",
+  "js/controller/settings/preferences/TilePreferencesController.js",
+  "js/controller/settings/PreferencesController.js",
   "js/controller/settings/exportimage/GifExportController.js",
   "js/controller/settings/exportimage/PngExportController.js",
   "js/controller/settings/exportimage/ZipExportController.js",

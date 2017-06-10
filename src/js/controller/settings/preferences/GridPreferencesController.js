@@ -1,5 +1,5 @@
 (function () {
-  var ns = $.namespace('pskl.controller.settings.application');
+  var ns = $.namespace('pskl.controller.settings.preferences');
 
   var colorsMap = {
     'transparent': Constants.TRANSPARENT_COLOR,
@@ -18,15 +18,15 @@
     'red': '#FF004D',
   };
 
-  ns.GridApplicationController = function (piskelController, applicationController) {
+  ns.GridPreferencesController = function (piskelController, preferencesController) {
     this.piskelController = piskelController;
-    this.applicationController = applicationController;
+    this.preferencesController = preferencesController;
     this.sizePicker = new pskl.widgets.SizePicker(this.onSizePickerChanged_.bind(this));
   };
 
-  pskl.utils.inherit(ns.GridApplicationController, pskl.controller.settings.AbstractSettingController);
+  pskl.utils.inherit(ns.GridPreferencesController, pskl.controller.settings.AbstractSettingController);
 
-  ns.GridApplicationController.prototype.init = function () {
+  ns.GridPreferencesController.prototype.init = function () {
     // Grid enabled
     var isEnabled = pskl.UserSettings.get(pskl.UserSettings.GRID_ENABLED);
     var enableGridCheckbox = document.querySelector('.enable-grid-checkbox');
@@ -66,20 +66,20 @@
     this.addEventListener(this.gridColorList, 'click', this.onGridColorClicked_.bind(this));
   };
 
-  ns.GridApplicationController.prototype.destroy = function () {
+  ns.GridPreferencesController.prototype.destroy = function () {
     this.sizePicker.destroy();
     this.superclass.destroy.call(this);
   };
 
-  ns.GridApplicationController.prototype.onSizePickerChanged_ = function (size) {
+  ns.GridPreferencesController.prototype.onSizePickerChanged_ = function (size) {
     pskl.UserSettings.set(pskl.UserSettings.GRID_WIDTH, size);
   };
 
-  ns.GridApplicationController.prototype.onEnableGridChange_ = function (evt) {
+  ns.GridPreferencesController.prototype.onEnableGridChange_ = function (evt) {
     pskl.UserSettings.set(pskl.UserSettings.GRID_ENABLED, evt.currentTarget.checked);
   };
 
-  ns.GridApplicationController.prototype.onGridColorClicked_ = function (evt) {
+  ns.GridPreferencesController.prototype.onGridColorClicked_ = function (evt) {
     var color = evt.target.dataset.color;
     if (color) {
       pskl.UserSettings.set(pskl.UserSettings.GRID_COLOR, color);
