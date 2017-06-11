@@ -2,7 +2,7 @@ describe("Palette Service", function() {
   var paletteService = null;
   var localStorage = {};
 
-  var localStorageService;
+  var localStorageGlobal;
 
 
   var addPalette = function (id, name, color) {
@@ -24,7 +24,7 @@ describe("Palette Service", function() {
   beforeEach(function() {
     localStorage = {};
 
-    localStorageService = {
+    localStorageGlobal = {
       getItem : function (key) {
         if (localStorage.hasOwnProperty(key)) {
           return localStorage[key];
@@ -38,21 +38,21 @@ describe("Palette Service", function() {
     };
 
     paletteService = new pskl.service.palette.PaletteService();
-    paletteService.localStorageService = localStorageService;
+    paletteService.localStorageGlobal = localStorageGlobal;
   });
 
   it("returns an empty array when no palette is stored", function() {
-    spyOn(localStorageService, 'getItem').and.callThrough();
+    spyOn(localStorageGlobal, 'getItem').and.callThrough();
 
     var palettes = paletteService.getPalettes();
     expect(Array.isArray(palettes)).toBe(true);
     expect(palettes.length).toBe(0);
-    expect(localStorageService.getItem).toHaveBeenCalled();
+    expect(localStorageGlobal.getItem).toHaveBeenCalled();
   });
 
   it("can store a palette", function() {
     // when
-    spyOn(localStorageService, 'setItem').and.callThrough();
+    spyOn(localStorageGlobal, 'setItem').and.callThrough();
 
     var paletteId = 'palette-id';
     var paletteName = 'palette-name';
@@ -63,7 +63,7 @@ describe("Palette Service", function() {
     var palettes = paletteService.getPalettes();
 
     // verify
-    expect(localStorageService.setItem).toHaveBeenCalled();
+    expect(localStorageGlobal.setItem).toHaveBeenCalled();
 
     expect(Array.isArray(palettes)).toBe(true);
     expect(palettes.length).toBe(1);
