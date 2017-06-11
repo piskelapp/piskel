@@ -34,7 +34,7 @@
     this.saveDesktopAsNewButton = document.querySelector('#save-desktop-as-new-button');
     this.saveFileDownloadButton = document.querySelector('#save-file-download-button');
 
-    this.safeAddEventListener_(this.saveLocalStorageButton, 'click', this.saveToLocalStorage_);
+    this.safeAddEventListener_(this.saveLocalStorageButton, 'click', this.saveToIndexedDb_);
     this.safeAddEventListener_(this.saveGalleryButton, 'click', this.saveToGallery_);
     this.safeAddEventListener_(this.saveDesktopButton, 'click', this.saveToDesktop_);
     this.safeAddEventListener_(this.saveDesktopAsNewButton, 'click', this.saveToDesktopAsNew_);
@@ -99,7 +99,7 @@
     if (pskl.app.isLoggedIn()) {
       this.saveToGallery_();
     } else {
-      this.saveToLocalStorage_();
+      this.saveToIndexedDb_();
     }
   };
 
@@ -111,8 +111,8 @@
     this.saveTo_('saveToGallery', false);
   };
 
-  ns.SaveController.prototype.saveToLocalStorage_ = function () {
-    this.saveTo_('saveToLocalStorage', false);
+  ns.SaveController.prototype.saveToIndexedDb_ = function () {
+    this.saveTo_('saveToIndexedDb', false);
   };
 
   ns.SaveController.prototype.saveToDesktop_ = function () {

@@ -168,8 +168,10 @@
   "js/widgets/Wizard.js",
 
   // Services
+  "js/service/storage/migrate/MigrateLocalStorageToIndexedDb.js",
   "js/service/storage/StorageService.js",
   "js/service/storage/FileDownloadStorageService.js",
+  "js/service/storage/IndexedDbStorageService.js",
   "js/service/storage/LocalStorageService.js",
   "js/service/storage/GalleryStorageService.js",
   "js/service/storage/DesktopStorageService.js",

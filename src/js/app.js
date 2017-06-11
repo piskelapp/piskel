@@ -114,6 +114,9 @@
       this.canvasBackgroundController = new pskl.controller.CanvasBackgroundController();
       this.canvasBackgroundController.init();
 
+      this.indexedDbStorageService = new pskl.service.storage.IndexedDbStorageService(this.piskelController);
+      this.indexedDbStorageService.init();
+
       this.localStorageService = new pskl.service.storage.LocalStorageService(this.piskelController);
       this.localStorageService.init();
 
