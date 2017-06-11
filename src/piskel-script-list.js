@@ -201,9 +201,6 @@
   "js/service/MouseStateService.js",
   "js/service/performance/PerformanceReport.js",
   "js/service/performance/PerformanceReportService.js",
-  "js/service/storage/LocalStorageService.js",
-  "js/service/storage/GalleryStorageService.js",
-  "js/service/storage/DesktopStorageService.js",
 
   // Tools
   "js/tools/ToolsHelper.js",
