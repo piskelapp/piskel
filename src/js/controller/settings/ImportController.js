@@ -29,18 +29,19 @@
 
   ns.ImportController.prototype.initRestoreSession_ = function () {
     var previousSessionContainer = document.querySelector('.previous-session');
-    var previousInfo = pskl.app.backupService.getPreviousPiskelInfo();
-    if (previousInfo) {
-      var previousSessionTemplate_ = pskl.utils.Template.get('previous-session-info-template');
-      var date = pskl.utils.DateUtils.format(previousInfo.date, '{{H}}:{{m}} - {{Y}}/{{M}}/{{D}}');
-      previousSessionContainer.innerHTML = pskl.utils.Template.replace(previousSessionTemplate_, {
-        name : previousInfo.name,
-        date : date
-      });
-      this.addEventListener('.restore-session-button', 'click', this.onRestorePreviousSessionClick_);
-    } else {
-      previousSessionContainer.innerHTML = 'No piskel backup was found on this browser.';
-    }
+    pskl.app.backupService.getPreviousPiskelInfo().then(function (previousInfo) {
+      if (previousInfo) {
+        var previousSessionTemplate_ = pskl.utils.Template.get('previous-session-info-template');
+        var date = pskl.utils.DateUtils.format(previousInfo.date, '{{H}}:{{m}} - {{Y}}/{{M}}/{{D}}');
+        previousSessionContainer.innerHTML = pskl.utils.Template.replace(previousSessionTemplate_, {
+          name : previousInfo.name,
+          date : date
+        });
+        this.addEventListener('.restore-session-button', 'click', this.onRestorePreviousSessionClick_);
+      } else {
+        previousSessionContainer.innerHTML = 'No piskel backup was found on this browser.';
+      }
+    }.bind(this));
   };
 
   ns.ImportController.prototype.closeDrawer_ = function () {
