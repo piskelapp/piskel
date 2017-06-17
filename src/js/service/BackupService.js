@@ -10,13 +10,15 @@
   var SNAPSHOT_INTERVAL = ONE_MINUTE * 5;
   // Store up to 12 snapshots for a piskel session, min. 1 hour of work
   var MAX_SNAPSHOTS_PER_SESSION = 12;
+  var MAX_SESSIONS = 10;
 
-  ns.BackupService = function (piskelController) {
+  ns.BackupService = function (piskelController, backupDatabase) {
     this.piskelController = piskelController;
     this.lastHash = null;
     this.nextSnapshotDate = -1;
 
-    this.backupDatabase = new pskl.database.BackupDatabase();
+    // backupDatabase can be provided for testing purposes.
+    this.backupDatabase = backupDatabase || new pskl.database.BackupDatabase();
   };
 
   ns.BackupService.prototype.init = function () {
@@ -25,13 +27,18 @@
     }.bind(this));
   };
 
+  // This is purely exposed for testing, so that backup dates can be set programmatically.
+  ns.BackupService.prototype.currentDate_ = function () {
+    return Date.now();
+  };
+
   ns.BackupService.prototype.backup = function () {
     var piskel = this.piskelController.getPiskel();
     var hash = piskel.getHash();
 
     // Do not save an unchanged piskel
     if (hash === this.lastHash) {
-      return;
+      return Q.resolve();
     }
 
     // Update the hash
@@ -40,7 +47,7 @@
 
     // Prepare the backup snapshot.
     var descriptor = piskel.getDescriptor();
-    var date = Date.now();
+    var date = this.currentDate_();
     var snapshot = {
       session_id: piskel.sessionId,
       date: date,
@@ -49,7 +56,7 @@
       serialized: pskl.utils.serialization.Serializer.serialize(piskel)
     };
 
-    this.backupDatabase.getSnapshotsBySessionId(piskel.sessionId).then(function (snapshots) {
+    return this.backupDatabase.getSnapshotsBySessionId(piskel.sessionId).then(function (snapshots) {
       var latest = snapshots[0];
 
       if (latest && date < this.nextSnapshotDate) {
@@ -64,10 +71,27 @@
             // remove oldest snapshot
             return this.backupDatabase.deleteSnapshot(snapshots[snapshots.length - 1]);
           }
+        }.bind(this)).then(function () {
+          var isNewSession = !latest;
+          if (!isNewSession) {
+            return;
+          }
+          return this.backupDatabase.getSessions().then(function (sessions) {
+            if (sessions.length <= MAX_SESSIONS) {
+              // If MAX_SESSIONS has not been reached, no need to delete
+              // previous sessions.
+              return;
+            }
+
+            var oldestSession = sessions.sort(function (s1, s2) {
+              return s1.startDate - s2.startDate;
+            })[0].id;
+
+            return this.backupDatabase.deleteSnapshotsForSession(oldestSession);
+          }.bind(this));
         }.bind(this));
       }
     }.bind(this)).catch(function (e) {
-      console.log('Backup failed');
       console.error(e);
     });
   };

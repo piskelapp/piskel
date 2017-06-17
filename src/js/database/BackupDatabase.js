@@ -176,4 +176,80 @@
 
     return deferred.promise;
   };
+
+  ns.BackupDatabase.prototype.getSessions = function () {
+    // Create the backup promise.
+    var deferred = Q.defer();
+
+    // Open a transaction to the snapshots object store.
+    var objectStore = this.db.transaction(['snapshots']).objectStore('snapshots');
+
+    var sessions = {};
+
+    var _createSession = function (snapshot) {
+      sessions[snapshot.sessionId] = {
+        startDate: snapshot.date,
+        endDate: snapshot.date,
+        name: snapshot.name,
+        id: snapshot.sessionId
+      };
+    };
+
+    var _updateSessions = function (snapshot) {
+      var s = sessions[snapshot.sessionId];
+      s.startDate = Math.min(s.startDate, snapshot.startDate);
+      s.endDate = Math.max(s.endDate, snapshot.endDate);
+      if (s.endDate === snapshot.endDate) {
+        s.name = snapshot.name;
+      }
+    };
+
+    var index = objectStore.index('date');
+    var range = IDBKeyRange.upperBound(Infinity);
+    index.openCursor(range, 'prev').onsuccess = function(event) {
+      var cursor = event.target.result;
+      var snapshot = cursor && cursor.value;
+      if (!snapshot) {
+        deferred.resolve(sessions);
+      } else {
+        if (sessions[snapshot.sessionId]) {
+          _createSession(snapshot);
+        } else {
+          _updateSessions(snapshot);
+        }
+        cursor.continue();
+      }
+    };
+
+    return deferred.promise.then(function (sessions) {
+      // Convert the sessions map to an array.
+      return Object.keys(sessions).map(function (key) {
+        return sessions[key];
+      });
+    });
+  };
+
+  ns.BackupDatabase.prototype.deleteSnapshotsForSession = function (sessionId) {
+    // Create the backup promise.
+    var deferred = Q.defer();
+
+    // Open a transaction to the snapshots object store.
+    var objectStore = this.db.transaction(['snapshots']).objectStore('snapshots');
+
+    // Loop on all the saved snapshots for the provided piskel id
+    var index = objectStore.index('session_id');
+    var keyRange = IDBKeyRange.only(sessionId);
+
+    index.openCursor(keyRange).onsuccess = function(event) {
+      var cursor = event.target.result;
+      if (cursor) {
+        cursor.delete();
+        cursor.continue();
+      } else {
+        deferred.resolve();
+      }
+    };
+
+    return deferred.promise;
+  };
 })();
