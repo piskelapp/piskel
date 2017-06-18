@@ -1,7 +1,5 @@
 (function () {
   var ns = $.namespace('pskl.service.storage');
-  var DB_NAME = 'PiskelDatabase';
-  var DB_VERSION = 1;
 
   ns.IndexedDbStorageService = function (piskelController) {
     this.piskelController = piskelController;
