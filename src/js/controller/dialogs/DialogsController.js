@@ -25,6 +25,10 @@
     'unsupported-browser' : {
       template : 'templates/dialogs/unsupported-browser.html',
       controller : ns.UnsupportedBrowserController
+    },
+    'browse-backups' : {
+      template : 'templates/dialogs/browse-backups.html',
+      controller : ns.backups.BrowseBackups
     }
   };
 

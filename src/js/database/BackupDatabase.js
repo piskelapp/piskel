@@ -90,6 +90,18 @@
   };
 
   /**
+   * Send a get request for the provided snapshotId.
+   * Returns a promise that resolves the request event.
+   */
+  ns.BackupDatabase.prototype.getSnapshot = function (snapshotId) {
+    var objectStore = this.openObjectStore_();
+    var request = objectStore.get(snapshotId);
+    return _requestPromise(request).then(function (event) {
+      return event.target.result;
+    });
+  };
+
+  /**
    * Get the last (most recent) snapshot that satisfies the accept filter provided.
    * Returns a promise that will resolve with the first matching snapshot (or null
    * if no valid snapshot is found).
@@ -175,6 +187,7 @@
         startDate: snapshot.date,
         endDate: snapshot.date,
         name: snapshot.name,
+        description: snapshot.description,
         id: snapshot.session_id
       };
     };
@@ -183,8 +196,12 @@
       var s = sessions[snapshot.session_id];
       s.startDate = Math.min(s.startDate, snapshot.date);
       s.endDate = Math.max(s.endDate, snapshot.date);
-      if (s.endDate === snapshot.endDate) {
+
+      if (s.endDate === snapshot.date) {
+        // If the endDate was updated, update also the session metadata to
+        // reflect the latest state.
         s.name = snapshot.name;
+        s.description = snapshot.description;
       }
     };
 

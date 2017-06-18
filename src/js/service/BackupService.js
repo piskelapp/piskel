@@ -14,7 +14,9 @@
 
   ns.BackupService = function (piskelController, backupDatabase) {
     this.piskelController = piskelController;
-    this.lastHash = null;
+    // Immediately store the current when initializing the Service to avoid storing
+    // empty sessions.
+    this.lastHash = this.piskelController.getPiskel().getHash();
     this.nextSnapshotDate = -1;
 
     // backupDatabase can be provided for testing purposes.
@@ -49,14 +51,14 @@
     var descriptor = piskel.getDescriptor();
     var date = this.currentDate_();
     var snapshot = {
-      session_id: piskel.sessionId,
+      session_id: pskl.app.sessionId,
       date: date,
       name: descriptor.name,
       description: descriptor.description,
       serialized: pskl.utils.serialization.Serializer.serialize(piskel)
     };
 
-    return this.backupDatabase.getSnapshotsBySessionId(piskel.sessionId).then(function (snapshots) {
+    return this.getSnapshotsBySessionId(pskl.app.sessionId).then(function (snapshots) {
       var latest = snapshots[0];
 
       if (latest && date < this.nextSnapshotDate) {
@@ -87,7 +89,7 @@
               return s1.startDate - s2.startDate;
             })[0].id;
 
-            return this.backupDatabase.deleteSnapshotsForSession(oldestSession);
+            return this.deleteSession(oldestSession);
           }.bind(this));
         }.bind(this));
       }
@@ -96,21 +98,54 @@
     });
   };
 
+  ns.BackupService.prototype.getSnapshotsBySessionId = function (sessionId) {
+    return this.backupDatabase.getSnapshotsBySessionId(sessionId);
+  };
+
+  ns.BackupService.prototype.deleteSession = function (sessionId) {
+    return this.backupDatabase.deleteSnapshotsForSession(sessionId);
+  };
+
   ns.BackupService.prototype.getPreviousPiskelInfo = function () {
-    var sessionId = this.piskelController.getPiskel().sessionId;
     return this.backupDatabase.findLastSnapshot(function (snapshot) {
-      return snapshot.session_id !== sessionId;
+      return snapshot.session_id !== pskl.app.sessionId;
     });
   };
 
+  ns.BackupService.prototype.list = function() {
+    return this.backupDatabase.getSessions();
+  };
+
+  ns.BackupService.prototype.loadSnapshotById = function(snapshotId) {
+    var deferred = Q.defer();
+
+    this.backupDatabase.getSnapshot(snapshotId).then(function (snapshot) {
+      pskl.utils.serialization.Deserializer.deserialize(
+        JSON.parse(snapshot.serialized),
+        function (piskel) {
+          pskl.app.piskelController.setPiskel(piskel);
+          deferred.resolve();
+        }
+      );
+    });
+
+    return deferred.promise;
+  };
+
+  // Load "latest" backup snapshot.
   ns.BackupService.prototype.load = function() {
+    var deferred = Q.defer();
+
     this.getPreviousPiskelInfo().then(function (snapshot) {
       pskl.utils.serialization.Deserializer.deserialize(
         JSON.parse(snapshot.serialized),
         function (piskel) {
           pskl.app.piskelController.setPiskel(piskel);
+          deferred.resolve();
         }
       );
     });
+
+    return deferred.promise;
   };
 })();

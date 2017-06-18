@@ -18,6 +18,9 @@
        */
       this.isAppEngineVersion = !!pskl.appEngineToken_;
 
+      // This id is used to keep track of sessions in the BackupService.
+      this.sessionId = pskl.utils.Uuid.generate();
+
       this.shortcutService = new pskl.service.keyboard.ShortcutService();
       this.shortcutService.init();
 

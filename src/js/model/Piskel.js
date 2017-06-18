@@ -16,9 +16,6 @@
       this.descriptor = descriptor;
       this.savePath = null;
       this.fps = fps;
-      // This id is used to keep track of sessions in the BackupService.
-      this.sessionId = pskl.utils.Uuid.generate();
-
     } else {
       throw 'Missing arguments in Piskel constructor : ' + Array.prototype.join.call(arguments, ',');
     }
