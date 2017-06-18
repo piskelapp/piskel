@@ -15,16 +15,9 @@
   /**
    * The PiskelDatabase handles all the database interactions related
    * to the local piskel saved that can be performed in-browser.
-   *
-   * @param {Object} options
-   *        - onUpgrade {Function} optional callback called when a DB
-   *        upgrade is performed.
    */
   ns.PiskelDatabase = function (options) {
-    options = options || {};
-
     this.db = null;
-    this.onUpgrade = options.onUpgrade;
   };
 
   ns.PiskelDatabase.prototype.init = function () {
@@ -57,9 +50,7 @@
     // Create an object store "piskels" with the autoIncrement flag set as true.
     var objectStore = this.db.createObjectStore('piskels', { keyPath : 'name' });
     objectStore.transaction.oncomplete = function(event) {
-      if (typeof this.onUpgrade == 'function') {
-        this.onUpgrade(this.db);
-      }
+      pskl.service.storage.migrate.MigrateLocalStorageToIndexed.migrate(this.db);
     }.bind(this);
   };
 

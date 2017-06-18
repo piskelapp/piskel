@@ -16,41 +16,29 @@
    * The BackupDatabase handles all the database interactions related
    * to piskel snapshots continuously saved while during the usage of
    * Piskel.
-   *
-   * @param {Object} options
-   *        - onUpgrade {Function} optional callback called when a DB
-   *        upgrade is performed.
    */
-  ns.BackupDatabase = function (options) {
-    options = options || {};
-
+  ns.BackupDatabase = function () {
     this.db = null;
-    this.onUpgrade = options.onUpgrade;
+  };
+
+  ns.BackupDatabase.drop = function () {
+    return _requestPromise(window.indexedDB.deleteDatabase(DB_NAME));
   };
 
   /**
    * Open and initialize the database.
+   * Returns a promise that resolves when the databse is opened.
    */
   ns.BackupDatabase.prototype.init = function () {
-    this.initDeferred_ = Q.defer();
-
     var request = window.indexedDB.open(DB_NAME, DB_VERSION);
-
-    request.onerror = this.onRequestError_.bind(this);
-    request.onsuccess = this.onRequestSuccess_.bind(this);
     request.onupgradeneeded = this.onUpgradeNeeded_.bind(this);
 
-    return this.initDeferred_.promise;
-  };
-
-  ns.BackupDatabase.prototype.onRequestError_ = function (event) {
-    console.log('Could not initialize the piskel backup database');
-    this.initDeferred_.reject();
-  };
-
-  ns.BackupDatabase.prototype.onRequestSuccess_ = function (event) {
-    this.db = event.target.result;
-    this.initDeferred_.resolve(this.db);
+    return _requestPromise(request).then(function (event) {
+      this.db = event.target.result;
+      return this.db;
+    }.bind(this)).catch(function (e) {
+      console.log('Could not initialize the piskel backup database');
+    });
   };
 
   ns.BackupDatabase.prototype.onUpgradeNeeded_ = function (event) {
@@ -65,9 +53,7 @@
     objectStore.createIndex('session_id, date', ['session_id', 'date'], { unique: false });
 
     objectStore.transaction.oncomplete = function(event) {
-      if (typeof this.onUpgrade == 'function') {
-        this.onUpgrade(this.db);
-      }
+      // Nothing to do at the moment!
     }.bind(this);
   };
 
@@ -187,18 +173,18 @@
     var sessions = {};
 
     var _createSession = function (snapshot) {
-      sessions[snapshot.sessionId] = {
+      sessions[snapshot.session_id] = {
         startDate: snapshot.date,
         endDate: snapshot.date,
         name: snapshot.name,
-        id: snapshot.sessionId
+        id: snapshot.session_id
       };
     };
 
-    var _updateSessions = function (snapshot) {
-      var s = sessions[snapshot.sessionId];
-      s.startDate = Math.min(s.startDate, snapshot.startDate);
-      s.endDate = Math.max(s.endDate, snapshot.endDate);
+    var _updateSession = function (snapshot) {
+      var s = sessions[snapshot.session_id];
+      s.startDate = Math.min(s.startDate, snapshot.date);
+      s.endDate = Math.max(s.endDate, snapshot.date);
       if (s.endDate === snapshot.endDate) {
         s.name = snapshot.name;
       }
@@ -212,10 +198,10 @@
       if (!snapshot) {
         deferred.resolve(sessions);
       } else {
-        if (sessions[snapshot.sessionId]) {
-          _createSession(snapshot);
+        if (sessions[snapshot.session_id]) {
+          _updateSession(snapshot);
         } else {
-          _updateSessions(snapshot);
+          _createSession(snapshot);
         }
         cursor.continue();
       }
@@ -234,7 +220,7 @@
     var deferred = Q.defer();
 
     // Open a transaction to the snapshots object store.
-    var objectStore = this.db.transaction(['snapshots']).objectStore('snapshots');
+    var objectStore = this.openObjectStore_();
 
     // Loop on all the saved snapshots for the provided piskel id
     var index = objectStore.index('session_id');
