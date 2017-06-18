@@ -14,6 +14,7 @@
     this.hiddenOpenPiskelInput = document.querySelector('[name="open-piskel-input"]');
 
     this.addEventListener('.browse-local-button', 'click', this.onBrowseLocalClick_);
+    this.addEventListener('.browse-backups-button', 'click', this.onBrowseBackupsClick_);
     this.addEventListener('.file-input-button', 'click', this.onFileInputClick_);
 
     // different handlers, depending on the Environment
@@ -23,25 +24,6 @@
       this.addEventListener(this.hiddenOpenPiskelInput, 'change', this.onOpenPiskelChange_);
       this.addEventListener('.open-piskel-button', 'click', this.onOpenPiskelClick_);
     }
-
-    this.initRestoreSession_();
-  };
-
-  ns.ImportController.prototype.initRestoreSession_ = function () {
-    var previousSessionContainer = document.querySelector('.previous-session');
-    pskl.app.backupService.getPreviousPiskelInfo().then(function (previousInfo) {
-      if (previousInfo) {
-        var previousSessionTemplate_ = pskl.utils.Template.get('previous-session-info-template');
-        var date = pskl.utils.DateUtils.format(previousInfo.date, '{{H}}:{{m}} - {{Y}}/{{M}}/{{D}}');
-        previousSessionContainer.innerHTML = pskl.utils.Template.replace(previousSessionTemplate_, {
-          name : previousInfo.name,
-          date : date
-        });
-        this.addEventListener('.restore-session-button', 'click', this.onRestorePreviousSessionClick_);
-      } else {
-        previousSessionContainer.innerHTML = 'No piskel backup was found on this browser.';
-      }
-    }.bind(this));
   };
 
   ns.ImportController.prototype.closeDrawer_ = function () {
@@ -74,6 +56,13 @@
   ns.ImportController.prototype.onBrowseLocalClick_ = function (evt) {
     $.publish(Events.DIALOG_SHOW, {
       dialogId : 'browse-local'
+    });
+    this.closeDrawer_();
+  };
+
+  ns.ImportController.prototype.onBrowseBackupsClick_ = function (evt) {
+    $.publish(Events.DIALOG_SHOW, {
+      dialogId : 'browse-backups'
     });
     this.closeDrawer_();
   };

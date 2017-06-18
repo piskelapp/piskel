@@ -74,7 +74,10 @@ describe('BackupService test', function () {
   };
 
   var preparePiskelMocks = function (session_id, name, description, hash, serialized) {
-    mockPiskel.sessionId = session_id;
+    // Update the session id.
+    pskl.app.sessionId = session_id;
+
+    // Update the piskel mock.
     mockPiskel._descriptor.name = name;
     mockPiskel._descriptor.description = description;
     mockPiskel._hash = hash;

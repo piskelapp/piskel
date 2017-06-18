@@ -1,0 +1,43 @@
+<script type="text/template" id="templates/dialogs/browse-backups.html">
+  <div class="dialog-wrapper">
+    <h3 class="dialog-head">
+      Browse backups
+      <span class="dialog-close">X</span>
+    </h3>
+    <div class="dialog-content backups-wizard-container"></div>
+    <div class="browse-backups-disclaimer"></div>
+  </div>
+</script>
+
+<script type="text/template" id="backups-select-session">
+<div class="backups-step-container">
+  <div class="backups-step-content">
+    <div class="session-list">
+    </div>
+  </div>
+</div>
+</script>
+
+<script type="text/template" id="session-list-item">
+<div class="session-item">
+  {{name}} - {{description}}
+  <button class="button" data-session-id="{{id}}" data-action="delete">Delete</button>
+  <button class="button button-primary" data-session-id="{{id}}" data-action="view">View</button>
+</div>
+</script>
+
+<script type="text/template" id="backups-session-details">
+<div class="backups-step-container">
+  <div class="backups-step-content">
+    <div class="snapshot-list"></div>
+  </div>
+  <button class="button back-button">back</button>
+</div>
+</script>
+
+<script type="text/template" id="snapshot-list-item">
+<div class="snapshot-item">
+  {{name}} - {{description}}. Snapshot taken at {{date}}.
+  <button class="button button-primary" data-action="load" data-snapshot-id="{{id}}">Load</button>
+</div>
+</script>
