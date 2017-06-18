@@ -21,9 +21,7 @@
     this.db = null;
   };
 
-  ns.BackupDatabase.drop = function () {
-    return _requestPromise(window.indexedDB.deleteDatabase(DB_NAME));
-  };
+  ns.BackupDatabase.DB_NAME = DB_NAME;
 
   /**
    * Open and initialize the database.

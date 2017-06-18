@@ -20,27 +20,18 @@
     this.db = null;
   };
 
+  ns.PiskelDatabase.DB_NAME = DB_NAME;
+
   ns.PiskelDatabase.prototype.init = function () {
-    this.initDeferred_ = Q.defer();
-
     var request = window.indexedDB.open(DB_NAME, DB_VERSION);
-
-    request.onerror = this.onRequestError_.bind(this);
-    request.onsuccess = this.onRequestSuccess_.bind(this);
     request.onupgradeneeded = this.onUpgradeNeeded_.bind(this);
 
-    return this.initDeferred_.promise;
-  };
-
-  ns.PiskelDatabase.prototype.onRequestError_ = function (event) {
-    console.log('Failed to initialize IndexedDB, local browser saves will be unavailable.');
-    this.initDeferred_.reject();
-  };
-
-  ns.PiskelDatabase.prototype.onRequestSuccess_ = function (event) {
-    console.log('Successfully initialized IndexedDB, local browser saves are available.');
-    this.db = event.target.result;
-    this.initDeferred_.resolve(this.db);
+    return _requestPromise(request).then(function (event) {
+      this.db = event.target.result;
+      return this.db;
+    }.bind(this)).catch(function (e) {
+      console.log('Failed to initialize IndexedDB, local browser saves will be unavailable.');
+    });
   };
 
   ns.PiskelDatabase.prototype.onUpgradeNeeded_ = function (event) {
@@ -50,7 +41,7 @@
     // Create an object store "piskels" with the autoIncrement flag set as true.
     var objectStore = this.db.createObjectStore('piskels', { keyPath : 'name' });
     objectStore.transaction.oncomplete = function(event) {
-      pskl.service.storage.migrate.MigrateLocalStorageToIndexed.migrate(this.db);
+      pskl.database.migrate.MigrateLocalStorageToIndexedDb.migrate(this.db);
     }.bind(this);
   };
 
@@ -64,7 +55,9 @@
    */
   ns.PiskelDatabase.prototype.get = function (name) {
     var objectStore = this.openObjectStore_();
-    return _requestPromise(objectStore.get(name));
+    return _requestPromise(objectStore.get(name)).then(function (event) {
+      return event.target.result;
+    });
   };
 
   /**
