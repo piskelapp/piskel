@@ -14,11 +14,11 @@ describe('BackupDatabase test', function () {
   };
 
   var _checkSnapshot = function (actual, expected) {
-    expect(actual.session_id).toBe(actual.session_id);
-    expect(actual.name).toBe(actual.name);
-    expect(actual.description).toBe(actual.description);
-    expect(actual.date).toBe(actual.date);
-    expect(actual.serialized).toBe(actual.serialized);
+    expect(actual.session_id).toBe(expected.session_id);
+    expect(actual.name).toBe(expected.name);
+    expect(actual.description).toBe(expected.description);
+    expect(actual.date).toBe(expected.date);
+    expect(actual.serialized).toBe(expected.serialized);
   };
 
   var _addSnapshots = function (snapshots) {
@@ -37,7 +37,9 @@ describe('BackupDatabase test', function () {
 
   beforeEach(function (done) {
     // Drop the database before each test.
-    pskl.database.BackupDatabase.drop().then(done);
+    var dbName = pskl.database.BackupDatabase.DB_NAME;
+    var req = window.indexedDB.deleteDatabase(dbName);
+    req.onsuccess = done;
   });
 
   afterEach(function () {

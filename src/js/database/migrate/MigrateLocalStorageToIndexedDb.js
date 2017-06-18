@@ -1,5 +1,5 @@
 (function () {
-  var ns = $.namespace('pskl.service.storage.migrate');
+  var ns = $.namespace('pskl.database.migrate');
 
   // Simple migration helper to move local storage saves to indexed db.
   ns.MigrateLocalStorageToIndexedDb = {};
@@ -52,8 +52,7 @@
   };
 
   ns.MigrateLocalStorageToIndexedDb.save_ = function (piskelDatabase, piskelData) {
-    return piskelDatabase.get(piskelData.name).then(function (event) {
-      var data = event.target.result;
+    return piskelDatabase.get(piskelData.name).then(function (data) {
       if (typeof data !== 'undefined') {
         return piskelDatabase.update(piskelData.name, piskelData.description, piskelData.date, piskelData.serialized);
       } else {

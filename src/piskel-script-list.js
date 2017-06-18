@@ -82,6 +82,7 @@
   // Database (IndexedDB)
   "js/database/BackupDatabase.js",
   "js/database/PiskelDatabase.js",
+  "js/database/migrate/MigrateLocalStorageToIndexedDb.js",
 
   // Selection
   "js/selection/SelectionManager.js",
@@ -172,7 +173,6 @@
   "js/widgets/Wizard.js",
 
   // Services
-  "js/service/storage/migrate/MigrateLocalStorageToIndexedDb.js",
   "js/service/storage/StorageService.js",
   "js/service/storage/FileDownloadStorageService.js",
   "js/service/storage/IndexedDbStorageService.js",

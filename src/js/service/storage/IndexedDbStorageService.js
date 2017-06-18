@@ -20,9 +20,8 @@
   };
 
   ns.IndexedDbStorageService.prototype.save_ = function (name, description, date, serialized) {
-    return this.piskelDatabase.get(name).then(function (event) {
-      var data = event.target.result;
-      if (typeof data !== 'undefined') {
+    return this.piskelDatabase.get(name).then(function (piskelData) {
+      if (typeof piskelData !== 'undefined') {
         return this.piskelDatabase.update(name, description, date, serialized);
       } else {
         return this.piskelDatabase.create(name, description, date, serialized);
@@ -31,10 +30,9 @@
   };
 
   ns.IndexedDbStorageService.prototype.load = function (name) {
-    this.piskelDatabase.get(name).then(function (event) {
-      var data = event.target.result;
-      if (typeof data !== 'undefined') {
-        var serialized = data.serialized;
+    this.piskelDatabase.get(name).then(function (piskelData) {
+      if (typeof piskelData !== 'undefined') {
+        var serialized = piskelData.serialized;
         pskl.utils.serialization.Deserializer.deserialize(
           JSON.parse(serialized),
           function (piskel) {
