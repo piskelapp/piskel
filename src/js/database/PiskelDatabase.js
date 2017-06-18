@@ -41,7 +41,7 @@
     // Create an object store "piskels" with the autoIncrement flag set as true.
     var objectStore = this.db.createObjectStore('piskels', { keyPath : 'name' });
     objectStore.transaction.oncomplete = function(event) {
-      pskl.database.migrate.MigrateLocalStorageToIndexedDb.migrate(this.db);
+      pskl.database.migrate.MigrateLocalStorageToIndexedDb.migrate(this);
     }.bind(this);
   };
 
