@@ -165,7 +165,7 @@
         snapshots.push(cursor.value);
         cursor.continue();
       } else {
-        console.log('consumed all piskel snapshots');
+        // Consumed all piskel snapshots
         deferred.resolve(snapshots);
       }
     };
