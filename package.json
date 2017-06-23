@@ -1,6 +1,6 @@
 {
   "name": "piskel",
-  "version": "0.12.0",
+  "version": "0.13.0-SNAPSHOT",
   "description": "Pixel art editor",
   "author": "Julian Descottes <julian.descottes@gmail.com>",
   "contributors": [
