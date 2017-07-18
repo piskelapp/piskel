@@ -54,7 +54,9 @@
     var colors = this.getSelectedPaletteColors_();
 
     if (colors.length > 0) {
-      var html = colors.map(function (color, index) {
+      var html = colors.filter(function (color) {
+        return !!color;
+      }).map(function (color, index) {
         return pskl.utils.Template.replace(this.paletteColorTemplate_, {
           color : color,
           index : index + 1,
