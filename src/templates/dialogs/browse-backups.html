@@ -5,13 +5,22 @@
       <span class="dialog-close">X</span>
     </h3>
     <div class="dialog-content backups-wizard-container"></div>
-    <div class="browse-backups-disclaimer"></div>
   </div>
 </script>
 
 <script type="text/template" id="backups-select-session">
 <div class="backups-step-container">
   <div class="backups-step-content">
+    <div class="browse-backups-disclaimer">
+      <img width="90" height="90" style="border: 1px solidd gold">
+      <div class="browse-backups-disclaimer-content">
+        <!-- Keep in sync with MAX_SESSIONS in BackupService.js -->
+        If you forgot to save your work or if Piskel crashed, try to restore one of the automatically backed up sessions below (up to 10 sessions).
+        <br/>
+        <br/>
+        Backups may be erased without notice, so try to save your work to a file or to your gallery as soon as you can.
+      </div>
+    </div>
     <div class="session-list">
     </div>
   </div>

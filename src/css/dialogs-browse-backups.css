@@ -19,6 +19,10 @@
   height: 10px;
   flex-grow: 1;
   background: #444;
+
+  padding: 20px;
+  overflow: auto;
+  box-sizing: border-box;
 }
 
 .backups-step-actions {
@@ -34,13 +38,20 @@
   margin-top: -250px;
 }
 
-.browse-backups .session-list,
-.browse-backups .snapshot-list {
-  width: 100%;
-  padding: 20px;
-  overflow: auto;
-  height: 100%;
-  box-sizing: border-box;
+.browse-backups .browse-backups-disclaimer {
+  display: flex;
+  margin-bottom: 20px;
+  align-items: center;
+}
+
+.browse-backups .browse-backups-disclaimer-content {
+  padding: 0 20px;
+  font-size: 13px;
+}
+
+.browse-backups .browse-backups-disclaimer > img {
+  border: 1px solid gold;
+  flex-shrink: 0;
 }
 
 .browse-backups .session-item {
@@ -80,7 +91,7 @@
 }
 
 .browse-backups .session-details-title {
-  font-weight: bold;
+  font-size: 13px;
 }
 
 .browse-backups .session-details-info {
