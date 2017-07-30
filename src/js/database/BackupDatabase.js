@@ -188,7 +188,8 @@
         endDate: snapshot.date,
         name: snapshot.name,
         description: snapshot.description,
-        id: snapshot.session_id
+        id: snapshot.session_id,
+        count: 1
       };
     };
 
@@ -196,6 +197,7 @@
       var s = sessions[snapshot.session_id];
       s.startDate = Math.min(s.startDate, snapshot.date);
       s.endDate = Math.max(s.endDate, snapshot.date);
+      s.count++;
 
       if (s.endDate === snapshot.date) {
         // If the endDate was updated, update also the session metadata to

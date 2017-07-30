@@ -19,10 +19,16 @@
 </script>
 
 <script type="text/template" id="session-list-item">
-<div class="session-item">
-  {{name}} - {{description}}
-  <button class="button" data-session-id="{{id}}" data-action="delete">Delete</button>
-  <button class="button button-primary" data-session-id="{{id}}" data-action="view">View</button>
+<div class="session-item" title="{{id}}">
+  <div class="session-details">
+    <span class="session-details-title">{{name}} {{description}}</span>
+    <span class="session-details-info">Session recorded {{date}}</span>
+    <span class="session-details-info">{{count}} saved</span>
+  </div>
+  <div class="session-actions">
+    <button class="button" data-session-id="{{id}}" data-action="delete">Delete</button>
+    <button class="button button-primary" data-session-id="{{id}}" data-action="view">View</button>
+  </div>
 </div>
 </script>
 
@@ -31,13 +37,19 @@
   <div class="backups-step-content">
     <div class="snapshot-list"></div>
   </div>
-  <button class="button back-button">back</button>
+  <div class="backups-step-actions">
+    <button class="button back-button">back</button>
+  </div>
 </div>
 </script>
 
 <script type="text/template" id="snapshot-list-item">
 <div class="snapshot-item">
-  {{name}} - {{description}}. Snapshot taken at {{date}}.
-  <button class="button button-primary" data-action="load" data-snapshot-id="{{id}}">Load</button>
+  <div class="snapshot-details">
+    {{name}} - {{description}}. Snapshot taken at {{date}}.
+  </div>
+  <div class="snapshot-actions">
+    <button class="button button-primary" data-action="load" data-snapshot-id="{{id}}">Load</button>
+  </div>
 </div>
 </script>

@@ -28,7 +28,14 @@
         var sessionItemTemplate = pskl.utils.Template.get('session-list-item');
         var html = '';
         sessions.forEach(function (session) {
-          html += pskl.utils.Template.replace(sessionItemTemplate, session);
+          var view = {
+            id: session.id,
+            name: session.name,
+            description: session.description ? '- ' + session.description : '',
+            date: pskl.utils.DateUtils.format(session.endDate, 'the {{Y}}/{{M}}/{{D}} at {{H}}:{{m}}'),
+            count: session.count === 1 ? '1 snapshot' : session.count + ' snapshots'
+          };
+          html += pskl.utils.Template.replace(sessionItemTemplate, view);
         });
       }
       this.container.querySelector('.session-list').innerHTML = html;
