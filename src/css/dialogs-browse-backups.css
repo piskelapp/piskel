@@ -43,6 +43,16 @@
   box-sizing: border-box;
 }
 
+.browse-backups .session-item {
+  transition: all 500ms;
+}
+
+/* Hide and slide up next sessions when deleting an item */
+.browse-backups .session-item.deleting {
+  opacity: 0;
+  margin-bottom: -60px;
+}
+
 .browse-backups .session-item,
 .browse-backups .snapshot-item {
   display: flex;
