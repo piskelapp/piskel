@@ -1,6 +1,22 @@
 (function () {
   var ns = $.namespace('pskl.controller.dialogs.backups.steps');
 
+  /**
+   * Helper that returns a promise that will resolve after waiting for a
+   * given time (in ms).
+   *
+   * @param {Number} time
+   *        The time to wait.
+   * @return {Promise} promise that resolves after time.
+   */
+  var wait = function (time) {
+    var deferred = Q.defer();
+    setTimeout(function () {
+      deferred.resolve();
+    }, time);
+    return deferred.promise;
+  };
+
   ns.SelectSession = function (piskelController, backupsController, container) {
     this.piskelController = piskelController;
     this.backupsController = backupsController;
@@ -57,10 +73,17 @@
       this.backupsController.mergeData.selectedSession = sessionId;
       this.backupsController.next();
     } else if (action == 'delete') {
-      pskl.app.backupService.deleteSession(sessionId).then(function () {
-        // Refresh the list of sessions
-        this.update();
-      }.bind(this));
+      if (window.confirm('Are you sure you want to delete this session?')) {
+        evt.target.closest('.session-item').classList.add('deleting');
+        Q.all([
+          pskl.app.backupService.deleteSession(sessionId),
+          // Wait for 500ms for the .hide opacity transition.
+          wait(500)
+        ]).then(function () {
+          // Refresh the list of sessions
+          this.update();
+        }.bind(this));
+      }
     }
   };
 
