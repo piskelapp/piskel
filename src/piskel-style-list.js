@@ -18,6 +18,7 @@
   "css/icons.css",
   "css/color-picker-slider.css",
   "css/dialogs.css",
+  "css/dialogs-browse-backups.css",
   "css/dialogs-browse-local.css",
   "css/dialogs-cheatsheet.css",
   "css/dialogs-create-palette.css",

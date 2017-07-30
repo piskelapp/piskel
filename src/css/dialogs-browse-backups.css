@@ -1,0 +1,95 @@
+#dialog-container.browse-backups {
+  width: 700px;
+  height: 500px;
+  top : 50%;
+  left : 50%;
+  position : absolute;
+  margin-left: -350px;
+}
+
+.backups-step-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.backups-step-content {
+  width: 100%;
+  height: 10px;
+  flex-grow: 1;
+  background: #444;
+}
+
+.backups-step-actions {
+  flex-grow: 0;
+  flex-shrink: 1;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+}
+
+.show #dialog-container.browse-backups {
+  margin-top: -250px;
+}
+
+.browse-backups .session-list,
+.browse-backups .snapshot-list {
+  width: 100%;
+  padding: 20px;
+  overflow: auto;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.browse-backups .session-item,
+.browse-backups .snapshot-item {
+  display: flex;
+  align-items: center;
+
+  width: 100%;
+  height: 60px;
+
+  margin-bottom: 10px;
+  padding: 0 20px;
+
+  border: 1px solid #666;
+  box-sizing: border-box;
+}
+
+.browse-backups .session-details,
+.browse-backups .snapshot-details {
+  flex-grow: 1;
+  flex-shrink: 0;
+}
+
+.browse-backups .session-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.browse-backups .session-details-title {
+  font-weight: bold;
+}
+
+.browse-backups .session-details-info {
+  color: #999;
+}
+
+.browse-backups .session-actions,
+.browse-backups .snapshot-actions {
+  flex-grow: 0;
+  flex-shrink: 1;
+  display: flex;
+}
+
+.browse-backups .session-actions button,
+.browse-backups .snapshot-actions button {
+  margin-left: 10px;
+}
+
+.browse-backups .session-item:last-child,
+.browse-backups .snapshot-item:last-child {
+  margin-bottom: 0;
+}
