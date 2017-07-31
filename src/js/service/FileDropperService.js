@@ -35,13 +35,9 @@
       var isPiskel = /\.piskel$/i.test(file.name);
       var isPalette = /\.(gpl|txt|pal)$/i.test(file.name);
       if (isImage) {
-        $.publish(Events.DIALOG_SHOW, {
-          dialogId : 'import',
-          initArgs : {
-            rawFiles: [file]
-          }
-        });
-        // pskl.utils.FileUtils.readImageFile(file, this.onImageLoaded_.bind(this));
+        pskl.utils.FileUtils.readImageFile(file, function (image) {
+          this.onImageLoaded_(image, file);
+        }.bind(this));
       } else if (isPiskel) {
         pskl.utils.PiskelFileUtils.loadFromFile(file, this.onPiskelFileLoaded_, this.onPiskelFileError_);
       } else if (isPalette) {
@@ -65,10 +61,23 @@
     $.publish(Events.PISKEL_FILE_IMPORT_FAILED, [reason]);
   };
 
-  ns.FileDropperService.prototype.onImageLoaded_ = function (importedImage) {
+  ns.FileDropperService.prototype.onImageLoaded_ = function (importedImage, file) {
+    var piskelWidth = pskl.app.piskelController.getWidth();
+    var piskelHeight = pskl.app.piskelController.getHeight();
+
     if (this.isMultipleFiles_) {
       this.piskelController.addFrameAtCurrentIndex();
       this.piskelController.selectNextFrame();
+    } else if (importedImage.width > piskelWidth || importedImage.height > piskelHeight) {
+      // For single file imports, if the file is too big, trigger the import wizard.
+      $.publish(Events.DIALOG_SHOW, {
+        dialogId : 'import',
+        initArgs : {
+          rawFiles: [file]
+        }
+      });
+
+      return;
     }
 
     var currentFrame = this.piskelController.getCurrentFrame();
