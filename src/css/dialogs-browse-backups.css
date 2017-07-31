@@ -49,9 +49,11 @@
   font-size: 13px;
 }
 
-.browse-backups .browse-backups-disclaimer > img {
+.browse-backups .browse-backups-disclaimer .backups-icon {
   border: 1px solid gold;
   flex-shrink: 0;
+  width: 90px;
+  height: 90px;
 }
 
 .browse-backups .session-item {
@@ -95,7 +97,7 @@
 }
 
 .browse-backups .session-details-info {
-  color: #999;
+  color: #bbb;
 }
 
 .browse-backups .session-actions,
