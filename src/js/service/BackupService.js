@@ -44,7 +44,7 @@
     }
 
     // Update the hash
-    // TODO: should only be done after a successfull save.
+    // TODO: should only be done after a successful save.
     this.lastHash = hash;
 
     // Prepare the backup snapshot.
