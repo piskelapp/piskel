@@ -23,6 +23,10 @@
 
     isIntegrationTest : function () {
       return window.location.href.indexOf('integration-test') !== -1;
+    },
+
+    isDebug : function () {
+      return window.location.href.indexOf('debug') !== -1;
     }
   };
 

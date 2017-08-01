@@ -84,6 +84,10 @@
         '123456789'.split(''), '1 to 9')
     },
 
+    DEBUG : {
+      RELOAD_STYLES : createShortcut('move-left', 'Move viewport left', 'ctrl+alt+R'),
+    },
+
     CATEGORIES : ['TOOL', 'SELECTION', 'MISC', 'STORAGE', 'COLOR']
   };
 })();
