@@ -63,7 +63,9 @@
 <script type="text/template" id="snapshot-list-item">
 <div class="snapshot-item">
   <div class="snapshot-details">
-    {{name}} - {{description}}. Snapshot taken at {{date}}.
+    <span class="snapshot-details-title">{{name}} {{description}}</span>
+    <span class="snapshot-details-info">Snapshot recorded {{date}}</span>
+    <span class="snapshot-details-info">{{frames}}, size {{resolution}}, {{fps}}fps</span>
   </div>
   <div class="snapshot-actions">
     <button class="button button-primary" data-action="load" data-snapshot-id="{{id}}">Load</button>
