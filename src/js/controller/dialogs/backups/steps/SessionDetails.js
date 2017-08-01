@@ -56,7 +56,7 @@
 
   ns.SessionDetails.prototype.onContainerClick_ = function (evt) {
     var action = evt.target.dataset.action;
-    if (action == 'load') {
+    if (action == 'load' && window.confirm(Constants.CONFIRM_OVERWRITE)) {
       var snapshotId = evt.target.dataset.snapshotId * 1;
       pskl.app.backupService.loadSnapshotById(snapshotId).then(function () {
         $.publish(Events.DIALOG_HIDE);

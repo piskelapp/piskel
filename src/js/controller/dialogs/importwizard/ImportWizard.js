@@ -144,9 +144,7 @@
 
     if (mode === ns.steps.SelectMode.MODES.REPLACE) {
       // Replace the current piskel and close the dialog.
-      var message = 'This will replace your current animation,' +
-                      ' are you sure you want to continue?';
-      if (window.confirm(message)) {
+      if (window.confirm(Constants.CONFIRM_OVERWRITE)) {
         this.piskelController.setPiskel(piskel);
         this.closeDialog();
       }

@@ -52,7 +52,7 @@
   };
 
   ns.FileDropperService.prototype.onPiskelFileLoaded_ = function (piskel) {
-    if (window.confirm('This will replace your current animation')) {
+    if (window.confirm(Constants.CONFIRM_OVERWRITE)) {
       pskl.app.piskelController.setPiskel(piskel);
     }
   };
