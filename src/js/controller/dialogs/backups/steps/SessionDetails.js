@@ -26,7 +26,10 @@
     pskl.app.backupService.getSnapshotsBySessionId(sessionId).then(function (snapshots) {
       var html = '';
       if (snapshots.length === 0) {
-        html = 'No snapshot found...';
+        // This should normally never happen, all sessions have at least one snapshot and snapshots
+        // can not be individually deleted.
+        console.warn('Could not retrieve snapshots for a session');
+        html = pskl.utils.Template.get('snapshot-list-empty');
       } else {
         var sessionItemTemplate = pskl.utils.Template.get('snapshot-list-item');
         var html = '';
