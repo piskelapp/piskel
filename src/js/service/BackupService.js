@@ -55,6 +55,10 @@
       date: date,
       name: descriptor.name,
       description: descriptor.description,
+      frames: piskel.getFrameCount(),
+      width: piskel.getWidth(),
+      height: piskel.getHeight(),
+      fps: piskel.getFPS(),
       serialized: pskl.utils.serialization.Serializer.serialize(piskel)
     };
 
