@@ -61,7 +61,8 @@
 </script>
 
 <script type="text/template" id="snapshot-list-item">
-<div class="snapshot-item">
+<div class="snapshot-item" data-snapshot-id={{id}}>
+  <div class="snapshot-preview lowcont-dark-picker-background"></div>
   <div class="snapshot-details">
     <span class="snapshot-details-title">{{name}} {{description}}</span>
     <span class="snapshot-details-info">Snapshot recorded {{date}}</span>

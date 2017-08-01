@@ -96,6 +96,14 @@
   box-sizing: border-box;
 }
 
+.browse-backups .snapshot-preview {
+  flex-grow: 0;
+  flex-shrink: 1;
+  height: 60px;
+  width: 60px;
+  margin-right: 20px;
+}
+
 .browse-backups .session-details,
 .browse-backups .snapshot-details {
   flex-grow: 1;

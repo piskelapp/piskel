@@ -44,10 +44,34 @@
             fps: snapshot.fps
           };
           html += pskl.utils.Template.replace(sessionItemTemplate, view);
-        });
+          this.updateSnapshotPreview_(snapshot);
+        }.bind(this));
       }
       this.container.querySelector('.snapshot-list').innerHTML = html;
     }.bind(this));
+  };
+
+  ns.SessionDetails.prototype.updateSnapshotPreview_ = function (snapshot) {
+    pskl.utils.serialization.Deserializer.deserialize(
+      JSON.parse(snapshot.serialized),
+      function (piskel) {
+        var selector = '.snapshot-item[data-snapshot-id="' + snapshot.id + '"] .snapshot-preview';
+        var previewContainer = this.container.querySelector(selector);
+        if (!previewContainer) {
+          return;
+        }
+        var image = this.getFirstFrameAsImage_(piskel);
+        previewContainer.appendChild(image);
+      }.bind(this)
+    );
+  };
+
+  ns.SessionDetails.prototype.getFirstFrameAsImage_ = function (piskel) {
+    var frame = pskl.utils.LayerUtils.mergeFrameAt(piskel.getLayers(), 0);
+    var wZoom = 60 / piskel.width;
+    var hZoom = 60 / piskel.height;
+    var zoom = Math.min(hZoom, wZoom);
+    return pskl.utils.FrameUtils.toImage(frame, zoom);
   };
 
   ns.SessionDetails.prototype.onBackClick_ = function () {
