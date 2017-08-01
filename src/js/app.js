@@ -201,6 +201,11 @@
           dialogId : 'unsupported-browser'
         });
       }
+
+      if (pskl.utils.Environment.isDebug()) {
+        pskl.app.shortcutService.registerShortcut(pskl.service.keyboard.Shortcuts.DEBUG.RELOAD_STYLES,
+          window.reloadStyles);
+      }
     },
 
     loadPiskel_ : function (piskelData) {
