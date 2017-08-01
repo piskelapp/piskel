@@ -39,7 +39,7 @@
     pskl.app.backupService.list().then(function (sessions) {
       var html = '';
       if (sessions.length === 0) {
-        html = 'No session found ...';
+        html = pskl.utils.Template.get('session-list-empty');
       } else {
         var sessionItemTemplate = pskl.utils.Template.get('session-list-item');
         var html = '';
