@@ -44,6 +44,10 @@
         var sessionItemTemplate = pskl.utils.Template.get('session-list-item');
         var html = '';
         sessions.forEach(function (session) {
+          if (session.id === pskl.app.sessionId) {
+            // Do not show backups for the current session.
+            return;
+          }
           var view = {
             id: session.id,
             name: session.name,
