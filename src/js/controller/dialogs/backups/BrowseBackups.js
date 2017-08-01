@@ -15,9 +15,9 @@
   ns.BrowseBackups = function (piskelController, args) {
     this.piskelController = piskelController;
 
-    // Merge data object used by steps to communicate and share their
+    // Backups data object used by steps to communicate and share their
     // results.
-    this.mergeData = {
+    this.backupsData = {
       sessions: [],
       selectedSession : null
     };

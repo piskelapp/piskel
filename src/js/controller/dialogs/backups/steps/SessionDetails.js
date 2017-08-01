@@ -22,7 +22,7 @@
   };
 
   ns.SessionDetails.prototype.onShow = function () {
-    var sessionId = this.backupsController.mergeData.selectedSession;
+    var sessionId = this.backupsController.backupsData.selectedSession;
     pskl.app.backupService.getSnapshotsBySessionId(sessionId).then(function (snapshots) {
       var html = '';
       if (snapshots.length === 0) {

@@ -74,7 +74,7 @@
 
     var action = evt.target.dataset.action;
     if (action == 'view') {
-      this.backupsController.mergeData.selectedSession = sessionId;
+      this.backupsController.backupsData.selectedSession = sessionId;
       this.backupsController.next();
     } else if (action == 'delete') {
       if (window.confirm('Are you sure you want to delete this session?')) {
