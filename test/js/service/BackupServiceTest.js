@@ -40,6 +40,10 @@ describe('BackupService test', function () {
       _hash: null,
       getDescriptor: function () { return this._descriptor; },
       getHash: function () { return this._hash; },
+      getWidth: function () { return 32; },
+      getHeight: function () { return 32; },
+      getFrameCount: function () { return 1; },
+      getFPS: function () { return 12; },
     };
 
     mockPiskelController = {
