@@ -1,6 +1,9 @@
 (function () {
   var ns = $.namespace('pskl.controller.dialogs.backups.steps');
 
+  // Should match the preview dimensions defined in dialogs-browse-backups.css
+  var PREVIEW_SIZE = 60;
+
   ns.SessionDetails = function (piskelController, backupsController, container) {
     this.piskelController = piskelController;
     this.backupsController = backupsController;
@@ -68,8 +71,8 @@
 
   ns.SessionDetails.prototype.getFirstFrameAsImage_ = function (piskel) {
     var frame = pskl.utils.LayerUtils.mergeFrameAt(piskel.getLayers(), 0);
-    var wZoom = 60 / piskel.width;
-    var hZoom = 60 / piskel.height;
+    var wZoom = PREVIEW_SIZE / piskel.width;
+    var hZoom = PREVIEW_SIZE / piskel.height;
     var zoom = Math.min(hZoom, wZoom);
     return pskl.utils.FrameUtils.toImage(frame, zoom);
   };

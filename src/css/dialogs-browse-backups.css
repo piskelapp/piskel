@@ -72,6 +72,7 @@
 }
 
 .browse-backups .session-item {
+  /* Transition duration should be kept in sync with SelectSession.DELETE_TRANSITION_DURATION */
   transition: all 500ms;
 }
 
@@ -99,6 +100,7 @@
 .browse-backups .snapshot-preview {
   flex-grow: 0;
   flex-shrink: 1;
+  /* Keep synced with SessionDetails.PREVIEW_SIZE */
   height: 60px;
   width: 60px;
   margin-right: 20px;
