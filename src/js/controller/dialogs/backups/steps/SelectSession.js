@@ -1,6 +1,8 @@
 (function () {
   var ns = $.namespace('pskl.controller.dialogs.backups.steps');
 
+  // Should match the transition duration for.session-item defined in dialogs-browse-backups.css
+  var DELETE_TRANSITION_DURATION = 500;
   /**
    * Helper that returns a promise that will resolve after waiting for a
    * given time (in ms).
@@ -82,7 +84,7 @@
         Q.all([
           pskl.app.backupService.deleteSession(sessionId),
           // Wait for 500ms for the .hide opacity transition.
-          wait(500)
+          wait(DELETE_TRANSITION_DURATION)
         ]).then(function () {
           // Refresh the list of sessions
           this.update();
