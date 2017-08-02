@@ -1,14 +1,9 @@
 language: node_js
 node_js:
-  - "4.1"
+  - "7.4.0"
 before_install:
   - npm update -g npm
   - npm install -g grunt-cli
-  - git clone git://github.com/n1k0/casperjs.git ~/casperjs
-  - cd ~/casperjs
-  - git checkout tags/1.1.3
-  - export PATH=$PATH:`pwd`/bin
-  - cd -
 before_script:
   - phantomjs --version
   - casperjs --version
