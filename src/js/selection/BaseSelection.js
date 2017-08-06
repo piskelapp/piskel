@@ -5,9 +5,23 @@
     this.reset();
   };
 
+  ns.BaseSelection.prototype.stringify = function () {
+    return JSON.stringify({
+      pixels: this.pixels,
+      time: this.time
+    });
+  };
+
+  ns.BaseSelection.prototype.parse = function (str) {
+    var selectionData = JSON.parse(str);
+    this.pixels = selectionData.pixels;
+    this.time = selectionData.time;
+  };
+
   ns.BaseSelection.prototype.reset = function () {
     this.pixels = [];
     this.hasPastedContent = false;
+    this.time = -1;
   };
 
   ns.BaseSelection.prototype.move = function (colDiff, rowDiff) {
@@ -30,5 +44,8 @@
     });
 
     this.hasPastedContent = true;
+    // Keep track of the selection time to compare between local selection and
+    // paste event selections.
+    this.time = Date.now();
   };
 })();
