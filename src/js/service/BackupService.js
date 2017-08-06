@@ -89,11 +89,17 @@
               return;
             }
 
-            var oldestSession = sessions.sort(function (s1, s2) {
+            // Prepare an array containing all the ids of the sessions to be deleted.
+            var sessionIdsToDelete = sessions.sort(function (s1, s2) {
               return s1.startDate - s2.startDate;
-            })[0].id;
+            }).map(function (s) {
+              return s.id;
+            }).slice(0, sessions.length - MAX_SESSIONS);
 
-            return this.deleteSession(oldestSession);
+            // Delete all the extra sessions.
+            return Q.all(sessionIdsToDelete.map(function (id) {
+              return this.deleteSession(id);
+            }.bind(this)));
           }.bind(this));
         }.bind(this));
       }

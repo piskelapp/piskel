@@ -30,6 +30,8 @@
   };
 
   ns.BeforeUnloadService.prototype.onBeforeUnload = function (evt) {
+    // Attempt one last backup. Some of it may fail due to the asynchronous
+    // nature of IndexedDB.
     pskl.app.backupService.backup();
     if (pskl.app.savedStatusService.isDirty()) {
       var confirmationMessage = 'Your current sprite has unsaved changes. Are you sure you want to quit?';
