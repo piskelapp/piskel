@@ -103,7 +103,7 @@
     }
   };
 
-  ns.SelectionManager.prototype.paste = function() {
+  ns.SelectionManager.prototype.paste = function(event) {
     var items = event.clipboardData.items;
 
     try {
