@@ -17,7 +17,16 @@ function onCopy(err) {
 
   console.log('Copied static files to piskel-website...');
   let previousPartialPath = path.resolve(PISKELAPP_PATH, 'templates/editor/main-partial.html');
-  fs.unlink(previousPartialPath, onDeletePreviousPartial);
+  fs.access(previousPartialPath, fs.constants.F_OK, function (err) {
+    if (err) {
+      // File does not exit, call next step directly.
+      console.error('Previous main partial doesn\'t exist yet.');
+      onDeletePreviousPartial();
+    } else {
+      // File exists, try to delete it before moving on.
+      fs.unlink(previousPartialPath, onDeletePreviousPartial);
+    }
+  })
 }
 
 function onDeletePreviousPartial(err) {
