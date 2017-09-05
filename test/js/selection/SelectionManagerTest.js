@@ -65,7 +65,7 @@ describe("SelectionManager suite", function() {
     selectMiddleLine();
 
     console.log('[SelectionManager] ... copy');
-    selectionManager.copy(createMockCopyEvent());
+    selectionManager.copy({ type: Events.CLIPBOARD_COPY }, createMockCopyEvent());
 
     console.log('[SelectionManager] ... check selection content after copy contains correct colors');
     expect(selection.pixels.length).toBe(3); // or not to be ... lalalala ... french-only joke \o/
@@ -82,7 +82,7 @@ describe("SelectionManager suite", function() {
     checkContainsPixel(selection.pixels, 2, 2, R);
 
     console.log('[SelectionManager] ... paste');
-    selectionManager.paste(createMockCopyEvent());
+    selectionManager.paste({ type: Events.CLIPBOARD_PASTE }, createMockCopyEvent());
 
     console.log('[SelectionManager] ... check last line is identical to middle line after paste');
     frameEqualsGrid(currentFrame, [
@@ -100,7 +100,7 @@ describe("SelectionManager suite", function() {
     selectMiddleLine();
 
     console.log('[SelectionManager] ... cut');
-    selectionManager.cut(createMockCopyEvent());
+    selectionManager.copy({ type: Events.CLIPBOARD_CUT }, createMockCopyEvent());
 
     console.log('[SelectionManager] ... check middle line was cut in the source frame');
     frameEqualsGrid(currentFrame, [
@@ -110,7 +110,7 @@ describe("SelectionManager suite", function() {
     ]);
 
     console.log('[SelectionManager] ... paste');
-    selectionManager.paste(createMockCopyEvent());
+    selectionManager.paste({ type: Events.CLIPBOARD_PASTE }, createMockCopyEvent());
 
     console.log('[SelectionManager] ... check middle line was restored by paste');
     frameEqualsGrid(currentFrame, [
@@ -131,7 +131,7 @@ describe("SelectionManager suite", function() {
     selection.move(2, 0);
 
     console.log('[SelectionManager] ... copy out of bounds');
-    selectionManager.copy(createMockCopyEvent());
+    selectionManager.copy({ type: Events.CLIPBOARD_COPY }, createMockCopyEvent());
     console.log('[SelectionManager] ... check out of bound pixels were replaced by transparent pixels');
     checkContainsPixel(selection.pixels, 1, 2, R);
     checkContainsPixel(selection.pixels, 1, 3, T);
@@ -146,7 +146,7 @@ describe("SelectionManager suite", function() {
     checkContainsPixel(selection.pixels, 1, 3, T);
 
     console.log('[SelectionManager] ... paste out of bounds');
-    selectionManager.paste(createMockCopyEvent());
+    selectionManager.paste({ type: Events.CLIPBOARD_PASTE }, createMockCopyEvent());
 
     console.log('[SelectionManager] ... check pixel at (1,1) is red after paste');
     frameEqualsGrid(currentFrame, [
@@ -167,7 +167,7 @@ describe("SelectionManager suite", function() {
     selection.move(2, 0);
 
     console.log('[SelectionManager] ... cut out of bounds');
-    selectionManager.cut(createMockCopyEvent());
+    selectionManager.copy({ type: Events.CLIPBOARD_CUT }, createMockCopyEvent());
     console.log('[SelectionManager] ... check last pixel of midle line was cut in the source frame');
     frameEqualsGrid(currentFrame, [
       [B, R, T],
@@ -178,7 +178,7 @@ describe("SelectionManager suite", function() {
     selection.move(-1, 0);
 
     console.log('[SelectionManager] ... paste out of bounds');
-    selectionManager.paste(createMockCopyEvent());
+    selectionManager.paste({ type: Events.CLIPBOARD_PASTE }, createMockCopyEvent());
 
     console.log('[SelectionManager] ... check middle line final state');
     frameEqualsGrid(currentFrame, [
