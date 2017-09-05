@@ -108,6 +108,8 @@
         this.playTransformToolEvent_(recordEvent);
       } else if (recordEvent.type === 'instrumented-event') {
         this.playInstrumentedEvent_(recordEvent);
+      } else if (recordEvent.type === 'clipboard-event') {
+        this.playClipboardEvent_(recordEvent);
       }
 
       // Record the time spent replaying the event
@@ -167,6 +169,16 @@
 
   ns.DrawingTestPlayer.prototype.playInstrumentedEvent_ = function (recordEvent) {
     pskl.app.piskelController[recordEvent.methodName].apply(pskl.app.piskelController, recordEvent.args);
+  };
+
+  ns.DrawingTestPlayer.prototype.playClipboardEvent_ = function (recordEvent) {
+    $.publish(recordEvent.event.type, {
+      preventDefault: function () {},
+      clipboardData: {
+        items: [],
+        setData: function () {}
+      }
+    });
   };
 
   ns.DrawingTestPlayer.prototype.onTestEnd_ = function () {

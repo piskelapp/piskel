@@ -17,15 +17,13 @@
     $.subscribe(Events.SELECTION_CREATED, $.proxy(this.onSelectionCreated_, this));
     $.subscribe(Events.SELECTION_DISMISSED, $.proxy(this.onSelectionDismissed_, this));
     $.subscribe(Events.SELECTION_MOVE_REQUEST, $.proxy(this.onSelectionMoved_, this));
+    $.subscribe(Events.CLIPBOARD_COPY, this.copy.bind(this));
+    $.subscribe(Events.CLIPBOARD_CUT, this.copy.bind(this));
+    $.subscribe(Events.CLIPBOARD_PASTE, this.paste.bind(this));
 
     var shortcuts = pskl.service.keyboard.Shortcuts;
     pskl.app.shortcutService.registerShortcut(shortcuts.SELECTION.DELETE, this.onDeleteShortcut_.bind(this));
     pskl.app.shortcutService.registerShortcut(shortcuts.SELECTION.COMMIT, this.commit.bind(this));
-
-    // These 3 events should be handled by a new separated service
-    window.addEventListener('cut', this.cut.bind(this), true);
-    window.addEventListener('copy', this.copy.bind(this), true);
-    window.addEventListener('paste', this.paste.bind(this), true);
 
     $.subscribe(Events.TOOL_SELECTED, $.proxy(this.onToolSelected_, this));
   };
@@ -82,26 +80,21 @@
     });
   };
 
-  ns.SelectionManager.prototype.copy = function(event) {
+  ns.SelectionManager.prototype.copy = function(event, domEvent) {
     if (this.currentSelection && this.piskelController.getCurrentFrame()) {
       this.currentSelection.fillSelectionFromFrame(this.piskelController.getCurrentFrame());
-      event.clipboardData.setData('text/plain', this.currentSelection.stringify());
-      event.preventDefault();
+      if (domEvent) {
+        domEvent.clipboardData.setData('text/plain', this.currentSelection.stringify());
+        domEvent.preventDefault();
+      }
+      if (event.type === Events.CLIPBOARD_CUT) {
+        this.erase();
+      }
     }
   };
 
-  ns.SelectionManager.prototype.cut = function(event) {
-    if (this.currentSelection && this.piskelController.getCurrentFrame()) {
-      // Put cut target into the selection:
-      this.currentSelection.fillSelectionFromFrame(this.piskelController.getCurrentFrame());
-      event.clipboardData.setData('text/plain', JSON.stringify(this.currentSelection));
-      event.preventDefault();
-      this.erase();
-    }
-  };
-
-  ns.SelectionManager.prototype.paste = function(event) {
-    var items = event.clipboardData.items;
+  ns.SelectionManager.prototype.paste = function(event, domEvent) {
+    var items = domEvent ? domEvent.clipboardData.items : [];
 
     try {
       for (var i = 0 ; i < items.length ; i++) {
