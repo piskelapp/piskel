@@ -17,9 +17,6 @@
     $.subscribe(Events.SELECTION_CREATED, $.proxy(this.onSelectionCreated_, this));
     $.subscribe(Events.SELECTION_DISMISSED, $.proxy(this.onSelectionDismissed_, this));
     $.subscribe(Events.SELECTION_MOVE_REQUEST, $.proxy(this.onSelectionMoved_, this));
-    $.subscribe(Events.SELECTION_COPY, this.copy.bind(this));
-    $.subscribe(Events.SELECTION_CUT, this.cut.bind(this));
-    $.subscribe(Events.SELECTION_PASTE, this.paste.bind(this));
 
     var shortcuts = pskl.service.keyboard.Shortcuts;
     pskl.app.shortcutService.registerShortcut(shortcuts.SELECTION.DELETE, this.onDeleteShortcut_.bind(this));
