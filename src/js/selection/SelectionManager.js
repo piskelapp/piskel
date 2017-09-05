@@ -123,8 +123,7 @@
     var tool = pskl.app.drawingController.currentToolBehavior;
     var isSelectionTool = tool instanceof pskl.tools.drawing.selection.BaseSelect;
     if (isSelectionTool) {
-      var overlay = pskl.app.drawingController.overlayFrame;
-      tool.commitSelection(overlay);
+      tool.commitSelection();
     }
   };
 

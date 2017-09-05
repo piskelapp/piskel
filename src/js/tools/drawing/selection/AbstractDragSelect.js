@@ -16,7 +16,7 @@
   ns.AbstractDragSelect.prototype.onSelectStart_ = function (col, row, frame, overlay) {
     if (this.hasSelection) {
       this.hasSelection = false;
-      this.commitSelection(overlay);
+      this.commitSelection();
     } else {
       this.hasSelection = true;
       this.onDragSelectStart_(col, row);
