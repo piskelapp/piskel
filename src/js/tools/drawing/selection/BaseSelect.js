@@ -54,7 +54,7 @@
       this.mode = 'moveSelection';
       if (event.shiftKey && !this.isMovingContent_) {
         this.isMovingContent_ = true;
-        $.publish(Events.SELECTION_CUT);
+        $.publish(Events.CLIPBOARD_CUT);
         this.drawSelectionOnOverlay_(overlay);
       }
       this.onSelectionMoveStart_(col, row, frame, overlay);
@@ -118,7 +118,7 @@
    */
   ns.BaseSelect.prototype.commitSelection = function () {
     if (this.isMovingContent_) {
-      $.publish(Events.SELECTION_PASTE);
+      $.publish(Events.CLIPBOARD_PASTE);
       this.isMovingContent_ = false;
     }
 

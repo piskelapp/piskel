@@ -15,6 +15,10 @@
     $.subscribe(Events.TRANSFORMATION_EVENT, this.onTransformationEvent_.bind(this));
     $.subscribe(Events.PRIMARY_COLOR_SELECTED, this.onColorEvent_.bind(this, true));
     $.subscribe(Events.SECONDARY_COLOR_SELECTED, this.onColorEvent_.bind(this, false));
+    $.subscribe(Events.CLIPBOARD_COPY, this.onClipboardEvent_.bind(this));
+    $.subscribe(Events.CLIPBOARD_CUT, this.onClipboardEvent_.bind(this));
+    $.subscribe(Events.CLIPBOARD_PASTE, this.onClipboardEvent_.bind(this));
+
 
     for (var key in this.piskelController) {
       if (typeof this.piskelController[key] == 'function') {
@@ -132,6 +136,15 @@
         altKey : domEvent.altKey,
         ctrlKey : domEvent.ctrlKey
       };
+      this.events.push(recordEvent);
+    }
+  };
+
+  ns.DrawingTestRecorder.prototype.onClipboardEvent_ = function (evt) {
+    if (this.isRecording) {
+      var recordEvent = {};
+      recordEvent.type = 'clipboard-event';
+      recordEvent.event = evt;
       this.events.push(recordEvent);
     }
   };

@@ -174,6 +174,9 @@
         this.currentColorsService);
       this.performanceReportService.init();
 
+      this.clipboardService = new pskl.service.ClipboardService(this.piskelController);
+      this.clipboardService.init();
+
       this.drawingLoop = new pskl.rendering.DrawingLoop();
       this.drawingLoop.addCallback(this.render, this);
       this.drawingLoop.start();
