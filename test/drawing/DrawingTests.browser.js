@@ -8,7 +8,7 @@
   "layers.duplicate.json",
   "layers.fun.json",
   "layers.merge.json",
-  "layers.top.bottom",
+  "layers.top.bottom.json",
   "lighten.darken.json",
   "move.json",
   "move-alllayers-allframes.json",
