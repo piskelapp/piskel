@@ -1,0 +1,70 @@
+<div style="display:none">
+  <script type="text/template" id="data-uri-export-partial">
+    <style>
+      html, body {
+        margin: 0;
+      }
+
+      body {
+        background: #444;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-family: monospace;
+      }
+
+      #image-wrapper {
+        flex-grow: 1;
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      img {
+        background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAABlBMVEXf39////8zI3BgAAAAHklEQVR4AWNghAIGCMDgjwgFCDDSw2M0PSCD0fQAACRcAgF4ciGUAAAAAElFTkSuQmCC') repeat;
+      }
+
+      #bottom-wrapper {
+        width: 600px;
+        height: 300px;
+        margin-top: 20px;
+        position: relative;
+        flex-shrink: 0;
+      }
+
+      textarea {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        height: 100%;
+        padding: 10px;
+        border-style: none;
+
+        background: black;
+        color: gold;
+        font-family: monospace;
+      }
+
+      span {
+        position: absolute;
+        bottom: 10px;
+        left: 10px;
+        font-size: 12px;
+        padding: 5px;
+        color: white;
+        background-color: #444;
+      }
+    </style>
+    <body>
+      <div id="image-wrapper">
+        <img src="{{src}}" alt="Exported image as data-uri">
+      </div>
+      <div id="bottom-wrapper">
+        <textarea spellcheck="false" onclick="this.select()">{{src}}</textarea>
+        <span>Data-uri for the exported framesheet</span>
+      </div>
+    </body>
+  </script>
+</div>

@@ -207,6 +207,14 @@
   };
 
   ns.PngExportController.prototype.onDataUriClick_ = function (evt) {
-    window.open(this.createPngSpritesheet_().toDataURL('image/png'));
+    var popup = window.open('about:blank');
+    var dataUri = this.createPngSpritesheet_().toDataURL('image/png');
+    window.setTimeout(function () {
+      var html = pskl.utils.Template.getAndReplace('data-uri-export-partial', {
+        src: dataUri
+      });
+      popup.document.title = dataUri;
+      popup.document.body.innerHTML = html;
+    }.bind(this), 500);
   };
 })();
