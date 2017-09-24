@@ -16,7 +16,7 @@
    */
   ns.PerformanceReport = function (piskel, colorsCount) {
     var pixels = piskel.getWidth() * piskel.getHeight();
-    this.resolution = pixels > (500 * 500);
+    this.resolution = pixels > (512 * 512);
 
     var layersCount = piskel.getLayers().length;
     this.layers = layersCount > 25;
@@ -24,10 +24,10 @@
     var framesCount = piskel.getLayerAt(0).size();
     this.frames = framesCount > 100;
 
-    this.colors = colorsCount > 100;
+    this.colors = colorsCount >= 256;
 
-    var overallScore = (pixels / 2500) + (layersCount * 4) + framesCount + colorsCount;
-    this.overall = overallScore > 100;
+    var overallScore = (pixels / 2620) + (layersCount * 4) + framesCount + (colorsCount * 100 / 256);
+    this.overall = overallScore > 200;
   };
 
   ns.PerformanceReport.prototype.equals = function (report) {
