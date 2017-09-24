@@ -14,7 +14,6 @@
   pskl.utils.inherit(ns.GifExportController, pskl.controller.settings.AbstractSettingController);
 
   ns.GifExportController.prototype.init = function () {
-
     this.uploadStatusContainerEl = document.querySelector('.gif-upload-status');
     this.previewContainerEl = document.querySelector('.gif-export-preview');
     this.uploadButton = document.querySelector('.gif-upload-button');
@@ -22,6 +21,10 @@
 
     this.addEventListener(this.uploadButton, 'click', this.onUploadButtonClick_);
     this.addEventListener(this.downloadButton, 'click', this.onDownloadButtonClick_);
+
+    var currentColors = pskl.app.currentColorsService.getCurrentColors();
+    var tooManyColors = currentColors.length >= MAX_GIF_COLORS;
+    document.querySelector('.gif-export-warning').classList.toggle('visible', tooManyColors);
   };
 
   ns.GifExportController.prototype.getZoom_ = function () {
