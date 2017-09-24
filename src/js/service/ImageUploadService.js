@@ -15,10 +15,17 @@
       data : imageData
     };
 
+    var protocol = pskl.utils.Environment.isHttps() ? 'https' : 'http';
     var wrappedSuccess = function (response) {
-      success(Constants.IMAGE_SERVICE_GET_URL + response.responseText);
+      var getUrl = pskl.utils.Template.replace(Constants.IMAGE_SERVICE_GET_URL, {
+        protocol: protocol
+      });
+      success(getUrl + response.responseText);
     };
 
-    pskl.utils.Xhr.post(Constants.IMAGE_SERVICE_UPLOAD_URL, data, wrappedSuccess, error);
+    var uploadUrl = pskl.utils.Template.replace(Constants.IMAGE_SERVICE_UPLOAD_URL, {
+      protocol: protocol
+    });
+    pskl.utils.Xhr.post(uploadUrl, data, wrappedSuccess, error);
   };
 })();
