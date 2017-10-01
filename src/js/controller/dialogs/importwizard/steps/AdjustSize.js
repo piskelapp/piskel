@@ -69,16 +69,15 @@
     var anchorInfo = this.container.querySelector('.import-resize-anchor-info');
     if (isBigger && keep) {
       anchorInfo.innerHTML = [
-        '<span class="import-resize-warning">',
+        '<div class="import-resize-warning">',
         '  Imported content will be cropped!',
-        '</span>',
-        ' ',
-        'Select crop origin'
+        '</div>',
+        'Select crop anchor:'
       ].join('');
     } else if (isBigger) {
-      anchorInfo.innerHTML = 'Select the anchor for resizing the canvas';
+      anchorInfo.innerHTML = 'Select resize anchor:';
     } else {
-      anchorInfo.innerHTML = 'Select where the import should be positioned';
+      anchorInfo.innerHTML = 'Select position anchor:';
     }
   };
 
