@@ -183,22 +183,14 @@
 .import-meta-value,
 .import-meta-label {
   padding: 2px 4px;
-  border: 1px solid gold;
 }
 
 .import-meta-label {
   border-radius: 2px 0 0 2px;
   color: var(--highlight-color);
-  border-right-width: 0;
-}
-
-.import-meta-title .import-meta-label {
-  border-right-width: 1px;
-  border-radius: 2px;
 }
 
 .import-meta-value {
-  border-radius: 0 2px 2px 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
