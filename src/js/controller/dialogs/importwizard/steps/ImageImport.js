@@ -42,12 +42,17 @@
     this.addEventListener(this.frameOffsetY, 'keyup', this.onFrameInputKeyUp_);
 
     pskl.utils.FileUtils.readImageFile(this.file_, this.onImageLoaded_.bind(this));
+
+    if (this.piskelController.isEmpty()) {
+      this.nextButton.textContent = 'import';
+    }
   };
 
   ns.ImageImport.prototype.onNextClick = function () {
     this.container.classList.add('import-image-loading');
     this.createPiskelFromImage().then(function (piskel) {
       this.mergeData.mergePiskel = piskel;
+      this.container.classList.remove('import-image-loading');
       this.superclass.onNextClick.call(this);
     }.bind(this)).catch(function (e) {
       console.error(e);
@@ -257,9 +262,7 @@
         context.lineTo(maxWidth * scaleX, y * scaleY);
       }
 
-      // Set the line style to dashed
       context.lineWidth = 1;
-      // context.setLineDash([2, 1]);
       context.strokeStyle = 'gold';
       context.stroke();
 
