@@ -297,4 +297,8 @@
   ns.PiskelController.prototype.serialize = function () {
     return pskl.utils.serialization.Serializer.serialize(this.piskel);
   };
+
+  ns.PiskelController.prototype.isEmpty = function () {
+    return pskl.app.currentColorsService.getCurrentColors().length === 0;
+  };
 })();
