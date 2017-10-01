@@ -131,9 +131,6 @@
     The imported image is bigger than the current sprite.
   </div>
   <div class="import-resize-section">
-    <div class="import-resize-option-label">
-      How do you want to proceed?
-    </div>
     <label class="import-resize-option">
       <input type="radio" name="resize-mode" id="resize-option-expand" value="expand" {{expandChecked}}/>
       <span>Expand canvas to {{newSize}}</span>
@@ -162,35 +159,25 @@
   </div>
 
   <div class="import-step-content">
-    <div>Select a frame in your current sprite:</div>
+    <div>Select the insertion frame:</div>
     <div class="insert-frame-preview"></div>
     <div class="insert-mode-container">
       <div class="insert-mode-option-label">
-        How should the imported frames be inserted:
+        Insert imported frames:
       </div>
       <label class="insert-mode-option">
         <input type="radio" name="insert-mode" id="insert-mode-add" value="add" checked="checked"/>
-        <span>Add new frames</span>
+        <span>as new frames</span>
       </label>
       <label class="insert-mode-option">
         <input type="radio" name="insert-mode" id="insert-mode-insert" value="insert"/>
-        <span>Insert in existing frames</span>
+        <span>in existing frames</span>
       </label>
     </div>
     <div class="import-step-buttons">
       <button class="import-back-button button">back</button>
       <button class="import-next-button button button-primary">import</button>
     </div>
-  </div>
-</div>
-</script>
-
-<script type="text/template" id="import-invalid-file">
-<div class="import-step-container">
-  <div>THIS IS AN INVALID FILEZ</div>
-  <div class="import-step-buttons">
-    <button class="import-back-button button">back</button>
-    <button class="import-next-button button button-primary">next</button>
   </div>
 </div>
 </script>

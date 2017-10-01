@@ -234,7 +234,7 @@
 .insert-mode-option {
   display: flex;
   align-items: center;
-  margin-bottom: 5px;
+  margin: 5px 0;
 }
 
 .import-resize-option :checked + span,
@@ -242,11 +242,15 @@
   color: var(--highlight-color);
 }
 
+.import-resize-option input,
+.insert-mode-option input {
+  margin: 5px;
+}
+
 /**
  * ADJUST SIZE
  */
-.import-resize-anchor-info,
-.import-resize-option-label {
+.import-resize-anchor-info {
   margin-bottom: 10px;
 }
 
