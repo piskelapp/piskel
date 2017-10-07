@@ -1,7 +1,7 @@
 /* globals casper, setPiskelFromGrid, isDrawerExpanded, getValue, isChecked,
    evalLine, waitForEvent, replaceFunction, setPiskelFromImageSrc */
 
-casper.test.begin('Double Image import test', 25, function(test) {
+casper.test.begin('Double Image import test', 26, function(test) {
   test.timeout = test.fail.bind(test, ['Test timed out']);
 
   // Helper to retrieve the text content of the provided selector
@@ -54,18 +54,21 @@ casper.test.begin('Double Image import test', 25, function(test) {
 
     test.assert(!isDrawerExpanded(), 'settings drawer is closed');
 
-    waitForEvent('PISKEL_RESET', onPiskelReset, test.timeout);
-
     // 1x1 black pixel
     var src = [
       'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcS',
       'JAAAADUlEQVQYV2NgYGD4DwABBAEAcCBlCwAAAABJRU5ErkJggg=='
     ].join('');
     setPiskelFromImageSrc(src);
+
+    // For this test the most important is that the color service picked up the color from the sprite
+    // since it drives which flow will be used for the import.
+    casper.waitForSelector('.palettes-list-color:nth-child(1)', onPiskelPaletteUpdated, test.timeout, 10000);
   }
 
-  function onPiskelReset() {
+  function onPiskelPaletteUpdated() {
     // Check the expected piskel was correctly loaded.
+    test.assertEquals(evalLine('pskl.app.currentColorsService.getCurrentColors().length'), 1, 'Has 1 color');
     test.assertEquals(evalLine('pskl.app.piskelController.getPiskel().getWidth()'), 1, 'Piskel width is 1 pixel');
     test.assertEquals(evalLine('pskl.app.piskelController.getPiskel().getHeight()'), 1, 'Piskel height is 1 pixel');
 

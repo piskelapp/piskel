@@ -9,7 +9,7 @@ casper.test.begin('PNG export test', 13, function(test) {
 
     test.assert(!isDrawerExpanded(), 'settings drawer is closed');
 
-        // Setup test Piskel
+    // Setup test Piskel
     setPiskelFromGrid('['+
       '[B, T],' +
       '[T, B],' +
