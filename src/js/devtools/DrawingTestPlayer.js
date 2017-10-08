@@ -32,6 +32,7 @@
   };
 
   ns.DrawingTestPlayer.prototype.setupInitialState_ = function () {
+
     var size = this.initialState.size;
     var piskel = this.createPiskel_(size.width, size.height);
     pskl.app.piskelController.setPiskel(piskel);
@@ -39,9 +40,10 @@
     $.publish(Events.SELECT_PRIMARY_COLOR, [this.initialState.primaryColor]);
     $.publish(Events.SELECT_SECONDARY_COLOR, [this.initialState.secondaryColor]);
     $.publish(Events.SELECT_TOOL, [this.initialState.selectedTool]);
-    if (this.initialState.penSize) {
-      pskl.app.penSizeService.setPenSize(this.initialState.penSize);
-    }
+
+    // Old tests do not have penSize stored in initialState, fallback to 1.
+    var penSize = this.initialState.penSize || 1;
+    pskl.app.penSizeService.setPenSize(this.initialState.penSize);
   };
 
   ns.DrawingTestPlayer.prototype.createPiskel_ = function (width, height) {
