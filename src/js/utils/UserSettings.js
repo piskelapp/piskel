@@ -17,6 +17,7 @@
     LAYER_OPACITY : 'LAYER_OPACITY',
     EXPORT_SCALE: 'EXPORT_SCALE',
     EXPORT_TAB: 'EXPORT_TAB',
+    EXPORT_GIF_REPEAT: 'EXPORT_GIF_REPEAT',
     PEN_SIZE : 'PEN_SIZE',
     RESIZE_SETTINGS: 'RESIZE_SETTINGS',
     COLOR_FORMAT: 'COLOR_FORMAT',
@@ -41,6 +42,7 @@
       'LAYER_PREVIEW' : true,
       'EXPORT_SCALE' : 1,
       'EXPORT_TAB' : 'gif',
+      'EXPORT_GIF_REPEAT' : true,
       'PEN_SIZE' : 1,
       'RESIZE_SETTINGS': {
         maintainRatio : true,
