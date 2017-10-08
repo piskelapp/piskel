@@ -298,6 +298,10 @@
     return pskl.utils.serialization.Serializer.serialize(this.piskel);
   };
 
+  /**
+   * Check if the current sprite is empty. Emptiness here means no pixel has been filled
+   * on any layer or frame for the current sprite.
+   */
   ns.PiskelController.prototype.isEmpty = function () {
     return pskl.app.currentColorsService.getCurrentColors().length === 0;
   };
