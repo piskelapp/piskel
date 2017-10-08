@@ -1,0 +1,125 @@
+{
+ "events": [
+  {
+   "type": "pensize-event",
+   "penSize": 2
+  },
+  {
+   "type": "tool-event",
+   "toolId": "tool-vertical-mirror-pen"
+  },
+  {
+   "event": {
+    "type": "mousedown",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 1,
+    "y": 1
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 1,
+    "y": 1
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 1,
+    "y": 2
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 1,
+    "y": 3
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 1,
+    "y": 4
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 1,
+    "y": 5
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mouseup",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 1,
+    "y": 5
+   },
+   "type": "mouse-event"
+  },
+  {
+   "type": "pensize-event",
+   "penSize": 1
+  }
+ ],
+ "initialState": {
+  "size": {
+   "width": 6,
+   "height": 6
+  },
+  "primaryColor": "#000000",
+  "secondaryColor": "rgba(0, 0, 0, 0)",
+  "selectedTool": "tool-pen",
+  "penSize": 1
+ },
+ "png": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAGCAYAAADgzO9IAAAAGElEQVQYV2NkYGD4zwABjFAazAdxBkwCAIsLDAFt5z4tAAAAAElFTkSuQmCC"
+}

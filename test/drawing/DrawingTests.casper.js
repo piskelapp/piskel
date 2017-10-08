@@ -10,6 +10,7 @@
   "layers.top.bottom.json",
   "move.json",
   "move-alllayers-allframes.json",
+  "pen.mirror.pensize.json",
   "pen.secondary.color.json",
   "selection.rectangular.json",
   "squares.circles.json",

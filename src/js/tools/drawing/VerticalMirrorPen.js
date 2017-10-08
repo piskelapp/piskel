@@ -44,10 +44,17 @@
   };
 
   ns.VerticalMirrorPen.prototype.getSymmetricCol_ = function(col, frame) {
-    return frame.getWidth() - col - 1;
+    return frame.getWidth() - col - this.getPenSizeOffset_();
   };
 
   ns.VerticalMirrorPen.prototype.getSymmetricRow_ = function(row, frame) {
-    return frame.getHeight() - row - 1;
+    return frame.getHeight() - row - this.getPenSizeOffset_();
+  };
+
+  /**
+   * Depending on the pen size, the mirrored index need to have an offset of 1 pixel.
+   */
+  ns.VerticalMirrorPen.prototype.getPenSizeOffset_ = function(row, frame) {
+    return pskl.app.penSizeService.getPenSize() % 2;
   };
 })();
