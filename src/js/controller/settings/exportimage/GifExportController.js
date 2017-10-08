@@ -18,9 +18,14 @@
     this.previewContainerEl = document.querySelector('.gif-export-preview');
     this.uploadButton = document.querySelector('.gif-upload-button');
     this.downloadButton = document.querySelector('.gif-download-button');
+    this.repeatCheckbox = document.querySelector('.gif-repeat-checkbox');
+
+    // Initialize repeatCheckbox state
+    this.repeatCheckbox.checked = this.getRepeatSetting_();
 
     this.addEventListener(this.uploadButton, 'click', this.onUploadButtonClick_);
     this.addEventListener(this.downloadButton, 'click', this.onDownloadButtonClick_);
+    this.addEventListener(this.repeatCheckbox, 'change', this.onRepeatCheckboxChange_);
 
     var currentColors = pskl.app.currentColorsService.getCurrentColors();
     var tooManyColors = currentColors.length >= MAX_GIF_COLORS;
@@ -108,6 +113,7 @@
       width: width * zoom,
       height: height * zoom,
       preserveColors : preserveColors,
+      repeat: this.getRepeatSetting_() ? 0 : 1,
       transparent : transparent
     });
 
@@ -150,6 +156,15 @@
     }
 
     return transparentColor;
+  };
+
+  ns.GifExportController.prototype.onRepeatCheckboxChange_ = function () {
+    var checked = this.repeatCheckbox.checked;
+    pskl.UserSettings.set(pskl.UserSettings.EXPORT_GIF_REPEAT, checked);
+  };
+
+  ns.GifExportController.prototype.getRepeatSetting_ = function () {
+    return pskl.UserSettings.get(pskl.UserSettings.EXPORT_GIF_REPEAT);
   };
 
   ns.GifExportController.prototype.updateStatus_ = function (imageUrl, error) {
