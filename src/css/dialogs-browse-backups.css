@@ -56,8 +56,7 @@
   height: 90px;
 }
 
-.browse-backups .session-list-empty,
-.browse-backups .snapshot-list-empty {
+.browse-backups .centered-message {
   position: absolute;
   left: 50%;
   width: 200px;
@@ -68,7 +67,16 @@
   font-size: 16px;
   text-align: center;
   border: 1px solid;
+}
+
+.browse-backups .session-list-empty,
+.browse-backups .snapshot-list-empty {
   color: #bbb;
+}
+
+.browse-backups .session-list-error,
+.browse-backups .snapshot-list-error {
+  color: white;
 }
 
 .browse-backups .session-item {
