@@ -7,7 +7,9 @@
   };
 
   ns.IndexedDbStorageService.prototype.init = function () {
-    this.piskelDatabase.init();
+    this.piskelDatabase.init().catch(function (e) {
+      console.log('Failed to initialize PiskelDatabase, local browser saves will be unavailable.');
+    });
   };
 
   ns.IndexedDbStorageService.prototype.save = function (piskel) {
@@ -30,7 +32,7 @@
   };
 
   ns.IndexedDbStorageService.prototype.load = function (name) {
-    this.piskelDatabase.get(name).then(function (piskelData) {
+    return this.piskelDatabase.get(name).then(function (piskelData) {
       if (typeof piskelData !== 'undefined') {
         var serialized = piskelData.serialized;
         pskl.utils.serialization.Deserializer.deserialize(
@@ -46,7 +48,7 @@
   };
 
   ns.IndexedDbStorageService.prototype.remove = function (name) {
-    this.piskelDatabase.delete(name);
+    return this.piskelDatabase.delete(name);
   };
 
   ns.IndexedDbStorageService.prototype.getKeys = function () {
