@@ -29,9 +29,7 @@
     return _requestPromise(request).then(function (event) {
       this.db = event.target.result;
       return this.db;
-    }.bind(this)).catch(function (e) {
-      console.log('Failed to initialize IndexedDB, local browser saves will be unavailable.');
-    });
+    }.bind(this));
   };
 
   ns.PiskelDatabase.prototype.onUpgradeNeeded_ = function (event) {
