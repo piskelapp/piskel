@@ -39,29 +39,34 @@
 
   ns.SelectSession.prototype.update = function () {
     pskl.app.backupService.list().then(function (sessions) {
-      var html = '';
-      if (sessions.length === 0) {
-        html = pskl.utils.Template.get('session-list-empty');
-      } else {
-        var sessionItemTemplate = pskl.utils.Template.get('session-list-item');
-        var html = '';
-        sessions.forEach(function (session) {
-          if (session.id === pskl.app.sessionId) {
-            // Do not show backups for the current session.
-            return;
-          }
-          var view = {
-            id: session.id,
-            name: session.name,
-            description: session.description ? '- ' + session.description : '',
-            date: pskl.utils.DateUtils.format(session.endDate, 'the {{Y}}/{{M}}/{{D}} at {{H}}:{{m}}'),
-            count: session.count === 1 ? '1 snapshot' : session.count + ' snapshots'
-          };
-          html += pskl.utils.Template.replace(sessionItemTemplate, view);
-        });
-      }
+      var html = this.getMarkupForSessions_(sessions);
+      this.container.querySelector('.session-list').innerHTML = html;
+    }.bind(this)).catch(function () {
+      var html = pskl.utils.Template.get('session-list-error');
       this.container.querySelector('.session-list').innerHTML = html;
     }.bind(this));
+  };
+
+  ns.SelectSession.prototype.getMarkupForSessions_ = function (sessions) {
+    if (sessions.length === 0) {
+      return pskl.utils.Template.get('session-list-empty');
+    }
+
+    var sessionItemTemplate = pskl.utils.Template.get('session-list-item');
+    return sessions.reduce(function (previous, session) {
+      if (session.id === pskl.app.sessionId) {
+        // Do not show backups for the current session.
+        return previous;
+      }
+      var view = {
+        id: session.id,
+        name: session.name,
+        description: session.description ? '- ' + session.description : '',
+        date: pskl.utils.DateUtils.format(session.endDate, 'the {{Y}}/{{M}}/{{D}} at {{H}}:{{m}}'),
+        count: session.count === 1 ? '1 snapshot' : session.count + ' snapshots'
+      };
+      return previous + pskl.utils.Template.replace(sessionItemTemplate, view);
+    }, '');
   };
 
   ns.SelectSession.prototype.destroy = function () {
