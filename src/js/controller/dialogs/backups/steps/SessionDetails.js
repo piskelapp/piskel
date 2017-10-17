@@ -27,31 +27,40 @@
   ns.SessionDetails.prototype.onShow = function () {
     var sessionId = this.backupsController.backupsData.selectedSession;
     pskl.app.backupService.getSnapshotsBySessionId(sessionId).then(function (snapshots) {
-      var html = '';
-      if (snapshots.length === 0) {
-        // This should normally never happen, all sessions have at least one snapshot and snapshots
-        // can not be individually deleted.
-        console.warn('Could not retrieve snapshots for a session');
-        html = pskl.utils.Template.get('snapshot-list-empty');
-      } else {
-        var sessionItemTemplate = pskl.utils.Template.get('snapshot-list-item');
-        var html = '';
-        snapshots.forEach(function (snapshot) {
-          var view = {
-            id: snapshot.id,
-            name: snapshot.name,
-            description: snapshot.description ? '- ' + snapshot.description : '',
-            date: pskl.utils.DateUtils.format(snapshot.date, 'the {{Y}}/{{M}}/{{D}} at {{H}}:{{m}}'),
-            frames: snapshot.frames === 1 ? '1 frame' : snapshot.frames + ' frames',
-            resolution: pskl.utils.StringUtils.formatSize(snapshot.width, snapshot.height),
-            fps: snapshot.fps
-          };
-          html += pskl.utils.Template.replace(sessionItemTemplate, view);
-          this.updateSnapshotPreview_(snapshot);
-        }.bind(this));
-      }
+      var html = this.getMarkupForSnapshots_(snapshots);
+      this.container.querySelector('.snapshot-list').innerHTML = html;
+
+      // Load the image of the first frame for each sprite and update the list.
+      snapshots.forEach(function (snapshot) {
+        this.updateSnapshotPreview_(snapshot);
+      }.bind(this));
+    }.bind(this)).catch(function () {
+      var html = pskl.utils.Template.get('snapshot-list-error');
       this.container.querySelector('.snapshot-list').innerHTML = html;
     }.bind(this));
+  };
+
+  ns.SessionDetails.prototype.getMarkupForSnapshots_ = function (snapshots) {
+    if (snapshots.length === 0) {
+      // This should normally never happen, all sessions have at least one snapshot and snapshots
+      // can not be individually deleted.
+      console.warn('Could not retrieve snapshots for a session');
+      return pskl.utils.Template.get('snapshot-list-empty');
+    }
+
+    var sessionItemTemplate = pskl.utils.Template.get('snapshot-list-item');
+    return snapshots.reduce(function (previous, snapshot) {
+      var view = {
+        id: snapshot.id,
+        name: snapshot.name,
+        description: snapshot.description ? '- ' + snapshot.description : '',
+        date: pskl.utils.DateUtils.format(snapshot.date, 'the {{Y}}/{{M}}/{{D}} at {{H}}:{{m}}'),
+        frames: snapshot.frames === 1 ? '1 frame' : snapshot.frames + ' frames',
+        resolution: pskl.utils.StringUtils.formatSize(snapshot.width, snapshot.height),
+        fps: snapshot.fps
+      };
+      return previous + pskl.utils.Template.replace(sessionItemTemplate, view);
+    }, '');
   };
 
   ns.SessionDetails.prototype.updateSnapshotPreview_ = function (snapshot) {
