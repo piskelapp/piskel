@@ -52,7 +52,12 @@ body {
 }
 
 .checkbox-fix {
-  margin-left: 0;
+  margin: 3px 3px 3px 0;
+}
+
+.checkbox-container {
+  display: flex;
+  align-items: center;
 }
 
 .hidden {
