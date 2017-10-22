@@ -86,6 +86,12 @@
   font-family:monospace;
 }
 
+.cursor-coordinates .drawing-zoom {
+  position: absolute;
+  top: -20px;
+  left: 1px;
+}
+
 /**
  * Canvases layout
  */
