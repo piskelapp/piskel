@@ -17,6 +17,7 @@
     $.subscribe(Events.DRAG_START, this.onDragStart_.bind(this));
     $.subscribe(Events.DRAG_END, this.onDragEnd_.bind(this));
     $.subscribe(Events.FRAME_SIZE_CHANGED, this.redraw.bind(this));
+    $.subscribe(Events.ZOOM_CHANGED, this.redraw.bind(this));
 
     this.redraw();
   };
@@ -37,6 +38,11 @@
         var dY = Math.abs(y - this.origin.y) + 1;
         html += ' (' + dX + 'x' + dY + ')';
       }
+    }
+
+    if (pskl.app.drawingController) {
+      var zoom = pskl.app.drawingController.compositeRenderer.getZoom().toFixed(2);
+      html += '<div class="drawing-zoom">x' + zoom + '</div>';
     }
 
     this.coordinatesContainer.innerHTML = this.getFrameSizeHTML_() + html;
