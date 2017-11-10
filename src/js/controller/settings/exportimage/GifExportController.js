@@ -113,7 +113,7 @@
       width: width * zoom,
       height: height * zoom,
       preserveColors : preserveColors,
-      repeat: this.getRepeatSetting_() ? 0 : 1,
+      repeat: this.getRepeatSetting_() ? 0 : -1,
       transparent : transparent
     });
 
