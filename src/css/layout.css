@@ -80,10 +80,10 @@
 }
 
 .cursor-coordinates {
-  color:#888;
-  font-size:12px;
-  font-weight:bold;
-  font-family:monospace;
+  color: gold;
+  font-size: 12px;
+  font-weight: bold;
+  font-family: monospace;
 }
 
 .cursor-coordinates .drawing-zoom {
