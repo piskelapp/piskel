@@ -80,7 +80,7 @@
 }
 
 .cursor-coordinates {
-  color: gold;
+  color: var(--highlight-color);
   font-size: 12px;
   font-weight: bold;
   font-family: monospace;
