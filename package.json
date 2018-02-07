@@ -45,7 +45,6 @@
     "grunt-karma": "1.0.0",
     "grunt-leading-indent": "0.2.0",
     "grunt-nw-builder": "3.1.0",
-    "grunt-open": "0.2.3",
     "grunt-replace": "1.0.1",
     "grunt-spritesmith": "6.4.0",
     "jasmine-core": "2.6.1",

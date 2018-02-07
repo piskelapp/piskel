@@ -47,16 +47,13 @@ module.exports = function(grunt) {
   var integrationTestPaths = require('./test/casperjs/integration/IntegrationSuite.js').tests;
   var integrationTests = prefixPaths(integrationTestPaths, "test/casperjs/integration/");
 
-  var getConnectConfig = function (base, port, host) {
-    if (typeof base === 'string') {
-      base = [base];
-    }
-
+  var getConnectConfig = function (base, port, host, open) {
     return {
       options: {
         port: port,
         hostname : host,
-        base: base
+        base: base,
+        open: open
       }
     };
   };
@@ -98,18 +95,9 @@ module.exports = function(grunt) {
      */
 
     connect: {
-      prod: getConnectConfig('dest/prod', PORT.PROD, hostname),
-      test: getConnectConfig(['dest/dev', 'test'], PORT.TEST, hostname),
-      dev: getConnectConfig(['dest/dev', 'test'], PORT.DEV, hostname)
-    },
-
-    open : {
-      prod : {
-        path : 'http://' + hostname + ':' + PORT.PROD + '/'
-      },
-      dev : {
-        path : 'http://' + hostname + ':' + PORT.DEV + '/?debug'
-      }
+      prod: getConnectConfig('dest/prod', PORT.PROD, hostname, true),
+      test: getConnectConfig(['dest/dev', 'test'], PORT.TEST, hostname, false),
+      dev: getConnectConfig(['dest/dev', 'test'], PORT.DEV, hostname, 'http://' + hostname + ':' + PORT.DEV + '/?debug')
     },
 
     watch: {
@@ -343,9 +331,9 @@ module.exports = function(grunt) {
 
   // SERVER TASKS
   // Start webserver and watch for changes
-  grunt.registerTask('serve', ['build', 'connect:prod', 'open:prod', 'watch:prod']);
+  grunt.registerTask('serve', ['build', 'connect:prod', 'watch:prod']);
   // Start webserver on src folder, in debug mode
-  grunt.registerTask('play', ['build-dev', 'connect:dev', 'open:dev', 'watch:dev']);
+  grunt.registerTask('play', ['build-dev', 'connect:dev', 'watch:dev']);
 
   // ALIASES, kept for backward compatibility
   grunt.registerTask('serve-debug', ['play']);
