@@ -171,6 +171,7 @@
   "js/widgets/HslRgbColorPicker.js",
   "js/widgets/SizeInput.js",
   "js/widgets/SizePicker.js",
+  "js/widgets/SpacingPicker.js",
   "js/widgets/SynchronizedInputs.js",
   "js/widgets/Tabs.js",
   "js/widgets/Wizard.js",

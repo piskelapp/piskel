@@ -5,6 +5,7 @@
     GRID_COLOR : 'GRID_COLOR',
     GRID_ENABLED : 'GRID_ENABLED',
     GRID_WIDTH : 'GRID_WIDTH',
+    GRID_SPACING : 'GRID_SPACING',
     MAX_FPS : 'MAX_FPS',
     DEFAULT_SIZE : 'DEFAULT_SIZE',
     CANVAS_BACKGROUND : 'CANVAS_BACKGROUND',
@@ -27,6 +28,7 @@
       'GRID_COLOR' : Constants.TRANSPARENT_COLOR,
       'GRID_ENABLED' : false,
       'GRID_WIDTH' : 1,
+      'GRID_SPACING' : 1,
       'MAX_FPS' : 24,
       'DEFAULT_SIZE' : {
         width : Constants.DEFAULT.WIDTH,
@@ -138,6 +140,11 @@
     var storedGridWidth = ns.UserSettings.readFromLocalStorage_('GRID_WIDTH');
     if (storedGridWidth === 0) {
       ns.UserSettings.writeToLocalStorage_('GRID_WIDTH', 1);
+    }
+
+    var storedGridSpacing = ns.UserSettings.readFromLocalStorage_('GRID_SPACING');
+    if (storedGridSpacing === 0) {
+      ns.UserSettings.writeToLocalStorage_('GRID_SPACING', 1);
     }
   };
 })();
