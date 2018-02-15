@@ -40,6 +40,7 @@
   "css/widgets-anchor.css",
   "css/widgets-frame-picker.css",
   "css/widgets-size-picker.css",
+  "css/widgets-spacing-picker.css",
   "css/widgets-tabs.css",
   "css/widgets-wizard.css"
 ];

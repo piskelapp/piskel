@@ -60,13 +60,15 @@
 }
 
 .settings-item-grid-size,
-.settings-item-grid-color {
+.settings-item-grid-spacing,
+.settings-item-grid-color,
   display: flex;
   align-items: center;
 }
 
 .settings-item-grid-size > label,
-.settings-item-grid-color > label {
+.settings-item-grid-spacing > label,
+.settings-item-grid-color > label,
   width: 65px;
   flex-shrink: 0;
 }
