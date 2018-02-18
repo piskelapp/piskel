@@ -172,10 +172,16 @@
    * particularly for the current zoom level
    */
   ns.FrameRenderer.prototype.computeGridWidthForDisplay_ = function () {
+    var gridSpacing = this.getGridSpacing();
+    if (this.zoom * gridSpacing < 6) {
+      return 0;
+    }
+
     var gridWidth = this.getGridWidth();
-    while (this.zoom < 6 * gridWidth) {
+    while (gridWidth > 1 && this.zoom < 6 * gridWidth) {
       gridWidth--;
     }
+
     return gridWidth;
   };
 

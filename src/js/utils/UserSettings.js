@@ -141,10 +141,5 @@
     if (storedGridWidth === 0) {
       ns.UserSettings.writeToLocalStorage_('GRID_WIDTH', 1);
     }
-
-    var storedGridSpacing = ns.UserSettings.readFromLocalStorage_('GRID_SPACING');
-    if (storedGridSpacing === 0) {
-      ns.UserSettings.writeToLocalStorage_('GRID_SPACING', 1);
-    }
   };
 })();
