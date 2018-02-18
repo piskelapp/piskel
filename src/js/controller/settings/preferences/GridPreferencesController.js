@@ -22,7 +22,7 @@
     this.piskelController = piskelController;
     this.preferencesController = preferencesController;
     this.sizePicker = new pskl.widgets.SizePicker(this.onSizePickerChanged_.bind(this));
-    this.spacingPicker = new pskl.widgets.SpacingPicker(this.onSpacingPickerChanged_.bind(this));
+    this.spacingPicker = new pskl.widgets.SizePicker(this.onSpacingPickerChanged_.bind(this));
   };
 
   pskl.utils.inherit(ns.GridPreferencesController, pskl.controller.settings.AbstractSettingController);
@@ -44,7 +44,7 @@
     //Grid Spacing
     var gridSpacing = pskl.UserSettings.get(pskl.UserSettings.GRID_SPACING);
     this.spacingPicker.init(document.querySelector('.grid-spacing-container'));
-    this.spacingPicker.setSpacing(gridSpacing);
+    this.spacingPicker.setSize(gridSpacing);
 
     // Grid color
     var colorListItemTemplate = pskl.utils.Template.get('color-list-item-template');

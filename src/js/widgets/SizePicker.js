@@ -27,10 +27,9 @@
     pskl.utils.Dom.removeClass('labeled', this.container);
     pskl.utils.Dom.removeClass('selected', this.container);
     var selectedOption;
-    if (size <= 4) {
-      selectedOption = this.container.querySelector('[data-size="' + size + '"]');
-    } else {
-      selectedOption = this.container.querySelector('[data-size="4"]');
+    selectedOption = this.container.querySelector('[data-size="' + size + '"]');
+    if (typeof selectedOption === 'undefined') {
+      selectedOption = this.container.querySelector('[data-size]:last-child');
       selectedOption.classList.add('labeled');
       selectedOption.setAttribute('real-size', size);
     }
