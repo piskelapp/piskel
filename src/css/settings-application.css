@@ -73,11 +73,35 @@
   flex-shrink: 0;
 }
 
-.settings-item-grid-size .size-picker-option {
+.grid-spacing-container .size-picker-option[data-size='1'] {
+  padding: 7px;
+}
+.grid-spacing-container .size-picker-option[data-size='2'] {
+  padding: 6px;
+}
+.grid-spacing-container .size-picker-option[data-size='4'] {
+  padding: 5px;
+}
+.grid-spacing-container .size-picker-option[data-size='8'] {
+  padding: 4px;
+}
+.grid-spacing-container .size-picker-option[data-size='16'] {
+  padding: 3px;
+}
+.grid-spacing-container .size-picker-option[data-size='32'] {
+  padding: 2px;
+}
+.grid-spacing-container .size-picker-option[data-size='64'] {
+  padding: 1px;
+}
+
+.settings-item-grid-size .size-picker-option,
+.settings-item-grid-spacing .size-picker-option {
   border-color: #888;
 }
 
-.settings-item-grid-size .size-picker-option:not(.selected):hover {
+.settings-item-grid-size .size-picker-option:not(.selected):hover,
+.settings-item-grid-spacing .size-picker-option:not(.selected):hover {
   border-color: white;
 }
 
