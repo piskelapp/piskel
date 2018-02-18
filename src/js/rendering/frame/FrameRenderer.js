@@ -333,7 +333,6 @@
       displayContext.scale(1 / z, 1 / z);
 
       var drawOrClear;
-      var drawing = true;
       if (gridColor === Constants.TRANSPARENT_COLOR) {
         drawOrClear = displayContext.clearRect.bind(displayContext);
       } else {
