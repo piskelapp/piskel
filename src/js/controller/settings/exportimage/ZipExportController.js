@@ -12,10 +12,19 @@
     this.pngFilePrefixInput = document.querySelector('.zip-prefix-name');
     this.pngFilePrefixInput.value = 'sprite_';
 
-    this.splitByLayersCheckbox =  document.querySelector('.zip-split-layers-checkbox');
+    this.splitByLayersCheckbox = document.querySelector('.zip-split-layers-checkbox');
+    this.addEventListener(this.splitByLayersCheckbox, 'change', this.onSplitLayersClick_);
+
+    this.useLayerNamesCheckboxContainer = document.querySelector('.use-layer-names-checkbox-container');
+    this.useLayerNamesCheckbox = document.querySelector('.zip-use-layer-names-checkbox');
+    this.useLayerNamesCheckboxContainer.hidden = !this.splitByLayersCheckbox.checked;
 
     var zipButton = document.querySelector('.zip-generate-button');
     this.addEventListener(zipButton, 'click', this.onZipButtonClick_);
+  };
+
+  ns.ZipExportController.prototype.onSplitLayersClick_ = function () {
+    this.useLayerNamesCheckboxContainer.hidden = !this.splitByLayersCheckbox.checked;
   };
 
   ns.ZipExportController.prototype.onZipButtonClick_ = function () {
@@ -63,6 +72,9 @@
         var basename = this.pngFilePrefixInput.value;
         var frameid = pskl.utils.StringUtils.leftPad(i + 1, framePaddingLength, '0');
         var filename = 'l' + layerid + '_' + basename + frameid + '.png';
+        if (this.useLayerNamesCheckbox.checked) {
+          filename = layer.getName() + '_' + basename + frameid + '.png';
+        }
         zip.file(filename, pskl.utils.CanvasUtils.getBase64FromCanvas(canvas) + '\n', {base64: true});
       }
     }
