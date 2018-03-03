@@ -15,16 +15,20 @@
     this.splitByLayersCheckbox = document.querySelector('.zip-split-layers-checkbox');
     this.addEventListener(this.splitByLayersCheckbox, 'change', this.onSplitLayersClick_);
 
-    this.useLayerNamesCheckboxContainer = document.querySelector('.use-layer-names-checkbox-container');
+    this.useLayerNamesContainer = document.querySelector('.use-layer-names-container');
     this.useLayerNamesCheckbox = document.querySelector('.zip-use-layer-names-checkbox');
-    this.useLayerNamesCheckboxContainer.hidden = !this.splitByLayersCheckbox.checked;
+    this.toggleHideUseLayerNamesCheckbox();
 
     var zipButton = document.querySelector('.zip-generate-button');
     this.addEventListener(zipButton, 'click', this.onZipButtonClick_);
   };
 
+  ns.ZipExportController.prototype.toggleHideUseLayerNamesCheckbox = function () {
+    this.useLayerNamesContainer.style.display = (this.splitByLayersCheckbox.checked ? 'block' : 'none');
+  };
+
   ns.ZipExportController.prototype.onSplitLayersClick_ = function () {
-    this.useLayerNamesCheckboxContainer.hidden = !this.splitByLayersCheckbox.checked;
+    this.toggleHideUseLayerNamesCheckbox();
   };
 
   ns.ZipExportController.prototype.onZipButtonClick_ = function () {
