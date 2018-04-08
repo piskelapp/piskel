@@ -11,12 +11,11 @@
     this.localStorageItemTemplate_ = pskl.utils.Template.get('local-storage-item-template');
 
     this.service_ = pskl.app.indexedDbStorageService;
-    this.piskelList = $('.local-piskel-list');
-    this.prevSessionContainer = $('.previous-session');
+    this.piskelList = document.querySelector('.local-piskel-list');
 
     this.fillLocalPiskelsList_();
 
-    this.piskelList.click(this.onPiskelsListClick_.bind(this));
+    this.piskelList.addEventListener('click', this.onPiskelsListClick_.bind(this));
   };
 
   ns.BrowseLocalController.prototype.onPiskelsListClick_ = function (evt) {
@@ -52,7 +51,7 @@
         });
       }).bind(this));
 
-      var tableBody_ = this.piskelList.get(0).tBodies[0];
+      var tableBody_ = this.piskelList.tBodies[0];
       tableBody_.innerHTML = html;
     }.bind(this));
   };
