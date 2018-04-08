@@ -5,7 +5,7 @@
     this.piskelController = piskelController;
     this.previewController = previewController;
     this.drawingController = drawingController;
-    this.container = container.get(0);
+    this.container = container;
 
     this.isClicked = false;
     this.isVisible = false;
