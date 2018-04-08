@@ -14,9 +14,9 @@
   };
 
   ns.SelectionManager.prototype.init = function () {
-    $.subscribe(Events.SELECTION_CREATED, $.proxy(this.onSelectionCreated_, this));
-    $.subscribe(Events.SELECTION_DISMISSED, $.proxy(this.onSelectionDismissed_, this));
-    $.subscribe(Events.SELECTION_MOVE_REQUEST, $.proxy(this.onSelectionMoved_, this));
+    $.subscribe(Events.SELECTION_CREATED, this.onSelectionCreated_.bind(this));
+    $.subscribe(Events.SELECTION_DISMISSED, this.onSelectionDismissed_.bind(this));
+    $.subscribe(Events.SELECTION_MOVE_REQUEST, this.onSelectionMoved_.bind(this));
     $.subscribe(Events.CLIPBOARD_COPY, this.copy.bind(this));
     $.subscribe(Events.CLIPBOARD_CUT, this.copy.bind(this));
     $.subscribe(Events.CLIPBOARD_PASTE, this.paste.bind(this));
@@ -25,7 +25,7 @@
     pskl.app.shortcutService.registerShortcut(shortcuts.SELECTION.DELETE, this.onDeleteShortcut_.bind(this));
     pskl.app.shortcutService.registerShortcut(shortcuts.SELECTION.COMMIT, this.commit.bind(this));
 
-    $.subscribe(Events.TOOL_SELECTED, $.proxy(this.onToolSelected_, this));
+    $.subscribe(Events.TOOL_SELECTED, this.onToolSelected_.bind(this));
   };
 
   /**
