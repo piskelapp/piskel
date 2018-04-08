@@ -7,8 +7,8 @@
    * @public
    */
   ns.NotificationController.prototype.init = function() {
-    $.subscribe(Events.SHOW_NOTIFICATION, $.proxy(this.displayMessage_, this));
-    $.subscribe(Events.HIDE_NOTIFICATION, $.proxy(this.removeMessage_, this));
+    $.subscribe(Events.SHOW_NOTIFICATION, this.displayMessage_.bind(this));
+    $.subscribe(Events.HIDE_NOTIFICATION, this.removeMessage_.bind(this));
   };
 
   /**
@@ -35,9 +35,9 @@
    * @private
    */
   ns.NotificationController.prototype.removeMessage_ = function (evt) {
-    var message = $('#user-message');
-    if (message.length) {
-      message.remove();
+    var message = document.querySelector('#user-message');
+    if (message) {
+      message.parentNode.removeChild(message);
     }
   };
 })();
