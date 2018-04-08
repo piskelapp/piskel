@@ -7,7 +7,7 @@
 
   ns.PreviewController = function (piskelController, container) {
     this.piskelController = piskelController;
-    this.container = container;
+    this.container = container.get(0);
 
     this.elapsedTime = 0;
     this.currentIndex = 0;
@@ -40,7 +40,7 @@
     };
     this.toggleOnionSkinButton = document.querySelector('.preview-toggle-onion-skin');
 
-    this.renderer = new pskl.rendering.frame.BackgroundImageFrameRenderer(this.container.get(0));
+    this.renderer = new pskl.rendering.frame.BackgroundImageFrameRenderer(this.container);
     this.popupPreviewController = new ns.PopupPreviewController(piskelController);
   };
 
@@ -72,7 +72,7 @@
     }
 
     $.subscribe(Events.FRAME_SIZE_CHANGED, this.onFrameSizeChange_.bind(this));
-    $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
+    $.subscribe(Events.USER_SETTINGS_CHANGED, this.onUserSettingsChange_.bind(this));
     $.subscribe(Events.PISKEL_SAVE_STATE, this.setRenderFlag_.bind(this, true));
     $.subscribe(Events.FPS_CHANGED, this.updateFPS_.bind(this));
     // On PISKEL_RESET, set the render flag and update the FPS input
@@ -228,9 +228,9 @@
   };
 
   ns.PreviewController.prototype.getCoordinates = function(x, y) {
-    var containerOffset = this.container.offset();
-    x = x - containerOffset.left;
-    y = y - containerOffset.top;
+    var containerRect = this.container.getBoundingClientRect();
+    x = x - containerRect.left;
+    y = y - containerRect.top;
     var zoom = this.getZoom();
     return {
       x : Math.floor(x / zoom),
@@ -323,7 +323,7 @@
       width = frame.getWidth() * zoom;
     }
 
-    var containerEl = this.container.get(0);
+    var containerEl = this.container;
     containerEl.style.height = height + 'px';
     containerEl.style.width = width + 'px';
 
