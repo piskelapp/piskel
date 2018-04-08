@@ -162,7 +162,10 @@
     this.previewList.innerHTML = '';
 
     // Manually remove tooltips since mouseout events were shortcut by the DOM refresh:
-    $('.tooltip').remove();
+    var tooltips = [...document.querySelectorAll('.tooltip')];
+    tooltips.forEach(function (tooltip) {
+      tooltip.parentNode.removeChild(tooltip);
+    });
 
     var frameCount = this.piskelController.getFrameCount();
 
@@ -190,8 +193,8 @@
   ns.FramesListController.prototype.initDragndropBehavior_ = function () {
     $(this.previewList).sortable({
       placeholder: 'preview-tile preview-tile-drop-proxy',
-      update: $.proxy(this.onUpdate_, this),
-      stop: $.proxy(this.onSortableStop_, this),
+      update: this.onUpdate_.bind(this),
+      stop: this.onSortableStop_.bind(this),
       items: '.preview-tile',
       axis: 'y',
       tolerance: 'pointer'
@@ -203,8 +206,10 @@
    * @private
    */
   ns.FramesListController.prototype.onUpdate_ = function (event, ui) {
-    var originFrameId = parseInt(ui.item.data('tile-number'), 10);
-    var targetInsertionId = $('.preview-tile').index(ui.item);
+    var movedItem = ui.item.get(0);
+    var originFrameId = parseInt(movedItem.dataset.tileNumber, 10);
+    var tiles = [...document.querySelectorAll('.preview-tile')];
+    var targetInsertionId = tiles.indexOf(movedItem);
 
     this.piskelController.moveFrame(originFrameId, targetInsertionId);
     this.piskelController.setCurrentFrameIndex(targetInsertionId);
@@ -220,9 +225,9 @@
   ns.FramesListController.prototype.onSortableStop_ = function (event, ui) {
     this.justDropped = true;
 
-    this.resizeTimer = window.setTimeout($.proxy(function() {
+    this.resizeTimer = window.setTimeout((function() {
       this.justDropped = false;
-    }, this), 200);
+    }).bind(this), 200);
   };
 
   /**
