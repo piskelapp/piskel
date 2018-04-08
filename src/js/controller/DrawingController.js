@@ -345,6 +345,8 @@
       // Picking color after ALT+click or middle mouse button click.
       this.pickColorAt_(coords);
       this.isPickingColor = false;
+      // Flash the cursor to briefly show the colorpicker cursor.
+      this.flashColorPicker_();
     } else if (isMiddleDrag) {
       // Stop the drag handler after a middle button drag action.
       this.dragHandler.stopDrag();
@@ -378,6 +380,16 @@
     var isRightButton = pskl.app.mouseStateService.isRightButtonPressed();
     var evt = isRightButton ? Events.SELECT_SECONDARY_COLOR : Events.SELECT_PRIMARY_COLOR;
     $.publish(evt, [color]);
+  };
+
+  ns.DrawingController.prototype.flashColorPicker_ = function () {
+    document.body.classList.add('tool-colorpicker');
+    document.body.classList.remove(this.currentToolBehavior.toolId);
+    window.clearTimeout(this.flashColorPickerTimer);
+    this.flashColorPickerTimer = window.setTimeout(function () {
+      document.body.classList.remove('tool-colorpicker');
+      document.body.classList.add(this.currentToolBehavior.toolId);
+    }.bind(this), 200);
   };
 
   /**
