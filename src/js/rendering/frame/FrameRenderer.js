@@ -107,7 +107,7 @@
     this.displayWidth = width;
     this.displayHeight = height;
     if (this.displayCanvas) {
-      $(this.displayCanvas).remove();
+      this.displayCanvas.parentNode.removeChild(this.displayCanvas);
       this.displayCanvas = null;
     }
     this.createDisplayCanvas_();
