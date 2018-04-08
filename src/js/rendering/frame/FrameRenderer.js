@@ -199,7 +199,7 @@
 
     this.displayCanvas = pskl.utils.CanvasUtils.createCanvas(width, height, this.classList);
     pskl.utils.CanvasUtils.disableImageSmoothing(this.displayCanvas);
-    this.container.append(this.displayCanvas);
+    this.container.appendChild(this.displayCanvas);
   };
 
   ns.FrameRenderer.prototype.onUserSettingsChange_ = function (evt, settingName, settingValue) {
@@ -230,9 +230,9 @@
    * @public
    */
   ns.FrameRenderer.prototype.getCoordinates = function(x, y) {
-    var containerOffset = this.container.offset();
-    x = x - containerOffset.left;
-    y = y - containerOffset.top;
+    var containerRect = this.container.getBoundingClientRect();
+    x = x - containerRect.left;
+    y = y - containerRect.top;
 
     // apply margins
     x = x - this.margin.x;
@@ -261,9 +261,9 @@
     x = x + this.margin.x;
     y = y + this.margin.y;
 
-    var containerOffset = this.container.offset();
-    x = x + containerOffset.left;
-    y = y + containerOffset.top;
+    var containerRect = this.container.getBoundingClientRect();
+    x = x + containerRect.left;
+    y = y + containerRect.top;
 
     return {
       x : x + (cellSize / 2),
