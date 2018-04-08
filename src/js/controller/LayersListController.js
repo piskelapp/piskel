@@ -22,7 +22,7 @@
     this.updateToggleLayerPreview_();
 
     $.subscribe(Events.PISKEL_RESET, this.renderLayerList_.bind(this));
-    $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
+    $.subscribe(Events.USER_SETTINGS_CHANGED, this.onUserSettingsChange_.bind(this));
   };
 
   ns.LayersListController.prototype.renderLayerList_ = function () {
@@ -125,10 +125,10 @@
     var layerItem = pskl.utils.Template.createFromHTML(layerItemHtml);
     this.layersListEl.insertBefore(layerItem, this.layersListEl.firstChild);
     if (layerItem.offsetWidth < layerItem.scrollWidth) {
-      $(layerItem).find('.layer-name')
-        .addClass('overflowing-name')
-        .attr('title', layer.getName())
-        .tooltip();
+      var layerNameEl = layerItem.querySelector('.layer-name');
+      layerNameEl.classList.add('overflowing-name');
+      layerNameEl.setAttribute('title', layer.getName());
+      layerNameEl.setAttribute('rel', 'tooltip');
     }
   };
 
