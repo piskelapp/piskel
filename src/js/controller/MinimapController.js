@@ -60,7 +60,7 @@
     this.minimapEl.style.display = 'block';
     this.minimapEl.style.width = Math.min(minimapSize.width, containerWidth) + 'px';
     this.minimapEl.style.height = Math.min(minimapSize.height, containerHeight) + 'px';
-    this.minimapEl.style.left = Math.max(0, left) +  'px';
+    this.minimapEl.style.left = (Math.max(0, left) + Constants.RIGHT_COLUMN_PADDING_LEFT) +  'px';
     this.minimapEl.style.top = Math.max(0, top) +  'px';
 
     this.isVisible = true;
