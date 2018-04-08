@@ -40,7 +40,7 @@
     };
     this.toggleOnionSkinButton = document.querySelector('.preview-toggle-onion-skin');
 
-    this.renderer = new pskl.rendering.frame.BackgroundImageFrameRenderer(this.container);
+    this.renderer = new pskl.rendering.frame.BackgroundImageFrameRenderer(this.container.get(0));
     this.popupPreviewController = new ns.PopupPreviewController(piskelController);
   };
 

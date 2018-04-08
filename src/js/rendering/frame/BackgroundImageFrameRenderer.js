@@ -5,11 +5,10 @@
     this.container = container;
     this.setZoom(zoom);
 
-    var containerEl = container.get(0);
-    var containerDocument = containerEl.ownerDocument;
+    var containerDocument = container.ownerDocument;
     this.frameContainer = containerDocument.createElement('div');
     this.frameContainer.classList.add('background-image-frame-container');
-    container.get(0).appendChild(this.frameContainer);
+    container.appendChild(this.frameContainer);
 
     this.cachedFrameProcessor = new pskl.model.frame.CachedFrameProcessor();
     this.cachedFrameProcessor.setFrameProcessor(this.frameToDataUrl_.bind(this));
