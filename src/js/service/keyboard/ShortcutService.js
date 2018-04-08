@@ -9,7 +9,7 @@
    * @public
    */
   ns.ShortcutService.prototype.init = function() {
-    $(document.body).keydown($.proxy(this.onKeyDown_, this));
+    document.body.addEventListener('keydown', this.onKeyDown_.bind(this));
   };
 
   /**
