@@ -35,7 +35,8 @@
     // Set SimplePen as default selected tool:
     this.selectTool_(this.tools[0]);
     // Activate listener on tool panel:
-    $('#tool-section').mousedown($.proxy(this.onToolIconClicked_, this));
+    var toolSection = document.querySelector('#tool-section');
+    toolSection.addEventListener('mousedown', this.onToolIconClicked_.bind(this));
 
     $.subscribe(Events.SELECT_TOOL, this.onSelectToolEvent_.bind(this));
     $.subscribe(Events.SHORTCUTS_CHANGED, this.createToolsDom_.bind(this));
@@ -45,14 +46,14 @@
    * @private
    */
   ns.ToolController.prototype.activateToolOnStage_ = function(tool) {
-    var stage = $('body');
-    var previousSelectedToolClass = stage.data('selected-tool-class');
+    var stage = document.body;
+    var previousSelectedToolClass = stage.dataset.selectedToolClass;
     if (previousSelectedToolClass) {
-      stage.removeClass(previousSelectedToolClass);
-      stage.removeClass(pskl.tools.drawing.Move.TOOL_ID);
+      stage.classList.remove(previousSelectedToolClass);
+      stage.classList.remove(pskl.tools.drawing.Move.TOOL_ID);
     }
-    stage.addClass(tool.toolId);
-    stage.data('selected-tool-class', tool.toolId);
+    stage.classList.add(tool.toolId);
+    stage.dataset.selectedToolClass = tool.toolId;
   };
 
   ns.ToolController.prototype.onSelectToolEvent_ = function(event, toolId) {
@@ -69,11 +70,13 @@
     this.currentSelectedTool = tool;
     this.activateToolOnStage_(this.currentSelectedTool);
 
-    var selectedToolElement = $('#tool-section .tool-icon.selected');
-    var toolElement = $('[data-tool-id=' + tool.toolId + ']');
+    var selectedToolElement = document.querySelector('#tool-section .tool-icon.selected');
+    if (selectedToolElement) {
+      selectedToolElement.classList.remove('selected');
+    }
 
-    selectedToolElement.removeClass('selected');
-    toolElement.addClass('selected');
+    var toolElement = document.querySelector('[data-tool-id=' + tool.toolId + ']');
+    toolElement.classList.add('selected');
 
     $.publish(Events.TOOL_SELECTED, [tool]);
   };
@@ -82,11 +85,11 @@
    * @private
    */
   ns.ToolController.prototype.onToolIconClicked_ = function(evt) {
-    var target = $(evt.target);
-    var clickedTool = target.closest('.tool-icon');
+    var target = evt.target;
+    var clickedTool = pskl.utils.Dom.getParentWithData(target, 'toolId');
 
-    if (clickedTool.length) {
-      var toolId = clickedTool.data().toolId;
+    if (clickedTool) {
+      var toolId = clickedTool.dataset.toolId;
       var tool = this.getToolById_(toolId);
       if (tool) {
         this.selectTool_(tool);
@@ -116,7 +119,7 @@
       var tool = this.tools[i];
       html += this.toolIconBuilder.createIcon(tool);
     }
-    $('#tools-container').html(html);
+    document.querySelector('#tools-container').innerHTML = html;
   };
 
   ns.ToolController.prototype.addKeyboardShortcuts_ = function () {
