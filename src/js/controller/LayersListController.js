@@ -1,8 +1,6 @@
 (function () {
   var ns = $.namespace('pskl.controller');
 
-  var TOGGLE_LAYER_SHORTCUT = 'alt+L';
-
   ns.LayersListController = function (piskelController) {
     this.piskelController = piskelController;
     this.layerPreviewShortcut = pskl.service.keyboard.Shortcuts.MISC.LAYER_PREVIEW  ;
