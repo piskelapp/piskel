@@ -35,24 +35,24 @@
     // Initialize colorpickers:
     var colorPicker = $('#color-picker');
     colorPicker.spectrum($.extend({color: Constants.DEFAULT_PEN_COLOR}, spectrumCfg));
-    colorPicker.change({isPrimary : true}, $.proxy(this.onPickerChange_, this));
-    this.setTitleOnPicker_(Constants.DEFAULT_PEN_COLOR, colorPicker);
+    colorPicker.change({isPrimary : true}, this.onPickerChange_.bind(this));
+    this.setTitleOnPicker_(Constants.DEFAULT_PEN_COLOR, colorPicker.get(0));
 
     var secondaryColorPicker = $('#secondary-color-picker');
     secondaryColorPicker.spectrum($.extend({color: Constants.TRANSPARENT_COLOR}, spectrumCfg));
-    secondaryColorPicker.change({isPrimary : false}, $.proxy(this.onPickerChange_, this));
-    this.setTitleOnPicker_(Constants.TRANSPARENT_COLOR, secondaryColorPicker);
+    secondaryColorPicker.change({isPrimary : false}, this.onPickerChange_.bind(this));
+    this.setTitleOnPicker_(Constants.TRANSPARENT_COLOR, secondaryColorPicker.get(0));
 
-    var swapColorsIcon = $('.swap-colors-button');
-    swapColorsIcon.click(this.swapColors.bind(this));
+    var swapColorsIcon = document.querySelector('.swap-colors-button');
+    swapColorsIcon.addEventListener('click', this.swapColors.bind(this));
   };
 
   /**
    * @private
    */
-  ns.PaletteController.prototype.onPickerChange_ = function(evt, isPrimary) {
-    var inputPicker = $(evt.target);
-    var color = inputPicker.val();
+  ns.PaletteController.prototype.onPickerChange_ = function(evt) {
+    var inputPicker = evt.target;
+    var color = inputPicker.value;
 
     if (color != Constants.TRANSPARENT_COLOR) {
       // Unless the color is TRANSPARENT_COLOR, format it to hexstring, as
@@ -71,7 +71,6 @@
    * @private
    */
   ns.PaletteController.prototype.onColorSelected_ = function(args, evt, color) {
-    var inputPicker = $(evt.target);
     if (args.isPrimary) {
       this.setPrimaryColor_(color);
     } else {
@@ -80,12 +79,12 @@
   };
 
   ns.PaletteController.prototype.setPrimaryColor_ = function (color) {
-    this.updateColorPicker_(color, $('#color-picker'));
+    this.updateColorPicker_(color, document.querySelector('#color-picker'));
     $.publish(Events.PRIMARY_COLOR_SELECTED, [color]);
   };
 
   ns.PaletteController.prototype.setSecondaryColor_ = function (color) {
-    this.updateColorPicker_(color, $('#secondary-color-picker'));
+    this.updateColorPicker_(color, document.querySelector('#secondary-color-picker'));
     $.publish(Events.SECONDARY_COLOR_SELECTED, [color]);
   };
 
@@ -104,6 +103,7 @@
    * @private
    */
   ns.PaletteController.prototype.updateColorPicker_ = function (color, colorPicker) {
+    var jqueryColorPicker = $(colorPicker);
     if (color == Constants.TRANSPARENT_COLOR) {
       // We can set the current palette color to transparent.
       // You can then combine this transparent color with an advanced
@@ -114,17 +114,17 @@
       // The colorpicker can't be set to a transparent state.
       // We set its background to white and insert the
       // string "TRANSPARENT" to mimic this state:
-      colorPicker.spectrum('set', Constants.TRANSPARENT_COLOR);
-      colorPicker.val(Constants.TRANSPARENT_COLOR);
+      jqueryColorPicker.spectrum('set', Constants.TRANSPARENT_COLOR);
+      colorPicker.value = Constants.TRANSPARENT_COLOR;
     } else {
-      colorPicker.spectrum('set', color);
+      jqueryColorPicker.spectrum('set', color);
     }
     this.setTitleOnPicker_(color, colorPicker);
   };
 
   ns.PaletteController.prototype.setTitleOnPicker_ = function (title, colorPicker) {
-    var parent = colorPicker.parent();
-    title = parent.data('initial-title') + '<br/>' + title;
-    parent.attr('data-original-title', title);
+    var parent = colorPicker.parentNode;
+    title = parent.dataset.initialTitle + '<br/>' + title;
+    parent.dataset.originalTitle = title;
   };
 })();
