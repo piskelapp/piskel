@@ -10,9 +10,9 @@
   };
 
   ns.ProgressBarController.prototype.init = function () {
-    $.subscribe(Events.SHOW_PROGRESS, $.proxy(this.showProgress_, this));
-    $.subscribe(Events.UPDATE_PROGRESS, $.proxy(this.updateProgress_, this));
-    $.subscribe(Events.HIDE_PROGRESS, $.proxy(this.hideProgress_, this));
+    $.subscribe(Events.SHOW_PROGRESS, this.showProgress_.bind(this));
+    $.subscribe(Events.UPDATE_PROGRESS, this.updateProgress_.bind(this));
+    $.subscribe(Events.HIDE_PROGRESS, this.hideProgress_.bind(this));
   };
 
   ns.ProgressBarController.prototype.showProgress_ = function (event, progressInfo) {
