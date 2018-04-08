@@ -18,7 +18,7 @@
     /**
      * @private
      */
-    this.container = container.get(0);
+    this.container = container;
 
     var cfg = {
       'zoom': this.calculateZoom_(),

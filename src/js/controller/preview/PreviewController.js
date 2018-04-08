@@ -7,7 +7,7 @@
 
   ns.PreviewController = function (piskelController, container) {
     this.piskelController = piskelController;
-    this.container = container.get(0);
+    this.container = container;
 
     this.elapsedTime = 0;
     this.currentIndex = 0;

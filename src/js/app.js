@@ -67,24 +67,24 @@
 
       this.drawingController = new pskl.controller.DrawingController(
         this.piskelController,
-        $('#drawing-canvas-container'));
+        document.querySelector('#drawing-canvas-container'));
       this.drawingController.init();
 
       this.previewController = new pskl.controller.preview.PreviewController(
         this.piskelController,
-        $('#animated-preview-canvas-container'));
+        document.querySelector('#animated-preview-canvas-container'));
       this.previewController.init();
 
       this.minimapController = new pskl.controller.MinimapController(
         this.piskelController,
         this.previewController,
         this.drawingController,
-        $('.minimap-container'));
+        document.querySelector('.minimap-container'));
       this.minimapController.init();
 
       this.framesListController = new pskl.controller.FramesListController(
         this.piskelController,
-        $('#preview-list-wrapper').get(0));
+        document.querySelector('#preview-list-wrapper'));
       this.framesListController.init();
 
       this.layersListController = new pskl.controller.LayersListController(this.piskelController);
