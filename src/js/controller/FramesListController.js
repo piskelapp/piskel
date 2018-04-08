@@ -162,8 +162,8 @@
     this.previewList.innerHTML = '';
 
     // Manually remove tooltips since mouseout events were shortcut by the DOM refresh:
-    var tooltips = [...document.querySelectorAll('.tooltip')];
-    tooltips.forEach(function (tooltip) {
+    var tooltips = document.querySelectorAll('.tooltip');
+    Array.prototype.forEach.call(tooltips, function (tooltip) {
       tooltip.parentNode.removeChild(tooltip);
     });
 
@@ -208,8 +208,8 @@
   ns.FramesListController.prototype.onUpdate_ = function (event, ui) {
     var movedItem = ui.item.get(0);
     var originFrameId = parseInt(movedItem.dataset.tileNumber, 10);
-    var tiles = [...document.querySelectorAll('.preview-tile')];
-    var targetInsertionId = tiles.indexOf(movedItem);
+    var tiles = document.querySelectorAll('.preview-tile');
+    var targetInsertionId = Array.prototype.indexOf.call(tiles, movedItem);
 
     this.piskelController.moveFrame(originFrameId, targetInsertionId);
     this.piskelController.setCurrentFrameIndex(targetInsertionId);
@@ -232,7 +232,6 @@
 
   /**
    * @private
-   * TODO(vincz): clean this giant rendering function & remove listeners.
    */
   ns.FramesListController.prototype.createPreviewTile_ = function(tileNumber) {
     var currentFrame = this.piskelController.getCurrentLayer().getFrameAt(tileNumber);
