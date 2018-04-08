@@ -139,7 +139,8 @@
     var colorElement = drop.item.get(0);
 
     var oldIndex = parseInt(colorElement.dataset.paletteIndex, 10);
-    var newIndex = $('.create-palette-color').index(drop.item);
+    var colors = document.querySelectorAll('.create-palette-color');
+    var newIndex = Array.prototype.indexOf.call(colors, colorElement);
     this.palette.move(oldIndex, newIndex);
 
     this.selectedIndex = newIndex;
