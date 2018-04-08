@@ -18,7 +18,7 @@
     /**
      * @private
      */
-    this.container = container;
+    this.container = container.get(0);
 
     var cfg = {
       'zoom': this.calculateZoom_(),
@@ -29,11 +29,10 @@
       'yOffset' : 0
     };
 
-    var containerEl = this.container.get(0);
-    this.overlayRenderer = new pskl.rendering.frame.CachedFrameRenderer(containerEl, cfg, ['canvas-overlay']);
-    this.renderer = new pskl.rendering.frame.CachedFrameRenderer(containerEl, cfg, ['drawing-canvas']);
-    this.onionSkinRenderer = pskl.rendering.OnionSkinRenderer.createInContainer(containerEl, cfg, piskelController);
-    this.layersRenderer = new pskl.rendering.layer.LayersRenderer(containerEl, cfg, piskelController);
+    this.overlayRenderer = new pskl.rendering.frame.CachedFrameRenderer(this.container, cfg, ['canvas-overlay']);
+    this.renderer = new pskl.rendering.frame.CachedFrameRenderer(this.container, cfg, ['drawing-canvas']);
+    this.onionSkinRenderer = pskl.rendering.OnionSkinRenderer.createInContainer(this.container, cfg, piskelController);
+    this.layersRenderer = new pskl.rendering.layer.LayersRenderer(this.container, cfg, piskelController);
 
     this.compositeRenderer = new pskl.rendering.CompositeRenderer();
     this.compositeRenderer
@@ -51,12 +50,12 @@
   ns.DrawingController.prototype.init = function () {
     this.initMouseBehavior();
 
-    $.subscribe(Events.TOOL_SELECTED, $.proxy(function(evt, toolBehavior) {
+    $.subscribe(Events.TOOL_SELECTED, (function(evt, toolBehavior) {
       this.currentToolBehavior = toolBehavior;
       this.overlayFrame.clear();
-    }, this));
+    }).bind(this));
 
-    $(window).resize($.proxy(this.startResizeTimer_, this));
+    window.addEventListener('resize', this.startResizeTimer_.bind(this));
 
     $.subscribe(Events.USER_SETTINGS_CHANGED, this.onUserSettingsChange_.bind(this));
     $.subscribe(Events.FRAME_SIZE_CHANGED, this.onFrameSizeChange_.bind(this));
@@ -77,13 +76,12 @@
   };
 
   ns.DrawingController.prototype.initMouseBehavior = function() {
-    var body = $('body');
-    this.container.mousedown($.proxy(this.onMousedown_, this));
+    this.container.addEventListener('mousedown', this.onMousedown_.bind(this));
 
     if (pskl.utils.UserAgent.isChrome || pskl.utils.UserAgent.isIE11) {
-      this.container.on('mousewheel', $.proxy(this.onMousewheel_, this));
+      this.container.addEventListener('mousewheel', this.onMousewheel_.bind(this));
     } else {
-      this.container.on('wheel', $.proxy(this.onMousewheel_, this));
+      this.container.addEventListener('wheel', this.onMousewheel_.bind(this));
     }
 
     window.addEventListener('mouseup', this.onMouseup_.bind(this));
@@ -94,22 +92,20 @@
     window.addEventListener('touchend', this.onTouchend_.bind(this));
 
     // Deactivate right click:
-    body.contextmenu(this.onCanvasContextMenu_);
-
+    document.body.addEventListener('contextmenu', this.onCanvasContextMenu_.bind(this));
   };
 
   ns.DrawingController.prototype.startResizeTimer_ = function () {
     if (this.resizeTimer) {
       window.clearInterval(this.resizeTimer);
     }
-    this.resizeTimer = window.setTimeout($.proxy(this.afterWindowResize_, this), 200);
+    this.resizeTimer = window.setTimeout(this.afterWindowResize_.bind(this), 200);
   };
 
   ns.DrawingController.prototype.afterWindowResize_ = function () {
     var initialWidth = this.compositeRenderer.getDisplaySize().width;
 
     this.compositeRenderer.setDisplaySize(this.getContainerWidth_(), this.getContainerHeight_());
-    this.centerColumnWrapperHorizontally_();
     var ratio = this.compositeRenderer.getDisplaySize().width / initialWidth;
     var newZoom = ratio * this.compositeRenderer.getZoom();
     this.compositeRenderer.setZoom(newZoom);
@@ -134,7 +130,6 @@
 
   ns.DrawingController.prototype.onFrameSizeChange_ = function () {
     this.compositeRenderer.setDisplaySize(this.getContainerWidth_(), this.getContainerHeight_());
-    this.centerColumnWrapperHorizontally_();
     this.compositeRenderer.setZoom(this.calculateZoom_());
     this.compositeRenderer.setOffset(0, 0);
     $.publish(Events.ZOOM_CHANGED);
@@ -242,8 +237,7 @@
     $.publish(Events.CURSOR_MOVED, [coords.x, coords.y]);
   };
 
-  ns.DrawingController.prototype.onMousewheel_ = function (jQueryEvent) {
-    var evt = jQueryEvent.originalEvent;
+  ns.DrawingController.prototype.onMousewheel_ = function (evt) {
     // Ratio between wheelDeltaY (mousewheel event) and deltaY (wheel event) is -40
     var delta;
     if (pskl.utils.UserAgent.isIE11) {
@@ -404,7 +398,8 @@
    * @private
    */
   ns.DrawingController.prototype.onCanvasContextMenu_ = function (event) {
-    if ($(event.target).closest('#drawing-canvas-container').length) {
+    // closest() not really available everywhere yet, just skip if missing.
+    if (event.target.closest && event.target.closest('#drawing-canvas-container')) {
       // Deactivate right click on drawing canvas only.
       event.preventDefault();
       event.stopPropagation();
@@ -442,17 +437,21 @@
   };
 
   ns.DrawingController.prototype.getAvailableHeight_ = function () {
-    return $('#main-wrapper').height();
+    return document.querySelector('#main-wrapper').getBoundingClientRect().height;
+  };
+
+  ns.DrawingController.prototype.getSelectorWidth_ = function (selector) {
+    return document.querySelector(selector).getBoundingClientRect().width;
   };
 
   ns.DrawingController.prototype.getAvailableWidth_ = function () {
-    var leftSectionWidth = $('.left-column').outerWidth(true);
-    var rightSectionWidth = $('.right-column').outerWidth(true);
-    var toolsContainerWidth = $('#tool-section').outerWidth(true);
-    var settingsContainerWidth = $('#application-action-section').outerWidth(true);
+    var leftSectionWidth = this.getSelectorWidth_('.left-column');
+    var rightSectionWidth = this.getSelectorWidth_('.right-column');
+    var toolsContainerWidth = this.getSelectorWidth_('#tool-section');
+    var settingsContainerWidth = this.getSelectorWidth_('#application-action-section');
 
     var usedWidth = leftSectionWidth + rightSectionWidth + toolsContainerWidth + settingsContainerWidth;
-    var availableWidth = $('#main-wrapper').width() - usedWidth;
+    var availableWidth = this.getSelectorWidth_('#main-wrapper') - usedWidth;
 
     var comfortMargin = 10;
     return availableWidth - comfortMargin;
@@ -464,17 +463,6 @@
 
   ns.DrawingController.prototype.getContainerWidth_ = function () {
     return this.getAvailableWidth_();
-  };
-
-  /**
-   * @private
-   */
-  ns.DrawingController.prototype.centerColumnWrapperHorizontally_ = function() {
-    var containerHeight = this.getContainerHeight_();
-    var verticalGapInPixel = Math.floor(($('#main-wrapper').height() - containerHeight) / 2);
-    $('#column-wrapper').css({
-      'top': verticalGapInPixel + 'px'
-    });
   };
 
   ns.DrawingController.prototype.getRenderer = function () {

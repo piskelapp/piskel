@@ -25,7 +25,7 @@
 .left-column {
   vertical-align: top;
   height: 100%;
-  margin-right: 7px;
+  padding-right: 7px;
   flex-shrink: 0;
 }
 
@@ -44,7 +44,8 @@
   flex-direction: column;
   position: relative;
 
-  margin-left: 10px;
+  /* Keep in sync with Constants.RIGHT_COLUMN_PADDING_LEFT */
+  padding-left: 10px;
   /* Add some padding for the absolutely positioned .cursor-coordinates */
   padding-bottom: 20px;
 }

@@ -48,7 +48,8 @@
     this.fpsRangeInput.addEventListener('change', this.onFpsRangeInputUpdate_.bind(this));
     this.fpsRangeInput.addEventListener('input', this.onFpsRangeInputUpdate_.bind(this));
 
-    document.querySelector('.right-column').style.width = Constants.ANIMATED_PREVIEW_WIDTH + 'px';
+    var width = Constants.ANIMATED_PREVIEW_WIDTH + Constants.RIGHT_COLUMN_PADDING_LEFT;
+    document.querySelector('.right-column').style.width = width + 'px';
 
     var addEvent = pskl.utils.Event.addEventListener;
     addEvent(this.toggleOnionSkinButton, 'click', this.toggleOnionSkin_, this);

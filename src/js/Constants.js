@@ -19,6 +19,8 @@ var Constants = {
 
   PREVIEW_FILM_SIZE : 96,
   ANIMATED_PREVIEW_WIDTH : 200,
+  // Keep in sync with padding-left: 10px in layout.css
+  RIGHT_COLUMN_PADDING_LEFT : 10,
 
   DEFAULT_PEN_COLOR : '#000000',
   TRANSPARENT_COLOR : 'rgba(0, 0, 0, 0)',
