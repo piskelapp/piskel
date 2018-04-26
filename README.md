@@ -36,12 +36,23 @@ As well as some **icons** from the [Noun Project](http://thenounproject.com/) :
 ## Other Versions
 
 The web-based version is featured on **[piskelapp.com](http://piskelapp.com)**. Piskel supports the following browsers:
-   * **Chrome** (latest)
+  * **Chrome** (latest)
   * **Firefox** (latest)
   * **Edge** (latest)
   * **Internet Explorer** 11
 
 Offline desktop versions are available to **[download at piskelapp.com](https://www.piskelapp.com/download)** for Windows, Mac OS X and Linux. More details can be found on the [dedicated wiki page](https://github.com/piskelapp/piskel/wiki/Desktop-applications).
+
+## Support
+
+For general questions, website account information, or a support request you can:
+   * Twitter: send a direct message to **[@piskelapp](https://twitter.com/piskelapp)**
+   * Email: send an email to julian@piskelapp.com
+
+If you have a bug to report, a feature to propose, the best is to open an issue on GitHub:
+* **[Piskel issues](https://github.com/piskelapp/piskel/issues)** for the editor
+* **[Piskel-website issues](https://github.com/piskelapp/piskel-website/issues)** for anything else (user pages, piskel pages etc...)
+
 
 ## License
 
