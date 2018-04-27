@@ -11,9 +11,10 @@ Piskel
 ## About Piskel
 Piskel is an open-source, easy-to-use sprite editor for creating game sprites, animations and pixel-art. Free web-based and offline versions are also available at **[piskelapp.com](http://piskelapp.com)**.
 
+
 ## Table of Contents
 
-## Instillation
+## Installation
 
 ## Use Case
 
@@ -33,15 +34,20 @@ The following **libraries** are also used :
 As well as some **icons** from the [Noun Project](http://thenounproject.com/) :
 * Folder by Simple Icons from The Noun Project
 
-## Other Versions
+## Related Projects
 
-The web-based version is featured on **[piskelapp.com](http://piskelapp.com)**. Piskel supports the following browsers:
-  * **Chrome** (latest)
-  * **Firefox** (latest)
-  * **Edge** (latest)
-  * **Internet Explorer** 11
+### The **[Web-based Version](https://github.com/piskelapp/piskel-website)** of Piskel.
 
-Offline desktop versions are available to **[download at piskelapp.com](https://www.piskelapp.com/download)** for Windows, Mac OS X and Linux. More details can be found on the [dedicated wiki page](https://github.com/piskelapp/piskel/wiki/Desktop-applications).
+  Featured on **[piskelapp.com](http://piskelapp.com)**. 
+
+  Supports the following browsers: **Chrome, Firefox, Edge and Internet Explorer 11**
+
+### Desktop Versions of Piskel
+  Offline desktop versions are available for **[download at piskelapp.com](https://www.piskelapp.com/download)**.
+
+  Available for the following operating systems: **Windows, Mac OS X and Linux**
+  
+  More details can be found on the [dedicated wiki page](https://github.com/piskelapp/piskel/wiki/Desktop-applications).
 
 ## Support
 
