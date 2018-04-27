@@ -16,7 +16,10 @@ Piskel is an open-source, easy-to-use sprite editor for creating game sprites, a
 
 ## Installation
 
-## Use Case
+## Testing
+#### [Unit Tests](https://github.com/piskelapp/piskel/wiki/Test-Guidelines-%3A-Unit-tests)
+#### [Drawing Tests](https://github.com/piskelapp/piskel/wiki/Test-Guidelines-%3A-Drawing-tests)
+#### [Integration Tests](https://github.com/piskelapp/piskel/wiki/Test-Guidelines-%3A-Integration-tests)
 
 ### Code Build
 
@@ -36,7 +39,7 @@ As well as some **icons** from the [Noun Project](http://thenounproject.com/) :
 
 ## Related Projects
 
-### The **[Web-based Version](https://github.com/piskelapp/piskel-website)** of Piskel.
+### **[Web-based Version](https://github.com/piskelapp/piskel-website)** of Piskel
 
   Featured on **[piskelapp.com](http://piskelapp.com)**. 
 
