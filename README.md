@@ -21,7 +21,7 @@ Piskel is an open-source, easy-to-use sprite editor for creating game sprites, a
 #### [Drawing Tests](https://github.com/piskelapp/piskel/wiki/Test-Guidelines-%3A-Drawing-tests)
 #### [Integration Tests](https://github.com/piskelapp/piskel/wiki/Test-Guidelines-%3A-Integration-tests)
 
-### Code Build
+## Build
 
 The Piskel editor is purely built in **JavaScript, HTML and CSS**.
 
@@ -52,13 +52,18 @@ As well as some **icons** from the [Noun Project](http://thenounproject.com/) :
   
   More details can be found on the [dedicated wiki page](https://github.com/piskelapp/piskel/wiki/Desktop-applications).
 
+## Contributing
+  Please review the process for submitting pull requests.
+  Consistency is maintained through a mandatory [Code Style](https://github.com/piskelapp/piskel/wiki/Code-Style).
+  Contact information is provided in the Support section.
+
 ## Support
 
-For general questions, website account information, or a support request you can:
+For general questions, website account information or a support request:
    * Twitter: send a direct message to **[@piskelapp](https://twitter.com/piskelapp)**
    * Email: send an email to julian@piskelapp.com
 
-If you have a bug to report, a feature to propose, the best is to open an issue on GitHub:
+For bug reports, feature proposals and contribution requests:
 * **[Piskel issues](https://github.com/piskelapp/piskel/issues)** for the editor
 * **[Piskel-website issues](https://github.com/piskelapp/piskel-website/issues)** for anything else (user pages, piskel pages etc...)
 
