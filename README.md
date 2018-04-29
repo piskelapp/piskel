@@ -25,8 +25,8 @@ Node.js is an open-source, cross-platform JavaScript runtime environment built o
 * **Note:** Node.js does not automatically update `npm`. Use command lines to manually update `npm` after installation is complete.
   - Check which version of npm is installed with the command `npm -v`
   - If the installed version is not the latest version, a manual update using command lines may be necessary
-  - For Windows: `npm install npm --global // Update the `npm` CLI client`
-  - For Mac OS X: `sudo npm install npm --global // Update the `npm` CLI client`
+  - For Windows: ```npm install npm --global // Update the `npm` CLI client```
+  - For Mac OS X: ```sudo npm install npm --global // Update the `npm` CLI client```
   - For most other platforms: `npm install npm@latest -g` or `npm install npm@next`
 
 ## Testing
