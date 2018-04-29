@@ -17,21 +17,17 @@ Piskel is an open-source, easy-to-use sprite editor for creating game sprites, a
 ## Installation
 ### Development Environment Setup
 #### Install [Node.js](https://nodejs.org/en/)
-* [Download](https://nodejs.org/en/download/) the Node.js installer.
-* Run the Installation Wizard as an Administrator.
-* Verify Node.js is properly installed by entering the following command into the Command Prompt:
-```$ node -v```
-* If the installation is successful, the command will print the version of Node.js that is currently installed.
-  - *Node.js Installation Varification Example)*
-```
-$ node -v // 
-v6.9.5 //
-```
-* Update `npm`, the package manager bundled with Node.js, using the command:
-```
-npm install npm --global // Update the `npm` CLI client
-```
-* **Note:** Node.js does not automatically update `npm` so periodically check for updates via the manual command above.
+
+Node.js is an open-source, cross-platform JavaScript runtime environment built on Chrome's V8 JavaScript engine. The single-threaded, non-blocking event loop and low-level I/O API make Node.js lightweight and efficient. Node.js is bundled with `npm`,  npm is the package manager for JavaScript and the world's largest software registry.
+
+* [Download](https://nodejs.org/en/download/) the Node.js installer or binary file.
+* Visit the Node.js community wiki [Installation page](https://github.com/nodejs/node/wiki/Installation) for indepth guides on installing/building Node.js in Windows, Mac OS X, Linux, etc.
+* **Note:** Node.js does not automatically update `npm`. Use command lines to manually update `npm` after installation is complete.
+  - Check which version of npm is installed with the command `npm -v`
+  - If the installed version is not the latest version, a manual update using command lines may be necessary
+  - For Windows: `npm install npm --global // Update the `npm` CLI client`
+  - For Mac OS X: `sudo npm install npm --global // Update the `npm` CLI client`
+  - For most other platforms: `npm install npm@latest -g` or `npm install npm@next`
 
 ## Testing
 #### [Unit Tests](https://github.com/piskelapp/piskel/wiki/Test-Guidelines-%3A-Unit-tests)
