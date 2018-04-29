@@ -15,13 +15,30 @@ Piskel is an open-source, easy-to-use sprite editor for creating game sprites, a
 ## Table of Contents
 
 ## Installation
+### Development Environment Setup
+#### Install [Node.js](https://nodejs.org/en/)
+* [Download](https://nodejs.org/en/download/) the Node.js installer.
+* Run the Installation Wizard as an Administrator.
+* Verify Node.js is properly installed by entering the following command into the Command Prompt:
+```$ node -v```
+* If the installation is successful, the command will print the version of Node.js that is currently installed.
+  - *Node.js Installation Varification Example)*
+```
+$ node -v // 
+v6.9.5 //
+```
+* Update `npm`, the package manager bundled with Node.js, using the command:
+```
+npm install npm --global // Update the `npm` CLI client
+```
+* **Note:** Node.js does not automatically update `npm` so periodically check for updates via the manual command above.
 
 ## Testing
 #### [Unit Tests](https://github.com/piskelapp/piskel/wiki/Test-Guidelines-%3A-Unit-tests)
 #### [Drawing Tests](https://github.com/piskelapp/piskel/wiki/Test-Guidelines-%3A-Drawing-tests)
 #### [Integration Tests](https://github.com/piskelapp/piskel/wiki/Test-Guidelines-%3A-Integration-tests)
 
-## Build
+### Build
 
 The Piskel editor is purely built in **JavaScript, HTML and CSS**.
 
@@ -53,9 +70,10 @@ As well as some **icons** from the [Noun Project](http://thenounproject.com/) :
   More details can be found on the [dedicated wiki page](https://github.com/piskelapp/piskel/wiki/Desktop-applications).
 
 ## Contributing
-  Please review the process for submitting pull requests.
-  Consistency is maintained through a mandatory [Code Style](https://github.com/piskelapp/piskel/wiki/Code-Style).
-  Contact information is provided in the Support section.
+Contributors are always welcome. To maintain consistency and coherency, please review these guidelines before submitting.
+* Discuss any changes you wish to make with juliandescottes via issue, email, or twitter before making a change. Contact information is provided in the following Support section.
+* Consistency is maintained through a mandatory [Code Style](https://github.com/piskelapp/piskel/wiki/Code-Style).
+* Update the README.md with details of changes to the interface, additional environment variables, new testing protocols, links to useful documentation as added, etc.
 
 ## Support
 
