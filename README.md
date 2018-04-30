@@ -22,12 +22,21 @@ Node.js is an open-source, cross-platform JavaScript runtime environment built o
 
 * [Download](https://nodejs.org/en/download/) the Node.js installer or binary file.
 * Visit the Node.js community wiki [Installation page](https://github.com/nodejs/node/wiki/Installation) for indepth guides on installing/building Node.js in Windows, Mac OS X, Linux, etc.
-* **Note:** Node.js does not automatically update `npm`. Use command lines to manually update `npm` after installation is complete.
-  - Check which version of npm is installed with the command `npm -v`
-  - If the installed version is not the latest version, a manual update using command lines may be necessary
-  - For Windows: ```npm install npm --global // Update the `npm` CLI client```
-  - For Mac OS X: ```sudo npm install npm --global // Update the `npm` CLI client```
-  - For most other platforms: `npm install npm@latest -g` or `npm install npm@next`
+
+#### Update npm
+
+* **Note:** Node.js does not automatically update `npm`. Use command lines to manually update `npm` after installation.
+  - Check which version of npm is installed with the command `npm -v`.
+  - If the installed version of npm is not the latest version, perform a manual update by running `npm update -g npm`. Mac OS X may require the `sudo` prefix before the command.
+
+#### Install Grunt-CLI
+
+* [Install Grunt](https://gruntjs.com/installing-grunt)
+* Grunt and Grunt-CLI are installed via npm. Update npm **before** beginning the installation.
+* Run `npm install -g grunt`then run `npm install -g grunt-cli` to install Grunt and Grunt-CLI respectively.
+  - Windows: Run as Administrator
+  - Mac OS X: May require the `sudo` prefix
+* Further instructions configuring the CLI can be found on Grunt's [Installing the CLI](https://gruntjs.com/using-the-cli) page.
 
 ## Testing
 #### [Unit Tests](https://github.com/piskelapp/piskel/wiki/Test-Guidelines-%3A-Unit-tests)
