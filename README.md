@@ -21,7 +21,6 @@ To build piskel, you need:
 1. Node.js - A Javascript runtime environment.
 2. Grunt-CLI - The Grunt command line interface.
 3. Grunt - A JavaScript task runner.
-4. CasperJS - Used for integration tests.
 
 ### Development Environment Setup
 #### Install Node.js
@@ -58,14 +57,11 @@ Grunt-CLI is the Grunt command line interface. Installing Grunt-CLI globally ena
 * If depriciation warnings or other errors appear, run `npm update` in the piskel directory.
 * For further troubleshooting and installation tips, see the **Working with an existing Grunt project** section of Grunt's official [Getting started](https://gruntjs.com/getting-started) page. Also see the official npm [Getting Started](https://docs.npmjs.com/getting-started/what-is-npm) section.
 
-#### 
-
-
-
 ## Testing
-#### [Unit Tests](https://github.com/piskelapp/piskel/wiki/Test-Guidelines-%3A-Unit-tests)
-#### [Drawing Tests](https://github.com/piskelapp/piskel/wiki/Test-Guidelines-%3A-Drawing-tests)
-#### [Integration Tests](https://github.com/piskelapp/piskel/wiki/Test-Guidelines-%3A-Integration-tests)
+
+#### [Unit Tests](https://github.com/piskelapp/piskel/wiki/Test-Guidelines-%3A-Unit-tests) - Karma / Jasmine unit tests for utilities and services.
+#### [Drawing Tests](https://github.com/piskelapp/piskel/wiki/Test-Guidelines-%3A-Drawing-tests) - Custom integration tests for drawing tools using a record/replay utility.
+#### [Integration Tests](https://github.com/piskelapp/piskel/wiki/Test-Guidelines-%3A-Integration-tests) - CasperJS integration tests for controllers.
 
 ### Build
 
@@ -85,13 +81,14 @@ As well as some **icons** from the [Noun Project](http://thenounproject.com/) :
 
 ## Related Projects
 
-### **[Web-based Version](https://github.com/piskelapp/piskel-website)** of Piskel
-
-  Featured on **[piskelapp.com](http://piskelapp.com)**. 
+### Website Version of Piskel
+  Featured on **[piskelapp.com](http://piskelapp.com)**.
+  
+  Source code is located on the [Piskel-Website GitHub](https://github.com/piskelapp/piskel-website) page.
 
   Supports the following browsers: **Chrome, Firefox, Edge and Internet Explorer 11**
 
-### Desktop Versions of Piskel
+### Desktop Version of Piskel
   Offline desktop versions are available for **[download at piskelapp.com](https://www.piskelapp.com/download)**.
 
   Available for the following operating systems: **Windows, Mac OS X and Linux**
