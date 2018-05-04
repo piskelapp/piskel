@@ -15,19 +15,52 @@ Piskel is an open-source, easy-to-use sprite editor for creating game sprites, a
 ## Table of Contents
 
 ## Installation
-### Development Environment Setup
-#### Install [Node.js](https://nodejs.org/en/)
+### Prerequisites
+To build piskel, you need:
 
-Node.js is an open-source, cross-platform JavaScript runtime environment built on Chrome's V8 JavaScript engine. The single-threaded, non-blocking event loop and low-level I/O API make Node.js lightweight and efficient. Node.js is bundled with `npm`,  npm is the package manager for JavaScript and the world's largest software registry.
+1. Node.js - A Javascript runtime environment.
+2. Grunt-CLI - The Grunt command line interface.
+3. Grunt - A JavaScript task runner.
+4. CasperJS - Used for integration tests.
+
+### Development Environment Setup
+#### Install Node.js
+
+Node.js is an open-source, cross-platform JavaScript runtime environment built on Chrome's V8 JavaScript engine. The single-threaded, non-blocking event loop and low-level I/O API make Node.js lightweight and efficient. Node.js is bundled with `npm`, the package manager for JavaScript and the world's largest software registry.
 
 * [Download](https://nodejs.org/en/download/) the Node.js installer or binary file.
 * Visit the Node.js community wiki [Installation page](https://github.com/nodejs/node/wiki/Installation) for indepth guides on installing/building Node.js in Windows, Mac OS X, Linux, etc.
-* **Note:** Node.js does not automatically update `npm`. Use command lines to manually update `npm` after installation is complete.
-  - Check which version of npm is installed with the command `npm -v`
-  - If the installed version is not the latest version, a manual update using command lines may be necessary
-  - For Windows: ```npm install npm --global // Update the `npm` CLI client```
-  - For Mac OS X: ```sudo npm install npm --global // Update the `npm` CLI client```
-  - For most other platforms: `npm install npm@latest -g` or `npm install npm@next`
+
+#### Update npm
+
+* **Note:** Node.js does not automatically update `npm`. Use command lines to manually update `npm` after installation.
+  - Check which version of npm is installed with the `npm -v` command.
+  - If the installed version of `npm` is not the latest version, perform a manual update by running `npm update -g npm` or `npm update`. Mac OS X requires the `sudo` prefix.
+* Grunt and Grunt-CLI are installed via npm. Update npm **before** beginning the installation process for Grunt and Grunt-CLI.
+* More indepth information on npm can be found [here](https://www.npmjs.com/).
+
+#### Install Grunt-CLI
+
+Grunt-CLI is the Grunt command line interface. Installing Grunt-CLI globally enables the `grunt` command to be used anywhere on the user's system irregardless of the Grunt version installed locally to the project.
+
+* Run `npm install -g grunt-cli` to install Grunt-CLI globally.
+  - Windows: Run as Administrator
+  - Mac OS X: May require the `sudo` prefix
+* Instructions on configuring Grunt-CLI can be found on Grunt's [Installing the CLI](https://gruntjs.com/using-the-cli) page.
+  
+#### Repository Setup and Grunt Installation
+* Clone the repository from [piskel's github](https://github.com/piskelapp/piskel) page.
+* Go to the repository's directory using `cd piskel` and locally install the project dependencies by running `npm install`.
+* Check `npm install` worked correctly by confirming a node_modules directory exists. The new directory should contain the `grunt` package.
+  - Run `dir node_modules` to view a list of packages included in the directory.
+  - If grunt is not listed in the directory, run `npm install grunt` to install `grunt` locally.
+  - Run `dir node_modules` again to verify the `grunt` package was installed.
+* If depriciation warnings or other errors appear, run `npm update` in the piskel directory.
+* For further troubleshooting and installation tips, see the **Working with an existing Grunt project** section of Grunt's official [Getting started](https://gruntjs.com/getting-started) page. Also see the official npm [Getting Started](https://docs.npmjs.com/getting-started/what-is-npm) section.
+
+#### 
+
+
 
 ## Testing
 #### [Unit Tests](https://github.com/piskelapp/piskel/wiki/Test-Guidelines-%3A-Unit-tests)
@@ -69,6 +102,8 @@ As well as some **icons** from the [Noun Project](http://thenounproject.com/) :
 Contributors are always welcome. To maintain consistency and coherency, please review these guidelines before submitting.
 * Discuss any changes you wish to make with juliandescottes via issue, email, or twitter before making a change. Contact information is provided in the following Support section.
 * Consistency is maintained through a mandatory [Code Style](https://github.com/piskelapp/piskel/wiki/Code-Style).
+* Any new dialog has to be registered in DialogsController.js document.
+* New js & css files need to be listed in piskel-script-list.js and piskel-style-list.js documents.
 * Update the README.md with details of changes to the interface, additional environment variables, new testing protocols, links to useful documentation as added, etc.
 
 ## Support
