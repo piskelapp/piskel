@@ -44,6 +44,7 @@
     // State of drawing controller:
     this.isClicked = false;
     this.previousMousemoveTime = 0;
+    this.lastUpdateInputs_ = 0;
     this.currentToolBehavior = null;
   };
 
@@ -64,10 +65,16 @@
     pskl.app.shortcutService.registerShortcut(shortcuts.MISC.RESET_ZOOM, this.resetZoom_.bind(this));
     pskl.app.shortcutService.registerShortcut(shortcuts.MISC.INCREASE_ZOOM, this.updateZoom_.bind(this, 1));
     pskl.app.shortcutService.registerShortcut(shortcuts.MISC.DECREASE_ZOOM, this.updateZoom_.bind(this, -1));
+
     pskl.app.shortcutService.registerShortcut(shortcuts.MISC.OFFSET_UP, this.updateOffset_.bind(this, 'up'));
     pskl.app.shortcutService.registerShortcut(shortcuts.MISC.OFFSET_RIGHT, this.updateOffset_.bind(this, 'right'));
     pskl.app.shortcutService.registerShortcut(shortcuts.MISC.OFFSET_DOWN, this.updateOffset_.bind(this, 'down'));
     pskl.app.shortcutService.registerShortcut(shortcuts.MISC.OFFSET_LEFT, this.updateOffset_.bind(this, 'left'));
+
+    pskl.app.shortcutService.registerShortcut(shortcuts.MISC.CURSOR_UP, this.updateCursor_.bind(this, 'up'));
+    pskl.app.shortcutService.registerShortcut(shortcuts.MISC.CURSOR_RIGHT, this.updateCursor_.bind(this, 'right'));
+    pskl.app.shortcutService.registerShortcut(shortcuts.MISC.CURSOR_DOWN, this.updateCursor_.bind(this, 'down'));
+    pskl.app.shortcutService.registerShortcut(shortcuts.MISC.CURSOR_LEFT, this.updateCursor_.bind(this, 'left'));
 
     window.setTimeout(function () {
       this.afterWindowResize_();
@@ -152,6 +159,10 @@
    * @private
    */
   ns.DrawingController.prototype.onMousedown_ = function (event) {
+    if (this.isClicked) {
+      return;
+    }
+
     $.publish(Events.MOUSE_EVENT, [event, this]);
     var frame = this.piskelController.getCurrentFrame();
     var coords = this.getSpriteCoordinates(event.clientX, event.clientY);
@@ -200,6 +211,7 @@
   };
 
   /**
+   * Trigger tool move on key up in order to acknowledge modifier changes.
    * @private
    */
   ns.DrawingController.prototype.onKeyup_ = function (event) {
@@ -282,6 +294,83 @@
       off.x,
       off.y
     );
+  };
+
+  /**
+   * Update the current viewport offset of 1 pixel in the provided direction.
+   * Direction can be one of 'up', 'right', 'down', 'left'.
+   * Callback for the OFFSET_${DIR} shortcuts.
+   */
+  ns.DrawingController.prototype.updateCursor_ = function (dir) {
+    var x = this.currentX || 0;
+    var y = this.currentY || 0;
+    if (dir === 'up') {
+      y -= 1;
+    } else if (dir === 'right') {
+      x += 1;
+    } else if (dir === 'down') {
+      y += 1;
+    } else if (dir === 'left') {
+      x -= 1;
+    }
+
+    this.currentX = x;
+    this.currentY = y;
+
+    var screenCoordinates = this.getScreenCoordinates(x, y);
+
+    var event = {
+      'type': 'mousemove',
+      'button': 0,
+      'shiftKey': false,
+      'altKey': false,
+      'ctrlKey': false
+    };
+
+    event.clientX = screenCoordinates.x;
+    event.clientY = screenCoordinates.y;
+
+    this.onMousemove_(event);
+  };
+
+  ns.DrawingController.prototype.clickCursor_ = function () {
+    var x = this.currentX || 0;
+    var y = this.currentY || 0;
+
+    var screenCoordinates = this.getScreenCoordinates(x, y);
+
+    var event = {
+      'type': 'mousedown',
+      'button': 0,
+      'shiftKey': false,
+      'altKey': false,
+      'ctrlKey': false
+    };
+
+    event.clientX = screenCoordinates.x;
+    event.clientY = screenCoordinates.y;
+
+    this.onMousedown_(event);
+  };
+
+  ns.DrawingController.prototype.releaseCursor_ = function () {
+    var x = this.currentX || 0;
+    var y = this.currentY || 0;
+
+    var screenCoordinates = this.getScreenCoordinates(x, y);
+
+    var event = {
+      'type': 'mouseup',
+      'button': 0,
+      'shiftKey': false,
+      'altKey': false,
+      'ctrlKey': false
+    };
+
+    event.clientX = screenCoordinates.x;
+    event.clientY = screenCoordinates.y;
+
+    this.onMouseup_(event);
   };
 
   /**
@@ -436,6 +525,20 @@
 
     this.renderer.render(currentFrame);
     this.overlayRenderer.render(this.overlayFrame);
+
+    this.updateInputs_();
+  };
+
+  ns.DrawingController.prototype.updateInputs_ = function () {
+    var shortcuts = pskl.service.keyboard.Shortcuts;
+
+    if (pskl.app.inputService.isKeyPressed(shortcuts.MISC.CURSOR_CLICK)) {
+      this.clickCursor_();
+      this.isClickingCursor_ = true;
+    } else if (this.isClickingCursor_) {
+      this.releaseCursor_();
+      this.isClickingCursor_ = false;
+    }
   };
 
   /**

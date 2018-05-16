@@ -66,6 +66,11 @@
       OFFSET_RIGHT : createShortcut('move-right', 'Move viewport right', 'shift+right'),
       OFFSET_DOWN : createShortcut('move-down', 'Move viewport down', 'shift+down'),
       OFFSET_LEFT : createShortcut('move-left', 'Move viewport left', 'shift+left'),
+      CURSOR_UP : createShortcut('cursor-up', 'Move cursor up', 'alt+up'),
+      CURSOR_RIGHT : createShortcut('cursor-right', 'Move cursor right', 'alt+right'),
+      CURSOR_DOWN : createShortcut('cursor-down', 'Move cursor down', 'alt+down'),
+      CURSOR_LEFT : createShortcut('cursor-left', 'Move cursor left', 'alt+left'),
+      CURSOR_CLICK : createShortcut('cursor-click', 'Click cursor', 'SPACE'),
     },
 
     STORAGE : {
