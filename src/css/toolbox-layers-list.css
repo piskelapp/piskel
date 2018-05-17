@@ -85,6 +85,10 @@
   padding-right: 8px;
 }
 
+.layer-item-export {
+  padding-right: 8px;
+}
+
 .current-layer-item,
 .current-layer-item:hover {
   background : #333;

@@ -213,6 +213,13 @@
     }
   };
 
+  ns.PiskelController.prototype.setLayerExportedAt = function (index, flag) {
+    var layer = this.getLayerByIndex(index);
+    if (layer) {
+      layer.setExported(flag);
+    }
+  };
+
   ns.PiskelController.prototype.mergeDownLayerAt = function (index) {
     var layer = this.getLayerByIndex(index);
     var downLayer = this.getLayerByIndex(index - 1);

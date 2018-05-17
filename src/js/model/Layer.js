@@ -8,6 +8,7 @@
       this.name = name;
       this.frames = [];
       this.opacity = 1;
+      this.export = true;
     }
   };
 
@@ -44,6 +45,14 @@
       return;
     }
     this.opacity = +opacity.toFixed(3);
+  };
+
+  ns.Layer.prototype.isExported = function () {
+    return this.export;
+  };
+
+  ns.Layer.prototype.setExported = function (flag) {
+    this.export = flag;
   };
 
   ns.Layer.prototype.isTransparent = function () {
