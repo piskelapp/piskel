@@ -1,10 +1,10 @@
 Piskel
 ======
 
-[![Travis Status](https://api.travis-ci.org/piskelapp/piskel.png?branch=master)](https://travis-ci.org/piskelapp/piskel) [![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](http://gruntjs.com/)
+[![Travis Status](https://api.travis-ci.org/piskelapp/piskel.png?branch=master)](https://travis-ci.org/piskelapp/piskel) [![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](https://gruntjs.com/)
 
 Piskel is an easy-to-use sprite editor. It can be used to create game sprites, animations, pixel-art...
-It is the editor used in **[piskelapp.com](http://piskelapp.com)**.
+It is the editor used in **[piskelapp.com](https://www.piskelapp.com)**.
 
 <img
   src="https://screenletstore.appspot.com/img/95aaa0f0-37a4-11e7-a652-7b8128ce3e3b.png"
@@ -19,14 +19,14 @@ The Piskel editor is purely built in **JavaScript, HTML and CSS**.
 
 We also use the following **libraries** :
 * [spectrum](https://github.com/bgrins/spectrum) : awesome standalone colorpicker
-* [gifjs](http://jnordberg.github.io/gif.js/) : generate animated GIFs in javascript, using webworkers
+* [gifjs](https://jnordberg.github.io/gif.js/) : generate animated GIFs in javascript, using webworkers
 * [supergif](https://github.com/buzzfeed/libgif-js) : modified version of SuperGif to parse and import GIFs
 * [jszip](https://github.com/Stuk/jszip) : create, read and edit .zip files with Javascript
 * [canvas-toBlob](https://github.com/eligrey/canvas-toBlob.js/) : shim for canvas toBlob
-* [jquery](http://jquery.com/) : used sporadically in the application
-* [bootstrap-tooltip](http://getbootstrap.com/javascript/#tooltips) : nice tooltips
+* [jquery](https://jquery.com/) : used sporadically in the application
+* [bootstrap-tooltip](https://getbootstrap.com/javascript/#tooltips) : nice tooltips
 
-As well as some **icons** from the [Noun Project](http://thenounproject.com/) :
+As well as some **icons** from the [Noun Project](https://thenounproject.com/) :
 * Folder by Simple Icons from The Noun Project
 * (and probably one or two others)
 
