@@ -31,6 +31,7 @@
 }
 
 .canvas-container-wrapper {
+  position: relative;
   height :200px;
   width : 200px;
   overflow:hidden;

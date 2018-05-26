@@ -130,10 +130,22 @@
   ns.FrameRenderer.prototype.setOffset = function (x, y) {
     var width = pskl.app.piskelController.getWidth();
     var height = pskl.app.piskelController.getHeight();
-    var maxX = width - (this.displayWidth / this.zoom);
-    x = pskl.utils.Math.minmax(x, 0, maxX);
-    var maxY = height - (this.displayHeight / this.zoom);
-    y = pskl.utils.Math.minmax(y, 0, maxY);
+
+    var minX = 0;
+    var maxX = width - (this.displayWidth / (this.zoom ));
+    if (maxX > 0 ) {
+      minX -= this.displayWidth / (this.zoom * 2)
+      maxX += this.displayWidth / (this.zoom * 2)
+    }
+    x = pskl.utils.Math.minmax(x, minX, maxX);
+
+    var minY = 0;
+    var maxY = height - (this.displayHeight / (this.zoom));
+    if (maxY > 0) {
+      minY -= this.displayHeight / (this.zoom * 2)
+      maxY += this.displayHeight / (this.zoom * 2)
+    }
+    y = pskl.utils.Math.minmax(y, minY, maxY);
 
     this.offset.x = x;
     this.offset.y = y;
