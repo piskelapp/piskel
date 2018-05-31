@@ -132,18 +132,18 @@
     var height = pskl.app.piskelController.getHeight();
 
     var minX = 0;
-    var maxX = width - (this.displayWidth / (this.zoom ));
-    if (maxX > 0 ) {
-      minX -= this.displayWidth / (this.zoom * 2)
-      maxX += this.displayWidth / (this.zoom * 2)
+    var maxX = width - (this.displayWidth / (this.zoom));
+    if (maxX > 0) {
+      minX -= this.displayWidth / (this.zoom * 2);
+      maxX += this.displayWidth / (this.zoom * 2);
     }
     x = pskl.utils.Math.minmax(x, minX, maxX);
 
     var minY = 0;
     var maxY = height - (this.displayHeight / (this.zoom));
     if (maxY > 0) {
-      minY -= this.displayHeight / (this.zoom * 2)
-      maxY += this.displayHeight / (this.zoom * 2)
+      minY -= this.displayHeight / (this.zoom * 2);
+      maxY += this.displayHeight / (this.zoom * 2);
     }
     y = pskl.utils.Math.minmax(y, minY, maxY);
 
