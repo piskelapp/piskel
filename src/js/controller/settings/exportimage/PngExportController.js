@@ -31,6 +31,7 @@
     var downloadButton = document.querySelector('.png-download-button');
     var downloadPixiButton = document.querySelector('.png-pixi-download-button');
     var dataUriButton = document.querySelector('.datauri-open-button');
+    var selectedFrameDownloadButton = document.querySelector('.selected-frame-download-button');
 
     this.initLayoutSection_();
     this.updateDimensionLabel_();
@@ -39,6 +40,7 @@
     this.addEventListener(downloadButton, 'click', this.onDownloadClick_);
     this.addEventListener(downloadPixiButton, 'click', this.onPixiDownloadClick_);
     this.addEventListener(dataUriButton, 'click', this.onDataUriClick_);
+    this.addEventListener(selectedFrameDownloadButton, 'click', this.onDownloadSelectedFrameClick_);
     $.subscribe(Events.EXPORT_SCALE_CHANGED, this.onScaleChanged_);
   };
 
@@ -216,5 +218,20 @@
       popup.document.title = dataUri;
       popup.document.body.innerHTML = html;
     }.bind(this), 500);
+  };
+
+  ns.PngExportController.prototype.onDownloadSelectedFrameClick_ = function (evt) {
+    var frameIndex = this.piskelController.getCurrentFrameIndex();
+    var name = this.piskelController.getPiskel().getDescriptor().name;
+    var fileName = name + '-' + (frameIndex + 1) + '.png';
+    var canvas = this.piskelController.renderFrameAt(frameIndex, true);
+    var zoom = this.exportController.getExportZoom();
+    if (zoom != 1) {
+      canvas = pskl.utils.ImageResizer.resize(canvas, canvas.width * zoom, canvas.height * zoom, false);
+    }
+
+    pskl.utils.BlobUtils.canvasToBlob(canvas, function(blob) {
+      pskl.utils.FileUtils.downloadAsFile(blob, fileName);
+    });
   };
 })();

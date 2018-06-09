@@ -144,7 +144,8 @@
   overflow: hidden;
 }
 
-.export-panel-gif .button {
+.export-panel-gif .button,
+.export-panel-png .button {
   margin-right: 5px;
   width: 75px;
   flex-shrink: 0;
@@ -152,11 +153,6 @@
 
 .export-panel-png .textfield {
   width: 50px;
-}
-
-.png-export-dimension-info,
-.png-export-datauri-info {
-  margin-left: 5px;
 }
 
 #png-export-columns,

@@ -14,24 +14,43 @@
         </div>
       </div>
     </div>
-    <div class="export-panel-section export-panel-row">
-      <button type="button" class="button button-primary png-download-button">Download</button>
-      <span class="png-export-dimension-info export-info"></span>
+    <div class="export-panel-section">
+      <div style="padding-bottom: 5px">
+        <span class="highlight export-panel-row">Spritesheet file export: </span>
+      </div>
+      <div class="export-panel-row">
+        <button type="button" class="button button-primary png-download-button">Download</button>
+        <span class="png-export-dimension-info export-info"></span>
+      </div>
     </div>
-    <div class="export-panel-section export-panel-row png-export-datauri-section">
-      <button type="button" style="white-space: nowrap;" class="button button-primary datauri-open-button">To data-uri</button>
-      <span class="png-export-datauri-info export-info">Open the PNG export in your browser as a data-uri</span>
+    <div class="export-panel-section">
+      <div style="padding-bottom: 5px">
+        <span class="highlight export-panel-row">Spritesheet data-uri export: </span>
+      </div>
+      <div class="export-panel-row">
+        <button type="button" style="white-space: nowrap;" class="button button-primary datauri-open-button">Open</button>
+        <span class="export-info">Open the spritesheet as a data-uri</span>
+      </div>
     </div>
 
     <div class="export-panel-section">
       <div style="padding-bottom: 5px">
-        <span class="highlight export-panel-row">Export for PixiJS Movie: </span>
+        <span class="highlight export-panel-row">PixiJS Movie export: </span>
       </div>
       <div class="export-panel-row">
         <button type="button" class="button button-primary png-pixi-download-button"/>Download</button>
-        <span class="png-export-dimension-info export-info">Spritesheet with JSON metadata</span>
+        <span class="export-info">Spritesheet with JSON metadata</span>
       </div>
+    </div>
 
+    <div class="export-panel-section">
+      <div style="padding-bottom: 5px">
+        <span class="highlight">Selected frame export:</span>
+      </div>
+      <div class="export-panel-row">
+        <button type="button" class="button button-primary selected-frame-download-button"/>Download</button>
+        <span class="export-info">Single frame as a PNG file</span>
+      </div>
     </div>
 
   </div>
