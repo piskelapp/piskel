@@ -130,3 +130,10 @@ function setPiskelFromImageSrc(src) {
       });\
     }');
 }
+
+function beforeTest() {
+  // Cleanup local storage.
+  casper.evaluate(function() {
+    localStorage.clear();
+  }, {});
+}

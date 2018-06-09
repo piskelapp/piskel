@@ -1,9 +1,12 @@
 /* globals casper, setPiskelFromGrid, isDrawerExpanded, getValue, isChecked,
    evalLine, waitForEvent, piskelFrameEqualsGrid, replaceFunction, setPiskelFromImageSrc */
 
-casper.test.begin('PNG export test, with 2x scaling', 16, function(test) {
-  test.timeout = test.fail.bind(test, ['Test timed out']);
+// PNG export will be tested with single frame export and spritesheet export.
+// This global variable will be set before starting each test.
+var testButtonClass;
 
+casper.test.begin('PNG export test, with 2x scaling', 32, function(test) {
+  test.timeout = test.fail.bind(test, ['Test timed out']);
   function onTestStart() {
     test.assertExists('#drawing-canvas-container canvas', 'Piskel ready, test starting');
 
@@ -59,8 +62,8 @@ casper.test.begin('PNG export test, with 2x scaling', 16, function(test) {
     test.assertEquals(getValue('[name="resize-height"]'), "4", 'Resize height is 4px');
     test.assertEquals(getValue('[name="resize-height"]'), "4", 'Resize height is 4px');
 
-    casper.echo('Clicking on Download PNG button');
-    casper.click('.png-download-button');
+    casper.echo('Clicking on the export button');
+    casper.click(testButtonClass);
 
     casper.echo('Wait for #casper-imagedata-ready');
     casper.waitForSelector('#casper-imagedata-ready', onImageDataReady, test.timeout, 10000);
@@ -111,8 +114,19 @@ casper.test.begin('PNG export test, with 2x scaling', 16, function(test) {
   casper
     .start(casper.cli.get('baseUrl')+"/?debug")
     .then(function () {
-      casper.echo("URL loaded");
+      casper.echo("Test with spritesheet PNG export");
+      beforeTest();
+      testButtonClass = '.png-download-button';
       casper.waitForSelector('#drawing-canvas-container canvas', onTestStart, test.timeout, 20000);
+    })
+    .then(function () {
+      casper.start(casper.cli.get('baseUrl')+"/?debug")
+      .then(function () {
+        casper.echo("Test with single frame PNG export");
+        beforeTest();
+        testButtonClass = '.selected-frame-download-button';
+        casper.waitForSelector('#drawing-canvas-container canvas', onTestStart, test.timeout, 20000);
+      })
     })
     .run(function () {
       test.done();
