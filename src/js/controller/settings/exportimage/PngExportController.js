@@ -151,9 +151,9 @@
   };
 
   // Used and overridden in casper integration tests.
-  ns.PngExportController.prototype.downloadCanvas_ = function (canvas) {
+  ns.PngExportController.prototype.downloadCanvas_ = function (canvas, name) {
     // Generate file name
-    var name = this.piskelController.getPiskel().getDescriptor().name;
+    name = name || this.piskelController.getPiskel().getDescriptor().name;
     var fileName = name + '.png';
 
     // Transform to blob and start download.
@@ -223,15 +223,13 @@
   ns.PngExportController.prototype.onDownloadSelectedFrameClick_ = function (evt) {
     var frameIndex = this.piskelController.getCurrentFrameIndex();
     var name = this.piskelController.getPiskel().getDescriptor().name;
-    var fileName = name + '-' + (frameIndex + 1) + '.png';
     var canvas = this.piskelController.renderFrameAt(frameIndex, true);
     var zoom = this.exportController.getExportZoom();
     if (zoom != 1) {
       canvas = pskl.utils.ImageResizer.resize(canvas, canvas.width * zoom, canvas.height * zoom, false);
     }
 
-    pskl.utils.BlobUtils.canvasToBlob(canvas, function(blob) {
-      pskl.utils.FileUtils.downloadAsFile(blob, fileName);
-    });
+    var fileName = name + '-' + (frameIndex + 1) + '.png';
+    this.downloadCanvas_(canvas, fileName);
   };
 })();
