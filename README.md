@@ -66,7 +66,7 @@ Grunt-CLI is the Grunt command line interface. Installing Grunt-CLI globally ena
   
 #### Repository Setup and Grunt Installation
 * Clone the repository from [piskel's github](https://github.com/piskelapp/piskel) page.
-* Go to the repository's directory using `cd piskel` and locally install the project dependencies by running `npm install`.
+* Enter the directory from the command prompt using `cd piskel` and locally install the project dependencies by running `npm install`.
 * Check `npm install` worked correctly by confirming a node_modules directory exists. The new directory should contain the `grunt` package.
   - Run `dir node_modules` to view a list of packages included in the directory.
   - If grunt is not listed in the directory, run `npm install grunt` to install `grunt` locally.
