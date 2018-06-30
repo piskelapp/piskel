@@ -11,8 +11,25 @@ Piskel
 ## About Piskel
 Piskel is an open-source, easy-to-use sprite editor for creating game sprites, animations and pixel-art. Free web-based and offline versions are also available at **[piskelapp.com](http://piskelapp.com)**.
 
-
 ## Table of Contents
+- [Installation](#installation)
+  * [Prerequisites](#prerequisites)
+  * [Development Environment Setup](#development-environment-setup)
+    + [Install Node.js](#install-nodejs)
+    + [Update npm](#update-npm)
+    + [Install Grunt-CLI](#install-grunt-cli)
+    + [Repository Setup and Grunt Installation](#repository-setup-and-grunt-installation)
+- [Testing](#testing)
+    + [Unit Tests](#unit-tests)
+    + [Drawing Tests](#drawing-tests)
+    + [Integration Tests](#integration-tests)
+- [Build](#build)
+- [Related Projects](#related-projects)
+  * [Website Version of Piskel](#website-version-of-piskel)
+  * [Desktop Version of Piskel](#desktop-version-of-piskel)
+- [Contributing](#contributing)
+- [Support](#support)
+- [License](#license)
 
 ## Installation
 ### Prerequisites
@@ -59,11 +76,20 @@ Grunt-CLI is the Grunt command line interface. Installing Grunt-CLI globally ena
 
 ## Testing
 
-#### [Unit Tests](https://github.com/piskelapp/piskel/wiki/Test-Guidelines-%3A-Unit-tests) - Karma / Jasmine unit tests for utilities and services.
-#### [Drawing Tests](https://github.com/piskelapp/piskel/wiki/Test-Guidelines-%3A-Drawing-tests) - Custom integration tests for drawing tools using a record/replay utility.
-#### [Integration Tests](https://github.com/piskelapp/piskel/wiki/Test-Guidelines-%3A-Integration-tests) - CasperJS integration tests for controllers.
+#### Unit Tests
+* Karma / Jasmine unit tests for utilities and services.
+* [Unit Tests Wiki Page](https://github.com/piskelapp/piskel/wiki/Test-Guidelines-%3A-Unit-tests) 
 
-### Build
+#### Drawing Tests
+* Custom integration tests for drawing tools using a record/replay utility.
+* [Drawing Tests Wiki Page](https://github.com/piskelapp/piskel/wiki/Test-Guidelines-%3A-Drawing-tests) 
+
+#### Integration Tests
+* CasperJS integration tests for controllers.
+* [Integration Tests Wiki Page](https://github.com/piskelapp/piskel/wiki/Test-Guidelines-%3A-Integration-tests) 
+
+
+## Build
 
 The Piskel editor is purely built in **JavaScript, HTML and CSS**.
 
