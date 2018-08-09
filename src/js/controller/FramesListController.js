@@ -28,7 +28,7 @@
   ns.FramesListController.prototype.init = function() {
     $.subscribe(Events.TOOL_RELEASED, this.flagForRedraw_.bind(this));
     $.subscribe(Events.PISKEL_RESET, this.flagForRedraw_.bind(this, true));
-    $.subscribe(Events.USER_SETTINGS_CHANGED, this.flagForRedraw_.bind(this));
+    $.subscribe(Events.USER_SETTINGS_CHANGED, this.flagForRedraw_.bind(this, true));
 
     $.subscribe(Events.PISKEL_RESET, this.refreshZoom_.bind(this));
 
