@@ -22,7 +22,7 @@
 
     var cfg = {
       'zoom': this.calculateZoom_(),
-      'supportGridRendering' : true,
+      'supportGridRendering' : false,
       'height' : this.getContainerHeight_(),
       'width' : this.getContainerWidth_(),
       'xOffset' : 0,
@@ -30,9 +30,10 @@
     };
 
     this.overlayRenderer = new pskl.rendering.frame.CachedFrameRenderer(this.container, cfg, ['canvas-overlay']);
-    this.renderer = new pskl.rendering.frame.CachedFrameRenderer(this.container, cfg, ['drawing-canvas']);
     this.onionSkinRenderer = pskl.rendering.OnionSkinRenderer.createInContainer(this.container, cfg, piskelController);
     this.layersRenderer = new pskl.rendering.layer.LayersRenderer(this.container, cfg, piskelController);
+    cfg.supportGridRendering = true;
+    this.renderer = new pskl.rendering.frame.CachedFrameRenderer(this.container, cfg, ['drawing-canvas']);
 
     this.compositeRenderer = new pskl.rendering.CompositeRenderer();
     this.compositeRenderer
