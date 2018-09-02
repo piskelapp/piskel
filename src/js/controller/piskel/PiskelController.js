@@ -158,6 +158,29 @@
     });
   };
 
+  ns.PiskelController.prototype.getFrames = function () {
+    var layer = this.getCurrentLayer();
+    return layer.getFrames();
+  };
+
+  ns.PiskelController.prototype.getToggledFrameIndexes = function () {
+    var frameIndexes = this.getFrames()
+    /* Replace each frame with its index
+       or -1 if it's not toggled */
+    .map(
+      function(frame, idx) {
+        var idx;
+        idx += 1;
+        return (frame.toggled) ? idx - 1 : -1;
+      })
+    /* Filter out untoggled frames */
+    .filter(
+      function(frame) {
+        return frame >= 0;
+      });
+    return frameIndexes;
+  };
+
   ns.PiskelController.prototype.getFrameCount = function () {
     return this.piskel.getFrameCount();
   };

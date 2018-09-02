@@ -281,11 +281,13 @@
       return this.piskelController.getCurrentFrameIndex();
     } else {
       var index = Math.floor(this.elapsedTime / (1000 / this.fps));
-      if (!this.piskelController.hasFrameAt(index)) {
+      var frameIndexes = this.piskelController.getToggledFrameIndexes();
+      if (frameIndexes.length <= index) {
         this.elapsedTime = 0;
-        index = 0;
+        index = (frameIndexes.length) ? frameIndexes[0] : this.piskelController.getCurrentFrameIndex();
+        return index;
       }
-      return index;
+      return frameIndexes[index];
     }
   };
 
