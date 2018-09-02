@@ -9,6 +9,7 @@
       this.version = 0;
       this.pixels = ns.Frame.createEmptyPixelGrid_(width, height);
       this.stateIndex = 0;
+      this.toggled = true;
     } else {
       throw 'Bad arguments in pskl.model.Frame constructor : ' + width + ', ' + height;
     }

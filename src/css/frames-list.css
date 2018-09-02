@@ -135,6 +135,10 @@
   cursor: default;
 }
 
+.preview-tile .tile-overlay.tile-count.toggled {
+  background-color: rgba(111, 215, 0, 0.6);
+}
+
 .preview-tile .tile-overlay.delete-frame-action {
    top: 0;
    right: 0;

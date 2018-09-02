@@ -5,7 +5,8 @@
     SELECT : 'select',
     CLONE : 'clone',
     DELETE : 'delete',
-    NEW_FRAME : 'newframe'
+    NEW_FRAME : 'newframe',
+    TOGGLE: 'toggle'
   };
 
   ns.FramesListController = function (piskelController, container) {
@@ -114,6 +115,9 @@
       this.tiles.push(newtile);
       this.previewList.insertBefore(newtile, this.addFrameTile);
       this.updateScrollerOverflows();
+    } else if (action == ACTION.TOGGLE) {
+      var frame = this.piskelController.getCurrentLayer().getFrameAt(index);
+      frame.toggled = !frame.toggled;
     }
 
     this.flagForRedraw_();
@@ -127,9 +131,18 @@
       // Remove selected class
       this.tiles[i].classList.remove('selected');
 
+      // Remove toggle class
+      this.tiles[i].querySelector('.tile-count').classList.remove('toggled');
+
       // Update tile numbers
       this.tiles[i].setAttribute('data-tile-number', i);
       this.tiles[i].querySelector('.tile-count').innerHTML = (i + 1);
+
+      // Update toggle
+      var frame = this.piskelController.getCurrentLayer().getFrameAt(i);
+      if (frame.toggled) {
+        this.tiles[i].querySelector('.tile-count').classList.add('toggled');
+      }
 
       // Check if any tile is updated
       var hash = this.piskelController.getCurrentLayer().getFrameAt(i).getHash();
@@ -290,8 +303,12 @@
     previewTileRoot.appendChild(dndHandle);
 
     // Add tile count
-    var tileCount = document.createElement('div');
-    tileCount.className = 'tile-overlay tile-count';
+    var tileCount = document.createElement('button');
+    tileCount.setAttribute('rel', 'tooltip');
+    tileCount.setAttribute('title', 'Toggle for preview');
+    tileCount.setAttribute('data-tile-number', tileNumber);
+    tileCount.setAttribute('data-tile-action', ACTION.TOGGLE);
+    tileCount.className = 'tile-overlay tile-count toggle-frame-action';
     tileCount.innerHTML = tileNumber + 1;
     previewTileRoot.appendChild(tileCount);
 
