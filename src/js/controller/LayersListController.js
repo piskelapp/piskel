@@ -189,8 +189,6 @@
       this.mergeDownCurrentLayer_();
     } else if (action == 'edit') {
       this.renameCurrentLayer_();
-    } else if (action == 'alpha') {
-      this.changeAlphaOfLayer_();
     }
   };
 
@@ -205,6 +203,4 @@
       pskl.UserSettings.set(pskl.UserSettings.LAYER_OPACITY, Constants.DEFAULT.LAYER_OPACITY);
     }
   };
-
-
 })();
