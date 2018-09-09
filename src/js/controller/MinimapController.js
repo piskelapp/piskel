@@ -52,17 +52,19 @@
     // before adding the offset coming from the drawing area
     var leftMargin = (containerWidth - Math.max(minimapSize.width, previewSize.width)) / 2;
     var leftOffset = offset.x * this.previewController.getZoom();
+    var minLeft = minimapSize.width < containerWidth ? (-containerWidth / 2) : 0;
     var left = leftMargin + leftOffset;
 
     var topMargin = (containerHeight - Math.max(minimapSize.height, previewSize.height)) / 2;
     var topOffset = offset.y * this.previewController.getZoom();
+    var minTop = minimapSize.height < containerHeight ? (-containerHeight / 2) : 0;
     var top = topMargin + topOffset;
 
     this.minimapEl.style.display = 'block';
     this.minimapEl.style.width = Math.min(minimapSize.width, containerWidth) + 'px';
     this.minimapEl.style.height = Math.min(minimapSize.height, containerHeight) + 'px';
-    this.minimapEl.style.left = (Math.max(0, left) + Constants.RIGHT_COLUMN_PADDING_LEFT) +  'px';
-    this.minimapEl.style.top = Math.max(0, top) +  'px';
+    this.minimapEl.style.left = Math.max(minLeft, left) +  'px';
+    this.minimapEl.style.top = Math.max(minTop, top) +  'px';
 
     this.isVisible = true;
   };
