@@ -116,8 +116,7 @@
       this.previewList.insertBefore(newtile, this.addFrameTile);
       this.updateScrollerOverflows();
     } else if (action == ACTION.TOGGLE) {
-      var frame = this.piskelController.getCurrentLayer().getFrameAt(index);
-      frame.toggled = !frame.toggled;
+      this.piskelController.toggleFrameAt(index);
     }
 
     this.flagForRedraw_();
@@ -138,9 +137,8 @@
       this.tiles[i].setAttribute('data-tile-number', i);
       this.tiles[i].querySelector('.tile-count').innerHTML = (i + 1);
 
-      // Update toggle
-      var frame = this.piskelController.getCurrentLayer().getFrameAt(i);
-      if (frame.toggled) {
+      // Update visibility
+      if (this.piskelController.hasVisibleFrameAt(i)) {
         this.tiles[i].querySelector('.tile-count').classList.add('toggled');
       }
 

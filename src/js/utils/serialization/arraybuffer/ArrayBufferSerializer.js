@@ -101,7 +101,22 @@
         framesData.push({uri: dataUri, length: dataUriLength});
       }
 
-      var bytes = ns.ArrayBufferSerializer.calculateRequiredBytes(piskel, framesData);
+      var frames = pskl.app.piskelController.getLayerAt(0).getFrames();
+      var hiddenFrames = frames.map(function (frame, index) {
+        if (frame.visible) {
+          return -1;
+        }
+        return index;
+      }).filter(function (frameIndex) {
+        return frameIndex !== -1;
+      });
+      var serializedHiddenFrames = hiddenFrames.join('-');
+
+      var bytes = ns.ArrayBufferSerializer.calculateRequiredBytes(
+        piskel,
+        framesData,
+        serializedHiddenFrames
+      );
 
       var buffer = new ArrayBuffer(bytes);
       var arr8 = new Uint8Array(buffer);
@@ -130,21 +145,33 @@
       // Layers meta
       arr16[6] = piskel.getLayers().length;
 
+      // Frames meta
+      arr16[7] = serializedHiddenFrames.length;
+
+      var currentIndex = 8;
+
       /********/
       /* DATA */
       /********/
       // Descriptor name
       for (i = 0; i < descriptorNameLength; i++) {
-        arr16[7 + i] = descriptorName.charCodeAt(i);
+        arr16[currentIndex + i] = descriptorName.charCodeAt(i);
       }
+      currentIndex = currentIndex + descriptorNameLength;
 
       // Descriptor description
       for (i = 0; i < descriptorDescriptionLength; i++) {
-        arr16[7 + descriptorNameLength + i] = descriptorDescription.charCodeAt(i);
+        arr16[currentIndex + i] = descriptorDescription.charCodeAt(i);
       }
+      currentIndex = currentIndex + descriptorDescriptionLength;
+
+      // Hidden frames
+      for (i = 0; i < serializedHiddenFrames.length; i++) {
+        arr16[currentIndex + i] = serializedHiddenFrames.charCodeAt(i);
+      }
+      currentIndex = currentIndex + serializedHiddenFrames.length;
 
       // Layers
-      var layerStartIndex = 7 + descriptorNameLength + descriptorDescriptionLength;
       for (i = 0, layers = piskel.getLayers(); i < layers.length; i++) {
         var layer = layers[i];
         var frames = layer.getFrames();
@@ -158,23 +185,23 @@
         dataUriLength = framesData[i].length;
 
         // Meta
-        arr16[layerStartIndex] = layerNameLength;
-        arr16[layerStartIndex + 1] = Math.floor(opacity * 65535);
-        arr16[layerStartIndex + 2] = frameCount;
-        arr16[layerStartIndex + 3] = ((dataUriLength & 0xffff0000) >> 16) >>> 0; // Upper 16
-        arr16[layerStartIndex + 4] = ((dataUriLength & 0x0000ffff)) >>> 0;       // Lower 16
+        arr16[currentIndex] = layerNameLength;
+        arr16[currentIndex + 1] = Math.floor(opacity * 65535);
+        arr16[currentIndex + 2] = frameCount;
+        arr16[currentIndex + 3] = ((dataUriLength & 0xffff0000) >> 16) >>> 0; // Upper 16
+        arr16[currentIndex + 4] = ((dataUriLength & 0x0000ffff)) >>> 0;       // Lower 16
 
         // Name
         for (j = 0; j < layerNameLength; j++) {
-          arr16[layerStartIndex + 5 + j] = layerName.charCodeAt(j);
+          arr16[currentIndex + 5 + j] = layerName.charCodeAt(j);
         }
 
         // Data URI
         for (j = 0; j < dataUriLength; j++) {
-          arr8[(layerStartIndex + 5 + layerNameLength) * 2 + j] = dataUri.charCodeAt(j);
+          arr8[(currentIndex + 5 + layerNameLength) * 2 + j] = dataUri.charCodeAt(j);
         }
 
-        layerStartIndex += Math.ceil(5 + layerNameLength + (dataUriLength / 2));
+        currentIndex += Math.ceil(5 + layerNameLength + (dataUriLength / 2));
       }
 
       return buffer;

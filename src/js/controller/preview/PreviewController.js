@@ -281,7 +281,7 @@
       return this.piskelController.getCurrentFrameIndex();
     } else {
       var index = Math.floor(this.elapsedTime / (1000 / this.fps));
-      var frameIndexes = this.piskelController.getToggledFrameIndexes();
+      var frameIndexes = this.piskelController.getVisibleFrameIndexes();
       if (frameIndexes.length <= index) {
         this.elapsedTime = 0;
         index = (frameIndexes.length) ? frameIndexes[0] : this.piskelController.getCurrentFrameIndex();

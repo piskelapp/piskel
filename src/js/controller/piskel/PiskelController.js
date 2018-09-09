@@ -152,31 +152,35 @@
     this.setCurrentFrameIndex(index + 1);
   };
 
+  ns.PiskelController.prototype.toggleFrameAt = function (index) {
+    this.getLayers().forEach(function (l) {
+      l.toggleFrameAt(index);
+    });
+  };
+
   ns.PiskelController.prototype.moveFrame = function (fromIndex, toIndex) {
     this.getLayers().forEach(function (l) {
       l.moveFrame(fromIndex, toIndex);
     });
   };
 
-  ns.PiskelController.prototype.getFrames = function () {
-    var layer = this.getCurrentLayer();
-    return layer.getFrames();
+  ns.PiskelController.prototype.hasVisibleFrameAt = function (index) {
+    var frame = this.getCurrentLayer().getFrameAt(index);
+    return frame ? frame.isVisible() : false;
   };
 
-  ns.PiskelController.prototype.getToggledFrameIndexes = function () {
-    var frameIndexes = this.getFrames()
+  ns.PiskelController.prototype.getVisibleFrameIndexes = function () {
+    var frameIndexes = this.getCurrentLayer().getFrames()
     /* Replace each frame with its index
-       or -1 if it's not toggled */
+       or -1 if it's not visible */
     .map(
       function(frame, idx) {
-        var idx;
-        idx += 1;
-        return (frame.toggled) ? idx - 1 : -1;
+        return (frame.visible) ? idx : -1;
       })
-    /* Filter out untoggled frames */
+    /* Filter out invisible frames */
     .filter(
-      function(frame) {
-        return frame >= 0;
+      function(index) {
+        return index >= 0;
       });
     return frameIndexes;
   };
