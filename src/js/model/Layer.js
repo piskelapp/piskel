@@ -110,6 +110,15 @@
     }
   };
 
+  ns.Layer.prototype.toggleFrameAt = function (index) {
+    var frame = this.frames[index];
+    if (frame) {
+      frame.toggleVisibility();
+    } else {
+      console.error('Frame not found in toggleFrameAt (at %s)', index);
+    }
+  };
+
   ns.Layer.prototype.size = function () {
     return this.frames.length;
   };

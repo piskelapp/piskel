@@ -36,23 +36,36 @@
       // Layers meta
       var layerCount = arr16[6];
 
+      // Layers meta
+      var serializedHiddenFramesLength = arr16[7];
+
+      var currentIndex = 8;
       /********/
       /* DATA */
       /********/
       // Descriptor name
       var descriptorName = '';
       for (i = 0; i < descriptorNameLength; i++) {
-        descriptorName += String.fromCharCode(arr16[7 + i]);
+        descriptorName += String.fromCharCode(arr16[currentIndex + i]);
       }
+      currentIndex += descriptorNameLength;
 
       // Descriptor description
       var descriptorDescription = '';
       for (i = 0; i < descriptorDescriptionLength; i++) {
-        descriptorDescription = String.fromCharCode(arr16[7 + descriptorNameLength + i]);
+        descriptorDescription = String.fromCharCode(arr16[8 + descriptorNameLength + i]);
       }
+      currentIndex += descriptorDescriptionLength;
+
+      // Hidden frames
+      var serializedHiddenFrames = '';
+      for (i = 0; i < serializedHiddenFramesLength; i++) {
+        serializedHiddenFrames = String.fromCharCode(arr16[8 + descriptorNameLength + i]);
+      }
+      var hiddenFrames = serializedHiddenFrames.split('-');
+      currentIndex += serializedHiddenFramesLength;
 
       // Layers
-      var layerStartIndex = 7 + descriptorNameLength + descriptorDescriptionLength;
       var layers = [];
       var layer;
       for (i = 0; i < layerCount; i++) {
@@ -60,27 +73,27 @@
         var frames = [];
 
         // Meta
-        var layerNameLength = arr16[layerStartIndex];
-        var opacity =  arr16[layerStartIndex + 1] / 65535;
-        var frameCount = arr16[layerStartIndex + 2];
-        var dataUriLengthFirstHalf = arr16[layerStartIndex + 3];
-        var dataUriLengthSecondHalf = arr16[layerStartIndex + 4];
+        var layerNameLength = arr16[currentIndex];
+        var opacity =  arr16[currentIndex + 1] / 65535;
+        var frameCount = arr16[currentIndex + 2];
+        var dataUriLengthFirstHalf = arr16[currentIndex + 3];
+        var dataUriLengthSecondHalf = arr16[currentIndex + 4];
         var dataUriLength = (dataUriLengthSecondHalf >>> 0) | (dataUriLengthFirstHalf << 16 >>> 0);
 
         // Name
         var layerName = '';
         for (j = 0; j < layerNameLength; j++) {
-          layerName += String.fromCharCode(arr16[layerStartIndex + 5 + j]);
+          layerName += String.fromCharCode(arr16[currentIndex + 5 + j]);
         }
 
         // Data URI
         var dataUri = '';
         for (j = 0; j < dataUriLength; j++) {
-          dataUri += String.fromCharCode(arr8[(layerStartIndex + 5 + layerNameLength) * 2 + j]);
+          dataUri += String.fromCharCode(arr8[(currentIndex + 5 + layerNameLength) * 2 + j]);
         }
         dataUri = 'data:image/png;base64,' + dataUri;
 
-        layerStartIndex += Math.ceil(5 + layerNameLength + (dataUriLength / 2));
+        currentIndex += Math.ceil(5 + layerNameLength + (dataUriLength / 2));
 
         layer.name = layerName;
         layer.opacity = opacity;
@@ -99,6 +112,10 @@
           var frames = pskl.utils.FrameUtils.createFramesFromSpritesheet(this, layer.frameCount);
           frames.forEach(function (frame) {
             layer.model.addFrame(frame);
+            var currentIndex = layer.model.getFrames().length - 1;
+            if (hiddenFrames.indexOf(currentIndex) != -1) {
+              frame.visible = false;
+            }
           });
 
           loadedLayers++;

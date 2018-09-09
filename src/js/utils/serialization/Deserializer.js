@@ -36,6 +36,7 @@
 
     var descriptor = new pskl.model.piskel.Descriptor(name, description);
     this.piskel_ = new pskl.model.Piskel(piskelData.width, piskelData.height, piskelData.fps, descriptor);
+    this.hiddenFrames = piskelData.hiddenFrames || [];
 
     this.layersToLoad_ = piskelData.layers.length;
     piskelData.layers.forEach(this.deserializeLayer.bind(this));
@@ -73,7 +74,14 @@
       image.src = chunk.base64PNG;
       return deferred.promise;
     })).then(function () {
-      frames.forEach(layer.addFrame.bind(layer));
+      var hiddenFrames = this.hiddenFrames;
+      frames.forEach(function (frame) {
+        layer.addFrame(frame);
+        var currentIndex = layer.getFrames().length - 1;
+        if (hiddenFrames.indexOf(currentIndex) != -1) {
+          frame.visible = false;
+        }
+      });
       this.layers_[index] = layer;
       this.onLayerLoaded_();
     }.bind(this)).catch(function (error) {

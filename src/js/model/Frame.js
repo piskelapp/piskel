@@ -9,7 +9,7 @@
       this.version = 0;
       this.pixels = ns.Frame.createEmptyPixelGrid_(width, height);
       this.stateIndex = 0;
-      this.toggled = true;
+      this.visible = true;
     } else {
       throw 'Bad arguments in pskl.model.Frame constructor : ' + width + ', ' + height;
     }
@@ -151,5 +151,13 @@
 
   ns.Frame.prototype.isSameSize = function (otherFrame) {
     return this.getHeight() == otherFrame.getHeight() && this.getWidth() == otherFrame.getWidth();
+  };
+
+  ns.Frame.prototype.toggleVisibility = function () {
+    this.visible = !this.visible;
+  };
+
+  ns.Frame.prototype.isVisible = function () {
+    return this.visible;
   };
 })();
