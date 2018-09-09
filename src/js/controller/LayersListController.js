@@ -143,7 +143,14 @@
     } else if (el.classList.contains('layer-item-opacity')) {
       index = pskl.utils.Dom.getData(el, 'layerIndex');
       var layer = this.piskelController.getLayerAt(parseInt(index, 10));
-      var opacity = window.prompt('Set layer opacity (value between 0 and 1)', layer.getOpacity());
+      var opacity = layer.getOpacity();
+      if (opacity == 1) {
+        opacity = 0.5;
+      } else if (opacity == 0.5) {
+        opacity = 0;
+      } else if (opacity == 0) {
+        opacity = 1;
+      }
       this.piskelController.setLayerOpacityAt(index, opacity);
     }
   };
