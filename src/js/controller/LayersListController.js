@@ -118,6 +118,7 @@
     var isSelected = this.piskelController.getCurrentLayer() === layer;
     var layerItemHtml = pskl.utils.Template.replace(this.layerItemTemplate_, {
       'layername' : layer.getName(),
+      'exported': layer.isExported() ? 'exported' : 'skipped',
       'layerindex' : index,
       'isselected:current-layer-item' : isSelected,
       'opacity': layer.getOpacity()
@@ -145,6 +146,10 @@
       var layer = this.piskelController.getLayerAt(parseInt(index, 10));
       var opacity = window.prompt('Set layer opacity (value between 0 and 1)', layer.getOpacity());
       this.piskelController.setLayerOpacityAt(index, opacity);
+    } else if (el.classList.contains('layer-item-export')) {
+      index = pskl.utils.Dom.getData(el, 'layerIndex');
+      var layer = this.piskelController.getLayerAt(parseInt(index, 10));
+      this.piskelController.setLayerExportedAt(index, !layer.isExported());
     }
   };
 

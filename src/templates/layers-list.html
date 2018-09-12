@@ -37,6 +37,10 @@
     <li class="layer-item {{isselected:current-layer-item}}"
         data-layer-index="{{layerindex}}">
         <span class="layer-name" data-placement="top">{{layername}}</span>
+        <span class="layer-item-export {{exported:active}}"
+              title="Export layer" rel="tooltip" data-placement="top">
+          {{exported}}
+        </span>
         <span class="layer-item-opacity"
               title="Layer opacity" rel="tooltip" data-placement="top">
           {{opacity}}&#945;

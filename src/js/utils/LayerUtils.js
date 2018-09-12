@@ -80,8 +80,10 @@
 
       var context = canvas.getContext('2d');
       layers.forEach(function (l) {
-        var render = ns.LayerUtils.renderFrameAt(l, index, preserveOpacity);
-        context.drawImage(render, 0, 0, width, height, 0, 0, width, height);
+        if (l.isExported()) {
+          var render = ns.LayerUtils.renderFrameAt(l, index, preserveOpacity);
+          context.drawImage(render, 0, 0, width, height, 0, 0, width, height);
+        }
       });
 
       return canvas;

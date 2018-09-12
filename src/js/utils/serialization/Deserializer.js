@@ -46,6 +46,9 @@
     var layer = new pskl.model.Layer(layerData.name);
     layer.setOpacity(layerData.opacity);
 
+    // By default each layer is exported
+    layer.setExported(typeof layerData.export === 'undefined' ? true : !!layerData.export);
+
     // Backward compatibility: if the layerData is not chunked but contains a single base64PNG,
     // create a fake chunk, expected to represent all frames side-by-side.
     if (typeof layerData.chunks === 'undefined' && layerData.base64PNG) {

@@ -39,6 +39,7 @@
       var layerToSerialize = {
         name : layer.getName(),
         opacity : layer.getOpacity(),
+        export: layer.isExported(),
         frameCount : frames.length
       };
 
