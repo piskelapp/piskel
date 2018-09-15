@@ -21,7 +21,7 @@
       var serializedLayers = piskel.getLayers().map(function (l) {
         return pskl.utils.serialization.Serializer.serializeLayer(l);
       });
-      var frames = pskl.app.piskelController.getLayerAt(0).getFrames();
+      var frames = piskel.getLayerAt(0).getFrames();
       var hiddenFrames = frames.map(function (frame, index) {
         if (frame.visible) {
           return -1;
