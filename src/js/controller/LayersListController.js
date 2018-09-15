@@ -130,6 +130,14 @@
       layerNameEl.setAttribute('title', layer.getName());
       layerNameEl.setAttribute('rel', 'tooltip');
     }
+    var opacity = layer.getOpacity();
+    if (opacity == 1) {
+      layerItem.querySelector('.layer-item-opacity').style.color = '#ffd700';
+    } else if (opacity == 0) {
+      layerItem.querySelector('.layer-item-opacity').style.color = '#969696';
+    } else {
+      layerItem.querySelector('.layer-item-opacity').style.color = '#ffffff';
+    }
   };
 
   ns.LayersListController.prototype.onClick_ = function (evt) {
