@@ -125,6 +125,14 @@
 }
 
 /**
+ * If the icon represents an enabled state, the border should always be gold.
+ */
+.preview-contextual-action-enabled {
+  color: var(--highlight-color);
+  border-color: var(--highlight-color);
+}
+
+/**
  * Drop-down in preview size selection
  */
 .preview-drop-down {
@@ -195,6 +203,7 @@
 
 @media (-webkit-min-device-pixel-ratio: 2),
        (min-resolution: 192dpi) {
-  background-image: url(../img/icons/minimap/minimap-popup-preview-arrow-gold@2x.png);
-
+  .icon-minimap-popup-preview-arrow-white:hover {
+    background-image: url(../img/icons/minimap/minimap-popup-preview-arrow-gold@2x.png);
+  }
 }
