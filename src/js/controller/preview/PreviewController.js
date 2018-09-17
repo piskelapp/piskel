@@ -20,6 +20,7 @@
     this.fpsRangeInput = document.querySelector('#preview-fps');
     this.fpsCounterDisplay = document.querySelector('#display-fps');
     this.openPopupPreview = document.querySelector('.open-popup-preview-button');
+    this.toggleGridButton = document.querySelector('.toggle-grid-button');
     this.previewSizeDropdown = document.querySelector('.preview-drop-down');
     this.previewSizes = {
       original: {
@@ -54,6 +55,7 @@
     var addEvent = pskl.utils.Event.addEventListener;
     addEvent(this.toggleOnionSkinButton, 'click', this.toggleOnionSkin_, this);
     addEvent(this.openPopupPreview, 'click', this.onOpenPopupPreviewClick_, this);
+    addEvent(this.toggleGridButton, 'click', this.toggleGrid_, this);
 
     var registerShortcut = pskl.app.shortcutService.registerShortcut.bind(pskl.app.shortcutService);
     registerShortcut(this.onionSkinShortcut, this.toggleOnionSkin_.bind(this));
@@ -88,6 +90,19 @@
     this.updateFPS_();
     this.updateMaxFPS_();
     this.updateContainerDimensions_();
+    this.updateToggleGridButton_();
+  };
+
+  ns.PreviewController.prototype.updateToggleGridButton_ = function () {
+    var gridEnabled = pskl.UserSettings.get(pskl.UserSettings.GRID_ENABLED);
+    this.toggleGridButton.classList.toggle('icon-minimap-grid-white', !gridEnabled);
+    this.toggleGridButton.classList.toggle('icon-minimap-grid-gold', gridEnabled);
+    this.toggleGridButton.classList.toggle('preview-contextual-action-enabled', gridEnabled);
+  };
+
+  ns.PreviewController.prototype.toggleGrid_ = function () {
+    var gridEnabled = pskl.UserSettings.get(pskl.UserSettings.GRID_ENABLED);
+    pskl.UserSettings.set(pskl.UserSettings.GRID_ENABLED, !gridEnabled);
   };
 
   ns.PreviewController.prototype.updatePreviewSizeButtons_ = function () {
@@ -171,6 +186,8 @@
       this.updateMaxFPS_();
     } else if (name === pskl.UserSettings.SEAMLESS_MODE) {
       this.onFrameSizeChange_();
+    } else if (name === pskl.UserSettings.GRID_ENABLED) {
+      this.updateToggleGridButton_();
     } else {
       this.updateZoom_();
       this.selectPreviewSizeButton_();
