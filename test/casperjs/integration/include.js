@@ -17,6 +17,13 @@ function getValue(selector) {
     }');
 }
 
+function getClassName(selector) {
+  return casper.evaluate(
+    'function () { \
+      return document.querySelector(\'' + selector + '\').className;\
+    }');
+}
+
 function isChecked(selector) {
   return casper.evaluate(
     'function () { \
