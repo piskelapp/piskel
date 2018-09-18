@@ -10,9 +10,6 @@
   ns.app = {
 
     init : function () {
-      // Run preferences migration scripts for version v0.12.0
-      pskl.UserSettings.migrate_to_v0_12();
-
       /**
        * When started from APP Engine, appEngineToken_ (Boolean) should be set on window.pskl
        */
