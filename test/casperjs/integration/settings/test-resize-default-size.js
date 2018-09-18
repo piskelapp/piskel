@@ -49,13 +49,5 @@ casper.test.begin('Test updating default size works', 14 , function(test) {
       322, 'Piskel height is now 322 pixels');
   }
 
-  casper
-    .start(casper.cli.get('baseUrl')+"/?debug")
-    .then(function () {
-      this.echo("URL loaded");
-      this.waitForSelector('#drawing-canvas-container canvas', onTestStart, test.timeout, 20000);
-    })
-    .run(function () {
-      test.done();
-    });
+  startTest(test, onTestStart);
 });
