@@ -51,13 +51,5 @@ casper.test.begin('Test resize feature works', 16 , function(test) {
     test.assertEquals(evalLine('pskl.app.piskelController.getPiskel().getHeight()'), 320, 'Piskel height is now 320 pixels');
   }
 
-  casper
-    .start(casper.cli.get('baseUrl')+"/?debug")
-    .then(function () {
-      this.echo("URL loaded");
-      this.waitForSelector('#drawing-canvas-container canvas', onTestStart, test.timeout, 20000);
-    })
-    .run(function () {
-      test.done();
-    });
+  startTest(test, onTestStart);
 });

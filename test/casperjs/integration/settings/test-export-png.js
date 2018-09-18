@@ -97,13 +97,5 @@ casper.test.begin('PNG export test', 13, function(test) {
     test.assert(!isDrawerExpanded(), 'settings drawer is closed');
   }
 
-  casper
-    .start(casper.cli.get('baseUrl')+"/?debug")
-    .then(function () {
-      casper.echo("URL loaded");
-      casper.waitForSelector('#drawing-canvas-container canvas', onTestStart, test.timeout, 20000);
-    })
-    .run(function () {
-      test.done();
-    });
+  startTest(test, onTestStart);
 });

@@ -85,13 +85,5 @@ casper.test.begin('Test resize panel width/height inputs are synchronized', 28 ,
     test.assert(!isDrawerExpanded(), 'settings drawer is closed');
   }
 
-  casper
-    .start(casper.cli.get('baseUrl')+"/?debug")
-    .then(function () {
-      this.echo("URL loaded");
-      this.waitForSelector('#drawing-canvas-container canvas', onTestStart, test.timeout, 20000);
-    })
-    .run(function () {
-      test.done();
-    });
+  startTest(test, onTestStart);
 });

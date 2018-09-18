@@ -111,24 +111,11 @@ casper.test.begin('PNG export test, with 2x scaling', 32, function(test) {
     test.assert(!isDrawerExpanded(), 'settings drawer is closed');
   }
 
-  casper
-    .start(casper.cli.get('baseUrl')+"/?debug")
-    .then(function () {
-      casper.echo("Test with spritesheet PNG export");
-      beforeTest();
-      testButtonClass = '.png-download-button';
-      casper.waitForSelector('#drawing-canvas-container canvas', onTestStart, test.timeout, 20000);
-    })
-    .then(function () {
-      casper.start(casper.cli.get('baseUrl')+"/?debug")
-      .then(function () {
-        casper.echo("Test with single frame PNG export");
-        beforeTest();
-        testButtonClass = '.selected-frame-download-button';
-        casper.waitForSelector('#drawing-canvas-container canvas', onTestStart, test.timeout, 20000);
-      })
-    })
-    .run(function () {
-      test.done();
-    });
+  casper.echo("Test with spritesheet PNG export");
+  testButtonClass = '.png-download-button';
+  startTest(test, onTestStart).then(function () {
+    casper.echo("Test with single frame PNG export");
+    testButtonClass = '.selected-frame-download-button';
+    startTest(test, onTestStart);
+  });
 });

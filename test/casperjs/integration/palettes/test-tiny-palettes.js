@@ -55,13 +55,5 @@ casper.test.begin('Test palette switches to tiny mode if it contains more than 1
       'Check that the palette colors container is not in tiny mode');
   }
 
-  casper
-    .start(casper.cli.get('baseUrl')+"/?debug")
-    .then(function () {
-      casper.echo("URL loaded");
-      casper.waitForSelector('#drawing-canvas-container canvas', onTestStart, test.timeout, 20000);
-    })
-    .run(function () {
-      test.done();
-    });
+  startTest(test, onTestStart);
 });

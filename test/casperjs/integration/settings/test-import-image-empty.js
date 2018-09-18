@@ -93,13 +93,5 @@ casper.test.begin('Image import test with an empty current sprite', 16, function
     test.assertEquals(evalLine('pskl.app.piskelController.getFrameCount()'), 1, 'Piskel has 1 frame');
   }
 
-  casper
-    .start(casper.cli.get('baseUrl')+"/?debug&integration-test")
-    .then(function () {
-      casper.echo("URL loaded");
-      casper.waitForSelector('#drawing-canvas-container canvas', onTestStart, test.timeout, 20000);
-    })
-    .run(function () {
-      test.done();
-    });
+  startTest(test, onTestStart);
 });

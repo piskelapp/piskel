@@ -65,13 +65,5 @@ casper.test.begin('Test resize feature works, and check the output', 19, functio
     ]', 0, 0), 'Resized piskel content is as expected');
   }
 
-  casper
-    .start(casper.cli.get('baseUrl')+"/?debug")
-    .then(function () {
-      this.echo("URL loaded");
-      this.waitForSelector('#drawing-canvas-container canvas', onTestStart, test.timeout, 20000);
-    })
-    .run(function () {
-      test.done();
-    });
+  startTest(test, onTestStart);
 });
