@@ -7,6 +7,7 @@
     this.container = container;
 
     this.onionSkinShortcut = pskl.service.keyboard.Shortcuts.MISC.ONION_SKIN;
+    this.toggleGridShortcut = pskl.service.keyboard.Shortcuts.MISC.TOGGLE_GRID;
 
     this.fpsRangeInput = document.querySelector('#preview-fps');
     this.fpsCounterDisplay = document.querySelector('#display-fps');
@@ -44,6 +45,7 @@
 
     var registerShortcut = pskl.app.shortcutService.registerShortcut.bind(pskl.app.shortcutService);
     registerShortcut(this.onionSkinShortcut, this.toggleOnionSkin_.bind(this));
+    registerShortcut(this.toggleGridShortcut, this.toggleGrid_.bind(this));
 
     var onionSkinTooltip = pskl.utils.TooltipFormatter.format('Toggle onion skin', this.onionSkinShortcut);
     this.toggleOnionSkinButton.setAttribute('title', onionSkinTooltip);
