@@ -59,6 +59,7 @@
       BEST_PREVIEW : createShortcut('best-preview', 'Select best size preview', 'alt+2'),
       FULL_PREVIEW : createShortcut('full-preview', 'Select full size preview', 'alt+3'),
       ONION_SKIN : createShortcut('onion-skin', 'Toggle onion skin', 'alt+O'),
+      TOGGLE_GRID : createShortcut('toggle-grid', 'Show/Hide grid', 'alt+G'),
       LAYER_PREVIEW : createShortcut('layer-preview', 'Toggle layer preview', 'alt+L'),
       MERGE_ANIMATION : createShortcut('import-animation', 'Open merge animation popup', 'ctrl+shift+M'),
       CLOSE_POPUP : createShortcut('close-popup', 'Close an opened popup', 'ESC'),
