@@ -42,7 +42,7 @@
     this.lastMoveRow = row;
 
     // The select tool can be in two different state.
-    // If the inital click of the tool is not on a selection, we go in 'select'
+    // If the initial click of the tool is not on a selection, we go in 'select'
     // mode to create a selection.
     // If the initial click is on a previous selection, we go in 'moveSelection'
     // mode to allow to move the selection by drag'n dropping it.
