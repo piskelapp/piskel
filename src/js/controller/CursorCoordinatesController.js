@@ -51,7 +51,9 @@
   ns.CursorCoordinatesController.prototype.getFrameSizeHTML_ = function () {
     var w = this.piskelController.getWidth();
     var h = this.piskelController.getHeight();
-    return '[' + w + 'x' + h + '] ';
+    var currentFrameIndex = this.piskelController.getCurrentFrameIndex() + 1;
+    var frameCount = this.piskelController.getFrameCount();
+    return '[' + w + 'x' + h + '] ' + currentFrameIndex + '/' + frameCount;
   };
 
   ns.CursorCoordinatesController.prototype.onCursorMoved_ = function (event, x, y) {
