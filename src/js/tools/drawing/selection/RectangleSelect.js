@@ -24,8 +24,8 @@
 
   /**
    * When creating the rectangle selection, we clear the current overlayFrame and
-   * redraw the current rectangle based on the orgin coordinate and
-   * the current mouse coordiinate in sprite.
+   * redraw the current rectangle based on the origin coordinate and
+   * the current mouse coordinate in sprite.
    * @override
    */
   ns.RectangleSelect.prototype.onDragSelect_ = function (col, row, frame, overlay) {

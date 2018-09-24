@@ -25,7 +25,7 @@
 
   /**
    * Open and initialize the database.
-   * Returns a promise that resolves when the databse is opened.
+   * Returns a promise that resolves when the database is opened.
    */
   ns.BackupDatabase.prototype.init = function () {
     var request = window.indexedDB.open(DB_NAME, DB_VERSION);
