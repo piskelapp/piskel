@@ -93,6 +93,11 @@
   left: 1px;
 }
 
+.cursor-coordinates .frame-info {
+  line-height: 1.5;
+  text-align: left;
+}
+
 /**
  * Canvases layout
  */
