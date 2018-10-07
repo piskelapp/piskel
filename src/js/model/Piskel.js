@@ -16,6 +16,7 @@
       this.descriptor = descriptor;
       this.savePath = null;
       this.fps = fps;
+      this.hiddenFrames = [];
     } else {
       throw 'Missing arguments in Piskel constructor : ' + Array.prototype.join.call(arguments, ',');
     }

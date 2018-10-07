@@ -122,6 +122,16 @@
       l.addFrameAt(this.createEmptyFrame_(), index);
     }.bind(this));
 
+    this.onFrameAddedAt_(index);
+  };
+
+  ns.PiskelController.prototype.onFrameAddedAt_ = function (index) {
+    this.piskel.hiddenFrames = this.piskel.hiddenFrames.map(function (hiddenIndex) {
+      if (hiddenIndex >= index) {
+        return hiddenIndex + 1;
+      }
+    });
+
     this.setCurrentFrameIndex(index);
   };
 
@@ -135,6 +145,13 @@
     this.getLayers().forEach(function (l) {
       l.removeFrameAt(index);
     });
+
+    this.piskel.hiddenFrames = this.piskel.hiddenFrames.map(function (hiddenIndex) {
+      if (hiddenIndex > index) {
+        return hiddenIndex - 1;
+      }
+    });
+
     // Current frame index is impacted if the removed frame was before the current frame
     if (this.currentFrameIndex >= index && this.currentFrameIndex > 0) {
       this.setCurrentFrameIndex(this.currentFrameIndex - 1);
@@ -149,40 +166,52 @@
     this.getLayers().forEach(function (l) {
       l.duplicateFrameAt(index);
     });
-    this.setCurrentFrameIndex(index + 1);
+    this.onFrameAddedAt_(index + 1);
   };
 
   ns.PiskelController.prototype.toggleFrameAt = function (index) {
-    this.getLayers().forEach(function (l) {
-      l.toggleFrameAt(index);
-    });
+    var hiddenFrames = this.piskel.hiddenFrames;
+    if (hiddenFrames.indexOf(index) === -1) {
+      hiddenFrames.push(index);
+    } else {
+      hiddenFrames = hiddenFrames.filter(function (i) {
+        return i !== index;
+      });
+    }
+
+    // Keep the hiddenFrames array sorted.
+    this.piskel.hiddenFrames = hiddenFrames.sort();
   };
 
   ns.PiskelController.prototype.moveFrame = function (fromIndex, toIndex) {
     this.getLayers().forEach(function (l) {
       l.moveFrame(fromIndex, toIndex);
     });
+
+    this.piskel.hiddenFrames = this.piskel.hiddenFrames.map(function (index) {
+      if (index === fromIndex) {
+        return toIndex;
+      }
+
+      var direction = fromIndex < toIndex ? 1 : -1;
+      var max = Math.max(fromIndex, toIndex);
+      var min = Math.min(fromIndex, toIndex);
+      if (index >= min && index <= max) {
+        return index - direction;
+      }
+    });
   };
 
   ns.PiskelController.prototype.hasVisibleFrameAt = function (index) {
-    var frame = this.getCurrentLayer().getFrameAt(index);
-    return frame ? frame.isVisible() : false;
+    return this.piskel.hiddenFrames.indexOf(index) === -1;
   };
 
   ns.PiskelController.prototype.getVisibleFrameIndexes = function () {
-    var frameIndexes = this.getCurrentLayer().getFrames()
-    /* Replace each frame with its index
-       or -1 if it's not visible */
-    .map(
-      function(frame, idx) {
-        return (frame.visible) ? idx : -1;
-      })
-    /* Filter out invisible frames */
-    .filter(
-      function(index) {
-        return index >= 0;
-      });
-    return frameIndexes;
+    return this.getCurrentLayer().getFrames().map(function (frame, index) {
+      return index;
+    }).filter(function (index) {
+      return this.piskel.hiddenFrames.indexOf(index) === -1;
+    }.bind(this));
   };
 
   ns.PiskelController.prototype.getFrameCount = function () {
