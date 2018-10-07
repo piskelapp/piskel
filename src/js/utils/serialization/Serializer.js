@@ -21,15 +21,6 @@
       var serializedLayers = piskel.getLayers().map(function (l) {
         return pskl.utils.serialization.Serializer.serializeLayer(l);
       });
-      var frames = piskel.getLayerAt(0).getFrames();
-      var hiddenFrames = frames.map(function (frame, index) {
-        if (frame.visible) {
-          return -1;
-        }
-        return index;
-      }).filter(function (frameIndex) {
-        return frameIndex !== -1;
-      });
 
       return JSON.stringify({
         modelVersion : Constants.MODEL_VERSION,
@@ -40,7 +31,7 @@
           height : piskel.getHeight(),
           width : piskel.getWidth(),
           layers : serializedLayers,
-          hiddenFrames : hiddenFrames,
+          hiddenFrames : piskel.hiddenFrames,
         }
       });
     },

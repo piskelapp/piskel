@@ -74,13 +74,8 @@
       image.src = chunk.base64PNG;
       return deferred.promise;
     })).then(function () {
-      var hiddenFrames = this.hiddenFrames;
       frames.forEach(function (frame) {
         layer.addFrame(frame);
-        var currentIndex = layer.getFrames().length - 1;
-        if (hiddenFrames.indexOf(currentIndex) != -1) {
-          frame.visible = false;
-        }
       });
       this.layers_[index] = layer;
       this.onLayerLoaded_();
@@ -98,6 +93,7 @@
       this.layers_.forEach(function (layer) {
         this.piskel_.addLayer(layer);
       }.bind(this));
+      this.piskel_.hiddenFrames = this.hiddenFrames;
       this.callback_(this.piskel_);
     }
   };

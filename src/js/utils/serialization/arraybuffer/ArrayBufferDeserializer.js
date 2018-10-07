@@ -104,6 +104,7 @@
 
       var descriptor = new pskl.model.piskel.Descriptor(descriptorName, descriptorDescription);
       var piskel = new pskl.model.Piskel(width, height, fps, descriptor);
+      piskel.hiddenFrames = hiddenFrames;
       var loadedLayers = 0;
 
       var loadLayerImage = function(layer, cb) {
@@ -112,10 +113,6 @@
           var frames = pskl.utils.FrameUtils.createFramesFromSpritesheet(this, layer.frameCount);
           frames.forEach(function (frame) {
             layer.model.addFrame(frame);
-            var currentIndex = layer.model.getFrames().length - 1;
-            if (hiddenFrames.indexOf(currentIndex) != -1) {
-              frame.visible = false;
-            }
           });
 
           loadedLayers++;
