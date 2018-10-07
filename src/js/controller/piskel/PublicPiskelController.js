@@ -37,7 +37,7 @@
     this.saveWrap_('moveLayerDown', true);
     this.saveWrap_('removeCurrentLayer', true);
     this.saveWrap_('setLayerOpacityAt', true);
-    this.saveWrap_('toggleFrameAt', true);
+    this.saveWrap_('toggleFrameVisibilityAt', true);
 
     var shortcuts = pskl.service.keyboard.Shortcuts;
     pskl.app.shortcutService.registerShortcut(shortcuts.MISC.PREVIOUS_FRAME, this.selectPreviousFrame.bind(this));

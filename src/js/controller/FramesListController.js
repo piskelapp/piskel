@@ -116,7 +116,7 @@
       this.previewList.insertBefore(newtile, this.addFrameTile);
       this.updateScrollerOverflows();
     } else if (action == ACTION.TOGGLE) {
-      this.piskelController.toggleFrameAt(index);
+      this.piskelController.toggleFrameVisibilityAt(index);
     }
 
     this.flagForRedraw_();

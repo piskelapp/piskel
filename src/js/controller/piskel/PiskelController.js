@@ -146,6 +146,7 @@
       l.removeFrameAt(index);
     });
 
+    // Update the array of hidden frames since some hidden indexes might have shifted.
     this.piskel.hiddenFrames = this.piskel.hiddenFrames.map(function (hiddenIndex) {
       if (hiddenIndex > index) {
         return hiddenIndex - 1;
@@ -169,7 +170,11 @@
     this.onFrameAddedAt_(index + 1);
   };
 
-  ns.PiskelController.prototype.toggleFrameAt = function (index) {
+  /**
+   * Toggle frame visibility for the frame at the provided index.
+   * A visible frame will be included in the animated preview.
+   */
+  ns.PiskelController.prototype.toggleFrameVisibilityAt = function (index) {
     var hiddenFrames = this.piskel.hiddenFrames;
     if (hiddenFrames.indexOf(index) === -1) {
       hiddenFrames.push(index);
@@ -188,16 +193,24 @@
       l.moveFrame(fromIndex, toIndex);
     });
 
+    // Update the array of hidden frames since some hidden indexes might have shifted.
     this.piskel.hiddenFrames = this.piskel.hiddenFrames.map(function (index) {
       if (index === fromIndex) {
         return toIndex;
       }
 
-      var direction = fromIndex < toIndex ? 1 : -1;
-      var max = Math.max(fromIndex, toIndex);
-      var min = Math.min(fromIndex, toIndex);
-      if (index >= min && index <= max) {
-        return index - direction;
+      // All the frames between fromIndex and toIndex changed their index.
+      var isImpacted = index >= Math.min(fromIndex, toIndex) &&
+                       index <= Math.max(fromIndex, toIndex);
+      if (isImpacted) {
+        if (fromIndex < toIndex) {
+          // If the frame moved to a higher index, all impacted frames had their index
+          // reduced by 1.
+          return index - 1;
+        } else {
+          // Otherwise, they had their index increased by 1.
+          return index + 1;
+        }
       }
     });
   };
