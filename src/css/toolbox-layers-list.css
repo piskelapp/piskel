@@ -66,10 +66,15 @@
   cursor: pointer;
 }
 
-.layer-item .layer-name {
+.layer-item .layer-name,
+.layer-item .layer-name-input {
   padding: 0 0 0 10px;
   flex: 1 auto;
   white-space: nowrap;
+}
+
+.layer-item .layer-name-input {
+  width: 80%;
 }
 
 .layer-item .layer-name.overflowing-name {
@@ -82,7 +87,8 @@
 }
 
 .layer-item-opacity {
-  padding-right: 8px;
+  padding: 0 8px 0 8px;
+  flex: 0 auto;
 }
 
 .current-layer-item,
