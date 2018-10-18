@@ -33,6 +33,8 @@
     var dataUriButton = document.querySelector('.datauri-open-button');
     var selectedFrameDownloadButton = document.querySelector('.selected-frame-download-button');
 
+    this.pixiInlineImageCheckbox = document.querySelector('.png-pixi-inline-image-checkbox');
+
     this.initLayoutSection_();
     this.updateDimensionLabel_();
 
@@ -169,7 +171,15 @@
     var canvas = this.createPngSpritesheet_();
     var name = this.piskelController.getPiskel().getDescriptor().name;
 
-    zip.file(name + '.png', pskl.utils.CanvasUtils.getBase64FromCanvas(canvas) + '\n', {base64: true});
+    var image;
+
+    if (this.pixiInlineImageCheckbox.checked) {
+      image = canvas.toDataURL('image/png');
+    } else {
+      image = name + '.png';
+
+      zip.file(image, pskl.utils.CanvasUtils.getBase64FromCanvas(canvas) + '\n', {base64: true});
+    }
 
     var width = canvas.width / this.getColumns_();
     var height = canvas.height / this.getRows_();
@@ -194,7 +204,7 @@
       'meta': {
         'app': 'https://github.com/piskelapp/piskel/',
         'version': '1.0',
-        'image': name + '.png',
+        'image': image,
         'format': 'RGBA8888',
         'size': {'w': canvas.width,'h': canvas.height}
       }
