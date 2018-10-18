@@ -17,7 +17,8 @@
     "misc/scripts/piskel-root"
   ],
   "bin": {
-    "piskel-root": "./misc/scripts/piskel-root"
+    "piskel-root": "./misc/scripts/piskel-root",
+    "piskel-cli": "./cli/index.js"
   },
   "main": "./dest/prod/index.html",
   "scripts": {
@@ -63,5 +64,8 @@
     "toolbar": false,
     "width": 1000,
     "height": 700
+  },
+  "dependencies": {
+    "minimist": "^1.2.0"
   }
 }
