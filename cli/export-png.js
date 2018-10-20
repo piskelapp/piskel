@@ -115,7 +115,7 @@ function onPageExit(page, options, data) {
     if (options.dataUri) {
         const dataUriPath = options.dest + '.datauri';
 
-        const dataUri = `data:image/png;base64,${page.renderBase64('PNG')}`;
+        const dataUri = 'data:image/png;base64,' + page.renderBase64('PNG');
 
         // Write data-uri to file
         fs.write(dataUriPath, dataUri, 'w');
