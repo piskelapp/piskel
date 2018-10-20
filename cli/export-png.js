@@ -105,7 +105,7 @@ function onPageExit(page, options, data) {
 
     console.log("\n" + 'Generated file(s):');
 
-    const dest = options.dest + '.png';
+    const dest = options.dest.replace('.png', '') + '.png';
 
     // Render page to the output image
     page.render(dest);
