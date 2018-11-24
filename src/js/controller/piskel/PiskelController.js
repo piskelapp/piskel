@@ -130,6 +130,7 @@
       if (hiddenIndex >= index) {
         return hiddenIndex + 1;
       }
+      return hiddenIndex;
     });
 
     this.setCurrentFrameIndex(index);
@@ -151,6 +152,7 @@
       if (hiddenIndex > index) {
         return hiddenIndex - 1;
       }
+      return hiddenIndex;
     });
 
     // Current frame index is impacted if the removed frame was before the current frame
