@@ -28,7 +28,7 @@
     pskl.utils.Dom.removeClass('selected', this.container);
     var selectedOption;
     selectedOption = this.container.querySelector('[data-size="' + size + '"]');
-    if (typeof selectedOption === 'undefined') {
+    if (!selectedOption) {
       selectedOption = this.container.querySelector('[data-size]:last-child');
       selectedOption.classList.add('labeled');
       selectedOption.setAttribute('real-size', size);
