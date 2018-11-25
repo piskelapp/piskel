@@ -1,0 +1,32 @@
+# Release instructions
+
+- retrieve source code and dependencies
+  - clone piskel `git clone https://github.com/piskelapp/piskel`
+  - clone piskel website `git clone https://github.com/piskelapp/piskel-website`
+  - download the appengine SDK for python at [this url](https://cloud.google.com/appengine/docs/standard/python/download). It seems recent versions don't work for me on Windows. [GoogleAppEngine-1.9.67.msi](https://storage.cloud.google.com/appengine-sdks/featured/GoogleAppEngine-1.9.67.msi?_ga=2.6838962.-1257793585.1543157659) looks ok...
+- prepare the release
+  - in `piskel-website` clone, checkout the `master` branch, not the `release`. The release branch is similar to the master branch, except it doesn't ignore the statics files coming from the `piskel` project. The idea is that we can easily checkout the release branch to do a new release, without having to rebuild piskel, in case nothing changed in piskel itself. We will switch to the release branch when we perform the final release.
+  - in `piskel` clone, create a new branch for the release `git checkout -b vX.Y`
+  - build and copy piskel to piskel-website (assumes the clones are in the same folder) `grunt && node bin/copy-to-piskel-website.js`
+- local test
+  - start piskel-website in the Google app engine launcher, test manually the update
+  - if any issue is detected create a commit to fix it (on the `vX.Y` branch) and push it.
+
+- beta test
+  - check the version in app.yaml is set to 'beta'. For historical reasons, alpha is the "production" version, while beta is the ... beta version. Don't ask.
+  - in the google app engine launcher, deploy this version.
+  - go to https://beta-dot-piskel-app.appspot.com and test (while this is not production frontend, it shares the same database, so be careful with what you create and delete)
+  - if any issue is detected create a commit to fix it (on `master`) and push it.
+- check caches...
+  - If any icon was modified or any script of piskel-website was modified, there's no nice way to clean the cache on each release... so we just put a time stamp in the requests. eg `background-image: url(../img/icons@2x.png?20181125);` or `<script type="text/javascript" src="/static/js/piskel-animated-preview.js?20181124"></script>`. Erk.
+- finalize the release
+  - in `piskel` update version in package.json. Remove the "-SNAPSHOT" at the end and commit the change, with a commit message such as `release: bump version to vX.Y`.
+  - in `piskel-website` checkout the `release` branch. Rebase it on master (that's pretty bad, we should probably cherry pick all the changes between the two branches...)
+  - once again build and copy piskel to piskel-website
+  - in `piskel-website` run `git status` to check that there are a bunch of changes to commit. (test locally again if you are paranoid)
+  - in `piskel-website` commit the current changes with a commit message such as `update statics for release vX.Y`
+  - Check that the version in app.yaml is now set to alpha. Deploy. Pray.
+- post release
+  - in piskel-website push the release branch to github
+  - in piskel add a last commit to update the version in package.json to update the version to `vX+1.0-SNAPSHOT`
+  - create a tag on github
