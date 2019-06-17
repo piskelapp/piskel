@@ -17,6 +17,7 @@
       new pskl.tools.drawing.selection.RectangleSelect(),
       new pskl.tools.drawing.selection.LassoSelect(),
       new pskl.tools.drawing.Lighten(),
+      new pskl.tools.drawing.ShiftIndex(),
       new pskl.tools.drawing.DitheringTool(),
       new pskl.tools.drawing.ColorPicker()
     ];

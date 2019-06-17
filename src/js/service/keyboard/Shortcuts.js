@@ -30,6 +30,7 @@
       RECTANGLE_SELECT : createShortcut('tool-rectangle-select', 'Rectangle selection', 'S'),
       LASSO_SELECT : createShortcut('tool-lasso-select', 'Lasso selection', 'H'),
       LIGHTEN : createShortcut('tool-lighten', 'Lighten tool', 'U'),
+      SHIFT_INDEX : createShortcut('tool-shift-index', 'Shift Color Index tool', 'P'),
       DITHERING : createShortcut('tool-dithering', 'Dithering tool', 'T'),
       COLORPICKER : createShortcut('tool-colorpicker', 'Color picker', 'O')
     },
