@@ -55,23 +55,27 @@
 		}
 		var backward = pskl.utils.UserAgent.isMac ? event.metaKey : event.ctrlKey;
 
-		var color = pskl.utils.intToColor(pixelColor);
+		var color = pskl.utils.intToHex(pixelColor);
 		var colorPalette = pskl.app.palettesListController.getSelectedPaletteColors_();
+		var startPoint = colorPalette.indexOf(pskl.app.selectedColorsService.getPrimaryColor());
+		colorPalette.splice(0,startPoint);
 		var index = colorPalette.indexOf(color);
+		var range = colorPalette.indexOf(pskl.app.selectedColorsService.getSecondaryColor()) + 1;
+		startPoint = index - (index % range);
+		var colorsInCycleRange = colorPalette.slice(startPoint, startPoint + range);
+		index = colorsInCycleRange.indexOf(color);
 		if (index !== -1) {
-			var index = colorPalette.indexOf(color);
 			if (backward) {
 				index -= 1;
 			} else {
 				index += 1;
 			}
-
 			if (index < 0) {
 				index = 0;
-			} else if (index > colorPalette.length - 1) {
-				index = colorPalette.length - 1;
+			} else if (index > colorsInCycleRange.length - 1) {
+				index = colorsInCycleRange.length - 1;
 			}
-			color = colorPalette[index];
+			color = colorsInCycleRange[index];
 		}
 		return color;
 	};

@@ -3,6 +3,7 @@
 
   var PRIMARY_COLOR_CLASSNAME = 'palettes-list-primary-color';
   var SECONDARY_COLOR_CLASSNAME = 'palettes-list-secondary-color';
+  var CYCLED_COLOR_CLASSNAME = 'palettes-list-cycled-color';
 
   ns.PalettesListController = function (usedColorService) {
     this.usedColorService = usedColorService;
@@ -30,6 +31,7 @@
     $.subscribe(Events.PRIMARY_COLOR_SELECTED, this.highlightSelectedColors.bind(this));
     $.subscribe(Events.SECONDARY_COLOR_SELECTED, this.highlightSelectedColors.bind(this));
     $.subscribe(Events.USER_SETTINGS_CHANGED, this.onUserSettingsChange_.bind(this));
+    $.subscribe(Events.TOOL_SELECTED, this.onToolEvent_.bind(this));
 
     var shortcuts = pskl.service.keyboard.Shortcuts;
     pskl.app.shortcutService.registerShortcut(shortcuts.COLOR.PREVIOUS_COLOR, this.selectPreviousColor_.bind(this));
@@ -39,6 +41,11 @@
     this.fillPaletteList();
     this.updateFromUserSettings();
     this.fillColorListContainer();
+  };
+
+  ns.PalettesListController.prototype.onToolEvent_ = function (evt, tool) {
+    this.showColorCycles = tool.toolId === 'tool-shift-index';
+    this.highlightSelectedColors();
   };
 
   ns.PalettesListController.prototype.fillPaletteList = function () {
@@ -179,19 +186,44 @@
   };
 
   ns.PalettesListController.prototype.highlightSelectedColors = function () {
-    this.removeClass_(PRIMARY_COLOR_CLASSNAME);
-    this.removeClass_(SECONDARY_COLOR_CLASSNAME);
+    var colorPalette = pskl.app.palettesListController.getSelectedPaletteColors_();
+    colorPalette.forEach(function(color, index) {
+      pskl.app.palettesListController.getColorContainer_(color).classList.remove(PRIMARY_COLOR_CLASSNAME);
+      pskl.app.palettesListController.getColorContainer_(color).classList.remove(SECONDARY_COLOR_CLASSNAME);
+      pskl.app.palettesListController.getColorContainer_(color).classList.remove(CYCLED_COLOR_CLASSNAME);
+    });
 
-    var colorContainer = this.getColorContainer_(pskl.app.selectedColorsService.getSecondaryColor());
-    if (colorContainer) {
-      colorContainer.classList.remove(PRIMARY_COLOR_CLASSNAME);
-      colorContainer.classList.add(SECONDARY_COLOR_CLASSNAME);
+    var secondaryColorContainer = this.getColorContainer_(pskl.app.selectedColorsService.getSecondaryColor());
+    if (secondaryColorContainer) {
+      secondaryColorContainer.classList.remove(PRIMARY_COLOR_CLASSNAME);
+      secondaryColorContainer.classList.add(SECONDARY_COLOR_CLASSNAME);
     }
 
-    colorContainer = this.getColorContainer_(pskl.app.selectedColorsService.getPrimaryColor());
-    if (colorContainer) {
-      colorContainer.classList.remove(SECONDARY_COLOR_CLASSNAME);
-      colorContainer.classList.add(PRIMARY_COLOR_CLASSNAME);
+    var primaryColorContainer = this.getColorContainer_(pskl.app.selectedColorsService.getPrimaryColor());
+    if (primaryColorContainer) {
+      primaryColorContainer.classList.remove(SECONDARY_COLOR_CLASSNAME);
+      primaryColorContainer.classList.add(PRIMARY_COLOR_CLASSNAME);
+    }
+
+    // Display cycling colors while using the Shift index brush
+    if (!primaryColorContainer || !secondaryColorContainer) { return; }
+    var startPoint = colorPalette.indexOf(pskl.app.selectedColorsService.getPrimaryColor());
+    var endPoint = colorPalette.indexOf(pskl.app.selectedColorsService.getSecondaryColor());
+    if (startPoint === endPoint) { return; }
+    var range = endPoint + 1 - startPoint ;
+    if (this.showColorCycles && range > 0) {
+      colorPalette.splice(0, endPoint + 1);
+      colorPalette.forEach(function(color, index) {
+        var colorNumber = index + 1;
+        if (colorNumber % range === 1) {
+          pskl.app.palettesListController.getColorContainer_(color).classList.add(PRIMARY_COLOR_CLASSNAME);
+          pskl.app.palettesListController.getColorContainer_(color).classList.add(CYCLED_COLOR_CLASSNAME);
+        }
+        if (colorNumber % range === 0) {
+          pskl.app.palettesListController.getColorContainer_(color).classList.add(SECONDARY_COLOR_CLASSNAME);
+          pskl.app.palettesListController.getColorContainer_(color).classList.add(CYCLED_COLOR_CLASSNAME);
+        }
+      });
     }
   };
 
