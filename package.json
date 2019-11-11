@@ -23,7 +23,7 @@
   "main": "./dest/prod/index.html",
   "scripts": {
     "test": "grunt test",
-    "start": "nodewebkit",
+    "start": "nw",
     "preversion": "grunt test build",
     "postversion": "git push && git push --tags && npm publish",
     "release": "grunt && node ./bin/copy-to-piskel-website"
@@ -54,6 +54,7 @@
     "karma-jasmine": "1.1.0",
     "karma-phantomjs-launcher": "1.0.4",
     "load-grunt-tasks": "3.5.0",
+    "nw": "^0.42.3",
     "phantomjs": "2.1.7",
     "phantomjs-polyfill-object-assign": "0.0.2",
     "promise-polyfill": "6.0.2",
