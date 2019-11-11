@@ -23,10 +23,13 @@
   "main": "./dest/prod/index.html",
   "scripts": {
     "test": "grunt test",
+    "dev": "grunt serve",
     "start": "nw",
     "preversion": "grunt test build",
     "postversion": "git push && git push --tags && npm publish",
-    "release": "grunt && node ./bin/copy-to-piskel-website"
+    "release": "grunt && node ./bin/copy-to-piskel-website",
+    "build": "grunt desktop",
+    "build:mac": "grunt desktop-mac"
   },
   "devDependencies": {
     "dateformat": "2.0.0",
