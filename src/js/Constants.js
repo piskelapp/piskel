@@ -28,6 +28,8 @@ var Constants = {
 
   CURRENT_COLORS_PALETTE_ID : '__current-colors',
 
+  CURRENT_FRAME_COLORS_PALETTE_ID : '__current-frame-colors',
+
   /*
    * Fake semi-transparent color used to highlight transparent
    * strokes and rectangles:

@@ -9,6 +9,7 @@
       this.version = 0;
       this.pixels = ns.Frame.createEmptyPixelGrid_(width, height);
       this.pixelIndexes = ns.Frame.createEmptyPixelIndexGrid_(width, height);
+      this.colorPalette = [];
       this.stateIndex = 0;
     } else {
       throw 'Bad arguments in pskl.model.Frame constructor : ' + width + ', ' + height;
@@ -90,6 +91,13 @@
   };
 
   /**
+   * Returns a copy of the pixel indexes used by the frame
+   */
+  ns.Frame.prototype.getPixelIndexes = function () {
+    return new Int32Array(this.pixelIndexes);
+  };
+
+  /**
    * Copies the passed pixels into the frame.
    */
   ns.Frame.prototype.setPixels = function (pixels) {
@@ -115,27 +123,32 @@
     return [this.id, this.version].join('-');
   };
 
-  ns.Frame.prototype.setPixel = function (x, y, entryColor, pixelIndex) {
+  ns.Frame.prototype.setPixel = function (x, y, entryColor) {
     if (this.containsPixel(x, y)) {
       var index = y * this.width + x;
       var p = this.pixels[index];
       var color = pskl.utils.colorToInt(entryColor);
       
       if (p !== color) {
-        this.pixels[index] = color || pskl.utils.colorToInt(Constants.TRANSPARENT_COLOR);
-        
-        // only apply indexes to pixels when the color selected in the palette is primary
-        if (color === 0) { // when erasing pixels, set to -1
-          this.pixelIndexes[index] = -1;
-        } else if (pixelIndex !== undefined) { // when receiving a pixel index, use that
-          this.pixelIndexes[index] = pixelIndex
-        } else { // otherwise apply the primary color index, which is -1, when the color is not in the palette
-          this.pixelIndexes[index] = pskl.app.palettesListController.primaryColorIndex;
-        };
+        var applyColor = color || pskl.utils.colorToInt(Constants.TRANSPARENT_COLOR);
+        this.pixels[index] = applyColor;
+
         this.version++;
       }
     }
   };
+
+  ns.Frame.prototype.setPixelIndex = function (x, y, pixelIndex) {
+    if (this.containsPixel(x, y)) {
+      var index = y * this.width + x;
+      var oldPixelIndex = this.pixelIndexes[index];
+
+      if (oldPixelIndex !== pixelIndex) {
+        console.log(pixelIndex)
+        this.pixelIndexes[index] = pixelIndex
+      }
+    }
+  }
 
   ns.Frame.prototype.getPixel = function (x, y) {
     if (this.containsPixel(x, y)) {

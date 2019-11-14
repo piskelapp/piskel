@@ -6,6 +6,7 @@
     // cache of current colors by history state
     this.cache = {};
     this.currentColors = [];
+    this.currentFrameColors = [];
 
     this.cachedFrameProcessor = new pskl.model.frame.AsyncCachedFrameProcessor();
     this.cachedFrameProcessor.setFrameProcessor(this.getFrameColors_.bind(this));
@@ -21,10 +22,16 @@
   ns.CurrentColorsService.prototype.init = function () {
     $.subscribe(Events.HISTORY_STATE_SAVED, this.throttledUpdateCurrentColors_);
     $.subscribe(Events.HISTORY_STATE_LOADED, this.loadColorsFromCache_.bind(this));
+    $.subscribe(Events.CURRENT_FRAME_CHANGED, this.updateCurrentColors_.bind(this));
+    $.subscribe(Events.CURRENT_LAYER_CHANGED, this.updateCurrentColors_.bind(this));
   };
 
   ns.CurrentColorsService.prototype.getCurrentColors = function () {
     return this.currentColors;
+  };
+
+  ns.CurrentColorsService.prototype.getCurrentFrameColors = function () {
+    return this.currentFrameColors 
   };
 
   ns.CurrentColorsService.prototype.setCurrentColors = function (colors) {
@@ -34,6 +41,35 @@
       this.currentColors = colors;
       $.publish(Events.CURRENT_COLORS_UPDATED);
     }
+  };
+
+  ns.CurrentColorsService.prototype.updateCurrentFrameColors = function () {
+    var currentFrameIndex = pskl.app.piskelController.getCurrentFrameIndex();
+    var frame = pskl.app.piskelController.getCurrentLayer().getFrameAt(currentFrameIndex);
+
+    // remove missing colors
+    frame.colorPalette.forEach(function(color, index){
+      if (!frame.getPixels().includes(pskl.utils.colorToInt(color))){
+        frame.colorPalette.splice(index, 1)
+      }
+    })
+
+    // add new colors, update indexes
+    frame.forEachPixel(function (color, col, row, frame, pixelIndex) {
+      if (color ===  0) return;
+      var hexColor = pskl.utils.intToHex(color);
+      if (!frame.colorPalette.includes(hexColor)) {       
+        frame.colorPalette.push(hexColor)
+      }
+      var indexOfPixelColorInPal = frame.colorPalette.indexOf(hexColor);
+      
+      if (indexOfPixelColorInPal !== pixelIndex) {
+        frame.setPixelIndex(col, row, indexOfPixelColorInPal)
+      }
+    }) 
+  
+    this.currentFrameColors = frame.colorPalette;    
+    $.publish(Events.CURRENT_COLORS_UPDATED);
   };
 
   ns.CurrentColorsService.prototype.isCurrentColorsPaletteSelected_ = function () {
@@ -97,6 +133,7 @@
         return pskl.utils.intToHex(color);
       });
       this.setCurrentColors(hexColors);
+      this.updateCurrentFrameColors();
     }.bind(this));
   };
 

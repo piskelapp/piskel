@@ -188,6 +188,7 @@
   "js/service/HistoryService.js",
   "js/service/color/ColorSorter.js",
   "js/service/palette/CurrentColorsPalette.js",
+  "js/service/palette/CurrentFrameColorsPalette.js",
   "js/service/palette/PaletteService.js",
   "js/service/palette/PaletteGplWriter.js",
   "js/service/palette/reader/AbstractPaletteFileReader.js",
