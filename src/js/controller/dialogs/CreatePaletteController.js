@@ -30,7 +30,7 @@
     this.colorsListWidget = new pskl.widgets.ColorsList(colorsListContainer);
 
     var palette;
-    var isCurrentColorsPalette = paletteId == Constants.CURRENT_COLORS_PALETTE_ID;
+    var isCurrentColorsPalette = paletteId == Constants.CURRENT_COLORS_PALETTE_ID || paletteId == Constants.CURRENT_FRAME_COLORS_PALETTE_ID;
     if (paletteId && !isCurrentColorsPalette) {
       importFileButton.style.display = 'none';
       this.setTitle('Edit Palette');
