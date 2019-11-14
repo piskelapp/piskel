@@ -166,18 +166,8 @@
   };
 
   ns.PalettesListController.prototype.onApplyPaletteClick_ = function (evt) {
-    var currentFrameIndex = pskl.app.piskelController.getCurrentFrameIndex();
-    
-    // apply the colors of the currently selected palette to the indexes of pixels  that have them
-    var frame = pskl.app.piskelController.getCurrentLayer().getFrameAt(currentFrameIndex)
-    this.getSelectedPaletteColors_().forEach(function(color, index) {
-      frame.forEachPixel(function (oldColor, col, row, frame, pixelIndex) {
-        if (pixelIndex === index) {
-          frame.setPixel(col, row, color);
-          frame.setPixelIndex(col, row, pixelIndex);
-        }
-      }) 
-    })
+    var currentPalette = this.getSelectedPaletteColors_();
+    pskl.app.currentColorsService.applyCurrentPaletteToIndexedPixels(currentPalette);
   };
 
   ns.PalettesListController.prototype.onColorContainerContextMenu = function (event) {

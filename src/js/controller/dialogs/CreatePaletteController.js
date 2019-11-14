@@ -58,6 +58,11 @@
     return palette.getColors();
   };
 
+  ns.CreatePaletteController.prototype.getCurrentFrameColors_ = function () {
+    var palette = this.paletteService.getPaletteById(Constants.CURRENT_FRAME_COLORS_PALETTE_ID);
+    return palette.getColors();
+  };
+
   ns.CreatePaletteController.prototype.setPalette_ = function (palette) {
     this.palette = palette;
     this.nameInput.value = pskl.utils.unescapeHtml(palette.name);

@@ -43,6 +43,7 @@
     }
   };
 
+  // Current frame colors are tracked and updated for any future pixel indexing operations
   ns.CurrentColorsService.prototype.updateCurrentFrameColors = function () {
     var currentFrameIndex = pskl.app.piskelController.getCurrentFrameIndex();
     var frame = pskl.app.piskelController.getCurrentLayer().getFrameAt(currentFrameIndex);
@@ -62,22 +63,44 @@
         frame.colorPalette.push(hexColor)
       }
     })
+  
+    this.currentFrameColors = frame.colorPalette;
+    $.publish(Events.CURRENT_COLORS_UPDATED);
+    // this.updatePixelIndexes();
+  };
 
-    // update indexes
+  // call this before doing any color application operation that relies on pixel indexing
+  ns.CurrentColorsService.prototype.updatePixelIndexes = function () {
+    var currentFrameIndex = pskl.app.piskelController.getCurrentFrameIndex();
+    var frame = pskl.app.piskelController.getCurrentLayer().getFrameAt(currentFrameIndex);
+
+    var colorPalette = this.getCurrentFrameColors();
     frame.forEachPixel(function (color, col, row, frame, pixelIndex) {
       if (color ===  0) return;
       var hexColor = pskl.utils.intToHex(color);
-      var indexOfPixelColorInPal = frame.colorPalette.indexOf(hexColor);
+      var indexOfPixelColorInPal = colorPalette.indexOf(hexColor);
       if (indexOfPixelColorInPal !== pixelIndex) {
         frame.setPixelIndex(col, row, indexOfPixelColorInPal)
       }
     });
+  }
 
-    console.log(frame.getPixelIndexes())
-  
-    this.currentFrameColors = frame.colorPalette;    
-    $.publish(Events.CURRENT_COLORS_UPDATED);
-  };
+  ns.CurrentColorsService.prototype.applyCurrentPaletteToIndexedPixels = function (applicationPalette) {
+    var currentFrameIndex = pskl.app.piskelController.getCurrentFrameIndex();
+    var frame = pskl.app.piskelController.getCurrentLayer().getFrameAt(currentFrameIndex);
+
+    // update color indexes to frame pixels with current frame colors first
+    this.updatePixelIndexes();
+    // apply current palette colors to the indexed pixels
+    applicationPalette.forEach(function(color, index) {
+      frame.forEachPixel(function (oldColor, col, row, frame, pixelIndex) {
+        if (pixelIndex === index) {
+          frame.setPixel(col, row, color);
+        }
+      }) 
+    })
+
+  }
 
   ns.CurrentColorsService.prototype.isCurrentColorsPaletteSelected_ = function () {
     var paletteId = pskl.UserSettings.get(pskl.UserSettings.SELECTED_PALETTE);

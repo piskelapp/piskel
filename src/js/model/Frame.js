@@ -144,7 +144,6 @@
       var oldPixelIndex = this.pixelIndexes[index];
 
       if (oldPixelIndex !== pixelIndex) {
-        console.log(pixelIndex)
         this.pixelIndexes[index] = pixelIndex
       }
     }
