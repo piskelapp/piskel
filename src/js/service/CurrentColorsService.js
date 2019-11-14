@@ -54,19 +54,26 @@
       }
     })
 
-    // add new colors, update indexes
+    // add new colors
     frame.forEachPixel(function (color, col, row, frame, pixelIndex) {
       if (color ===  0) return;
       var hexColor = pskl.utils.intToHex(color);
       if (!frame.colorPalette.includes(hexColor)) {       
         frame.colorPalette.push(hexColor)
       }
+    })
+
+    // update indexes
+    frame.forEachPixel(function (color, col, row, frame, pixelIndex) {
+      if (color ===  0) return;
+      var hexColor = pskl.utils.intToHex(color);
       var indexOfPixelColorInPal = frame.colorPalette.indexOf(hexColor);
-      
       if (indexOfPixelColorInPal !== pixelIndex) {
         frame.setPixelIndex(col, row, indexOfPixelColorInPal)
       }
-    }) 
+    });
+
+    console.log(frame.getPixelIndexes())
   
     this.currentFrameColors = frame.colorPalette;    
     $.publish(Events.CURRENT_COLORS_UPDATED);
