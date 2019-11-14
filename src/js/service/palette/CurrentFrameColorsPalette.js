@@ -10,6 +10,6 @@
   ns.CurrentFrameColorsPalette.prototype.getColors = function () {
     var currentColors = pskl.app.currentColorsService.getCurrentFrameColors();
     currentColors = currentColors.slice(0, Constants.MAX_PALETTE_COLORS);
-    return this.colorSorter.sort(currentColors);
+    return currentColors;
   };
 })();
