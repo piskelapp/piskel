@@ -79,6 +79,7 @@
 
   ns.PalettesListController.prototype.selectPalette = function (paletteId) {
     pskl.UserSettings.set(pskl.UserSettings.SELECTED_PALETTE, paletteId);
+    $.publish(Events.CURRENT_PALETTE_CHANGED)
   };
 
   ns.PalettesListController.prototype.getSelectedPaletteColors_ = function () {

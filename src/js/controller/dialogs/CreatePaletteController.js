@@ -43,8 +43,10 @@
       this.setTitle('Create Palette');
 
       var uuid = pskl.utils.Uuid.generate();
-      if (isCurrentColorsPalette) {
+      if (paletteId == Constants.CURRENT_COLORS_PALETTE_ID) {
         palette = new pskl.model.Palette(uuid, 'Current colors clone', this.getCurrentColors_());
+      } else if (paletteId == Constants.CURRENT_FRAME_COLORS_PALETTE_ID) {
+        palette = new pskl.model.Palette(uuid, 'Current frame colors clone', this.getCurrentFrameColors_());
       } else {
         palette = new pskl.model.Palette(uuid, 'New palette', []);
       }

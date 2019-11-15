@@ -24,6 +24,7 @@
     $.subscribe(Events.HISTORY_STATE_LOADED, this.loadColorsFromCache_.bind(this));
     $.subscribe(Events.CURRENT_FRAME_CHANGED, this.updateCurrentColors_.bind(this));
     $.subscribe(Events.CURRENT_LAYER_CHANGED, this.updateCurrentColors_.bind(this));
+    $.subscribe(Events.CURRENT_PALETTE_CHANGED, this.updateCurrentColors_.bind(this));
   };
 
   ns.CurrentColorsService.prototype.getCurrentColors = function () {
@@ -48,14 +49,7 @@
     var currentFrameIndex = pskl.app.piskelController.getCurrentFrameIndex();
     var frame = pskl.app.piskelController.getCurrentLayer().getFrameAt(currentFrameIndex);
 
-    // remove missing colors
-    frame.colorPalette.forEach(function(color, index){
-      if (!frame.getPixels().includes(pskl.utils.colorToInt(color))){
-        frame.colorPalette.splice(index, 1)
-      }
-    })
-
-    // add new colors
+    frame.colorPalette = [];
     frame.forEachPixel(function (color, col, row, frame) {
       if (color ===  0) return;
       if (!frame.colorPalette.includes(color)) {       
@@ -82,7 +76,7 @@
           frame.setPixel(col, row, color);
         }
       }) 
-    })
+    });
   }
 
   ns.CurrentColorsService.prototype.isCurrentColorsPaletteSelected_ = function () {
