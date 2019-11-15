@@ -8,7 +8,6 @@
       this.id = __idCounter++;
       this.version = 0;
       this.pixels = ns.Frame.createEmptyPixelGrid_(width, height);
-      this.pixelIndexes = ns.Frame.createEmptyPixelIndexGrid_(width, height);
       this.colorPalette = [];
       this.stateIndex = 0;
     } else {
@@ -66,13 +65,6 @@
     return new Uint32Array(pixels);
   };
 
-  ns.Frame.createEmptyPixelIndexGrid_ = function (width, height) {
-    var pixels;
-    pixels = new Int32Array(width * height);
-    pixels.fill(-1);
-    return new Int32Array(pixels);
-  };
-
   ns.Frame.createEmptyFromFrame = function (frame) {
     return new ns.Frame(frame.getWidth(), frame.getHeight());
   };
@@ -91,13 +83,6 @@
   };
 
   /**
-   * Returns a copy of the pixel indexes used by the frame
-   */
-  ns.Frame.prototype.getPixelIndexes = function () {
-    return new Int32Array(this.pixelIndexes);
-  };
-
-  /**
    * Copies the passed pixels into the frame.
    */
   ns.Frame.prototype.setPixels = function (pixels) {
@@ -107,7 +92,6 @@
 
   ns.Frame.prototype.clear = function () {
     this.pixels = ns.Frame.createEmptyPixelGrid_(this.getWidth(), this.getHeight());
-    this.pixelIndexes = ns.Frame.createEmptyPixelIndexGrid_(this.getWidth(), this.getHeight());
     this.version++;
   };
 
@@ -138,17 +122,6 @@
     }
   };
 
-  ns.Frame.prototype.setPixelIndex = function (x, y, pixelIndex) {
-    if (this.containsPixel(x, y)) {
-      var index = y * this.width + x;
-      var oldPixelIndex = this.pixelIndexes[index];
-
-      if (oldPixelIndex !== pixelIndex) {
-        this.pixelIndexes[index] = pixelIndex
-      }
-    }
-  }
-
   ns.Frame.prototype.getPixel = function (x, y) {
     if (this.containsPixel(x, y)) {
       return this.pixels[y * this.width + x];
@@ -162,7 +135,7 @@
     var height = this.getHeight();
     var length = width * height;
     for (var i = 0; i < length ; i++) {
-      callback(this.pixels[i], i % width, Math.floor(i / width), this, this.pixelIndexes[i]);
+      callback(this.pixels[i], i % width, Math.floor(i / width), this);
     }
   };
 
