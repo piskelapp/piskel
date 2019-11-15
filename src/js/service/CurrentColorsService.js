@@ -63,7 +63,10 @@
       }
     })
   
-    this.currentFrameColors = frame.colorPalette;
+    // this.currentFrameColors keeps them as hexes, for the palette
+    this.currentFrameColors = frame.colorPalette.map(function(intColor) {
+      return pskl.utils.intToHex(intColor)
+    })
     $.publish(Events.CURRENT_COLORS_UPDATED);
   };
 
