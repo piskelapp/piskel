@@ -45,10 +45,15 @@
   };
 
   // Current frame colors are tracked and updated for any future pixel indexing operations
-  ns.CurrentColorsService.prototype.updateCurrentFrameColors = function () {
+  ns.CurrentColorsService.prototype.updateCurrentFrameColors = function (frame) {
     var currentFrameIndex = pskl.app.piskelController.getCurrentFrameIndex();
     var frame = pskl.app.piskelController.getCurrentLayer().getFrameAt(currentFrameIndex);
 
+    this.updateFrameColors(frame);
+    $.publish(Events.CURRENT_COLORS_UPDATED);
+  };
+
+  ns.CurrentColorsService.prototype.updateFrameColors = function (frame) {
     frame.colorPalette = [];
     frame.forEachPixel(function (color, col, row, frame) {
       if (color ===  0) return;
@@ -61,13 +66,10 @@
     this.currentFrameColors = frame.colorPalette.map(function(intColor) {
       return pskl.utils.intToHex(intColor)
     })
-    $.publish(Events.CURRENT_COLORS_UPDATED);
-  };
+  }
 
-  ns.CurrentColorsService.prototype.applyCurrentPaletteToIndexedPixels = function (applicationPalette) {
-    var currentFrameIndex = pskl.app.piskelController.getCurrentFrameIndex();
-    var frame = pskl.app.piskelController.getCurrentLayer().getFrameAt(currentFrameIndex);
-
+  ns.CurrentColorsService.prototype.applyCurrentPaletteToIndexedPixels = function (applicationPalette, frame, update) {
+    this.updateFrameColors(frame);
     applicationPalette.forEach(function(color, index) {
       frame.forEachPixel(function (oldColor, col, row, frame) {
         if (oldColor === 0) return;

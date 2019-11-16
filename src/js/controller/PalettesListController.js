@@ -167,8 +167,10 @@
   };
 
   ns.PalettesListController.prototype.onApplyPaletteClick_ = function (evt) {
-    var currentPalette = this.getSelectedPaletteColors_();
-    pskl.app.currentColorsService.applyCurrentPaletteToIndexedPixels(currentPalette);
+    var currentFrameIndex = pskl.app.piskelController.getCurrentFrameIndex();
+    var frame = pskl.app.piskelController.getCurrentLayer().getFrameAt(currentFrameIndex);
+
+    pskl.app.transformationsController.tools[5].applyToolOnFrame_(frame);
   };
 
   ns.PalettesListController.prototype.onColorContainerContextMenu = function (event) {
