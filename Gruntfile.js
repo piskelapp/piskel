@@ -87,7 +87,10 @@ module.exports = function(grunt) {
         // Exludes
         // TODO: remove this (for now we still get warnings from the lib folder)
         '!src/js/**/lib/**/*.js'
-      ]
+      ],
+      options: {
+        fix: grunt.option('fix') // this will get params from the flags
+      }
     },
 
     /**
