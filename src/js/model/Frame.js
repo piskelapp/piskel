@@ -8,6 +8,7 @@
       this.id = __idCounter++;
       this.version = 0;
       this.pixels = ns.Frame.createEmptyPixelGrid_(width, height);
+      this.pixelIndexes = ns.Frame.createEmptyPixelIndexGrid_(width, height);
       this.stateIndex = 0;
     } else {
       throw 'Bad arguments in pskl.model.Frame constructor : ' + width + ', ' + height;
@@ -64,6 +65,13 @@
     return new Uint32Array(pixels);
   };
 
+  ns.Frame.createEmptyPixelIndexGrid_ = function (width, height) {
+    var pixels;
+    pixels = new Int32Array(width * height);
+    pixels.fill(-1);
+    return new Int32Array(pixels);
+  };
+
   ns.Frame.createEmptyFromFrame = function (frame) {
     return new ns.Frame(frame.getWidth(), frame.getHeight());
   };
@@ -91,6 +99,7 @@
 
   ns.Frame.prototype.clear = function () {
     this.pixels = ns.Frame.createEmptyPixelGrid_(this.getWidth(), this.getHeight());
+    this.pixelIndexes = ns.Frame.createEmptyPixelIndexGrid_(this.getWidth(), this.getHeight());
     this.version++;
   };
 
@@ -106,14 +115,23 @@
     return [this.id, this.version].join('-');
   };
 
-  ns.Frame.prototype.setPixel = function (x, y, color) {
+  ns.Frame.prototype.setPixel = function (x, y, entryColor, pixelIndex) {
     if (this.containsPixel(x, y)) {
       var index = y * this.width + x;
       var p = this.pixels[index];
-      color = pskl.utils.colorToInt(color);
-
+      var color = pskl.utils.colorToInt(entryColor);
+      
       if (p !== color) {
         this.pixels[index] = color || pskl.utils.colorToInt(Constants.TRANSPARENT_COLOR);
+        
+        // only apply indexes to pixels when the color selected in the palette is primary
+        if (color === 0) { // when erasing pixels, set to -1
+          this.pixelIndexes[index] = -1;
+        } else if (pixelIndex !== undefined) { // when receiving a pixel index, use that
+          this.pixelIndexes[index] = pixelIndex
+        } else { // otherwise apply the primary color index, which is -1, when the color is not in the palette
+          this.pixelIndexes[index] = pskl.app.palettesListController.primaryColorIndex;
+        };
         this.version++;
       }
     }
@@ -132,7 +150,7 @@
     var height = this.getHeight();
     var length = width * height;
     for (var i = 0; i < length ; i++) {
-      callback(this.pixels[i], i % width, Math.floor(i / width), this);
+      callback(this.pixels[i], i % width, Math.floor(i / width), this, this.pixelIndexes[i]);
     }
   };
 
