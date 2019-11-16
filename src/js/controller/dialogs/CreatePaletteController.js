@@ -44,9 +44,10 @@
 
       var uuid = pskl.utils.Uuid.generate();
       if (paletteId == Constants.CURRENT_COLORS_PALETTE_ID) {
-        palette = new pskl.model.Palette(uuid, 'Current colors clone', this.getCurrentColors_());
+        palette = new pskl.model.Palette(uuid, 'File colors copy', this.getCurrentColors_());
       } else if (paletteId == Constants.CURRENT_FRAME_COLORS_PALETTE_ID) {
-        palette = new pskl.model.Palette(uuid, 'Current frame colors clone', this.getCurrentFrameColors_());
+        var frameId = pskl.app.piskelController.getCurrentFrameIndex() + 1;
+        palette = new pskl.model.Palette(uuid, 'frame:' + frameId + ' colors copy', this.getCurrentFrameColors_());
       } else {
         palette = new pskl.model.Palette(uuid, 'New palette', []);
       }
