@@ -3,7 +3,7 @@
 
   ns.PaletteApply = function () {
     this.toolId = 'tool-colorswap';
-    this.helpText = "Apply the currently selected palette's colors to the frame via their index numbers";
+    this.helpText = "Apply the currently selected palette's colors to a frame via their index numbers";
     this.tooltipDescriptors = [
       {key : 'ctrl', description : 'Apply to all layers'},
       {key : 'shift', description : 'Apply to all frames'}

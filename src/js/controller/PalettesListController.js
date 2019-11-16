@@ -17,7 +17,6 @@
 
     var createPaletteButton_ = document.querySelector('.create-palette-button');
     var editPaletteButton_ = document.querySelector('.edit-palette-button');
-    var applyPaletteButton_ = document.querySelector('.apply-palette-button');
 
     this.colorPaletteSelect_.addEventListener('change', this.onPaletteSelected_.bind(this));
     this.colorListContainer_.addEventListener('mouseup', this.onColorContainerMouseup.bind(this));
@@ -25,7 +24,6 @@
 
     createPaletteButton_.addEventListener('click', this.onCreatePaletteClick_.bind(this));
     editPaletteButton_.addEventListener('click', this.onEditPaletteClick_.bind(this));
-    applyPaletteButton_.addEventListener('click', this.onApplyPaletteClick_.bind(this));
 
     $.subscribe(Events.PALETTE_LIST_UPDATED, this.onPaletteListUpdated.bind(this));
     $.subscribe(Events.CURRENT_COLORS_UPDATED, this.fillColorListContainer.bind(this));
@@ -164,13 +162,6 @@
       dialogId : 'create-palette',
       initArgs : paletteId
     });
-  };
-
-  ns.PalettesListController.prototype.onApplyPaletteClick_ = function (evt) {
-    var currentFrameIndex = pskl.app.piskelController.getCurrentFrameIndex();
-    var frame = pskl.app.piskelController.getCurrentLayer().getFrameAt(currentFrameIndex);
-
-    pskl.app.transformationsController.tools[5].applyToolOnFrame_(frame);
   };
 
   ns.PalettesListController.prototype.onColorContainerContextMenu = function (event) {
