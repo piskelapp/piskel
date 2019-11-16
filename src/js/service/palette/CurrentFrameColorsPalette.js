@@ -2,7 +2,7 @@
   var ns = $.namespace('pskl.service.palette');
 
   ns.CurrentFrameColorsPalette = function () {
-    this.name = 'Current Frame colors';
+    this.name = '- Current Frame -';
     this.id = Constants.CURRENT_FRAME_COLORS_PALETTE_ID;
     this.colorSorter = new pskl.service.color.ColorSorter();
   };

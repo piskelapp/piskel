@@ -2,7 +2,7 @@
   var ns = $.namespace('pskl.service.palette');
 
   ns.CurrentColorsPalette = function () {
-    this.name = 'Current colors';
+    this.name = '* Current File *';
     this.id = Constants.CURRENT_COLORS_PALETTE_ID;
     this.colorSorter = new pskl.service.color.ColorSorter();
   };
