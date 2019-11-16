@@ -3,7 +3,7 @@
 
   ns.PaletteApply = function () {
     this.toolId = 'tool-colorswap';
-    this.helpText = "Apply the currently selected palette's colors to a frame via their index numbers";
+    this.helpText = 'Apply the currently selected palette\'s colors to a frame via their index numbers';
     this.tooltipDescriptors = [
       {key : 'ctrl', description : 'Apply to all layers'},
       {key : 'shift', description : 'Apply to all frames'}
@@ -18,7 +18,7 @@
     var allFrames = event.shiftKey;
 
     var currentPalette = pskl.app.palettesListController.getSelectedPaletteColors_();
-    this.swapColors_(currentPalette, allLayers, allFrames)
+    this.swapColors_(currentPalette, allLayers, allFrames);
 
   };
 
@@ -31,6 +31,6 @@
         pskl.app.currentColorsService.applyCurrentPaletteToIndexedPixels(newPalette, frame, true);
       }.bind(this));
     }.bind(this));
-  }
+  };
 
 })();

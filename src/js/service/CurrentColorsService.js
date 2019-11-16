@@ -32,7 +32,7 @@
   };
 
   ns.CurrentColorsService.prototype.getCurrentFrameColors = function () {
-    return this.currentFrameColors 
+    return this.currentFrameColors;
   };
 
   ns.CurrentColorsService.prototype.setCurrentColors = function (colors) {
@@ -56,30 +56,30 @@
   ns.CurrentColorsService.prototype.updateFrameColors = function (frame) {
     frame.colorPalette = [];
     frame.forEachPixel(function (color, col, row, frame) {
-      if (color ===  0) return;
-      if (!frame.colorPalette.includes(color)) {       
-        frame.colorPalette.push(color)
+      if (color ===  0) {return;}
+      if (!frame.colorPalette.includes(color)) {
+        frame.colorPalette.push(color);
       }
-    })
-  
+    });
+
     // this.currentFrameColors keeps them as hexes, for the palette
     this.currentFrameColors = frame.colorPalette.map(function(intColor) {
-      return pskl.utils.intToHex(intColor)
-    })
-  }
+      return pskl.utils.intToHex(intColor);
+    });
+  };
 
   ns.CurrentColorsService.prototype.applyCurrentPaletteToIndexedPixels = function (applicationPalette, frame, update) {
     this.updateFrameColors(frame);
     applicationPalette.forEach(function(color, index) {
       frame.forEachPixel(function (oldColor, col, row, frame) {
-        if (oldColor === 0) return;
-        var newPixelIndex = frame.colorPalette.indexOf(oldColor)
+        if (oldColor === 0) {return;}
+        var newPixelIndex = frame.colorPalette.indexOf(oldColor);
         if (newPixelIndex === index) {
           frame.setPixel(col, row, color);
         }
-      }) 
+      });
     });
-  }
+  };
 
   ns.CurrentColorsService.prototype.isCurrentColorsPaletteSelected_ = function () {
     var paletteId = pskl.UserSettings.get(pskl.UserSettings.SELECTED_PALETTE);

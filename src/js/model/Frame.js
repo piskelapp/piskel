@@ -112,7 +112,7 @@
       var index = y * this.width + x;
       var p = this.pixels[index];
       var color = pskl.utils.colorToInt(entryColor);
-      
+
       if (p !== color) {
         var applyColor = color || pskl.utils.colorToInt(Constants.TRANSPARENT_COLOR);
         this.pixels[index] = applyColor;
