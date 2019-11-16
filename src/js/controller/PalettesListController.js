@@ -196,28 +196,6 @@
       colorContainer.classList.remove(SECONDARY_COLOR_CLASSNAME);
       colorContainer.classList.add(PRIMARY_COLOR_CLASSNAME);
     }
-
-    this.primaryColorIndex = !!primaryColorContainer ? colorPalette.indexOf(pskl.app.selectedColorsService.getPrimaryColor()) : -1;
-    // Display cycling colors while using the Shift index brush
-    if (!primaryColorContainer || !secondaryColorContainer) { return; }
-    var startPoint = colorPalette.indexOf(pskl.app.selectedColorsService.getPrimaryColor());
-    var endPoint = colorPalette.indexOf(pskl.app.selectedColorsService.getSecondaryColor());
-    if (startPoint === endPoint) { return; }
-    var range = endPoint + 1 - startPoint ;
-    if (this.showColorCycles && range > 0) {
-      colorPalette.splice(0, endPoint + 1);
-      colorPalette.forEach(function(color, index) {
-        var colorNumber = index + 1;
-        if (colorNumber % range === 1) {
-          pskl.app.palettesListController.getColorContainer_(color).classList.add(PRIMARY_COLOR_CLASSNAME);
-          pskl.app.palettesListController.getColorContainer_(color).classList.add(CYCLED_COLOR_CLASSNAME);
-        }
-        if (colorNumber % range === 0) {
-          pskl.app.palettesListController.getColorContainer_(color).classList.add(SECONDARY_COLOR_CLASSNAME);
-          pskl.app.palettesListController.getColorContainer_(color).classList.add(CYCLED_COLOR_CLASSNAME);
-        }
-      });
-    }
   };
 
   ns.PalettesListController.prototype.getColorContainer_ = function (color) {
