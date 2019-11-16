@@ -77,7 +77,7 @@
 
   ns.PalettesListController.prototype.selectPalette = function (paletteId) {
     pskl.UserSettings.set(pskl.UserSettings.SELECTED_PALETTE, paletteId);
-    $.publish(Events.CURRENT_PALETTE_CHANGED);
+    $.publish(Events.CURRENT_PALETTE_CHANGED)
   };
 
   ns.PalettesListController.prototype.getSelectedPaletteColors_ = function () {
@@ -182,15 +182,8 @@
   };
 
   ns.PalettesListController.prototype.highlightSelectedColors = function () {
-    var colorPalette = pskl.app.palettesListController.getSelectedPaletteColors_();
-    colorPalette.forEach(function(color, index) {
-      pskl.app.palettesListController.getColorContainer_(color)
-      .classList.remove(PRIMARY_COLOR_CLASSNAME);
-      pskl.app.palettesListController.getColorContainer_(color)
-      .classList.remove(SECONDARY_COLOR_CLASSNAME);
-      pskl.app.palettesListController.getColorContainer_(color)
-      .classList.remove(CYCLED_COLOR_CLASSNAME);
-    });
+    this.removeClass_(PRIMARY_COLOR_CLASSNAME);
+    this.removeClass_(SECONDARY_COLOR_CLASSNAME);
 
     var colorContainer = this.getColorContainer_(pskl.app.selectedColorsService.getSecondaryColor());
     if (colorContainer) {
@@ -204,8 +197,7 @@
       colorContainer.classList.add(PRIMARY_COLOR_CLASSNAME);
     }
 
-    this.primaryColorIndex =
-      !!primaryColorContainer ? colorPalette.indexOf(pskl.app.selectedColorsService.getPrimaryColor()) : -1;
+    this.primaryColorIndex = !!primaryColorContainer ? colorPalette.indexOf(pskl.app.selectedColorsService.getPrimaryColor()) : -1;
     // Display cycling colors while using the Shift index brush
     if (!primaryColorContainer || !secondaryColorContainer) { return; }
     var startPoint = colorPalette.indexOf(pskl.app.selectedColorsService.getPrimaryColor());
