@@ -23,7 +23,7 @@
   "main": "./dest/prod/index.html",
   "scripts": {
     "test": "grunt test",
-    "dev": "grunt serve",
+    "dev": "grunt play",
     "start": "grunt build && nw",
     "preversion": "grunt test build",
     "postversion": "git push && git push --tags && npm publish",
