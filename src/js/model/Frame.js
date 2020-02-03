@@ -8,6 +8,7 @@
       this.id = __idCounter++;
       this.version = 0;
       this.pixels = ns.Frame.createEmptyPixelGrid_(width, height);
+      this.colorPalette = [];
       this.stateIndex = 0;
     } else {
       throw 'Bad arguments in pskl.model.Frame constructor : ' + width + ', ' + height;
@@ -106,14 +107,16 @@
     return [this.id, this.version].join('-');
   };
 
-  ns.Frame.prototype.setPixel = function (x, y, color) {
+  ns.Frame.prototype.setPixel = function (x, y, entryColor) {
     if (this.containsPixel(x, y)) {
       var index = y * this.width + x;
       var p = this.pixels[index];
-      color = pskl.utils.colorToInt(color);
-
+      var color = pskl.utils.colorToInt(entryColor);
+      
       if (p !== color) {
-        this.pixels[index] = color || pskl.utils.colorToInt(Constants.TRANSPARENT_COLOR);
+        var applyColor = color || pskl.utils.colorToInt(Constants.TRANSPARENT_COLOR);
+        this.pixels[index] = applyColor;
+
         this.version++;
       }
     }

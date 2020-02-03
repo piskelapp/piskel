@@ -236,6 +236,7 @@
   ns.PiskelController.prototype.setCurrentFrameIndex = function (index) {
     if (this.hasFrameAt(index)) {
       this.currentFrameIndex = index;
+      $.publish(Events.CURRENT_FRAME_CHANGED);
     } else {
       window.console.error('Could not set current frame index to ' + index);
     }
@@ -258,6 +259,7 @@
   ns.PiskelController.prototype.setCurrentLayerIndex = function (index) {
     if (this.hasLayerAt(index)) {
       this.currentLayerIndex = index;
+      $.publish(Events.CURRENT_LAYER_CHANGED);
     } else {
       window.console.error('Could not set current layer index to ' + index);
     }

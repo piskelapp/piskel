@@ -43,6 +43,7 @@
 
       this.paletteService = new pskl.service.palette.PaletteService();
       this.paletteService.addDynamicPalette(new pskl.service.palette.CurrentColorsPalette());
+      this.paletteService.addDynamicPalette(new pskl.service.palette.CurrentFrameColorsPalette());
 
       this.selectedColorsService = new pskl.service.SelectedColorsService();
       this.selectedColorsService.init();

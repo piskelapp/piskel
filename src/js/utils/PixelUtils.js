@@ -99,8 +99,7 @@
     /**
      * Apply the paintbucket tool in a frame at the (col, row) initial position
      * with the replacement color.
-     *
-     * @param frame pskl.model.Frame The frame target in which we want to paintbucket
+     * @param frame pskl.model.Frame The target in which we want to paintbucket. We set color on this frame.
      * @param col number Column coordinate in the frame
      * @param row number Row coordinate in the frame
      * @param replacementColor string Hexadecimal color used to fill the area

@@ -30,7 +30,7 @@
     this.colorsListWidget = new pskl.widgets.ColorsList(colorsListContainer);
 
     var palette;
-    var isCurrentColorsPalette = paletteId == Constants.CURRENT_COLORS_PALETTE_ID;
+    var isCurrentColorsPalette = paletteId == Constants.CURRENT_COLORS_PALETTE_ID || paletteId == Constants.CURRENT_FRAME_COLORS_PALETTE_ID;
     if (paletteId && !isCurrentColorsPalette) {
       importFileButton.style.display = 'none';
       this.setTitle('Edit Palette');
@@ -43,8 +43,11 @@
       this.setTitle('Create Palette');
 
       var uuid = pskl.utils.Uuid.generate();
-      if (isCurrentColorsPalette) {
-        palette = new pskl.model.Palette(uuid, 'Current colors clone', this.getCurrentColors_());
+      if (paletteId == Constants.CURRENT_COLORS_PALETTE_ID) {
+        palette = new pskl.model.Palette(uuid, 'File colors copy', this.getCurrentColors_());
+      } else if (paletteId == Constants.CURRENT_FRAME_COLORS_PALETTE_ID) {
+        var frameId = pskl.app.piskelController.getCurrentFrameIndex() + 1;
+        palette = new pskl.model.Palette(uuid, 'frame:' + frameId + ' colors copy', this.getCurrentFrameColors_());
       } else {
         palette = new pskl.model.Palette(uuid, 'New palette', []);
       }
@@ -55,6 +58,11 @@
 
   ns.CreatePaletteController.prototype.getCurrentColors_ = function () {
     var palette = this.paletteService.getPaletteById(Constants.CURRENT_COLORS_PALETTE_ID);
+    return palette.getColors();
+  };
+
+  ns.CreatePaletteController.prototype.getCurrentFrameColors_ = function () {
+    var palette = this.paletteService.getPaletteById(Constants.CURRENT_FRAME_COLORS_PALETTE_ID);
     return palette.getColors();
   };
 

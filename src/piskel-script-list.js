@@ -188,6 +188,7 @@
   "js/service/HistoryService.js",
   "js/service/color/ColorSorter.js",
   "js/service/palette/CurrentColorsPalette.js",
+  "js/service/palette/CurrentFrameColorsPalette.js",
   "js/service/palette/PaletteService.js",
   "js/service/palette/PaletteGplWriter.js",
   "js/service/palette/reader/AbstractPaletteFileReader.js",
@@ -242,6 +243,7 @@
   "js/tools/transform/Crop.js",
   "js/tools/transform/Flip.js",
   "js/tools/transform/Rotate.js",
+  "js/tools/transform/PaletteApply.js",
   "js/tools/transform/TransformUtils.js",
 
   // Devtools
