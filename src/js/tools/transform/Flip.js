@@ -3,9 +3,9 @@
 
   ns.Flip = function () {
     this.toolId = 'tool-flip';
-    this.helpText = 'Flip vertically';
+    this.helpText = 'Flip horizontally';
     this.tooltipDescriptors = [
-      {key : 'alt', description : 'Flip horizontally'},
+      {key : 'alt', description : 'Flip vertically'},
       {key : 'ctrl', description : 'Apply to all layers'},
       {key : 'shift', description : 'Apply to all frames'}
     ];
