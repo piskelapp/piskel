@@ -3,7 +3,9 @@
 
   var PRIMARY_COLOR_CLASSNAME = 'palettes-list-primary-color';
   var SECONDARY_COLOR_CLASSNAME = 'palettes-list-secondary-color';
-  var CYCLED_COLOR_CLASSNAME = 'palettes-list-cycled-color';
+  var CYCLED_COLOR_RANGE_START_CLASSNAME = 'palettes-list-cycled-color-start';
+  var CYCLED_COLOR_RANGE_END_CLASSNAME = 'palettes-list-cycled-color-end';
+
 
   ns.PalettesListController = function (usedColorService) {
     this.usedColorService = usedColorService;
@@ -186,11 +188,13 @@
   };
 
   ns.PalettesListController.prototype.highlightSelectedColors = function () {
-    var colorPalette = pskl.app.palettesListController.getSelectedPaletteColors_();
-    colorPalette.forEach(function(color, index) {
-      pskl.app.palettesListController.getColorContainer_(color).classList.remove(PRIMARY_COLOR_CLASSNAME);
-      pskl.app.palettesListController.getColorContainer_(color).classList.remove(SECONDARY_COLOR_CLASSNAME);
-      pskl.app.palettesListController.getColorContainer_(color).classList.remove(CYCLED_COLOR_CLASSNAME);
+    var colorPalette = this.getSelectedPaletteColors_();
+    colorPalette.forEach(function(color) {
+      var colorContainer = pskl.app.palettesListController.getColorContainer_(color);
+      colorContainer.classList.remove(PRIMARY_COLOR_CLASSNAME);
+      colorContainer.classList.remove(SECONDARY_COLOR_CLASSNAME);
+      colorContainer.classList.remove(CYCLED_COLOR_RANGE_START_CLASSNAME);
+      colorContainer.classList.remove(CYCLED_COLOR_RANGE_END_CLASSNAME);
     });
 
     var secondaryColorContainer = this.getColorContainer_(pskl.app.selectedColorsService.getSecondaryColor());
@@ -206,22 +210,20 @@
     }
 
     // Display cycling colors while using the Shift index brush
-    if (!primaryColorContainer || !secondaryColorContainer) { return; }
+    if (!this.showColorCycles || !primaryColorContainer || !secondaryColorContainer) { return; }
     var startPoint = colorPalette.indexOf(pskl.app.selectedColorsService.getPrimaryColor());
     var endPoint = colorPalette.indexOf(pskl.app.selectedColorsService.getSecondaryColor());
     if (startPoint === endPoint) { return; }
     var range = endPoint + 1 - startPoint ;
-    if (this.showColorCycles && range > 0) {
+    if (range > 0) {
       colorPalette.splice(0, endPoint + 1);
       colorPalette.forEach(function(color, index) {
         var colorNumber = index + 1;
         if (colorNumber % range === 1) {
-          pskl.app.palettesListController.getColorContainer_(color).classList.add(PRIMARY_COLOR_CLASSNAME);
-          pskl.app.palettesListController.getColorContainer_(color).classList.add(CYCLED_COLOR_CLASSNAME);
+          pskl.app.palettesListController.getColorContainer_(color).classList.add(CYCLED_COLOR_RANGE_START_CLASSNAME);
         }
         if (colorNumber % range === 0) {
-          pskl.app.palettesListController.getColorContainer_(color).classList.add(SECONDARY_COLOR_CLASSNAME);
-          pskl.app.palettesListController.getColorContainer_(color).classList.add(CYCLED_COLOR_CLASSNAME);
+          pskl.app.palettesListController.getColorContainer_(color).classList.add(CYCLED_COLOR_RANGE_END_CLASSNAME);
         }
       });
     }
@@ -229,13 +231,6 @@
 
   ns.PalettesListController.prototype.getColorContainer_ = function (color) {
     return this.colorListContainer_.querySelector('.palettes-list-color[data-color="' + color + '"]');
-  };
-
-  ns.PalettesListController.prototype.removeClass_ = function (cssClass) {
-    var element = document.querySelector('.' + cssClass);
-    if (element) {
-      element.classList.remove(cssClass);
-    }
   };
 
   ns.PalettesListController.prototype.onPaletteListUpdated = function () {

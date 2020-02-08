@@ -1,4 +1,3 @@
-/* eslint-disable indent */
 /**
  * @provide pskl.tools.drawing.ShiftIndex
  *
@@ -12,10 +11,21 @@
 		this.superclass.constructor.call(this);
 
 		this.toolId = 'tool-shift-index';
-		this.helpText = 'ShiftIndex';
+		this.helpText = 'Shift Palette Color Index Brush';
 		this.shortcut = pskl.service.keyboard.Shortcuts.TOOL.SHIFT_INDEX;
 
-		this.tooltipDescriptors = [{ key: 'ctrl', description: 'Shift Index backwards' }];
+		this.tooltipDescriptors = [
+			{ 
+				description: 'Changes the color of pixels which are in the current palette. ' + 
+					'For each pixel it touches, the next or previous color within the palette will be used. ' + 
+					'Use the primary and secondary colors in the palette to set ' +
+					'cell shade range boundaries. For example if your palette has: ' +
+					'- light red, dark red, light blue, dark blue - ' +
+					'you would want to set the primary colour to light red and secondary to dark red. ' +
+					'This will prevent the brush from cycling red to blue'
+			},
+			{ key: 'ctrl', description: 'Shift Index backwards' },
+		];
 	};
 
 	pskl.utils.inherit(ns.ShiftIndex, ns.SimplePen);
@@ -39,22 +49,22 @@
 	};
 
 	ns.ShiftIndex.prototype.getModifiedColor_ = function(col, row, frame, overlay, event) {
-		var overlayColor = overlay.getPixel(col, row);
-		var frameColor = frame.getPixel(col, row);
-
-		var isPixelModified = overlayColor !== pskl.utils.colorToInt(Constants.TRANSPARENT_COLOR);
-		var pixelColor = isPixelModified ? overlayColor : frameColor;
-
+		var pixelColor = frame.getPixel(col, row);
 		var isTransparent = pixelColor === pskl.utils.colorToInt(Constants.TRANSPARENT_COLOR);
 		if (isTransparent) {
-			return Constants.TRANSPARENT_COLOR;
+		// Ignore transparent pixels.
+		return Constants.TRANSPARENT_COLOR;
 		}
 
+		var overlayColor = overlay.getPixel(col, row);
+		var isPixelModified = overlayColor !== pskl.utils.colorToInt(Constants.TRANSPARENT_COLOR);
 		if (isPixelModified) {
-			return pixelColor;
+		// This pixel was already updated by the tool, reuse the current color 
+		// buffered in the overlay.
+		return overlayColor;
 		}
-		var backward = pskl.utils.UserAgent.isMac ? event.metaKey : event.ctrlKey;
 
+		var backward = pskl.utils.UserAgent.isMac ? event.metaKey : event.ctrlKey;
 		var color = pskl.utils.intToHex(pixelColor);
 		var colorPalette = pskl.app.palettesListController.getSelectedPaletteColors_();
 		var startPoint = colorPalette.indexOf(pskl.app.selectedColorsService.getPrimaryColor());
