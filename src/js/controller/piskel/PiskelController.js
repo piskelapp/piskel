@@ -5,7 +5,7 @@
     if (piskel) {
       this.setPiskel(piskel);
     } else {
-      throw 'A piskel instance is mandatory for instanciating PiskelController';
+      throw 'A piskel instance is mandatory for instantiating PiskelController';
     }
   };
 
