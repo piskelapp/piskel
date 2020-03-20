@@ -52,7 +52,7 @@
   };
 
   /**
-   * Initalize all controls related to the spritesheet layout.
+   * Initialize all controls related to the spritesheet layout.
    */
   ns.PngExportController.prototype.initLayoutSection_ = function () {
     var frames = this.piskelController.getFrameCount();
