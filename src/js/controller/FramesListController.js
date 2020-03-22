@@ -71,16 +71,16 @@
     var scrollerHeight = scroller.offsetHeight;
     var scrollTop = scroller.scrollTop;
     var scrollerContentHeight = this.previewList.offsetHeight;
-    var treshold = this.container.querySelector('.top-overflow').offsetHeight;
+    var threshold = this.container.querySelector('.top-overflow').offsetHeight;
     var overflowTop = false;
     var overflowBottom = false;
 
     if (scrollerHeight < scrollerContentHeight) {
-      if (scrollTop > treshold) {
+      if (scrollTop > threshold) {
         overflowTop = true;
       }
       var scrollBottom = (scrollerContentHeight - scrollTop) - scrollerHeight;
-      if (scrollBottom > treshold) {
+      if (scrollBottom > threshold) {
         overflowBottom = true;
       }
     }

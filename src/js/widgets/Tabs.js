@@ -12,7 +12,7 @@
 
   ns.Tabs.prototype.init = function (container) {
     this.tabListEl = container.querySelector('.tab-list');
-    this.tabContentlEl = container.querySelector('.tab-content');
+    this.tabContentEl = container.querySelector('.tab-content');
     pskl.utils.Event.addEventListener(this.tabListEl, 'click', this.onTabsClicked_, this);
 
     var tab = pskl.UserSettings.get(this.settingsName);
@@ -37,7 +37,7 @@
       this.currentController.destroy();
     }
 
-    this.tabContentlEl.innerHTML = pskl.utils.Template.get(this.tabs[tabId].template);
+    this.tabContentEl.innerHTML = pskl.utils.Template.get(this.tabs[tabId].template);
     this.currentController = new this.tabs[tabId].controller(pskl.app.piskelController, this.parentController);
     this.currentController.init();
     this.currentTab = tabId;
