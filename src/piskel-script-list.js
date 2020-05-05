@@ -225,6 +225,7 @@
   "js/tools/drawing/Eraser.js",
   "js/tools/drawing/Stroke.js",
   "js/tools/drawing/PaintBucket.js",
+  "js/tools/drawing/Outliner.js",
   "js/tools/drawing/Rectangle.js",
   "js/tools/drawing/Circle.js",
   "js/tools/drawing/Move.js",

@@ -155,6 +155,76 @@
     },
 
     /**
+     * Apply the outliner tool in a frame at the (col, row) initial position
+     * with the replacement color.
+     *
+     * @param frame pskl.model.Frame The frame target in which we want to paintbucket
+     * @param col number Column coordinate in the frame
+     * @param row number Row coordinate in the frame
+     * @param replacementColor string Hexadecimal color used to fill the area
+     * @param fillCorners boolean If true, also paint corner pixels
+     *
+     * @return an array of the pixel coordinates paint with the replacement color
+     */
+    outlineSimilarConnectedPixelsFromFrame: function(frame, col, row, replacementColor, fillCorners) {
+      /**
+       * Acts like floodfill, except that a given pixel is only painted if it has at
+       * least one non-filled-color neighbor.
+       * 
+       */
+      if (typeof replacementColor == 'string') {
+        replacementColor = pskl.utils.colorToInt(replacementColor);
+      }
+
+      if (fillCorners===undefined) {
+        fillCorners = false;
+      }
+
+      var targetColor;
+      try {
+        targetColor = frame.getPixel(col, row);
+      } catch (e) {
+        // Frame out of bound exception.
+      }
+
+      if (targetColor === null || targetColor == replacementColor) {
+        return;
+      }
+
+      var atLeastOneNeighborHasNonTargetColor = function(pixel) {
+        for (var y = -1; y <= 1; y++ ) {
+          for (var x = -1; x <= 1; x++ ) {
+            if (x != 0 || y != 0) {
+              if (fillCorners || (x == 0 || y == 0)) {
+                try {
+                  var pixelColor = frame.getPixel(pixel.col + x, pixel.row + y);
+                  if ( pixelColor !== null && pixelColor !== targetColor) {
+                    return true;
+                  }
+                } catch (e) {
+                  // Frame out of bound exception.
+                }
+              }
+            }
+          }
+        }
+        return false;
+      };
+
+      var pixels = pskl.PixelUtils.getSimilarConnectedPixelsFromFrame(frame, col, row);
+      pixels = pixels.filter(pixel => atLeastOneNeighborHasNonTargetColor(pixel));
+
+      var paintedPixels = [];
+
+      for (var pixel of pixels) {
+        frame.setPixel(pixel.col, pixel.row, replacementColor);
+        paintedPixels.push(pixel);
+      }
+
+      return paintedPixels;
+    },
+
+    /**
      * Starting from a provided origin, visit connected pixels using a visitor function.
      * After visiting a pixel, select the 4 connected pixels (up, right, down, left).
      * Call the provided visitor on each pixel. The visitor should return true if the
@@ -167,9 +237,6 @@
      * @return {Array} the array of visited pixels {col, row}
      */
     visitConnectedPixels : function (pixel, frame, pixelVisitor) {
-      var col = pixel.col;
-      var row = pixel.row;
-
       var queue = [];
       var visitedPixels = [];
       var dy = [-1, 0, 1, 0];
