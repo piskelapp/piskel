@@ -15,7 +15,7 @@
     this.tooltipDescriptors = [
       {key : 'ctrl', description : 'Use 25% dither'},
       {key : 'shift', description : 'Use 75% dither'},
-    ];   
+    ];
   };
 
   pskl.utils.inherit(ns.DitheringTool, ns.SimplePen);
@@ -41,11 +41,10 @@
   ns.DitheringTool.prototype.applyToolOnPixel = function(col, row, frame, overlay, event) {
     var usePrimaryColor = (col + row) % 2;
 
-    if( pskl.utils.UserAgent.isMac ? event.metaKey : event.ctrlKey ) {
-      usePrimaryColor = col%2 || row%2
-    }
-    else if( event.shiftKey ) {
-      usePrimaryColor = col%2 && row%2
+    if (pskl.utils.UserAgent.isMac ? event.metaKey : event.ctrlKey) {
+      usePrimaryColor = col % 2 || row % 2;
+    } else if (event.shiftKey) {
+      usePrimaryColor = col % 2 && row % 2;
     }
 
     if (pskl.app.mouseStateService.isRightButtonPressed()) {
