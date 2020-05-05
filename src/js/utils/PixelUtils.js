@@ -170,13 +170,13 @@
       /**
        * Acts like floodfill, except that a given pixel is only painted if it has at
        * least one non-filled-color neighbor.
-       * 
+       *
        */
       if (typeof replacementColor == 'string') {
         replacementColor = pskl.utils.colorToInt(replacementColor);
       }
 
-      if (fillCorners===undefined) {
+      if (fillCorners === undefined) {
         fillCorners = false;
       }
 
@@ -192,13 +192,13 @@
       }
 
       var atLeastOneNeighborHasNonTargetColor = function(pixel) {
-        for (var y = -1; y <= 1; y++ ) {
-          for (var x = -1; x <= 1; x++ ) {
+        for (var y = -1; y <= 1; y++) {
+          for (var x = -1; x <= 1; x++) {
             if (x != 0 || y != 0) {
               if (fillCorners || (x == 0 || y == 0)) {
                 try {
                   var pixelColor = frame.getPixel(pixel.col + x, pixel.row + y);
-                  if ( pixelColor !== null && pixelColor !== targetColor) {
+                  if (pixelColor !== null && pixelColor !== targetColor) {
                     return true;
                   }
                 } catch (e) {
@@ -212,11 +212,14 @@
       };
 
       var pixels = pskl.PixelUtils.getSimilarConnectedPixelsFromFrame(frame, col, row);
-      pixels = pixels.filter(pixel => atLeastOneNeighborHasNonTargetColor(pixel));
+      pixels = pixels.filter(function(pixel) {
+        return atLeastOneNeighborHasNonTargetColor(pixel);
+      });
 
       var paintedPixels = [];
 
-      for (var pixel of pixels) {
+      for (var i = 0; i < pixels.length; i++) {
+        var pixel = pixels[i];
         frame.setPixel(pixel.col, pixel.row, replacementColor);
         paintedPixels.push(pixel);
       }

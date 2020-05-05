@@ -34,6 +34,11 @@
   };
 
   ns.Outliner.prototype.replay = function (frame, replayData) {
-    pskl.PixelUtils.outlineSimilarConnectedPixelsFromFrame(frame, replayData.col, replayData.row, replayData.color, replayData.fillCorners);
+    pskl.PixelUtils.outlineSimilarConnectedPixelsFromFrame(
+      frame,
+      replayData.col,
+      replayData.row,
+      replayData.color,
+      replayData.fillCorners);
   };
 })();
