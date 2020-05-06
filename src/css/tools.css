@@ -30,6 +30,7 @@
  */
 
 .tool-paint-bucket .drawing-canvas-container:hover,
+.tool-outliner .drawing-canvas-container:hover,
 .tool-colorswap .drawing-canvas-container:hover {
   cursor: url(../img/cursors/paint-bucket.png) 14 14, pointer;
 }
