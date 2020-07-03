@@ -182,7 +182,7 @@
       var layer = this.piskelController.getLayerAt(parseInt(index, 10));
       var opacity = window.prompt('Set layer opacity (value between 0 and 1)', layer.getOpacity());
       this.piskelController.setLayerOpacityAt(index, opacity);
-    } else if(el.classList.contains('layer-lock')) {
+    } else if (el.classList.contains('layer-lock')) {
       index = pskl.utils.Dom.getData(el, 'layerIndex');
       var layer = this.piskelController.getLayerAt(parseInt(index, 10));
       this.piskelController.setLayerLockedAt(index, layer.getLocked());
