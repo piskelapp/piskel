@@ -125,7 +125,8 @@
       'layername' : layer.getName(),
       'layerindex' : index,
       'isselected:current-layer-item' : isSelected,
-      'opacity' : layer.getOpacity()
+      'opacity' : layer.getOpacity(),
+      'locked' : layer.locked ? 'locked' : 'unlocked'
     });
     var layerItem = pskl.utils.Template.createFromHTML(layerItemHtml);
     this.layersListEl.insertBefore(layerItem, this.layersListEl.firstChild);
@@ -181,6 +182,10 @@
       var layer = this.piskelController.getLayerAt(parseInt(index, 10));
       var opacity = window.prompt('Set layer opacity (value between 0 and 1)', layer.getOpacity());
       this.piskelController.setLayerOpacityAt(index, opacity);
+    } else if(el.classList.contains('layer-lock')) {
+      index = pskl.utils.Dom.getData(el, 'layerIndex');
+      var layer = this.piskelController.getLayerAt(parseInt(index, 10));
+      this.piskelController.setLayerLockedAt(index, layer.getLocked());
     }
   };
 

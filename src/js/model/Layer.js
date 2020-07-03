@@ -8,6 +8,7 @@
       this.name = name;
       this.frames = [];
       this.opacity = 1;
+      this.locked = false;
     }
   };
 
@@ -45,6 +46,17 @@
     }
     this.opacity = +opacity.toFixed(3);
   };
+
+  ns.Layer.prototype.getLocked = function () {
+    return this.locked;
+  };
+
+  ns.Layer.prototype.setLocked = function (locked) {
+    if (typeof locked !== 'boolean') {
+      locked = false;
+    }
+    this.locked = locked;
+  }
 
   ns.Layer.prototype.isTransparent = function () {
     return this.opacity < 1;

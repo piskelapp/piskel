@@ -94,3 +94,11 @@
 .piskel-icon-arrow-down-thin:before {
   content: "\e60f";
 }
+
+.piskel-icon-lock-locked:before {
+  content: "\e98f";
+}
+
+.piskel-icon-lock-unlocked:before {
+  content: "\e990";
+}

@@ -79,6 +79,7 @@
         var dataUriLengthFirstHalf = arr16[currentIndex + 3];
         var dataUriLengthSecondHalf = arr16[currentIndex + 4];
         var dataUriLength = (dataUriLengthSecondHalf >>> 0) | (dataUriLengthFirstHalf << 16 >>> 0);
+        var locked = false;
 
         // Name
         var layerName = '';
@@ -97,6 +98,7 @@
 
         layer.name = layerName;
         layer.opacity = opacity;
+        layer.locked = locked;
         layer.frameCount = frameCount;
         layer.dataUri = dataUri;
         layers.push(layer);
@@ -128,6 +130,7 @@
         var nlayer = new pskl.model.Layer(layer.name);
         layer.model = nlayer;
         nlayer.setOpacity(layer.opacity);
+        nlayer.setLocked(layer.locked);
         piskel.addLayer(nlayer);
 
         loadLayerImage.bind(this, layer, callback)();

@@ -284,6 +284,13 @@
     }
   };
 
+  ns.PiskelController.prototype.setLayerLockedAt = function (index, locked) {
+    var layer = this.getLayerByIndex(index);
+    if (layer) {
+      layer.setLocked(!locked);
+    }
+  };
+
   ns.PiskelController.prototype.mergeDownLayerAt = function (index) {
     var layer = this.getLayerByIndex(index);
     var downLayer = this.getLayerByIndex(index - 1);
