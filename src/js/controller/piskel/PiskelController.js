@@ -294,6 +294,10 @@
   ns.PiskelController.prototype.mergeDownLayerAt = function (index) {
     var layer = this.getLayerByIndex(index);
     var downLayer = this.getLayerByIndex(index - 1);
+    if (layer.locked || downLayer.locked) {
+      window.console.error('Could not merge with later below. One of the layers is locked.');
+      return;
+    }
     if (layer && downLayer) {
       var mergedLayer = pskl.utils.LayerUtils.mergeLayers(layer, downLayer);
       this.removeLayerAt(index);
