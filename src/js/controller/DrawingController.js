@@ -137,6 +137,11 @@
   };
 
   ns.DrawingController.prototype.onTouchstart_ = function (event) {
+    var index = this.piskelController.getCurrentLayerIndex();
+    var layer = this.piskelController.getLayerByIndex(index);
+    if (layer.locked) {
+      return;
+    }
     this.onMousedown_(event);
   };
 
@@ -153,6 +158,11 @@
    * @private
    */
   ns.DrawingController.prototype.onMousedown_ = function (event) {
+    var index = this.piskelController.getCurrentLayerIndex();
+    var layer = this.piskelController.getLayerByIndex(index);
+    if (layer.locked) {
+      return;
+    }
     $.publish(Events.MOUSE_EVENT, [event, this]);
     var frame = this.piskelController.getCurrentFrame();
     var coords = this.getSpriteCoordinates(event.clientX, event.clientY);
