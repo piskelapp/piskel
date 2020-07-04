@@ -56,7 +56,7 @@
       locked = false;
     }
     this.locked = locked;
-  }
+  };
 
   ns.Layer.prototype.isTransparent = function () {
     return this.opacity < 1;
