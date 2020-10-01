@@ -5,29 +5,36 @@
          class="layers-toggle-preview piskel-icon-eye"></div>
   </h3>
   <div class="toolbox-buttons">
+
+    <div class="tooltip-wrapper" data-toggle="tooltip" rel="tooltip" data-html="true" data-placement="top">
     <button data-action="add"
-      class="button layers-button piskel-icon-plus"
-      rel="tooltip" data-placement="top" ></button>
+      class="button layers-button piskel-icon-plus"></button>
+    </div>
 
+    <div class="tooltip-wrapper" data-toggle="tooltip" rel="tooltip" data-html="true" data-placement="top">
     <button data-action="up"
-      class="button layers-button piskel-icon-arrow-up-fat"
-      title="Move layer up" rel="tooltip" data-placement="top" ></button>
+      class="button layers-button piskel-icon-arrow-up-fat"></button>
+    </div>
 
+    <div class="tooltip-wrapper" rel="tooltip" data-html="true" data-placement="top">
     <button data-action="down"
-      class="button layers-button piskel-icon-arrow-down-fat"
-      title="Move layer down" rel="tooltip" data-placement="top" ></button>
+      class="button layers-button piskel-icon-arrow-down-fat"></button>
+    </div>
 
+    <div class="tooltip-wrapper" rel="tooltip" data-html="true" data-placement="top">
     <button data-action="edit"
-      class="button layers-button piskel-icon-pencil"
-      title="Edit layer name" rel="tooltip" data-placement="top"></button>
+      class="button layers-button piskel-icon-pencil"></button>
+    </div>
 
+    <div class="tooltip-wrapper" rel="tooltip" data-html="true" data-placement="top">
     <button data-action="merge"
-      class="button layers-button piskel-icon-merge"
-      title="Merge with layer below" rel="tooltip" data-placement="top" ></button>
+      class="button layers-button piskel-icon-merge"></button>
+    </div>
 
+    <div class="tooltip-wrapper" rel="tooltip" data-html="true" data-placement="top">
     <button data-action="delete"
-      class="button layers-button piskel-icon-close"
-      title="Delete selected layer" rel="tooltip" data-placement="top" ></button>
+      class="button layers-button piskel-icon-close"></button>
+    </div>
 
   </div>
 
@@ -38,13 +45,9 @@
         data-layer-index="{{layerindex}}">
         <span class="layer-name" data-placement="top">{{layername}}</span>
         <span class="layer-item-opacity"
-              title="Layer opacity ({{opacity}})" rel="tooltip" data-placement="top">
-            &#945;
+              title="Layer opacity" rel="tooltip" data-placement="top">
+          {{opacity}}&#945;
         </span>
     </li>
-  </script>
-    
-  <script type="text/template" id="layer-name-input-template">
-    <input class="textfield layer-name-input" type="text" autocomplete="off" value="{{layername}}" />
   </script>
 </div>

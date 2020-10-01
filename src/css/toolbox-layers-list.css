@@ -44,8 +44,8 @@
 
 .layers-button {
   margin: 0;
-  width: 16.66667%;
   float : left;
+  width: 120%;
 }
 
 /**
@@ -66,15 +66,10 @@
   cursor: pointer;
 }
 
-.layer-item .layer-name,
-.layer-item .layer-name-input {
+.layer-item .layer-name {
   padding: 0 0 0 10px;
   flex: 1 auto;
   white-space: nowrap;
-}
-
-.layer-item .layer-name-input {
-  width: 80%;
 }
 
 .layer-item .layer-name.overflowing-name {
@@ -87,8 +82,7 @@
 }
 
 .layer-item-opacity {
-  padding: 0 8px 0 8px;
-  flex: 0 auto;
+  padding-right: 8px;
 }
 
 .current-layer-item,

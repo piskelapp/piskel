@@ -1,18 +1,15 @@
 (function () {
   var ns = $.namespace('pskl.controller');
 
+  var TOGGLE_LAYER_SHORTCUT = 'alt+L';
+
   ns.LayersListController = function (piskelController) {
     this.piskelController = piskelController;
-    this.layerPreviewShortcut = pskl.service.keyboard.Shortcuts.MISC.LAYER_PREVIEW;
-    this.startRenamingCurrentLayer_ = this.startRenamingCurrentLayer_.bind(this);
-    this.onRenameInput_ = this.onRenameInput_.bind(this);
+    this.layerPreviewShortcut = pskl.service.keyboard.Shortcuts.MISC.LAYER_PREVIEW  ;
   };
 
   ns.LayersListController.prototype.init = function () {
-    this.isRenaming = false;
-
     this.layerItemTemplate_ = pskl.utils.Template.get('layer-item-template');
-    this.layerNameInputTemplate_ = pskl.utils.Template.get('layer-name-input-template');
     this.rootEl = document.querySelector('.layers-list-container');
     this.layersListEl = document.querySelector('.layers-list');
     this.toggleLayerPreviewEl = document.querySelector('.layers-toggle-preview');
@@ -27,7 +24,7 @@
     this.updateToggleLayerPreview_();
 
     $.subscribe(Events.PISKEL_RESET, this.renderLayerList_.bind(this));
-    $.subscribe(Events.USER_SETTINGS_CHANGED, this.onUserSettingsChange_.bind(this));
+    $.subscribe(Events.USER_SETTINGS_CHANGED, $.proxy(this.onUserSettingsChange_, this));
   };
 
   ns.LayersListController.prototype.renderLayerList_ = function () {
@@ -53,20 +50,32 @@
     var addTooltip = pskl.utils.TooltipFormatter.format('Create a layer', null, [
       {key : 'shift', description : 'Clone current layer'}
     ]);
-    var addButton = this.rootEl.querySelector('[data-action="add"]');
-    addButton.setAttribute('title', addTooltip);
+    var addDiv = this.rootEl.querySelector('[data-action="add"]').parentElement;
+    addDiv.setAttribute('title', addTooltip);
 
     var moveDownTooltip = pskl.utils.TooltipFormatter.format('Move layer down', null, [
       {key : 'shift', description : 'Move to the bottom'}
     ]);
-    var moveDownButton = this.rootEl.querySelector('[data-action="down"]');
-    moveDownButton.setAttribute('title', moveDownTooltip);
+    var moveDownDiv = this.rootEl.querySelector('[data-action="down"]').parentElement;
+    moveDownDiv.setAttribute('title', moveDownTooltip);
 
     var moveUpTooltip = pskl.utils.TooltipFormatter.format('Move layer up', null, [
       {key : 'shift', description : 'Move to the top'}
     ]);
-    var moveUpButton = this.rootEl.querySelector('[data-action="up"]');
-    moveUpButton.setAttribute('title', moveUpTooltip);
+    var moveUpDiv = this.rootEl.querySelector('[data-action="up"]').parentElement;
+    moveUpDiv.setAttribute('title', moveUpTooltip);
+
+    var editLayerTooltip = pskl.utils.TooltipFormatter.format('Edit layer name', null,[]);
+    var editLayerDiv = this.rootEl.querySelector('[data-action="edit"]').parentElement;
+    editLayerDiv.setAttribute('title', editLayerTooltip);
+
+    var mergeLayerTooltip = pskl.utils.TooltipFormatter.format('Merge with layer below', null,[]);
+    var mergeLayerDiv = this.rootEl.querySelector('[data-action="merge"]').parentElement;
+    mergeLayerDiv.setAttribute('title', mergeLayerTooltip);
+
+    var deleteLayerTooltip = pskl.utils.TooltipFormatter.format('Delete selected layer', null,[]);
+    var deleteLayerDiv = this.rootEl.querySelector('[data-action="delete"]').parentElement;
+    deleteLayerDiv.setAttribute('title', deleteLayerTooltip);
   };
 
   ns.LayersListController.prototype.initToggleLayerPreview_ = function () {
@@ -80,6 +89,7 @@
 
   ns.LayersListController.prototype.updateButtonStatus_ = function () {
     var layers = this.piskelController.getLayers();
+    var currentLayer = this.piskelController.getCurrentLayer();
     var index = this.piskelController.getCurrentLayerIndex();
 
     var isLast = index === 0;
@@ -113,53 +123,26 @@
   };
 
   ns.LayersListController.prototype.onUserSettingsChange_ = function (evt, name, value) {
-    if (name == pskl.UserSettings.LAYER_PREVIEW) {
+    if (name === pskl.UserSettings.LAYER_PREVIEW) {
       this.updateToggleLayerPreview_();
     }
   };
 
   ns.LayersListController.prototype.addLayerItem = function (layer, index) {
     var isSelected = this.piskelController.getCurrentLayer() === layer;
-    var isRenaming = isSelected && this.isRenaming;
     var layerItemHtml = pskl.utils.Template.replace(this.layerItemTemplate_, {
       'layername' : layer.getName(),
       'layerindex' : index,
       'isselected:current-layer-item' : isSelected,
-      'opacity' : layer.getOpacity()
+      'opacity': layer.getOpacity()
     });
     var layerItem = pskl.utils.Template.createFromHTML(layerItemHtml);
     this.layersListEl.insertBefore(layerItem, this.layersListEl.firstChild);
     if (layerItem.offsetWidth < layerItem.scrollWidth) {
-      var layerNameEl = layerItem.querySelector('.layer-name');
-      layerNameEl.classList.add('overflowing-name');
-      layerNameEl.setAttribute('title', layer.getName());
-      layerNameEl.setAttribute('rel', 'tooltip');
-    }
-    if (isSelected) {
-      layerItem.removeEventListener('dblclick', this.startRenamingCurrentLayer_);
-      layerItem.addEventListener('dblclick', this.startRenamingCurrentLayer_);
-    }
-    if (isRenaming) {
-      var layerNameInputHtml = pskl.utils.Template.replace(this.layerNameInputTemplate_, {
-        'layername' : layer.getName()
-      });
-      var layerNameInput = pskl.utils.Template.createFromHTML(layerNameInputHtml);
-      var layerNameEl = layerItem.querySelector('.layer-name');
-      layerItem.replaceChild(layerNameInput, layerNameEl);
-      layerNameInput.removeEventListener('blur', this.onRenameInput_);
-      layerNameInput.removeEventListener('keydown', this.onRenameInput_);
-      layerNameInput.addEventListener('blur', this.onRenameInput_);
-      layerNameInput.addEventListener('keydown', this.onRenameInput_);
-      layerNameInput.focus();
-      layerNameInput.select();
-    }
-    var opacity = layer.getOpacity();
-    if (opacity == 1) {
-      layerItem.querySelector('.layer-item-opacity').style.color = '#ffd700';
-    } else if (opacity == 0) {
-      layerItem.querySelector('.layer-item-opacity').style.color = '#969696';
-    } else {
-      layerItem.querySelector('.layer-item-opacity').style.color = '#ffffff';
+      $(layerItem).find('.layer-name')
+        .addClass('overflowing-name')
+        .attr('title', layer.getName())
+        .tooltip();
     }
   };
 
@@ -169,13 +152,8 @@
     if (el.classList.contains('button')) {
       this.onButtonClick_(el, evt);
     } else if (el.classList.contains('layer-name')) {
-      var currentIndex = this.piskelController.getCurrentLayerIndex();
       index = pskl.utils.Dom.getData(el, 'layerIndex');
-      if (index != currentIndex) {
-        var currentItem = el.parentElement.parentElement.querySelector('.current-layer-item');
-        currentItem.removeEventListener('dblclick', this.startRenamingCurrentLayer_);
-        this.piskelController.setCurrentLayerIndex(parseInt(index, 10));
-      }
+      this.piskelController.setCurrentLayerIndex(parseInt(index, 10));
     } else if (el.classList.contains('layer-item-opacity')) {
       index = pskl.utils.Dom.getData(el, 'layerIndex');
       var layer = this.piskelController.getLayerAt(parseInt(index, 10));
@@ -184,29 +162,14 @@
     }
   };
 
-  ns.LayersListController.prototype.startRenamingCurrentLayer_ = function () {
-    this.isRenaming = true;
-    this.renderLayerList_();
-  };
-
-  ns.LayersListController.prototype.onRenameInput_ = function (evt) {
-    var el = evt.target || evt.srcElement;
-    if (evt.key === 'Enter') {
-      this.finishRenamingCurrentLayer_(el, el.value);
-    } else if (!evt.key || evt.key === 'Escape') {
-      this.finishRenamingCurrentLayer_(el);
-    }
-  };
-
-  ns.LayersListController.prototype.finishRenamingCurrentLayer_ = function (input, newName) {
-    if (newName) {
+  ns.LayersListController.prototype.renameCurrentLayer_ = function () {
+    var layer = this.piskelController.getCurrentLayer();
+    var name = window.prompt('Please enter the layer name', layer.getName());
+    if (name) {
       var index = this.piskelController.getCurrentLayerIndex();
-      this.piskelController.renameLayerAt(index, newName);
+      this.piskelController.renameLayerAt(index, name);
+      this.renderLayerList_();
     }
-    input.removeEventListener('blur', this.onRenameInput_);
-    input.removeEventListener('keydown', this.onRenameInput_);
-    this.isRenaming = false;
-    this.renderLayerList_();
   };
 
   ns.LayersListController.prototype.mergeDownCurrentLayer_ = function () {
@@ -217,22 +180,22 @@
 
   ns.LayersListController.prototype.onButtonClick_ = function (button, evt) {
     var action = button.getAttribute('data-action');
-    if (action == 'up') {
+    if (action === 'up') {
       this.piskelController.moveLayerUp(evt.shiftKey);
-    } else if (action == 'down') {
+    } else if (action === 'down') {
       this.piskelController.moveLayerDown(evt.shiftKey);
-    } else if (action == 'add') {
+    } else if (action === 'add') {
       if (evt.shiftKey) {
         this.piskelController.duplicateCurrentLayer();
       } else {
         this.piskelController.createLayer();
       }
-    } else if (action == 'delete') {
+    } else if (action === 'delete') {
       this.piskelController.removeCurrentLayer();
-    } else if (action == 'merge') {
+    } else if (action === 'merge') {
       this.mergeDownCurrentLayer_();
-    } else if (action == 'edit') {
-      this.startRenamingCurrentLayer_();
+    } else if (action === 'edit') {
+      this.renameCurrentLayer_();
     }
   };
 
