@@ -234,6 +234,14 @@
    * @private
    */
   ns.FramesListController.prototype.onSortableStop_ = function (event, ui) {
+    // Make sure that the target tile gets selected, even in an on-the-spot drag/drop.
+    // This also ensures that devices like graphics tablets can make a selection even
+    // if it appears as a drag/drop event (which it often does).
+    var movedItem = ui.item.get(0);
+    var tiles = document.querySelectorAll('.preview-tile');
+    var targetInsertionId = Array.prototype.indexOf.call(tiles, movedItem);
+    this.piskelController.setCurrentFrameIndex(targetInsertionId);
+
     this.justDropped = true;
 
     this.resizeTimer = window.setTimeout((function() {
