@@ -93,29 +93,9 @@
   margin: 5px 5px 0 5px;
 }
 
-
-.grid-colors-list {
-  overflow: hidden;
-  padding: 0 5px;
-}
-
-.grid-colors-item {
-  float: left;
-  width: 20px;
-  height: 20px;
-  cursor: pointer;
-  border: 2px solid #888;
-  margin-right: 2px;
-  margin-bottom: 2px;
-  box-sizing: border-box;
-}
-
-.grid-colors-item:hover {
-  border-color: white;
-}
-
-.grid-colors-item.selected {
-  border-color: gold;
+.grid-color-container .sp-preview {
+  width: 16px;
+  height: 16px;
 }
 
 .settings-section-preferences > .settings-title {
