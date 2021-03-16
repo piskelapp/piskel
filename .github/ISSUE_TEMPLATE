@@ -1,19 +1,24 @@
-Bug description
+### BEFORE YOU START (Checklist)
+{Yes/No} I have researched my issue on the internet.
+{Yes/No} I could not find a solution to my problem.
+{Yes/No} What I am reporting is a bug, glitch, etc.
 
-(this template is intended for bug reports, erase it when requesting features/enhancements)
+Bug description:
+
+(This template is intended for bug reports, erase it when requesting features/enhancements)
 
 ### Steps to reproduce the bug
-1. go to piskelapp.com
-2. select a tool
+1. Go to piskelapp.com
+2. Select a tool
 3. ...
 
 ### Environment details
-* operating system:
-* browser (or offline application version):
+* Operating system:
+* Browser (or offline application version):
 
 ### Sprite details
-* number of frames:
-* sprite resolution:
-* session duration:
+* Number of frames:
+* Sprite resolution:
+* Session duration:
 
 Feel free to include a screenshot of the bug, a .piskel file of the sprite or anything else that can help us investigate.
