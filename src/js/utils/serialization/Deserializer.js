@@ -33,9 +33,10 @@
     var piskelData = data.piskel;
     var name = piskelData.name || 'Deserialized piskel';
     var description = piskelData.description || '';
+    var fps = typeof piskelData.fps != 'undefined' ? piskelData.fps : 12;
 
     var descriptor = new pskl.model.piskel.Descriptor(name, description);
-    this.piskel_ = new pskl.model.Piskel(piskelData.width, piskelData.height, piskelData.fps, descriptor);
+    this.piskel_ = new pskl.model.Piskel(piskelData.width, piskelData.height, fps, descriptor);
     this.hiddenFrames = piskelData.hiddenFrames || [];
 
     this.layersToLoad_ = piskelData.layers.length;
