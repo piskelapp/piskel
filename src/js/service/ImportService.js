@@ -97,15 +97,15 @@
    * @private
    */
   ns.ImportService.prototype.createImagesFromSheet_ = function (image,
-      frameSizeX, frameSizeY, frameOffsetX, frameOffsetY) {
+    frameSizeX, frameSizeY, frameOffsetX, frameOffsetY) {
     return pskl.utils.CanvasUtils.createFramesFromImage(
-        image,
-        frameOffsetX,
-        frameOffsetY,
-        frameSizeX,
-        frameSizeY,
-        /*useHorizonalStrips=*/ true,
-        /*ignoreEmptyFrames=*/ true);
+      image,
+      frameOffsetX,
+      frameOffsetY,
+      frameSizeX,
+      frameSizeY,
+      /*useHorizonalStrips=*/ true,
+      /*ignoreEmptyFrames=*/ true);
   };
 
   /**
@@ -116,7 +116,7 @@
    * @private
    */
   ns.ImportService.prototype.createPiskelFromImages_ = function (images, name,
-      frameSizeX, frameSizeY, smoothing) {
+    frameSizeX, frameSizeY, smoothing) {
     name = name || 'Imported piskel';
     var frames = this.createFramesFromImages_(images, frameSizeX, frameSizeY, smoothing);
     var layer = pskl.model.Layer.fromFrames('Layer 1', frames);
