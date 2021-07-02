@@ -74,9 +74,9 @@
       {
         importType: this.getImportType_(),
         frameSizeX: this.getImportType_() === 'single' ?
-            this.resizeWidth.value : this.sanitizeInputValue_(this.frameSizeX, 1),
+          this.resizeWidth.value : this.sanitizeInputValue_(this.frameSizeX, 1),
         frameSizeY: this.getImportType_() === 'single' ?
-            this.resizeHeight.value : this.sanitizeInputValue_(this.frameSizeY, 1),
+          this.resizeHeight.value : this.sanitizeInputValue_(this.frameSizeY, 1),
         frameOffsetX: this.sanitizeInputValue_(this.frameOffsetX, 0),
         frameOffsetY: this.sanitizeInputValue_(this.frameOffsetY, 0),
         smoothing: !!this.smoothResize.checked,

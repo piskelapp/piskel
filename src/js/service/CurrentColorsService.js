@@ -83,21 +83,21 @@
     batchAll(frames, function (frame) {
       return this.cachedFrameProcessor.get(frame);
     }.bind(this))
-    .then(function (results) {
-      var colors = {};
-      results.forEach(function (result) {
-        Object.keys(result).forEach(function (color) {
-          colors[color] = true;
+      .then(function (results) {
+        var colors = {};
+        results.forEach(function (result) {
+          Object.keys(result).forEach(function (color) {
+            colors[color] = true;
+          });
         });
-      });
-      // Remove transparent color from used colors
-      delete colors[pskl.utils.colorToInt(Constants.TRANSPARENT_COLOR)];
+        // Remove transparent color from used colors
+        delete colors[pskl.utils.colorToInt(Constants.TRANSPARENT_COLOR)];
 
-      var hexColors = Object.keys(colors).map(function (color) {
-        return pskl.utils.intToHex(color);
-      });
-      this.setCurrentColors(hexColors);
-    }.bind(this));
+        var hexColors = Object.keys(colors).map(function (color) {
+          return pskl.utils.intToHex(color);
+        });
+        this.setCurrentColors(hexColors);
+      }.bind(this));
   };
 
   ns.CurrentColorsService.prototype.isCurrentColorsPaletteSelected_ = function () {
