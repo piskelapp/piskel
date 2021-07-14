@@ -17,7 +17,7 @@
         var otherFrame = framesB[index];
         mergedFrames.push(pskl.utils.FrameUtils.merge([otherFrame, frame]));
       });
-      var mergedLayer = pskl.model.Layer.fromFrames(layerA.getName(), mergedFrames);
+      var mergedLayer = pskl.model.Layer.fromFrames(layerB.getName(), mergedFrames);
       return mergedLayer;
     },
 
