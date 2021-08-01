@@ -46,6 +46,7 @@ body {
 .tool.bucket { background-image: url(img/paintbucket-icon.png); }
 .tool.pen { background-image: url(img/pen-icon.png); }
 .tool.eyedropper { background-image: url(img/eyedropper-icon.png);}
+.tool.outliner { background-image: url(img/outliner-icon.png);}	/* TODO!!! replace */
 
 .tool:hover {
 	cursor: pointer;
