@@ -86,6 +86,10 @@
   background : #222;
 }
 
+.layer-lock {
+  padding: 6px 0;
+}
+
 .layer-item-opacity {
   padding: 0 8px 0 8px;
   flex: 0 auto;
