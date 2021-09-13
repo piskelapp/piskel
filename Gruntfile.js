@@ -1,5 +1,7 @@
 module.exports = function(grunt) {
 
+  var a = 5
+
   // Update this variable if you don't want or can't serve on localhost
   var hostname = 'localhost';
 
