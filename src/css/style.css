@@ -75,6 +75,15 @@ body {
   text-align: left;
 }
 
+.tooltip-wrapper {
+  display: inline-block;
+  margin: 0;
+}
+
+.tooltip-wrapper .layers-button[disabled] {
+  pointer-events: none;
+}
+
 .tooltip-descriptor {
   color:#999;
 }
