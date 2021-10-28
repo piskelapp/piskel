@@ -32,6 +32,7 @@
     var downloadPixiButton = document.querySelector('.png-pixi-download-button');
     var dataUriButton = document.querySelector('.datauri-open-button');
     var selectedFrameDownloadButton = document.querySelector('.selected-frame-download-button');
+    var downloadCssButton = document.querySelector('.css-download-button');
 
     this.pixiInlineImageCheckbox = document.querySelector('.png-pixi-inline-image-checkbox');
 
@@ -40,6 +41,7 @@
 
     this.addEventListener(this.columnsInput, 'input', this.onColumnsInput_);
     this.addEventListener(downloadButton, 'click', this.onDownloadClick_);
+    this.addEventListener(downloadCssButton, 'click', this.onDownloadCssClick_);
     this.addEventListener(downloadPixiButton, 'click', this.onPixiDownloadClick_);
     this.addEventListener(dataUriButton, 'click', this.onDataUriClick_);
     this.addEventListener(selectedFrameDownloadButton, 'click', this.onDownloadSelectedFrameClick_);
@@ -241,5 +243,50 @@
 
     var fileName = name + '-' + (frameIndex + 1) + '.png';
     this.downloadCanvas_(canvas, fileName);
+  };
+
+  ns.PngExportController.prototype.onDownloadCssClick_ = function (evt) {
+    var name = this.piskelController.getPiskel().getDescriptor().name;
+    var css = this.getSpritesheetCss(name);
+
+    pskl.utils.BlobUtils.stringToBlob(css, function (blob) {
+      pskl.utils.FileUtils.downloadAsFile(blob, name + '.css');
+    });
+  };
+
+  ns.PngExportController.prototype.getSpritesheetCss = function (name) {
+    var zoom = this.exportController.getExportZoom();
+    var frameCount = this.piskelController.getFrameCount();
+    var width = this.piskelController.getWidth() * zoom;
+    var height = this.piskelController.getHeight() * zoom;
+    var columns = this.getColumns_();
+
+    var classSafeName = 'spritesheet-' + name.toLowerCase().replace(/[^a-z0-9\-_]/g, '');
+
+    var css = [];
+
+    css.push([
+      '[class^="' + classSafeName + '"] {',
+      '  width: ' + width + 'px;',
+      '  height: ' + height + 'px;',
+      '  background-image: url("' + name + '.png");',
+      '}'
+    ].join('\n'));
+
+    for (var i = 0; i < frameCount; i++) {
+      var column = i % columns;
+      var row = (i - column) / columns;
+      var x = width * column;
+      var y = height * row;
+      var frameName = classSafeName  + '-frame-' + i;
+
+      css.push([
+        '.' + frameName + ' {',
+        '  background-position: -' + x + 'px ' + '-' + y + 'px;',
+        '}'
+      ].join('\n'));
+    }
+
+    return css.join('\n\n');
   };
 })();
