@@ -1,5 +1,8 @@
 (function () {
 
+  // Register Service Worker for offline use
+  if ("serviceWorker" in navigator) window.addEventListener("load",() => navigator.serviceWorker.register("service-worker.js"));
+
   /**
    * See @Gruntfile.js => after build, @@version is replaced by the build version
    */
