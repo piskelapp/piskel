@@ -217,6 +217,8 @@ module.exports = function(grunt) {
           // dest/js/piskel-packaged-min.js should have been created by the uglify task
           {src: ['dest/tmp/js/piskel-packaged-min.js'], dest: 'dest/prod/js/piskel-packaged-min' + version + '.js'},
           {src: ['dest/tmp/index.html'], dest: 'dest/prod/index.html'},
+          {src: ['src/manifest.webmanifest'], dest: 'dest/prod/manifest.webmanifest'},
+          {src: ['src/service-worker.js'], dest: 'dest/prod/service-worker.js'},
           {src: ['src/logo.png'], dest: 'dest/prod/logo.png'},
           {src: ['src/js/lib/gif/gif.ie.worker.js'], dest: 'dest/prod/js/lib/gif/gif.ie.worker.js'},
           {expand: true, src: ['img/**'], cwd: 'src/', dest: 'dest/prod/', filter: 'isFile'},
@@ -229,6 +231,8 @@ module.exports = function(grunt) {
           {src: ['dest/tmp/index.html'], dest: 'dest/dev/index.html'},
           {src: ['src/piskel-script-list.js'], dest: 'dest/dev/piskel-script-list.js'},
           {src: ['src/piskel-style-list.js'], dest: 'dest/dev/piskel-style-list.js'},
+          {src: ['src/manifest.webmanifest'], dest: 'dest/dev/manifest.webmanifest'},
+          {src: ['src/service-worker.js'], dest: 'dest/dev/service-worker.js'},
           {expand: true, src: ['js/**'], cwd: 'src/', dest: 'dest/dev/', filter: 'isFile'},
           {expand: true, src: ['css/**'], cwd: 'src/', dest: 'dest/dev/', filter: 'isFile'},
           {expand: true, src: ['img/**'], cwd: 'src/', dest: 'dest/dev/', filter: 'isFile'},
