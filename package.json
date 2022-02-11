@@ -55,13 +55,15 @@
     "grunt-spritesmith": "^6.9.0",
     "jasmine-core": "3.8.0",
     "karma": "6.3.4",
+    "karma-chrome-launcher": "^3.1.0",
     "karma-jasmine": "4.0.1",
     "karma-phantomjs-launcher": "1.0.4",
     "load-grunt-tasks": "5.1.0",
     "nw": "0.54.0",
-    "phantomjs-prebuilt": "2.1.16",
     "phantomjs-polyfill-object-assign": "0.0.2",
+    "phantomjs-prebuilt": "2.1.16",
     "promise-polyfill": "8.2.0",
+    "puppeteer": "^13.3.1",
     "rmdir": "1.2.0"
   },
   "window": {
