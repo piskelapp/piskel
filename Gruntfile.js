@@ -273,7 +273,7 @@ module.exports = function(grunt) {
       windows : {
         options: {
           downloadUrl: 'https://dl.nwjs.io/',
-          version : "0.19.4",
+          version : "0.49.1",
           build_dir: './dest/desktop/', // destination folder of releases.
           win: true,
           linux32: true,
@@ -286,7 +286,7 @@ module.exports = function(grunt) {
         options: {
           downloadUrl: 'https://dl.nwjs.io/',
           osx64: true,
-          version : "0.19.4",
+          version : "0.49.1",
           build_dir: './dest/desktop/',
           flavor: "normal",
         },
@@ -328,7 +328,7 @@ module.exports = function(grunt) {
   grunt.registerTask('merge-statics', ['concat:js', 'concat:css', 'uglify']);
   grunt.registerTask('build',  ['clean:prod', 'sprite', 'merge-statics', 'build-index.html', 'replace:mainPartial', 'replace:css', 'copy:prod']);
   grunt.registerTask('build-dev',  ['clean:dev', 'sprite', 'build-index.html', 'copy:dev']);
-  grunt.registerTask('desktop', ['clean:desktop', 'default', 'nwjs:windows']);
+  grunt.registerTask('desktop-win', ['clean:desktop', 'default', 'nwjs:windows']);
   grunt.registerTask('desktop-mac', ['clean:desktop', 'default', 'nwjs:macos']);
   grunt.registerTask('desktop-mac-old', ['clean:desktop', 'default', 'replace:desktop', 'nwjs:macos_old']);
 
