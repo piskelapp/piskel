@@ -59,7 +59,7 @@
     "karma-phantomjs-launcher": "1.0.4",
     "load-grunt-tasks": "5.1.0",
     "nw": "0.54.0",
-    "phantomjs": "2.1.7",
+    "phantomjs-prebuilt": "2.1.16",
     "phantomjs-polyfill-object-assign": "0.0.2",
     "promise-polyfill": "8.2.0",
     "rmdir": "1.2.0"
