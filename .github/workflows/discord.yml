@@ -1,1 +1,22 @@
+name: Send Discord message
 
+on:
+  push:
+
+  issues:
+    types:
+      - opened
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@master
+    - name: send custom message with args
+      uses: appleboy/discord-action@master
+      with:
+        webhook_id: ${{ secrets.WEBHOOK_ID }}
+        webhook_token: ${{ secrets.WEBHOOK_TOKEN }}
+        message: Somebody triggered the |${{ github.event_name }}| event
