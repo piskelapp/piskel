@@ -286,7 +286,7 @@ module.exports = function(grunt) {
         options: {
           downloadUrl: 'https://dl.nwjs.io/',
           osx64: true,
-          version : "0.49.1",
+          version : "0.63.1",
           build_dir: './dest/desktop/',
           flavor: "normal",
         },
