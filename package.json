@@ -35,16 +35,16 @@
   "devDependencies": {
     "@happikitsune/grunt-nw-builder": "3.5.10",
     "dateformat": "4.5.1",
-    "fs-extra": "10.0.0",
-    "grunt": "1.4.1",
-    "grunt-casperjs": "^2.2.1",
-    "grunt-cli": "^1.4.3",
-    "grunt-contrib-clean": "2.0.0",
-    "grunt-contrib-concat": "2.0.0",
+    "fs-extra": "10.1.0",
+    "grunt": "1.5.2",
+    "grunt-casperjs": "2.2.1",
+    "grunt-cli": "1.4.3",
+    "grunt-contrib-clean": "2.0.1",
+    "grunt-contrib-concat": "2.1.0",
     "grunt-contrib-connect": "3.0.0",
     "grunt-contrib-copy": "1.0.0",
-    "grunt-contrib-jshint": "3.1.1",
-    "grunt-contrib-uglify": "5.0.1",
+    "grunt-contrib-jshint": "3.2.0",
+    "grunt-contrib-uglify": "5.2.1",
     "grunt-contrib-watch": "1.1.0",
     "grunt-eslint": "24.0.0",
     "grunt-include-replace": "5.0.0",
@@ -52,18 +52,18 @@
     "grunt-karma": "4.0.2",
     "grunt-leading-indent": "0.2.0",
     "grunt-replace": "2.0.2",
-    "grunt-spritesmith": "^6.9.0",
-    "jasmine-core": "4.0.0",
-    "karma": "6.3.16",
-    "karma-chrome-launcher": "^3.1.0",
-    "karma-jasmine": "4.0.1",
+    "grunt-spritesmith": "6.10.0",
+    "jasmine-core": "4.1.0",
+    "karma": "6.3.19",
+    "karma-chrome-launcher": "3.1.1",
+    "karma-jasmine": "5.0.0",
     "karma-phantomjs-launcher": "1.0.4",
     "load-grunt-tasks": "5.1.0",
-    "nw": "0.61.0",
+    "nw": "0.64.0",
     "phantomjs-polyfill-object-assign": "0.0.2",
     "phantomjs-prebuilt": "2.1.16",
-    "promise-polyfill": "8.2.1",
-    "puppeteer": "^13.3.1",
+    "promise-polyfill": "8.2.3",
+    "puppeteer": "13.7.0",
     "rmdir": "1.2.0"
   },
   "window": {
@@ -74,6 +74,6 @@
     "height": 700
   },
   "dependencies": {
-    "minimist": "^1.2.5"
+    "minimist": "1.2.6"
   }
 }
