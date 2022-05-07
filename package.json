@@ -33,6 +33,7 @@
     "format": "grunt eslint --fix"
   },
   "devDependencies": {
+    "@chiragrupani/karma-chromium-edge-launcher": "^2.2.1",
     "@happikitsune/grunt-nw-builder": "3.5.10",
     "dateformat": "4.5.1",
     "fs-extra": "10.1.0",
@@ -56,6 +57,7 @@
     "jasmine-core": "4.1.0",
     "karma": "6.3.19",
     "karma-chrome-launcher": "3.1.1",
+    "karma-firefox-launcher": "^2.1.2",
     "karma-jasmine": "5.0.0",
     "karma-phantomjs-launcher": "1.0.4",
     "load-grunt-tasks": "5.1.0",
