@@ -33,7 +33,7 @@
     "format": "grunt eslint --fix"
   },
   "devDependencies": {
-    "@chiragrupani/karma-chromium-edge-launcher": "2.2.1",
+    "@chiragrupani/karma-chromium-edge-launcher": "2.2.2",
     "date-fns": "2.28.0",
     "fs-extra": "10.1.0",
     "grunt": "1.5.3",
@@ -51,7 +51,7 @@
     "grunt-jscs": "3.0.1",
     "grunt-karma": "4.0.2",
     "grunt-leading-indent": "0.2.0",
-    "grunt-nw-builder": "3.7.1",
+    "grunt-nw-builder": "3.7.3",
     "grunt-replace": "2.0.2",
     "grunt-spritesmith": "6.10.0",
     "jasmine-core": "4.1.1",
