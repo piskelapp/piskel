@@ -10,8 +10,8 @@ module.exports = function(grunt) {
   };
 
   // create a version based on the build timestamp
-  var dateFormat = require('dateformat');
-  var version = '-' + dateFormat(new Date(), "yyyy-mm-dd-hh-MM");
+  var { format } = require('date-fns');
+  var version = `-${format(new Date(), "yyyy-MM-dd-HH-mm")}`;
   var releaseVersion = require('./package.json').version;
 
   /**
