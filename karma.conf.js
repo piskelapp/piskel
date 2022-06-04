@@ -3,7 +3,7 @@
 
 const puppeteer = require('puppeteer');
 process.env.CHROME_BIN = puppeteer.executablePath();
-process.env.EDGE_BIN = puppeteer.executablePath();
+// process.env.EDGE_BIN = puppeteer.executablePath();
 
 module.exports = function(config) {
 
@@ -70,14 +70,14 @@ module.exports = function(config) {
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
     browsers: [
       'ChromeHeadless',
-      'EdgeHeadless',
-      'FirefoxHeadless',
+      // 'EdgeHeadless',
+      // 'FirefoxHeadless',
     ],
 
     plugins: [
       'karma-chrome-launcher',
-      '@chiragrupani/karma-chromium-edge-launcher',
-      'karma-firefox-launcher',
+      // '@chiragrupani/karma-chromium-edge-launcher',
+      // 'karma-firefox-launcher',
       'karma-jasmine',
     ],
 
