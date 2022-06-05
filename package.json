@@ -70,7 +70,7 @@
   },
   "window": {
     "title": "Piskel",
-    "icon": "dest/prod/logo.png",
+    "icon": "./logo.png",
     "toolbar": false,
     "width": 1000,
     "height": 700
