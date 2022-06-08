@@ -28,6 +28,8 @@
 
     this.frameSizeX = this.container.querySelector('[name=frame-size-x]');
     this.frameSizeY = this.container.querySelector('[name=frame-size-y]');
+    this.frameQuantityX = this.container.querySelector('[name=frame-quantity-x]');
+    this.frameQuantityY = this.container.querySelector('[name=frame-quantity-y]');
     this.frameOffsetX = this.container.querySelector('[name=frame-offset-x]');
     this.frameOffsetY = this.container.querySelector('[name=frame-offset-y]');
 
@@ -38,6 +40,8 @@
     this.addEventListener(this.resizeHeight, 'keyup', this.onResizeInputKeyUp_);
     this.addEventListener(this.frameSizeX, 'keyup', this.onFrameInputKeyUp_);
     this.addEventListener(this.frameSizeY, 'keyup', this.onFrameInputKeyUp_);
+    this.addEventListener(this.frameQuantityX, 'keyup', this.onFrameInputKeyUp_);
+    this.addEventListener(this.frameQuantityY, 'keyup', this.onFrameInputKeyUp_);
     this.addEventListener(this.frameOffsetX, 'keyup', this.onFrameInputKeyUp_);
     this.addEventListener(this.frameOffsetY, 'keyup', this.onFrameInputKeyUp_);
 
@@ -97,7 +101,9 @@
       var y = this.sanitizeInputValue_(this.frameOffsetY, 0);
       var w = this.sanitizeInputValue_(this.frameSizeX, 1);
       var h = this.sanitizeInputValue_(this.frameSizeY, 1);
-      this.drawFrameGrid_(x, y, w, h);
+      var qx = this.sanitizeInputValue_(this.frameQuantityX, 1);
+      var qy = this.sanitizeInputValue_(this.frameQuantityY, 1);
+      this.drawFrameGrid_(x, y, w, h, qx, qy);
     }
   };
 
@@ -109,8 +115,9 @@
   };
 
   ns.ImageImport.prototype.onFrameInputKeyUp_ = function (evt) {
+    var from = evt.target.getAttribute('name');
     if (this.importedImage_) {
-      this.synchronizeFrameFields_(evt.target.value);
+      this.synchronizeFrameFields_(evt.target.value, from);
     }
   };
 
@@ -132,23 +139,40 @@
     }
   };
 
-  ns.ImageImport.prototype.synchronizeFrameFields_ = function (value) {
+  ns.ImageImport.prototype.synchronizeFrameFields_ = function (value, from) {
     value = parseInt(value, 10);
     if (isNaN(value)) {
       value = 0;
     }
 
+    var width = this.importedImage_.width;
+    var heigth = this.importedImage_.height;
+
     // Parse the frame input values
     var frameSizeX = this.sanitizeInputValue_(this.frameSizeX, 1);
     var frameSizeY = this.sanitizeInputValue_(this.frameSizeY, 1);
+    var frameQuantityX = this.sanitizeInputValue_(this.frameQuantityX, 1);
+    var frameQuantityY = this.sanitizeInputValue_(this.frameQuantityY, 1);
     var frameOffsetX = this.sanitizeInputValue_(this.frameOffsetX, 0);
     var frameOffsetY = this.sanitizeInputValue_(this.frameOffsetY, 0);
+
+    if (from === 'frame-size-x') {
+      this.frameQuantityX.value = width / value;
+    } else if (from === 'frame-size-y') {
+      this.frameQuantityY.value = heigth / value;
+    }
+
+    if (from === 'frame-quantity-x') {
+      this.frameSizeX.value = width / value;
+    } else if (from === 'frame-quantity-y') {
+      this.frameSizeY.value = heigth / value;
+    }
 
     // Select spritesheet import type since the user changed a value here
     this.sheetImportType.checked = true;
 
     // Draw the grid
-    this.drawFrameGrid_(frameOffsetX, frameOffsetY, frameSizeX, frameSizeY);
+    this.drawFrameGrid_(frameOffsetX, frameOffsetY, frameSizeX, frameSizeY, frameQuantityX, frameQuantityY);
   };
 
   ns.ImageImport.prototype.sanitizeInputValue_ = function(input, minValue) {
@@ -189,6 +213,8 @@
 
     this.frameSizeX.value = w;
     this.frameSizeY.value = h;
+    this.frameQuantityX.value = 1;
+    this.frameQuantityY.value = 1;
     this.frameOffsetX.value = 0;
     this.frameOffsetY.value = 0;
 
@@ -214,7 +240,7 @@
     return parts[parts.length - 1];
   };
 
-  ns.ImageImport.prototype.drawFrameGrid_ = function (frameX, frameY, frameW, frameH) {
+  ns.ImageImport.prototype.drawFrameGrid_ = function (frameX, frameY, frameW, frameH, quantityX, quantityY) {
     if (!this.importedImage_) {
       return;
     }
@@ -239,6 +265,14 @@
     var context = canvas.getContext('2d');
     context.clearRect(0, 0, canvas.width, canvas.height);
     context.beginPath();
+
+    if (quantityX > 0) {
+      frameW = width / quantityX;
+    }
+
+    if (quantityY > 0) {
+      frameH = height / quantityY;
+    }
 
     // Calculate the number of whole frames
     var countX = Math.floor((width - frameX) / frameW);
