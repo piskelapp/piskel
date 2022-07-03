@@ -63,7 +63,7 @@
     "phantomjs-polyfill-object-assign": "0.0.2",
     "phantomjs-prebuilt": "2.1.16",
     "promise-polyfill": "8.2.3",
-    "puppeteer": "14.4.1",
+    "puppeteer": "15.3.0",
     "rmdir": "1.2.0"
   },
   "window": {
