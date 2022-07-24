@@ -4,7 +4,6 @@
 # nodejs local installs
 node_modules
 npm-debug.log
-pnpm-lock.yaml
 
 # node webkit cache
 cache
