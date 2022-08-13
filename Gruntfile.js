@@ -273,7 +273,7 @@ module.exports = function(grunt) {
     nwjs: {
       run: {
         options: {
-          version : "0.66.1",
+          version : "0.67.1",
           buildDir: './dest/desktop/', // destination folder of releases.
           flavor: "normal",
           mode: "run",
@@ -282,7 +282,7 @@ module.exports = function(grunt) {
       },
       build: {
         options: {
-          version : "0.66.1",
+          version : "0.67.1",
           buildDir: './dest/desktop/', // destination folder of releases.
           flavor: "normal",
           platforms: ['linux', 'osx64', 'win'],

@@ -51,7 +51,7 @@
     "grunt-jscs": "3.0.1",
     "grunt-karma": "4.0.2",
     "grunt-leading-indent": "0.2.0",
-    "grunt-nw-builder": "3.8.1",
+    "grunt-nw-builder": "3.8.2",
     "grunt-replace": "2.0.2",
     "grunt-spritesmith": "6.10.0",
     "jasmine-core": "4.3.0",
@@ -64,7 +64,7 @@
     "phantomjs-polyfill-object-assign": "0.0.2",
     "phantomjs-prebuilt": "2.1.16",
     "promise-polyfill": "8.2.3",
-    "puppeteer": "15.5.0",
+    "puppeteer": "16.1.0",
     "rmdir": "1.2.0"
   },
   "window": {
