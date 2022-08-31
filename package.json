@@ -34,7 +34,7 @@
   },
   "devDependencies": {
     "@chiragrupani/karma-chromium-edge-launcher": "2.2.2",
-    "date-fns": "2.29.1",
+    "date-fns": "2.29.2",
     "fs-extra": "10.1.0",
     "grunt": "1.5.3",
     "grunt-casperjs": "2.2.1",
@@ -63,7 +63,7 @@
     "phantomjs-polyfill-object-assign": "0.0.2",
     "phantomjs-prebuilt": "2.1.16",
     "promise-polyfill": "8.2.3",
-    "puppeteer": "16.1.0",
+    "puppeteer": "17.0.0",
     "rmdir": "1.2.0"
   },
   "window": {
