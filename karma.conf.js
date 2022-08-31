@@ -1,6 +1,10 @@
 // Karma configuration
 // Generated on Tue Jul 22 2014 23:49:26 GMT+0200 (Romance Daylight Time)
 
+const puppeteer = require('puppeteer');
+process.env.CHROME_BIN = puppeteer.executablePath();
+// process.env.EDGE_BIN = puppeteer.executablePath();
+
 module.exports = function(config) {
 
   var mapToSrcFolder = function (path) {return ['src', path].join('/');};
@@ -64,11 +68,30 @@ module.exports = function(config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['PhantomJS'],
+    // browsers: [
+    //   'ChromeHeadless',
+    //   // 'EdgeHeadless',
+    //   // 'FirefoxHeadless',
+    // ],
 
+    // https://github.com/karma-runner/karma-chrome-launcher/issues/158#issuecomment-339265457
+    browsers: ['ChromeHeadlessNoSandbox'],
+    customLaunchers: {
+      ChromeHeadlessNoSandbox: {
+        base: 'ChromeHeadless',
+        flags: ['--no-sandbox']
+      }
+    },
+
+    plugins: [
+      'karma-chrome-launcher',
+      // '@chiragrupani/karma-chromium-edge-launcher',
+      // 'karma-firefox-launcher',
+      'karma-jasmine',
+    ],
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
-    singleRun: true
+    singleRun: true,
   });
 };
