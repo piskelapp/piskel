@@ -1,8 +1,6 @@
 Piskel Unleashed
 ======
 
-> Piskel has a lot of potential.
-
 [![Travis Status](https://api.travis-ci.org/piskelapp/piskel.png?branch=master)](https://travis-ci.org/piskelapp/piskel) [![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](https://gruntjs.com/)
 
 Piskel is an easy-to-use sprite editor. It can be used to create game sprites, animations, pixel-art...
