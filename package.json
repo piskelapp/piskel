@@ -1,16 +1,17 @@
 {
-  "name": "piskel",
-  "version": "0.15.2-SNAPSHOT",
+  "name": "piskel-unleashed",
+  "version": "0.15.2",
   "description": "Pixel art editor",
-  "author": "Julian Descottes <julian.descottes@gmail.com>",
-  "contributors": [
-    "Vincent Renaudin"
-  ],
-  "homepage": "http://github.com/piskelapp/piskel",
+  "author": {
+    "name": "Ayushman Chhabra",
+    "email": "ayushmxn@outlook.com",
+    "url": "https://ayushmanchhabra.com"
+  },
+  "homepage": "http://github.com/ayushmxn/piskel",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "http://github.com/piskelapp/piskel.git"
+    "url": "http://github.com/ayushmxn/piskel.git"
   },
   "files": [
     "dest/prod",
