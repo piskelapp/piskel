@@ -10,8 +10,8 @@ module.exports = function(grunt) {
   };
 
   // create a version based on the build timestamp
-  var dateFormat = require('dateformat');
-  var version = '-' + dateFormat(new Date(), "yyyy-mm-dd-hh-MM");
+  var { format } = require('date-fns');
+  var version = `-${format(new Date(), "yyyy-MM-dd-HH-mm")}`;
   var releaseVersion = require('./package.json').version;
 
   /**
@@ -219,6 +219,7 @@ module.exports = function(grunt) {
           {src: ['dest/tmp/index.html'], dest: 'dest/prod/index.html'},
           {src: ['src/logo.png'], dest: 'dest/prod/logo.png'},
           {src: ['src/js/lib/gif/gif.ie.worker.js'], dest: 'dest/prod/js/lib/gif/gif.ie.worker.js'},
+          {src: ['src/package.json'], dest: 'dest/prod/package.json'},
           {expand: true, src: ['img/**'], cwd: 'src/', dest: 'dest/prod/', filter: 'isFile'},
           {expand: true, src: ['css/fonts/**'], cwd: 'src/', dest: 'dest/prod/', filter: 'isFile'}
         ]
@@ -264,45 +265,6 @@ module.exports = function(grunt) {
         }
       }
     },
-
-    /**
-     * DESKTOP BUILDS
-     */
-
-    nwjs: {
-      windows : {
-        options: {
-          downloadUrl: 'https://dl.nwjs.io/',
-          version : "0.19.4",
-          build_dir: './dest/desktop/', // destination folder of releases.
-          win: true,
-          linux32: true,
-          linux64: true,
-          flavor: "normal",
-        },
-        src: ['./dest/prod/**/*', "./package.json", "!./dest/desktop/"]
-      },
-      macos : {
-        options: {
-          downloadUrl: 'https://dl.nwjs.io/',
-          osx64: true,
-          version : "0.19.4",
-          build_dir: './dest/desktop/',
-          flavor: "normal",
-        },
-        src: ['./dest/prod/**/*', "./package.json", "!./dest/desktop/"]
-      },
-      macos_old : {
-        options: {
-          downloadUrl: 'https://dl.nwjs.io/',
-          osx64: true,
-          version : "0.12.3",
-          build_dir: './dest/desktop/old',
-          flavor: "normal",
-        },
-        src: ['./dest/prod/**/*', "./package.json", "!./dest/desktop/"]
-      }
-    }
   });
 
   // TEST TASKS
@@ -328,21 +290,12 @@ module.exports = function(grunt) {
   grunt.registerTask('merge-statics', ['concat:js', 'concat:css', 'uglify']);
   grunt.registerTask('build',  ['clean:prod', 'sprite', 'merge-statics', 'build-index.html', 'replace:mainPartial', 'replace:css', 'copy:prod']);
   grunt.registerTask('build-dev',  ['clean:dev', 'sprite', 'build-index.html', 'copy:dev']);
-  grunt.registerTask('desktop', ['clean:desktop', 'default', 'nwjs:windows']);
-  grunt.registerTask('desktop-mac', ['clean:desktop', 'default', 'nwjs:macos']);
-  grunt.registerTask('desktop-mac-old', ['clean:desktop', 'default', 'replace:desktop', 'nwjs:macos_old']);
 
   // SERVER TASKS
   // Start webserver and watch for changes
   grunt.registerTask('serve', ['build', 'connect:prod', 'watch:prod']);
   // Start webserver on src folder, in debug mode
   grunt.registerTask('play', ['build-dev', 'connect:dev', 'watch:dev']);
-
-  // ALIASES, kept for backward compatibility
-  grunt.registerTask('serve-debug', ['play']);
-  grunt.registerTask('serve-dev', ['play']);
-  grunt.registerTask('test-travis', ['test']);
-  grunt.registerTask('test-local', ['test']);
 
   // Default task
   grunt.registerTask('default', ['lint', 'build']);

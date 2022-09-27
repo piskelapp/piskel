@@ -1,0 +1,9 @@
+{
+    "name": "piskel-unleashed",
+    "version": "0.15.2",
+    "main": "./index.html",
+    "window": {
+        "title": "Piskel",
+        "icon": "./logo.png"
+    }
+}

@@ -1,40 +1,13 @@
-# mac artifacts
-*.DS_Store
+# system
+.DS_Store
 
-# nodejs local installs
+# runtime
 node_modules
-npm-debug.log
 
-# node webkit cache
+# application
 cache
-
-# sublime text stuff (the -project should actually be shared, but then we'd have to share the same disk location)
-*.sublime-project
-*.sublime-workspace
-
-# netbeans project folder
-nbproject
-
-# vscode workspace folder
-.vscode
-
-# git stackdumps
-*.stackdump
-
-# diffs
-diff.txt
-
-# build destination
 dest
-build/closure/closure_compiled_binary.js
 
-# spriting artifacts
+src/css/icons.css
 src/img/icons.png
 src/img/icons@2x.png
-src/css/icons.css
-
-# plato report directory
-report
-
-# marked as private
-*.private.*
