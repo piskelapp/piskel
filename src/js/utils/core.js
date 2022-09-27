@@ -13,54 +13,6 @@ jQuery.namespace = function() {
 };
 
 /**
- * Need a polyfill for PhantomJS
- */
-if (!Function.prototype.bind) {
-  Function.prototype.bind = function (oThis) {
-    if (typeof this !== 'function') {
-      // closest thing possible to the ECMAScript 5
-      // internal IsCallable function
-      throw new TypeError('Function.prototype.bind - what is trying to be bound is not callable');
-    }
-
-    var bindArgs = Array.prototype.slice.call(arguments, 1);
-    var fToBind = this;
-    var FNOP = function () {};
-    var fBound = function () {
-      var args = bindArgs.concat(Array.prototype.slice.call(arguments));
-      return fToBind.apply(this instanceof FNOP && oThis ? this : oThis, args);
-    };
-
-    FNOP.prototype = this.prototype;
-    fBound.prototype = new FNOP();
-
-    return fBound;
-  };
-}
-
-/**
- * Polyfill for typedarrays' fill method for PhantomJS
- */
-if (!Uint32Array.prototype.fill) {
-  Uint32Array.prototype.fill = function (value, start, end) {
-    start = typeof start === 'undefined' ? 0 : start;
-    end = typeof end === 'undefined' ? this.length : end;
-
-    if (start < 0) {
-      start = this.length + start;
-    }
-
-    if (end < 0) {
-      end = this.length + end;
-    }
-
-    for (var i = start; i < end; i++) {
-      this[i] = value;
-    }
-  };
-}
-
-/**
  * @provide pskl.utils
  *
  * @require Constants

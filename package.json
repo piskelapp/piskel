@@ -56,7 +56,6 @@
     "karma-jasmine": "5.1.0",
     "load-grunt-tasks": "5.1.0",
     "nw-builder": "3.8.6",
-    "phantomjs-polyfill-object-assign": "0.0.2",
     "phantomjs-prebuilt": "2.1.16",
     "playwright": "1.26.1",
     "promise-polyfill": "8.2.3",

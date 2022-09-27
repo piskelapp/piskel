@@ -1,9 +1,6 @@
 (function () {
   var tests = require('../drawing/DrawingTests.casper.js').tests;
 
-  // Polyfill for Object.assign (missing in PhantomJS)
-  casper.options.clientScripts.push('./node_modules/phantomjs-polyfill-object-assign/object-assign-polyfill.js');
-
   var baseUrl = casper.cli.get('baseUrl')+"?debug";
   var resultSelector = '#drawing-test-result';
 
