@@ -1,6 +1,16 @@
 // Karma configuration
 // Generated on Tue Jul 22 2014 23:49:26 GMT+0200 (Romance Daylight Time)
 
+'use strict';
+
+const { chromium, firefox, webkit } = require('playwright');
+
+Object.assign(process.env, {
+  CHROMIUM_BIN: chromium.executablePath(),
+  FIREFOX_BIN: firefox.executablePath(),
+  WEBKIT_BIN: webkit.executablePath(),
+});
+
 module.exports = function(config) {
 
   var mapToSrcFolder = function (path) {return ['src', path].join('/');};
@@ -8,9 +18,6 @@ module.exports = function(config) {
   var piskelScripts = require('./src/piskel-script-list.js').scripts.map(mapToSrcFolder);
   piskelScripts.push('test/js/testutils/**/*.js');
   piskelScripts.push('test/js/**/*.js');
-
-  // Polyfill for Object.assign (missing in PhantomJS)
-  piskelScripts.push('./node_modules/phantomjs-polyfill-object-assign/object-assign-polyfill.js');
 
   config.set({
 
@@ -20,7 +27,7 @@ module.exports = function(config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['jasmine'],
+    frameworks: ["jasmine"],
 
 
     // list of files / patterns to load in the browser
@@ -61,10 +68,18 @@ module.exports = function(config) {
     // enable / disable watching file and executing tests whenever any file changes
     autoWatch: true,
 
+    plugins: [
+      'karma-jasmine',
+      '@onslip/karma-playwright-launcher',
+    ],
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['PhantomJS'],
+    browsers: [
+      'ChromiumHeadless',
+      'FirefoxHeadless',
+      'WebKitHeadless',
+    ],
 
 
     // Continuous Integration mode
