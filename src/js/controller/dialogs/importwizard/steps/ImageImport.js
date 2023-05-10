@@ -26,6 +26,8 @@
     this.resizeHeight = this.container.querySelector('[name=resize-height]');
     this.smoothResize =  this.container.querySelector('[name=smooth-resize-checkbox]');
 
+    this.framesH = this.container.querySelector('[name=frames-h]');
+    this.framesV = this.container.querySelector('[name=frames-v]');
     this.frameSizeX = this.container.querySelector('[name=frame-size-x]');
     this.frameSizeY = this.container.querySelector('[name=frame-size-y]');
     this.frameOffsetX = this.container.querySelector('[name=frame-offset-x]');
@@ -34,6 +36,8 @@
     this.addEventListener(this.singleImportType, 'change', this.onImportTypeChange_);
     this.addEventListener(this.sheetImportType, 'change', this.onImportTypeChange_);
 
+    this.addEventListener(this.framesH, 'keyup', this.onFrameInputKeyUp_);
+    this.addEventListener(this.framesV, 'keyup', this.onFrameInputKeyUp_);
     this.addEventListener(this.resizeWidth, 'keyup', this.onResizeInputKeyUp_);
     this.addEventListener(this.resizeHeight, 'keyup', this.onResizeInputKeyUp_);
     this.addEventListener(this.frameSizeX, 'keyup', this.onFrameInputKeyUp_);
@@ -73,6 +77,10 @@
       this.importedImage_,
       {
         importType: this.getImportType_(),
+        framesH: this.getImportType_() === 'single' ?
+          1 : this.sanitizeInputValue_(this.frameSizeX, 1),
+        frameV: this.getImportType_() === 'single' ?
+          1 : this.sanitizeInputValue_(this.frameSizeY, 1),
         frameSizeX: this.getImportType_() === 'single' ?
           this.resizeWidth.value : this.sanitizeInputValue_(this.frameSizeX, 1),
         frameSizeY: this.getImportType_() === 'single' ?
@@ -110,7 +118,31 @@
 
   ns.ImageImport.prototype.onFrameInputKeyUp_ = function (evt) {
     if (this.importedImage_) {
+      var targetName = evt.originalTarget.name;
+      if (!targetName.includes('offset')) {
+        this.synchronizeDivisions(targetName);
+      }
       this.synchronizeFrameFields_(evt.target.value);
+    }
+  };
+
+  ns.ImageImport.prototype.synchronizeDivisions = function (targetName) {
+    var divideBy = (targetName === 'frames-h' || targetName === 'frame-size-x') ?
+      this.importedImage_.width : this.importedImage_.height;
+
+    switch (targetName) {
+      case 'frames-h':
+        this.frameSizeX.value = Math.floor(divideBy / this.sanitizeInputValue_(this.framesH, 0));
+        break;
+      case 'frame-size-x':
+        this.framesH.value = Math.floor(divideBy / this.sanitizeInputValue_(this.frameSizeX, 1));
+        break;
+      case 'frames-v':
+        this.frameSizeY.value = Math.floor(divideBy / this.sanitizeInputValue_(this.framesV, 1));
+        break;
+      case 'frame-size-y':
+        this.framesV.value = Math.floor(divideBy / this.sanitizeInputValue_(this.frameSizeY, 1));
+        break;
     }
   };
 
@@ -139,6 +171,8 @@
     }
 
     // Parse the frame input values
+    var framesH = this.sanitizeInputValue_(this.framesH, 1);
+    var framesV = this.sanitizeInputValue_(this.framesV, 1);
     var frameSizeX = this.sanitizeInputValue_(this.frameSizeX, 1);
     var frameSizeY = this.sanitizeInputValue_(this.frameSizeY, 1);
     var frameOffsetX = this.sanitizeInputValue_(this.frameOffsetX, 0);
@@ -187,6 +221,8 @@
     this.resizeWidth.value = w;
     this.resizeHeight.value = h;
 
+    this.framesH.value = 1;
+    this.framesV.value = 1;
     this.frameSizeX.value = w;
     this.frameSizeY.value = h;
     this.frameOffsetX.value = 0;
