@@ -4,7 +4,7 @@ Piskel
 [![Travis Status](https://api.travis-ci.org/piskelapp/piskel.png?branch=master)](https://travis-ci.org/piskelapp/piskel) [![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](https://gruntjs.com/)
 
 Piskel is an easy-to-use sprite editor. It can be used to create game sprites, animations, pixel-art...
-It is the editor used in **[piskelapp.com](https://www.piskelapp.com)**[[Status](https://status.groundflow.top/api/badge/3/uptime/24)](https://status.groundflow.top/api/badge/3/uptime/24).
+It is the editor used in **[piskelapp.com](https://www.piskelapp.com)**[![Status](https://status.groundflow.top/api/badge/3/uptime/24)](https://status.groundflow.top/api/badge/3/uptime/24).
 
 <img
   src="https://screenletstore.appspot.com/img/95aaa0f0-37a4-11e7-a652-7b8128ce3e3b.png"
