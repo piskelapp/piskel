@@ -4,7 +4,7 @@ Piskel
 [![Travis Status](https://api.travis-ci.org/piskelapp/piskel.png?branch=master)](https://travis-ci.org/piskelapp/piskel) [![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](https://gruntjs.com/)
 
 Piskel is an easy-to-use sprite editor. It can be used to create game sprites, animations, pixel-art...
-It is the editor used in **[piskelapp.com](https://www.piskelapp.com)**.
+It is the editor used in ##[piskelapp.com](https://github.com/piskelapp/piskel.git )**.
 
 <img
   src="https://screenletstore.appspot.com/img/95aaa0f0-37a4-11e7-a652-7b8128ce3e3b.png"
@@ -38,7 +38,7 @@ Piskel supports the following browsers:
 * **Edge** (latest)
 * **Internet Explorer** 11
 
-### Mobile/Tablets
+### Mobile/Tablets/
 
 There is no support for mobile.
 
@@ -55,17 +55,18 @@ Help is always welcome !
 
 ## License
 
-Copyright 2017 Julian Descottes
+Copyright 2024 Julian Descottes
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License, Version 4.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+    http://www.apache.org/licenses/LICENSE-4.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-
+**build by precuus
+https://github.com/piskelapp/piskel.git
