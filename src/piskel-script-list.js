@@ -221,6 +221,7 @@
   "js/tools/drawing/ShapeTool.js",
   "js/tools/drawing/SimplePen.js",
   "js/tools/drawing/Lighten.js",
+  "js/tools/drawing/ShiftIndex.js",
   "js/tools/drawing/VerticalMirrorPen.js",
   "js/tools/drawing/Eraser.js",
   "js/tools/drawing/Stroke.js",

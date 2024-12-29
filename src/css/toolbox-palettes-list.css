@@ -102,7 +102,8 @@
 /*
  * Primary and secondary color markers
  */
-
+.palettes-list-cycled-color-start:before,
+.palettes-list-cycled-color-end:before,
 .palettes-list-primary-color:before, .palettes-list-secondary-color:before {
   content: "";
   position: absolute;
@@ -113,13 +114,20 @@
   height: 14px;
 }
 
+.palettes-list-cycled-color-start:before,
 .palettes-list-primary-color:before {
   left: 1px;
 }
 
+.palettes-list-cycled-color-end:before,
 .palettes-list-secondary-color:before {
   right: 1px;
   background: url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20height%3D%2215%22%20width%3D%2215%22%3E%3Cpath%20stroke%3D%22gold%22%20stroke-width%3D%222%22%20d%3D%22M3%2013h10V3z%22/%3E%3C/svg%3E');
+}
+
+.palettes-list-cycled-color-start:before,
+.palettes-list-cycled-color-end:before {
+  filter: invert(100%)
 }
 
 /*
