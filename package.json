@@ -35,7 +35,7 @@
   "devDependencies": {
     "dateformat": "4.5.1",
     "fs-extra": "10.0.0",
-    "grunt": "1.4.1",
+    "grunt": "1.6.1",
     "grunt-casperjs": "^2.2.1",
     "grunt-cli": "^1.4.3",
     "grunt-contrib-clean": "2.0.0",
