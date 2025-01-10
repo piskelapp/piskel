@@ -1,0 +1,23 @@
+{
+  "name": "Piskel",
+  "short_name": "Piskel",
+  "description": "Piskel is a free online editor for animated sprites & pixel art",
+  "start_url": "./",
+  "scope": ".",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay"],
+  "theme_color": "#2d2d2d",
+  "background_color": "#2d2d2d",
+  "icons": [
+    {
+      "src": "img/app-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "img/app-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}

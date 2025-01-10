@@ -5,13 +5,21 @@
 
   .fake-piskelapp-header {
     position: relative;
+    left: env(titlebar-area-x);
+    top: env(titlebar-area-y);
     text-align: center;
+    max-width: env(titlebar-area-width);
     height: 40px;
+    max-height: env(titlebar-area-height);
     line-height: 40px;
     font-size: 24px;
-    background: black;
+    background: #2d2d2d;
     color: gold;
     z-index: 100;
+    -webkit-app-region: drag;
+  }
+  .fake-piskelapp-header > * {
+    -webkit-app-region: no-drag;
   }
 
   .piskel-name.piskel-name-saving {
