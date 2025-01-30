@@ -100,7 +100,7 @@
   };
 
   /**
-   * Backward comptibility only. Create a chunk for layerData objects that only contain
+   * Backward compatibility only. Create a chunk for layerData objects that only contain
    * an single base64PNG without chunk/layout information.
    */
   ns.Deserializer.prototype.normalizeLayerData_ = function (layerData) {

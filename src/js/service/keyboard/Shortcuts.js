@@ -8,7 +8,7 @@
   ns.Shortcuts = {
     /**
      * List of keys that cannot be remapped. Either alternate keys, which are not displayed.
-     * Or really custom shortcuts such as the 1-9 for color palette shorctus
+     * Or really custom shortcuts such as the 1-9 for color palette shortcuts
      */
     FORBIDDEN_KEYS : ['1', '2', '3', '4', '5', '6', '7', '8', '9', '?', 'shift+?',
       'DEL', 'BACK', 'ENTER', 'ctrl+Y', 'ctrl+shift+Z'],

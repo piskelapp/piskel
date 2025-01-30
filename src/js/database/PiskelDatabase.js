@@ -84,7 +84,7 @@
         });
         cursor.continue();
       } else {
-        // Cursor consumed all availabled piskels
+        // Cursor consumed all available piskels
         deferred.resolve(piskels);
       }
     };

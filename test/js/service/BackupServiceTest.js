@@ -91,7 +91,7 @@ describe('BackupService test', function () {
   it('calls create to backup', function (done) {
     preparePiskelMocks(1, 'piskel_name', 'piskel_desc', 'piskel_hash', 'serialized');
 
-    // Set snashot date.
+    // Set snapshot date.
     snapshotDate = 5;
 
     // No snapshots currently saved.

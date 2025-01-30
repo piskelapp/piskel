@@ -84,7 +84,7 @@
 
   /**
    * If we mouseover the selection draw inside the overlay frame, show the 'move' cursor
-   * instead of the 'select' one. It indicates that we can move the selection by dragndroping it.
+   * instead of the 'select' one. It indicates that we can move the selection by dragndropping it.
    * @override
    */
   ns.BaseSelect.prototype.moveUnactiveToolAt = function(col, row, frame, overlay, event) {

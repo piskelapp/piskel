@@ -24,7 +24,7 @@
 
   /**
    * The move tool id is used by the ToolController and the BaseSelect and needs to be
-   * easliy accessible
+   * easily accessible
    */
   ns.Move.TOOL_ID = 'tool-move';
 
