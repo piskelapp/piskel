@@ -244,7 +244,7 @@
     if (pskl.utils.UserAgent.isIE11) {
       delta = evt.wheelDelta;
     } else if (pskl.utils.UserAgent.isFirefox) {
-      delta = -40 * evt.deltaY;
+      delta = evt.deltaY > 0 ? -120 : 120;
     } else {
       delta = evt.wheelDeltaY;
     }
