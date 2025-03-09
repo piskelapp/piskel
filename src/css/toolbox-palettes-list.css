@@ -2,6 +2,7 @@
   min-height: 100px;
   display: flex;
   flex-direction: column;
+  overflow: auto;
 }
 
 .palettes-title {
@@ -37,13 +38,13 @@
   padding: 0 5px 0 5px;
 
   color: #aaa;
-  font-size : 0.75em;
+  font-size: 0.75em;
 
-  text-align:left;
+  text-align: left;
   font-weight: normal;
 
-  transition : background-color 0.3s, color 0.3s;
-  cursor:pointer;
+  transition: background-color 0.3s, color 0.3s;
+  cursor: pointer;
 }
 
 .palettes-list-select:hover,
@@ -62,9 +63,11 @@
 
 .palettes-list-colors {
   height: 100%;
-  max-height: 160px;
+  max-height: none;
   overflow: auto;
   padding-top: 5px;
+  flex: 1;
+  min-height: 0;
 }
 
 .palettes-list-color {
@@ -96,19 +99,20 @@
   color: gray;
   font-size: 0.8em;
   font-style: italic;
-  text-align: center
+  text-align: center;
 }
 
 /*
  * Primary and secondary color markers
  */
 
-.palettes-list-primary-color:before, .palettes-list-secondary-color:before {
+.palettes-list-primary-color:before,
+.palettes-list-secondary-color:before {
   content: "";
   position: absolute;
   bottom: 1px;
   display: inline-block;
-  background: url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20height%3D%2215%22%20width%3D%2215%22%3E%3Cpath%20stroke%3D%22gold%22%20stroke-width%3D%222%22%20d%3D%22M1%203v10h10z%22/%3E%3C/svg%3E');
+  background: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20height%3D%2215%22%20width%3D%2215%22%3E%3Cpath%20stroke%3D%22gold%22%20stroke-width%3D%222%22%20d%3D%22M1%203v10h10z%22/%3E%3C/svg%3E");
   width: 14px;
   height: 14px;
 }
@@ -119,14 +123,14 @@
 
 .palettes-list-secondary-color:before {
   right: 1px;
-  background: url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20height%3D%2215%22%20width%3D%2215%22%3E%3Cpath%20stroke%3D%22gold%22%20stroke-width%3D%222%22%20d%3D%22M3%2013h10V3z%22/%3E%3C/svg%3E');
+  background: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20height%3D%2215%22%20width%3D%2215%22%3E%3Cpath%20stroke%3D%22gold%22%20stroke-width%3D%222%22%20d%3D%22M3%2013h10V3z%22/%3E%3C/svg%3E");
 }
 
 /*
  * Color index for the 9 first colors
  */
 
-:not(.tiny) > .palettes-list-color:nth-child(-n+10):after {
+:not(.tiny) > .palettes-list-color:nth-child(-n + 10):after {
   content: attr(data-color-index);
   position: absolute;
   top: 0;
