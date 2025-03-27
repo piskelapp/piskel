@@ -22,7 +22,7 @@
       direction = ns.TransformUtils.COUNTERCLOCKWISE;
     }
 
-    ns.TransformUtils.rotate(frame, direction);
+    ns.TransformUtils.rotateNearestNeighbor(frame, direction);
   };
 
 })();
