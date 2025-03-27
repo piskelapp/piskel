@@ -70,10 +70,12 @@
     rotateNearestNeighbor: function (frame, direction) {
 	  /**
       * Rotates a frame object using Nearest Neighbor interpolation.
+	  * Following the lead of the original rotation function, 
+	  * (_x,_y) is the pixel we want to set
+	  * ( x, y) is the pixel that rotates TO (_x,_y)
       */
-	  // fixed 90 degree angle for testing
-	  var angle = (direction === ns.TransformUtils.CLOCKWISE) ? Math.PI / 2 : -Math.PI / 2;
-	  var clone = frame.clone();	 
+
+	  var clone = frame.clone();
       var w = frame.getWidth();
       var h = frame.getHeight();
 	  
@@ -82,9 +84,11 @@
 	  var centerY = Math.floor(h / 2);
 
 	  // negative angle because we want to find the pixel we rotated FROM
+	  var angle = Math.PI /4; // fixed 180 degree angle for testing
 	  var cosA = Math.cos(-angle);
 	  var sinA = Math.sin(-angle);
 	  
+	  // for each pixel in the new image, find the old pixel location we rotated FROM
 	  frame.forEachPixel(function (color, x, y) {
 	  
 	    // store the pixel we want to find the value of
@@ -93,22 +97,22 @@
 		
 		//// Find the pixel that rotates TO the position we want to find
 		// Set center of image to origin for rotation
-		x = x - centerX;
-		y = y - centerY;
+		var xshift = x - centerX;
+		var yshift = y - centerY;
 
 		// Apply reverse rotation and undo translation
-		//var rotatedX = Math.round(x * cosA - y * sinA) + centerX;
-		//var rotatedY = Math.round(x * sinA + y * cosA) + centerY;
-	    //debug
-		x = -x;
-		y = y;
+		x = Math.round(xshift * cosA - yshift * sinA);
+		y = Math.round(xshift * sinA + yshift * cosA);
+	    //debug - sucessful "mirror" function
+		//x = -x;
+		//y = y;
 
 		// Convert the coordinates back to the rectangular grid
         x += centerX;
         y += centerY;
 
-		// Set pixel in the rotated frame
-		if (clone.containsPixel(x, y)) {
+		// Set pixel value in the rotated frame
+		if (clone.containsPixel(x, y)) { 
           frame.setPixel(_x, _y, clone.getPixel(x, y));
         } else {
           frame.setPixel(_x, _y, Constants.TRANSPARENT_COLOR);
