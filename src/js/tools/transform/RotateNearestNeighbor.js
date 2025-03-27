@@ -1,18 +1,19 @@
 (function () {
   var ns = $.namespace('pskl.tools.transform');
 
-  ns.Rotate = function () {
-    this.toolId = 'tool-rotate';
-    this.helpText = 'Counter-clockwise rotation';
+  ns.RotateNearestNeighbor = function () {
+    this.toolId = 'tool-rotate-nearest-neighbor';
+    this.helpText = 'Rotate selection using nearest neighbor interpolation';
+    this.angle = 15; // Default rotation step in degrees
     this.tooltipDescriptors = [
       {key : 'alt', description : 'Clockwise rotation'},
       {key : 'ctrl', description : 'Apply to all layers'},
       {key : 'shift', description : 'Apply to all frames'}];
   };
 
-  pskl.utils.inherit(ns.Rotate, ns.AbstractTransformTool);
+  pskl.utils.inherit(ns.RotateNearestNeighbor, ns.AbstractTransformTool);
 
-  ns.Rotate.prototype.applyToolOnFrame_ = function (frame, altKey) {
+  ns.RotateNearestNeighbor.prototype.applyToolOnFrame_ = function (frame, altKey) {
     var direction;
 
     if (altKey) {
@@ -21,7 +22,7 @@
       direction = ns.TransformUtils.COUNTERCLOCKWISE;
     }
 
-    ns.TransformUtils.rotate(frame, direction);
+    ns.TransformUtils.RotateNearestNeighbor(frame, direction);
   };
 
 })();
