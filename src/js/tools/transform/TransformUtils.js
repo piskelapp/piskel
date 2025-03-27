@@ -65,15 +65,17 @@
     },
 
 
-    //CLOCKWISE : 'clockwise',
-    //COUNTERCLOCKWISE : 'counterclockwise',
     rotateNearestNeighbor: function (frame, direction) {
 	  /**
-      * Rotates a frame object using Nearest Neighbor interpolation.
+      * Rotates a frame using Nearest Neighbor interpolation.
 	  * Following the lead of the original rotation function, 
 	  * (_x,_y) is the pixel we want to set
 	  * ( x, y) is the pixel that rotates TO (_x,_y)
+	  *
+	  * TODO: Upgrade function to accept an angle argument. 
+	  *    Currently, this function rotates at a fixed angle.
       */
+	  var angle = (Math.PI/180)*5; // fixed angle in radians for testing
 
 	  var clone = frame.clone();
       var w = frame.getWidth();
@@ -84,7 +86,7 @@
 	  var centerY = Math.floor(h / 2);
 
 	  // negative angle because we want to find the pixel we rotated FROM
-	  var angle = Math.PI /4; // fixed 180 degree angle for testing
+	  // this is a moot point because it only chooses between CW and CCW
 	  var cosA = Math.cos(-angle);
 	  var sinA = Math.sin(-angle);
 	  
@@ -96,16 +98,13 @@
         var _y = y;
 		
 		//// Find the pixel that rotates TO the position we want to find
-		// Set center of image to origin for rotation
+		// Set origin to center of image to for rotation
 		var xshift = x - centerX;
 		var yshift = y - centerY;
 
-		// Apply reverse rotation and undo translation
+		// Apply rotation
 		x = Math.round(xshift * cosA - yshift * sinA);
 		y = Math.round(xshift * sinA + yshift * cosA);
-	    //debug - sucessful "mirror" function
-		//x = -x;
-		//y = y;
 
 		// Convert the coordinates back to the rectangular grid
         x += centerX;
