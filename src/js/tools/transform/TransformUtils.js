@@ -64,55 +64,60 @@
       return frame;
     },
 
-    /**
-     * DUPLICATE OF rotate TO TEST ADDING BUTTONS AND LINKING FUNCTIONS
-     * Rotates an ImageData object using Nearest Neighbor interpolation.
-     * @param {ImageData} srcData - The original image data.
-     * @param {number} angle - Rotation angle in degrees.
-     * @returns {ImageData} - Rotated image data.
-     */
-    CLOCKWISE : 'clockwise',
-    COUNTERCLOCKWISE : 'counterclockwise',
-    rotateNearestNeighbor : function (frame, direction) {
-      var clone = frame.clone();
+
+    //CLOCKWISE : 'clockwise',
+    //COUNTERCLOCKWISE : 'counterclockwise',
+    rotateNearestNeighbor: function (frame, direction) {
+	  /**
+      * Rotates a frame object using Nearest Neighbor interpolation.
+      */
+	  // fixed 90 degree angle for testing
+	  var angle = (direction === ns.TransformUtils.CLOCKWISE) ? Math.PI / 2 : -Math.PI / 2;
+	  var clone = frame.clone();	 
       var w = frame.getWidth();
       var h = frame.getHeight();
+	  
+	  // find center of frame
+	  var centerX = Math.floor(w / 2);
+	  var centerY = Math.floor(h / 2);
 
-      var max =  Math.max(w, h);
-      var xDelta = Math.ceil((max - w) / 2);
-      var yDelta = Math.ceil((max - h) / 2);
-
-      frame.forEachPixel(function (color, x, y) {
-        var _x = x;
+	  // negative angle because we want to find the pixel we rotated FROM
+	  var cosA = Math.cos(-angle);
+	  var sinA = Math.sin(-angle);
+	  
+	  frame.forEachPixel(function (color, x, y) {
+	  
+	    // store the pixel we want to find the value of
+	    var _x = x;
         var _y = y;
+		
+		//// Find the pixel that rotates TO the position we want to find
+		// Set center of image to origin for rotation
+		x = x - centerX;
+		y = y - centerY;
 
-        // Convert to square coords
-        x = x + xDelta;
-        y = y + yDelta;
+		// Apply reverse rotation and undo translation
+		//var rotatedX = Math.round(x * cosA - y * sinA) + centerX;
+		//var rotatedY = Math.round(x * sinA + y * cosA) + centerY;
+	    //debug
+		x = -x;
+		y = y;
 
-        // Perform the rotation
-        var tmpX = x;
-        var tmpY = y;
-        if (direction === ns.TransformUtils.CLOCKWISE) {
-          x = tmpY;
-          y = max - 1 - tmpX;
-        } else if (direction === ns.TransformUtils.COUNTERCLOCKWISE) {
-          y = tmpX;
-          x = max - 1 - tmpY;
-        }
+		// Convert the coordinates back to the rectangular grid
+        x += centerX;
+        y += centerY;
 
-        // Convert the coordinates back to the rectangular grid
-        x = x - xDelta;
-        y = y - yDelta;
-        if (clone.containsPixel(x, y)) {
+		// Set pixel in the rotated frame
+		if (clone.containsPixel(x, y)) {
           frame.setPixel(_x, _y, clone.getPixel(x, y));
         } else {
           frame.setPixel(_x, _y, Constants.TRANSPARENT_COLOR);
         }
-      });
+	  });
+	  
+	  return frame;
+	},
 
-      return frame;
-    },
 
     getBoundaries : function(frames) {
       var minx = +Infinity;
