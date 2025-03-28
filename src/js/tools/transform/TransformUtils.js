@@ -65,18 +65,18 @@
     },
 
 
-    rotateNearestNeighbor: function (frame, direction) {
+    rotateNearestNeighbor: function (frame, angle) {
 	  /**
-      * Rotates a frame using Nearest Neighbor interpolation.
-	  * Following the lead of the original rotation function, 
-	  * (_x,_y) is the pixel we want to set
-	  * ( x, y) is the pixel that rotates TO (_x,_y)
+      * Rotates frame(s) using Nearest Neighbor interpolation.
+	  * Use 'alt' to set the angle in degrees. CCW is positive.
 	  *
-	  * TODO: Upgrade function to accept an angle argument. 
-	  *    Currently, this function rotates at a fixed angle.
-      */
-	  var angle = (Math.PI/180)*5; // fixed angle in radians for testing
+	  * Following the lead of the original rotation function, 
+	  * (_x,_y) is the pixel we want to SET
+	  * ( x, y) is the pixel that rotates TO (_x,_y)
+      **/
 
+	  angle = angle * (Math.PI/180); // convert degrees to radians
+	  
 	  var clone = frame.clone();
       var w = frame.getWidth();
       var h = frame.getHeight();
@@ -85,10 +85,8 @@
 	  var centerX = Math.floor(w / 2);
 	  var centerY = Math.floor(h / 2);
 
-	  // negative angle because we want to find the pixel we rotated FROM
-	  // this is a moot point because it only chooses between CW and CCW
-	  var cosA = Math.cos(-angle);
-	  var sinA = Math.sin(-angle);
+	  var cosA = Math.cos(angle);
+	  var sinA = Math.sin(angle);
 	  
 	  // for each pixel in the new image, find the old pixel location we rotated FROM
 	  frame.forEachPixel(function (color, x, y) {
