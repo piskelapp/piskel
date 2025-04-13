@@ -173,7 +173,7 @@ module.exports = function (grunt) {
     },
 
     replace: {
-      // main-partial.html is used when embedded in piskelapp.com
+      // main-partial.html is used when embedded in the legacy piskelapp.com
       mainPartial: {
         options: {
           patterns: [{
@@ -194,6 +194,30 @@ module.exports = function (grunt) {
         files: [
           // src/index.html should already have been moved by the includereplace task
           { src: ['dest/tmp/index.html'], dest: 'dest/prod/piskelapp-partials/main-partial.html' }
+        ]
+      },
+
+      // piskel-web-partial.html is used when embedded in piskelapp.com
+      piskelWebPartial: {
+        options: {
+          patterns: [{
+            match: /^(.|[\r\n])*<!--body-main-start-->/,
+            replacement: "---\nlayout: \"editorLayout.html\"\n---\n\n",
+            description: "Remove everything before body-main-start comment"
+          }, {
+            match: /<!--body-main-end-->(.|[\r\n])*$/,
+            replacement: "",
+            description: "Remove everything after body-main-end comment"
+          }, {
+            match: /([\r\n])  /g,
+            replacement: "$1",
+            description: "Decrease indentation by one"
+          }
+          ]
+        },
+        files: [
+          // src/index.html should already have been moved by the includereplace task
+          { src: ['dest/tmp/index.html'], dest: 'dest/prod/piskelapp-partials/piskel-web-partial.html' }
         ]
       },
 
@@ -326,7 +350,8 @@ module.exports = function (grunt) {
   // BUILD TASKS
   grunt.registerTask('build-index.html', ['includereplace']);
   grunt.registerTask('merge-statics', ['concat:js', 'concat:css', 'uglify']);
-  grunt.registerTask('build', ['clean:prod', 'sprite', 'merge-statics', 'build-index.html', 'replace:mainPartial', 'replace:css', 'copy:prod']);
+  grunt.registerTask('build-partials', ['replace:mainPartial', 'replace:piskelWebPartial']);
+  grunt.registerTask('build', ['clean:prod', 'sprite', 'merge-statics', 'build-index.html', 'build-partials', 'replace:css', 'copy:prod']);
   grunt.registerTask('build-dev', ['clean:dev', 'sprite', 'build-index.html', 'copy:dev']);
   grunt.registerTask('desktop', ['clean:desktop', 'default', 'nwjs:windows']);
   grunt.registerTask('desktop-mac', ['clean:desktop', 'default', 'nwjs:macos']);
