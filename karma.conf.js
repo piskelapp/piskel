@@ -1,9 +1,9 @@
 // Karma configuration
 // Generated on Tue Jul 22 2014 23:49:26 GMT+0200 (Romance Daylight Time)
 
-module.exports = function(config) {
+module.exports = function (config) {
 
-  var mapToSrcFolder = function (path) {return ['src', path].join('/');};
+  var mapToSrcFolder = function (path) { return ['src', path].join('/'); };
 
   var piskelScripts = require('./src/piskel-script-list.js').scripts.map(mapToSrcFolder);
   piskelScripts.push('test/js/testutils/**/*.js');
@@ -25,7 +25,7 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: piskelScripts.concat([
-      './node_modules/promise-polyfill/promise.js'
+      './node_modules/promise-polyfill/dist/polyfill.min.js'
     ]),
 
 
