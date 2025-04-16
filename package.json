@@ -25,9 +25,11 @@
     "test": "grunt test",
     "dev": "grunt play",
     "start": "grunt build && nw",
+    "serve": "grunt serve",
     "preversion": "grunt test build",
     "postversion": "git push && git push --tags && npm publish",
     "release": "grunt && node ./bin/copy-to-piskel-website",
+    "release-piskel-web": "grunt && node ./bin/copy-to-piskel-web",
     "build": "grunt desktop",
     "build:mac": "grunt desktop-mac",
     "format": "grunt eslint --fix"
