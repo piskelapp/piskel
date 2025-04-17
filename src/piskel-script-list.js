@@ -48,7 +48,7 @@
   "js/utils/serialization/backward/Deserializer_v0.js",
   "js/utils/serialization/backward/Deserializer_v1.js",
 
-    // GIF Encoding libraries
+  // GIF Encoding libraries
   "js/lib/gif/gif.worker.js",
   "js/lib/gif/gif.js",
   "js/lib/gif/libgif.js",
@@ -112,6 +112,7 @@
   "js/controller/FramesListController.js",
   "js/controller/HeaderController.js",
   "js/controller/LayersListController.js",
+  "js/controller/PixelStatsController.js",
   "js/controller/preview/PopupPreviewController.js",
   "js/controller/preview/PreviewActionsController.js",
   "js/controller/preview/PreviewController.js",
@@ -186,6 +187,7 @@
   "js/service/BackupService.js",
   "js/service/BeforeUnloadService.js",
   "js/service/HistoryService.js",
+  "js/service/PixelStatsService.js",
   "js/service/color/ColorSorter.js",
   "js/service/palette/CurrentColorsPalette.js",
   "js/service/palette/PaletteService.js",
