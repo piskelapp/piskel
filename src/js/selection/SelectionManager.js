@@ -7,10 +7,9 @@
   };
 
   ns.SelectionManager = function (piskelController) {
-
     this.piskelController = piskelController;
-
     this.currentSelection = null;
+    this.pasteLayerCounter = 1;
   };
 
   ns.SelectionManager.prototype.init = function () {
@@ -95,6 +94,10 @@
 
   ns.SelectionManager.prototype.paste = function(event, domEvent) {
     var items = domEvent ? domEvent.clipboardData.items : [];
+
+    // Create a new layer with incremental name
+    var layerName = 'Pasted Layer ' + (this.pasteLayerCounter++);
+    this.piskelController.createLayer(layerName);
 
     try {
       for (var i = 0 ; i < items.length ; i++) {
