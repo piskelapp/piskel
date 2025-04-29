@@ -27,6 +27,7 @@ diff.txt
 # build destination
 dest
 build/closure/closure_compiled_binary.js
+out
 
 # spriting artifacts
 src/img/icons.png
