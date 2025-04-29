@@ -4,7 +4,7 @@ const fs = require('fs');
 const fse = require('fs-extra');
 
 const PISKEL_PATH = path.resolve(__dirname, '..');
-const PISKELAPP_PATH = path.resolve(__dirname, '../../piskel-web/src/editor');
+const PISKELAPP_PATH = path.resolve(__dirname, '../../piskel-web/src/p/create/sprite');
 
 var pjson = require('../package.json');
 
