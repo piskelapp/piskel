@@ -24,15 +24,15 @@
   "scripts": {
     "test": "grunt test",
     "dev": "grunt play",
-    "start": "grunt build && nw",
-    "serve": "grunt serve",
+    "prod": "grunt serve",
+    "format": "grunt eslint --fix",
     "preversion": "grunt test build",
     "postversion": "git push && git push --tags && npm publish",
     "release": "grunt && node ./bin/copy-to-piskel-website",
     "release-piskel-web": "grunt && node ./bin/copy-to-piskel-web",
-    "build": "grunt desktop",
+    "build:desktop": "grunt desktop",
     "build:mac": "grunt desktop-mac",
-    "format": "grunt eslint --fix"
+    "start:nw": "grunt build && nw"
   },
   "devDependencies": {
     "dateformat": "4.5.1",
