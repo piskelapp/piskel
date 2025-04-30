@@ -30,8 +30,10 @@
     "postversion": "git push && git push --tags && npm publish",
     "release": "grunt && node ./bin/copy-to-piskel-website",
     "release-piskel-web": "grunt && node ./bin/copy-to-piskel-web",
-    "build:desktop": "grunt desktop",
-    "build:mac": "grunt desktop-mac",
+    "build:desktop:linux64": "grunt desktop-linux64",
+    "build:desktop:osx64": "grunt desktop-osx64",
+    "build:desktop:osxarm64": "grunt desktop-osxarm64",
+    "build:desktop:win64": "grunt desktop-win64",
     "start:nw": "grunt build && nw"
   },
   "devDependencies": {
@@ -60,7 +62,6 @@
     "karma-jasmine": "4.0.1",
     "karma-phantomjs-launcher": "1.0.4",
     "load-grunt-tasks": "5.1.0",
-    "nw": "0.54.0",
     "phantomjs-prebuilt": "2.1.8",
     "phantomjs-polyfill-object-assign": "0.0.2",
     "promise-polyfill": "8.2.0",

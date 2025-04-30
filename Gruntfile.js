@@ -294,38 +294,42 @@ module.exports = function (grunt) {
      */
 
     nwjs: {
-      windows: {
+      linux64: {
         options: {
-          downloadUrl: 'https://dl.nwjs.io/',
-          version: "0.19.4",
-          build_dir: './dest/desktop/', // destination folder of releases.
-          win: true,
-          linux32: true,
-          linux64: true,
-          flavor: "normal",
+          version: '0.54.0',
+          platform: 'linux',
+          arch: 'x64',
+          outDir: './dest/desktop/linux64',
         },
-        src: ['./dest/prod/**/*', "./package.json", "!./dest/desktop/"]
+        src: ['./package.json', './dest/prod/**/*'],
       },
-      macos: {
+      osx64: {
         options: {
-          downloadUrl: 'https://dl.nwjs.io/',
-          osx64: true,
-          version: "0.19.4",
-          build_dir: './dest/desktop/',
-          flavor: "normal",
+          version: '0.54.0',
+          platform: 'osx',
+          arch: 'x64',
+          outDir: './dest/desktop/osx64',
         },
-        src: ['./dest/prod/**/*', "./package.json", "!./dest/desktop/"]
+        src: ['./package.json', './dest/prod/**/*'],
       },
-      macos_old: {
+      osxarm64: {
         options: {
-          downloadUrl: 'https://dl.nwjs.io/',
-          osx64: true,
-          version: "0.12.3",
-          build_dir: './dest/desktop/old',
-          flavor: "normal",
+          version: '0.54.0',
+          platform: 'osx',
+          arch: 'arm64',
+          outDir: './dest/desktop/osxarm64',
         },
-        src: ['./dest/prod/**/*', "./package.json", "!./dest/desktop/"]
-      }
+        src: ['./package.json', './dest/prod/**/*'],
+      },
+      win64: {
+        options: {
+          version: '0.54.0',
+          platform: 'win',
+          arch: 'x64',
+          outDir: './dest/desktop/win64',
+        },
+        src: ['./package.json', './dest/prod/**/*'],
+      },
     }
   });
 
@@ -353,7 +357,10 @@ module.exports = function (grunt) {
   grunt.registerTask('build-partials', ['replace:mainPartial', 'replace:piskelWebPartial']);
   grunt.registerTask('build', ['clean:prod', 'sprite', 'merge-statics', 'build-index.html', 'build-partials', 'replace:css', 'copy:prod']);
   grunt.registerTask('build-dev', ['clean:dev', 'sprite', 'build-index.html', 'copy:dev']);
-  grunt.registerTask('desktop', ['clean:desktop', 'default', 'nwjs:windows']);
+  grunt.registerTask('desktop-linux64', ['clean:desktop', 'default', 'nwjs:linux64'])
+  grunt.registerTask('desktop-osx64', ['clean:desktop', 'default', 'nwjs:osx64'])
+  runt.registerTask('desktop-osxarm64', ['clean:desktop', 'default', 'nwjs:osxarm64'])
+  grunt.registerTask('desktop-win64', ['clean:desktop', 'default', 'nwjs:win64']);
   grunt.registerTask('desktop-mac', ['clean:desktop', 'default', 'nwjs:macos']);
   grunt.registerTask('desktop-mac-old', ['clean:desktop', 'default', 'replace:desktop', 'nwjs:macos_old']);
 
