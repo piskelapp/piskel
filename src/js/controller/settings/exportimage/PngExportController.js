@@ -52,7 +52,7 @@
   };
 
   /**
-   * Initalize all controls related to the spritesheet layout.
+   * Initialize all controls related to the spritesheet layout.
    */
   ns.PngExportController.prototype.initLayoutSection_ = function () {
     var frames = this.piskelController.getFrameCount();
@@ -107,7 +107,7 @@
   };
 
   /**
-   * Synchronise column and row inputs, called everytime a user input updates one of the
+   * Synchronise column and row inputs, called every time a user input updates one of the
    * two inputs by the SynchronizedInputs widget.
    */
   ns.PngExportController.prototype.onColumnsInput_ = function () {

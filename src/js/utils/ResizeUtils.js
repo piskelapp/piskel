@@ -8,7 +8,7 @@
      * @param  {Object} options
      *         - width {Number} target width after the resize
      *         - height {Number} target height after the resize
-     *         - resizeContent {Booleam} true of the sprite content should be resized
+     *         - resizeContent {Boolean} true of the sprite content should be resized
      *         - origin {String} should be a valid AnchorWidget origin
      * @return {Piskel} The resized piskel
      */

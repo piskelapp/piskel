@@ -84,7 +84,7 @@ module.exports = function (grunt) {
       files: [
         // Includes
         'src/js/**/*.js',
-        // Exludes
+        // Excludes
         // TODO: remove this (for now we still get warnings from the lib folder)
         '!src/js/**/lib/**/*.js'
       ],

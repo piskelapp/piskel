@@ -46,7 +46,7 @@
   };
 
   /**
-   * Transition to the step cirresponding to the provided step name.
+   * Transition to the step corresponding to the provided step name.
    * Animation will be skipped if no current step is displayed.
    */
   ns.Wizard.prototype.goTo = function (stepName) {

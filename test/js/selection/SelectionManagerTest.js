@@ -168,7 +168,7 @@ describe("SelectionManager suite", function() {
 
     console.log('[SelectionManager] ... cut out of bounds');
     selectionManager.copy({ type: Events.CLIPBOARD_CUT }, createMockCopyEvent());
-    console.log('[SelectionManager] ... check last pixel of midle line was cut in the source frame');
+    console.log('[SelectionManager] ... check last pixel of middle line was cut in the source frame');
     frameEqualsGrid(currentFrame, [
       [B, R, T],
       [R, B, T],
