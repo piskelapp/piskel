@@ -100,14 +100,15 @@
      * Apply the paintbucket tool in a frame at the (col, row) initial position
      * with the replacement color.
      *
-     * @param frame pskl.model.Frame The frame target in which we want to paintbucket
+     * @param sourceFrame pskl.model.Frame The frame source which we use for reference to discover pixels to fill. This is disposed.
+     * @param targetFrame pskl.model.Frame The frame target in which we want to paintbucket. We set color on this frame.
      * @param col number Column coordinate in the frame
      * @param row number Row coordinate in the frame
      * @param replacementColor string Hexadecimal color used to fill the area
      *
      * @return an array of the pixel coordinates paint with the replacement color
      */
-    paintSimilarConnectedPixelsFromFrame: function(frame, col, row, replacementColor) {
+    paintSimilarConnectedPixelsFromFrame: function(sourceFrame, targetFrame, col, row, replacementColor) {
       /**
        *  Queue linear Flood-fill (node, target-color, replacement-color):
        *   1. Set Q to the empty queue.
@@ -131,7 +132,7 @@
 
       var targetColor;
       try {
-        targetColor = frame.getPixel(col, row);
+        targetColor = sourceFrame.getPixel(col, row);
       } catch (e) {
         // Frame out of bound exception.
       }
@@ -144,9 +145,10 @@
         col : col,
         row : row
       };
-      var paintedPixels = pskl.PixelUtils.visitConnectedPixels(startPixel, frame, function (pixel) {
-        if (frame.getPixel(pixel.col, pixel.row) == targetColor) {
-          frame.setPixel(pixel.col, pixel.row, replacementColor);
+      var paintedPixels = pskl.PixelUtils.visitConnectedPixels(startPixel, sourceFrame, function (pixel) {
+        if (sourceFrame.getPixel(pixel.col, pixel.row) == targetColor) {
+          sourceFrame.setPixel(pixel.col, pixel.row, replacementColor);
+          targetFrame.setPixel(pixel.col, pixel.row, replacementColor);
           return true;
         }
         return false;
