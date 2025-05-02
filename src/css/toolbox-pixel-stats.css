@@ -1,0 +1,68 @@
+.pixel-stats-container {
+  font-size: 12px;
+  overflow: auto;
+  box-sizing: border-box;
+  height: 100%;
+}
+
+.pixel-stats-summary {
+  margin: 5px 0;
+  padding: 5px;
+  border-bottom: 1px solid #666;
+}
+
+.pixel-stats-item {
+  margin: 4px 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+.pixel-stats-label {
+  font-weight: bold;
+}
+
+.pixel-stats-colors-title {
+  margin: 10px 0 5px;
+  padding: 0 5px;
+  font-weight: bold;
+}
+
+.pixel-stats-colors-container {
+  max-height: calc(100% - 180px);
+  overflow-y: auto;
+  padding: 5px;
+}
+
+.pixel-stats-color {
+  display: flex;
+  align-items: center;
+  margin: 5px 0;
+  padding: 5px;
+  border-radius: 3px;
+  background-color: #333;
+  cursor: default;
+}
+
+.pixel-stats-color-square {
+  width: 24px;
+  height: 24px;
+  border: 1px solid #888;
+  margin-right: 10px;
+  border-radius: 2px;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+}
+
+.pixel-stats-color-info {
+  flex-grow: 1;
+}
+
+.pixel-stats-color-count {
+  font-size: 11px;
+  font-family: monospace;
+}
+
+.pixel-stats-color > div[data-color="transparent"],
+.pixel-stats-color > div[style*="background:transparent"] {
+  background-image: repeating-conic-gradient(#ccc 0% 25%, #fff 0% 50%);
+  background-size: 8px 8px;
+}
