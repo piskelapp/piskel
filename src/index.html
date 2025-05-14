@@ -1,109 +1,130 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>Piskel</title>
-  <meta name="description" content="">
-  <meta name="author" content="Julian Descottes">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body>
-  <div
-    id="loading-mask"
-    style="
-    position:fixed;
-    top:0;right:0;bottom:0;left:0;
-    background:black;
-    opacity:1;
-    text-align:center;
-    z-index : 20000;
-    transition:opacity 0.5s;
-    color:white;">
-      <span style="top:45%">Loading Piskel ...</span>
-  </div>
-  @@include('templates/debug-header.html', {})
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>Piskel</title>
+    <meta name="description" content="" />
+    <meta name="author" content="Julian Descottes" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <body>
+    <div
+      id="loading-mask"
+      style="
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background: black;
+        opacity: 1;
+        text-align: center;
+        z-index: 20000;
+        transition: opacity 0.5s;
+        color: white;
+      "
+    >
+      <span style="top: 45%">Loading Piskel ...</span>
+    </div>
+    @@include('templates/debug-header.html', {})
 
-  <!-- the comment below indicates the beginning of markup reused by the editor integrated in piskelapp.com -->
-  <!-- do not delete, do not move :) -->
-  <!--body-main-start-->
-  <div id="main-wrapper" class="main-wrapper">
-    @@include('templates/drawing-tools.html', {})
+    <!-- the comment below indicates the beginning of markup reused by the editor integrated in piskelapp.com -->
+    <!-- do not delete, do not move :) -->
+    <!--body-main-start-->
+    <div id="main-wrapper" class="main-wrapper">
+      @@include('templates/drawing-tools.html', {})
 
-    <div id="column-wrapper" class="column-wrapper">
-      <div class='column left-column'>
-        @@include('templates/frames-list.html', {})
-      </div>
+      <div id="column-wrapper" class="column-wrapper">
+        <div class="column left-column">
+          @@include('templates/frames-list.html', {})
+        </div>
 
-      <div class='column main-column'>
-        <div id="drawing-canvas-container" class="drawing-canvas-container canvas-container">
-          <div class="canvas-background"></div>
+        <div class="column main-column">
+          <div
+            id="drawing-canvas-container"
+            class="drawing-canvas-container canvas-container"
+          >
+            <div class="canvas-background"></div>
+          </div>
+        </div>
+
+        <div class="column right-column">
+          @@include('templates/preview.html', {})
+          @@include('templates/layers-list.html', {})
+          @@include('templates/transformations.html', {})
+          @@include('templates/pixel-stats.html', {})
+          @@include('templates/palettes-list.html', {})
+          <div class="pull-bottom cursor-coordinates"></div>
         </div>
       </div>
 
-      <div class="column right-column">
-        @@include('templates/preview.html', {})
-        @@include('templates/layers-list.html', {})
-        @@include('templates/transformations.html', {})
-        @@include('templates/palettes-list.html', {})
-        <div class="pull-bottom cursor-coordinates"></div>
-      </div>
-    </div>
-
-    <div id="application-action-section" data-pskl-controller="settings" class="sticky-section right-sticky-section">
-      <div class="sticky-section-wrap">
-        @@include('templates/settings.html', {})
-        <div class="drawer vertical-centerer">
-          <div class="drawer-content" id="drawer-container">
+      <div
+        id="application-action-section"
+        data-pskl-controller="settings"
+        class="sticky-section right-sticky-section"
+      >
+        <div class="sticky-section-wrap">
+          @@include('templates/settings.html', {})
+          <div class="drawer vertical-centerer">
+            <div class="drawer-content" id="drawer-container"></div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <div id="dialog-container-wrapper">
-    <div id="dialog-container">
+    <div id="dialog-container-wrapper">
+      <div id="dialog-container"></div>
     </div>
-  </div>
 
-  @@include('templates/misc-templates.html', {})
-  @@include('templates/data-uri-export.html', {})
-  @@include('templates/popup-preview.html', {})
+    @@include('templates/misc-templates.html', {})
+    @@include('templates/data-uri-export.html', {})
+    @@include('templates/popup-preview.html', {})
 
-  <span class="cheatsheet-link icon-common-keyboard-gold"
-        rel="tooltip" data-placement="right" title="Keyboard shortcuts">&nbsp;</span>
-  <div class="performance-link icon-common-warning-red"
-       rel="tooltip" data-placement="left" title="Performance problem detected, learn more.">&nbsp;</div>
+    <span
+      class="cheatsheet-link icon-common-keyboard-gold"
+      rel="tooltip"
+      data-placement="right"
+      title="Keyboard shortcuts"
+      >&nbsp;</span
+    >
+    <div
+      class="performance-link icon-common-warning-red"
+      rel="tooltip"
+      data-placement="left"
+      title="Performance problem detected, learn more."
+    >
+      &nbsp;
+    </div>
 
-  <!-- dialogs partials -->
-  @@include('templates/dialogs/browse-backups.html', {})
-  @@include('templates/dialogs/browse-local.html', {})
-  @@include('templates/dialogs/cheatsheet.html', {})
-  @@include('templates/dialogs/create-palette.html', {})
-  @@include('templates/dialogs/import.html', {})
-  @@include('templates/dialogs/performance-info.html', {})
-  @@include('templates/dialogs/unsupported-browser.html', {})
+    <!-- dialogs partials -->
+    @@include('templates/dialogs/browse-backups.html', {})
+    @@include('templates/dialogs/browse-local.html', {})
+    @@include('templates/dialogs/cheatsheet.html', {})
+    @@include('templates/dialogs/create-palette.html', {})
+    @@include('templates/dialogs/import.html', {})
+    @@include('templates/dialogs/performance-info.html', {})
+    @@include('templates/dialogs/unsupported-browser.html', {})
 
-  <!-- settings-panel partials -->
-  @@include('templates/settings/preferences.html', {})
-  @@include('templates/settings/preferences/grid.html', {})
-  @@include('templates/settings/preferences/misc.html', {})
-  @@include('templates/settings/preferences/tile.html', {})
-  @@include('templates/settings/resize.html', {})
-  @@include('templates/settings/save.html', {})
-  @@include('templates/settings/import.html', {})
-  @@include('templates/settings/export.html', {})
-  @@include('templates/settings/export/png.html', {})
-  @@include('templates/settings/export/gif.html', {})
-  @@include('templates/settings/export/zip.html', {})
-  @@include('templates/settings/export/misc.html', {})
+    <!-- settings-panel partials -->
+    @@include('templates/settings/preferences.html', {})
+    @@include('templates/settings/preferences/grid.html', {})
+    @@include('templates/settings/preferences/misc.html', {})
+    @@include('templates/settings/preferences/tile.html', {})
+    @@include('templates/settings/resize.html', {})
+    @@include('templates/settings/save.html', {})
+    @@include('templates/settings/import.html', {})
+    @@include('templates/settings/export.html', {})
+    @@include('templates/settings/export/png.html', {})
+    @@include('templates/settings/export/gif.html', {})
+    @@include('templates/settings/export/zip.html', {})
+    @@include('templates/settings/export/misc.html', {})
 
-  <script type="text/javascript">
-    @@include('piskel-boot.js', {})
-  </script>
-  <!--body-main-end-->
-  <!-- the comment above indicates the end of the markup reused by the editor integrated in piskelapp.com -->
-  <!-- do not delete, do not move :) -->
-
-</body>
+    <script type="text/javascript">
+      @@include('piskel-boot.js', {})
+    </script>
+    <!--body-main-end-->
+    <!-- the comment above indicates the end of the markup reused by the editor integrated in piskelapp.com -->
+    <!-- do not delete, do not move :) -->
+  </body>
 </html>

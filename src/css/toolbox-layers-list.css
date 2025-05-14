@@ -1,11 +1,28 @@
-
 /**
  * Layers container
  */
 .layers-list-container {
-  min-height: 85px;
+  min-height: 150px;
   display: flex;
   flex-direction: column;
+  resize: vertical;
+  overflow: auto;
+}
+
+/* Add visual handle for resize */
+.layers-list-container::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 15px;
+  height: 15px;
+  cursor: ns-resize;
+  background: linear-gradient(
+    135deg,
+    transparent 50%,
+    var(--highlight-color) 50%
+  );
 }
 
 /**
@@ -35,7 +52,7 @@
 
 .layers-toggle-preview-enabled,
 .layers-toggle-preview-enabled:hover {
-  color : var(--highlight-color);
+  color: var(--highlight-color);
 }
 
 /**
@@ -45,7 +62,7 @@
 .layers-button {
   margin: 0;
   width: 16.66667%;
-  float : left;
+  float: left;
 }
 
 /**
@@ -53,14 +70,16 @@
  */
 
 .layers-list {
-  font-size : 12px;
+  font-size: 12px;
   overflow: auto;
+  flex: 1;
+  min-height: 0;
 }
 
 .layer-item {
   position: relative;
   display: flex;
-  height:24px;
+  height: 24px;
   line-height: 24px;
   border-top: 1px solid #444;
   cursor: pointer;
@@ -83,7 +102,7 @@
 }
 
 .layer-item:hover {
-  background : #222;
+  background: #222;
 }
 
 .layer-item-opacity {
@@ -93,6 +112,6 @@
 
 .current-layer-item,
 .current-layer-item:hover {
-  background : #333;
+  background: #333;
   color: var(--highlight-color);
 }

@@ -6,6 +6,10 @@
   border-radius: 2px;
   margin-top: 5px;
   overflow: hidden;
+  resize: vertical;
+  overflow: auto;
+  position: relative;
+  height: 130px;
 }
 
 .toolbox-title {
@@ -41,4 +45,26 @@
 
 .toolbox-buttons button:last-child {
   border-right-width: 0;
+}
+
+/* Add resize handle indicator */
+.toolbox-container::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 15px;
+  height: 15px;
+  cursor: ns-resize;
+  background: linear-gradient(
+    135deg,
+    transparent 50%,
+    var(--highlight-color) 50%
+  );
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.toolbox-container:hover::after {
+  opacity: 0.5;
 }

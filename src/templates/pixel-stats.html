@@ -1,0 +1,33 @@
+<div class="toolbox-container pixel-stats-container">
+  <h3 class="toolbox-title pixel-stats-title">Pixel Statistics</h3>
+  <div class="pixel-stats-summary">
+    <div class="pixel-stats-item">
+      <span class="pixel-stats-label">Total Pixels:</span>
+      <span class="pixel-stats-total-pixels"></span>
+    </div>
+    <div class="pixel-stats-item">
+      <span class="pixel-stats-label">Used Pixels:</span>
+      <span class="pixel-stats-used-pixels"></span>
+    </div>
+    <div class="pixel-stats-item">
+      <span class="pixel-stats-label">Transparency:</span>
+      <span class="pixel-stats-transparency"></span>
+    </div>
+    <div class="pixel-stats-item">
+      <span class="pixel-stats-label">Number of Colors:</span>
+      <span class="pixel-stats-color-count"></span>
+    </div>
+  </div>
+
+  <div class="pixel-stats-colors-title">Used Colors:</div>
+  <div class="pixel-stats-colors-container"></div>
+
+  <script type="text/template" id="pixel-stats-color-template">
+    <div class="pixel-stats-color">
+      <div class="pixel-stats-color-square" style="background-color:{{color}}"></div>
+      <div class="pixel-stats-color-info">
+        <span class="pixel-stats-color-count">{{count}} ({{percentage}}%)</span>
+      </div>
+    </div>
+  </script>
+</div>

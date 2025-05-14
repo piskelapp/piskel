@@ -30,6 +30,7 @@
   "css/toolbox-layers-list.css",
   "css/toolbox-palettes-list.css",
   "css/toolbox-animated-preview.css",
+  "css/toolbox-pixel-stats.css",
   "css/transformations.css",
   "css/spectrum/spectrum.css",
   "css/spectrum/spectrum-overrides.css",
