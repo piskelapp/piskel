@@ -9,6 +9,7 @@ const PISKELAPP_PATH = path.resolve(__dirname, '../../piskel-web/src/p/create/sp
 var pjson = require('../package.json');
 
 const srcEditorPath = path.resolve(PISKELAPP_PATH, "index.html");
+const srcTestEditorPath = path.resolve(PISKELAPP_PATH, "index_test.html");
 
 const copyPiskelStaticsToPiskelWeb = async () => {
     try {
@@ -33,6 +34,13 @@ const copyPiskelStaticsToPiskelWeb = async () => {
             srcEditorPath
         );
         console.log(`Copied piskel-web-partial.html to index.html successfully!`);
+
+        // Rename piskel-web-partial-test.html to index_test.html
+        await fse.copy(
+            path.resolve(PISKELAPP_PATH, "piskelapp-partials/piskel-web-partial-test.html"),
+            srcTestEditorPath
+        );
+        console.log(`Copied piskel-web-partial-test.html to index_test.html successfully!`);
 
         // Clean up unused partial folder from copied files
         await fse.remove(path.resolve(PISKELAPP_PATH, "piskelapp-partials"));
