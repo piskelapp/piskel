@@ -22,11 +22,11 @@
 
     var cfg = {
       'zoom': this.calculateZoom_(),
-      'supportGridRendering' : false,
-      'height' : this.getContainerHeight_(),
-      'width' : this.getContainerWidth_(),
-      'xOffset' : 0,
-      'yOffset' : 0
+      'supportGridRendering': false,
+      'height': this.getContainerHeight_(),
+      'width': this.getContainerWidth_(),
+      'xOffset': 0,
+      'yOffset': 0
     };
 
     this.overlayRenderer = new pskl.rendering.frame.CachedFrameRenderer(this.container, cfg, ['canvas-overlay']);
@@ -46,17 +46,16 @@
     this.isClicked = false;
     this.previousMousemoveTime = 0;
     this.currentToolBehavior = null;
+    this.resizeObserver = null;
   };
 
   ns.DrawingController.prototype.init = function () {
     this.initMouseBehavior();
 
-    $.subscribe(Events.TOOL_SELECTED, (function(evt, toolBehavior) {
+    $.subscribe(Events.TOOL_SELECTED, (function (evt, toolBehavior) {
       this.currentToolBehavior = toolBehavior;
       this.overlayFrame.clear();
     }).bind(this));
-
-    window.addEventListener('resize', this.startResizeTimer_.bind(this));
 
     $.subscribe(Events.USER_SETTINGS_CHANGED, this.onUserSettingsChange_.bind(this));
     $.subscribe(Events.FRAME_SIZE_CHANGED, this.onFrameSizeChange_.bind(this));
@@ -71,12 +70,19 @@
     pskl.app.shortcutService.registerShortcut(shortcuts.MISC.OFFSET_LEFT, this.updateOffset_.bind(this, 'left'));
 
     window.setTimeout(function () {
-      this.afterWindowResize_();
+      this.relayout_();
       this.resetZoom_();
     }.bind(this), 100);
+
+    this.resizeObserver = new ResizeObserver((entries) => {
+      this.requestRelayout_();
+    });
+
+    const container = document.querySelector('#main-wrapper');
+    this.resizeObserver.observe(container);
   };
 
-  ns.DrawingController.prototype.initMouseBehavior = function() {
+  ns.DrawingController.prototype.initMouseBehavior = function () {
     this.container.addEventListener('mousedown', this.onMousedown_.bind(this));
 
     if (pskl.utils.UserAgent.isChrome || pskl.utils.UserAgent.isIE11) {
@@ -89,21 +95,21 @@
     window.addEventListener('mousemove', this.onMousemove_.bind(this));
     window.addEventListener('keyup', this.onKeyup_.bind(this));
     window.addEventListener('touchstart', this.onTouchstart_.bind(this));
-    window.addEventListener('touchmove' , this.onTouchmove_.bind(this));
+    window.addEventListener('touchmove', this.onTouchmove_.bind(this));
     window.addEventListener('touchend', this.onTouchend_.bind(this));
 
     // Deactivate right click:
     document.body.addEventListener('contextmenu', this.onCanvasContextMenu_.bind(this));
   };
 
-  ns.DrawingController.prototype.startResizeTimer_ = function () {
+  ns.DrawingController.prototype.requestRelayout_ = function () {
     if (this.resizeTimer) {
       window.clearInterval(this.resizeTimer);
     }
-    this.resizeTimer = window.setTimeout(this.afterWindowResize_.bind(this), 200);
+    this.resizeTimer = window.setTimeout(this.relayout_.bind(this), 200);
   };
 
-  ns.DrawingController.prototype.afterWindowResize_ = function () {
+  ns.DrawingController.prototype.relayout_ = function () {
     var initialWidth = this.compositeRenderer.getDisplaySize().width;
 
     this.compositeRenderer.setDisplaySize(this.getContainerWidth_(), this.getContainerHeight_());
@@ -399,11 +405,11 @@
    * @param  {Number} screenY
    * @return {Object} {x:Number, y:Number}
    */
-  ns.DrawingController.prototype.getSpriteCoordinates = function(screenX, screenY) {
+  ns.DrawingController.prototype.getSpriteCoordinates = function (screenX, screenY) {
     return this.renderer.getCoordinates(screenX, screenY);
   };
 
-  ns.DrawingController.prototype.getScreenCoordinates = function(spriteX, spriteY) {
+  ns.DrawingController.prototype.getScreenCoordinates = function (spriteX, spriteY) {
     return this.renderer.reverseCoordinates(spriteX, spriteY);
   };
 
@@ -442,7 +448,7 @@
   /**
    * @private
    */
-  ns.DrawingController.prototype.calculateZoom_ = function() {
+  ns.DrawingController.prototype.calculateZoom_ = function () {
     var frameHeight = this.piskelController.getCurrentFrame().getHeight();
     var frameWidth = this.piskelController.getCurrentFrame().getWidth();
 
