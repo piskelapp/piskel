@@ -5,11 +5,13 @@ const fse = require('fs-extra');
 
 const PISKEL_PATH = path.resolve(__dirname, '..');
 const PISKELAPP_PATH = path.resolve(__dirname, '../../piskel-web/src/p/create/sprite');
+const PISKELAPP_KIDS_PATH = path.resolve(__dirname, '../../piskel-web/src/kids');
 
 var pjson = require('../package.json');
 
 const srcEditorPath = path.resolve(PISKELAPP_PATH, "index.html");
 const srcTestEditorPath = path.resolve(PISKELAPP_PATH, "index_test.html");
+const srcKidsEditorPath = path.resolve(PISKELAPP_KIDS_PATH, "index.html");
 
 const copyPiskelStaticsToPiskelWeb = async () => {
     try {
@@ -45,6 +47,28 @@ const copyPiskelStaticsToPiskelWeb = async () => {
         // Clean up unused partial folder from copied files
         await fse.remove(path.resolve(PISKELAPP_PATH, "piskelapp-partials"));
         console.log(`piskelapp-partials folder deleted successfully!`);
+
+        /** Kids file moves  */
+
+        // Then, copy all kids statics from piskel into piskel-web
+        await fse.copy(
+            path.resolve(PISKEL_PATH, "dest/prod"),
+            path.resolve(PISKELAPP_KIDS_PATH, "")
+        );
+        console.log(`All piskel kids statics copied successfully!`);
+
+        // Now, rename piskel-web-partial-kids.html to index.html
+        await fse.copy(
+            path.resolve(PISKELAPP_KIDS_PATH, "piskelapp-partials/piskel-web-partial-kids.html"),
+            srcKidsEditorPath
+        );
+        console.log(`Copied piskel-web-partial-kids.html to index.html successfully!`);
+
+        // Clean up unused kids partial folder from copied files
+        await fse.remove(path.resolve(PISKELAPP_KIDS_PATH, "piskelapp-partials"));
+        console.log(`piskelapp-partials in kids folder deleted successfully!`);
+
+        /** End: kids file moves */
 
         await fse.writeFile(path.resolve(PISKELAPP_PATH, "VERSION"), pjson.version);
         console.log(`VERSION file created successfully!`);
