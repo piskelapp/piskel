@@ -245,6 +245,30 @@ module.exports = function (grunt) {
         ]
       },
 
+      // Generate another piskel web partial for kids.
+      piskelWebPartialKids: {
+        options: {
+          patterns: [{
+            match: /^(.|[\r\n])*<!--body-main-start-->/,
+            replacement: "---\nlayout: \"editorLayout.html\"\nenableSafeMode: true\n---\n\n",
+            description: "Remove everything before body-main-start comment"
+          }, {
+            match: /<!--body-main-end-->(.|[\r\n])*$/,
+            replacement: "",
+            description: "Remove everything after body-main-end comment"
+          }, {
+            match: /([\r\n])  /g,
+            replacement: "$1",
+            description: "Decrease indentation by one"
+          }
+          ]
+        },
+        files: [
+          // src/index.html should already have been moved by the includereplace task
+          { src: ['dest/tmp/index.html'], dest: 'dest/prod/piskelapp-partials/piskel-web-partial-kids.html' }
+        ]
+      },
+
       css: {
         options: {
           patterns: [{
@@ -374,7 +398,7 @@ module.exports = function (grunt) {
   // BUILD TASKS
   grunt.registerTask('build-index.html', ['includereplace']);
   grunt.registerTask('merge-statics', ['concat:js', 'concat:css', 'uglify']);
-  grunt.registerTask('build-partials', ['replace:mainPartial', 'replace:piskelWebPartial', 'replace:piskelWebPartialTest']);
+  grunt.registerTask('build-partials', ['replace:mainPartial', 'replace:piskelWebPartial', 'replace:piskelWebPartialTest', 'replace:piskelWebPartialKids']);
   grunt.registerTask('build', ['clean:prod', 'sprite', 'merge-statics', 'build-index.html', 'build-partials', 'replace:css', 'copy:prod']);
   grunt.registerTask('build-dev', ['clean:dev', 'sprite', 'build-index.html', 'copy:dev']);
   grunt.registerTask('desktop', ['clean:desktop', 'default', 'nwjs:windows']);
