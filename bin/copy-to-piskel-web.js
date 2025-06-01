@@ -37,13 +37,6 @@ const copyPiskelStaticsToPiskelWeb = async () => {
         );
         console.log(`Copied piskel-web-partial.html to index.html successfully!`);
 
-        // Rename piskel-web-partial-test.html to index_test.html
-        await fse.copy(
-            path.resolve(PISKELAPP_PATH, "piskelapp-partials/piskel-web-partial-test.html"),
-            srcTestEditorPath
-        );
-        console.log(`Copied piskel-web-partial-test.html to index_test.html successfully!`);
-
         // Clean up unused partial folder from copied files
         await fse.remove(path.resolve(PISKELAPP_PATH, "piskelapp-partials"));
         console.log(`piskelapp-partials folder deleted successfully!`);
