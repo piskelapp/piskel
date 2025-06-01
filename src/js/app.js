@@ -180,7 +180,7 @@
 
       this.initTooltips_();
 
-      $.subscribe(Events.EXTERNAL_PISKEL_READY, () => {
+      $.subscribe(Events.EXTERNAL_PISKEL_READY, function () {
         const externalPiskel = window._externalPiskel;
         if (!externalPiskel) {
           console.error('No external piskel found');

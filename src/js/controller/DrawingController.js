@@ -74,9 +74,9 @@
       this.resetZoom_();
     }.bind(this), 100);
 
-    this.resizeObserver = new ResizeObserver((entries) => {
+    this.resizeObserver = new ResizeObserver(function () {
       this.requestRelayout_();
-    });
+    }.bind(this));
 
     const container = document.querySelector('#main-wrapper');
     this.resizeObserver.observe(container);

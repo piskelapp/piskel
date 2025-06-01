@@ -64,6 +64,7 @@
     "phantomjs-prebuilt": "2.1.8",
     "phantomjs-polyfill-object-assign": "0.0.2",
     "promise-polyfill": "8.2.0",
+    "resize-observer-polyfill": "^1.5.1",
     "rmdir": "1.2.0"
   },
   "window": {
@@ -73,7 +74,7 @@
     "width": 1000,
     "height": 700
   },
-  "dependencies": {
+  "dependencies": {   
     "minimist": "^1.2.5"
   }
 }
