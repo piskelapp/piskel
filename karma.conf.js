@@ -1,5 +1,4 @@
 // Karma configuration
-// Generated on Tue Jul 22 2014 23:49:26 GMT+0200 (Romance Daylight Time)
 
 module.exports = function (config) {
 
@@ -8,9 +7,6 @@ module.exports = function (config) {
   var piskelScripts = require('./src/piskel-script-list.js').scripts.map(mapToSrcFolder);
   piskelScripts.push('test/js/testutils/**/*.js');
   piskelScripts.push('test/js/**/*.js');
-
-  // Polyfill for Object.assign (missing in PhantomJS)
-  piskelScripts.push('./node_modules/phantomjs-polyfill-object-assign/object-assign-polyfill.js');
 
   config.set({
 
@@ -24,9 +20,12 @@ module.exports = function (config) {
 
 
     // list of files / patterns to load in the browser
-    files: piskelScripts.concat([
-      './node_modules/promise-polyfill/dist/polyfill.min.js'
-    ]),
+    files: [
+      // Polyfills missing in PhantomJS
+      'node_modules/phantomjs-polyfill-object-assign/object-assign-polyfill.js',
+      'node_modules/promise-polyfill/dist/polyfill.min.js',
+      'node_modules/resize-observer-polyfill/dist/ResizeObserver.global.js',
+      ...piskelScripts],
 
 
     // list of files to exclude
