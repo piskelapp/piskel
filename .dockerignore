@@ -1,0 +1,26 @@
+# Git specific
+.git
+.gitignore
+
+# Node specific
+node_modules
+npm-debug.log
+
+# Build artifacts (will be generated inside the container)
+dest/
+build/
+
+# OS specific
+.DS_Store
+*.stackdump
+
+# Editor specific
+.vscode
+*.sublime-project
+*.sublime-workspace
+nbproject
+
+# Other
+diff.txt
+report/
+*.private.*
