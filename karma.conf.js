@@ -1,12 +1,13 @@
 // Karma configuration
+process.env.CHROME_BIN = require('puppeteer').executablePath();
 
 module.exports = function (config) {
 
   var mapToSrcFolder = function (path) { return ['src', path].join('/'); };
 
   var piskelScripts = require('./src/piskel-script-list.js').scripts.map(mapToSrcFolder);
-  piskelScripts.push('test/js/testutils/**/*.js');
-  piskelScripts.push('test/js/**/*.js');
+  piskelScripts.push('tests/unit-tests/testutils/**/*.js');
+  piskelScripts.push('tests/unit-tests/**/*.js');
 
   config.set({
 
@@ -61,9 +62,7 @@ module.exports = function (config) {
     autoWatch: true,
 
 
-    // start these browsers
-    // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['PhantomJS'],
+    browsers: ['ChromeHeadless'],
 
 
     // Continuous Integration mode

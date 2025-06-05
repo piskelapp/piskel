@@ -286,12 +286,6 @@ module.exports = function (grunt) {
      * TESTING
      */
 
-    karma: {
-      unit: {
-        configFile: 'karma.conf.js'
-      }
-    },
-
     casperjs: {
       integration: {
         files: {
@@ -346,15 +340,9 @@ module.exports = function (grunt) {
   // TEST TASKS
   // Run linting
   grunt.registerTask('lint', ['eslint', 'leadingIndent:css']);
-  // Run unit-tests
-  grunt.registerTask('unit-test', ['karma']);
-  // Run integration tests
   grunt.registerTask('integration-test', ['build-dev', 'connect:test', 'casperjs:integration']);
-  // Run linting, unit tests, drawing tests and integration tests
-  grunt.registerTask('test', ['lint', 'unit-test', 'build-dev', 'connect:test', 'casperjs:integration']);
-
-  // Run the tests, even if the linting fails
-  grunt.registerTask('test-nolint', ['unit-test', 'build-dev', 'connect:test', 'casperjs:integration']);
+  grunt.registerTask('test', ['lint', 'integration-test']);
+  grunt.registerTask('test-nolint', ['integration-test']);
 
   // Used by optional precommit hook
   grunt.registerTask('precommit', ['test']);

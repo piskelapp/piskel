@@ -35,7 +35,9 @@
     "build:mac": "grunt desktop-mac",
     "start:nw": "grunt build && nw",
     "e2e": "npx playwright test",
-    "e2e:interactive": "npx playwright test --ui"
+    "e2e:interactive": "npx playwright test --ui",
+    "unit-tests": "karma start",
+    "unit-tests:watch": "karma start --auto-watch --no-single-run"
   },
   "devDependencies": {
     "@playwright/test": "^1.52.0",
@@ -61,13 +63,14 @@
     "grunt-spritesmith": "^6.9.0",
     "jasmine-core": "3.8.0",
     "karma": "6.3.4",
+    "karma-chrome-launcher": "^3.2.0",
     "karma-jasmine": "4.0.1",
-    "karma-phantomjs-launcher": "1.0.4",
     "load-grunt-tasks": "5.1.0",
     "nw": "0.54.0",
-    "phantomjs-prebuilt": "2.1.8",
     "phantomjs-polyfill-object-assign": "0.0.2",
+    "phantomjs-prebuilt": "2.1.8",
     "promise-polyfill": "8.2.0",
+    "puppeteer": "^24.10.0",
     "resize-observer-polyfill": "^1.5.1",
     "rmdir": "1.2.0",
     "typescript": "^5.8.3"
