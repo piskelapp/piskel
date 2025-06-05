@@ -9,5 +9,5 @@ export const executeTest = (testName) => {
     await page.waitForSelector(drawingDoneSelector, { state: 'attached', timeout: 30000 });
     const resultElement = page.locator(drawingDoneSelector);
     await expect(resultElement).toHaveText('OK');
-  })
+  });
 }
