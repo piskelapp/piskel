@@ -39,3 +39,6 @@ report
 
 # marked as private
 *.private.*
+
+# Test artifacts
+tests/e2e/playwright/tmp
