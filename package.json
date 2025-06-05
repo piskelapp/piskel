@@ -25,6 +25,7 @@
     "test": "grunt test",
     "dev": "grunt play",
     "prod": "grunt serve",
+    "prod:test": "grunt serve-test",
     "format": "grunt eslint --fix",
     "preversion": "grunt test build",
     "postversion": "git push && git push --tags && npm publish",
@@ -32,9 +33,12 @@
     "release-piskel-web": "grunt && node ./bin/copy-to-piskel-web",
     "build:desktop": "grunt desktop",
     "build:mac": "grunt desktop-mac",
-    "start:nw": "grunt build && nw"
+    "start:nw": "grunt build && nw",
+    "e2e": "npx playwright test",
+    "e2e:interactive": "npx playwright test --ui"
   },
   "devDependencies": {
+    "@playwright/test": "^1.52.0",
     "dateformat": "4.5.1",
     "fs-extra": "10.0.0",
     "grunt": "1.6.1",
@@ -65,7 +69,8 @@
     "phantomjs-polyfill-object-assign": "0.0.2",
     "promise-polyfill": "8.2.0",
     "resize-observer-polyfill": "^1.5.1",
-    "rmdir": "1.2.0"
+    "rmdir": "1.2.0",
+    "typescript": "^5.8.3"
   },
   "window": {
     "title": "Piskel",
@@ -74,7 +79,7 @@
     "width": 1000,
     "height": 700
   },
-  "dependencies": {   
+  "dependencies": {
     "minimist": "^1.2.5"
   }
 }
