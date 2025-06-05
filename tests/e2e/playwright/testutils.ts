@@ -18,10 +18,15 @@ export async function expectHasNotClass(page: Page, selector: string, className:
   expect(hasClass).toBe(false);
 }
 
-export const getRequiredElementBySelector = (selector: string): Element => {
-    const element = document.querySelector(selector)
-    if (element === null) {
-        throw new Error(`Element with selector "${selector}" not found`);
-    }
-    return element;
-}
+export const setPiskelFromImageSrc = async(page: Page, base64Image: string): Promise<void> => {
+  return page.evaluate((base64Image) => {
+      window.pskl.utils.FrameUtils.createFromImageSrc(base64Image, false, (frame) => {
+        var layer = window.pskl.model.Layer.fromFrames("l1", [frame]);
+        var piskel = window.pskl.model.Piskel.fromLayers([layer], 12, {
+          name: "piskel",
+          description: "description"
+        });
+        window.pskl.app.piskelController.setPiskel(piskel);
+      });
+  }, base64Image);
+};
