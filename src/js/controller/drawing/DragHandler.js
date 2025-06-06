@@ -25,6 +25,11 @@
    * @param {Number} y : y coordinate of the mouse event that initiated the drag
    */
   ns.DragHandler.prototype.startDrag = function (x, y) {
+    var index = this.piskelController.getCurrentLayerIndex();
+    var layer = this.piskelController.getLayerByIndex(index);
+    if (layer.locked) {
+      return;
+    }
     var coords = this.drawingController.getSpriteCoordinates(x, y);
     this.updateOrigin_(coords.x, coords.y);
   };
