@@ -30,3 +30,29 @@ export const setPiskelFromImageSrc = async(page: Page, base64Image: string): Pro
       });
   }, base64Image);
 };
+
+export const isSettingsDrawerExpanded = async(page: Page): Promise<boolean> => {
+  return await page.evaluate(() => {
+      const settingsElement = document.querySelector('[data-pskl-controller="settings"]')
+      return !!settingsElement && settingsElement.classList.contains('expanded');
+  })
+};
+
+export const isResizeDrawerCollapsed = async(page: Page): Promise<boolean> => {
+  return await page.evaluate(() => {
+      const settingsElement = document.querySelector('[data-pskl-controller="settings"]')
+      return !!settingsElement && settingsElement.classList.contains('expanded');
+  })
+};
+
+export const getCurrectPiskelWidth = async(page: Page): Promise<number> => {
+  return await page.evaluate(() => {
+      return window.pskl.app.piskelController.getPiskel().getWidth();
+  })
+};
+
+export const getCurrectPiskelHeight = async(page: Page): Promise<number> => {
+  return await page.evaluate(() => {
+      return window.pskl.app.piskelController.getPiskel().getHeight();
+  })
+};
