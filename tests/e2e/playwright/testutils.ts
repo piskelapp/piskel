@@ -119,14 +119,14 @@ export const getCurrectPiskelWidth = async(page: Page): Promise<number> => {
 export const getCurrectPiskelHeight = async(page: Page): Promise<number> => {
   return await page.evaluate(() => {
       return window.pskl.app.piskelController.getPiskel().getHeight();
-  })
+  });
 };
 
 export const isSettingsDrawerExpanded = async(page: Page): Promise<boolean> => {
   return await page.evaluate(() => {
       const settingsElement = document.querySelector('[data-pskl-controller="settings"]')
       return !!settingsElement && settingsElement.classList.contains('expanded');
-  })
+  });
 };
 
 export const openResizeSettingsPanel = async(page: Page): Promise<void> => {
@@ -144,4 +144,14 @@ export const expectResizeValues = async(page: Page, expectedWidth: string, expec
 
   await expect(widthInputLocator).toHaveValue(expectedWidth);
   await expect(heightInputLocator).toHaveValue(expectedHeight);
+};
+
+export const expectDefaultResizeValues = async(page: Page, expectedWidth: string, expectedHeight: string): Promise<void> => {
+  const defaultWidthInputLocator = page.locator('[name="default-width"]');
+  const defaultHeightInputLocator = page.locator('[name="default-height"]');
+  await expect(defaultWidthInputLocator).toBeAttached();
+  await expect(defaultHeightInputLocator).toBeAttached();
+
+  await expect(defaultWidthInputLocator).toHaveValue(expectedWidth);
+  await expect(defaultHeightInputLocator).toHaveValue(expectedHeight);
 };
