@@ -94,15 +94,11 @@ export const expectGrid = async(page: Page, grid: TestGrid, layerIndex: number =
       let isValid = true;
 
       frame.forEachPixel((color, col, row) => {
-        console.log("x:", color, expectedGrid[row][col]);
         if (window.pskl.utils.colorToInt(color) !== window.pskl.utils.colorToInt(expectedGrid[row][col])) {
           log.push([color, param.grid[row][col]]);
-          console.log("Grid comparison log x:", color, expectedGrid[row][col]);
-
         }
         isValid = isValid && window.pskl.utils.colorToInt(color) === window.pskl.utils.colorToInt(expectedGrid[row][col]);
       });
-      console.log("Grid comparison log:", log);
       return isValid;
   }, {grid, layerIndex, frameIndex});
 };
