@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>Piskel</title>
+  <title>Piskel (RMC moded)</title>
   <meta name="description" content="">
-  <meta name="author" content="Julian Descottes">
+  <meta name="author" content="Julian Descottes - modified by futote6">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
@@ -20,7 +20,7 @@
     z-index : 20000;
     transition:opacity 0.5s;
     color:white;">
-      <span style="top:45%">Loading Piskel ...</span>
+      <span style="top:45%">Loading Piskel (moded)...</span>
   </div>
   @@include('templates/debug-header.html', {})
 
@@ -31,7 +31,7 @@
     @@include('templates/drawing-tools.html', {})
 
     <div id="column-wrapper" class="column-wrapper">
-      <div class='column left-column'>
+      <div class='column left-column', style="display: none;">
         @@include('templates/frames-list.html', {})
       </div>
 

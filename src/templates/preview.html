@@ -3,14 +3,14 @@
     <div class="preview-contextual-actions">
       <div class="preview-drop-down">
         <div class="preview-disable-overlay" rel="tooltip" data-placement="left"></div>
-        <div class="preview-contextual-action  original-size-button" rel="tooltip" data-placement="left">1x</div>
-        <div class="preview-contextual-action  best-size-button" rel="tooltip" data-placement="left"></div>
-        <div class="preview-contextual-action  full-size-button" rel="tooltip" data-placement="left">Full</div>
+        <div class="preview-contextual-action  original-size-button" rel="tooltip" data-placement="left" style="display: none;">1x</div>
+        <div class="preview-contextual-action  best-size-button" rel="tooltip" data-placement="left" style="display: none"></div>
+        <div class="preview-contextual-action  full-size-button"">Full</div>
       </div>
       <div class="preview-contextual-action  toggle-grid-button  icon-minimap-grid-white"
         title="Toggle grid" rel="tooltip" data-placement="bottom"></div>
       <div class="preview-contextual-action  open-popup-preview-button  icon-minimap-popup-preview-arrow-white"
-           title="Open preview in popup" rel="tooltip" data-placement="bottom"></div>
+           title="Open preview in popup" style="display: none;"></div>
     </div>
 
     <div id="animated-preview-canvas-container" class="canvas-container">
@@ -20,10 +20,30 @@
   <div>
     <div rel="tooltip"
          data-placement="bottom"
-         class="piskel-icon-onion preview-toggle-onion-skin"></div>
-    <span id="display-fps" class="display-fps"></span>
-    <input id="preview-fps" class="range-fps" type="range" min="0" max="24"/>
+         class="piskel-icon-onion preview-toggle-onion-skin"
+         style="display: none;"></div>
+    <span id="display-fps" class="display-fps" style="display: none;"></span>
+    <input id="preview-fps" class="range-fps" type="range" min="0" max="0"/ style="display: none;">
   </div>
   <div>
   </div>
 </div>
+
+<script>
+  window.addEventListener('load', function () {
+    const wrapper = document.querySelector('.minimap-container');
+    const menu = document.querySelector('.preview-contextual-actions');
+
+    if (wrapper && menu) {
+      wrapper.addEventListener('mouseenter', () => {
+        menu.style.opacity = '1';
+        menu.style.pointerEvents = 'auto';
+      });
+
+      wrapper.addEventListener('mouseleave', () => {
+        menu.style.opacity = '0';
+        menu.style.pointerEvents = 'none';
+      });
+    }
+  });
+</script>
