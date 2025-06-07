@@ -1,5 +1,5 @@
 import test, {  expect } from "@playwright/test";
-import { getCurrectPiskelHeight, getCurrectPiskelWidth, isSettingsDrawerExpanded, openEditor } from "../../testutils";
+import { expectResizeValues, getCurrectPiskelHeight, getCurrectPiskelWidth, isSettingsDrawerExpanded, openEditor, openResizeSettingsPanel } from "../../testutils";
 
 test('Test resize a canvas from 32x32 to 320x320', async ({ page }) => {
   await openEditor(page);
@@ -7,28 +7,18 @@ test('Test resize a canvas from 32x32 to 320x320', async ({ page }) => {
     expect(await isSettingsDrawerExpanded(page)).toBe(false);
     await expect(page.locator('.settings-section-resize')).not.toBeAttached();
     
-    await page.click('[data-setting="resize"]');
+    await openResizeSettingsPanel(page);
 
-    await expect(page.locator('.settings-section-resize')).toBeAttached();
-    expect(await isSettingsDrawerExpanded(page)).toBe(true);
-    await expect(page.locator('.settings-section-resize')).toBeAttached();
-
-    const widthInputLocator = page.locator('[name="resize-width"]');
-    const heightInputLocator = page.locator('[name="resize-height"]');
-    await expect(widthInputLocator).toBeAttached();
-    await expect(heightInputLocator).toBeAttached();
-
-    await expect(widthInputLocator).toHaveValue("32");
-    await expect(heightInputLocator).toHaveValue("32");
-
+    await expectResizeValues(page, "32", "32");
+    
     const ratioCheckbox = page.locator('.resize-ratio-checkbox');
     await expect(ratioCheckbox).toBeChecked();
 
+    const widthInputLocator = page.locator('[name="resize-width"]');
     await widthInputLocator.focus();
     await page.keyboard.type("0");
 
-    await expect(widthInputLocator).toHaveValue("320");
-    await expect(heightInputLocator).toHaveValue("320");
+    await expectResizeValues(page, "320", "320");
 
     await page.click('.resize-button');
 

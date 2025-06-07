@@ -31,11 +31,80 @@ export const setPiskelFromImageSrc = async(page: Page, base64Image: string): Pro
   }, base64Image);
 };
 
-export const isSettingsDrawerExpanded = async(page: Page): Promise<boolean> => {
-  return await page.evaluate(() => {
-      const settingsElement = document.querySelector('[data-pskl-controller="settings"]')
-      return !!settingsElement && settingsElement.classList.contains('expanded');
-  })
+type TestColor = "R" | "G" | "B" | "T";
+type TestGrid = Array<Array< TestColor>>;
+
+export const setPiskelFromGrid = async(page: Page, grid: TestGrid): Promise<void> => {
+  return page.evaluate((grid) => {
+
+      const convertedGrid: Array<Array<string>> = grid.map(row => row.map(() => ""));;
+      for (let i = 0; i < grid.length; i++) {
+        for (let j = 0; j < grid[i].length; j++) {
+          switch (grid[i][j]) {
+            case "R":
+              convertedGrid[i][j] = "#FF0000";
+              break;
+            case "G":
+              convertedGrid[i][j] = "#00FF00";
+              break;
+            case "B":
+              convertedGrid[i][j] = "#0000FF";
+              break;
+            case "T":
+              convertedGrid[i][j] = "rgba(0, 0, 0, 0)";
+              break;
+          }
+        }
+      }
+
+      const pixelGrid = window.pskl.utils.FrameUtils.toFrameGrid(convertedGrid);
+      const frame = window.pskl.model.Frame.fromPixelGrid(pixelGrid);
+      const layer = window.pskl.model.Layer.fromFrames("l1", [frame]);
+      const piskel = window.pskl.model.Piskel.fromLayers([layer], 12, {name : "test", description : ""});
+      window.pskl.app.piskelController.setPiskel(piskel);
+  }, grid);
+};
+
+export const expectGrid = async(page: Page, grid: TestGrid, layerIndex: number = 0, frameIndex: number = 0): Promise<boolean> => {
+  return page.evaluate((param) => {
+      const expectedGrid: Array<Array<string>> = param.grid.map(row => row.map(() => ""));;
+      for (let i = 0; i < param.grid.length; i++) {
+        for (let j = 0; j < param.grid[i].length; j++) {
+          switch (param.grid[i][j]) {
+            case "R":
+              expectedGrid[i][j] = "#FF0000";
+              break;
+            case "G":
+              expectedGrid[i][j] = "#00FF00";
+              break;
+            case "B":
+              expectedGrid[i][j] = "#0000FF";
+              break;
+            case "T":
+              expectedGrid[i][j] = "rgba(0, 0, 0, 0)";
+              break;
+          }
+        }
+      }
+    
+      const piskel = window.pskl.app.piskelController.getPiskel();
+      const frame = piskel.getLayerAt(param.layerIndex).getFrameAt(param.frameIndex);
+
+      const log: Array<[any, TestColor]> = [];
+      let isValid = true;
+
+      frame.forEachPixel((color, col, row) => {
+        console.log("x:", color, expectedGrid[row][col]);
+        if (window.pskl.utils.colorToInt(color) !== window.pskl.utils.colorToInt(expectedGrid[row][col])) {
+          log.push([color, param.grid[row][col]]);
+          console.log("Grid comparison log x:", color, expectedGrid[row][col]);
+
+        }
+        isValid = isValid && window.pskl.utils.colorToInt(color) === window.pskl.utils.colorToInt(expectedGrid[row][col]);
+      });
+      console.log("Grid comparison log:", log);
+      return isValid;
+  }, {grid, layerIndex, frameIndex});
 };
 
 export const isResizeDrawerCollapsed = async(page: Page): Promise<boolean> => {
@@ -55,4 +124,28 @@ export const getCurrectPiskelHeight = async(page: Page): Promise<number> => {
   return await page.evaluate(() => {
       return window.pskl.app.piskelController.getPiskel().getHeight();
   })
+};
+
+export const isSettingsDrawerExpanded = async(page: Page): Promise<boolean> => {
+  return await page.evaluate(() => {
+      const settingsElement = document.querySelector('[data-pskl-controller="settings"]')
+      return !!settingsElement && settingsElement.classList.contains('expanded');
+  })
+};
+
+export const openResizeSettingsPanel = async(page: Page): Promise<void> => {
+  await page.click('[data-setting="resize"]');
+  await expect(page.locator('.settings-section-resize')).toBeAttached();
+  expect(await isSettingsDrawerExpanded(page)).toBe(true);
+  await expect(page.locator('.settings-section-resize')).toBeAttached();
+};
+
+export const expectResizeValues = async(page: Page, expectedWidth: string, expectedHeight: string): Promise<void> => {
+  const widthInputLocator = page.locator('[name="resize-width"]');
+  const heightInputLocator = page.locator('[name="resize-height"]');
+  await expect(widthInputLocator).toBeAttached();
+  await expect(heightInputLocator).toBeAttached();
+
+  await expect(widthInputLocator).toHaveValue(expectedWidth);
+  await expect(heightInputLocator).toHaveValue(expectedHeight);
 };

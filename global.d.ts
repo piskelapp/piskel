@@ -1,3 +1,7 @@
-interface Window {
-  pskl: any;
+export {}
+
+declare global {
+    interface Window {
+    pskl: any;
+  }
 }
