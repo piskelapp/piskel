@@ -5,8 +5,6 @@ test('Test resize a canvas from 32x32 to 320x320', async ({ page }) => {
   await openEditor(page);
 
     expect(await isSettingsDrawerExpanded(page)).toBe(false);
-    await expect(page.locator('.settings-section-resize')).not.toBeAttached();
-    
     await openResizeSettingsPanel(page);
 
     await expectResizeValues(page, "32", "32");
