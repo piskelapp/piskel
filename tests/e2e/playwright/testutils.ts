@@ -167,6 +167,13 @@ export const openImportSettingsPanel = async(page: Page): Promise<void> => {
   await expect(page.locator('.settings-section-import')).toBeAttached();
 };
 
+export const openExportSettingsPanel = async(page: Page): Promise<void> => {
+  await page.click('[data-setting="export"]');
+  await expect(page.locator('.settings-section-export')).toBeAttached();
+  expect(await isSettingsDrawerExpanded(page)).toBe(true);
+  await expect(page.locator('.settings-section-export')).toBeAttached();
+};
+
 export const expectResizeValues = async(page: Page, expectedWidth: string, expectedHeight: string): Promise<void> => {
   const widthInputLocator = page.locator('[name="resize-width"]');
   const heightInputLocator = page.locator('[name="resize-height"]');
