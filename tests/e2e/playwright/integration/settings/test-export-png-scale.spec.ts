@@ -2,7 +2,7 @@ import test, {  expect } from "@playwright/test";
 import { openEditor, openExportSettingsPanel, setPiskelFromGrid } from "../../testutils";
 import fs from 'fs/promises';
 
-test('Test export png', async ({ page }) => {
+test('Test export png with scaling', async ({ page }) => {
     await openEditor(page);
     await setPiskelFromGrid(page, [["B", "T"],["T", "B"]]);
 
