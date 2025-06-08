@@ -31,20 +31,6 @@ module.exports = function (grunt) {
   var stylePaths = require('./src/piskel-style-list.js').styles;
   var piskelStyles = prefixPaths(stylePaths, "src/");
 
-  // Casper JS tests
-  var casperjsOptions = [
-    '--baseUrl=http://' + hostname + ':' + PORT.TEST,
-    '--mode=?debug',
-    '--verbose=false',
-    '--includes=test/casperjs/integration/include.js',
-    '--log-level=info',
-    '--print-command=false',
-    '--print-file-paths=true',
-  ];
-
-  var integrationTestPaths = require('./test/casperjs/integration/IntegrationSuite.js').tests;
-  var integrationTests = prefixPaths(integrationTestPaths, "test/casperjs/integration/");
-
   var getConnectConfig = function (base, port, host, open) {
     return {
       options: {
@@ -283,21 +269,6 @@ module.exports = function (grunt) {
     },
 
     /**
-     * TESTING
-     */
-
-    casperjs: {
-      integration: {
-        files: {
-          src: integrationTests
-        },
-        options: {
-          casperjsOptions: casperjsOptions
-        }
-      }
-    },
-
-    /**
      * DESKTOP BUILDS
      */
 
@@ -340,9 +311,6 @@ module.exports = function (grunt) {
   // TEST TASKS
   // Run linting
   grunt.registerTask('lint', ['eslint', 'leadingIndent:css']);
-  grunt.registerTask('integration-test', ['build-dev', 'connect:test', 'casperjs:integration']);
-  grunt.registerTask('test', ['lint', 'integration-test']);
-  grunt.registerTask('test-nolint', ['integration-test']);
 
   // Used by optional precommit hook
   grunt.registerTask('precommit', ['test']);

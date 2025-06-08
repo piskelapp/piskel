@@ -1,5 +1,5 @@
 import test, {  expect } from "@playwright/test";
-import { getCurrectPiskelHeight, getCurrectPiskelWidth, isSettingsDrawerExpanded, openEditor } from "../../testutils";
+import { isSettingsDrawerExpanded, openEditor } from "../../testutils";
 
 test('Test opening/closing all settings drawer tabs', async ({ page }) => {
     await openEditor(page);

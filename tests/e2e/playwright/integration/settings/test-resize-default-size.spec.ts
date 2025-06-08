@@ -1,5 +1,5 @@
 import test, {  expect } from "@playwright/test";
-import { expectDefaultResizeValues, expectResizeValues, getCurrectPiskelHeight, getCurrectPiskelWidth, isSettingsDrawerExpanded, openEditor, openResizeSettingsPanel } from "../../testutils";
+import { expectDefaultResizeValues, isSettingsDrawerExpanded, openEditor, openResizeSettingsPanel } from "../../testutils";
 
 test('Test changing the default canvas size', async ({ page }) => {
   await openEditor(page);

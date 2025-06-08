@@ -110,15 +110,39 @@ export const isResizeDrawerCollapsed = async(page: Page): Promise<boolean> => {
   })
 };
 
-export const getCurrectPiskelWidth = async(page: Page): Promise<number> => {
+export const getCurrentPiskelWidth = async(page: Page): Promise<number> => {
   return await page.evaluate(() => {
       return window.pskl.app.piskelController.getPiskel().getWidth();
   })
 };
 
-export const getCurrectPiskelHeight = async(page: Page): Promise<number> => {
+export const getCurrentPiskelHeight = async(page: Page): Promise<number> => {
   return await page.evaluate(() => {
       return window.pskl.app.piskelController.getPiskel().getHeight();
+  });
+};
+
+export const getCurrentPiskelFrameCount = async(page: Page): Promise<number> => {
+  return await page.evaluate(() => {
+      return window.pskl.app.piskelController.getFrameCount();
+  });
+};
+
+export const getCurrentPiskelLayerCount = async(page: Page): Promise<number> => {
+  return await page.evaluate(() => {
+      return window.pskl.app.piskelController.getLayers().length;
+  });
+};
+
+export const getCurrentPiskelColorCount= async(page: Page): Promise<number> => {
+  return await page.evaluate(() => {
+      return window.pskl.app.currentColorsService.getCurrentColors().length;
+  });
+};
+
+export const isCurrentPiskelEmpty= async(page: Page): Promise<boolean> => {
+  return await page.evaluate(() => {
+      return window.pskl.app.piskelController.isEmpty();
   });
 };
 
@@ -134,6 +158,20 @@ export const openResizeSettingsPanel = async(page: Page): Promise<void> => {
   await expect(page.locator('.settings-section-resize')).toBeAttached();
   expect(await isSettingsDrawerExpanded(page)).toBe(true);
   await expect(page.locator('.settings-section-resize')).toBeAttached();
+};
+
+export const openImportSettingsPanel = async(page: Page): Promise<void> => {
+  await page.click('[data-setting="import"]');
+  await expect(page.locator('.settings-section-import')).toBeAttached();
+  expect(await isSettingsDrawerExpanded(page)).toBe(true);
+  await expect(page.locator('.settings-section-import')).toBeAttached();
+};
+
+export const openExportSettingsPanel = async(page: Page): Promise<void> => {
+  await page.click('[data-setting="export"]');
+  await expect(page.locator('.settings-section-export')).toBeAttached();
+  expect(await isSettingsDrawerExpanded(page)).toBe(true);
+  await expect(page.locator('.settings-section-export')).toBeAttached();
 };
 
 export const expectResizeValues = async(page: Page, expectedWidth: string, expectedHeight: string): Promise<void> => {
