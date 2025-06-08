@@ -12,7 +12,6 @@ test('Test export png with scaling', async ({ page }) => {
     await page.click('[data-tab-id="png"]');
     await expect(page.locator('.export-panel-png')).toBeAttached();
 
-    '[name="scale-input"]'
     const defaultHeightInputLocator = page.locator('[name="resize-width"]');
     await defaultHeightInputLocator.focus();
     await page.keyboard.type("0");
