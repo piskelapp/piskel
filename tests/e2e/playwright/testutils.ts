@@ -110,13 +110,13 @@ export const isResizeDrawerCollapsed = async(page: Page): Promise<boolean> => {
   })
 };
 
-export const getCurrectPiskelWidth = async(page: Page): Promise<number> => {
+export const getCurrentPiskelWidth = async(page: Page): Promise<number> => {
   return await page.evaluate(() => {
       return window.pskl.app.piskelController.getPiskel().getWidth();
   })
 };
 
-export const getCurrectPiskelHeight = async(page: Page): Promise<number> => {
+export const getCurrentPiskelHeight = async(page: Page): Promise<number> => {
   return await page.evaluate(() => {
       return window.pskl.app.piskelController.getPiskel().getHeight();
   });

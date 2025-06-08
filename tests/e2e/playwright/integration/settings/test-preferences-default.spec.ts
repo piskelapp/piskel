@@ -1,5 +1,5 @@
 import test, {  expect } from "@playwright/test";
-import { expectResizeValues, getCurrectPiskelHeight, getCurrectPiskelWidth, isSettingsDrawerExpanded, openEditor, openResizeSettingsPanel } from "../../testutils";
+import { isSettingsDrawerExpanded, openEditor } from "../../testutils";
 
 test('Test default user preferences', async ({ page }) => {
     await openEditor(page);
