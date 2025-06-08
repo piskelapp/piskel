@@ -22,12 +22,7 @@ module.exports = function (config) {
 
     // list of files / patterns to load in the browser
     files: [
-      // Polyfills missing in PhantomJS
-      'node_modules/phantomjs-polyfill-object-assign/object-assign-polyfill.js',
-      'node_modules/promise-polyfill/dist/polyfill.min.js',
-      'node_modules/resize-observer-polyfill/dist/ResizeObserver.global.js',
       ...piskelScripts],
-
 
     // list of files to exclude
     exclude: [],
