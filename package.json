@@ -22,7 +22,6 @@
   },
   "main": "./dest/prod/index.html",
   "scripts": {
-    "test": "grunt test",
     "dev": "grunt play",
     "prod": "grunt serve",
     "prod:test": "grunt serve-test",
@@ -37,7 +36,8 @@
     "e2e": "npx playwright test",
     "e2e:interactive": "npx playwright test --ui",
     "unit-tests": "karma start",
-    "unit-tests:watch": "karma start --auto-watch --no-single-run"
+    "unit-tests:watch": "karma start --auto-watch --no-single-run",
+    "test": "npm run unit-tests; npm run e2e"
   },
   "devDependencies": {
     "@playwright/test": "^1.52.0",
