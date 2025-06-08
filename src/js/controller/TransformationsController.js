@@ -6,9 +6,9 @@
     this.tools = [
       new pskl.tools.transform.Flip(),
       new pskl.tools.transform.Rotate(),
-      new pskl.tools.transform.Clone(),
+      //new pskl.tools.transform.Clone(),
       new pskl.tools.transform.Center(),
-      new pskl.tools.transform.Crop(),
+      //new pskl.tools.transform.Crop(),
     ];
 
     this.toolIconBuilder = new pskl.tools.ToolIconBuilder();
