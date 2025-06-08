@@ -1,5 +1,5 @@
 import test, {  expect } from "@playwright/test";
-import { getCurrentPiskelColorCount, getCurrentPiskelFrameCount, getCurrentPiskelHeight, getCurrentPiskelLayerCount, getCurrentPiskelWidth, isCurrentPiskelEmpty, isSettingsDrawerExpanded, openEditor, openImportSettingsPanel, openResizeSettingsPanel, setPiskelFromGrid, setPiskelFromImageSrc } from "../../testutils";
+import { isCurrentPiskelEmpty, openEditor, openImportSettingsPanel, setPiskelFromGrid } from "../../testutils";
 
 test('Test importing a simple image over an empty one', async ({ page }) => {
     await openEditor(page);
