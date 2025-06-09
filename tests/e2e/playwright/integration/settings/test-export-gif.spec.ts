@@ -27,7 +27,7 @@ const base64_gif = [
   'mP+/lzZDXS8FKMAz6i3tyNU4k1NJx2xaS0AWGXf5eolzeGJWvCuKtYyAPPPkJUzYTkuvP69Qt8JhZStVNKkk0NWVlJzM0o',
   'YFvYHkZfP8HV3o3OtliK0/N5uXk/vtsv8De4Y3LYq8qFNwAAAABJRU5ErkJggg=='].join('');
 
-test('Test export png', async ({ page }) => {
+test('Test export gif', async ({ page }) => {
     await openEditor(page);
 
     await setPiskelFromImageSrc(page, base64_gif);
