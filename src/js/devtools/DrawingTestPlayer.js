@@ -91,7 +91,10 @@
 
       // All events have already been replayed, finish the test.
       if (!recordEvent) {
-        this.onTestEnd_();
+        window.setTimeout(() => {
+          // Give some time for the last step to be processed.
+          this.onTestEnd_();
+        }, 1000);
         return;
       }
 
@@ -145,7 +148,7 @@
       event.metaKey = event.ctrlKey;
     }
 
-    event.preventDefault = function () {};
+    event.preventDefault = function () { };
     pskl.app.shortcutService.onKeyDown_(event);
   };
 
@@ -175,10 +178,10 @@
 
   ns.DrawingTestPlayer.prototype.playClipboardEvent_ = function (recordEvent) {
     $.publish(recordEvent.event.type, {
-      preventDefault: function () {},
+      preventDefault: function () { },
       clipboardData: {
         items: [],
-        setData: function () {}
+        setData: function () { }
       }
     });
   };
@@ -199,7 +202,7 @@
 
     // Compare the two imageData arrays.
     var success = true;
-    for (var i = 0 ; i < this.referenceData.data.length ; i++) {
+    for (var i = 0; i < this.referenceData.data.length; i++) {
       if (this.referenceData.data[i] != testData.data[i]) {
         success = false;
       }

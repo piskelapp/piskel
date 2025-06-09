@@ -2,9 +2,8 @@ import { executeTest } from './utils';
 
 const penSizeTestNames = [
   "pensize.circle.basic.json",
-  // "pensize.circle.undo.json", // undo shortcut is flaky
+  "pensize.circle.undo.json",
   "pensize.eraser.basic.json",
-  // "pensize.eraser.undo.json", // undo shortcut is flaky
   "pensize.pen.basic.json",
   "pensize.pen.undo.json",
   "pensize.rectangle.basic.json",

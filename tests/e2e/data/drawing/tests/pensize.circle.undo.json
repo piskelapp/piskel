@@ -868,34 +868,6 @@
                 "which": 90
             },
             "type": "keyboard-event"
-        },
-        {
-            "event": {
-                "altKey": false,
-                "ctrlKey": true,
-                "shiftKey": false,
-                "target": {
-                    "nodeName": "BODY"
-                },
-                "which": 90
-            },
-            "type": "keyboard-event"
-        },
-        {
-            "event": {
-                "altKey": false,
-                "ctrlKey": true,
-                "shiftKey": false,
-                "target": {
-                    "nodeName": "BODY"
-                },
-                "which": 89
-            },
-            "type": "keyboard-event"
-        },
-        {
-            "toolId": "tool-pen",
-            "type": "tool-event"
         }
     ],
     "initialState": {
