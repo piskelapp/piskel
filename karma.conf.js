@@ -56,8 +56,13 @@ module.exports = function (config) {
     // enable / disable watching file and executing tests whenever any file changes
     autoWatch: true,
 
-
-    browsers: ['ChromeHeadless'],
+    customLaunchers: {
+      ChromeHeadlessNoSandbox: {
+        base: 'ChromeHeadless',
+        flags: ['--no-sandbox', '--disable-gpu']
+      }
+    },
+    browsers: ['ChromeHeadlessNoSandbox'],
 
 
     // Continuous Integration mode
