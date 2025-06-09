@@ -91,10 +91,10 @@
 
       // All events have already been replayed, finish the test.
       if (!recordEvent) {
+        // Give some time for the last step to be processed and reduce flakyness.
         window.setTimeout(() => {
-          // Give some time for the last step to be processed.
           this.onTestEnd_();
-        }, 1000);
+        }, 500);
         return;
       }
 
