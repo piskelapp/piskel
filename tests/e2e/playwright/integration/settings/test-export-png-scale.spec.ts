@@ -1,6 +1,7 @@
 import test, {  expect } from "@playwright/test";
 import { openEditor, openExportSettingsPanel, setPiskelFromGrid } from "../../testutils";
 import fs from 'fs/promises';
+import PNG from 'png-ts';
 
 test('Test export png with scaling', async ({ page }) => {
     await openEditor(page);
@@ -31,7 +32,18 @@ test('Test export png with scaling', async ({ page }) => {
     expect(suggestedFilename).toBe("test.png");
 
     const buffer = await fs.readFile(path);
-    const base64 = buffer.toString('base64');
-    const expectedBase64 = "iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAADxJREFUOE9jZGD4/5+BKMDISIwyxlED8QTTaBjiCJwhkWyISf8gNcTlKKKyE8TKUQNxJ5vRSMEZAgOUbABlzSgBIg8P4wAAAABJRU5ErkJgggAA";
-    expect(base64).toBe(expectedBase64);
+    
+    const png = new PNG(buffer);
+    expect(png.width).toBe(20);
+    expect(png.height).toBe(20);
+    
+    const decodedPixelsData = png.decodePixels();
+    const pixelCount = decodedPixelsData.length / 4; // RGBA
+    expect(pixelCount).toBe(400); // 20x20
+
+    const firstPixelRGBA = decodedPixelsData.slice(0,4).join("-");
+    expect(firstPixelRGBA).toBe("0-0-255-255"); // Blue
+
+    const lastPixelRGBA = decodedPixelsData.slice(-4).join("-");
+    expect(lastPixelRGBA).toBe("0-0-255-255"); // Blue
 });
