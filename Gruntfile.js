@@ -335,7 +335,6 @@ module.exports = function (grunt) {
   // ALIASES, kept for backward compatibility
   grunt.registerTask('serve-debug', ['play']);
   grunt.registerTask('serve-dev', ['play']);
-  grunt.registerTask('test-travis', ['test']);
   grunt.registerTask('test-local', ['test']);
 
   // Default task

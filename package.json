@@ -37,7 +37,8 @@
     "e2e:interactive": "npx playwright test --ui",
     "unit-tests": "karma start",
     "unit-tests:watch": "karma start --auto-watch --no-single-run",
-    "test": "npm run unit-tests; npm run e2e"
+    "test": "npm run unit-tests; npm run e2e",
+    "test-ci": "bash ./run-test-ci.sh"
   },
   "devDependencies": {
     "@playwright/test": "^1.52.0",
