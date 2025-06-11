@@ -55,9 +55,9 @@
       NEW_FRAME : createShortcut('new-frame', 'Create new empty frame', 'N'),
       DUPLICATE_FRAME : createShortcut('duplicate-frame', 'Duplicate selected frame', 'shift+N'),
       CHEATSHEET : createShortcut('cheatsheet', 'Open the keyboard shortcut cheatsheet', ['?', 'shift+?']),
-      X1_PREVIEW : createShortcut('x1-preview', 'Select original size preview', 'alt+1'),
-      BEST_PREVIEW : createShortcut('best-preview', 'Select best size preview', 'alt+2'),
-      FULL_PREVIEW : createShortcut('full-preview', 'Select full size preview', 'alt+3'),
+      X1_PREVIEW : createShortcut('x1-preview', 'Select original size preview', ''),
+      BEST_PREVIEW : createShortcut('best-preview', 'Select best size preview', ''),
+      FULL_PREVIEW : createShortcut('full-preview', 'Select full size preview', ''),
       ONION_SKIN : createShortcut('onion-skin', 'Toggle onion skin', 'alt+O'),
       TOGGLE_GRID : createShortcut('toggle-grid', 'Show/Hide grid', 'alt+G'),
       LAYER_PREVIEW : createShortcut('layer-preview', 'Toggle layer preview', 'alt+L'),
@@ -71,8 +71,8 @@
 
     STORAGE : {
       SAVE : createShortcut('save', 'Save the current sprite', 'ctrl+S'),
-      OPEN : createShortcut('open', '(desktop) Open a .piskel file', 'ctrl+O'),
-      SAVE_AS : createShortcut('save-as', '(desktop) Save as new', 'ctrl+shift+S')
+      OPEN : createShortcut('open', '(desktop) Open a .piskel file', ''),
+      SAVE_AS : createShortcut('save-as', '(desktop) Save as new', '')
     },
 
     COLOR : {

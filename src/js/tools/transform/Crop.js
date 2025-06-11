@@ -4,12 +4,12 @@
   ns.Crop = function () {
     this.toolId = 'tool-crop';
     this.helpText = 'Crop the sprite';
-    this.tooltipDescriptors = [
+    this.tooltipDescriptors = [/*
       {
         description : 'Crop to fit the content or the selection. ' +
                       'Applies to all frames and layers!'
       }
-    ];
+    */];
   };
 
   // This transform tool is the only one that adapts to the current selection and can't
@@ -17,7 +17,7 @@
   pskl.utils.inherit(ns.Crop, pskl.tools.Tool);
 
   ns.Crop.prototype.applyTransformation = function (evt) {
-    var frames = this.getFrames_();
+    /*var frames = this.getFrames_();
 
     var boundaries;
     if (pskl.app.selectionManager.currentSelection) {
@@ -34,15 +34,15 @@
         boundaries : boundaries
       });
     }
-  };
+  */};
 
   ns.Crop.prototype.replay = function (frame, replayData) {
-    var frames = this.getFrames_();
-    this.applyTool_(frames, replayData.boundaries);
+    /*var frames = this.getFrames_();
+    this.applyTool_(frames, replayData.boundaries);*/
   };
 
   ns.Crop.prototype.applyTool_ = function (frames, boundaries) {
-    if (boundaries.minx >= boundaries.maxx) {
+    /*if (boundaries.minx >= boundaries.maxx) {
       return false;
     }
 
@@ -78,13 +78,13 @@
     });
 
     return true;
-  };
+  */};
 
   /**
    * Retrieve the list of frames for the current piskel in a single flat array.
    */
   ns.Crop.prototype.getFrames_ = function () {
-    var currentPiskel = pskl.app.piskelController.getPiskel();
+    /*var currentPiskel = pskl.app.piskelController.getPiskel();
 
     // Get all frames in a single array.
     var frames = currentPiskel.getLayers().map(function (l) {
@@ -100,7 +100,7 @@
    * Retrieve a boundaries object {minx, maxx, miny, maxy} for the current selection.
    */
   ns.Crop.prototype.getBoundariesForSelection_ = function () {
-    var selectionManager = pskl.app.selectionManager;
+    /*var selectionManager = pskl.app.selectionManager;
     var pixels = selectionManager.currentSelection.pixels;
 
     // Fetch the first frame to perform out-of-bound checks.
@@ -120,8 +120,8 @@
           }
         }
       }
-    };
+    */};
 
-    return pskl.tools.transform.TransformUtils.getBoundaries([selectionFrame]);
+    //return pskl.tools.transform.TransformUtils.getBoundaries([selectionFrame]);
   };
 })();

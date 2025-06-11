@@ -100,9 +100,13 @@
   ns.CheatsheetController.prototype.initMarkupForCategory_ = function (category, container, iconClassProvider) {
     var shortcutMap = pskl.service.keyboard.Shortcuts[category];
 
-    var descriptors = Object.keys(shortcutMap).map(function (shortcutKey) {
-      return this.toDescriptor_(shortcutMap[shortcutKey], iconClassProvider);
-    }.bind(this));
+    var descriptors = Object.keys(shortcutMap)
+      .filter(function (shortcutKey) {
+        return ['SAVE_AS', 'OPEN','X1_PREVIEW','BEST_PREVIEW','FULL_PREVIEW'].indexOf(shortcutKey) === -1;
+      })
+      .map(function (shortcutKey) {
+        return this.toDescriptor_(shortcutMap[shortcutKey], iconClassProvider);
+      }.bind(this));
 
     this.initMarkupForDescriptors_(descriptors, container);
   };

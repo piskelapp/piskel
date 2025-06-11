@@ -37,7 +37,7 @@ module.exports = function (grunt) {
         port: port,
         hostname: host,
         base: base,
-        open: open
+        open: false
       }
     };
   };
