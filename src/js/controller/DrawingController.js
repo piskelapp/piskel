@@ -46,6 +46,7 @@
     this.isClicked = false;
     this.previousMousemoveTime = 0;
     this.currentToolBehavior = null;
+    this.currentToolCursorUrl_ = null;
     this.resizeObserver = null;
   };
 
@@ -100,6 +101,36 @@
 
     // Deactivate right click:
     document.body.addEventListener('contextmenu', this.onCanvasContextMenu_.bind(this));
+
+    this.container.addEventListener('mouseenter', () => {
+      if (!this.currentToolBehavior) {
+        return;
+      }
+      // const symbol = document.getElementById("tool-vertical-mirror-pen");
+      const symbol = document.getElementById(this.currentToolBehavior.toolId);
+      const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+
+      svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+      svg.setAttribute("viewBox", symbol.getAttribute("viewBox") || "0 0 46 46");
+      svg.setAttribute("width", "46");
+      svg.setAttribute("height", "46");
+
+      // Append a clone of the symbol's content
+      svg.append(...Array.from(symbol.childNodes).map(n => n.cloneNode(true)));
+
+      // Serialize to string
+      const svgString = new XMLSerializer().serializeToString(svg);
+      const blob = new Blob([svgString], { type: "image/svg+xml" });
+      this.currentToolCursorUrl_ = URL.createObjectURL(blob);
+
+      const cursorImageOffsetX = this.currentToolBehavior?.cursorImageOffset?.[0] ?? 0;
+      const cursorImageOffsetY = this.currentToolBehavior?.cursorImageOffset?.[1] ?? 0;
+      document.body.style.cursor = `url(${this.currentToolCursorUrl_}) ${cursorImageOffsetX} ${cursorImageOffsetY} , auto`;
+    });
+    this.container.addEventListener('mouseleave', () => {
+      document.body.style.cursor = "unset";
+      URL.revokeObjectURL(this.currentToolCursorUrl_);
+    });
   };
 
   ns.DrawingController.prototype.requestRelayout_ = function () {
