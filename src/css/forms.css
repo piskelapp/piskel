@@ -39,13 +39,14 @@
   border-radius: 2px;
   cursor: pointer;
   text-decoration: none;
-
   color: white;
   font-weight: bold;
   font-size: 1rem;
   text-align: center;
-
   transition: background-color 0.2s linear;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .button:hover {
