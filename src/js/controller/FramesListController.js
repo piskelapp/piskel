@@ -2,10 +2,10 @@
   var ns = $.namespace('pskl.controller');
 
   var ACTION = {
-    SELECT : 'select',
-    CLONE : 'clone',
-    DELETE : 'delete',
-    NEW_FRAME : 'newframe',
+    SELECT: 'select',
+    CLONE: 'clone',
+    DELETE: 'delete',
+    NEW_FRAME: 'newframe',
     TOGGLE: 'toggle'
   };
 
@@ -26,7 +26,7 @@
     this.initDragndropBehavior_();
   };
 
-  ns.FramesListController.prototype.init = function() {
+  ns.FramesListController.prototype.init = function () {
     $.subscribe(Events.TOOL_RELEASED, this.flagForRedraw_.bind(this));
     $.subscribe(Events.PISKEL_RESET, this.flagForRedraw_.bind(this, true));
     $.subscribe(Events.USER_SETTINGS_CHANGED, this.flagForRedraw_.bind(this));
@@ -180,7 +180,7 @@
 
     var frameCount = this.piskelController.getFrameCount();
 
-    for (var i = 0 ; i < frameCount ; i++) {
+    for (var i = 0; i < frameCount; i++) {
       var tile = this.createPreviewTile_(i);
       this.previewList.appendChild(tile);
       this.tiles[i] = tile;
@@ -190,8 +190,10 @@
     newFrameButton.id = 'add-frame-action';
     newFrameButton.className = 'add-frame-action';
     newFrameButton.setAttribute('data-tile-action', ACTION.NEW_FRAME);
-    newFrameButton.innerHTML = '<div class="add-frame-action-icon icon-frame-plus-white">' +
-      '</div><div class="label">Add new frame</div>';
+    newFrameButton.innerHTML =
+      // '<div class="add-frame-action-icon icon-frame-plus-white"></div>' +
+      '<svg class="add-frame-action-icon" width="26px" height="26px" ><use href="#svg-plus-icon" /></svg>' +
+      '<div class="label">Add new frame</div>';
     this.previewList.appendChild(newFrameButton);
     this.addFrameTile = newFrameButton;
 
@@ -236,7 +238,7 @@
   ns.FramesListController.prototype.onSortableStop_ = function (event, ui) {
     this.justDropped = true;
 
-    this.resizeTimer = window.setTimeout((function() {
+    this.resizeTimer = window.setTimeout((function () {
       this.justDropped = false;
     }).bind(this), 200);
   };
@@ -244,7 +246,7 @@
   /**
    * @private
    */
-  ns.FramesListController.prototype.createPreviewTile_ = function(tileNumber) {
+  ns.FramesListController.prototype.createPreviewTile_ = function (tileNumber) {
     var currentFrame = this.piskelController.getCurrentLayer().getFrameAt(tileNumber);
 
     var previewTileRoot = document.createElement('li');
@@ -297,7 +299,7 @@
 
     // Add 'dragndrop handle'.
     var dndHandle = document.createElement('div');
-    dndHandle.className = 'tile-overlay dnd-action icon-frame-dragndrop-white' ;
+    dndHandle.className = 'tile-overlay dnd-action icon-frame-dragndrop-white';
     previewTileRoot.appendChild(dndHandle);
 
     // Add tile count

@@ -41,6 +41,8 @@
 
   <!-- Drawing tool icon-button -->
   <script type="text/template" id="drawingTool-item-template">
-    <li rel="tooltip" data-placement="{{tooltipposition}}" class="{{cssclass}}" data-tool-id="{{toolid}}" title="{{title}}"></li>
+    <li rel="tooltip" data-placement="{{tooltipposition}}" class="tool-icon" data-tool-id="{{toolid}}" title="{{title}}">
+      <svg class="icon"  width="46" height="46" ><use href="#{{toolid}}" /></svg>
+    </li>
   </script>
 </div>

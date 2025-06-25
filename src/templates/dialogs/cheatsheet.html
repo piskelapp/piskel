@@ -42,7 +42,9 @@
 
 <script type="text/template" id="cheatsheet-shortcut-template">
   <li class="cheatsheet-shortcut {{className}}" data-shortcut-id="{{id}}">
-    <div class="cheatsheet-icon {{icon}}"></div>
+    <div class="cheatsheet-icon {{icon}}">
+      <svg class="icon" viewBox="0 0 92 92"><use href="#{{id}}" /></svg>
+    </div>
     <span class="cheatsheet-key" rel="tooltip" data-placement="top" title="{{title}}">{{!key!}}</span>
     <span class="cheatsheet-description">{{description}}</span>
   </li>

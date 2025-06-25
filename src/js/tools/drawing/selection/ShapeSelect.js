@@ -3,15 +3,16 @@
  *
  * @require pskl.utils
  */
-(function() {
+(function () {
   var ns = $.namespace('pskl.tools.drawing.selection');
 
-  ns.ShapeSelect = function() {
+  ns.ShapeSelect = function () {
     ns.BaseSelect.call(this);
 
     this.toolId = 'tool-shape-select';
     this.helpText = 'Shape selection';
     this.shortcut = pskl.service.keyboard.Shortcuts.TOOL.SHAPE_SELECT;
+    this.cursorImageOffset = [33, 8];
   };
 
   pskl.utils.inherit(ns.ShapeSelect, ns.BaseSelect);
