@@ -6,6 +6,7 @@
     this.tools = [
       new pskl.tools.transform.Flip(),
       new pskl.tools.transform.Rotate(),
+	  new pskl.tools.transform.RotateNearestNeighbor(), 
       new pskl.tools.transform.Clone(),
       new pskl.tools.transform.Center(),
       new pskl.tools.transform.Crop(),
