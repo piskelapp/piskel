@@ -64,20 +64,6 @@
   font-weight: normal;
 }
 
-.preview-upload-ongoing:before{
-  content: "Upload in progress...";
-  position: absolute;
-  display: block;
-  height: 100%;
-  width: 100%;
-  text-align: center;
-  padding-top: 45%;
-  box-sizing:border-box;
-  -moz-box-sizing:border-box;
-  background: rgba(0,0,0,0.5);
-  color: white;
-}
-
 .export-scale {
   margin-bottom: 10px;
 }
