@@ -67,7 +67,6 @@
     "karma-chrome-launcher": "^3.2.0",
     "karma-jasmine": "4.0.1",
     "load-grunt-tasks": "5.1.0",
-    "nw": "0.54.0",
     "png-ts": "^0.0.3",
     "puppeteer": "^24.10.0",
     "rmdir": "1.2.0",
