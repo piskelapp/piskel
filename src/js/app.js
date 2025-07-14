@@ -135,9 +135,6 @@
       this.importService = new pskl.service.ImportService(this.piskelController);
       this.importService.init();
 
-      this.imageUploadService = new pskl.service.ImageUploadService();
-      this.imageUploadService.init();
-
       this.savedStatusService = new pskl.service.SavedStatusService(
         this.piskelController,
         this.historyService);
