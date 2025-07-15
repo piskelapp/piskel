@@ -28,7 +28,7 @@
       full: {
         button: document.querySelector('.full-size-button'),
         shortcut: pskl.service.keyboard.Shortcuts.MISC.FULL_PREVIEW,
-        tooltip: 'Full size preview'
+        tooltip: 'Full size locked'
       }
     };
     this.toggleOnionSkinButton = document.querySelector('.preview-toggle-onion-skin');
