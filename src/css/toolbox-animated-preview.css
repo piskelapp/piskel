@@ -52,12 +52,40 @@
   line-height: 26px;
 }
 
+/* change ".range-fps" to "input[type='range']" to make universal */
 .range-fps {
   overflow: hidden;
   width: 100px;
   height : 26px;
   margin : 0;
   box-sizing: border-box;
+  accent-color:gold; /* fallback */
+  accent-color: var(--highlight-color);
+  cursor: pointer;
+}
+.range-fps::-webkit-slider-thumb{
+  cursor:grab;
+}
+.range-fps::-moz-range-thumb{
+  cursor:grab;
+}
+.range-fps::-ms-thumb{
+  cursor:grab;
+}
+
+/* moving slider */
+.range-fps:active,
+.range-fps:focus-within{
+  cursor:grabbing;
+}
+.range-fps::-webkit-slider-thumb:active{
+  cursor:grabbing;
+}
+.range-fps::-moz-range-thumb:active{
+  cursor:grabbing;
+}
+.range-fps::-ms-thumb:active{
+  cursor:grabbing;
 }
 
 .preview-toggle-onion-skin {
