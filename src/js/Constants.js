@@ -64,7 +64,5 @@ var Constants = {
   CONFIRM_OVERWRITE: 'This will replace your current animation, are you sure you want to continue?',
 
   // SERVICE URLS
-  APPENGINE_SAVE_URL : 'save',
-  IMAGE_SERVICE_UPLOAD_URL : '{{protocol}}://piskel-imgstore-b.appspot.com/__/upload',
-  IMAGE_SERVICE_GET_URL : '{{protocol}}://piskel-imgstore-b.appspot.com/img/'
+  APPENGINE_SAVE_URL : 'save'
 };

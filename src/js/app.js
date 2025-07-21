@@ -9,7 +9,7 @@
    */
   ns.app = {
 
-    init : function () {
+    init: function () {
       /**
        * When started from APP Engine, appEngineToken_ (Boolean) should be set on window.pskl
        */
@@ -135,9 +135,6 @@
       this.importService = new pskl.service.ImportService(this.piskelController);
       this.importService.init();
 
-      this.imageUploadService = new pskl.service.ImageUploadService();
-      this.imageUploadService.init();
-
       this.savedStatusService = new pskl.service.SavedStatusService(
         this.piskelController,
         this.historyService);
@@ -180,10 +177,16 @@
 
       this.initTooltips_();
 
-      var piskelData = this.getPiskelInitData_();
-      if (piskelData && piskelData.piskel) {
-        this.loadPiskel_(piskelData);
-      }
+      $.subscribe(Events.EXTERNAL_PISKEL_READY, function () {
+        const externalPiskel = window._externalPiskel;
+        if (!externalPiskel) {
+          console.error('No external piskel found');
+          return;
+        }
+        pskl.utils.serialization.Deserializer.deserialize(externalPiskel, function (piskel) {
+          pskl.app.piskelController.setPiskel(piskel);
+        });
+      });
 
       if (pskl.devtools) {
         pskl.devtools.init();
@@ -191,14 +194,14 @@
 
       if (pskl.utils.Environment.detectNodeWebkit() && pskl.utils.UserAgent.isMac) {
         var gui = require('nw.gui');
-        var mb = new gui.Menu({type : 'menubar'});
+        var mb = new gui.Menu({ type: 'menubar' });
         mb.createMacBuiltin('Piskel');
         gui.Window.get().menu = mb;
       }
 
       if (!pskl.utils.Environment.isIntegrationTest() && pskl.utils.UserAgent.isUnsupported()) {
         $.publish(Events.DIALOG_SHOW, {
-          dialogId : 'unsupported-browser'
+          dialogId: 'unsupported-browser'
         });
       }
 
@@ -208,40 +211,24 @@
       }
     },
 
-    loadPiskel_ : function (piskelData) {
-      var serializedPiskel = piskelData.piskel;
-      pskl.utils.serialization.Deserializer.deserialize(serializedPiskel, function (piskel) {
-        pskl.app.piskelController.setPiskel(piskel);
-        $.publish(Events.PISKEL_SAVED);
-        if (piskelData.descriptor) {
-          // Backward compatibility for v2 or older
-          piskel.setDescriptor(piskelData.descriptor);
-        }
-      });
+    // TODO: Remove this method and connected code.
+    isLoggedIn: function () {
+      return false;
     },
 
-    getPiskelInitData_ : function () {
-      return pskl.appEnginePiskelData_;
-    },
-
-    isLoggedIn : function () {
-      var piskelData = this.getPiskelInitData_();
-      return piskelData && piskelData.isLoggedIn;
-    },
-
-    initTooltips_ : function () {
+    initTooltips_: function () {
       $('body').tooltip({
         selector: '[rel=tooltip]'
       });
     },
 
-    render : function (delta) {
+    render: function (delta) {
       this.drawingController.render(delta);
       this.previewController.render(delta);
       this.framesListController.render(delta);
     },
 
-    getFirstFrameAsPng : function () {
+    getFirstFrameAsPng: function () {
       var frame = pskl.utils.LayerUtils.mergeFrameAt(this.piskelController.getLayers(), 0);
       var canvas;
       if (frame instanceof pskl.model.frame.RenderedFrame) {
@@ -252,7 +239,7 @@
       return canvas.toDataURL('image/png');
     },
 
-    getFramesheetAsPng : function () {
+    getFramesheetAsPng: function () {
       var renderer = new pskl.rendering.PiskelRenderer(this.piskelController);
       var framesheetCanvas = renderer.renderAsCanvas();
       return framesheetCanvas.toDataURL('image/png');

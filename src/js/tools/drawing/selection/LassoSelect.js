@@ -3,22 +3,23 @@
  *
  * @require pskl.utils
  */
-(function() {
+(function () {
   var ns = $.namespace('pskl.tools.drawing.selection');
 
-  ns.LassoSelect = function() {
+  ns.LassoSelect = function () {
     ns.AbstractDragSelect.call(this);
 
     this.toolId = 'tool-lasso-select';
     this.helpText = 'Lasso selection';
     this.shortcut = pskl.service.keyboard.Shortcuts.TOOL.LASSO_SELECT;
+    this.cursorImageOffset = [5, 10];
   };
 
   pskl.utils.inherit(ns.LassoSelect, ns.AbstractDragSelect);
 
   /** @override */
   ns.LassoSelect.prototype.onDragSelectStart_ = function (col, row) {
-    this.pixels = [{col : col, row : row}];
+    this.pixels = [{ col: col, row: row }];
 
     this.startCol = col;
     this.startRow = row;

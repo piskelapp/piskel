@@ -75,6 +75,7 @@
   margin: 3px;
   float: left;
   flex-shrink: 0;
+  color: #fff;
 }
 
 .add-frame-action .label {

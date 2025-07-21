@@ -3,15 +3,15 @@
  *
  * @require pskl.utils
  */
-(function() {
+(function () {
   var ns = $.namespace('pskl.tools.drawing');
 
-  ns.Rectangle = function() {
+  ns.Rectangle = function () {
     ns.ShapeTool.call(this);
-
     this.toolId = 'tool-rectangle';
     this.helpText = 'Rectangle tool';
     this.shortcut = pskl.service.keyboard.Shortcuts.TOOL.RECTANGLE;
+    this.cursorImageOffset = [12, 12];
   };
 
   pskl.utils.inherit(ns.Rectangle, ns.ShapeTool);

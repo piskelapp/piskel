@@ -1,16 +1,13 @@
 // Karma configuration
-// Generated on Tue Jul 22 2014 23:49:26 GMT+0200 (Romance Daylight Time)
+process.env.CHROME_BIN = require('puppeteer').executablePath();
 
-module.exports = function(config) {
+module.exports = function (config) {
 
-  var mapToSrcFolder = function (path) {return ['src', path].join('/');};
+  var mapToSrcFolder = function (path) { return ['src', path].join('/'); };
 
   var piskelScripts = require('./src/piskel-script-list.js').scripts.map(mapToSrcFolder);
-  piskelScripts.push('test/js/testutils/**/*.js');
-  piskelScripts.push('test/js/**/*.js');
-
-  // Polyfill for Object.assign (missing in PhantomJS)
-  piskelScripts.push('./node_modules/phantomjs-polyfill-object-assign/object-assign-polyfill.js');
+  piskelScripts.push('tests/unit-tests/testutils/**/*.js');
+  piskelScripts.push('tests/unit-tests/**/*.js');
 
   config.set({
 
@@ -24,10 +21,8 @@ module.exports = function(config) {
 
 
     // list of files / patterns to load in the browser
-    files: piskelScripts.concat([
-      './node_modules/promise-polyfill/promise.js'
-    ]),
-
+    files: [
+      ...piskelScripts],
 
     // list of files to exclude
     exclude: [],
@@ -61,10 +56,13 @@ module.exports = function(config) {
     // enable / disable watching file and executing tests whenever any file changes
     autoWatch: true,
 
-
-    // start these browsers
-    // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['PhantomJS'],
+    customLaunchers: {
+      ChromeHeadlessNoSandbox: {
+        base: 'ChromeHeadless',
+        flags: ['--no-sandbox', '--disable-gpu']
+      }
+    },
+    browsers: ['ChromeHeadlessNoSandbox'],
 
 
     // Continuous Integration mode

@@ -18,6 +18,7 @@
     var testResult = document.createElement('div');
     testResult.id = 'drawing-test-result';
     testResult.setAttribute('data-test-name', this.testName);
+    testResult.setAttribute('data-testid', 'drawing-test-result');
     testResult.innerHTML = success ? 'OK' : 'KO';
     document.body.appendChild(testResult);
   };

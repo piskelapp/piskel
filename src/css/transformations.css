@@ -22,10 +22,15 @@
   margin-bottom: -5px;
 }
 
+.transformations-title {
+  position: relative;
+}
+
 .transformations-show-more-link {
   position: absolute;
   color: #999;
-  right: 10px;
+  right: 2px;
+  top: 4px;
   font-weight: normal;
   cursor: pointer;
   transition: 0.2s linear;

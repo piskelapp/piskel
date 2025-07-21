@@ -1,7 +1,7 @@
-Piskel
+Piskel 
 ======
 
-[![Travis Status](https://api.travis-ci.org/piskelapp/piskel.png?branch=master)](https://travis-ci.org/piskelapp/piskel) [![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](https://gruntjs.com/)
+[![E2E Tests](https://github.com/piskelapp/piskel/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/piskelapp/piskel/actions/workflows/ci.yml)
 
 Piskel is an easy-to-use sprite editor. It can be used to create game sprites, animations, pixel-art...
 It is the editor used in **[piskelapp.com](https://www.piskelapp.com)**.
@@ -25,6 +25,7 @@ We also use the following **libraries** :
 * [canvas-toBlob](https://github.com/eligrey/canvas-toBlob.js/) : shim for canvas toBlob
 * [jquery](https://jquery.com/) : used sporadically in the application
 * [bootstrap-tooltip](https://getbootstrap.com/javascript/#tooltips) : nice tooltips
+* [playwright](https://playwright.dev/): End to end testing
 
 As well as some **icons** from the [Noun Project](https://thenounproject.com/) :
 * Folder by Simple Icons from The Noun Project
