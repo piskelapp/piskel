@@ -22,11 +22,12 @@
   ns.PaletteGplWriter.prototype.writeColorLine = function (color) {
     var tinycolor = window.tinycolor(color);
     var rgb = tinycolor.toRgb();
+    var hex = tinycolor.toHexString();
     var strBuffer = [];
     strBuffer.push(this.padString(rgb.r, 3));
     strBuffer.push(this.padString(rgb.g, 3));
     strBuffer.push(this.padString(rgb.b, 3));
-    strBuffer.push('Untitled');
+    strBuffer.push(hex);
 
     return strBuffer.join(' ');
   };
