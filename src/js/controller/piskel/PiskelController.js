@@ -243,16 +243,18 @@
 
   ns.PiskelController.prototype.selectNextFrame = function () {
     var nextIndex = this.currentFrameIndex + 1;
-    if (nextIndex < this.getFrameCount()) {
-      this.setCurrentFrameIndex(nextIndex);
+    if (nextIndex >= this.getFrameCount()) {
+      nextIndex = 0;
     }
+    this.setCurrentFrameIndex(nextIndex);
   };
 
   ns.PiskelController.prototype.selectPreviousFrame = function () {
     var nextIndex = this.currentFrameIndex - 1;
-    if (nextIndex >= 0) {
-      this.setCurrentFrameIndex(nextIndex);
+    if (nextIndex < 0) {
+      nextIndex = this.getFrameCount() - 1;
     }
+    this.setCurrentFrameIndex(nextIndex);
   };
 
   ns.PiskelController.prototype.setCurrentLayerIndex = function (index) {
