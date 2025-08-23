@@ -2,6 +2,8 @@
 
   var ns = $.namespace('pskl.controller');
 
+  var computedLineheightForScrollEvents = parseFloat(getComputedStyle(document.documentElement).lineHeight) || 16;
+
   ns.DrawingController = function (piskelController, container) {
     /**
      * @public
@@ -86,11 +88,7 @@
   ns.DrawingController.prototype.initMouseBehavior = function () {
     this.container.addEventListener('mousedown', this.onMousedown_.bind(this));
 
-    if (pskl.utils.UserAgent.isChrome || pskl.utils.UserAgent.isIE11) {
-      this.container.addEventListener('mousewheel', this.onMousewheel_.bind(this));
-    } else {
-      this.container.addEventListener('wheel', this.onMousewheel_.bind(this));
-    }
+    this.container.addEventListener('wheel', this.onMousewheel_.bind(this));
 
     window.addEventListener('mouseup', this.onMouseup_.bind(this));
     window.addEventListener('mousemove', this.onMousemove_.bind(this));
@@ -276,14 +274,14 @@
   };
 
   ns.DrawingController.prototype.onMousewheel_ = function (evt) {
-    // Ratio between wheelDeltaY (mousewheel event) and deltaY (wheel event) is -40
+    // Normalize mousewheel:
     var delta;
-    if (pskl.utils.UserAgent.isIE11) {
-      delta = evt.wheelDelta;
-    } else if (pskl.utils.UserAgent.isFirefox) {
-      delta = -40 * evt.deltaY;
-    } else {
-      delta = evt.wheelDeltaY;
+    if (evt.deltaMode === 2) { // DOM_DELTA_PAGE
+      delta = evt.deltaY * window.innerHeight;
+    } else if (evt.deltaMode === 1) { // DOM_DELTA_LINE
+      delta = evt.deltaY * computedLineheightForScrollEvents; // Firefox uses line delta on desktop.
+    } else { // DOM_DELTA_PIXEL
+      delta = evt.deltaY; // Default and most common case.
     }
 
     delta = delta || 0;
