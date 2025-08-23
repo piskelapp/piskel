@@ -277,11 +277,11 @@
     // Normalize mousewheel:
     var delta;
     if (evt.deltaMode === 2) { // DOM_DELTA_PAGE
-      delta = evt.deltaY * window.innerHeight;
+      delta = -1 * evt.deltaY * window.innerHeight;
     } else if (evt.deltaMode === 1) { // DOM_DELTA_LINE
-      delta = evt.deltaY * computedLineheightForScrollEvents; // Firefox uses line delta on desktop.
+      delta = -1 * evt.deltaY * computedLineheightForScrollEvents; // Firefox uses line delta on desktop.
     } else { // DOM_DELTA_PIXEL
-      delta = evt.deltaY; // Default and most common case.
+      delta = -1 * evt.deltaY; // Default and most common case.
     }
 
     delta = delta || 0;
