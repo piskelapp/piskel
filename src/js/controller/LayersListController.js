@@ -164,12 +164,9 @@
   };
 
   ns.LayersListController.prototype.onClick_ = function (evt) {
-    var originElement = evt.target || evt.srcElement
-    var el = originElement.closest(".button");
+    var el = evt.target || evt.srcElement
     var index;
-    if (el.classList.contains('button')) {
-      this.onButtonClick_(el, evt);
-    } else if (el.classList.contains('layer-name')) {
+    if (el.classList.contains('layer-name')) {
       var currentIndex = this.piskelController.getCurrentLayerIndex();
       index = pskl.utils.Dom.getData(el, 'layerIndex');
       if (index != currentIndex) {
@@ -182,6 +179,11 @@
       var layer = this.piskelController.getLayerAt(parseInt(index, 10));
       var opacity = window.prompt('Set layer opacity (value between 0 and 1)', layer.getOpacity());
       this.piskelController.setLayerOpacityAt(index, opacity);
+    } else {
+      var containingButton = el.closest(".button");
+      if (containingButton && containingButton.classList.contains('button')) {
+        this.onButtonClick_(containingButton, evt);
+      }
     }
   };
 
