@@ -2,18 +2,17 @@
  * @provide pskl.tools.drawing.ColorSwap
  *
  */
-(function () {
+(function() {
   var ns = $.namespace('pskl.tools.drawing');
 
-  ns.ColorSwap = function () {
+  ns.ColorSwap = function() {
     this.toolId = 'tool-colorswap';
     this.helpText = 'Paint all pixels of the same color';
     this.shortcut = pskl.service.keyboard.Shortcuts.TOOL.COLORSWAP;
-    this.cursorImageOffset = [38, 38];
 
     this.tooltipDescriptors = [
-      { key: 'ctrl', description: 'Apply to all layers' },
-      { key: 'shift', description: 'Apply to all frames' }
+      {key : 'ctrl', description : 'Apply to all layers'},
+      {key : 'shift', description : 'Apply to all frames'}
     ];
   };
 
@@ -22,20 +21,20 @@
   /**
    * @override
    */
-  ns.ColorSwap.prototype.applyToolAt = function (col, row, frame, overlay, event) {
+  ns.ColorSwap.prototype.applyToolAt = function(col, row, frame, overlay, event) {
     if (frame.containsPixel(col, row)) {
       var oldColor = frame.getPixel(col, row);
       var newColor = this.getToolColor();
 
-      var allLayers = pskl.utils.UserAgent.isMac ? event.metaKey : event.ctrlKey;
+      var allLayers = pskl.utils.UserAgent.isMac ?  event.metaKey : event.ctrlKey;
       var allFrames = event.shiftKey;
       this.swapColors_(oldColor, newColor, allLayers, allFrames);
 
       this.raiseSaveStateEvent({
-        allLayers: allLayers,
-        allFrames: allFrames,
-        oldColor: oldColor,
-        newColor: newColor
+        allLayers : allLayers,
+        allFrames : allFrames,
+        oldColor : oldColor,
+        newColor : newColor
       });
     }
   };
@@ -44,7 +43,7 @@
     this.swapColors_(replayData.oldColor, replayData.newColor, replayData.allLayers, replayData.allFrames);
   };
 
-  ns.ColorSwap.prototype.swapColors_ = function (oldColor, newColor, allLayers, allFrames) {
+  ns.ColorSwap.prototype.swapColors_ = function(oldColor, newColor, allLayers, allFrames) {
     var currentFrameIndex = pskl.app.piskelController.getCurrentFrameIndex();
     var layers = allLayers ? pskl.app.piskelController.getLayers() : [pskl.app.piskelController.getCurrentLayer()];
     layers.forEach(function (layer) {

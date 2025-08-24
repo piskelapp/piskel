@@ -3,27 +3,26 @@
  *
  * @require pskl.utils
  */
-(function () {
+(function() {
   var ns = $.namespace('pskl.tools.drawing');
 
-  ns.DitheringTool = function () {
+  ns.DitheringTool = function() {
     ns.SimplePen.call(this);
     this.toolId = 'tool-dithering';
     this.helpText = 'Dithering tool';
     this.shortcut = pskl.service.keyboard.Shortcuts.TOOL.DITHERING;
-    this.cursorImageOffset = [12, 12];
   };
 
   pskl.utils.inherit(ns.DitheringTool, ns.SimplePen);
 
-  ns.DitheringTool.prototype.supportsDynamicPenSize = function () {
+  ns.DitheringTool.prototype.supportsDynamicPenSize = function() {
     return true;
   };
 
   /**
    * @override
    */
-  ns.DitheringTool.prototype.applyToolAt = function (col, row, frame, overlay, event) {
+  ns.DitheringTool.prototype.applyToolAt = function(col, row, frame, overlay, event) {
     this.previousCol = col;
     this.previousRow = row;
 
@@ -34,7 +33,7 @@
     }.bind(this));
   };
 
-  ns.DitheringTool.prototype.applyToolOnPixel = function (col, row, frame, overlay, event) {
+  ns.DitheringTool.prototype.applyToolOnPixel = function(col, row, frame, overlay, event) {
     var usePrimaryColor = (col + row) % 2;
 
     if (pskl.app.mouseStateService.isRightButtonPressed()) {

@@ -3,16 +3,15 @@
  *
  * @require pskl.utils
  */
-(function () {
+(function() {
   var ns = $.namespace('pskl.tools.drawing');
 
-  ns.Circle = function () {
+  ns.Circle = function() {
     ns.ShapeTool.call(this);
 
     this.toolId = 'tool-circle';
     this.helpText = 'Circle tool';
     this.shortcut = pskl.service.keyboard.Shortcuts.TOOL.CIRCLE;
-    this.cursorImageOffset = [9, 12];
   };
 
   pskl.utils.inherit(ns.Circle, ns.ShapeTool);
@@ -43,7 +42,7 @@
     var r;
 
     if (penSize == 1) {
-      for (x = coords.x0; x <= xC; x++) {
+      for (x = coords.x0 ; x <= xC ; x++) {
         angle = Math.acos((x - xC) / rX);
         y = Math.round(rY * Math.sin(angle) + yC);
         pixels.push([x - evenX, y]);
@@ -51,7 +50,7 @@
         pixels.push([2 * xC - x, y]);
         pixels.push([2 * xC - x, 2 * yC - y - evenY]);
       }
-      for (y = coords.y0; y <= yC; y++) {
+      for (y = coords.y0 ; y <= yC ; y++) {
         angle = Math.asin((y - yC) / rY);
         x = Math.round(rX * Math.cos(angle) + xC);
         pixels.push([x, y - evenY]);
@@ -71,8 +70,8 @@
       iY = 0;
     }
 
-    for (x = 0; x <= rX; x++) {
-      for (y = 0; y <= rY; y++) {
+    for (x = 0 ; x <= rX ; x++) {
+      for (y = 0 ; y <= rY ; y++) {
         angle = Math.atan(y / x);
         r = Math.sqrt(x * x + y * y);
         if ((rX <= penSize || rY <= penSize ||

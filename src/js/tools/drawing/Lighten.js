@@ -4,21 +4,20 @@
  * @require Constants
  * @require pskl.utils
  */
-(function () {
+(function() {
   var ns = $.namespace('pskl.tools.drawing');
   var DEFAULT_STEP = 3;
 
-  ns.Lighten = function () {
+  ns.Lighten = function() {
     this.superclass.constructor.call(this);
 
     this.toolId = 'tool-lighten';
     this.helpText = 'Lighten';
     this.shortcut = pskl.service.keyboard.Shortcuts.TOOL.LIGHTEN;
-    this.cursorImageOffset = [5, 5];
 
     this.tooltipDescriptors = [
-      { key: 'ctrl', description: 'Darken' },
-      { key: 'shift', description: 'Apply only once per pixel' }
+      {key : 'ctrl', description : 'Darken'},
+      {key : 'shift', description : 'Apply only once per pixel'}
     ];
   };
 
@@ -27,7 +26,7 @@
   /**
    * @Override
    */
-  ns.Lighten.prototype.applyToolAt = function (col, row, frame, overlay, event) {
+  ns.Lighten.prototype.applyToolAt = function(col, row, frame, overlay, event) {
     this.previousCol = col;
     this.previousRow = row;
 
@@ -39,7 +38,7 @@
     }.bind(this));
   };
 
-  ns.Lighten.prototype.getModifiedColor_ = function (col, row, frame, overlay, event) {
+  ns.Lighten.prototype.getModifiedColor_ = function(col, row, frame, overlay, event) {
     // get colors in overlay and in frame
     var overlayColor = overlay.getPixel(col, row);
     var frameColor = frame.getPixel(col, row);
@@ -58,7 +57,7 @@
     }
 
     var step = oncePerPixel ? DEFAULT_STEP * 2 : DEFAULT_STEP;
-    var isDarken = pskl.utils.UserAgent.isMac ? event.metaKey : event.ctrlKey;
+    var isDarken = pskl.utils.UserAgent.isMac ?  event.metaKey : event.ctrlKey;
 
     var color;
     if (isDarken) {

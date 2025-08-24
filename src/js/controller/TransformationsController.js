@@ -37,9 +37,8 @@
   };
 
   ns.TransformationsController.prototype.onTransformationClick_ = function (evt) {
-    const toolElement = evt.target.closest('[data-tool-id]');
-    const toolId = toolElement.dataset.toolId;
-    if (toolId && this.container.contains(toolElement)) {
+    var toolId = evt.target.dataset.toolId;
+    if (toolId) {
       this.applyTool(toolId, evt);
     }
   };
@@ -63,7 +62,7 @@
     this.showMoreLink.classList.toggle('hidden', this.tools.length < 5);
   };
 
-  ns.TransformationsController.prototype.createToolsDom_ = function () {
+  ns.TransformationsController.prototype.createToolsDom_ = function() {
     var html = this.tools.reduce(function (p, tool) {
       return p + this.toolIconBuilder.createIcon(tool, 'left');
     }.bind(this), '');

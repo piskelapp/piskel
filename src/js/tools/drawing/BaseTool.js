@@ -3,27 +3,27 @@
  *
  * @require pskl.utils
  */
-(function () {
+(function() {
   var ns = $.namespace('pskl.tools.drawing');
 
-  ns.BaseTool = function () {
+  ns.BaseTool = function() {
     pskl.tool.Tool.call(this);
     this.toolId = 'tool-base';
   };
 
   pskl.utils.inherit(ns.BaseTool, pskl.tools.Tool);
 
-  ns.BaseTool.prototype.applyToolAt = function (col, row, frame, overlay, event) { };
+  ns.BaseTool.prototype.applyToolAt = function (col, row, frame, overlay, event) {};
 
-  ns.BaseTool.prototype.moveToolAt = function (col, row, frame, overlay, event) { };
+  ns.BaseTool.prototype.moveToolAt = function (col, row, frame, overlay, event) {};
 
   ns.BaseTool.prototype.replay = Constants.ABSTRACT_FUNCTION;
 
-  ns.BaseTool.prototype.supportsDynamicPenSize = function () {
+  ns.BaseTool.prototype.supportsDynamicPenSize = function() {
     return false;
   };
 
-  ns.BaseTool.prototype.getToolColor = function () {
+  ns.BaseTool.prototype.getToolColor = function() {
     if (pskl.app.mouseStateService.isRightButtonPressed()) {
       return pskl.app.selectedColorsService.getSecondaryColor();
     }
@@ -80,7 +80,7 @@
     }
   };
 
-  ns.BaseTool.prototype.releaseToolAt = function (col, row, frame, overlay, event) { };
+  ns.BaseTool.prototype.releaseToolAt = function (col, row, frame, overlay, event) {};
 
   /**
    * Does the tool support the ALT modifier. To be overridden by subclasses.

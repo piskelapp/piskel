@@ -70,13 +70,9 @@
   margin: 10px 0;
 }
 
-.cheatsheet-icon {
-  display: none;
-}
-
 .cheatsheet-icon.tool-icon {
-  display: block;
   float: left;
+
   height: 30px;
   width: 30px;
   margin: 0 10px 0 0;
@@ -167,4 +163,65 @@
   position: absolute;
   bottom: 10px;
   right: 10px;
+}
+
+
+.cheatsheet-icon-tool-circle {
+  background-image: url(../img/icons/tools/tool-circle.png);
+}
+
+.cheatsheet-icon-tool-colorpicker {
+  background-image: url(../img/icons/tools/tool-colorpicker.png);
+}
+
+.cheatsheet-icon-tool-colorswap {
+  background-image: url(../img/icons/tools/tool-colorswap.png);
+}
+
+.cheatsheet-icon-tool-dithering {
+  background-image: url(../img/icons/tools/tool-dithering.png);
+}
+
+.cheatsheet-icon-tool-eraser {
+  background-image: url(../img/icons/tools/tool-eraser.png);
+}
+
+.cheatsheet-icon-tool-lasso-select {
+  background-image: url(../img/icons/tools/tool-lasso-select.png);
+}
+
+.cheatsheet-icon-tool-lighten {
+  background-image: url(../img/icons/tools/tool-lighten.png);
+}
+
+.cheatsheet-icon-tool-move {
+  background-image: url(../img/icons/tools/tool-move.png);
+}
+
+.cheatsheet-icon-tool-paint-bucket {
+  background-image: url(../img/icons/tools/tool-paint-bucket.png);
+}
+
+.cheatsheet-icon-tool-pen {
+  background-image: url(../img/icons/tools/tool-pen.png);
+}
+
+.cheatsheet-icon-tool-rectangle-select {
+  background-image: url(../img/icons/tools/tool-rectangle-select.png);
+}
+
+.cheatsheet-icon-tool-rectangle {
+  background-image: url(../img/icons/tools/tool-rectangle.png);
+}
+
+.cheatsheet-icon-tool-shape-select {
+  background-image: url(../img/icons/tools/tool-shape-select.png);
+}
+
+.cheatsheet-icon-tool-stroke {
+  background-image: url(../img/icons/tools/tool-stroke.png);
+}
+
+.cheatsheet-icon-tool-vertical-mirror-pen {
+  background-image: url(../img/icons/tools/tool-vertical-mirror-pen.png);
 }

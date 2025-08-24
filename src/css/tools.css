@@ -25,6 +25,64 @@
   background-color: #444;
 }
 
+/*
+ * Tool cursors:
+ */
+
+.tool-paint-bucket .drawing-canvas-container:hover,
+.tool-colorswap .drawing-canvas-container:hover {
+  cursor: url(../img/cursors/paint-bucket.png) 14 14, pointer;
+}
+
+.tool-vertical-mirror-pen .drawing-canvas-container:hover {
+  cursor: url(../img/cursors/vertical-mirror-pen.png) 5 15, pointer;
+}
+
+.tool-pen .drawing-canvas-container:hover {
+  cursor: url(../img/cursors/pen.png) 1 14, pointer;
+}
+
+.tool-dithering .drawing-canvas-container:hover {
+  cursor: url(../img/cursors/dither.png) 1 14, pointer;
+}
+
+.tool-lighten .drawing-canvas-container:hover {
+  cursor: url(../img/cursors/lighten.png) 1 15, pointer;
+}
+
+.tool-eraser .drawing-canvas-container:hover {
+  cursor: url(../img/cursors/eraser.png) 3 14, pointer;
+}
+
+.tool-stroke .drawing-canvas-container:hover {
+  cursor: url(../img/cursors/stroke.png) 1 14, pointer;
+}
+
+.tool-rectangle .drawing-canvas-container:hover {
+  cursor: url(../img/cursors/rectangle.png) 5 15, pointer;
+}
+
+.tool-circle .drawing-canvas-container:hover {
+  cursor: url(../img/cursors/circle.png) 5 15, pointer;
+}
+
+.tool-move .drawing-canvas-container:hover {
+  cursor: url(../img/cursors/hand.png) 7 7, pointer;
+}
+
+.tool-rectangle-select .drawing-canvas-container:hover,
+.tool-lasso-select .drawing-canvas-container:hover {
+  cursor: crosshair;
+}
+
+.tool-shape-select .drawing-canvas-container:hover {
+  cursor: url(../img/cursors/wand.png) 10 5, pointer;
+}
+
+.tool-colorpicker .drawing-canvas-container:hover {
+  cursor: url(../img/cursors/dropper.png) 2 15, pointer;
+}
+
 .swap-colors-button {
   position: relative;
   top: 50px;
