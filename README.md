@@ -37,7 +37,7 @@ Piskel supports the following browsers:
 * **Chrome** (latest)
 * **Firefox** (latest)
 * **Edge** (latest)
-* **Internet Explorer** 11
+* **Brave** (latest) but **only if canvas fingerprinting is disabled** ([more info](https://github.com/piskelapp/piskel/wiki/About-canvas-based%E2%80%90browser-fingerprinting-and-Brave-browser))
 
 ### Mobile/Tablets
 
