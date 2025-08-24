@@ -242,6 +242,7 @@
   "js/tools/transform/Crop.js",
   "js/tools/transform/Flip.js",
   "js/tools/transform/Rotate.js",
+  "js/tools/transform/RotateNearestNeighbor.js",
   "js/tools/transform/TransformUtils.js",
 
   // Devtools

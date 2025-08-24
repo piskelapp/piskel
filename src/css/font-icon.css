@@ -43,6 +43,14 @@
   content: "\e604";
 }
 
+.piskel-icon-rotate-nearest-neighborleft:before {
+  content: "\e603";
+}
+
+.piskel-icon-rotate-nearest-neighborright:before {
+  content: "\e604";
+}
+
 .piskel-icon-fliph:before {
   content: "\e605";
 }

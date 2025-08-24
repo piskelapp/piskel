@@ -64,6 +64,62 @@
       return frame;
     },
 
+
+    rotateNearestNeighbor: function (frame, angle) {
+	  /**
+      * Rotates frame(s) using Nearest Neighbor interpolation.
+	  * Use 'alt' to set the angle in degrees. CCW is positive.
+	  *
+	  * Following the lead of the original rotation function, 
+	  * (_x,_y) is the pixel we want to SET
+	  * ( x, y) is the pixel that rotates TO (_x,_y)
+      **/
+
+	  angle = angle * (Math.PI/180); // convert degrees to radians
+	  
+	  var clone = frame.clone();
+      var w = frame.getWidth();
+      var h = frame.getHeight();
+	  
+	  // find center of frame
+	  var centerX = Math.floor(w / 2);
+	  var centerY = Math.floor(h / 2);
+
+	  var cosA = Math.cos(angle);
+	  var sinA = Math.sin(angle);
+	  
+	  // for each pixel in the new image, find the old pixel location we rotated FROM
+	  frame.forEachPixel(function (color, x, y) {
+	  
+	    // store the pixel we want to find the value of
+	    var _x = x;
+        var _y = y;
+		
+		//// Find the pixel that rotates TO the position we want to find
+		// Set origin to center of image to for rotation
+		var xshift = x - centerX;
+		var yshift = y - centerY;
+
+		// Apply rotation
+		x = Math.round(xshift * cosA - yshift * sinA);
+		y = Math.round(xshift * sinA + yshift * cosA);
+
+		// Convert the coordinates back to the rectangular grid
+        x += centerX;
+        y += centerY;
+
+		// Set pixel value in the rotated frame
+		if (clone.containsPixel(x, y)) { 
+          frame.setPixel(_x, _y, clone.getPixel(x, y));
+        } else {
+          frame.setPixel(_x, _y, Constants.TRANSPARENT_COLOR);
+        }
+	  });
+	  
+	  return frame;
+	},
+
+
     getBoundaries : function(frames) {
       var minx = +Infinity;
       var miny = +Infinity;
