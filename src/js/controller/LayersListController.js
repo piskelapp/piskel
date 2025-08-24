@@ -164,7 +164,7 @@
   };
 
   ns.LayersListController.prototype.onClick_ = function (evt) {
-    var el = evt.target || evt.srcElement
+    var el = evt.target || evt.srcElement;
     var index;
     if (el.classList.contains('layer-name')) {
       var currentIndex = this.piskelController.getCurrentLayerIndex();
@@ -180,7 +180,7 @@
       var opacity = window.prompt('Set layer opacity (value between 0 and 1)', layer.getOpacity());
       this.piskelController.setLayerOpacityAt(index, opacity);
     } else {
-      var containingButton = el.closest(".button");
+      var containingButton = el.closest('.button');
       if (containingButton && containingButton.classList.contains('button')) {
         this.onButtonClick_(containingButton, evt);
       }
