@@ -22,7 +22,6 @@
     this.piskelController = piskelController;
     this.preferencesController = preferencesController;
     this.sizePicker = new pskl.widgets.SizePicker(this.onSizePickerChanged_.bind(this));
-    this.spacingPicker = new pskl.widgets.SizePicker(this.onSpacingPickerChanged_.bind(this));
   };
 
   pskl.utils.inherit(ns.GridPreferencesController, pskl.controller.settings.AbstractSettingController);
@@ -42,39 +41,25 @@
     this.sizePicker.setSize(gridWidth);
 
     //Grid Spacing
-    var gridSpacing = pskl.UserSettings.get(pskl.UserSettings.GRID_SPACING);
-    this.spacingPicker.init(document.querySelector('.grid-spacing-container'));
-    this.spacingPicker.setSize(gridSpacing);
+    var gridSpacingInput = document.querySelector('.grid-spacing-input');
+    gridSpacingInput.value = pskl.UserSettings.get(pskl.UserSettings.GRID_SPACING);
+    this.addEventListener(gridSpacingInput, 'change', this.onGridSpacingChange_);
 
     // Grid color
-    var colorListItemTemplate = pskl.utils.Template.get('color-list-item-template');
-
     var gridColor = pskl.UserSettings.get(pskl.UserSettings.GRID_COLOR);
-    var gridColorSelect = document.querySelector('#grid-color');
-
-    var markup = '';
-    Object.keys(colorsMap).forEach(function (key, index) {
-      var background = colorsMap[key];
-      if (key === 'transparent') {
-        background = 'url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAIAAADZ' +
-            'F8uwAAAAGUlEQVQYV2M4gwH+YwCGIasIUwhT25BVBADtzYNYrHvv4gAAAABJRU5ErkJggg==)';
-      }
-      markup += pskl.utils.Template.replace(colorListItemTemplate, {
-        color: colorsMap[key],
-        title: key,
-        background: background,
-        ':selected': gridColor === colorsMap[key]
-      });
-    });
-    this.gridColorList = document.querySelector('.grid-colors-list');
-    this.gridColorList.innerHTML = markup;
-
-    this.addEventListener(this.gridColorList, 'click', this.onGridColorClicked_.bind(this));
+    var gridColorSelector = $('#grid-color-picker');
+    var spectrumCfg = {
+      showPalette: false,
+      showButtons: false,
+      showInput: true,
+      clickoutFiresChange : true,
+    };
+    gridColorSelector.spectrum($.extend({color: gridColor}, spectrumCfg));
+    gridColorSelector.change(this.onGridColorClicked_);
   };
 
   ns.GridPreferencesController.prototype.destroy = function () {
     this.sizePicker.destroy();
-    this.spacingPicker.destroy();
     this.superclass.destroy.call(this);
   };
 
@@ -82,8 +67,14 @@
     pskl.UserSettings.set(pskl.UserSettings.GRID_WIDTH, size);
   };
 
-  ns.GridPreferencesController.prototype.onSpacingPickerChanged_ = function (size) {
-    pskl.UserSettings.set(pskl.UserSettings.GRID_SPACING, size);
+  ns.GridPreferencesController.prototype.onGridSpacingChange_ = function (evt) {
+    var target = evt.target;
+    var gridSpacing = parseInt(target.value, 10);
+    if (gridSpacing && !isNaN(gridSpacing)) {
+      pskl.UserSettings.set(pskl.UserSettings.GRID_SPACING, gridSpacing);
+    } else {
+      target.value = pskl.UserSettings.get(pskl.UserSettings.GRID_SPACING);
+    };
   };
 
   ns.GridPreferencesController.prototype.onEnableGridChange_ = function (evt) {
@@ -91,11 +82,9 @@
   };
 
   ns.GridPreferencesController.prototype.onGridColorClicked_ = function (evt) {
-    var color = evt.target.dataset.color;
+    var color = evt.target.value;
     if (color) {
       pskl.UserSettings.set(pskl.UserSettings.GRID_COLOR, color);
-      this.gridColorList.querySelector('.selected').classList.remove('selected');
-      evt.target.classList.add('selected');
     }
   };
 })();
