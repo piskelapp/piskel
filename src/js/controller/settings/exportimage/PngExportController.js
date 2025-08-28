@@ -67,7 +67,7 @@
   };
 
   ns.PngExportController.prototype.updateDimensionLabel_ = function () {
-    var zoom = this.exportController.getExportZoom();
+    var zoom = this.getExportZoom_();
     var frames = this.piskelController.getFrameCount();
     var width = this.piskelController.getWidth() * zoom;
     var height = this.piskelController.getHeight() * zoom;
@@ -138,7 +138,7 @@
     var width = outputCanvas.width;
     var height = outputCanvas.height;
 
-    var zoom = this.exportController.getExportZoom();
+    var zoom = this.getExportZoom_();
     if (zoom != 1) {
       outputCanvas = pskl.utils.ImageResizer.resize(outputCanvas, width * zoom, height * zoom, false);
     }
@@ -230,11 +230,29 @@
     }.bind(this), 500);
   };
 
+  /**
+   * Get the export zoom with fallback for offline mode compatibility.
+   * This method ensures that scaling works correctly in both online and offline versions.
+   */
+  ns.PngExportController.prototype.getExportZoom_ = function () {
+    // Try to get zoom from the main export controller
+    if (this.exportController && typeof this.exportController.getExportZoom === 'function') {
+      var zoom = this.exportController.getExportZoom();
+      if (!isNaN(zoom) && zoom > 0) {
+        return zoom;
+      }
+    }
+    
+    // Fallback to user settings if export controller is unavailable or returns invalid value
+    var fallbackZoom = pskl.UserSettings.get(pskl.UserSettings.EXPORT_SCALE);
+    return (fallbackZoom && !isNaN(fallbackZoom) && fallbackZoom > 0) ? fallbackZoom : 1;
+  };
+
   ns.PngExportController.prototype.onDownloadSelectedFrameClick_ = function (evt) {
     var frameIndex = this.piskelController.getCurrentFrameIndex();
     var name = this.piskelController.getPiskel().getDescriptor().name;
     var canvas = this.piskelController.renderFrameAt(frameIndex, true);
-    var zoom = this.exportController.getExportZoom();
+    var zoom = this.getExportZoom_();
     if (zoom != 1) {
       canvas = pskl.utils.ImageResizer.resize(canvas, canvas.width * zoom, canvas.height * zoom, false);
     }
