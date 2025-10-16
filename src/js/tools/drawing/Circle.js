@@ -40,10 +40,13 @@
     var y;
     var angle;
     var r;
+    var v;
 
     if (penSize == 1) {
       for (x = coords.x0 ; x <= xC ; x++) {
-        angle = Math.acos((x - xC) / rX);
+        v = (x - xC) / rX;
+        if (v < -1 || v > 1) continue;
+        angle = Math.acos(v);
         y = Math.round(rY * Math.sin(angle) + yC);
         pixels.push([x - evenX, y]);
         pixels.push([x - evenX, 2 * yC - y - evenY]);
@@ -51,7 +54,9 @@
         pixels.push([2 * xC - x, 2 * yC - y - evenY]);
       }
       for (y = coords.y0 ; y <= yC ; y++) {
-        angle = Math.asin((y - yC) / rY);
+        v = (y - yC) / rY
+        if (v < -1 || v > 1) continue;
+        angle = Math.asin(v);
         x = Math.round(rX * Math.cos(angle) + xC);
         pixels.push([x, y - evenY]);
         pixels.push([2 * xC - x - evenX, y - evenY]);

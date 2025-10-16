@@ -18,8 +18,16 @@
    * @override
    */
   ns.ColorPicker.prototype.applyToolAt = function(col, row, frame, overlay, event) {
-    if (frame.containsPixel(col, row)) {
-      var sampledColor = pskl.utils.intToColor(frame.getPixel(col, row));
+    var targetCol = col;
+    var targetRow = row;
+
+    if (pskl.UserSettings.get('SEAMLESS_MODE')) {
+      targetCol = ((col % frame.getWidth()) + frame.getWidth()) % frame.getWidth();
+      targetRow = ((row % frame.getHeight()) + frame.getHeight()) % frame.getHeight();
+    }
+
+    if (frame.containsPixel(targetCol, targetRow)) {
+      var sampledColor = pskl.utils.intToColor(frame.getPixel(targetCol, targetRow));
       if (pskl.app.mouseStateService.isLeftButtonPressed()) {
         $.publish(Events.SELECT_PRIMARY_COLOR, [sampledColor]);
       } else if (pskl.app.mouseStateService.isRightButtonPressed()) {

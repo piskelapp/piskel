@@ -189,6 +189,11 @@
         for (var i = 0; i < 4; i++) {
           var nextCol = currentItem.col + dx[i];
           var nextRow = currentItem.row + dy[i];
+          
+          if (pskl.UserSettings.get('SEAMLESS_MODE')) {
+            nextCol = ((nextCol % frame.getWidth()) + frame.getWidth()) % frame.getWidth();
+            nextRow = ((nextRow % frame.getHeight()) + frame.getHeight()) % frame.getHeight();
+          }
           try {
             var connectedPixel = {'col': nextCol, 'row': nextRow};
             var isValid = pixelVisitor(connectedPixel);

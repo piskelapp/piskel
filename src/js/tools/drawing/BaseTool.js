@@ -31,7 +31,7 @@
   };
 
   ns.BaseTool.prototype.moveUnactiveToolAt = function (col, row, frame, overlay, event) {
-    if (overlay.containsPixel(col, row)) {
+    if (overlay.containsPixel(col, row) || pskl.UserSettings.get('SEAMLESS_MODE')) {
       this.updateHighlightedPixel(frame, overlay, col, row);
     } else {
       this.hideHighlightedPixel(overlay);

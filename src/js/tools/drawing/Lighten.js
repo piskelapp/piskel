@@ -29,9 +29,16 @@
   ns.Lighten.prototype.applyToolAt = function(col, row, frame, overlay, event) {
     this.previousCol = col;
     this.previousRow = row;
+    var targetCol = col;
+    var targetRow = row;
+  
+    if (pskl.UserSettings.get('SEAMLESS_MODE')) {
+      targetCol = ((col % frame.getWidth()) + frame.getWidth()) % frame.getWidth();
+      targetRow = ((row % frame.getHeight()) + frame.getHeight()) % frame.getHeight();
+    }
 
     var penSize = pskl.app.penSizeService.getPenSize();
-    var points = pskl.PixelUtils.resizePixel(col, row, penSize);
+    var points = pskl.PixelUtils.resizePixel(targetCol, targetRow, penSize);
     points.forEach(function (point) {
       var modifiedColor = this.getModifiedColor_(point[0], point[1], frame, overlay, event);
       this.draw(modifiedColor, point[0], point[1], frame, overlay);
