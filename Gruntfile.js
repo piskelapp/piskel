@@ -277,7 +277,7 @@ module.exports = function (grunt) {
         options: {
           downloadUrl: 'https://dl.nwjs.io/',
           version: "0.19.4",
-          build_dir: './dest/desktop/', // destination folder of releases.
+          outDir: './dest/desktop/', // destination folder of releases.
           win: true,
           linux32: true,
           linux64: true,
@@ -287,20 +287,36 @@ module.exports = function (grunt) {
       },
       macos: {
         options: {
-          downloadUrl: 'https://dl.nwjs.io/',
+          downloadUrl: 'https://dl.nwjs.io',
+          manifestUrl: 'https://nwjs.io/versions.json',
           osx64: true,
-          version: "0.19.4",
-          build_dir: './dest/desktop/',
+          version: "0.105.0",
+          outDir: './dest/desktop/',
           flavor: "normal",
+          app: {
+            name: "Piskel",
+            icon: "./misc/desktop/nw.icns",
+            LSApplicationCategoryType: "public.app-category.graphics-design",
+            CFBundleIdentifier: "com.piskelapp.piskel",
+            CFBundleName: "Piskel",
+            CFBundleDisplayName: "Piskel",
+            CFBundleSpokenName: "Piskel",
+            CFBundleVersion: releaseVersion,
+            CFBundleShortVersionString: releaseVersion,
+            NSHumanReadableCopyright: "Copyright © 2025 Piskel contributors",
+            NSLocalNetworkUsageDescription: "Piskel does not access the local network"
+          }
         },
         src: ['./dest/prod/**/*', "./package.json", "!./dest/desktop/"]
       },
+      // TODO: This is for Macbooks that are 2013 and older, consider deprecating this.
       macos_old: {
         options: {
-          downloadUrl: 'https://dl.nwjs.io/',
+          downloadUrl: 'https://dl.nwjs.io',
+          manifestUrl: 'https://nwjs.io/versions.json',
           osx64: true,
           version: "0.12.3",
-          build_dir: './dest/desktop/old',
+          outDir: './dest/desktop/old',
           flavor: "normal",
         },
         src: ['./dest/prod/**/*', "./package.json", "!./dest/desktop/"]
