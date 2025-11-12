@@ -79,6 +79,7 @@
     "width": 1000,
     "height": 700
   },
+  "chromium-args": "--disable-features=WebBluetooth,WebBluetoothNewPermissionsBackend,WebBluetoothGetDevices,WebBluetoothScanning,WebBluetoothWatchAdvertisements",
   "dependencies": {
     "minimist": "^1.2.5"
   }
