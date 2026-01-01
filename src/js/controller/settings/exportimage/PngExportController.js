@@ -239,7 +239,7 @@
       canvas = pskl.utils.ImageResizer.resize(canvas, canvas.width * zoom, canvas.height * zoom, false);
     }
 
-    var fileName = name + '-' + (frameIndex + 1) + '.png';
+    var fileName = name + '-' + (frameIndex + 1);
     this.downloadCanvas_(canvas, fileName);
   };
 })();
