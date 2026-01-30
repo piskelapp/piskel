@@ -12,6 +12,27 @@
   ns.MiscExportController.prototype.init = function () {
     var cDownloadButton = document.querySelector('.c-download-button');
     this.addEventListener(cDownloadButton, 'click', this.onDownloadCFileClick_);
+    this.addEventListener(document.querySelector('.apng-download-button'), 'click', this.onDownloadApngClick_);
+  };
+
+  ns.MiscExportController.prototype.onDownloadApngClick_ = function (evt) {
+    var fileName = this.piskelController.getPiskel().getDescriptor().name + '.apng';
+    var width = this.piskelController.getWidth();
+    var height = this.piskelController.getHeight();
+    var frameCount = this.piskelController.getFrameCount();
+    var fps = this.piskelController.getFPS();
+
+    const frameBuffers = Array.from({ length: frameCount }).map((_, i) => {
+      var render = this.piskelController.renderFrameAt(i, true);
+      var context = render.getContext('2d');
+      var imgd = context.getImageData(0, 0, width, height);
+      return imgd.data.buffer;
+    });
+    const dels = Array.from({ length: frameCount }).fill(1000 / fps);
+    const apngBuffer = UPNG.encodeLL(frameBuffers, width, height, 3, 1, 8, dels);
+    const file = new Blob([apngBuffer], { type: 'image/png' });
+
+    pskl.utils.FileUtils.downloadAsFile(file, fileName);
   };
 
   ns.MiscExportController.prototype.onDownloadCFileClick_ = function (evt) {

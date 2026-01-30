@@ -56,6 +56,9 @@
   // JSZip https://github.com/Stuk/jszip
   "js/lib/jszip/jszip.min.js",
 
+  // upng-js https://github.com/photopea/UPNG.js
+  'js/lib/apng/UPNG.js',
+
   "js/lib/scrollifneeded/scrollifneeded.js",
   // Smoothscroll: https://github.com/iamdustan/smoothscroll
   "js/lib/smoothscroll/smoothscroll.js",
@@ -204,7 +207,7 @@
   "js/service/keyboard/Shortcuts.js",
   "js/service/keyboard/ShortcutService.js",
   "js/service/ImportService.js",
-  "js/service/ImageUploadService.js",
+  // "js/service/ImageUploadService.js",
   "js/service/ClipboardService.js",
   "js/service/CurrentColorsService.js",
   "js/service/FileDropperService.js",
