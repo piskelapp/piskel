@@ -29,7 +29,7 @@
       return imgd.data.buffer;
     });
     const dels = Array.from({ length: frameCount }).fill(1000 / fps);
-    const apngBuffer = UPNG.encode(frameBuffers, width, height, 0, dels);
+    const apngBuffer = UPNG.encodeLL(frameBuffers, width, height, 3, 1, 8, dels);
     const file = new Blob([apngBuffer], { type: 'image/png' });
 
     pskl.utils.FileUtils.downloadAsFile(file, fileName);
