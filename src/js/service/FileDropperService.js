@@ -26,17 +26,26 @@
       y : event.clientY
     };
 
-    var files = event.dataTransfer.files;
+    var files = Array.from(event.dataTransfer.files);
     this.isMultipleFiles_ = (files.length > 1);
+    const loadedOrder = [];
+    const lastFrameIndex = this.piskelController.getCurrentFrameIndex();
 
-    for (var i = 0; i < files.length ; i++) {
-      var file = files[i];
-      var isImage = file.type.indexOf('image') === 0;
-      var isPiskel = /\.piskel$/i.test(file.name);
-      var isPalette = /\.(gpl|txt|pal)$/i.test(file.name);
+    for (let i = 0; i < files.length ; i++) {
+      let file = files[i];
+      const isImage = file.type.indexOf('image') === 0;
+      const isPiskel = /\.piskel$/i.test(file.name);
+      const isPalette = /\.(gpl|txt|pal)$/i.test(file.name);
       if (isImage) {
         pskl.utils.FileUtils.readImageFile(file, function (image) {
+          // keep it drag-drop order
+          loadedOrder.push(i);
           this.onImageLoaded_(image, file);
+
+          if (loadedOrder.length === files.length)
+            if(this.isMultipleFiles_) {
+              this.resortImportOrders_(lastFrameIndex, loadedOrder);
+            }
         }.bind(this));
       } else if (isPiskel) {
         pskl.utils.PiskelFileUtils.loadFromFile(file, this.onPiskelFileLoaded_, this.onPiskelFileError_);
@@ -98,4 +107,48 @@
     });
   };
 
+  /**
+   * Resort imported images to the dragged order
+   * 
+   * @param {number} startIndex ordered index
+   * @param {number[]} order insert order. start from 0
+   */
+  ns.FileDropperService.prototype.resortImportOrders_ = function (startIndex, order) {
+    const indexedOrder = order.map((o) => o + startIndex + 1);
+    const sorted = [...indexedOrder].sort((a, b) => a - b);
+
+    let currentPositions = new Map();
+    for (let i = 0; i < indexedOrder.length; i++) {
+      currentPositions.set(indexedOrder[i], startIndex + 1 + i);
+    }
+
+    for (let targetIdx = 0; targetIdx < sorted.length; targetIdx++) {
+      const targetValue = sorted[targetIdx];
+      const targetAbsolutePos = startIndex + 1 + targetIdx;
+
+      const currentPos = currentPositions.get(targetValue);
+
+      if (currentPos === targetAbsolutePos)
+        continue;
+
+      this.piskelController.moveFrame(currentPos, targetAbsolutePos);
+
+      // update others location
+      if (currentPos < targetAbsolutePos) {
+        for (let [value, pos] of currentPositions) {
+          if (pos > currentPos && pos <= targetAbsolutePos) {
+            currentPositions.set(value, pos - 1);
+          }
+        }
+      } else {
+        for (let [value, pos] of currentPositions) {
+          if (pos >= targetAbsolutePos && pos < currentPos) {
+            currentPositions.set(value, pos + 1);
+          }
+        }
+      }
+
+      currentPositions.set(targetValue, targetAbsolutePos);
+    }
+  }
 })();
