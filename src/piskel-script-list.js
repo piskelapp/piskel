@@ -56,7 +56,7 @@
   // JSZip https://github.com/Stuk/jszip
   "js/lib/jszip/jszip.min.js",
 
-  // @pdf-lib/upng https://github.com/Hopding/upng
+  // upng-js https://github.com/photopea/UPNG.js
   'js/lib/apng/UPNG.js',
 
   "js/lib/scrollifneeded/scrollifneeded.js",
