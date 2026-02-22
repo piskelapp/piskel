@@ -67,7 +67,7 @@
   };
 
   ns.PngExportController.prototype.updateDimensionLabel_ = function () {
-    var zoom = this.exportController.getExportZoom();
+    var zoom = this.getExportZoom_();
     var frames = this.piskelController.getFrameCount();
     var width = this.piskelController.getWidth() * zoom;
     var height = this.piskelController.getHeight() * zoom;
@@ -138,7 +138,7 @@
     var width = outputCanvas.width;
     var height = outputCanvas.height;
 
-    var zoom = this.exportController.getExportZoom();
+    var zoom = this.getExportZoom_();
     if (zoom != 1) {
       outputCanvas = pskl.utils.ImageResizer.resize(outputCanvas, width * zoom, height * zoom, false);
     }
@@ -230,11 +230,40 @@
     }.bind(this), 500);
   };
 
+  /**
+   * Get the export zoom level with a fallback for offline mode.
+   *
+   * In the online version, ExportController manages the zoom via DOM inputs.
+   * In the offline version (Piskel Desktop), ExportController may not be fully
+   * initialized, causing getExportZoom() to return NaN. This method falls back
+   * to the persisted EXPORT_SCALE user setting to guarantee a valid zoom value.
+   *
+   * @return {number} The export zoom level (>= 1).
+   */
+  ns.PngExportController.prototype.getExportZoom_ = function () {
+    // Primary: delegate to ExportController (online / fully initialized case).
+    if (this.exportController && typeof this.exportController.getExportZoom === 'function') {
+      var zoom = this.exportController.getExportZoom();
+      if (!isNaN(zoom) && zoom > 0) {
+        return zoom;
+      }
+    }
+
+    // Fallback: read the persisted user setting directly.
+    var savedZoom = pskl.UserSettings.get(pskl.UserSettings.EXPORT_SCALE);
+    if (!isNaN(savedZoom) && savedZoom > 0) {
+      return savedZoom;
+    }
+
+    // Last resort: default to 1x.
+    return 1;
+  };
+
   ns.PngExportController.prototype.onDownloadSelectedFrameClick_ = function (evt) {
     var frameIndex = this.piskelController.getCurrentFrameIndex();
     var name = this.piskelController.getPiskel().getDescriptor().name;
     var canvas = this.piskelController.renderFrameAt(frameIndex, true);
-    var zoom = this.exportController.getExportZoom();
+    var zoom = this.getExportZoom_();
     if (zoom != 1) {
       canvas = pskl.utils.ImageResizer.resize(canvas, canvas.width * zoom, canvas.height * zoom, false);
     }
