@@ -41,4 +41,9 @@
     $.publish(Events.DRAG_END);
   };
 
+  /** @override */
+  ns.RectangleSelect.prototype.isResizeEnabled_ = function () {
+    return true;
+  };
+
 })();

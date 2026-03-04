@@ -204,7 +204,6 @@
   "js/service/keyboard/Shortcuts.js",
   "js/service/keyboard/ShortcutService.js",
   "js/service/ImportService.js",
-  "js/service/ImageUploadService.js",
   "js/service/ClipboardService.js",
   "js/service/CurrentColorsService.js",
   "js/service/FileDropperService.js",
