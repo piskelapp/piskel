@@ -41,14 +41,28 @@
     this.lastMoveCol = col;
     this.lastMoveRow = row;
 
-    // The select tool can be in two different state.
+    // The select tool can be in three different state.
     // If the initial click of the tool is not on a selection, we go in 'select'
     // mode to create a selection.
+    // If the initial click of the tool is at the bottom right of the selection, we go in 'resize'
+    // mode to allow to resize the selection.
     // If the initial click is on a previous selection, we go in 'moveSelection'
     // mode to allow to move the selection by drag'n dropping it.
     if (!this.isInSelection(col, row)) {
       this.mode = 'select';
       this.onSelectStart_(col, row, frame, overlay);
+    } else if (this.isResizeEnabled_() && this.isAtBottomRight_(col, row)) {
+      this.mode = 'resize';
+      if (this.isMovingContent_) {
+        this.referenceFrame = pskl.model.Frame.createEmptyFromFrame(frame);
+        this.selection.pasteToFrame(this.referenceFrame);
+      } else {
+        this.isMovingContent_ = true;
+        this.referenceFrame = frame.clone();
+        $.publish(Events.CLIPBOARD_CUT);
+      }
+      this.drawSelectionOnOverlay_(overlay);
+      this.onSelectionResizeStart_(col, row, frame, overlay);
     } else {
       this.mode = 'moveSelection';
       if (event.shiftKey && !this.isMovingContent_) {
@@ -64,7 +78,9 @@
    * @override
    */
   ns.BaseSelect.prototype.moveToolAt = function(col, row, frame, overlay, event) {
-    if (this.mode == 'select') {
+    if (this.mode == 'resize') {
+      this.onSelectionResize_(col, row, frame, overlay);
+    } else if (this.mode == 'select') {
       this.onSelect_(col, row, frame, overlay);
     } else if (this.mode == 'moveSelection') {
       this.onSelectionMove_(col, row, frame, overlay);
@@ -89,14 +105,22 @@
    */
   ns.BaseSelect.prototype.moveUnactiveToolAt = function(col, row, frame, overlay, event) {
     if (overlay.containsPixel(col, row)) {
-      if (this.isInSelection(col, row)) {
+      var resizeToolId = 'tool-resize';
+      if (this.isResizeEnabled_() && this.isAtBottomRight_(col, row)) {
+        // We're hovering the bottom right of selection, show the resize tool:
+        document.body.classList.add(resizeToolId);
+        document.body.classList.remove(this.toolId);
+        document.body.classList.remove(this.secondaryToolId);
+      } else if (this.isInSelection(col, row)) {
         // We're hovering the selection, show the move tool:
         document.body.classList.add(this.secondaryToolId);
         document.body.classList.remove(this.toolId);
+        document.body.classList.remove(resizeToolId);
       } else {
         // We're not hovering the selection, show create selection tool:
         document.body.classList.add(this.toolId);
         document.body.classList.remove(this.secondaryToolId);
+        document.body.classList.remove(resizeToolId);
       }
     }
 
@@ -109,6 +133,87 @@
     return this.selection && this.selection.pixels.some(function (pixel) {
       return pixel.col === col && pixel.row === row;
     });
+  };
+
+  ns.BaseSelect.prototype.isAtBottomRight_ = function (col, row) {
+    var bottomRight = this.getSelectionBottomRight_();
+    if (!bottomRight) {
+      return false;
+    }
+
+    return bottomRight.col === col && bottomRight.row === row;
+  };
+
+  ns.BaseSelect.prototype.getSelectionTopLeft_ = function () {
+    if (!this.selection || !this.selection.pixels.length) {
+      return null;
+    }
+    return this.selection.pixels[0];
+  };
+
+  ns.BaseSelect.prototype.getSelectionBottomRight_ = function () {
+    if (!this.selection) {
+      return null;
+    }
+    var lastPixel = this.selection.pixels[this.selection.pixels.length - 1];
+    if (!lastPixel) {
+      return null;
+    }
+
+    return lastPixel;
+  };
+
+  ns.BaseSelect.getScaleFactor_ = function (
+    selectionTopLeft, col, row, originalSelectionWidth, originalSelectionHeight
+  ) {
+    var currentWidth = col - selectionTopLeft.col + 1;
+    var currentHeight = row - selectionTopLeft.row + 1;
+
+    var currentFactorH = currentWidth / originalSelectionWidth;
+    var currentFactorV = currentHeight / originalSelectionHeight;
+
+    var roundedFactorH = Math.floor(currentFactorH);
+    var roundedFactorV = Math.floor(currentFactorV);
+
+    var clampedFactorH = Math.max(1, roundedFactorH);
+    var clampedFactorV = Math.max(1, roundedFactorV);
+
+    return { h: clampedFactorH, v: clampedFactorV };
+  };
+
+  ns.BaseSelect.prototype.resizeSelection_ = function (selectionTopLeft, scaleFactor, reference) {
+    var newSelectionX2 = selectionTopLeft.col + this.originalSelectionWidth * scaleFactor.h - 1;
+    var newSelectionY2 = selectionTopLeft.row + this.originalSelectionHeight * scaleFactor.v - 1;
+    // resize only works for rectangle select for now
+    var newSelection = new pskl.selection.RectangularSelection(
+      selectionTopLeft.col, selectionTopLeft.row,
+      newSelectionX2, newSelectionY2
+    );
+
+    var tmpFrame = pskl.model.Frame.createEmptyFromFrame(reference);
+
+    for (var i = 0; i < this.selection.pixels.length; i++) {
+      var selectionPixel = this.selection.pixels[i];
+      var color = reference.getPixel(selectionPixel.col, selectionPixel.row);
+
+      if (!color) {
+        continue;
+      }
+
+      var relativeCol = selectionPixel.col - selectionTopLeft.col;
+      var relativeRow = selectionPixel.row - selectionTopLeft.row;
+
+      for (var x = 0; x < scaleFactor.h; x++) {
+        for (var y = 0; y < scaleFactor.v; y++) {
+          var col = selectionTopLeft.col + relativeCol * scaleFactor.h + x;
+          var row = selectionTopLeft.row + relativeRow * scaleFactor.v + y;
+          tmpFrame.setPixel(col, row, color);
+        }
+      }
+    }
+    newSelection.fillSelectionFromFrame(tmpFrame);
+    this.selection = newSelection;
+    $.publish(Events.SELECTION_CREATED, [this.selection]);
   };
 
   /**
@@ -156,6 +261,11 @@
     return color.toRgbString();
   }, {});
 
+  /** @protected */
+  ns.BaseSelect.prototype.isResizeEnabled_ = function () {
+    return false;
+  };
+
   // The list of callbacks to implement by specialized tools to implement the selection creation behavior.
   /** @protected */
   ns.BaseSelect.prototype.onSelectStart_ = function (col, row, frame, overlay) {};
@@ -189,5 +299,31 @@
   /** @private */
   ns.BaseSelect.prototype.onSelectionMoveEnd_ = function (col, row, frame, overlay) {
     this.onSelectionMove_(col, row, frame, overlay);
+  };
+
+  // The list of callbacks that define the drag'n drop behavior of selection resize.
+  /** @private */
+  ns.BaseSelect.prototype.onSelectionResizeStart_ = function (col, row, frame, overlay) {
+    this.scaleFactor = { h: 1, v: 1};
+
+    var selectionTopLeft = this.getSelectionTopLeft_();
+    var selectionBottomRight = this.getSelectionBottomRight_();
+    this.originalSelectionWidth = selectionBottomRight.col - selectionTopLeft.col + 1;
+    this.originalSelectionHeight = selectionBottomRight.row - selectionTopLeft.row + 1;
+  };
+  /** @private */
+  ns.BaseSelect.prototype.onSelectionResize_ = function (col, row, frame, overlay) {
+    var selectionTopLeft = this.getSelectionTopLeft_();
+    var newScaleFactor = ns.BaseSelect.getScaleFactor_(
+      selectionTopLeft, col, row, this.originalSelectionWidth, this.originalSelectionHeight
+    );
+    if (newScaleFactor.h !== this.scaleFactor.h || newScaleFactor.v !== this.scaleFactor.v) {
+      this.resizeSelection_(selectionTopLeft, newScaleFactor, this.referenceFrame);
+    }
+
+    this.scaleFactor = newScaleFactor;
+
+    overlay.clear();
+    this.drawSelectionOnOverlay_(overlay);
   };
 })();

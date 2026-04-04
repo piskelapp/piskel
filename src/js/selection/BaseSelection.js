@@ -48,4 +48,13 @@
     // paste event selections.
     this.time = Date.now();
   };
+
+  ns.BaseSelection.prototype.pasteToFrame = function (targetFrame) {
+    this.pixels.forEach(function (pixel) {
+      if (pixel.color === Constants.TRANSPARENT_COLOR || pixel.color === null) {
+        return;
+      }
+      targetFrame.setPixel(pixel.col, pixel.row, pixel.color);
+    });
+  };
 })();

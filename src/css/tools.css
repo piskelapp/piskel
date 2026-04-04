@@ -70,6 +70,10 @@
   cursor: url(../img/cursors/hand.png) 7 7, pointer;
 }
 
+.tool-resize .drawing-canvas-container:hover {
+  cursor: se-resize;
+}
+
 .tool-rectangle-select .drawing-canvas-container:hover,
 .tool-lasso-select .drawing-canvas-container:hover {
   cursor: crosshair;
