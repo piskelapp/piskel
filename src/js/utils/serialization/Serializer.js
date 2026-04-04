@@ -22,6 +22,10 @@
         return pskl.utils.serialization.Serializer.serializeLayer(l);
       });
 
+      // pixelon serialize
+      const serializedPixelOn =
+        pskl.utils.serialization.Serializer.serializePixelOn(pskl.app.pixelOnController.getPixelOn());
+      
       return JSON.stringify({
         modelVersion : Constants.MODEL_VERSION,
         piskel : {
@@ -32,9 +36,30 @@
           width : piskel.getWidth(),
           layers : serializedLayers,
           hiddenFrames : piskel.hiddenFrames,
+          pixelOn: serializedPixelOn,
         }
       });
     },
+
+    // pixelon serialize
+    serializePixelOn : function (pixelOn) {
+      // Map만 직렬화
+      const mapArray = [...pixelOn.imageStore.entries()];
+      const imageStore = JSON.stringify(mapArray);
+
+      // 나머지 모두 직렬화
+      return JSON.stringify({
+        pixelOnVersion: Constants.PIXELON_VERSION,
+        pixelOn: {
+          width: pixelOn.getWidth(),
+          height: pixelOn.getHeight(),
+          generateCount: pixelOn.getGenerateCount(),
+          imageStore: imageStore,
+          sessions: pixelOn.getSessions()
+        }
+      })
+    },
+    // -------------------
 
     serializeLayer : function (layer) {
       var frames = layer.getFrames();

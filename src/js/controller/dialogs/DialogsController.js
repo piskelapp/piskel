@@ -29,6 +29,10 @@
     'browse-backups' : {
       template : 'templates/dialogs/browse-backups.html',
       controller : ns.backups.BrowseBackups
+    },
+    'pixel-on-detail': {
+      template: 'templates/dialogs/pixel-on-detail.html',
+      controller: ns.PixelOnDetailController
     }
   };
 

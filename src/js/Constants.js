@@ -1,8 +1,8 @@
 // TODO(grosbouddha): put under pskl namespace.
 var Constants = {
   DEFAULT : {
-    HEIGHT : 32,
-    WIDTH : 32,
+    HEIGHT : 64,
+    WIDTH : 64,
     FPS : 12,
     LAYER_OPACITY : 0.2
   },
@@ -64,5 +64,11 @@ var Constants = {
   CONFIRM_OVERWRITE: 'This will replace your current animation, are you sure you want to continue?',
 
   // SERVICE URLS
-  APPENGINE_SAVE_URL : 'save'
+  APPENGINE_SAVE_URL : 'save',
+
+  // Add PixelOn Constant
+  GENERATE_COUNT: 4,
+
+  // PixelOn
+  PIXELON_VERSION: 0,
 };

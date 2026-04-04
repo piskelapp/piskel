@@ -78,6 +78,8 @@
   "js/model/frame/RenderedFrame.js",
   "js/model/Palette.js",
   "js/model/Piskel.js",
+  "js/model/pixelOn/AiSession.js",
+  "js/model/PixelOn.js",
 
   // Database (IndexedDB)
   "js/database/BackupDatabase.js",
@@ -119,12 +121,15 @@
   "js/controller/ToolController.js",
   "js/controller/PaletteController.js",
   "js/controller/PalettesListController.js",
+  "js/controller/AiAssistantController.js",
   "js/controller/PenSizeController.js",
   "js/controller/ProgressBarController.js",
   "js/controller/NotificationController.js",
   "js/controller/TransformationsController.js",
   "js/controller/CanvasBackgroundController.js",
   "js/controller/UserWarningController.js",
+  "js/controller/AiGeneratorController.js",
+  "js/controller/pixelOn/PixelOnController.js",
 
   // Settings sub-controllers
   "js/controller/settings/AbstractSettingController.js",
@@ -161,6 +166,8 @@
   "js/controller/dialogs/importwizard/ImportWizard.js",
   "js/controller/dialogs/PerformanceInfoController.js",
   "js/controller/dialogs/UnsupportedBrowserController.js",
+    ////////////////////////////////////////////////////////////////////////
+  "js/controller/dialogs/PixelOnDetailController.js",
 
   // Dialogs controller
   "js/controller/dialogs/DialogsController.js",
@@ -211,6 +218,7 @@
   "js/service/MouseStateService.js",
   "js/service/performance/PerformanceReport.js",
   "js/service/performance/PerformanceReportService.js",
+  "js/service/SDController.js",
 
   // Tools
   "js/tools/ToolsHelper.js",

@@ -80,6 +80,7 @@
     "height": 700
   },
   "dependencies": {
-    "minimist": "^1.2.5"
+    "minimist": "^1.2.5",
+    "socket.io-client": "^4.8.1"
   }
 }

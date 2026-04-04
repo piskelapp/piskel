@@ -123,7 +123,8 @@ module.exports = function (grunt) {
         options: {
           separator: ';'
         },
-        src: piskelScripts,
+        // 소켓 통신 지원을 위한 라이브러리 추가
+        src: ['node_modules/socket.io-client/dist/socket.io.js'].concat(piskelScripts),
         dest: 'dest/prod/js/piskel-packaged' + version + '.js'
       },
       css: {

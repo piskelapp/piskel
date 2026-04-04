@@ -25,9 +25,19 @@
       var fps = Constants.DEFAULT.FPS;
       var descriptor = new pskl.model.piskel.Descriptor('New Piskel', '');
       var piskel = new pskl.model.Piskel(size.width, size.height, fps, descriptor);
-
       var layer = new pskl.model.Layer('Layer 1');
       var frame = new pskl.model.Frame(size.width, size.height);
+
+      // New PixelOn 
+      var pixelOn = new pskl.model.PixelOn(size.width, size.height, Constants.GENERATE_COUNT)
+      var pixelOnController = new pskl.controller.pixelOn.PixelOnController(pixelOn)
+      pskl.app.pixelOnController = pixelOnController;
+      pixelOnController.init()
+
+      // New SDController
+      var sdController = new pskl.service.SDController();
+      sdController.startHeartbeat();
+       pskl.app.sdController = sdController;
 
       layer.addFrame(frame);
       piskel.addLayer(layer);
@@ -58,6 +68,9 @@
 
       this.palettesListController = new pskl.controller.PalettesListController(this.currentColorsService);
       this.palettesListController.init();
+
+      this.aiGeneratorController = new pskl.controller.AiGeneratorController(this.piskelController);
+      this.aiGeneratorController.init();
 
       this.cursorCoordinatesController = new pskl.controller.CursorCoordinatesController(this.piskelController);
       this.cursorCoordinatesController.init();
@@ -188,6 +201,8 @@
         });
       });
 
+      // ToDo subscribe(Evnets.EXTERNAL_PIXLON_READY, function() {});
+
       if (pskl.devtools) {
         pskl.devtools.init();
       }
@@ -246,4 +261,3 @@
     }
   };
 })();
-

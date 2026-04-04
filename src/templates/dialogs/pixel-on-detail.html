@@ -1,0 +1,162 @@
+
+<script type="text/template" id="templates/dialogs/pixel-on-detail.html">
+    <div class="dialog pixel-on-detail-dialog" data-dialog-id="pixel-on-detail">
+        <div class="dialog-header dialog-head">
+            <h2 class="dialog-title text-wrapper-2">AI Generator</h2>
+            <button type="button" class="dialog-close text-wrapper-3" data-p-action="close">&times;</button>
+        </div>
+        <div class="dialog-content">
+            <div class="detail-columns-container">
+                <div class="history-column">
+                    <div class="history-header">
+                        <div class="title-3">
+                            <h2>History (latest)</h2>
+                        </div>
+                    </div>
+                    <div class="history-contents">
+                        <ul class="history-list" id="selectable-list">
+                            <li class="add-frame-action" id="new-session">
+                                <div class="add-frame-action-icon icon-frame-plus-white"></div>
+                                <div class="label">New Session</div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="prompt-column">
+                    <div class="prompt-column.panel-header">
+                        <h2>Prompts & Setting</h2>
+                    </div>
+                    <div class="prompt-group">
+                        <label>Positive Prompt</label>
+                        <div class="tag-input-container positive-prompt-container">
+                            <input type="text" class="tag-input" placeholder="Add a tag and press Enter">
+                        </div>
+                    </div>
+                    <div class="prompt-group">
+                        <label class="negative-prompt-label">Negative Prompt</label>
+                        <div class="tag-input-container negative-prompt-container">
+                            <input type="text" class="tag-input" placeholder="Add a tag and press Enter">
+                        </div>
+                    </div>
+                    <div class="preset-section">
+                        <div class="preset-header">
+                            <h3>Preset</h3>
+                            <span class="preset-status">None</span>
+                        </div>
+                        <div class="preset-buttons">
+                            <button class="preset-button active" data-preset="general">General</button>
+                            <button class="preset-button" data-preset="character">Character</button>
+                            <button class="preset-button" data-preset="sd character">SD Character</button>
+                            <button class="preset-button" data-preset="background">Background</button>
+                        </div>
+                    </div>
+                    <!-- <button class="button test-image-button">Test Image</button> -->
+                    <div class="generation-controls">
+                        <div class="control-row">
+                            <div class="toggleable-settings-group" id="color-seed-settings">
+                                <div class="toggle-header">
+                                    <button type="button" class="toggle-arrow">▶</button>
+                                    <span class="toggle-summary"></span>
+                                </div>
+                                <div class="toggle-content" style="display: none;">
+                                    <div class="control-group">
+                                        <label>Colors</label>
+                                        <input type="number" class="colors-input" value="48">
+                                    </div>
+                                    <div class="control-group">
+                                        <label>Seed</label>
+                                        <input type="number" class="seed-input" value="-1">
+                                    </div>
+                                    <span class="color-warning-text" style="display: none;">Recommended: 8~48</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="control-row">
+                            <div class="control-group">
+                                <label>Resolution</label>
+                                <div class="resolution-inputs">
+                                    <input type="number" class="resolution-input" data-param="width" value="28">
+                                    <div class="resolution-shortcuts">
+                                        <button class="shortcut-button" data-size="64">64</button>
+                                        <button class="shortcut-button" data-size="128">128</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label>Count</label>
+                                <input type="number" class="count-input" value="16">
+                            </div>
+                            <button class="button-primary generate-button">Generate</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="result-column">
+                    <div class="title-3 result-header">
+                        <h2>Result</h2>
+                        <div class="select-controls" style="display: none;">
+                            <span class="selected-count">0 selected</span>
+                            <button class="cancel-select-button">Cancel Select</button>
+                            <button class="delete-select-button">Delete Select</button>
+                        </div>
+                    </div>
+                    <div class="result-wrapper">
+                        <div class="result-section">
+                            <div class="result-viewer" style="height: 100%;">
+                                <div class="result-container"></div>
+                            </div>
+                        </div>
+                        <div class="button-section">
+                            <div class="so-what">
+                                <div class="CMD">
+                                    <span class="status-text"></span>
+                                </div>
+                                <div class="result-actions-group">
+                                    <button class="button move-to-frame-button" rel="tooltip" data-placement="top" title="Move selected images to new frames">Move to Frame</button>
+                                    <button class="button move-to-layer-button" rel="tooltip" data-placement="top" title="Move selected image to a new layer">Move to Layer</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="dialog-footer" style="display: none;">
+            <button type="button" class="button cancel-button" data-p-action="close">Close</button>
+        </div>
+        <div class="dialog-footer" style="display: none;">
+            <button type="button" class="button export-button" data-p-action="close">Export</button>
+        </div>
+
+        <script type="text/template" id="image-frame-template">
+            <div class="image-frame" uuid="{{uuid}}">
+                <div class="canvas-background"></div>
+                <img class="image-dimensions-source" src="{{img}}" style="display: none;" />
+                <div class="image" style="background-repeat: no-repeat; background-image: url(&quot;{{img}}&quot;)"></div>
+                <div class="image-overlay-actions">
+                    <div class="overlay-top">
+                        <button class="button image-action-transfer-prompt">Transfer Prompt</button>
+                    </div>
+                    <div class="overlay-bottom">
+                        <button class="button image-action-delete">Delete</button>
+                    </div>
+                </div>
+                <div class="image-actions">
+                    <button class="image-menu-button">...</button>
+                </div>
+            </div>
+        </script>
+
+        <script type="text/template" id="history-block-template">
+            <li class="history-block" uuid="{{uuid}}">
+                <span class="history-item-name">{{historyName}}</span>
+                <div class="history-item-actions">
+                    <button class="history-item-menu-button">...</button>
+                    <div class="history-item-menu" style="display: none;">
+                        <button class="history-item-action-rename">Rename</button>
+                        <button class="history-item-action-delete">Delete</button>
+                    </div>
+                </div>
+            </li>
+        </script>
+    </div>
+</script>

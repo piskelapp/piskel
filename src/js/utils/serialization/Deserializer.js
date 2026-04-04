@@ -41,7 +41,40 @@
 
     this.layersToLoad_ = piskelData.layers.length;
     piskelData.layers.forEach(this.deserializeLayer.bind(this));
+
+    //pixelon
+    if (piskelData.pixelOn) {
+      console.log(piskelData.pixelOn)
+      this.deserializePixelOn(piskelData.pixelOn);
+    }
+
   };
+
+  // pixelon
+  ns.Deserializer.prototype.deserializePixelOn = function(d) {
+    // 상관 없으니, app에 직접 pixelOn 등록
+    // Map 역 직렬화
+    var data_ = JSON.parse(d);
+    var data = data_.pixelOn;
+    var pixelOn_ = new pskl.model.PixelOn(data.width, data.height, data.generateCount);
+    var mapArray = JSON.parse(data.imageStore);
+    var imageStore = new Map(mapArray);
+    pixelOn_.imageStore = imageStore;
+
+    // session object 화
+    var sessions = []
+    data.sessions.forEach((s) => {
+      var session = new pskl.model.pixelOn.AiSession(s.name, s.spec);
+      session.uuid = s.uuid;
+      session.createdAt = s.createdAt;
+      session.imageUuidsList = s.imageUuidsList;
+      sessions.push(session)
+    })
+    pixelOn_.sessions = sessions;
+
+    pskl.app.pixelOnController.setPixelOn(pixelOn_);
+  };
+  // -------
 
   ns.Deserializer.prototype.deserializeLayer = function (layerString, index) {
     var layerData = JSON.parse(layerString);

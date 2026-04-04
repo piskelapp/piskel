@@ -50,6 +50,12 @@
   padding-bottom: 20px;
 }
 
+.toolbox-container-wrapper {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+}
+
 .drawing-canvas-container {
   font-size: 0;
 }

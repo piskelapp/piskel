@@ -1,0 +1,184 @@
+/* ============================================== */
+/* 0. Top-level Container */
+/* ============================================== */
+.ai-generator-container {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    border-bottom: 1px solid #333;
+}
+
+.ai-generator-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Align items to each end */
+    text-align: left;
+    padding: 4px 10px;
+    margin: 0;
+    min-height: 25px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #FFFFFF;
+    border-bottom: 1px solid #333;
+}
+
+/* ============================================== */
+/* 2. Content Wrapper */
+/* ============================================== */
+.ai-generator-content {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 5px;
+    padding: 0 10px;
+}
+
+/* ============================================== */
+/* 3. Positive Prompt Section */
+/* ============================================== */
+.ai-generator-prompt-section {
+    padding: 0;
+    flex-direction: column;
+    display: flex;
+}
+
+.ai-generator-label {
+    font-size: 11px;
+    color: #ccc;
+    margin-bottom: 3px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.ai-generator-prompt {
+    width: 100%;
+    padding: 5px 0;
+    text-indent: 8px;
+    font-family: inherit;
+    font-size: 12px;
+    background: #000000;
+    color: #ffffff;
+    border: 1px solid #ffffff;
+    border-radius: 3px;
+    min-height: 100px;
+    resize: none;
+}
+
+.status-text {
+    font-size: 11px;
+    color: #FFFFFF;
+    margin-top: 5px;
+    min-height: 14px;
+}
+
+/* ============================================== */
+/* 4. Button Section */
+/* ============================================== */
+.ai-generator-buttons-bottom {
+    padding: 0;
+    flex-direction: row;
+    display: flex;
+    gap: 0;
+    margin: 5px -10px 0;
+}
+
+.ai-generator-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px 12px;
+    margin: 0;
+    font-weight: bold;
+    font-size: 13px;
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 50%;
+    width: auto;
+    background: #3a3a3a;
+    border: 1px solid #222;
+    color: #fff;
+    border-radius: 0;
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.4);
+    transition: background 0.2s;
+}
+
+/* ================================================================== */
+/*                         TAG INPUT STYLES (AI-GENERATOR)            */
+/* ================================================================== */
+.ai-generator-container .tag-input-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 4px;
+    background-color: #000000;
+    border: 1px solid #ffffff;
+    border-radius: 3px;
+    padding: 5px;
+    min-height: 50px;
+    cursor: text;
+    max-height: 100px;
+    overflow-y: auto;
+}
+
+.ai-generator-container .tag-item {
+    display: flex;
+    align-items: center;
+    background-color: #555;
+    color: #E0E0E0;
+    border-radius: 10px;
+    padding: 2px 8px;
+    font-size: 12px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.ai-generator-container .tag-item.tag-to-delete {
+    background-color: #ff4d4d;
+    color: white;
+}
+
+.ai-generator-container .tag-remove-button {
+    margin-left: 6px;
+    background: none;
+    border: none;
+    color: #E0E0E0;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 0;
+    line-height: 1;
+}
+
+.ai-generator-container .tag-input {
+    flex-grow: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #E0E0E0;
+    font-size: 12px;
+    min-width: 80px;
+    padding: 2px 0;
+}
+
+/* ================================================================== */
+/*                         HELP BUTTON                                */
+/* ================================================================== */
+.pixelon-help-button {
+    height: 18px;
+    width: 18px;
+    border-radius: 50%;
+    background-color: #555;
+    border: 1px solid #888;
+    color: #fff;
+    font-weight: bold;
+    font-size: 12px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    transition: background-color 0.2s ease;
+}
+
+.pixelon-help-button:hover {
+    background-color: #777;
+}
