@@ -1,6 +1,6 @@
 #dialog-container.import {
-  width: 500px;
-  height: 350px;
+  width: 575px;
+  height: 405px;
   top : 50%;
   left : 50%;
   position : absolute;
@@ -83,11 +83,11 @@
   display: inline-block;
   border: 1px dashed #999;
   border-radius: 3px;
-  margin-left: 50%;
+  margin-left: 250px;
   top: 10px;
 
-  width: 220px;
-  height: 220px;
+  width: 300px;
+  height: 300px;
   display: flex;
   align-items: center;
   justify-content: center;
