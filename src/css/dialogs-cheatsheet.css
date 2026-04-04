@@ -202,6 +202,10 @@
   background-image: url(../img/icons/tools/tool-paint-bucket.png);
 }
 
+.cheatsheet-icon-tool-outliner {
+  background-image: url(../img/icons/tools/tool-outliner.png);
+}
+
 .cheatsheet-icon-tool-pen {
   background-image: url(../img/icons/tools/tool-pen.png);
 }

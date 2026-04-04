@@ -31,7 +31,8 @@
       LASSO_SELECT : createShortcut('tool-lasso-select', 'Lasso selection', 'H'),
       LIGHTEN : createShortcut('tool-lighten', 'Lighten tool', 'U'),
       DITHERING : createShortcut('tool-dithering', 'Dithering tool', 'T'),
-      COLORPICKER : createShortcut('tool-colorpicker', 'Color picker', 'O')
+      COLORPICKER : createShortcut('tool-colorpicker', 'Color picker', 'O'),
+      OUTLINER : createShortcut('tool-outliner', 'Outliner', 'Q')
     },
 
     SELECTION : {
