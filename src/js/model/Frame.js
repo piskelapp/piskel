@@ -107,6 +107,7 @@
   };
 
   ns.Frame.prototype.setPixel = function (x, y, color) {
+    if(isNaN(x) || isNaN(y)) return;
     if (this.containsPixel(x, y)) {
       var index = y * this.width + x;
       var p = this.pixels[index];
@@ -116,6 +117,10 @@
         this.pixels[index] = color || pskl.utils.colorToInt(Constants.TRANSPARENT_COLOR);
         this.version++;
       }
+    } else if (pskl.UserSettings.get('SEAMLESS_MODE')) {
+      var tiledX = ((x % this.width) + this.width) % this.width;
+      var tiledY = ((y % this.height) + this.height) % this.height;
+      this.setPixel(tiledX , tiledY , color);
     }
   };
 

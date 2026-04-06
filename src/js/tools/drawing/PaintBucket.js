@@ -19,7 +19,15 @@
    */
   ns.PaintBucket.prototype.applyToolAt = function(col, row, frame, overlay, event) {
     var color = this.getToolColor();
-    pskl.PixelUtils.paintSimilarConnectedPixelsFromFrame(frame, col, row, color);
+    var targetCol = col;
+    var targetRow = row;
+    
+    if (pskl.UserSettings.get('SEAMLESS_MODE')) {
+      targetCol = ((col % frame.getWidth()) + frame.getWidth()) % frame.getWidth();
+      targetRow = ((row % frame.getHeight()) + frame.getHeight()) % frame.getHeight();
+    }
+
+    pskl.PixelUtils.paintSimilarConnectedPixelsFromFrame(frame, targetCol, targetRow, color);
 
     this.raiseSaveStateEvent({
       col : col,

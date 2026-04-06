@@ -22,8 +22,16 @@
    * @override
    */
   ns.ColorSwap.prototype.applyToolAt = function(col, row, frame, overlay, event) {
-    if (frame.containsPixel(col, row)) {
-      var oldColor = frame.getPixel(col, row);
+    var targetCol = col;
+    var targetRow = row;
+  
+    if (pskl.UserSettings.get('SEAMLESS_MODE')) {
+      targetCol = ((col % frame.getWidth()) + frame.getWidth()) % frame.getWidth();
+      targetRow = ((row % frame.getHeight()) + frame.getHeight()) % frame.getHeight();
+    }
+
+    if (frame.containsPixel(targetCol, targetRow)) {
+      var oldColor = frame.getPixel(targetCol, targetRow);
       var newColor = this.getToolColor();
 
       var allLayers = pskl.utils.UserAgent.isMac ?  event.metaKey : event.ctrlKey;
