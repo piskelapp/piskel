@@ -1,5 +1,5 @@
 import test, { expect, Page, Locator } from '../../fixtures';
-import { openEditor, openSaveSettingsPanel, setPiskelFromGrid, testId, wait, waitFor } from "../../testutils";
+import { openEditor, openSaveSettingsPanel, setPiskelFromGrid, testId, wait, waitFor, decodePngDataUrl } from "../../testutils";
 
 // ─── Shared helpers ──────────────────────────────────────────────
 
@@ -236,14 +236,30 @@ test.describe('Preview actions', () => {
 
     // Wait for the preview to render
     const bgContainer = page.locator('#animated-preview-container .background-image-frame-container');
-    const expectedBase64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAAXNSR0IArs4c6QAAAB5JREFUGFdj/M/A8J+RgYGRAQoYsQqAJGGq4EphWgAj3QYFh2hu/QAAAABJRU5ErkJggg==';
     await waitFor(async () => {
       const bg = await bgContainer.evaluate(el => getComputedStyle(el).backgroundImage);
       return bg.includes('data:image/png;base64,');
     });
 
     const bgImage = await bgContainer.evaluate(el => getComputedStyle(el).backgroundImage);
-    expect(bgImage).toBe(`url("${expectedBase64}")`);
+    const dataUrl = bgImage.slice(5, -2); // strip url(" and ")
+    const pixels = await decodePngDataUrl(page, dataUrl);
+
+    expect(pixels.width).toBe(4);
+    expect(pixels.height).toBe(4);
+
+    // L-shape: col 0 rows 0-2 are red, (1,2) is red, rest transparent
+    const R = [255, 0, 0, 255];
+    const T = [0, 0, 0, 0];
+    const expectedPixels = [
+      R, T, T, T,
+      R, T, T, T,
+      R, R, T, T,
+      T, T, T, T,
+    ];
+    expectedPixels.forEach((expected, i) => {
+      expect(pixels.pixels[i]).toEqual(expected);
+    });
   });
 });
 
