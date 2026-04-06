@@ -1,0 +1,9 @@
+coverage:
+  reports:
+    - coverage/unit/lcov.info
+    - coverage/e2e/coverage/lcov.info
+
+comment: false
+
+github_checks:
+  annotations: false
