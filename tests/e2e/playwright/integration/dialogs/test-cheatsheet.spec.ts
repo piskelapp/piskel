@@ -1,4 +1,4 @@
-import test, { expect } from "@playwright/test";
+import test, { expect } from '../../fixtures';
 import { MODIFIER_LABEL, openEditor } from "../../testutils";
 
 /** Open the cheatsheet dialog and wait for it to be visible */

@@ -1,4 +1,4 @@
-import test, {  expect } from "@playwright/test";
+import test, {  expect } from '../../fixtures';
 import { expectGrid, expectResizeValues, getCurrentPiskelHeight, getCurrentPiskelWidth, isSettingsDrawerExpanded, openEditor, openResizeSettingsPanel, setPiskelFromGrid } from "../../testutils";
 
 test('Test resize the canvas and resize the content', async ({ page }) => {

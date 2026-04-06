@@ -1,4 +1,4 @@
-import test, { expect } from "@playwright/test";
+import test, { expect } from '../../fixtures';
 import { openEditor, testId, clickTool, setPrimaryColor, getPrimaryColor, drawAtPixel, waitFor, getPaletteColors } from "../../testutils";
 
 test.describe('Create palette', () => {

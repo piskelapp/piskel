@@ -1,4 +1,4 @@
-import test, {  expect } from "@playwright/test";
+import test, {  expect } from '../../fixtures';
 import { isCurrentPiskelEmpty, openEditor, openImportSettingsPanel, setPiskelFromGrid } from "../../testutils";
 
 test('Test importing a simple image over an empty one', async ({ page }) => {

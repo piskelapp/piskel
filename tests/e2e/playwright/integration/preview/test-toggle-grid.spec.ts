@@ -1,4 +1,4 @@
-import test, { Page, expect } from "@playwright/test";
+import test, { Page, expect } from '../../fixtures';
 import { expectHasClass, expectHasNotClass, openEditor } from "../../testutils";
 
 const GRID_BUTTON_CLASS = 'toggle-grid-button';

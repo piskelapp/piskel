@@ -1,4 +1,4 @@
-import test, {  expect } from "@playwright/test";
+import test, {  expect } from '../../fixtures';
 import { openEditor, openExportSettingsPanel, setPiskelFromGrid } from "../../testutils";
 import fs from 'fs/promises';
 import PNG from 'png-ts';
