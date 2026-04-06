@@ -45,3 +45,22 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps
       - run: npm run test-ci
+
+  coverage:
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run unit-tests:coverage
+      - run: npm run e2e:coverage
+      - uses: codecov/codecov-action@v4
+        with:
+          files: coverage/unit/lcov.info,coverage/e2e/coverage/lcov.info
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
