@@ -1,4 +1,4 @@
-import test, { expect, Page } from "@playwright/test";
+import test, { expect, Page } from '../../fixtures';
 import { openEditor, waitFor, wait } from "../../testutils";
 
 /** Open the preferences panel and switch to the Grid tab */

@@ -1,4 +1,4 @@
-import test, { expect, Page } from "@playwright/test";
+import test, { expect, Page } from '../../fixtures';
 import { openEditor, clickTool, setPiskelFromGrid, waitFor, getAddFrameButton, getFrameTiles, wait } from "../../testutils";
 
 /** Get screen coordinates for a sprite pixel (waits for pending relayout first) */

@@ -1,4 +1,4 @@
-import test, {  expect } from "@playwright/test";
+import test, {  expect } from '../../fixtures';
 import { expectResizeValues, isSettingsDrawerExpanded, openEditor, openResizeSettingsPanel } from "../../testutils";
 
 test('Test resize a canvas from 32x32 to 320x320', async ({ page }) => {

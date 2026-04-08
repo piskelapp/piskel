@@ -1,4 +1,4 @@
-import test, {  expect } from "@playwright/test";
+import test, {  expect } from '../../fixtures';
 import { getCurrentPiskelColorCount, getCurrentPiskelFrameCount, getCurrentPiskelHeight, getCurrentPiskelLayerCount, getCurrentPiskelWidth, isCurrentPiskelEmpty, isSettingsDrawerExpanded, openEditor, openImportSettingsPanel, openResizeSettingsPanel, setPiskelFromImageSrc } from "../../testutils";
 
 test('Test importing a simple image', async ({ page }) => {

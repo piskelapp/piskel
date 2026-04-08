@@ -1,4 +1,4 @@
-import test, { expect, Page } from "@playwright/test";
+import test, { expect, Page } from '../../../fixtures';
 import { openEditor, setPiskelFromGrid, setPrimaryColor, isSettingsDrawerExpanded, waitFor, wait } from "../../../testutils";
 
 test.use({ viewport: { width: 1280, height: 720 } });

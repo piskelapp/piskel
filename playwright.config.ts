@@ -17,6 +17,21 @@ export default defineConfig({
     stderr: 'pipe',
   },
 
+  reporter: [
+    ['list'],
+    ...(process.env.COVERAGE ? [['monocart-reporter', {
+      name: 'Piskel E2E Coverage',
+      outputFile: 'coverage/e2e/index.html',
+      coverage: {
+        v8: true,
+        entryFilter: (entry) => entry.url.includes('piskel-packaged-min'),
+        sourceFilter: (sourcePath) => !sourcePath.includes('lib/'),
+        lcov: true,
+        outputDir: 'coverage/e2e/coverage',
+      }
+    }]] : []),
+  ],
+
   use: {
     baseURL: baseUrl
   },

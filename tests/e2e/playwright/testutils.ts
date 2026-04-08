@@ -375,6 +375,30 @@ export const dragBetweenPixels = async (
   await page.mouse.up();
 };
 
+/**
+ * Decode a PNG data URL via browser canvas and return pixel data.
+ * Use this instead of comparing raw base64 strings, which vary across Chrome versions.
+ */
+export const decodePngDataUrl = async (page: Page, dataUrl: string): Promise<{ width: number, height: number, pixels: number[][] }> => {
+  return page.evaluate(async (src: string) => {
+    const img = await new Promise<HTMLImageElement>((resolve, reject) => {
+      const i = new Image();
+      i.onload = () => resolve(i);
+      i.onerror = reject;
+      i.src = src;
+    });
+    const canvas = document.createElement('canvas');
+    canvas.width = img.width;
+    canvas.height = img.height;
+    const ctx = canvas.getContext('2d')!;
+    ctx.drawImage(img, 0, 0);
+    const d = ctx.getImageData(0, 0, img.width, img.height).data;
+    const pixels: number[][] = [];
+    for (let i = 0; i < d.length; i += 4) pixels.push([d[i], d[i+1], d[i+2], d[i+3]]);
+    return { width: img.width, height: img.height, pixels };
+  }, dataUrl);
+};
+
 /** Simple async delay. Use sparingly — prefer waitFor for state checks. */
 export const wait = (ms: number) => new Promise(r => setTimeout(r, ms));
 

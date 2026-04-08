@@ -42,3 +42,5 @@ report
 
 # Test artifacts
 tests/e2e/playwright/tmp
+playwright-report/
+coverage/

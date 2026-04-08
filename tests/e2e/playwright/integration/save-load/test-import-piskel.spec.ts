@@ -1,4 +1,4 @@
-import test, { expect, Page, Download } from "@playwright/test";
+import test, { expect, Page, Download } from '../../fixtures';
 import fs from 'fs/promises';
 import nodePath from 'path';
 import {

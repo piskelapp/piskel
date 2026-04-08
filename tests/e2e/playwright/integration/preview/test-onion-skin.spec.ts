@@ -1,4 +1,4 @@
-import test, { Page, expect } from "@playwright/test";
+import test, { Page, expect } from '../../fixtures';
 import {
   expectHasClass,
   expectHasNotClass,
