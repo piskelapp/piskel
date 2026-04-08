@@ -44,28 +44,28 @@
     "postversion": "git push && git push --tags && npm publish"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.4.10",
-    "@playwright/test": "^1.52.0",
-    "@types/adm-zip": "^0.5.8",
-    "adm-zip": "^0.5.16",
+    "@biomejs/biome": "2.4.10",
+    "@playwright/test": "1.59.1",
+    "@types/adm-zip": "0.5.8",
+    "adm-zip": "0.5.17",
     "dateformat": "4.5.1",
     "fs-extra": "10.0.0",
-    "gifuct-js": "^2.1.2",
-    "husky": "^9.1.7",
+    "gifuct-js": "2.1.2",
+    "husky": "9.1.7",
     "jasmine-core": "3.8.0",
     "karma": "6.3.4",
-    "karma-chrome-launcher": "^3.2.0",
+    "karma-chrome-launcher": "3.2.0",
     "karma-jasmine": "4.0.1",
-    "magic-string": "^0.30.21",
-    "nw-builder": "^4.17.5",
-    "png-ts": "^0.0.3",
-    "puppeteer": "^24.10.0",
+    "magic-string": "0.30.21",
+    "nw-builder": "4.17.5",
+    "png-ts": "0.0.3",
+    "puppeteer": "24.40.0",
     "rmdir": "1.2.0",
-    "spritesheet-templates": "^10.5.2",
-    "spritesmith": "^3.5.1",
-    "terser": "^5.46.1",
-    "typescript": "^5.8.3",
-    "vite": "^8.0.3"
+    "spritesheet-templates": "10.5.2",
+    "spritesmith": "3.5.1",
+    "terser": "5.46.1",
+    "typescript": "5.9.3",
+    "vite": "8.0.7"
   },
   "window": {
     "title": "Piskel",
@@ -75,6 +75,6 @@
     "height": 700
   },
   "dependencies": {
-    "minimist": "^1.2.5"
+    "minimist": "1.2.8"
   }
 }
