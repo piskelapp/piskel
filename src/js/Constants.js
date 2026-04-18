@@ -57,16 +57,7 @@ var Constants = {
   // TESTS
   DRAWING_TEST_FOLDER: "drawing",
 
-  // Maximum size of a sprite that can be saved on piskelapp datastore.
-  // This size will be compared to the length of the stringified serialization of the sprite.
-  // This is an approximation at best but gives correct results in most cases.
-  // The datastore limit is 1 MiB, which we roughly approximate to 1 million characters.
-  APPENGINE_SAVE_LIMIT: 1 * 1024 * 1024,
-
   // Message displayed when an action will lead to erase the current animation.
   CONFIRM_OVERWRITE:
-    "This will replace your current animation, are you sure you want to continue?",
-
-  // SERVICE URLS
-  APPENGINE_SAVE_URL: "save"
+    "This will replace your current animation, are you sure you want to continue?"
 };

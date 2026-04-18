@@ -9,11 +9,6 @@
    */
   ns.app = {
     init: function () {
-      /**
-       * When started from APP Engine, appEngineToken_ (Boolean) should be set on window.pskl
-       */
-      this.isAppEngineVersion = !!pskl.appEngineToken_;
-
       // This id is used to keep track of sessions in the BackupService.
       this.sessionId = pskl.utils.Uuid.generate();
 
