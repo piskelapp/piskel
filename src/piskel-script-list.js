@@ -258,8 +258,5 @@ exports.scripts = [
   "js/worker/imageprocessor/ImageProcessor.js",
 
   // Application controller and initialization
-  "js/app.js",
-
-  // Bonus features !!
-  "js/snippets.js"
+  "js/app.js"
 ];
