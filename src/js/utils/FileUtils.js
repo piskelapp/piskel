@@ -31,22 +31,15 @@
     },
 
     downloadAsFile: function (content, filename) {
-      var saveAs =
-        window.saveAs ||
-        (navigator.msSaveBlob && navigator.msSaveBlob.bind(navigator));
-      if (saveAs) {
-        saveAs(content, filename);
-      } else {
-        var downloadLink = document.createElement("a");
-        content = window.URL.createObjectURL(content);
-        downloadLink.setAttribute("href", content);
-        downloadLink.setAttribute("download", filename);
-        document.body.appendChild(downloadLink);
-        downloadLink.addEventListener("click", stopPropagation);
-        downloadLink.click();
-        downloadLink.removeEventListener("click", stopPropagation);
-        document.body.removeChild(downloadLink);
-      }
+      var downloadLink = document.createElement("a");
+      var url = window.URL.createObjectURL(content);
+      downloadLink.setAttribute("href", url);
+      downloadLink.setAttribute("download", filename);
+      document.body.appendChild(downloadLink);
+      downloadLink.addEventListener("click", stopPropagation);
+      downloadLink.click();
+      downloadLink.removeEventListener("click", stopPropagation);
+      document.body.removeChild(downloadLink);
     }
   };
 })();
