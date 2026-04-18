@@ -179,7 +179,6 @@ exports.scripts = [
   "js/service/storage/FileDownloadStorageService.js",
   "js/service/storage/IndexedDbStorageService.js",
   "js/service/storage/LocalStorageService.js",
-  "js/service/storage/GalleryStorageService.js",
   "js/service/storage/DesktopStorageService.js",
   "js/service/BackupService.js",
   "js/service/BeforeUnloadService.js",
@@ -261,8 +260,5 @@ exports.scripts = [
   "js/worker/imageprocessor/ImageProcessor.js",
 
   // Application controller and initialization
-  "js/app.js",
-
-  // Bonus features !!
-  "js/snippets.js"
+  "js/app.js"
 ];

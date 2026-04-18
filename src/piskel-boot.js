@@ -24,16 +24,7 @@
     }
   };
 
-  var prefixPath = function (path) {
-    if (window.pskl && window.pskl.appEngineToken_) {
-      return "../" + path;
-    } else {
-      return path;
-    }
-  };
-
   var loadScript = function (src, callback) {
-    src = prefixPath(src);
     var script = window.document.createElement("script");
     script.setAttribute("src", src);
     script.setAttribute("onload", callback);
@@ -41,7 +32,6 @@
   };
 
   var loadStyle = function (src) {
-    src = prefixPath(src);
     var link = document.createElement("link");
     link.setAttribute("href", src);
     link.setAttribute("rel", "stylesheet");

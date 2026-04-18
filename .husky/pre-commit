@@ -1,1 +1,1 @@
-npx biome check --staged --write --no-errors-on-unmatched
+npm run lint

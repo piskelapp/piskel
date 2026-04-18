@@ -38,10 +38,6 @@
     return this.savingFlag_;
   };
 
-  ns.StorageService.prototype.saveToGallery = function (piskel) {
-    return this.delegateSave_(pskl.app.galleryStorageService, piskel);
-  };
-
   // @deprecated, use saveToIndexedDb unless indexedDb is not available.
   ns.StorageService.prototype.saveToLocalStorage = function (piskel) {
     return this.delegateSave_(pskl.app.localStorageService, piskel);
@@ -86,9 +82,7 @@
   };
 
   ns.StorageService.prototype.onSaveKey_ = function (charkey) {
-    if (pskl.app.isLoggedIn()) {
-      this.saveToGallery(this.piskelController.getPiskel());
-    } else if (pskl.utils.Environment.detectNodeWebkit()) {
+    if (pskl.utils.Environment.detectNodeWebkit()) {
       this.saveToDesktop(this.piskelController.getPiskel());
     } else {
       // saveToLocalStorage might display a native confirm dialog
