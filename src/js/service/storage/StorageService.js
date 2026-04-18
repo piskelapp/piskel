@@ -69,7 +69,7 @@
     saveAsNew
   ) {
     if (this.savingFlag_) {
-      return Q.reject("Already saving");
+      return Promise.reject("Already saving");
     }
 
     $.publish(Events.BEFORE_SAVING_PISKEL);
@@ -134,7 +134,7 @@
       }
     ]);
     this.afterSaving_();
-    return Q.reject(errorMessage);
+    return Promise.reject(errorMessage);
   };
 
   ns.StorageService.prototype.afterSaving_ = function () {

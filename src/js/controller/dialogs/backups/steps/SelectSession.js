@@ -12,11 +12,9 @@
    * @return {Promise} promise that resolves after time.
    */
   var wait = function (time) {
-    var deferred = Q.defer();
-    setTimeout(function () {
-      deferred.resolve();
-    }, time);
-    return deferred.promise;
+    return new Promise(function (resolve) {
+      setTimeout(resolve, time);
+    });
   };
 
   ns.SelectSession = function (piskelController, backupsController, container) {
@@ -96,7 +94,7 @@
     } else if (action == "delete") {
       if (window.confirm("Are you sure you want to delete this session?")) {
         evt.target.closest(".session-item").classList.add("deleting");
-        Q.all([
+        Promise.all([
           pskl.app.backupService.deleteSession(sessionId),
           // Wait for 500ms for the .hide opacity transition.
           wait(DELETE_TRANSITION_DURATION)

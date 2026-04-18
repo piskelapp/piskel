@@ -24,7 +24,7 @@
 
   ns.DesktopStorageService.prototype.saveAtPath_ = function (piskel, savePath) {
     if (!savePath) {
-      return Q.reject("Invalid file name");
+      return Promise.reject("Invalid file name");
     }
 
     var serialized = pskl.utils.serialization.Serializer.serialize(piskel);

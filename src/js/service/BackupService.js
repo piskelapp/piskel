@@ -42,7 +42,7 @@
 
     // Do not save an unchanged piskel
     if (hash === this.lastHash) {
-      return Q.resolve();
+      return Promise.resolve();
     }
 
     // Update the hash
@@ -113,7 +113,7 @@
                         .slice(0, sessions.length - MAX_SESSIONS);
 
                       // Delete all the extra sessions.
-                      return Q.all(
+                      return Promise.all(
                         sessionIdsToDelete.map(
                           function (id) {
                             return this.deleteSession(id);
@@ -151,35 +151,35 @@
   };
 
   ns.BackupService.prototype.loadSnapshotById = function (snapshotId) {
-    var deferred = Q.defer();
-
-    this.backupDatabase.getSnapshot(snapshotId).then(function (snapshot) {
-      pskl.utils.serialization.Deserializer.deserialize(
-        JSON.parse(snapshot.serialized),
-        function (piskel) {
-          pskl.app.piskelController.setPiskel(piskel);
-          deferred.resolve();
-        }
-      );
-    });
-
-    return deferred.promise;
+    return new Promise(
+      function (resolve) {
+        this.backupDatabase.getSnapshot(snapshotId).then(function (snapshot) {
+          pskl.utils.serialization.Deserializer.deserialize(
+            JSON.parse(snapshot.serialized),
+            function (piskel) {
+              pskl.app.piskelController.setPiskel(piskel);
+              resolve();
+            }
+          );
+        });
+      }.bind(this)
+    );
   };
 
   // Load "latest" backup snapshot.
   ns.BackupService.prototype.load = function () {
-    var deferred = Q.defer();
-
-    this.getPreviousPiskelInfo().then(function (snapshot) {
-      pskl.utils.serialization.Deserializer.deserialize(
-        JSON.parse(snapshot.serialized),
-        function (piskel) {
-          pskl.app.piskelController.setPiskel(piskel);
-          deferred.resolve();
-        }
-      );
-    });
-
-    return deferred.promise;
+    return new Promise(
+      function (resolve) {
+        this.getPreviousPiskelInfo().then(function (snapshot) {
+          pskl.utils.serialization.Deserializer.deserialize(
+            JSON.parse(snapshot.serialized),
+            function (piskel) {
+              pskl.app.piskelController.setPiskel(piskel);
+              resolve();
+            }
+          );
+        });
+      }.bind(this)
+    );
   };
 })();
