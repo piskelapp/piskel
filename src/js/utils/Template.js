@@ -29,9 +29,7 @@
       dummyEl.innerHTML = html;
       var element = dummyEl.children[0];
 
-      if (!pskl.utils.UserAgent.isIE11) {
-        dummyEl.innerHTML = "";
-      }
+      dummyEl.innerHTML = "";
 
       return element;
     },
@@ -84,24 +82,16 @@
       dummyEl.textContent = string;
       var sanitizedString = dummyEl.innerHTML;
 
-      if (!pskl.utils.UserAgent.isIE11) {
-        dummyEl.innerHTML = "";
-      }
+      dummyEl.innerHTML = "";
 
       return sanitizedString;
     },
 
-    _getDummyEl: pskl.utils.UserAgent.isIE11
-      ? // IE11 specific implementation
-        function () {
-          return document.createElement("div");
-        }
-      : // Normal, sane browsers implementation.
-        function () {
-          if (!ns.Template._dummyEl) {
-            ns.Template._dummyEl = document.createElement("div");
-          }
-          return ns.Template._dummyEl;
-        }
+    _getDummyEl: function () {
+      if (!ns.Template._dummyEl) {
+        ns.Template._dummyEl = document.createElement("div");
+      }
+      return ns.Template._dummyEl;
+    }
   };
 })();

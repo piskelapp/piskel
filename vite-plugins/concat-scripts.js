@@ -64,7 +64,9 @@ function concatScripts(options = {}) {
 
   function walkDir(dir) {
     const results = [];
-    if (!fs.existsSync(dir)) return results;
+    if (!fs.existsSync(dir)) {
+      return results;
+    }
     const entries = fs.readdirSync(dir, { withFileTypes: true });
     for (const entry of entries) {
       const fullPath = path.join(dir, entry.name);
@@ -140,7 +142,6 @@ function concatScripts(options = {}) {
       // --- Static assets ---
       const singleFiles = [
         { src: 'logo.png', dest: 'logo.png' },
-        { src: 'js/lib/gif/gif.ie.worker.js', dest: 'js/lib/gif/gif.ie.worker.js' },
       ];
 
       for (const asset of singleFiles) {
