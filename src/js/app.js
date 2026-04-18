@@ -166,10 +166,6 @@
         new pskl.service.storage.DesktopStorageService(this.piskelController);
       this.desktopStorageService.init();
 
-      this.galleryStorageService =
-        new pskl.service.storage.GalleryStorageService(this.piskelController);
-      this.galleryStorageService.init();
-
       this.storageService = new pskl.service.storage.StorageService(
         this.piskelController
       );
@@ -272,11 +268,6 @@
           dialogId: "unsupported-browser"
         });
       }
-    },
-
-    // TODO: Remove this method and connected code.
-    isLoggedIn: function () {
-      return false;
     },
 
     initTooltips_: function () {
