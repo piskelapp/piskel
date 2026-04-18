@@ -171,16 +171,10 @@
           var previewSize = this.previewSizes[size];
           var isSizeEnabled = validSizes.indexOf(size) != -1;
 
-          // classList.toggle is not available on IE11.
-          if (isSizeEnabled) {
-            previewSize.button.classList.remove(
-              "preview-contextual-action-hidden"
-            );
-          } else {
-            previewSize.button.classList.add(
-              "preview-contextual-action-hidden"
-            );
-          }
+          previewSize.button.classList.toggle(
+            "preview-contextual-action-hidden",
+            !isSizeEnabled
+          );
         }
       }
 
@@ -241,12 +235,7 @@
     var enabledClassname = "preview-toggle-onion-skin-enabled";
     var isEnabled = pskl.UserSettings.get(pskl.UserSettings.ONION_SKIN);
 
-    // classList.toggle is not available on IE11.
-    if (isEnabled) {
-      this.toggleOnionSkinButton.classList.add(enabledClassname);
-    } else {
-      this.toggleOnionSkinButton.classList.remove(enabledClassname);
-    }
+    this.toggleOnionSkinButton.classList.toggle(enabledClassname, isEnabled);
   };
 
   ns.PreviewActionsController.prototype.selectPreviewSizeButton_ = function () {
