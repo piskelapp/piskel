@@ -6,10 +6,10 @@
 
   // Simple wrapper to promisify a request.
   var _requestPromise = function (req) {
-    var deferred = Q.defer();
-    req.onsuccess = deferred.resolve.bind(deferred);
-    req.onerror = deferred.reject.bind(deferred);
-    return deferred.promise;
+    return new Promise(function (resolve, reject) {
+      req.onsuccess = resolve;
+      req.onerror = reject;
+    });
   };
 
   /**
@@ -71,31 +71,30 @@
    * needs to be retrieved with a separate get.
    */
   ns.PiskelDatabase.prototype.list = function () {
-    var deferred = Q.defer();
-
     var piskels = [];
     var objectStore = this.openObjectStore_();
     var cursor = objectStore.openCursor();
-    cursor.onsuccess = function (event) {
-      var cursor = event.target.result;
-      if (cursor) {
-        piskels.push({
-          name: cursor.value.name,
-          date: cursor.value.date,
-          description: cursor.value.description
-        });
-        cursor.continue();
-      } else {
-        // Cursor consumed all availabled piskels
-        deferred.resolve(piskels);
-      }
-    };
 
-    cursor.onerror = function () {
-      deferred.reject();
-    };
+    return new Promise(function (resolve, reject) {
+      cursor.onsuccess = function (event) {
+        var cursor = event.target.result;
+        if (cursor) {
+          piskels.push({
+            name: cursor.value.name,
+            date: cursor.value.date,
+            description: cursor.value.description
+          });
+          cursor.continue();
+        } else {
+          // Cursor consumed all availabled piskels
+          resolve(piskels);
+        }
+      };
 
-    return deferred.promise;
+      cursor.onerror = function () {
+        reject();
+      };
+    });
   };
 
   /**

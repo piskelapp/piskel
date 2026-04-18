@@ -20,7 +20,9 @@
         "There is already a piskel saved as " + name + ". Overwrite ?"
       );
       if (!confirmOverwrite) {
-        return Q.reject('Cancelled by user, "' + name + '" already exists');
+        return Promise.reject(
+          'Cancelled by user, "' + name + '" already exists'
+        );
       }
     }
 
@@ -28,9 +30,9 @@
       this.removeFromKeys_(name);
       this.addToKeys_(name, description, Date.now());
       window.localStorage.setItem("piskel." + name, serialized);
-      return Q.resolve();
+      return Promise.resolve();
     } catch (e) {
-      return Q.reject(e.message);
+      return Promise.reject(e.message);
     }
   };
 

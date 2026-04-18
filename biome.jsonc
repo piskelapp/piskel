@@ -49,11 +49,26 @@
       "pskl",
       "Events",
       "Constants",
-      "Q",
       "module",
       "require",
       "console",
-      "Promise"
+      "Promise",
+      "describe",
+      "xdescribe",
+      "fdescribe",
+      "it",
+      "xit",
+      "fit",
+      "beforeEach",
+      "afterEach",
+      "beforeAll",
+      "afterAll",
+      "expect",
+      "fail",
+      "pending",
+      "spyOn",
+      "spyOnProperty",
+      "jasmine"
     ]
   },
   "css": {

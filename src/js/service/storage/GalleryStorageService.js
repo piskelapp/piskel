@@ -9,7 +9,6 @@
 
   ns.GalleryStorageService.prototype.save = function (piskel) {
     var descriptor = piskel.getDescriptor();
-    var deferred = Q.defer();
 
     var serialized = pskl.utils.serialization.Serializer.serialize(piskel);
 
@@ -23,32 +22,34 @@
       framesheet_as_png: pskl.app.getFramesheetAsPng()
     };
 
-    if (serialized.length > Constants.APPENGINE_SAVE_LIMIT) {
-      deferred.reject(
-        "This sprite is too big to be saved on the gallery. Try saving it as a .piskel file."
-      );
-    }
-
     if (descriptor.isPublic) {
       data.public = true;
     }
 
-    var successCallback = function (response) {
-      deferred.resolve();
-    };
+    return new Promise(
+      function (resolve, reject) {
+        if (serialized.length > Constants.APPENGINE_SAVE_LIMIT) {
+          reject(
+            "This sprite is too big to be saved on the gallery. Try saving it as a .piskel file."
+          );
+        }
 
-    var errorCallback = function (response) {
-      deferred.reject(this.getErrorMessage_(response));
-    };
+        var successCallback = function (response) {
+          resolve();
+        };
 
-    pskl.utils.Xhr.post(
-      Constants.APPENGINE_SAVE_URL,
-      data,
-      successCallback,
-      errorCallback.bind(this)
+        var errorCallback = function (response) {
+          reject(this.getErrorMessage_(response));
+        };
+
+        pskl.utils.Xhr.post(
+          Constants.APPENGINE_SAVE_URL,
+          data,
+          successCallback,
+          errorCallback.bind(this)
+        );
+      }.bind(this)
     );
-
-    return deferred.promise;
   };
 
   ns.GalleryStorageService.prototype.getErrorMessage_ = function (response) {

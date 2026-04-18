@@ -61,9 +61,6 @@ exports.scripts = [
   // Spectrum color-picker library
   "js/lib/spectrum/spectrum.js",
 
-  // Promises
-  "js/lib/q.js",
-
   // Application libraries
   "js/rendering/DrawingLoop.js",
 

@@ -6,10 +6,10 @@
 
   // Simple wrapper to promisify a request.
   var _requestPromise = function (req) {
-    var deferred = Q.defer();
-    req.onsuccess = deferred.resolve.bind(deferred);
-    req.onerror = deferred.reject.bind(deferred);
-    return deferred.promise;
+    return new Promise(function (resolve, reject) {
+      req.onsuccess = resolve;
+      req.onerror = reject;
+    });
   };
 
   /**
@@ -122,9 +122,6 @@
    *        if the snapshot is valid.
    */
   ns.BackupDatabase.prototype.findLastSnapshot = function (accept) {
-    // Create the backup promise.
-    var deferred = Q.defer();
-
     // Open a transaction to the snapshots object store.
     var objectStore = this.db
       .transaction(["snapshots"])
@@ -132,21 +129,22 @@
 
     var index = objectStore.index("date");
     var range = IDBKeyRange.upperBound(Infinity);
-    index.openCursor(range, "prev").onsuccess = function (event) {
-      var cursor = event.target.result;
-      var snapshot = cursor && cursor.value;
 
-      // Resolve null if we couldn't find a matching snapshot.
-      if (!snapshot) {
-        deferred.resolve(null);
-      } else if (accept(snapshot)) {
-        deferred.resolve(snapshot);
-      } else {
-        cursor.continue();
-      }
-    };
+    return new Promise(function (resolve) {
+      index.openCursor(range, "prev").onsuccess = function (event) {
+        var cursor = event.target.result;
+        var snapshot = cursor && cursor.value;
 
-    return deferred.promise;
+        // Resolve null if we couldn't find a matching snapshot.
+        if (!snapshot) {
+          resolve(null);
+        } else if (accept(snapshot)) {
+          resolve(snapshot);
+        } else {
+          cursor.continue();
+        }
+      };
+    });
   };
 
   /**
@@ -157,9 +155,6 @@
    *        The session id
    */
   ns.BackupDatabase.prototype.getSnapshotsBySessionId = function (sessionId) {
-    // Create the backup promise.
-    var deferred = Q.defer();
-
     // Open a transaction to the snapshots object store.
     var objectStore = this.db
       .transaction(["snapshots"])
@@ -170,25 +165,22 @@
     var keyRange = IDBKeyRange.bound([sessionId, 0], [sessionId, Infinity]);
 
     var snapshots = [];
-    // Ordered by date in descending order.
-    index.openCursor(keyRange, "prev").onsuccess = function (event) {
-      var cursor = event.target.result;
-      if (cursor) {
-        snapshots.push(cursor.value);
-        cursor.continue();
-      } else {
-        // Consumed all piskel snapshots
-        deferred.resolve(snapshots);
-      }
-    };
-
-    return deferred.promise;
+    return new Promise(function (resolve) {
+      // Ordered by date in descending order.
+      index.openCursor(keyRange, "prev").onsuccess = function (event) {
+        var cursor = event.target.result;
+        if (cursor) {
+          snapshots.push(cursor.value);
+          cursor.continue();
+        } else {
+          // Consumed all piskel snapshots
+          resolve(snapshots);
+        }
+      };
+    });
   };
 
   ns.BackupDatabase.prototype.getSessions = function () {
-    // Create the backup promise.
-    var deferred = Q.defer();
-
     // Open a transaction to the snapshots object store.
     var objectStore = this.db
       .transaction(["snapshots"])
@@ -223,22 +215,23 @@
 
     var index = objectStore.index("date");
     var range = IDBKeyRange.upperBound(Infinity);
-    index.openCursor(range, "prev").onsuccess = function (event) {
-      var cursor = event.target.result;
-      var snapshot = cursor && cursor.value;
-      if (!snapshot) {
-        deferred.resolve(sessions);
-      } else {
-        if (sessions[snapshot.session_id]) {
-          _updateSession(snapshot);
-        } else {
-          _createSession(snapshot);
-        }
-        cursor.continue();
-      }
-    };
 
-    return deferred.promise.then(function (sessions) {
+    return new Promise(function (resolve) {
+      index.openCursor(range, "prev").onsuccess = function (event) {
+        var cursor = event.target.result;
+        var snapshot = cursor && cursor.value;
+        if (!snapshot) {
+          resolve(sessions);
+        } else {
+          if (sessions[snapshot.session_id]) {
+            _updateSession(snapshot);
+          } else {
+            _createSession(snapshot);
+          }
+          cursor.continue();
+        }
+      };
+    }).then(function (sessions) {
       // Convert the sessions map to an array.
       return Object.keys(sessions).map(function (key) {
         return sessions[key];
@@ -247,9 +240,6 @@
   };
 
   ns.BackupDatabase.prototype.deleteSnapshotsForSession = function (sessionId) {
-    // Create the backup promise.
-    var deferred = Q.defer();
-
     // Open a transaction to the snapshots object store.
     var objectStore = this.openObjectStore_();
 
@@ -257,16 +247,16 @@
     var index = objectStore.index("session_id");
     var keyRange = IDBKeyRange.only(sessionId);
 
-    index.openCursor(keyRange).onsuccess = function (event) {
-      var cursor = event.target.result;
-      if (cursor) {
-        cursor.delete();
-        cursor.continue();
-      } else {
-        deferred.resolve();
-      }
-    };
-
-    return deferred.promise;
+    return new Promise(function (resolve) {
+      index.openCursor(keyRange).onsuccess = function (event) {
+        var cursor = event.target.result;
+        if (cursor) {
+          cursor.delete();
+          cursor.continue();
+        } else {
+          resolve();
+        }
+      };
+    });
   };
 })();

@@ -5,8 +5,6 @@
   ns.MigrateLocalStorageToIndexedDb = {};
 
   ns.MigrateLocalStorageToIndexedDb.migrate = function (piskelDatabase) {
-    var deferred = Q.defer();
-
     var localStorageService = pskl.app.localStorageService;
 
     var localStorageKeys = localStorageService.getKeys();
@@ -19,41 +17,41 @@
       };
     });
 
-    // Define the sequential migration process.
-    // Wait for each sprite to be saved before saving the next one.
-    var success = true;
-    var migrateSprite = function (index) {
-      var data = migrationData[index];
-      if (!data) {
-        console.log(
-          "Data migration from local storage to indexed db finished."
-        );
-        if (success) {
+    return new Promise(function (resolve) {
+      // Define the sequential migration process.
+      // Wait for each sprite to be saved before saving the next one.
+      var success = true;
+      var migrateSprite = function (index) {
+        var data = migrationData[index];
+        if (!data) {
           console.log(
-            "Local storage piskels successfully migrated. Old copies will be deleted."
+            "Data migration from local storage to indexed db finished."
           );
-          ns.MigrateLocalStorageToIndexedDb.deleteLocalStoragePiskels();
-        }
-
-        deferred.resolve();
-      } else {
-        ns.MigrateLocalStorageToIndexedDb.save_(piskelDatabase, data)
-          .then(function () {
-            migrateSprite(index + 1);
-          })
-          .catch(function (e) {
-            console.error(
-              "Failed to migrate local storage sprite for name: " + data.name
+          if (success) {
+            console.log(
+              "Local storage piskels successfully migrated. Old copies will be deleted."
             );
-            migrateSprite(index + 1);
-          });
-      }
-    };
+            ns.MigrateLocalStorageToIndexedDb.deleteLocalStoragePiskels();
+          }
 
-    // Start the migration.
-    migrateSprite(0);
+          resolve();
+        } else {
+          ns.MigrateLocalStorageToIndexedDb.save_(piskelDatabase, data)
+            .then(function () {
+              migrateSprite(index + 1);
+            })
+            .catch(function (e) {
+              console.error(
+                "Failed to migrate local storage sprite for name: " + data.name
+              );
+              migrateSprite(index + 1);
+            });
+        }
+      };
 
-    return deferred.promise;
+      // Start the migration.
+      migrateSprite(0);
+    });
   };
 
   ns.MigrateLocalStorageToIndexedDb.save_ = function (

@@ -66,10 +66,10 @@
     while (frames.length) {
       batches.push(frames.splice(0, 10));
     }
-    var result = Q([]);
+    var result = Promise.resolve([]);
     batches.forEach(function (batch) {
       result = result.then(function (results) {
-        return Q.all(batch.map(job)).then(function (partials) {
+        return Promise.all(batch.map(job)).then(function (partials) {
           return results.concat(partials);
         });
       });
