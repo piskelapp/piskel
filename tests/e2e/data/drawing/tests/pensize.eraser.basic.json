@@ -1,0 +1,179 @@
+{
+ "events": [
+  {
+   "type": "tool-event",
+   "toolId": "tool-paint-bucket"
+  },
+  {
+   "event": {
+    "type": "mousedown",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 3,
+    "y": 4
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mouseup",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 3,
+    "y": 4
+   },
+   "type": "mouse-event"
+  },
+  {
+   "type": "tool-event",
+   "toolId": "tool-eraser"
+  },
+  {
+   "type": "pensize-event",
+   "penSize": 1
+  },
+  {
+   "event": {
+    "type": "mousedown",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 1,
+    "y": 1
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mouseup",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 1,
+    "y": 1
+   },
+   "type": "mouse-event"
+  },
+  {
+   "type": "pensize-event",
+   "penSize": 2
+  },
+  {
+   "event": {
+    "type": "mousedown",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 5,
+    "y": 2
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mouseup",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 5,
+    "y": 2
+   },
+   "type": "mouse-event"
+  },
+  {
+   "type": "pensize-event",
+   "penSize": 3
+  },
+  {
+   "event": {
+    "type": "mousedown",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 9,
+    "y": 2
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mouseup",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 9,
+    "y": 2
+   },
+   "type": "mouse-event"
+  },
+  {
+   "type": "pensize-event",
+   "penSize": 4
+  },
+  {
+   "event": {
+    "type": "mousedown",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 3,
+    "y": 8
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mouseup",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 3,
+    "y": 8
+   },
+   "type": "mouse-event"
+  }
+ ],
+ "initialState": {
+  "size": {
+   "width": 12,
+   "height": 12
+  },
+  "primaryColor": "#000000",
+  "secondaryColor": "rgba(0, 0, 0, 0)",
+  "selectedTool": "tool-pen",
+  "penSize": 4
+ },
+ "png": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAAXNSR0IArs4c6QAAAEhJREFUKFNjZGBg+M9AAmCEaoDRIK0gNgjADILxwWLICmH2kKwB3YEEbcDrI2xOIkoDsrXIHsbQjBxKyJI4g5p+GoiOa5JDCQDemBYBRGZ8mQAAAABJRU5ErkJggg=="
+}

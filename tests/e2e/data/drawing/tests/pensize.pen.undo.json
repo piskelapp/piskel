@@ -1,0 +1,1641 @@
+{
+ "events": [
+  {
+   "event": {
+    "type": "mousedown",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 5,
+    "y": 10
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 5,
+    "y": 10
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 6,
+    "y": 9
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 6,
+    "y": 8
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 7,
+    "y": 7
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 8,
+    "y": 6
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 9,
+    "y": 6
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 10,
+    "y": 6
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 11,
+    "y": 6
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 12,
+    "y": 6
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 13,
+    "y": 6
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 14,
+    "y": 6
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 15,
+    "y": 7
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 16,
+    "y": 8
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 16,
+    "y": 9
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 16,
+    "y": 10
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 17,
+    "y": 11
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 17,
+    "y": 12
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 18,
+    "y": 13
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 18,
+    "y": 15
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 17,
+    "y": 16
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 16,
+    "y": 17
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 16,
+    "y": 18
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 15,
+    "y": 19
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 14,
+    "y": 19
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 13,
+    "y": 20
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 11,
+    "y": 20
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 10,
+    "y": 21
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 9,
+    "y": 21
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 8,
+    "y": 21
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 7,
+    "y": 21
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mouseup",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 7,
+    "y": 20
+   },
+   "type": "mouse-event"
+  },
+  {
+   "type": "pensize-event",
+   "penSize": 2
+  },
+  {
+   "type": "color-event",
+   "color": "#cf2323",
+   "isPrimary": true
+  },
+  {
+   "event": {
+    "type": "mousedown",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 11,
+    "y": 13
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 11,
+    "y": 13
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 10,
+    "y": 13
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 10,
+    "y": 14
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 9,
+    "y": 14
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 9,
+    "y": 15
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 8,
+    "y": 16
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 8,
+    "y": 17
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 7,
+    "y": 18
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 7,
+    "y": 19
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 6,
+    "y": 20
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 6,
+    "y": 21
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 6,
+    "y": 22
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 6,
+    "y": 23
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 7,
+    "y": 23
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 7,
+    "y": 24
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 8,
+    "y": 24
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 9,
+    "y": 25
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 10,
+    "y": 25
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 11,
+    "y": 25
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 12,
+    "y": 26
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 14,
+    "y": 26
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 16,
+    "y": 25
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 18,
+    "y": 24
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 19,
+    "y": 24
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 20,
+    "y": 23
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 21,
+    "y": 22
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 22,
+    "y": 21
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 23,
+    "y": 21
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 23,
+    "y": 20
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 24,
+    "y": 20
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 24,
+    "y": 19
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 24,
+    "y": 18
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 24,
+    "y": 17
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 24,
+    "y": 16
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 24,
+    "y": 15
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 24,
+    "y": 14
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 23,
+    "y": 13
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 22,
+    "y": 12
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 21,
+    "y": 12
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 21,
+    "y": 11
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 20,
+    "y": 11
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 20,
+    "y": 10
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 19,
+    "y": 10
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 18,
+    "y": 9
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 16,
+    "y": 8
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 15,
+    "y": 7
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 14,
+    "y": 6
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 13,
+    "y": 5
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 12,
+    "y": 5
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 12,
+    "y": 4
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 11,
+    "y": 4
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mouseup",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 11,
+    "y": 4
+   },
+   "type": "mouse-event"
+  },
+  {
+   "type": "pensize-event",
+   "penSize": 3
+  },
+  {
+   "type": "color-event",
+   "color": "#39cf23",
+   "isPrimary": true
+  },
+  {
+   "event": {
+    "type": "mousedown",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 25,
+    "y": 4
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 25,
+    "y": 4
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 25,
+    "y": 5
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 24,
+    "y": 5
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 23,
+    "y": 5
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 22,
+    "y": 6
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 21,
+    "y": 7
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 20,
+    "y": 8
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 18,
+    "y": 9
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 17,
+    "y": 10
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 16,
+    "y": 11
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 16,
+    "y": 12
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 16,
+    "y": 13
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 15,
+    "y": 14
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 15,
+    "y": 15
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 16,
+    "y": 16
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 16,
+    "y": 17
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 16,
+    "y": 18
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 17,
+    "y": 19
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 17,
+    "y": 20
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 17,
+    "y": 22
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 18,
+    "y": 23
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 19,
+    "y": 24
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 20,
+    "y": 25
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 21,
+    "y": 25
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 22,
+    "y": 25
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 22,
+    "y": 24
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mousemove",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 23,
+    "y": 24
+   },
+   "type": "mouse-event"
+  },
+  {
+   "event": {
+    "type": "mouseup",
+    "button": 0,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": false
+   },
+   "coords": {
+    "x": 23,
+    "y": 24
+   },
+   "type": "mouse-event"
+  },
+  {
+   "type": "keyboard-event",
+   "event": {
+    "which": 90,
+    "shiftKey": false,
+    "altKey": false,
+    "ctrlKey": true,
+    "target": {
+     "nodeName": "BODY"
+    }
+   }
+  }
+ ],
+ "initialState": {
+  "size": {
+   "width": 32,
+   "height": 32
+  },
+  "primaryColor": "#000000",
+  "secondaryColor": "rgba(0, 0, 0, 0)",
+  "selectedTool": "tool-pen",
+  "penSize": 1
+ },
+ "png": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAARBJREFUWEftlesNwyAMhJNZmCD7D5EJmCUVUUCGAnc2RKhS8zfY/nx+7dvib18cf/sdgNO5K6p1eD8NnHYkAQLILAgaIAR9A4IBSNLHEpzOpd4dVQIBhODVN7PU6AE0gwslMnUsagwBPCCXLIm2QVsAMHuxwO631pKgHmAXpRmCAiCWUFJMqwQEUDjMykZA3+qqAECXf/VNhOjZdQHYLOI0lAlNAyDmuzo1QwCK7OG2NJWAoW9JX25KNQCZfVzD8FaYASqGcvc3G1gxuv1Ld3hfbkLV2DJ3YUi+ko4sXWYGAVAWpdzoPS1pzbF0jv6zV0xd05pjYlE1eSCAtNR09zQFWEfWdyoFrEF6dn+A5Qp8ALosoyFPBTWxAAAAAElFTkSuQmCC"
+}

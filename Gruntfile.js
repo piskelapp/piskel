@@ -25,27 +25,11 @@ module.exports = function (grunt) {
 
   // get the list of scripts paths to include
   var scriptPaths = require('./src/piskel-script-list.js').scripts;
-  var piskelScripts = prefixPaths(scriptPaths, "src/").filter(function (path) {
-    return path.indexOf('devtools') === -1;
-  });
+  var piskelScripts = prefixPaths(scriptPaths, "src/");
 
   // get the list of styles paths to include
   var stylePaths = require('./src/piskel-style-list.js').styles;
   var piskelStyles = prefixPaths(stylePaths, "src/");
-
-  // Casper JS tests
-  var casperjsOptions = [
-    '--baseUrl=http://' + hostname + ':' + PORT.TEST,
-    '--mode=?debug',
-    '--verbose=false',
-    '--includes=test/casperjs/integration/include.js',
-    '--log-level=info',
-    '--print-command=false',
-    '--print-file-paths=true',
-  ];
-
-  var integrationTestPaths = require('./test/casperjs/integration/IntegrationSuite.js').tests;
-  var integrationTests = prefixPaths(integrationTestPaths, "test/casperjs/integration/");
 
   var getConnectConfig = function (base, port, host, open) {
     return {
@@ -98,8 +82,8 @@ module.exports = function (grunt) {
      */
 
     connect: {
-      prod: getConnectConfig('dest/prod', PORT.PROD, hostname, true),
-      test: getConnectConfig(['dest/dev', 'test'], PORT.TEST, hostname, false),
+      prod: getConnectConfig(['dest/prod', 'test'], PORT.PROD, hostname, true),
+      test: getConnectConfig(['dest/prod', 'tests/e2e/data'], PORT.PROD, hostname, true),
       dev: getConnectConfig(['dest/dev', 'test'], PORT.DEV, hostname, 'http://' + hostname + ':' + PORT.DEV + '/?debug')
     },
 
@@ -221,6 +205,30 @@ module.exports = function (grunt) {
         ]
       },
 
+      // Generate another piskel web partial for kids.
+      piskelWebPartialKids: {
+        options: {
+          patterns: [{
+            match: /^(.|[\r\n])*<!--body-main-start-->/,
+            replacement: "---\nlayout: \"editorLayout.html\"\nenableSafeMode: true\n---\n\n",
+            description: "Remove everything before body-main-start comment"
+          }, {
+            match: /<!--body-main-end-->(.|[\r\n])*$/,
+            replacement: "",
+            description: "Remove everything after body-main-end comment"
+          }, {
+            match: /([\r\n])  /g,
+            replacement: "$1",
+            description: "Decrease indentation by one"
+          }
+          ]
+        },
+        files: [
+          // src/index.html should already have been moved by the includereplace task
+          { src: ['dest/tmp/index.html'], dest: 'dest/prod/piskelapp-partials/piskel-web-partial-kids.html' }
+        ]
+      },
+
       css: {
         options: {
           patterns: [{
@@ -257,35 +265,6 @@ module.exports = function (grunt) {
           { expand: true, src: ['css/**'], cwd: 'src/', dest: 'dest/dev/', filter: 'isFile' },
           { expand: true, src: ['img/**'], cwd: 'src/', dest: 'dest/dev/', filter: 'isFile' },
         ]
-      }
-    },
-
-    /**
-     * TESTING
-     */
-
-    karma: {
-      unit: {
-        configFile: 'karma.conf.js'
-      }
-    },
-
-    casperjs: {
-      drawing: {
-        files: {
-          src: ['test/casperjs/DrawingTest.js']
-        },
-        options: {
-          casperjsOptions: casperjsOptions
-        }
-      },
-      integration: {
-        files: {
-          src: integrationTests
-        },
-        options: {
-          casperjsOptions: casperjsOptions
-        }
       }
     },
 
@@ -332,17 +311,6 @@ module.exports = function (grunt) {
   // TEST TASKS
   // Run linting
   grunt.registerTask('lint', ['eslint', 'leadingIndent:css']);
-  // Run unit-tests
-  grunt.registerTask('unit-test', ['karma']);
-  // Run integration tests
-  grunt.registerTask('integration-test', ['build-dev', 'connect:test', 'casperjs:integration']);
-  // Run drawing tests
-  grunt.registerTask('drawing-test', ['build-dev', 'connect:test', 'casperjs:drawing']);
-  // Run linting, unit tests, drawing tests and integration tests
-  grunt.registerTask('test', ['lint', 'unit-test', 'build-dev', 'connect:test', 'casperjs:drawing', 'casperjs:integration']);
-
-  // Run the tests, even if the linting fails
-  grunt.registerTask('test-nolint', ['unit-test', 'build-dev', 'connect:test', 'casperjs:drawing', 'casperjs:integration']);
 
   // Used by optional precommit hook
   grunt.registerTask('precommit', ['test']);
@@ -350,7 +318,7 @@ module.exports = function (grunt) {
   // BUILD TASKS
   grunt.registerTask('build-index.html', ['includereplace']);
   grunt.registerTask('merge-statics', ['concat:js', 'concat:css', 'uglify']);
-  grunt.registerTask('build-partials', ['replace:mainPartial', 'replace:piskelWebPartial']);
+  grunt.registerTask('build-partials', ['replace:mainPartial', 'replace:piskelWebPartial', 'replace:piskelWebPartialKids']);
   grunt.registerTask('build', ['clean:prod', 'sprite', 'merge-statics', 'build-index.html', 'build-partials', 'replace:css', 'copy:prod']);
   grunt.registerTask('build-dev', ['clean:dev', 'sprite', 'build-index.html', 'copy:dev']);
   grunt.registerTask('desktop', ['clean:desktop', 'default', 'nwjs:windows']);
@@ -360,13 +328,13 @@ module.exports = function (grunt) {
   // SERVER TASKS
   // Start webserver and watch for changes
   grunt.registerTask('serve', ['build', 'connect:prod', 'watch:prod']);
+  grunt.registerTask('serve-test', ['build', 'connect:test', 'watch:prod']);
   // Start webserver on src folder, in debug mode
   grunt.registerTask('play', ['build-dev', 'connect:dev', 'watch:dev']);
 
   // ALIASES, kept for backward compatibility
   grunt.registerTask('serve-debug', ['play']);
   grunt.registerTask('serve-dev', ['play']);
-  grunt.registerTask('test-travis', ['test']);
   grunt.registerTask('test-local', ['test']);
 
   // Default task

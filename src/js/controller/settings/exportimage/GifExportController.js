@@ -15,15 +15,12 @@
 
   ns.GifExportController.prototype.init = function () {
     this.uploadStatusContainerEl = document.querySelector('.gif-upload-status');
-    this.previewContainerEl = document.querySelector('.gif-export-preview');
-    this.uploadButton = document.querySelector('.gif-upload-button');
     this.downloadButton = document.querySelector('.gif-download-button');
     this.repeatCheckbox = document.querySelector('.gif-repeat-checkbox');
 
     // Initialize repeatCheckbox state
     this.repeatCheckbox.checked = this.getRepeatSetting_();
 
-    this.addEventListener(this.uploadButton, 'click', this.onUploadButtonClick_);
     this.addEventListener(this.downloadButton, 'click', this.onDownloadButtonClick_);
     this.addEventListener(this.repeatCheckbox, 'change', this.onRepeatCheckboxChange_);
 
@@ -34,14 +31,6 @@
 
   ns.GifExportController.prototype.getZoom_ = function () {
     return this.exportController.getExportZoom();
-  };
-
-  ns.GifExportController.prototype.onUploadButtonClick_ = function (evt) {
-    evt.preventDefault();
-    var zoom = this.getZoom_();
-    var fps = this.piskelController.getFPS();
-
-    this.renderAsImageDataAnimatedGIF(zoom, fps, this.uploadImageData_.bind(this));
   };
 
   ns.GifExportController.prototype.onDownloadButtonClick_ = function (evt) {
@@ -56,30 +45,6 @@
     pskl.utils.BlobUtils.dataToBlob(imageData, 'image/gif', function(blob) {
       pskl.utils.FileUtils.downloadAsFile(blob, fileName);
     });
-  };
-
-  ns.GifExportController.prototype.uploadImageData_ = function (imageData) {
-    this.updatePreview_(imageData);
-    this.previewContainerEl.classList.add('preview-upload-ongoing');
-
-    pskl.app.imageUploadService.upload(imageData,
-      this.onImageUploadCompleted_.bind(this),
-      this.onImageUploadFailed_.bind(this));
-  };
-
-  ns.GifExportController.prototype.onImageUploadCompleted_ = function (imageUrl) {
-    this.updatePreview_(imageUrl);
-    this.updateStatus_(imageUrl);
-    this.previewContainerEl.classList.remove('preview-upload-ongoing');
-  };
-
-  ns.GifExportController.prototype.onImageUploadFailed_ = function (event, xhr) {
-    if (xhr.status === 500) {
-      $.publish(Events.SHOW_NOTIFICATION, [{
-        'content': 'Upload failed : ' + xhr.responseText,
-        'hideDelay' : 5000
-      }]);
-    }
   };
 
   ns.GifExportController.prototype.updatePreview_ = function (src) {
@@ -165,28 +130,5 @@
 
   ns.GifExportController.prototype.getRepeatSetting_ = function () {
     return pskl.UserSettings.get(pskl.UserSettings.EXPORT_GIF_REPEAT);
-  };
-
-  ns.GifExportController.prototype.updateStatus_ = function (imageUrl, error) {
-    if (imageUrl) {
-      var linkTpl = '<a class="highlight" href="{{link}}" target="_blank">{{shortLink}}</a>';
-      var linkHtml = pskl.utils.Template.replace(linkTpl, {
-        link : imageUrl,
-        shortLink : this.shorten_(imageUrl, URL_MAX_LENGTH, '...')
-      });
-      this.uploadStatusContainerEl.innerHTML = 'Your image is now available at : ' + linkHtml;
-    } else {
-      // FIXME : Should display error message instead
-    }
-  };
-
-  ns.GifExportController.prototype.shorten_ = function (url, maxLength, suffix) {
-    if (url.length > maxLength) {
-      var index = Math.round((maxLength - suffix.length) / 2);
-      var part1 = url.substring(0, index);
-      var part2 = url.substring(url.length - index, url.length);
-      url = part1 + suffix + part2;
-    }
-    return url;
   };
 })();

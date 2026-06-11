@@ -143,18 +143,3 @@
 .settings-section-preferences .button-primary {
   margin-top: 10px;
 }
-
-.settings-version-info {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  color: #888;
-}
-
-/* Override default link styles for the release notes link
-   It doesn't need to popout too much */
-.settings-version,
-.settings-version:hover {
-  color: white !important;
-  text-decoration: none !important;
-}
