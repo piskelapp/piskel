@@ -65,7 +65,7 @@
     "spritesmith": "3.5.1",
     "terser": "5.46.1",
     "typescript": "5.9.3",
-    "vite": "8.0.7"
+    "vite": "8.0.16"
   },
   "window": {
     "title": "Piskel",
