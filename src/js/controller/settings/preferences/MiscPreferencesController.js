@@ -91,7 +91,7 @@
   ns.MiscPreferencesController.prototype.onMaxFpsChange_ = function (evt) {
     var target = evt.target;
     var fps = parseInt(target.value, 10);
-    if (fps && !isNaN(fps)) {
+    if (fps > 0 && isFinite(fps)) {
       pskl.UserSettings.set(pskl.UserSettings.MAX_FPS, fps);
     } else {
       target.value = pskl.UserSettings.get(pskl.UserSettings.MAX_FPS);

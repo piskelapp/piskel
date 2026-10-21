@@ -115,6 +115,28 @@ test.describe('Preferences — Misc tab', () => {
     await expect(page.locator('.max-fps-input')).toHaveValue('24');
   });
 
+  test('invalid maximum FPS should preserve the previous limit and animation speed', async ({ page }) => {
+    await openEditor(page);
+    await openMiscPreferences(page);
+
+    const fpsInput = page.locator('.max-fps-input');
+    await fpsInput.fill('30');
+    await fpsInput.dispatchEvent('change');
+
+    for (const value of ['-1', '-30', '0', '', 'abc', '9'.repeat(400)]) {
+      await fpsInput.fill(value);
+      await fpsInput.dispatchEvent('change');
+
+      await expect(fpsInput).toHaveValue('30');
+      await expect(page.locator('#preview-fps')).toHaveAttribute('max', '30');
+      expect(await page.evaluate(() => window.pskl.app.piskelController.getFPS())).toBe(12);
+    }
+
+    await closeMiscPreferences(page);
+    await openMiscPreferences(page);
+    await expect(page.locator('.max-fps-input')).toHaveValue('30');
+  });
+
   // ─── Canvas background screenshots ────────────────────────────
 
   test('default canvas background rendering', async ({ page }) => {
