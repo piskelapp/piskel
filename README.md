@@ -47,6 +47,12 @@ There is no support for mobile.
 
 Offline builds are available. More details in the [dedicated wiki page](https://github.com/piskelapp/piskel/wiki/Desktop-applications).
 
+## Deploy on Wasmer
+
+[![Deploy to Wasmer](https://img.shields.io/badge/Deploy%20to-Wasmer-171717?logo=wasmer&logoColor=white)](https://wasmer.io/apps/create?github=piskelapp%2Fpiskel)
+
+[Wasmer Edge](https://docs.wasmer.io/edge/) is a cloud hosting platform powered by WebAssembly. The included `Anybuild` configuration runs the browser build and serves `dest/prod/`; it does not build or run the desktop application. The button opens import settings for this public repository; review them before deploying. To customize it and redeploy changes, fork this repository and import your own fork.
+
 ## Contributing ?
 
 ### Reporting an issue
