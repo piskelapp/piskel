@@ -192,6 +192,49 @@ test.describe("Preview actions", () => {
     await popup.close();
   });
 
+  test("reloading the editor should close the popup preview", async ({
+    page,
+    context
+  }) => {
+    await openEditor(page);
+    await showPreviewActions(page);
+
+    const popupPromise = context.waitForEvent("page");
+    await testId(page, "open-popup-preview-button").click();
+    const popup = await popupPromise;
+    await popup.waitForLoadState();
+    await expect(popup.locator(".preview-container")).toBeAttached();
+
+    const popupClosed = popup.waitForEvent("close");
+    await page.reload();
+    await popupClosed;
+    expect(popup.isClosed()).toBe(true);
+  });
+
+  test("closing the popup preview should allow opening a new one", async ({
+    page,
+    context
+  }) => {
+    await openEditor(page);
+    await showPreviewActions(page);
+
+    const firstPopupPromise = context.waitForEvent("page");
+    await testId(page, "open-popup-preview-button").click();
+    const firstPopup = await firstPopupPromise;
+    await expect(firstPopup.locator(".preview-container")).toBeAttached();
+    await firstPopup.close();
+
+    // If the popup closure was not detected, clicking would only try to focus
+    // the closed popup instead of opening a new one.
+    await showPreviewActions(page);
+    const secondPopupPromise = context.waitForEvent("page");
+    await testId(page, "open-popup-preview-button").click();
+    const secondPopup = await secondPopupPromise;
+    await expect(secondPopup.locator(".preview-container")).toBeAttached();
+
+    await secondPopup.close();
+  });
+
   test("popup preview should render known pattern as base64 PNG", async ({
     page,
     context
