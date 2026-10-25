@@ -13,7 +13,7 @@
   ns.PopupPreviewController.prototype.init = function () {
     pskl.utils.Event.addEventListener(
       window,
-      "unload",
+      "pagehide",
       this.onMainWindowUnload_,
       this
     );
@@ -45,7 +45,7 @@
     );
     pskl.utils.Event.addEventListener(
       this.popup,
-      "unload",
+      "pagehide",
       this.onPopupClosed_,
       this
     );
@@ -101,6 +101,10 @@
   ns.PopupPreviewController.prototype.onMainWindowUnload_ = function () {
     if (this.isOpen()) {
       this.popup.close();
+      // The page might be restored from the bfcache, reset the state here
+      // rather than relying on the popup's pagehide listener.
+      this.popup = null;
+      this.renderer = null;
     }
   };
 })();
