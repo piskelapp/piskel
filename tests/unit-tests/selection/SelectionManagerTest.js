@@ -42,6 +42,18 @@ describe("SelectionManager suite", function() {
     };
   };
 
+  /**
+   * @Mock
+   */
+  var createMockTextClipboardItem = function (text) {
+    return {
+      type: 'text/plain',
+      getAsString: function (callback) {
+        callback(text);
+      }
+    };
+  };
+
   beforeEach(function() {
     currentFrame = pskl.model.Frame.fromPixelGrid([
       [B, R, T],
@@ -89,6 +101,25 @@ describe("SelectionManager suite", function() {
       [B, R, T],
       [R, B, R],
       [R, B, R]
+    ]);
+  });
+
+  /**
+   * Check that pasting text which is not a piskel selection is ignored
+   */
+  it("paste ignores random text from the clipboard", function () {
+    // Browsers call getAsString callbacks asynchronously, outside of paste()'s try/catch,
+    // so call pasteText_ directly to make sure it doesn't throw by itself.
+    ['Some random text', 'null', '42', '{}'].forEach(function (text) {
+      expect(function () {
+        selectionManager.pasteText_(createMockTextClipboardItem(text));
+      }).not.toThrow();
+    });
+
+    frameEqualsGrid(currentFrame, [
+      [B, R, T],
+      [R, B, R],
+      [T, R, B]
     ]);
   });
 
