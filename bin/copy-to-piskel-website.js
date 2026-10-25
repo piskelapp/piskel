@@ -1,3 +1,6 @@
+/**
+ * DEPRECATED: copies the build to the legacy piskel-website project (App Engine).
+ */
 const rmdir = require('rmdir');
 const path = require('path');
 const fs = require('fs');
