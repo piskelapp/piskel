@@ -34,7 +34,9 @@
 
   ns.DrawingLoop.prototype.loop_ = function () {
     var currentTime = Date.now();
-    var delta = currentTime - this.previousTime;
+    // The system clock can go backwards (NTP sync, user setting the time manually, resume from sleep...).
+    // A negative delta would lead to negative frame indexes in the preview.
+    var delta = Math.max(0, currentTime - this.previousTime);
     this.executeCallbacks_(delta);
     this.previousTime = currentTime;
     this.requestAnimationFrame.call(window, this.loop_);
