@@ -1,7 +1,7 @@
 import test, {  expect } from "@playwright/test";
 import { isSettingsDrawerExpanded, openEditor } from "../../testutils";
 
-test('Test opening/closing all settings drawer tabs', async ({ page }) => {
+test('Test opening/closing all settings drawer tabs', { tag: ['@settings.drawers'] }, async ({ page }) => {
     await openEditor(page);
 
     // Collapsed initially.

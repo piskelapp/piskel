@@ -44,14 +44,14 @@ async function getOnionSkinPixel(page: Page, col: number, row: number) {
 
 test.describe('Onion skin', () => {
 
-  test('should be disabled by default', async ({ page }) => {
+  test('should be disabled by default', { tag: ['@preview.onion-skin-toggle'] }, async ({ page }) => {
     await openEditor(page);
 
     expect(await isOnionSkinEnabled(page)).toBe(false);
     await expectHasNotClass(page, ONION_SKIN_SELECTOR, ENABLED_CLASS);
   });
 
-  test('should toggle on when clicking the onion skin button', async ({ page }) => {
+  test('should toggle on when clicking the onion skin button', { tag: ['@preview.onion-skin-toggle'] }, async ({ page }) => {
     await openEditor(page);
 
     await testId(page, 'onion-skin-toggle-button').click();
@@ -64,7 +64,7 @@ test.describe('Onion skin', () => {
     await expectHasClass(page, ONION_SKIN_SELECTOR, ENABLED_CLASS);
   });
 
-  test('should toggle off when clicking again', async ({ page }) => {
+  test('should toggle off when clicking again', { tag: ['@preview.onion-skin-toggle'] }, async ({ page }) => {
     await openEditor(page);
 
     // Enable
@@ -78,7 +78,7 @@ test.describe('Onion skin', () => {
     await expectHasNotClass(page, ONION_SKIN_SELECTOR, ENABLED_CLASS);
   });
 
-  test('should toggle onion skin with Alt+O shortcut', async ({ page }) => {
+  test('should toggle onion skin with Alt+O shortcut', { tag: ['@preview.onion-skin-toggle'] }, async ({ page }) => {
     await openEditor(page);
 
     expect(await isOnionSkinEnabled(page)).toBe(false);
@@ -92,7 +92,7 @@ test.describe('Onion skin', () => {
     await expectHasNotClass(page, ONION_SKIN_SELECTOR, ENABLED_CLASS);
   });
 
-  test('onion skin canvas should render previous and next frame content', async ({ page }) => {
+  test('onion skin canvas should render previous and next frame content', { tag: ['@preview.onion-skin'] }, async ({ page }) => {
     await openEditor(page);
 
     // Create a 10x10 piskel with a red pixel at (1,1) on frame 0
@@ -145,7 +145,7 @@ test.describe('Onion skin', () => {
     expect(emptyPixel.a).toBe(0);
   });
 
-  test('onion skin canvas should clear when disabled', async ({ page }) => {
+  test('onion skin canvas should clear when disabled', { tag: ['@preview.onion-skin'] }, async ({ page }) => {
     await openEditor(page);
 
     // Frame 0: red pixel at (1,1)

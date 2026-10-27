@@ -16,13 +16,13 @@ import {
 
 test.describe('Frame operations', () => {
 
-  test('should start with one frame', async ({ page }) => {
+  test('should start with one frame', { tag: ['@frames.at-least-one'] }, async ({ page }) => {
     await openEditor(page);
     expect(await getCurrentPiskelFrameCount(page)).toBe(1);
     await expect(getFrameTiles(page)).toHaveCount(1);
   });
 
-  test('should add a new frame', async ({ page }) => {
+  test('should add a new frame', { tag: ['@frames.add'] }, async ({ page }) => {
     await openEditor(page);
 
     await getAddFrameButton(page).click();
@@ -31,7 +31,7 @@ test.describe('Frame operations', () => {
     await expect(getFrameTiles(page)).toHaveCount(2);
   });
 
-  test('should select a frame by clicking', async ({ page }) => {
+  test('should select a frame by clicking', { tag: ['@frames.select'] }, async ({ page }) => {
     await openEditor(page);
 
     // Add a second frame
@@ -47,7 +47,7 @@ test.describe('Frame operations', () => {
     expect(await getCurrentFrameIndex(page)).toBe(1);
   });
 
-  test('should duplicate a frame', async ({ page }) => {
+  test('should duplicate a frame', { tag: ['@frames.duplicate'] }, async ({ page }) => {
     await openEditor(page);
 
     // Draw something on frame 0 so the duplicate has content
@@ -66,7 +66,7 @@ test.describe('Frame operations', () => {
     expect(pixel).toBe(colorToInt('#FF0000'));
   });
 
-  test('should delete the last frame', async ({ page }) => {
+  test('should delete the last frame', { tag: ['@frames.delete'] }, async ({ page }) => {
     await openEditor(page);
 
     // Add a second frame
@@ -81,7 +81,7 @@ test.describe('Frame operations', () => {
     await expect(getFrameTiles(page)).toHaveCount(1);
   });
 
-  test('should delete the first frame and keep the second', async ({ page }) => {
+  test('should delete the first frame and keep the second', { tag: ['@frames.delete'] }, async ({ page }) => {
     await openEditor(page);
 
     // Draw red on frame 0
@@ -105,7 +105,7 @@ test.describe('Frame operations', () => {
     expect(await getPixelColor(page, 0, 0)).toBe(colorToInt('#00FF00'));
   });
 
-  test('should delete a middle frame', async ({ page }) => {
+  test('should delete a middle frame', { tag: ['@frames.delete'] }, async ({ page }) => {
     await openEditor(page);
 
     // Frame 0: red
@@ -135,7 +135,7 @@ test.describe('Frame operations', () => {
     expect(await getPixelColor(page, 0, 0, 0, 1)).toBe(colorToInt('#0000FF'));
   });
 
-  test('should add multiple frames', async ({ page }) => {
+  test('should add multiple frames', { tag: ['@frames.add'] }, async ({ page }) => {
     await openEditor(page);
 
     await getAddFrameButton(page).click();
@@ -146,7 +146,7 @@ test.describe('Frame operations', () => {
     await expect(getFrameTiles(page)).toHaveCount(4);
   });
 
-  test('should navigate frames with keyboard shortcuts', async ({ page }) => {
+  test('should navigate frames with keyboard shortcuts', { tag: ['@frames.navigate'] }, async ({ page }) => {
     await openEditor(page);
 
     // Add frames
@@ -170,7 +170,7 @@ test.describe('Frame operations', () => {
     expect(await getCurrentFrameIndex(page)).toBe(1);
   });
 
-  test('should add a new frame with N shortcut', async ({ page }) => {
+  test('should add a new frame with N shortcut', { tag: ['@frames.add-shortcut'] }, async ({ page }) => {
     await openEditor(page);
     expect(await getCurrentPiskelFrameCount(page)).toBe(1);
 
@@ -179,7 +179,7 @@ test.describe('Frame operations', () => {
     await waitFor(async () => (await getCurrentPiskelFrameCount(page)) === 2);
   });
 
-  test('should duplicate frame with content via UI button', async ({ page }) => {
+  test('should duplicate frame with content via UI button', { tag: ['@frames.duplicate'] }, async ({ page }) => {
     await openEditor(page);
 
     // Draw something on frame 0 via the pen tool
@@ -196,7 +196,7 @@ test.describe('Frame operations', () => {
     expect(pixel).toBe(colorToInt('#000000'));
   });
 
-  test('should duplicate a middle frame and insert after it', async ({ page }) => {
+  test('should duplicate a middle frame and insert after it', { tag: ['@frames.duplicate'] }, async ({ page }) => {
     await openEditor(page);
     await clickTool(page, 'tool-pen');
 
