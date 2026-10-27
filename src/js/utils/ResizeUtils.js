@@ -68,6 +68,30 @@
       }
     },
 
+    /**
+     * Turn a width and height entered by the user into a size that can be used for a frame.
+     * Values that are not positive numbers are replaced by the fallback size, and values
+     * above Constants.MAX_DEFAULT_WIDTH / MAX_DEFAULT_HEIGHT are capped.
+     * @param  {String|Number} width
+     * @param  {String|Number} height
+     * @param  {Object} fallback {width, height} used for invalid values
+     * @return {Object} {width, height}
+     */
+    sanitizeSize: function (width, height, fallback) {
+      width = parseInt(width, 10);
+      height = parseInt(height, 10);
+      return {
+        width:
+          width > 0
+            ? Math.min(width, Constants.MAX_DEFAULT_WIDTH)
+            : fallback.width,
+        height:
+          height > 0
+            ? Math.min(height, Constants.MAX_DEFAULT_HEIGHT)
+            : fallback.height
+      };
+    },
+
     translateCoordinates: function (x, y, frame, resizedFrame, origin) {
       return {
         x: ns.ResizeUtils.translateX(
