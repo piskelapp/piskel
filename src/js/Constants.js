@@ -10,8 +10,8 @@ var Constants = {
 
   MODEL_VERSION: 2,
 
-  MAX_HEIGHT: 1024,
-  MAX_WIDTH: 1024,
+  MAX_DEFAULT_HEIGHT: 4096,
+  MAX_DEFAULT_WIDTH: 4096,
 
   MAX_PALETTE_COLORS: 256,
   // allow current colors service to get up to 256 colors.

@@ -15,7 +15,8 @@
       this.shortcutService = new pskl.service.keyboard.ShortcutService();
       this.shortcutService.init();
 
-      var size = pskl.UserSettings.get(pskl.UserSettings.DEFAULT_SIZE);
+      var size =
+        pskl.controller.settings.resize.DefaultSizeController.getDefaultSize();
       var fps = Constants.DEFAULT.FPS;
       var descriptor = new pskl.model.piskel.Descriptor("New Piskel", "");
       var piskel = new pskl.model.Piskel(
