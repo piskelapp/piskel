@@ -46,7 +46,7 @@ test.describe('Preferences — Grid tab', () => {
 
   // ─── Enable grid checkbox ─────────────────────────────────────
 
-  test('grid should be disabled by default and canvas has no grid lines', async ({ page }) => {
+  test('grid should be disabled by default and canvas has no grid lines', { tag: ['@settings.grid-enabled'] }, async ({ page }) => {
     await openEditor(page);
     await openGridPreferences(page);
 
@@ -54,7 +54,7 @@ test.describe('Preferences — Grid tab', () => {
     await expect(checkbox).not.toBeChecked();
   });
 
-  test('enabling grid with a visible color should draw grid lines on the canvas', async ({ page }) => {
+  test('enabling grid with a visible color should draw grid lines on the canvas', { tag: ['@settings.grid-enabled', '@canvas.grid'] }, async ({ page }) => {
     await openEditor(page);
 
     // Take baseline screenshot
@@ -82,7 +82,7 @@ test.describe('Preferences — Grid tab', () => {
     expect(pixel.a).toBeGreaterThan(0);
   });
 
-  test('disabling grid should remove grid lines from the canvas', async ({ page }) => {
+  test('disabling grid should remove grid lines from the canvas', { tag: ['@settings.grid-enabled', '@canvas.grid'] }, async ({ page }) => {
     await openEditor(page);
     await openGridPreferences(page);
 
@@ -109,7 +109,7 @@ test.describe('Preferences — Grid tab', () => {
 
   // ─── Grid size ─────────────────────────────────────────────────
 
-  test('grid size should default to 1 and changing it should affect the canvas', async ({ page }) => {
+  test('grid size should default to 1 and changing it should affect the canvas', { tag: ['@settings.grid-width'] }, async ({ page }) => {
     await openEditor(page);
     await openGridPreferences(page);
 
@@ -138,7 +138,7 @@ test.describe('Preferences — Grid tab', () => {
 
   // ─── Grid spacing ─────────────────────────────────────────────
 
-  test('grid spacing should default to 1 and changing it should affect the canvas', async ({ page }) => {
+  test('grid spacing should default to 1 and changing it should affect the canvas', { tag: ['@settings.grid-spacing'] }, async ({ page }) => {
     await openEditor(page);
     await openGridPreferences(page);
 
@@ -175,7 +175,7 @@ test.describe('Preferences — Grid tab', () => {
 
   // ─── Grid color ────────────────────────────────────────────────
 
-  test('should display all 14 grid color options', async ({ page }) => {
+  test('should display all 14 grid color options', { tag: ['@settings.grid-color'] }, async ({ page }) => {
     await openEditor(page);
     await openGridPreferences(page);
 
@@ -186,7 +186,7 @@ test.describe('Preferences — Grid tab', () => {
     await expect(page.locator('.grid-colors-item.selected')).toHaveAttribute('data-color', 'rgba(0, 0, 0, 0)');
   });
 
-  test('changing grid color should change the actual grid line color on canvas', async ({ page }) => {
+  test('changing grid color should change the actual grid line color on canvas', { tag: ['@settings.grid-color'] }, async ({ page }) => {
     await openEditor(page);
     await openGridPreferences(page);
 

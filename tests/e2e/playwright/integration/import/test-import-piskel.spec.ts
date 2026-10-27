@@ -50,7 +50,7 @@ async function importPiskelFile(page: Page, filePath: string): Promise<void> {
 
 test.describe('.piskel import', () => {
 
-  test('should import a .piskel file with multiple layers', async ({ page }) => {
+  test('should import a .piskel file with multiple layers', { tag: ['@import.browse-piskel', '@import.select-mode'] }, async ({ page }) => {
     await openEditor(page);
 
     // Create a sprite with 2 layers
@@ -89,7 +89,7 @@ test.describe('.piskel import', () => {
     expect(await getLayerName(page, 1)).toBe('Top Layer');
   });
 
-  test('should import a .piskel file with multiple frames', async ({ page }) => {
+  test('should import a .piskel file with multiple frames', { tag: ['@import.browse-piskel', '@import.select-mode'] }, async ({ page }) => {
     await openEditor(page);
 
     // Create a sprite with 3 frames

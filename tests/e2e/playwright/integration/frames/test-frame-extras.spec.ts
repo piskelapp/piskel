@@ -22,7 +22,7 @@ async function isFrameVisible(page: Page, index: number): Promise<boolean> {
 
 test.describe('Frame visibility toggle', () => {
 
-  test('all frames should be visible by default', async ({ page }) => {
+  test('all frames should be visible by default', { tag: ['@frames.visibility'] }, async ({ page }) => {
     await openEditor(page);
 
     // Add 2 more frames (3 total)
@@ -37,7 +37,7 @@ test.describe('Frame visibility toggle', () => {
     expect(await isFrameVisible(page, 2)).toBe(true);
   });
 
-  test('clicking toggle should hide a frame from preview', async ({ page }) => {
+  test('clicking toggle should hide a frame from preview', { tag: ['@frames.visibility'] }, async ({ page }) => {
     await openEditor(page);
 
     await getAddFrameButton(page).click();
@@ -54,7 +54,7 @@ test.describe('Frame visibility toggle', () => {
     expect(await isFrameVisible(page, 2)).toBe(true);
   });
 
-  test('clicking toggle again should make the frame visible', async ({ page }) => {
+  test('clicking toggle again should make the frame visible', { tag: ['@frames.visibility'] }, async ({ page }) => {
     await openEditor(page);
 
     await getAddFrameButton(page).click();
@@ -68,7 +68,7 @@ test.describe('Frame visibility toggle', () => {
     await waitFor(async () => (await isFrameVisible(page, 1)));
   });
 
-  test('hidden frame should be excluded from visible frame indexes', async ({ page }) => {
+  test('hidden frame should be excluded from visible frame indexes', { tag: ['@frames.visibility'] }, async ({ page }) => {
     await openEditor(page);
 
     await getAddFrameButton(page).click();

@@ -8,39 +8,40 @@ whole sprite.
 ## Behavior
 
 Transformations apply immediately on click; they are not modes. By default
-they affect the current frame of the current layer. Modifiers:
+they affect the current frame of the current layer.
 
-- `ctrl`: apply to all layers.
-- `shift`: apply to all frames.
+- `transformations.all-layers` `ctrl`+click applies the transformation to
+  all layers (flip, rotate, center).
+- `transformations.all-frames` `shift`+click applies the transformation to
+  all frames (flip, rotate, center).
 
-| Tool | Id | Default | Modifiers |
+| Claim | Tool | Id | Behavior |
 | --- | --- | --- | --- |
-| Flip | `tool-flip` | Flip horizontally. | `alt`: flip vertically. `ctrl`, `shift` as above. |
-| Rotate | `tool-rotate` | Rotate 90° counter-clockwise. | `alt`: clockwise. `ctrl`, `shift` as above. |
-| Clone | `tool-clone` | Copy the current frame of the current layer to every frame of that layer. | None. |
-| Center | `tool-center` | Move the content so its bounding box is centered. | `ctrl`, `shift` as above. |
-| Crop | `tool-crop` | Resize the sprite to the bounding box of its content, or to the current selection if there is one. Always applies to all frames and layers. | None. |
+| `transformations.flip` | Flip | `tool-flip` | Flips horizontally; with `alt`, vertically. |
+| `transformations.rotate` | Rotate | `tool-rotate` | Rotates 90° counter-clockwise; with `alt`, clockwise. |
+| `transformations.clone` | Clone | `tool-clone` | Copies the current frame of the current layer to every frame of that layer. No modifiers. |
+| `transformations.center` | Center | `tool-center` | Moves the content so its bounding box is centered. |
+| `transformations.crop` | Crop | `tool-crop` | Resizes the sprite to the bounding box of its content. Always applies to all frames and layers. No modifiers. |
+| `transformations.crop-selection` | Crop | `tool-crop` | With a selection, resizes the sprite to the selection instead, and dismisses the selection. |
 
-- Each transformation is a single undo step.
-- Rotation of a non-square sprite rotates around the center; pixels that
-  fall outside the canvas are lost, and uncovered areas become transparent.
-- Crop does nothing when the content already fills the canvas or the
-  sprite is empty. It dismisses the current selection.
+- `transformations.undo` Each transformation is a single undo step.
+- `transformations.rotate-non-square` Rotation of a non-square sprite
+  rotates around the center; pixels that fall outside the canvas are lost,
+  and uncovered areas become transparent.
+- `transformations.crop-noop` Crop does nothing when the content already
+  fills the canvas or the sprite is empty.
+- `transformations.show-more` Only the first tools are visible by default;
+  "View more tools" expands the panel and clicking it again collapses it.
+- `transformations.show-more-saved` Whether the panel is expanded is
+  remembered across sessions.
 
 ## UI and shortcuts
 
-The "Transform" panel in the right column. Only the first tools are visible
-by default; "View more tools" expands the panel. No keyboard shortcuts.
+The "Transform" panel in the right column. No keyboard shortcuts.
 
 ## Settings
 
 - `TRANSFORM_SHOW_MORE` (default `false`): whether the panel is expanded.
-
-## Test gaps
-
-- No readable integration tests for clone, center and crop; they are only
-  covered by recorded sessions.
-- Rotate with `ctrl` (all layers).
 
 ## Known issues
 

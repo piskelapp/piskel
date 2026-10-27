@@ -9,55 +9,49 @@ another frame, layer, or another Piskel tab.
 
 ### Selection tools
 
-| Tool | Id | Key | Selects |
-| --- | --- | --- | --- |
-| Rectangle selection | `tool-rectangle-select` | `S` | The dragged rectangle. |
-| Lasso selection | `tool-lasso-select` | `H` | A freeform area traced with the mouse. |
-| Shape selection | `tool-shape-select` | `Z` | The contiguous region of the clicked color. |
+| Claim | Tool | Id | Key | Selects |
+| --- | --- | --- | --- | --- |
+| `selection.rectangle` | Rectangle selection | `tool-rectangle-select` | `S` | The dragged rectangle. |
+| `selection.lasso` | Lasso selection | `tool-lasso-select` | `H` | A freeform area traced with the mouse. |
+| `selection.shape` | Shape selection | `tool-shape-select` | `Z` | The contiguous region of the clicked color. |
 
-- Dragging inside an existing selection moves the selection outline.
-  Holding `shift` while dragging moves the **content** with it.
-- The selection survives switching frames and layers, so content can be
-  moved or pasted onto another frame/layer.
-- Switching to a non-selection tool dismisses the selection.
+- `selection.move-outline` Dragging inside an existing selection moves the
+  selection outline.
+- `selection.move-content` Holding `shift` while dragging moves the
+  **content** with it.
+- `selection.across-frames` The selection survives switching frames and
+  layers, so content can be moved or pasted onto another frame/layer.
+- `selection.dismiss-on-tool-change` Switching to a non-selection tool
+  dismisses the selection.
 
 ### Actions
 
-| Action | Shortcut | Effect |
-| --- | --- | --- |
-| Copy | `ctrl+C` | Copies the selected pixels (also to the system clipboard). |
-| Cut | `ctrl+X` | Copies, then clears the selected pixels. |
-| Paste | `ctrl+V` | Pastes the copied pixels on the current frame, at the current position of the selection (after any move). Transparent pixels are not pasted, so they don't erase what is underneath. |
-| Delete | `Del` / `Backspace` | Clears the selected pixels. |
-| Commit | `Enter` | Applies moved content and dismisses the selection. |
+| Claim | Action | Shortcut | Effect |
+| --- | --- | --- | --- |
+| `selection.copy` | Copy | `ctrl+C` | Copies the selected pixels (also to the system clipboard). |
+| `selection.cut` | Cut | `ctrl+X` | Copies, then clears the selected pixels. |
+| `selection.paste` | Paste | `ctrl+V` | Pastes the copied pixels on the current frame, at the current position of the selection (after any move). Transparent pixels are not pasted, so they don't erase what is underneath. |
+| `selection.delete` | Delete | `Del` / `Backspace` | Clears the selected pixels. |
+| `selection.commit` | Commit | `Enter` | Applies moved content and dismisses the selection. |
 
-- Pasting from the system clipboard:
-  - Piskel selection data copied from another Piskel tab is used, unless a
-    newer local selection exists.
-  - An **image** in the clipboard is imported through the import flow (see
-    [import.md](import.md)).
-- Cut, paste and delete are each a single undo step. Copy doesn't change
-  the sprite.
-
-### Edge cases
-
-- Pasting with nothing copied does nothing.
-- Content moved outside the canvas is clipped on commit.
+- `selection.paste-other-tab` When pasting from the system clipboard,
+  Piskel selection data copied from another Piskel tab is used, unless a
+  newer local selection exists.
+- `selection.paste-image` An **image** in the system clipboard is imported
+  through the import flow (see [import.md](import.md)).
+- `selection.undo` Cut, paste and delete are each a single undo step. Copy
+  doesn't change the sprite.
+- `selection.paste-empty` Pasting with nothing copied does nothing.
+- `selection.clip` Content moved outside the canvas is clipped on commit.
 
 ## UI and shortcuts
 
 Selection tools are in the left toolbar with the drawing tools. Shortcuts
-are in the table above.
+are in the tables above.
 
 ## Settings
 
 None.
-
-## Test gaps
-
-- Moving content with `shift`, then committing with `Enter`.
-- Pasting onto another frame or layer.
-- Pasting an image from the system clipboard.
 
 ## Known issues
 

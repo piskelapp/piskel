@@ -38,13 +38,13 @@ test.describe('Keyboard shortcuts — zoom', () => {
     throw new Error(`Zoom did not ${direction === 'up' ? 'increase' : 'decrease'} after pressing "${key}" (3 attempts)`);
   }
 
-  test('"+" should increase zoom', async ({ page }) => {
+  test('"+" should increase zoom', { tag: ['@canvas.zoom-shortcuts'] }, async ({ page }) => {
     await openEditor(page);
     const before = await getZoom(page);
     await pressZoomKey(page, '+', before, 'up');
   });
 
-  test('"-" should decrease zoom', async ({ page }) => {
+  test('"-" should decrease zoom', { tag: ['@canvas.zoom-shortcuts'] }, async ({ page }) => {
     await openEditor(page);
 
     // Zoom in first — press one at a time and wait for each to take effect
@@ -57,7 +57,7 @@ test.describe('Keyboard shortcuts — zoom', () => {
     await pressZoomKey(page, '-', zoom, 'down');
   });
 
-  test('"0" should reset zoom', async ({ page }) => {
+  test('"0" should reset zoom', { tag: ['@canvas.zoom-shortcuts'] }, async ({ page }) => {
     await openEditor(page);
     const initial = await getZoom(page);
 
@@ -76,7 +76,7 @@ test.describe('Keyboard shortcuts — zoom', () => {
 
 test.describe('Keyboard shortcuts — palette color select', () => {
 
-  test('"1"-"3" should select different palette colors', async ({ page }) => {
+  test('"1"-"3" should select different palette colors', { tag: ['@colors-and-palettes.number-keys'] }, async ({ page }) => {
     await openEditor(page);
 
     // Set a grid with 3 distinct colors so the palette has entries
@@ -121,7 +121,7 @@ test.describe('Keyboard shortcuts — palette color select', () => {
 
 test.describe('Keyboard shortcuts — save', () => {
 
-  test('Ctrl+S should save and clear dirty indicator', async ({ page }) => {
+  test('Ctrl+S should save and clear dirty indicator', { tag: ['@save-and-storage.browser-save', '@save-and-storage.dirty-indicator'] }, async ({ page }) => {
     await openEditor(page);
 
     // Make canvas dirty
@@ -139,7 +139,7 @@ test.describe('Keyboard shortcuts — save', () => {
 
 test.describe('Keyboard shortcuts — ESC', () => {
 
-  test('ESC should close an open dialog', async ({ page }) => {
+  test('ESC should close an open dialog', { tag: ['@keyboard-shortcuts.escape'] }, async ({ page }) => {
     await openEditor(page);
 
     // Open cheatsheet dialog
@@ -151,7 +151,7 @@ test.describe('Keyboard shortcuts — ESC', () => {
     await waitFor(async () => (await page.locator('#dialog-container-wrapper.show').count()) === 0);
   });
 
-  test('ESC should close settings drawer', async ({ page }) => {
+  test('ESC should close settings drawer', { tag: ['@keyboard-shortcuts.escape', '@settings.drawers'] }, async ({ page }) => {
     await openEditor(page);
 
     await openSaveSettingsPanel(page);

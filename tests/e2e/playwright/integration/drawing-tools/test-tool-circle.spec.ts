@@ -14,7 +14,7 @@ function emptyTestGrid(size = 10): ("T")[][] {
 
 test.describe('Circle tool', () => {
 
-  test('circle tool: draws hollow circle', async ({ page }) => {
+  test('circle tool: draws hollow circle', { tag: ['@drawing-tools.circle'] }, async ({ page }) => {
     await openEditor(page);
     await setPiskelFromGrid(page, emptyTestGrid());
     await clickTool(page, 'tool-circle');
@@ -35,7 +35,7 @@ test.describe('Circle tool', () => {
     ]);
   });
 
-  test('circle tool + Shift: constrains to perfect circle', async ({ page }) => {
+  test('circle tool + Shift: constrains to perfect circle', { tag: ['@drawing-tools.circle'] }, async ({ page }) => {
     await openEditor(page);
     await setPiskelFromGrid(page, emptyTestGrid());
     await clickTool(page, 'tool-circle');

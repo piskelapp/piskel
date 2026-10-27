@@ -27,26 +27,38 @@ grouped into these categories:
 - **Storage**: `ctrl+S`; desktop only: `ctrl+O`, `ctrl+shift+S`.
 - **Colors**: `X`, `D`, `alt+P`, `<`, `>`, `1`–`9`.
 
-`ctrl` maps to Cmd on macOS. Shortcuts are ignored while typing in a text
-input.
+What each shortcut does is specified with the feature it triggers. The
+claims here are about the shortcut system itself:
+
+- `keyboard-shortcuts.tool-keys` Each tool is selected by its key, and
+  switching tools by click or by key can be mixed freely.
+- `keyboard-shortcuts.escape` `Escape` closes the open dialog or settings
+  drawer.
+- `keyboard-shortcuts.ctrl-cmd` `ctrl` maps to Cmd on macOS.
+- `keyboard-shortcuts.ignore-inputs` Shortcuts are ignored while typing in
+  a text input.
 
 ### Cheatsheet
 
-- `?` or the link in the bottom bar opens the cheatsheet dialog, listing
-  every shortcut by category with its current keys.
-- `Escape` or the close button closes it.
+- `keyboard-shortcuts.cheatsheet-open` `?` or the link in the bottom bar
+  opens the cheatsheet dialog. `?`, `Escape` or the close button closes it.
+- `keyboard-shortcuts.cheatsheet-content` The cheatsheet lists every
+  shortcut by category with its current keys.
 
 ### Remapping
 
-- In the cheatsheet, editable shortcuts are marked. Click one, then press
-  the new key combination.
-- Some keys cannot be remapped (`1`–`9`, `?`, `Del`, `Backspace`, `Enter`,
-  `ctrl+Y`, `ctrl+shift+Z`); trying shows a notification. Shortcuts bound
-  to several keys (e.g. redo, delete) are not editable.
-- If the new key was already used by another shortcut, it is removed from
-  that shortcut and a notification says so.
-- **Restore default shortcuts** resets all of them, after confirmation.
-- Custom keys are persisted per browser.
+- `keyboard-shortcuts.remap` In the cheatsheet, editable shortcuts are
+  marked. Click one, then press the new key combination. Clicking
+  elsewhere cancels editing.
+- `keyboard-shortcuts.forbidden-keys` Some keys cannot be remapped
+  (`1`–`9`, `?`, `Del`, `Backspace`, `Enter`, `ctrl+Y`, `ctrl+shift+Z`);
+  trying shows a notification. Shortcuts bound to several keys (e.g. redo,
+  delete) are not editable.
+- `keyboard-shortcuts.conflict` If the new key was already used by another
+  shortcut, it is removed from that shortcut and a notification says so.
+- `keyboard-shortcuts.restore-defaults` **Restore default shortcuts**
+  resets all of them, after confirmation.
+- `keyboard-shortcuts.persist` Custom keys are persisted per browser.
 
 ## UI and shortcuts
 
@@ -57,12 +69,6 @@ Cheatsheet dialog, opened with
 
 Custom keys are stored as user settings, one key per shortcut (not part of
 the declared settings with defaults).
-
-## Test gaps
-
-- Completing a remap and checking that the new key works.
-- Conflict handling, forbidden keys, restore defaults.
-- Persistence of custom keys across reloads.
 
 ## Known issues
 

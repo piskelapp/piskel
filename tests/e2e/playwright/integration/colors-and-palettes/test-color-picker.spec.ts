@@ -10,7 +10,7 @@ import {
 
 test.describe('Color picker', () => {
 
-  test('should have default colors on load', async ({ page }) => {
+  test('should have default colors on load', { tag: ['@colors-and-palettes.defaults'] }, async ({ page }) => {
     await openEditor(page);
 
     const primary = await getPrimaryColor(page);
@@ -21,7 +21,7 @@ test.describe('Color picker', () => {
     expect(secondary).toBe('rgba(0, 0, 0, 0)');
   });
 
-  test('should swap colors with X key', async ({ page }) => {
+  test('should swap colors with X key', { tag: ['@colors-and-palettes.swap'] }, async ({ page }) => {
     await openEditor(page);
 
     // Set distinct colors to verify swap
@@ -38,7 +38,7 @@ test.describe('Color picker', () => {
     expect((await getSecondaryColor(page)).toLowerCase()).toBe('#ff0000');
   });
 
-  test('should swap colors by clicking swap button', async ({ page }) => {
+  test('should swap colors by clicking swap button', { tag: ['@colors-and-palettes.swap'] }, async ({ page }) => {
     await openEditor(page);
 
     await setPrimaryColor(page, '#00FF00');
@@ -53,7 +53,7 @@ test.describe('Color picker', () => {
     expect((await getSecondaryColor(page)).toLowerCase()).toBe('#00ff00');
   });
 
-  test('should reset colors with D key', async ({ page }) => {
+  test('should reset colors with D key', { tag: ['@colors-and-palettes.reset'] }, async ({ page }) => {
     await openEditor(page);
 
     // Set non-default colors
@@ -81,7 +81,7 @@ test.describe('Color picker', () => {
     expect((await getSecondaryColor(page)).toLowerCase()).toBe('#00ccdd');
   });
 
-  test('should swap colors twice to return to original', async ({ page }) => {
+  test('should swap colors twice to return to original', { tag: ['@colors-and-palettes.swap'] }, async ({ page }) => {
     await openEditor(page);
 
     await setPrimaryColor(page, '#112233');

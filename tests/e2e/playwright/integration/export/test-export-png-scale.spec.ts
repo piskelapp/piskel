@@ -3,7 +3,7 @@ import { openEditor, openExportSettingsPanel, setPiskelFromGrid } from "../../te
 import fs from 'fs/promises';
 import PNG from 'png-ts';
 
-test('Test export png with scaling', async ({ page }) => {
+test('Test export png with scaling', { tag: ['@export.scale'] }, async ({ page }) => {
     await openEditor(page);
     await setPiskelFromGrid(page, [["B", "T"],["T", "B"]]);
 

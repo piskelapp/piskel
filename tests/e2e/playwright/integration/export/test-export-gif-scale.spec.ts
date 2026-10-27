@@ -3,7 +3,7 @@ import { openEditor, openExportSettingsPanel, setPiskelFromGrid } from "../../te
 import fs from 'fs/promises';
 import { parseGIF, decompressFrames } from 'gifuct-js'
 
-test('Test export gif with scaling', async ({ page }) => {
+test('Test export gif with scaling', { tag: ['@export.scale', '@export.gif'] }, async ({ page }) => {
     await openEditor(page);
 
     await setPiskelFromGrid(page, [["R", "G", "B"],["B", "R", "G"], ["G", "B", "R"]]);

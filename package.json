@@ -29,6 +29,7 @@
     "start:test": "npm run build && node scripts/serve.js --test",
     "lint": "biome check src/",
     "lint:fix": "biome check --write src/",
+    "spec-check": "node scripts/spec-check.js",
     "build:desktop": "npm run lint && npm run build && node scripts/desktop.js",
     "build:mac": "npm run lint && npm run build && node scripts/desktop.js --platform=macos",
     "start:nw": "npm run build && nw",

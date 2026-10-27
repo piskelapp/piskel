@@ -82,7 +82,7 @@ test.describe('Transform panel', () => {
 
   // ─── Flip ──────────────────────────────────────────────────────
 
-  test('flip horizontal (default) should mirror pixels left-right', async ({ page }) => {
+  test('flip horizontal (default) should mirror pixels left-right', { tag: ['@transformations.flip'] }, async ({ page }) => {
     await openEditor(page);
     await setPiskelFromGrid(page, lShapeGrid());
 
@@ -104,7 +104,7 @@ test.describe('Transform panel', () => {
     expect(grid.map(r => r.join(''))).toEqual(expected);
   });
 
-  test('flip vertical (Alt) should mirror pixels top-bottom', async ({ page }) => {
+  test('flip vertical (Alt) should mirror pixels top-bottom', { tag: ['@transformations.flip'] }, async ({ page }) => {
     await openEditor(page);
     await setPiskelFromGrid(page, lShapeGrid());
 
@@ -126,7 +126,7 @@ test.describe('Transform panel', () => {
     expect(grid.map(r => r.join(''))).toEqual(expected);
   });
 
-  test('flip all frames (Shift) should flip every frame', async ({ page }) => {
+  test('flip all frames (Shift) should flip every frame', { tag: ['@transformations.flip', '@transformations.all-frames'] }, async ({ page }) => {
     await openEditor(page);
     await setPiskelFromGrid(page, lShapeGrid());
 
@@ -155,7 +155,7 @@ test.describe('Transform panel', () => {
     expect(grid1[0][0]).toBe('.');
   });
 
-  test('flip all layers (Ctrl) should flip every layer', async ({ page }) => {
+  test('flip all layers (Ctrl) should flip every layer', { tag: ['@transformations.flip', '@transformations.all-layers'] }, async ({ page }) => {
     await openEditor(page);
     await setPiskelFromGrid(page, lShapeGrid());
 
@@ -181,7 +181,7 @@ test.describe('Transform panel', () => {
 
   // ─── Rotate ────────────────────────────────────────────────────
 
-  test('rotate counter-clockwise (default)', async ({ page }) => {
+  test('rotate counter-clockwise (default)', { tag: ['@transformations.rotate'] }, async ({ page }) => {
     await openEditor(page);
     await setPiskelFromGrid(page, lShapeGrid());
 
@@ -205,7 +205,7 @@ test.describe('Transform panel', () => {
     expect(grid.map(r => r.join(''))).toEqual(expected);
   });
 
-  test('rotate clockwise (Alt)', async ({ page }) => {
+  test('rotate clockwise (Alt)', { tag: ['@transformations.rotate'] }, async ({ page }) => {
     await openEditor(page);
     await setPiskelFromGrid(page, lShapeGrid());
 
@@ -229,7 +229,7 @@ test.describe('Transform panel', () => {
     expect(grid.map(r => r.join(''))).toEqual(expected);
   });
 
-  test('rotate all frames (Shift) should rotate every frame', async ({ page }) => {
+  test('rotate all frames (Shift) should rotate every frame', { tag: ['@transformations.rotate', '@transformations.all-frames'] }, async ({ page }) => {
     await openEditor(page);
     await setPiskelFromGrid(page, lShapeGrid());
 
@@ -259,7 +259,7 @@ test.describe('Transform panel', () => {
 
   // ─── Clone ─────────────────────────────────────────────────────
 
-  test('clone should copy current frame pixels to all frames', async ({ page }) => {
+  test('clone should copy current frame pixels to all frames', { tag: ['@transformations.clone'] }, async ({ page }) => {
     await openEditor(page);
     await setPiskelFromGrid(page, lShapeGrid());
 
@@ -295,7 +295,7 @@ test.describe('Transform panel', () => {
 
   // ─── Center ────────────────────────────────────────────────────
 
-  test('center should move content to the center of the canvas', async ({ page }) => {
+  test('center should move content to the center of the canvas', { tag: ['@transformations.center'] }, async ({ page }) => {
     await openEditor(page);
     await setPiskelFromGrid(page, lShapeGrid());
 
@@ -320,7 +320,7 @@ test.describe('Transform panel', () => {
     expect(grid.map(r => r.join(''))).toEqual(expected);
   });
 
-  test('center all frames (Shift) should center every frame', async ({ page }) => {
+  test('center all frames (Shift) should center every frame', { tag: ['@transformations.center', '@transformations.all-frames'] }, async ({ page }) => {
     await openEditor(page);
     await setPiskelFromGrid(page, lShapeGrid());
 
@@ -349,7 +349,7 @@ test.describe('Transform panel', () => {
     expect(grid1[0][0]).toBe('.');
   });
 
-  test('center all layers (Ctrl) should center every layer', async ({ page }) => {
+  test('center all layers (Ctrl) should center every layer', { tag: ['@transformations.center', '@transformations.all-layers'] }, async ({ page }) => {
     await openEditor(page);
     await setPiskelFromGrid(page, lShapeGrid());
 
@@ -376,7 +376,7 @@ test.describe('Transform panel', () => {
 
   // ─── Crop ──────────────────────────────────────────────────────
 
-  test('crop should resize canvas to fit content', async ({ page }) => {
+  test('crop should resize canvas to fit content', { tag: ['@transformations.crop'] }, async ({ page }) => {
     await openEditor(page);
     await setPiskelFromGrid(page, lShapeGrid());
 
@@ -398,7 +398,7 @@ test.describe('Transform panel', () => {
     expect(grid.map(r => r.join(''))).toEqual(expected);
   });
 
-  test('crop to selection should resize canvas to selection bounds', async ({ page }) => {
+  test('crop to selection should resize canvas to selection bounds', { tag: ['@transformations.crop-selection'] }, async ({ page }) => {
     await openEditor(page);
 
     // Fill entire 10x10 canvas with color
@@ -437,7 +437,7 @@ test.describe('Transform panel', () => {
 
   // ─── Show more toggle ─────────────────────────────────────────
 
-  test('show more toggle should expand/collapse transform tools', async ({ page }) => {
+  test('show more toggle should expand/collapse transform tools', { tag: ['@transformations.show-more'] }, async ({ page }) => {
     await openEditor(page);
 
     const container = page.locator('.transformations-container');

@@ -20,7 +20,7 @@ async function getCoordsText(page: Page): Promise<string> {
 
 test.describe('Cursor coordinates', () => {
 
-  test('should display frame size on load', async ({ page }) => {
+  test('should display frame size on load', { tag: ['@canvas.coords-size'] }, async ({ page }) => {
     await openEditor(page);
 
     const text = await getCoordsText(page);
@@ -28,7 +28,7 @@ test.describe('Cursor coordinates', () => {
     expect(text).toContain('[32x32]');
   });
 
-  test('should show x:y coordinates when hovering over canvas', async ({ page }) => {
+  test('should show x:y coordinates when hovering over canvas', { tag: ['@canvas.coords-hover'] }, async ({ page }) => {
     await openEditor(page);
     await setPiskelFromGrid(page, Array.from({ length: 10 }, () => Array(10).fill('T')));
 
@@ -46,7 +46,7 @@ test.describe('Cursor coordinates', () => {
     expect(text).toContain('3:5');
   });
 
-  test('should update coordinates when moving mouse to a different pixel', async ({ page }) => {
+  test('should update coordinates when moving mouse to a different pixel', { tag: ['@canvas.coords-hover'] }, async ({ page }) => {
     await openEditor(page);
     await setPiskelFromGrid(page, Array.from({ length: 10 }, () => Array(10).fill('T')));
 
@@ -65,7 +65,7 @@ test.describe('Cursor coordinates', () => {
     expect(text).not.toContain('2:3');
   });
 
-  test('should show drag origin during rectangle selection', async ({ page }) => {
+  test('should show drag origin during rectangle selection', { tag: ['@canvas.coords-drag'] }, async ({ page }) => {
     await openEditor(page);
     await setPiskelFromGrid(page, Array.from({ length: 10 }, () => Array(10).fill('T')));
 
@@ -93,7 +93,7 @@ test.describe('Cursor coordinates', () => {
     await page.mouse.up();
   });
 
-  test('should clear drag origin after mouse up', async ({ page }) => {
+  test('should clear drag origin after mouse up', { tag: ['@canvas.coords-drag'] }, async ({ page }) => {
     await openEditor(page);
     await setPiskelFromGrid(page, Array.from({ length: 10 }, () => Array(10).fill('T')));
 
@@ -117,7 +117,7 @@ test.describe('Cursor coordinates', () => {
     expect(text).not.toContain(' to ');
   });
 
-  test('should show frame index and update when navigating frames', async ({ page }) => {
+  test('should show frame index and update when navigating frames', { tag: ['@canvas.coords-frame'] }, async ({ page }) => {
     await openEditor(page);
     const frameInfo = page.locator('.cursor-coordinates .frame-info');
 
@@ -153,7 +153,7 @@ test.describe('Cursor coordinates', () => {
     expect((await frameInfo.innerText()).trim()).toBe('2/3');
   });
 
-  test('should show zoom level', async ({ page }) => {
+  test('should show zoom level', { tag: ['@canvas.coords-zoom'] }, async ({ page }) => {
     await openEditor(page);
 
     const zoomText = await page.locator('.cursor-coordinates .drawing-zoom').innerText();

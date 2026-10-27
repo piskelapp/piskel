@@ -1,7 +1,7 @@
 import test, {  expect } from "@playwright/test";
 import { getCurrentPiskelFrameCount, getCurrentPiskelHeight, getCurrentPiskelLayerCount, getCurrentPiskelWidth, isSettingsDrawerExpanded, openEditor, openImportSettingsPanel, setPiskelFromImageSrc } from "../../testutils";
 
-test('Double Image import test', async ({ page }) => {
+test('Double Image import test', { tag: ['@import.browse-images', '@import.select-mode'] }, async ({ page }) => {
     await openEditor(page);
     
     // Set-up dummy image first.

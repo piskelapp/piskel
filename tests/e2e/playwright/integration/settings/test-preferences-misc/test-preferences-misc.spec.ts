@@ -24,7 +24,7 @@ test.describe('Preferences — Misc tab', () => {
 
   // ─── Defaults ──────────────────────────────────────────────────
 
-  test('canvas background should default to lowcont-dark', async ({ page }) => {
+  test('canvas background should default to lowcont-dark', { tag: ['@settings.background'] }, async ({ page }) => {
     await openEditor(page);
     await openMiscPreferences(page);
 
@@ -32,14 +32,14 @@ test.describe('Preferences — Misc tab', () => {
     await expect(selected).toHaveAttribute('data-background', 'lowcont-dark-canvas-background');
   });
 
-  test('color format should default to hex', async ({ page }) => {
+  test('color format should default to hex', { tag: ['@settings.color-format'] }, async ({ page }) => {
     await openEditor(page);
     await openMiscPreferences(page);
 
     await expect(page.locator('.color-format-select')).toHaveValue('hex');
   });
 
-  test('changing color format should affect the color picker display', async ({ page }) => {
+  test('changing color format should affect the color picker display', { tag: ['@settings.color-format', '@colors-and-palettes.picker'] }, async ({ page }) => {
     await openEditor(page);
 
     // Set a known primary color so the picker has a non-default value
@@ -99,7 +99,7 @@ test.describe('Preferences — Misc tab', () => {
     });
   });
 
-  test('layer opacity should default to 0.20', async ({ page }) => {
+  test('layer opacity should default to 0.20', { tag: ['@settings.layer-opacity'] }, async ({ page }) => {
     await openEditor(page);
     await openMiscPreferences(page);
 
@@ -108,7 +108,7 @@ test.describe('Preferences — Misc tab', () => {
     expect(await page.locator('.layer-opacity-text').innerText()).toContain('0.20');
   });
 
-  test('max FPS should default to 24', async ({ page }) => {
+  test('max FPS should default to 24', { tag: ['@settings.max-fps'] }, async ({ page }) => {
     await openEditor(page);
     await openMiscPreferences(page);
 
@@ -117,7 +117,7 @@ test.describe('Preferences — Misc tab', () => {
 
   // ─── Canvas background screenshots ────────────────────────────
 
-  test('default canvas background rendering', async ({ page }) => {
+  test('default canvas background rendering', { tag: ['@settings.background', '@canvas.background'] }, async ({ page }) => {
     await openEditor(page);
     await setPiskelFromGrid(page, [
       ['R', 'T', 'T', 'T'],
@@ -131,7 +131,7 @@ test.describe('Preferences — Misc tab', () => {
     await expect(canvas(page)).toHaveScreenshot('bg-lowcont-dark.png', screenshotOpts);
   });
 
-  test('changing to light background should update the canvas', async ({ page }) => {
+  test('changing to light background should update the canvas', { tag: ['@settings.background', '@canvas.background'] }, async ({ page }) => {
     await openEditor(page);
     await setPiskelFromGrid(page, [
       ['R', 'T', 'T', 'T'],
@@ -149,7 +149,7 @@ test.describe('Preferences — Misc tab', () => {
     await expect(canvas(page)).toHaveScreenshot('bg-light.png', screenshotOpts);
   });
 
-  test('changing to medium background should update the canvas', async ({ page }) => {
+  test('changing to medium background should update the canvas', { tag: ['@settings.background', '@canvas.background'] }, async ({ page }) => {
     await openEditor(page);
     await setPiskelFromGrid(page, [
       ['R', 'T', 'T', 'T'],
@@ -168,7 +168,7 @@ test.describe('Preferences — Misc tab', () => {
 
   // ─── Layer opacity screenshots ─────────────────────────────────
 
-  test('layer opacity affects canvas rendering with multiple layers', async ({ page }) => {
+  test('layer opacity affects canvas rendering with multiple layers', { tag: ['@settings.layer-opacity', '@layers.preview'] }, async ({ page }) => {
     await openEditor(page);
     await setPiskelFromGrid(page, [
       ['R', 'R', 'T', 'T'],
@@ -195,7 +195,7 @@ test.describe('Preferences — Misc tab', () => {
 
   // ─── All settings persist after close/reopen ───────────────────
 
-  test('all misc settings should persist after closing and reopening the panel', async ({ page }) => {
+  test('all misc settings should persist after closing and reopening the panel', { tag: ['@settings.persist'] }, async ({ page }) => {
     await openEditor(page);
     await openMiscPreferences(page);
 

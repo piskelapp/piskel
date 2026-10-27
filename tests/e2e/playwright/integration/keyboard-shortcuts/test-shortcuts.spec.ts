@@ -27,7 +27,7 @@ test.describe('Keyboard shortcuts - tool selection', () => {
   ];
 
   for (const { key, toolId, name } of toolShortcuts) {
-    test(`should select ${name} tool with "${key}" key`, async ({ page }) => {
+    test(`should select ${name} tool with "${key}" key`, { tag: ['@keyboard-shortcuts.tool-keys'] }, async ({ page }) => {
       await openEditor(page);
 
       // First select a different tool to ensure the shortcut changes it
@@ -47,7 +47,7 @@ test.describe('Keyboard shortcuts - tool selection', () => {
 
 test.describe('Keyboard shortcuts - mixed selection', () => {
 
-  test('should switch tools via click and keyboard interchangeably', async ({ page }) => {
+  test('should switch tools via click and keyboard interchangeably', { tag: ['@keyboard-shortcuts.tool-keys'] }, async ({ page }) => {
     await openEditor(page);
 
     // Click eraser
@@ -74,7 +74,7 @@ test.describe('Keyboard shortcuts - mixed selection', () => {
 
 test.describe('Keyboard shortcuts - pen size', () => {
 
-  test('should increase and decrease pen size with ] and [ keys', async ({ page }) => {
+  test('should increase and decrease pen size with ] and [ keys', { tag: ['@drawing-tools.pen-size-shortcuts'] }, async ({ page }) => {
     await openEditor(page);
 
     expect(await getSelectedPenSize(page)).toBe(1);

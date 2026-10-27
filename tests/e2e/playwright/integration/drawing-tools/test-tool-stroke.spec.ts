@@ -14,7 +14,7 @@ function emptyTestGrid(size = 10): ("T")[][] {
 
 test.describe('Stroke tool', () => {
 
-  test('stroke tool: draws a line between two points', async ({ page }) => {
+  test('stroke tool: draws a line between two points', { tag: ['@drawing-tools.stroke'] }, async ({ page }) => {
     await openEditor(page);
     await setPiskelFromGrid(page, emptyTestGrid());
     await clickTool(page, 'tool-stroke');
@@ -36,7 +36,7 @@ test.describe('Stroke tool', () => {
     ]);
   });
 
-  test('stroke tool + Shift: snaps to straight lines', async ({ page }) => {
+  test('stroke tool + Shift: snaps to straight lines', { tag: ['@drawing-tools.stroke'] }, async ({ page }) => {
     await openEditor(page);
     await setPiskelFromGrid(page, emptyTestGrid());
     await clickTool(page, 'tool-stroke');

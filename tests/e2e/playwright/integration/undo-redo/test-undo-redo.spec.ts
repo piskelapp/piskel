@@ -18,7 +18,7 @@ import {
 
 test.describe('Undo and Redo', () => {
 
-  test('should undo a pixel change', async ({ page }) => {
+  test('should undo a pixel change', { tag: ['@undo-redo.shortcuts', '@undo-redo.recorded'] }, async ({ page }) => {
     await openEditor(page);
 
     // Verify pixel is initially transparent
@@ -37,7 +37,7 @@ test.describe('Undo and Redo', () => {
     await waitFor(async () => (await getPixelColor(page, 2, 2)) === TRANSPARENT);
   });
 
-  test('should redo after undo', async ({ page }) => {
+  test('should redo after undo', { tag: ['@undo-redo.shortcuts'] }, async ({ page }) => {
     await openEditor(page);
 
     // Draw a pixel
@@ -56,7 +56,7 @@ test.describe('Undo and Redo', () => {
     await waitFor(async () => (await getPixelColor(page, 3, 3)) === colorToInt('#00FF00'));
   });
 
-  test('should undo multiple steps', async ({ page }) => {
+  test('should undo multiple steps', { tag: ['@undo-redo.shortcuts'] }, async ({ page }) => {
     await openEditor(page);
     await clickTool(page, 'tool-pen');
 
@@ -81,7 +81,7 @@ test.describe('Undo and Redo', () => {
     await waitFor(async () => (await getPixelColor(page, 0, 0)) === TRANSPARENT);
   });
 
-  test('should undo add frame', async ({ page }) => {
+  test('should undo add frame', { tag: ['@undo-redo.recorded', '@frames.undo'] }, async ({ page }) => {
     await openEditor(page);
     expect(await getCurrentPiskelFrameCount(page)).toBe(1);
 
@@ -94,7 +94,7 @@ test.describe('Undo and Redo', () => {
     await waitFor(async () => (await getCurrentPiskelFrameCount(page)) === 1);
   });
 
-  test('should undo add layer', async ({ page }) => {
+  test('should undo add layer', { tag: ['@undo-redo.recorded', '@layers.undo'] }, async ({ page }) => {
     await openEditor(page);
     expect(await getCurrentPiskelLayerCount(page)).toBe(1);
 

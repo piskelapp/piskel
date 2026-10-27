@@ -29,7 +29,7 @@ function emptyTestGrid(size = 10): ("T")[][] {
 
 test.describe('Move tool', () => {
 
-  test('move tool: shifts content with wrapping and clipping', async ({ page }) => {
+  test('move tool: shifts content with wrapping and clipping', { tag: ['@drawing-tools.move'] }, async ({ page }) => {
     await openEditor(page);
 
     // Arrow shape pointing right, near the right edge
@@ -101,7 +101,7 @@ test.describe('Move tool', () => {
     expect(afterLeft.map(r => r.join(''))).toEqual(expectedLeft);
   });
 
-  test('move tool + Alt: wraps content around borders', async ({ page }) => {
+  test('move tool + Alt: wraps content around borders', { tag: ['@drawing-tools.move'] }, async ({ page }) => {
     await openEditor(page);
 
     // Same arrow shape as the default move test
@@ -150,7 +150,7 @@ test.describe('Move tool', () => {
     expect(grid.map(r => r.join(''))).toEqual(expected);
   });
 
-  test('move tool + Shift: applies to all frames', async ({ page }) => {
+  test('move tool + Shift: applies to all frames', { tag: ['@drawing-tools.move'] }, async ({ page }) => {
     await openEditor(page);
     await setPiskelFromGrid(page, emptyTestGrid());
 
@@ -217,7 +217,7 @@ test.describe('Move tool', () => {
     expect(grid2.map(r => r.join(''))).toEqual(expectedRow);
   });
 
-  test('move tool + Ctrl: applies to all layers', async ({ page }) => {
+  test('move tool + Ctrl: applies to all layers', { tag: ['@drawing-tools.move'] }, async ({ page }) => {
     await openEditor(page);
     await setPiskelFromGrid(page, emptyTestGrid());
 

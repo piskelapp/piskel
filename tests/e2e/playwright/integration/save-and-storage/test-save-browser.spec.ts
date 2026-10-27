@@ -42,7 +42,7 @@ async function openBrowseLocalDialog(page: Page) {
 
 test.describe('Save to browser (IndexedDB)', () => {
 
-  test('should save a piskel to IndexedDB and show it in browse local dialog', async ({ page }) => {
+  test('should save a piskel to IndexedDB and show it in browse local dialog', { tag: ['@save-and-storage.browser-save', '@save-and-storage.browse-local', '@import.browse-local'] }, async ({ page }) => {
     await openEditor(page);
     await setPiskelFromGrid(page, [['R', 'T'], ['T', 'B']]);
 
@@ -60,7 +60,7 @@ test.describe('Save to browser (IndexedDB)', () => {
     await expect(nameCell).toBeVisible();
   });
 
-  test('name and description should persist in save panel', async ({ page }) => {
+  test('name and description should persist in save panel', { tag: ['@save-and-storage.descriptor'] }, async ({ page }) => {
     await openEditor(page);
 
     // Set name and description, save
@@ -75,14 +75,14 @@ test.describe('Save to browser (IndexedDB)', () => {
 
 test.describe('Header dirty indicator', () => {
 
-  test('header should show sprite name without * on fresh load', async ({ page }) => {
+  test('header should show sprite name without * on fresh load', { tag: ['@save-and-storage.dirty-indicator'] }, async ({ page }) => {
     await openEditor(page);
 
     const name = await getHeaderName(page);
     expect(name).not.toContain('*');
   });
 
-  test('header should show * after drawing (dirty state)', async ({ page }) => {
+  test('header should show * after drawing (dirty state)', { tag: ['@save-and-storage.dirty-indicator'] }, async ({ page }) => {
     await openEditor(page);
 
     await clickTool(page, 'tool-pen');
@@ -93,7 +93,7 @@ test.describe('Header dirty indicator', () => {
     expect(name).toContain('*');
   });
 
-  test('header should remove * after saving to IndexedDB', async ({ page }) => {
+  test('header should remove * after saving to IndexedDB', { tag: ['@save-and-storage.dirty-indicator'] }, async ({ page }) => {
     await openEditor(page);
 
     // Make a change to dirty the state
@@ -110,7 +110,7 @@ test.describe('Header dirty indicator', () => {
     expect(name).not.toContain('*');
   });
 
-  test('header should show the sprite name from save panel', async ({ page }) => {
+  test('header should show the sprite name from save panel', { tag: ['@save-and-storage.header-name'] }, async ({ page }) => {
     await openEditor(page);
 
     await saveToIndexedDb(page, 'my-custom-name');
@@ -122,7 +122,7 @@ test.describe('Header dirty indicator', () => {
 
 test.describe('Browse local saves dialog', () => {
 
-  test('should load a saved piskel and verify pixel content', async ({ page }) => {
+  test('should load a saved piskel and verify pixel content', { tag: ['@save-and-storage.browse-local-load'] }, async ({ page }) => {
     await openEditor(page);
 
     // Draw a known pattern and save
@@ -147,7 +147,7 @@ test.describe('Browse local saves dialog', () => {
     expect(await getPixelColor(page, 1, 1)).toBe(0); // transparent
   });
 
-  test('should delete a saved piskel', async ({ page }) => {
+  test('should delete a saved piskel', { tag: ['@save-and-storage.browse-local-delete'] }, async ({ page }) => {
     await openEditor(page);
 
     // Save a piskel
@@ -168,7 +168,7 @@ test.describe('Browse local saves dialog', () => {
     await expect(page.locator('.local-piskel-name', { hasText: 'delete-me' })).not.toBeAttached();
   });
 
-  test('should list multiple saved piskels', async ({ page }) => {
+  test('should list multiple saved piskels', { tag: ['@save-and-storage.browse-local'] }, async ({ page }) => {
     await openEditor(page);
 
     // Save two piskels with different names
@@ -183,7 +183,7 @@ test.describe('Browse local saves dialog', () => {
     await expect(page.locator('.local-piskel-name', { hasText: 'piskel-beta' })).toBeVisible();
   });
 
-  test('loading while dirty should prompt confirm — accept loads the piskel', async ({ page }) => {
+  test('loading while dirty should prompt confirm — accept loads the piskel', { tag: ['@save-and-storage.browse-local-load'] }, async ({ page }) => {
     await openEditor(page);
 
     // Save a piskel first
@@ -213,7 +213,7 @@ test.describe('Browse local saves dialog', () => {
     expect(await getPixelColor(page, 0, 0)).toBe(colorToInt('#FF0000'));
   });
 
-  test('loading while dirty should prompt confirm — dismiss keeps current piskel', async ({ page }) => {
+  test('loading while dirty should prompt confirm — dismiss keeps current piskel', { tag: ['@save-and-storage.browse-local-load'] }, async ({ page }) => {
     await openEditor(page);
 
     // Save a clean piskel
@@ -244,7 +244,7 @@ test.describe('Browse local saves dialog', () => {
 
 test.describe('Beforeunload prompt', () => {
 
-  test('dirty piskel should trigger beforeunload dialog on reload', async ({ page }) => {
+  test('dirty piskel should trigger beforeunload dialog on reload', { tag: ['@save-and-storage.unload-confirm'] }, async ({ page }) => {
     await openEditor(page);
 
     // Make canvas dirty
@@ -274,7 +274,7 @@ test.describe('Beforeunload prompt', () => {
     expect(dialogType).toBe('beforeunload');
   });
 
-  test('clean piskel should NOT trigger beforeunload dialog on reload', async ({ page }) => {
+  test('clean piskel should NOT trigger beforeunload dialog on reload', { tag: ['@save-and-storage.unload-confirm'] }, async ({ page }) => {
     await openEditor(page);
 
     // No changes — reload should go through without a dialog
@@ -290,7 +290,7 @@ test.describe('Beforeunload prompt', () => {
     expect(dialogFired).toBe(false);
   });
 
-  test('saved piskel should NOT trigger beforeunload dialog on reload', async ({ page }) => {
+  test('saved piskel should NOT trigger beforeunload dialog on reload', { tag: ['@save-and-storage.unload-confirm'] }, async ({ page }) => {
     await openEditor(page);
 
     // Draw then save

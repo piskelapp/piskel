@@ -24,7 +24,7 @@ async function selectExportTab(page: Page, tabName: string) {
 
 test.describe('Export extras — GIF loop toggle', () => {
 
-  test('GIF repeat checkbox should be present and toggleable', async ({ page }) => {
+  test('GIF repeat checkbox should be present and toggleable', { tag: ['@export.gif-loop'] }, async ({ page }) => {
     await openEditor(page);
     await openExportSettingsPanel(page);
     await selectExportTab(page, 'gif');
@@ -54,7 +54,7 @@ test.describe('Export extras — GIF loop toggle', () => {
     }
   });
 
-  test('downloading a GIF should produce a valid file', async ({ page }) => {
+  test('downloading a GIF should produce a valid file', { tag: ['@export.gif'] }, async ({ page }) => {
     await openEditor(page);
 
     // Create 2 frames with different colors so the GIF has animation
@@ -106,7 +106,7 @@ test.describe('Export extras — GIF loop toggle', () => {
 
 test.describe('Export extras — ZIP layer names', () => {
 
-  test('use layer names checkbox should appear when split by layers is checked', async ({ page }) => {
+  test('use layer names checkbox should appear when split by layers is checked', { tag: ['@export.zip-layer-names'] }, async ({ page }) => {
     await openEditor(page);
 
     // Need 2 layers for split-by-layers to be meaningful
@@ -144,7 +144,7 @@ test.describe('Export extras — ZIP layer names', () => {
 
 test.describe('Export extras — scale slider', () => {
 
-  test('scale slider should sync with width/height inputs', async ({ page }) => {
+  test('scale slider should sync with width/height inputs', { tag: ['@export.scale', '@export.resolution'] }, async ({ page }) => {
     await openEditor(page);
 
     // Use a known 2x2 canvas with R at (0,0)
@@ -215,7 +215,7 @@ test.describe('Export extras — scale slider', () => {
     ]);
   });
 
-  test('changing width input should update scale and height', async ({ page }) => {
+  test('changing width input should update scale and height', { tag: ['@export.resolution'] }, async ({ page }) => {
     await openEditor(page);
 
     await setPiskelFromGrid(page, [

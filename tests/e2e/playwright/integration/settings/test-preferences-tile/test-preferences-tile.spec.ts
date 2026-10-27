@@ -19,7 +19,7 @@ test.describe('Preferences — Tile tab', () => {
 
   // ─── Seamless / tile mode toggle ──────────────────────────────
 
-  test('tile mode should be disabled by default', async ({ page }) => {
+  test('tile mode should be disabled by default', { tag: ['@settings.tile-mode'] }, async ({ page }) => {
     await openEditor(page);
     await openTilePreferences(page);
 
@@ -27,7 +27,7 @@ test.describe('Preferences — Tile tab', () => {
     await expect(checkbox).not.toBeChecked();
   });
 
-  test('canvas without tile mode', async ({ page }) => {
+  test('canvas without tile mode', { tag: ['@canvas.tile-mode'] }, async ({ page }) => {
     await openEditor(page);
 
     await setPiskelFromGrid(page, [
@@ -43,7 +43,7 @@ test.describe('Preferences — Tile tab', () => {
     await expect(canvas(page)).toHaveScreenshot('tile-mode-off.png', screenshotOpts);
   });
 
-  test('enabling tile mode should tile the sprite around the canvas', async ({ page }) => {
+  test('enabling tile mode should tile the sprite around the canvas', { tag: ['@settings.tile-mode', '@canvas.tile-mode'] }, async ({ page }) => {
     await openEditor(page);
 
     await setPiskelFromGrid(page, [
@@ -60,7 +60,7 @@ test.describe('Preferences — Tile tab', () => {
     await expect(canvas(page)).toHaveScreenshot('tile-mode-on.png', screenshotOpts);
   });
 
-  test('disabling tile mode should restore canvas to original', async ({ page }) => {
+  test('disabling tile mode should restore canvas to original', { tag: ['@settings.tile-mode', '@canvas.tile-mode'] }, async ({ page }) => {
     await openEditor(page);
 
     await setPiskelFromGrid(page, [
@@ -84,7 +84,7 @@ test.describe('Preferences — Tile tab', () => {
 
   // ─── Tile mask opacity slider ─────────────────────────────────
 
-  test('tile mask opacity should default to 0.30', async ({ page }) => {
+  test('tile mask opacity should default to 0.30', { tag: ['@settings.tile-opacity'] }, async ({ page }) => {
     await openEditor(page);
     await openTilePreferences(page);
 
@@ -96,7 +96,7 @@ test.describe('Preferences — Tile tab', () => {
     expect(text).toContain('0.30');
   });
 
-  test('changing tile mask opacity should update the display text', async ({ page }) => {
+  test('changing tile mask opacity should update the display text', { tag: ['@settings.tile-opacity'] }, async ({ page }) => {
     await openEditor(page);
     await openTilePreferences(page);
 
@@ -112,7 +112,7 @@ test.describe('Preferences — Tile tab', () => {
     expect(text).toContain('0.10');
   });
 
-  test('tile mode with default opacity 0.30', async ({ page }) => {
+  test('tile mode with default opacity 0.30', { tag: ['@settings.tile-opacity', '@canvas.tile-mode'] }, async ({ page }) => {
     await openEditor(page);
 
     await setPiskelFromGrid(page, [
@@ -129,7 +129,7 @@ test.describe('Preferences — Tile tab', () => {
     await expect(canvas(page)).toHaveScreenshot('tile-opacity-030.png', screenshotOpts);
   });
 
-  test('tile mode with opacity 0.05 should show more visible tiles', async ({ page }) => {
+  test('tile mode with opacity 0.05 should show more visible tiles', { tag: ['@settings.tile-opacity', '@canvas.tile-mode'] }, async ({ page }) => {
     await openEditor(page);
 
     await setPiskelFromGrid(page, [

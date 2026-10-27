@@ -1,7 +1,7 @@
 import test, {  expect } from "@playwright/test";
 import { expectGrid, expectResizeValues, getCurrentPiskelHeight, getCurrentPiskelWidth, isSettingsDrawerExpanded, openEditor, openResizeSettingsPanel, setPiskelFromGrid } from "../../testutils";
 
-test('Test resize the canvas without resizing the content', async ({ page }) => {
+test('Test resize the canvas without resizing the content', { tag: ['@settings.resize'] }, async ({ page }) => {
     await openEditor(page);
   
     await setPiskelFromGrid(page, [["B", "T"],["T", "B"]]);

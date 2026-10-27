@@ -14,7 +14,7 @@ async function openCheatsheet(page: import('@playwright/test').Page) {
 
 test.describe('Cheatsheet dialog', () => {
 
-  test('should open and close with ? key', async ({ page }) => {
+  test('should open and close with ? key', { tag: ['@keyboard-shortcuts.cheatsheet-open'] }, async ({ page }) => {
     await openEditor(page);
 
     await openCheatsheet(page);
@@ -23,7 +23,7 @@ test.describe('Cheatsheet dialog', () => {
     await expect(page.locator('#dialog-container-wrapper:not(.show)')).toBeAttached({ timeout: 5000 });
   });
 
-  test('should close with X button', async ({ page }) => {
+  test('should close with X button', { tag: ['@keyboard-shortcuts.cheatsheet-open'] }, async ({ page }) => {
     await openEditor(page);
 
     await openCheatsheet(page);
@@ -32,7 +32,7 @@ test.describe('Cheatsheet dialog', () => {
     await expect(page.locator('#dialog-container-wrapper:not(.show)')).toBeAttached({ timeout: 5000 });
   });
 
-  test('should display all shortcut categories', async ({ page }) => {
+  test('should display all shortcut categories', { tag: ['@keyboard-shortcuts.cheatsheet-content'] }, async ({ page }) => {
     await openEditor(page);
 
     await openCheatsheet(page);
@@ -45,7 +45,7 @@ test.describe('Cheatsheet dialog', () => {
     await expect(page.locator('.cheatsheet-storage-shortcuts')).toBeAttached();
   });
 
-  test('should display default tool shortcuts', async ({ page }) => {
+  test('should display default tool shortcuts', { tag: ['@keyboard-shortcuts.cheatsheet-content'] }, async ({ page }) => {
     await openEditor(page);
 
     await openCheatsheet(page);
@@ -61,7 +61,7 @@ test.describe('Cheatsheet dialog', () => {
     await expect(bucketShortcut).toHaveText('B');
   });
 
-  test('should display misc and selection shortcuts', async ({ page }) => {
+  test('should display misc and selection shortcuts', { tag: ['@keyboard-shortcuts.cheatsheet-content'] }, async ({ page }) => {
     await openEditor(page);
 
     await openCheatsheet(page);
@@ -75,7 +75,7 @@ test.describe('Cheatsheet dialog', () => {
     await expect(redoShortcut).toContainText('Y');
   });
 
-  test('should mark editable shortcuts as editable', async ({ page }) => {
+  test('should mark editable shortcuts as editable', { tag: ['@keyboard-shortcuts.remap'] }, async ({ page }) => {
     await openEditor(page);
 
     await openCheatsheet(page);
@@ -85,7 +85,7 @@ test.describe('Cheatsheet dialog', () => {
     await expect(penItem).toHaveClass(/cheatsheet-shortcut-editable/);
   });
 
-  test('should enter editing mode when clicking an editable shortcut', async ({ page }) => {
+  test('should enter editing mode when clicking an editable shortcut', { tag: ['@keyboard-shortcuts.remap'] }, async ({ page }) => {
     await openEditor(page);
 
     await openCheatsheet(page);
@@ -97,7 +97,7 @@ test.describe('Cheatsheet dialog', () => {
     await expect(penItem).toHaveClass(/cheatsheet-shortcut-editing/);
   });
 
-  test('should customize a shortcut by pressing a new key', async ({ page }) => {
+  test('should customize a shortcut by pressing a new key', { tag: ['@keyboard-shortcuts.remap'] }, async ({ page }) => {
     await openEditor(page);
 
     await openCheatsheet(page);
@@ -128,7 +128,7 @@ test.describe('Cheatsheet dialog', () => {
     await expect(page.locator('[data-tool-id="tool-pen"]')).toHaveClass(/selected/);
   });
 
-  test('should restore default shortcuts', async ({ page }) => {
+  test('should restore default shortcuts', { tag: ['@keyboard-shortcuts.restore-defaults'] }, async ({ page }) => {
     await openEditor(page);
 
     await openCheatsheet(page);
@@ -147,7 +147,7 @@ test.describe('Cheatsheet dialog', () => {
     await expect(page.locator('[data-shortcut-id="tool-pen"] .cheatsheet-key')).toHaveText('P');
   });
 
-  test('should cancel restore defaults when declining confirm', async ({ page }) => {
+  test('should cancel restore defaults when declining confirm', { tag: ['@keyboard-shortcuts.restore-defaults'] }, async ({ page }) => {
     await openEditor(page);
 
     await openCheatsheet(page);
@@ -171,7 +171,7 @@ test.describe('Cheatsheet dialog', () => {
     await expect(page.locator('[data-shortcut-id="tool-pen"] .cheatsheet-key')).toHaveText('P');
   });
 
-  test('should steal key from conflicting shortcut', async ({ page }) => {
+  test('should steal key from conflicting shortcut', { tag: ['@keyboard-shortcuts.conflict'] }, async ({ page }) => {
     await openEditor(page);
 
     await openCheatsheet(page);
@@ -212,7 +212,7 @@ test.describe('Cheatsheet dialog', () => {
     await expect(page.locator('[data-shortcut-id="tool-eraser"] .cheatsheet-key')).toHaveText('E');
   });
 
-  test('should cancel editing mode when clicking outside shortcut', async ({ page }) => {
+  test('should cancel editing mode when clicking outside shortcut', { tag: ['@keyboard-shortcuts.remap'] }, async ({ page }) => {
     await openEditor(page);
 
     await openCheatsheet(page);

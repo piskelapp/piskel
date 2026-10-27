@@ -83,7 +83,7 @@ async function getFrameColors(page: Page, count: number): Promise<number[]> {
 
 test.describe('Frame drag-and-drop reorder', () => {
 
-  test('drag first frame to end', async ({ page }) => {
+  test('drag first frame to end', { tag: ['@frames.reorder'] }, async ({ page }) => {
     await openEditor(page);
     await setupThreeFrames(page);
 
@@ -97,7 +97,7 @@ test.describe('Frame drag-and-drop reorder', () => {
     expect(await getFrameColors(page, 3)).toEqual([GREEN, BLUE, RED]);
   });
 
-  test('drag last frame to start', async ({ page }) => {
+  test('drag last frame to start', { tag: ['@frames.reorder'] }, async ({ page }) => {
     await openEditor(page);
     await setupThreeFrames(page);
 
@@ -110,7 +110,7 @@ test.describe('Frame drag-and-drop reorder', () => {
     expect(await getFrameColors(page, 3)).toEqual([BLUE, RED, GREEN]);
   });
 
-  test('drag last frame to middle', async ({ page }) => {
+  test('drag last frame to middle', { tag: ['@frames.reorder'] }, async ({ page }) => {
     await openEditor(page);
     await setupThreeFrames(page);
 
@@ -123,7 +123,7 @@ test.describe('Frame drag-and-drop reorder', () => {
     expect(await getFrameColors(page, 3)).toEqual([RED, BLUE, GREEN]);
   });
 
-  test('drag first frame to middle', async ({ page }) => {
+  test('drag first frame to middle', { tag: ['@frames.reorder'] }, async ({ page }) => {
     await openEditor(page);
     await setupThreeFrames(page);
 
