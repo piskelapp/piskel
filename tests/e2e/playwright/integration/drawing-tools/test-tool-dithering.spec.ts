@@ -17,7 +17,7 @@ function emptyTestGrid(size = 10): ("T")[][] {
 
 test.describe('Dithering tool', () => {
 
-  test('dithering tool: draws checkerboard pattern', async ({ page }) => {
+  test('dithering tool: draws checkerboard pattern', { tag: ['@drawing-tools.dithering'] }, async ({ page }) => {
     await openEditor(page);
     await setPiskelFromGrid(page, emptyTestGrid());
 

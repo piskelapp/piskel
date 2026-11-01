@@ -1,7 +1,7 @@
 import test, {  expect } from "@playwright/test";
 import { isSettingsDrawerExpanded, openEditor } from "../../testutils";
 
-test('Test default user preferences', async ({ page }) => {
+test('Test default user preferences', { tag: ['@settings.drawers'] }, async ({ page }) => {
     await openEditor(page);
 
     expect(await isSettingsDrawerExpanded(page)).toBe(false);

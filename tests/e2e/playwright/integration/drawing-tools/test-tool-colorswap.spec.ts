@@ -17,7 +17,7 @@ import {
 
 test.describe('Color swap tool', () => {
 
-  test('color swap tool: replaces all pixels of one color', async ({ page }) => {
+  test('color swap tool: replaces all pixels of one color', { tag: ['@drawing-tools.magic-bucket'] }, async ({ page }) => {
     await openEditor(page);
 
     // Checkerboard of red and green
@@ -45,7 +45,7 @@ test.describe('Color swap tool', () => {
 
 test.describe('ColorSwap tool modifiers', () => {
 
-  test('ColorSwap should replace all matching pixels on current frame', async ({ page }) => {
+  test('ColorSwap should replace all matching pixels on current frame', { tag: ['@drawing-tools.magic-bucket'] }, async ({ page }) => {
     await openEditor(page);
 
     await setPiskelFromGrid(page, [
@@ -64,7 +64,7 @@ test.describe('ColorSwap tool modifiers', () => {
     expect(await getPixelColor(page, 1, 1)).toBe(colorToInt('#00FF00'));
   });
 
-  test('ColorSwap + Shift should apply to all frames', async ({ page }) => {
+  test('ColorSwap + Shift should apply to all frames', { tag: ['@drawing-tools.magic-bucket'] }, async ({ page }) => {
     await openEditor(page);
 
     await setPiskelFromGrid(page, [
@@ -93,7 +93,7 @@ test.describe('ColorSwap tool modifiers', () => {
     expect(await getPixelColor(page, 1, 1, 0, 1)).toBe(colorToInt('#0000FF'));
   });
 
-  test('ColorSwap + Ctrl should apply to all layers', async ({ page }) => {
+  test('ColorSwap + Ctrl should apply to all layers', { tag: ['@drawing-tools.magic-bucket'] }, async ({ page }) => {
     await openEditor(page);
 
     await setPiskelFromGrid(page, [

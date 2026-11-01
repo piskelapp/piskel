@@ -15,7 +15,7 @@ function emptyTestGrid(size = 10): ("T")[][] {
 
 test.describe('Vertical mirror pen tool', () => {
 
-  test('vertical mirror pen: draws symmetrically', async ({ page }) => {
+  test('vertical mirror pen: draws symmetrically', { tag: ['@drawing-tools.mirror-pen'] }, async ({ page }) => {
     await openEditor(page);
     await setPiskelFromGrid(page, emptyTestGrid());
     await clickTool(page, 'tool-vertical-mirror-pen');
@@ -41,7 +41,7 @@ test.describe('Vertical mirror pen tool', () => {
     expect(grid.map(r => r.join(''))).toEqual(expected);
   });
 
-  test('vertical mirror pen + Ctrl: mirrors on horizontal axis', async ({ page }) => {
+  test('vertical mirror pen + Ctrl: mirrors on horizontal axis', { tag: ['@drawing-tools.mirror-pen'] }, async ({ page }) => {
     await openEditor(page);
     await setPiskelFromGrid(page, emptyTestGrid());
     await clickTool(page, 'tool-vertical-mirror-pen');
@@ -73,7 +73,7 @@ test.describe('Vertical mirror pen tool', () => {
     expect(grid.map(r => r.join(''))).toEqual(expected);
   });
 
-  test('vertical mirror pen + Shift: mirrors on both axes (4-way)', async ({ page }) => {
+  test('vertical mirror pen + Shift: mirrors on both axes (4-way)', { tag: ['@drawing-tools.mirror-pen'] }, async ({ page }) => {
     await openEditor(page);
     await setPiskelFromGrid(page, emptyTestGrid());
     await clickTool(page, 'tool-vertical-mirror-pen');

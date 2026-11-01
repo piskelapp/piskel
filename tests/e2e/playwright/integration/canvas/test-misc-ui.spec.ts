@@ -21,7 +21,7 @@ async function getScreenCoords(page: Page, col: number, row: number) {
 
 test.describe('Misc UI — Alt+click pick color', () => {
 
-  test('Alt+click on canvas should pick color from pixel', async ({ page }) => {
+  test('Alt+click on canvas should pick color from pixel', { tag: ['@canvas.pick-color'] }, async ({ page }) => {
     await openEditor(page);
 
     // Draw a red pixel at (2,2)
@@ -51,7 +51,7 @@ test.describe('Misc UI — Alt+click pick color', () => {
     expect((await getPrimaryColor(page)).toLowerCase()).toBe('#ff0000');
   });
 
-  test('Alt+click on transparent pixel should pick transparent', async ({ page }) => {
+  test('Alt+click on transparent pixel should pick transparent', { tag: ['@canvas.pick-color'] }, async ({ page }) => {
     await openEditor(page);
 
     await setPiskelFromGrid(page, [
@@ -78,7 +78,7 @@ test.describe('Misc UI — Alt+click pick color', () => {
 
 test.describe('Misc UI — right-click draws with secondary color', () => {
 
-  test('right-click should draw with secondary color', async ({ page }) => {
+  test('right-click should draw with secondary color', { tag: ['@drawing-tools.mouse-buttons'] }, async ({ page }) => {
     await openEditor(page);
 
     await setPiskelFromGrid(page, [
@@ -111,7 +111,7 @@ test.describe('Misc UI — right-click draws with secondary color', () => {
 
 test.describe('Misc UI — middle-click pan', () => {
 
-  test('middle-click drag should pan the canvas', async ({ page }) => {
+  test('middle-click drag should pan the canvas', { tag: ['@canvas.middle-drag-pan'] }, async ({ page }) => {
     await openEditor(page);
 
     await setPiskelFromGrid(page, [

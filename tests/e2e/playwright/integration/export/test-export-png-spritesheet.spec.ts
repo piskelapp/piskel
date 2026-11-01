@@ -12,7 +12,7 @@ function rgbaAt(pixels: Uint8Array, width: number, x: number, y: number) {
 
 test.describe('PNG spritesheet export', () => {
 
-  test('should export multi-frame spritesheet with correct pixels', async ({ page }) => {
+  test('should export multi-frame spritesheet with correct pixels', { tag: ['@export.png-spritesheet', '@export.png-download'] }, async ({ page }) => {
     await openEditor(page);
 
     // Frame 0: R G / B T
@@ -66,7 +66,7 @@ test.describe('PNG spritesheet export', () => {
     expect(rgbaAt(pixels, 4, 3, 1)).toEqual({ r: 0, g: 255, b: 0, a: 255 });   // G
   });
 
-  test('should export single selected frame with correct pixels', async ({ page }) => {
+  test('should export single selected frame with correct pixels', { tag: ['@export.png-selected-frame'] }, async ({ page }) => {
     await openEditor(page);
     // R T / T B
     await setPiskelFromGrid(page, [["R", "T"], ["T", "B"]]);
@@ -95,7 +95,7 @@ test.describe('PNG spritesheet export', () => {
     expect(rgbaAt(pixels, 2, 1, 1)).toEqual({ r: 0, g: 0, b: 255, a: 255 });   // B
   });
 
-  test('should export vertical strip layout (1 column)', async ({ page }) => {
+  test('should export vertical strip layout (1 column)', { tag: ['@export.png-spritesheet'] }, async ({ page }) => {
     await openEditor(page);
 
     // Create 4 frames of 2x2: R, G, B, T (one solid color each)
@@ -158,7 +158,7 @@ test.describe('PNG spritesheet export', () => {
     expect(rgbaAt(pixels, 2, 1, 7)).toEqual(T);
   });
 
-  test('should export 2x2 grid layout (2 columns)', async ({ page }) => {
+  test('should export 2x2 grid layout (2 columns)', { tag: ['@export.png-spritesheet'] }, async ({ page }) => {
     await openEditor(page);
 
     // Create 4 frames of 2x2: R, G, B, T
@@ -224,7 +224,7 @@ test.describe('PNG spritesheet export', () => {
     expect(rgbaAt(pixels, 4, 3, 3)).toEqual(T);
   });
 
-  test('should export scaled PNG with correct pixel replication', async ({ page }) => {
+  test('should export scaled PNG with correct pixel replication', { tag: ['@export.scale'] }, async ({ page }) => {
     await openEditor(page);
     // Single pixel: R
     await setPiskelFromGrid(page, [["R"]]);
@@ -259,7 +259,7 @@ test.describe('PNG spritesheet export', () => {
     }
   });
 
-  test('should export spritesheet as data-uri in popup', async ({ page }) => {
+  test('should export spritesheet as data-uri in popup', { tag: ['@export.png-data-uri'] }, async ({ page }) => {
     await openEditor(page);
     // R G / B T
     await setPiskelFromGrid(page, [["R", "G"], ["B", "T"]]);
@@ -305,7 +305,7 @@ test.describe('PNG spritesheet export', () => {
     await popup.close();
   });
 
-  test('should export PixiJS ZIP with PNG and JSON metadata', async ({ page }) => {
+  test('should export PixiJS ZIP with PNG and JSON metadata', { tag: ['@export.pixi'] }, async ({ page }) => {
     await openEditor(page);
 
     // Create 2 frames of 2x2: frame 0 = R G / B T, frame 1 = empty
@@ -376,7 +376,7 @@ test.describe('PNG spritesheet export', () => {
     expect(rgbaAt(pixels, 2, 1, 3)).toEqual({ r: 0, g: 0, b: 0, a: 0 });
   });
 
-  test('should export PixiJS ZIP with inline data-uri', async ({ page }) => {
+  test('should export PixiJS ZIP with inline data-uri', { tag: ['@export.pixi'] }, async ({ page }) => {
     await openEditor(page);
     await setPiskelFromGrid(page, [["R", "G"], ["B", "T"]]);
 

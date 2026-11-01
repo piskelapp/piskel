@@ -1,7 +1,7 @@
 import test, {  expect } from "@playwright/test";
 import { getCurrentPiskelColorCount, getCurrentPiskelFrameCount, getCurrentPiskelHeight, getCurrentPiskelLayerCount, getCurrentPiskelWidth, isCurrentPiskelEmpty, isSettingsDrawerExpanded, openEditor, openImportSettingsPanel, openResizeSettingsPanel, setPiskelFromImageSrc } from "../../testutils";
 
-test('Test importing a simple image', async ({ page }) => {
+test('Test importing a simple image', { tag: ['@import.browse-images', '@import.select-mode', '@import.adjust-size', '@import.insert-location', '@import.combine-layers'] }, async ({ page }) => {
     await openEditor(page);
     
     

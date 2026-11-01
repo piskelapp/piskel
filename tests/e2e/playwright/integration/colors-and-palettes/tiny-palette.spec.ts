@@ -15,7 +15,7 @@ const getPaletteColorCount = async(page: Page): Promise<number> => {
   });
 };
 
-test('Test palette switches to tiny mode if it contains more than 10 colors', async ({ page }) => {
+test('Test palette switches to tiny mode if it contains more than 10 colors', { tag: ['@colors-and-palettes.tiny'] }, async ({ page }) => {
   await openEditor(page);
 
   await setPiskelFromImageSrc(page, src_4_colors);

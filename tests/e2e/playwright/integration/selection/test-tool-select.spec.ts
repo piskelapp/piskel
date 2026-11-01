@@ -25,7 +25,7 @@ async function dragBetweenPixels(page: Page, x1: number, y1: number, x2: number,
 
 test.describe('Selection tools', () => {
 
-  test('lasso select: selects freeform area and deletes it', async ({ page }) => {
+  test('lasso select: selects freeform area and deletes it', { tag: ['@selection.lasso', '@selection.delete'] }, async ({ page }) => {
     await openEditor(page);
 
     // Fill entire 10x10 canvas with red
@@ -84,7 +84,7 @@ test.describe('Selection tools', () => {
     expect(erasedCount).toBeGreaterThan(0);
   });
 
-  test('rectangle select: selects area and deletes it', async ({ page }) => {
+  test('rectangle select: selects area and deletes it', { tag: ['@selection.rectangle', '@selection.delete'] }, async ({ page }) => {
     await openEditor(page);
 
     // Fill entire 10x10 canvas
@@ -116,7 +116,7 @@ test.describe('Selection tools', () => {
     expect(grid.map(r => r.join(''))).toEqual(expected);
   });
 
-  test('shape select: selects connected same-color region and deletes it', async ({ page }) => {
+  test('shape select: selects connected same-color region and deletes it', { tag: ['@selection.shape', '@selection.delete'] }, async ({ page }) => {
     await openEditor(page);
 
     // Create a canvas with two separate red regions separated by transparent gap
@@ -158,7 +158,7 @@ test.describe('Selection tools', () => {
     expect(grid.map(r => r.join(''))).toEqual(expected);
   });
 
-  test('rectangle select: copy preserves original, paste places content', async ({ page }) => {
+  test('rectangle select: copy preserves original, paste places content', { tag: ['@selection.copy', '@selection.paste'] }, async ({ page }) => {
     await openEditor(page);
 
     // 3x3 block at top-left
@@ -212,7 +212,7 @@ test.describe('Selection tools', () => {
     expect(grid.map(r => r.join(''))).toEqual(expected);
   });
 
-  test('rectangle select: cut removes original and paste places it', async ({ page }) => {
+  test('rectangle select: cut removes original and paste places it', { tag: ['@selection.cut', '@selection.paste'] }, async ({ page }) => {
     await openEditor(page);
 
     // 3x3 block at top-left
@@ -254,7 +254,7 @@ test.describe('Selection tools', () => {
     expect(grid.flat().filter(c => c === 'X').length).toBe(9);
   });
 
-  test('rectangle select: drag to move selection content', async ({ page }) => {
+  test('rectangle select: drag to move selection content', { tag: ['@selection.move-content', '@selection.commit'] }, async ({ page }) => {
     await openEditor(page);
 
     // 3x3 red block at (0,0), rest transparent

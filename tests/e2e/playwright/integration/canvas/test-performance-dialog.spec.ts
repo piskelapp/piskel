@@ -28,7 +28,7 @@ async function resizeCanvas(page: any, width: string, height: string) {
 
 test.describe('Performance info dialog', () => {
 
-  test('performance warning should not show on small canvas', async ({ page }) => {
+  test('performance warning should not show on small canvas', { tag: ['@canvas.performance-warning'] }, async ({ page }) => {
     await openEditor(page);
 
     // Default 32x32 canvas — well under threshold
@@ -36,7 +36,7 @@ test.describe('Performance info dialog', () => {
     await expect(warningLink).not.toHaveClass(/visible/);
   });
 
-  test('performance warning should appear on large canvas (>512x512)', async ({ page }) => {
+  test('performance warning should appear on large canvas (>512x512)', { tag: ['@canvas.performance-warning'] }, async ({ page }) => {
     await openEditor(page);
 
     // Resize to 600x600 (exceeds 512x512 threshold)
@@ -51,7 +51,7 @@ test.describe('Performance info dialog', () => {
     await expect(warningLink).toHaveClass(/visible/);
   });
 
-  test('clicking warning icon should open performance dialog', async ({ page }) => {
+  test('clicking warning icon should open performance dialog', { tag: ['@canvas.performance-dialog'] }, async ({ page }) => {
     await openEditor(page);
     await resizeCanvas(page, '600', '600');
 
@@ -70,7 +70,7 @@ test.describe('Performance info dialog', () => {
     await expect(page.locator('.dialog-performance-info-body')).toBeVisible();
   });
 
-  test('performance dialog should close with X button', async ({ page }) => {
+  test('performance dialog should close with X button', { tag: ['@canvas.performance-dialog'] }, async ({ page }) => {
     await openEditor(page);
     await resizeCanvas(page, '600', '600');
 
@@ -89,7 +89,7 @@ test.describe('Performance info dialog', () => {
     await waitFor(async () => (await page.locator('#dialog-container-wrapper.show').count()) === 0);
   });
 
-  test('performance dialog should close with ESC', async ({ page }) => {
+  test('performance dialog should close with ESC', { tag: ['@canvas.performance-dialog'] }, async ({ page }) => {
     await openEditor(page);
     await resizeCanvas(page, '600', '600');
 

@@ -30,7 +30,7 @@ async function createPalette(page: Page, name: string) {
 
 test.describe('Palette extras — edit and delete', () => {
 
-  test('edit palette button should open dialog with palette data', async ({ page }) => {
+  test('edit palette button should open dialog with palette data', { tag: ['@colors-and-palettes.edit'] }, async ({ page }) => {
     await openEditor(page);
 
     await createPalette(page, 'Edit Test');
@@ -49,7 +49,7 @@ test.describe('Palette extras — edit and delete', () => {
     await expect(page.locator('.create-palette-import-button')).toBeHidden();
   });
 
-  test('delete palette should remove it after confirmation', async ({ page }) => {
+  test('delete palette should remove it after confirmation', { tag: ['@colors-and-palettes.delete'] }, async ({ page }) => {
     await openEditor(page);
 
     await createPalette(page, 'Delete Me');
@@ -66,7 +66,7 @@ test.describe('Palette extras — edit and delete', () => {
     expect(options).not.toContain('Delete Me');
   });
 
-  test('delete palette cancel should keep the palette', async ({ page }) => {
+  test('delete palette cancel should keep the palette', { tag: ['@colors-and-palettes.delete'] }, async ({ page }) => {
     await openEditor(page);
 
     await createPalette(page, 'Keep Me');
@@ -90,7 +90,7 @@ test.describe('Palette extras — edit and delete', () => {
 
 test.describe('Palette extras — import .gpl', () => {
 
-  test('importing a .gpl file should populate palette colors', async ({ page }) => {
+  test('importing a .gpl file should populate palette colors', { tag: ['@colors-and-palettes.import'] }, async ({ page }) => {
     await openEditor(page);
 
     // Open create palette dialog
@@ -142,7 +142,7 @@ test.describe('Palette extras — import .gpl', () => {
 
 test.describe('Palette extras — download .gpl', () => {
 
-  test('download button should produce a valid .gpl file', async ({ page }) => {
+  test('download button should produce a valid .gpl file', { tag: ['@colors-and-palettes.download'] }, async ({ page }) => {
     await openEditor(page);
 
     await createPalette(page, 'Download Test');

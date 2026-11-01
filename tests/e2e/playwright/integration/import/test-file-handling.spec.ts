@@ -22,7 +22,7 @@ const MULTICOLOR_2x2_BASE64 = 'iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAF
 
 test.describe('File handling — image import', () => {
 
-  test('importing a PNG image as single should replace the canvas', async ({ page }) => {
+  test('importing a PNG image as single should replace the canvas', { tag: ['@import.single-image'] }, async ({ page }) => {
     await openEditor(page);
 
     // Set up 1x1 black pixel first (same as working test)
@@ -61,7 +61,7 @@ test.describe('File handling — image import', () => {
     expect(await getCurrentPiskelHeight(page)).toBe(2);
   });
 
-  test('importing a PNG as spritesheet should create multiple frames', async ({ page }) => {
+  test('importing a PNG as spritesheet should create multiple frames', { tag: ['@import.spritesheet'] }, async ({ page }) => {
     await openEditor(page);
     await setPiskelFromImageSrc(page, BLACK_1x1);
     await wait(300);
@@ -130,7 +130,7 @@ test.describe('File handling — image import', () => {
     expect(await getPixelColor(page, 0, 0, 0, 1)).toBe(colorToInt('#0000FF'));
   });
 
-  test('spritesheet import with offset should extract correct frames', async ({ page }) => {
+  test('spritesheet import with offset should extract correct frames', { tag: ['@import.spritesheet'] }, async ({ page }) => {
     await openEditor(page);
     await setPiskelFromImageSrc(page, BLACK_1x1);
     await page.waitForSelector('.palettes-list-color:nth-child(1)', { state: 'attached' });
@@ -205,7 +205,7 @@ test.describe('File handling — image import', () => {
 
 test.describe('File handling — .piskel import', () => {
 
-  test('importing a .piskel file should restore pixel content', async ({ page }) => {
+  test('importing a .piskel file should restore pixel content', { tag: ['@import.browse-piskel'] }, async ({ page }) => {
     await openEditor(page);
 
     // Create a known pattern and save as .piskel

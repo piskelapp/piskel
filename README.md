@@ -52,6 +52,8 @@ Offline builds are available. More details in the [dedicated wiki page](https://
 ### Reporting an issue
 
 Found a problem when using the application, want to request a feature, [open an issue](https://github.com/piskelapp/piskel/issues).
+
+How each feature is expected to behave is described in the [feature specs](docs/specs/README.md).
  
 ### About PR contributions
 

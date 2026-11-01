@@ -14,7 +14,7 @@ function emptyTestGrid(size = 10): ("T")[][] {
 
 test.describe('Rectangle tool', () => {
 
-  test('rectangle tool: draws hollow outline', async ({ page }) => {
+  test('rectangle tool: draws hollow outline', { tag: ['@drawing-tools.rectangle'] }, async ({ page }) => {
     await openEditor(page);
     await setPiskelFromGrid(page, emptyTestGrid());
     await clickTool(page, 'tool-rectangle');
@@ -35,7 +35,7 @@ test.describe('Rectangle tool', () => {
     ]);
   });
 
-  test('rectangle tool + Shift: constrains to square', async ({ page }) => {
+  test('rectangle tool + Shift: constrains to square', { tag: ['@drawing-tools.rectangle'] }, async ({ page }) => {
     await openEditor(page);
     await setPiskelFromGrid(page, emptyTestGrid());
     await clickTool(page, 'tool-rectangle');

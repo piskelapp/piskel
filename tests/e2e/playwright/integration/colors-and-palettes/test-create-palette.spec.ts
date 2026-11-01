@@ -3,7 +3,7 @@ import { openEditor, testId, clickTool, setPrimaryColor, getPrimaryColor, drawAt
 
 test.describe('Create palette', () => {
 
-  test('should open create palette dialog with correct default content', async ({ page }) => {
+  test('should open create palette dialog with correct default content', { tag: ['@colors-and-palettes.create'] }, async ({ page }) => {
     await openEditor(page);
 
     await testId(page, 'create-palette-button').click();
@@ -48,7 +48,7 @@ test.describe('Create palette', () => {
     await expect(page.locator('.create-palette-color').first()).toHaveAttribute('data-palette-color', '#000000');
   });
 
-  test('should create a palette with a custom name', async ({ page }) => {
+  test('should create a palette with a custom name', { tag: ['@colors-and-palettes.create'] }, async ({ page }) => {
     await openEditor(page);
 
     await testId(page, 'create-palette-button').click();
@@ -69,7 +69,7 @@ test.describe('Create palette', () => {
     await expect(selectedOption).toContainText('My Test Palette');
   });
 
-  test('should cancel palette creation', async ({ page }) => {
+  test('should cancel palette creation', { tag: ['@colors-and-palettes.create'] }, async ({ page }) => {
     await openEditor(page);
 
     // Get current palette selection
@@ -91,7 +91,7 @@ test.describe('Create palette', () => {
     expect(currentPalette).toBe(initialPalette);
   });
 
-  test('should open create palette dialog with Alt+P shortcut', async ({ page }) => {
+  test('should open create palette dialog with Alt+P shortcut', { tag: ['@colors-and-palettes.create'] }, async ({ page }) => {
     await openEditor(page);
 
     await page.keyboard.press('Alt+p');
@@ -100,7 +100,7 @@ test.describe('Create palette', () => {
     await expect(page.locator('input[name="palette-name"]')).toBeAttached();
   });
 
-  test('should update current colors palette when drawing new colors', async ({ page }) => {
+  test('should update current colors palette when drawing new colors', { tag: ['@colors-and-palettes.current-colors'] }, async ({ page }) => {
     await openEditor(page);
 
     // Default palette is "Current colors" — starts empty on a blank canvas
@@ -137,7 +137,7 @@ test.describe('Create palette', () => {
     await expect(colorSwatches.locator('[data-color="#0000ff"]')).toBeAttached();
   });
 
-  test('should set primary color when clicking a palette swatch', async ({ page }) => {
+  test('should set primary color when clicking a palette swatch', { tag: ['@colors-and-palettes.swatches'] }, async ({ page }) => {
     await openEditor(page);
 
     // Draw red and green to populate the current colors palette
@@ -168,7 +168,7 @@ test.describe('Create palette', () => {
     expect((await getPrimaryColor(page)).toLowerCase()).toBe('#00ff00');
   });
 
-  test('should clone current colors, add/remove colors, save and verify', async ({ page }) => {
+  test('should clone current colors, add/remove colors, save and verify', { tag: ['@colors-and-palettes.clone-current'] }, async ({ page }) => {
     await openEditor(page);
 
     // Draw red and green to populate current colors

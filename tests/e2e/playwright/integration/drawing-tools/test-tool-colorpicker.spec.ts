@@ -10,7 +10,7 @@ import {
 
 test.describe('Color picker tool', () => {
 
-  test('color picker tool: picks color from canvas', async ({ page }) => {
+  test('color picker tool: picks color from canvas', { tag: ['@drawing-tools.color-picker'] }, async ({ page }) => {
     await openEditor(page);
 
     await setPiskelFromGrid(page, [

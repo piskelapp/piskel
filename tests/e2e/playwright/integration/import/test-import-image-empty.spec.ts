@@ -1,7 +1,7 @@
 import test, {  expect } from "@playwright/test";
 import { isCurrentPiskelEmpty, openEditor, openImportSettingsPanel, setPiskelFromGrid } from "../../testutils";
 
-test('Test importing a simple image over an empty one', async ({ page }) => {
+test('Test importing a simple image over an empty one', { tag: ['@import.browse-images', '@import.empty-sprite'] }, async ({ page }) => {
     await openEditor(page);
     
     // Set-up empty image first.

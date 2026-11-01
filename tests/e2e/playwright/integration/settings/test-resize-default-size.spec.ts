@@ -1,7 +1,7 @@
 import test, {  expect } from "@playwright/test";
 import { expectDefaultResizeValues, isSettingsDrawerExpanded, openEditor, openResizeSettingsPanel } from "../../testutils";
 
-test('Test changing the default canvas size', async ({ page }) => {
+test('Test changing the default canvas size', { tag: ['@settings.default-size'] }, async ({ page }) => {
   await openEditor(page);
 
     expect(await isSettingsDrawerExpanded(page)).toBe(false);

@@ -31,13 +31,13 @@ async function dragBetweenPixels(page: Page, x1: number, y1: number, x2: number,
 
 test.describe('Pen size UI', () => {
 
-  test('should default to pen size 1', async ({ page }) => {
+  test('should default to pen size 1', { tag: ['@drawing-tools.pen-size-picker'] }, async ({ page }) => {
     await openEditor(page);
     expect(await getSelectedPenSize(page)).toBe(1);
     await expect(getPenSizeButton(page, 1)).toHaveClass(/selected/);
   });
 
-  test('should change pen size by clicking size option', async ({ page }) => {
+  test('should change pen size by clicking size option', { tag: ['@drawing-tools.pen-size-picker'] }, async ({ page }) => {
     await openEditor(page);
 
     await getPenSizeButton(page, 2).click();
@@ -54,7 +54,7 @@ test.describe('Pen size UI', () => {
     await expect(getPenSizeButton(page, 4)).toHaveClass(/selected/);
   });
 
-  test('should draw a 2x2 block with pen size 2', async ({ page }) => {
+  test('should draw a 2x2 block with pen size 2', { tag: ['@drawing-tools.pen-size-tools'] }, async ({ page }) => {
     await openEditor(page);
 
     await clickTool(page, 'tool-pen');
@@ -76,7 +76,7 @@ test.describe('Pen size UI', () => {
     expect(await getPixelColor(page, 0, 2)).toBe(TRANSPARENT);
   });
 
-  test('should change pen size with keyboard shortcuts', async ({ page }) => {
+  test('should change pen size with keyboard shortcuts', { tag: ['@drawing-tools.pen-size-shortcuts'] }, async ({ page }) => {
     await openEditor(page);
 
     expect(await getSelectedPenSize(page)).toBe(1);
@@ -109,7 +109,7 @@ test.describe('Pen size UI', () => {
     expect(await getSelectedPenSize(page)).toBe(4);
   });
 
-  test('should affect pen tool: size 1 vs size 2', async ({ page }) => {
+  test('should affect pen tool: size 1 vs size 2', { tag: ['@drawing-tools.pen-size-tools'] }, async ({ page }) => {
     await openEditor(page);
     await setPiskelFromGrid(page, emptyTestGrid());
     await clickTool(page, 'tool-pen');
@@ -152,7 +152,7 @@ test.describe('Pen size UI', () => {
     expect(grid.map(r => r.join(''))).toEqual(expected);
   });
 
-  test('should affect eraser tool: size 1 vs size 2', async ({ page }) => {
+  test('should affect eraser tool: size 1 vs size 2', { tag: ['@drawing-tools.pen-size-tools'] }, async ({ page }) => {
     await openEditor(page);
 
     // Fill a 4x4 block at the center of a 20x20 canvas using setPiskelFromGrid
@@ -215,7 +215,7 @@ test.describe('Pen size UI', () => {
     expect(grid.map(r => r.join(''))).toEqual(expectedErased);
   });
 
-  test('should affect stroke tool: size 1 vs size 2', async ({ page }) => {
+  test('should affect stroke tool: size 1 vs size 2', { tag: ['@drawing-tools.pen-size-tools'] }, async ({ page }) => {
     await openEditor(page);
     await setPiskelFromGrid(page, emptyTestGrid());
     await clickTool(page, 'tool-stroke');
@@ -259,7 +259,7 @@ test.describe('Pen size UI', () => {
     expect(grid.map(r => r.join(''))).toEqual(expected);
   });
 
-  test('should affect rectangle tool: size 1 vs size 2', async ({ page }) => {
+  test('should affect rectangle tool: size 1 vs size 2', { tag: ['@drawing-tools.pen-size-tools'] }, async ({ page }) => {
     await openEditor(page);
     await setPiskelFromGrid(page, emptyTestGrid());
     await clickTool(page, 'tool-rectangle');
@@ -303,7 +303,7 @@ test.describe('Pen size UI', () => {
     expect(grid.map(r => r.join(''))).toEqual(expected);
   });
 
-  test('should affect circle tool: size 1 vs size 2', async ({ page }) => {
+  test('should affect circle tool: size 1 vs size 2', { tag: ['@drawing-tools.pen-size-tools'] }, async ({ page }) => {
     await openEditor(page);
     await setPiskelFromGrid(page, emptyTestGrid());
     await clickTool(page, 'tool-circle');

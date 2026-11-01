@@ -9,7 +9,7 @@ import {
 
 test.describe('Eraser tool', () => {
 
-  test('eraser tool: erases single pixels', async ({ page }) => {
+  test('eraser tool: erases single pixels', { tag: ['@drawing-tools.eraser'] }, async ({ page }) => {
     await openEditor(page);
 
     // Start with a filled 10x10 grid

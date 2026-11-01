@@ -12,7 +12,7 @@ import {
 
 test.describe('Paint bucket tool', () => {
 
-  test('paint bucket: fills connected transparent area', async ({ page }) => {
+  test('paint bucket: fills connected transparent area', { tag: ['@drawing-tools.paint-bucket'] }, async ({ page }) => {
     await openEditor(page);
 
     // Red border, transparent inside

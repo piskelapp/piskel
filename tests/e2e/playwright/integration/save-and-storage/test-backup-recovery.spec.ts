@@ -12,7 +12,7 @@ import {
 
 test.describe('Backup and recovery', () => {
 
-  test('should open backup browser dialog', async ({ page }) => {
+  test('should open backup browser dialog', { tag: ['@import.browse-backups'] }, async ({ page }) => {
     await openEditor(page);
     await openImportSettingsPanel(page);
 
@@ -22,7 +22,7 @@ test.describe('Backup and recovery', () => {
     await expect(page.locator('.backups-wizard-container')).toBeAttached();
   });
 
-  test('should persist drawing across page reload via backup', async ({ page }) => {
+  test('should persist drawing across page reload via backup', { tag: ['@save-and-storage.backup', '@save-and-storage.browse-backups'] }, async ({ page }) => {
     await openEditor(page);
 
     // Draw a recognizable pattern

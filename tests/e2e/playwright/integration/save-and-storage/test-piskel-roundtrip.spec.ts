@@ -15,7 +15,7 @@ import {
 
 test.describe('.piskel round-trip', () => {
 
-  test('should save and re-import a .piskel file with identical content', async ({ page }) => {
+  test('should save and re-import a .piskel file with identical content', { tag: ['@save-and-storage.piskel-file'] }, async ({ page }) => {
     await openEditor(page);
 
     // Create a known 2x2 sprite: R G / B T

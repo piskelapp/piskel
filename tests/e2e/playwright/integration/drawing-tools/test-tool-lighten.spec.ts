@@ -13,7 +13,7 @@ import {
 
 test.describe('Lighten tool', () => {
 
-  test('lighten tool: modifies pixel brightness', async ({ page }) => {
+  test('lighten tool: modifies pixel brightness', { tag: ['@drawing-tools.lighten'] }, async ({ page }) => {
     await openEditor(page);
 
     // Start with a medium gray pixel
@@ -44,7 +44,7 @@ test.describe('Lighten tool', () => {
 
 test.describe('Lighten tool modifiers', () => {
 
-  test('Lighten should make a pixel lighter', async ({ page }) => {
+  test('Lighten should make a pixel lighter', { tag: ['@drawing-tools.lighten'] }, async ({ page }) => {
     await openEditor(page);
 
     await setPiskelFromGrid(page, [
@@ -73,7 +73,7 @@ test.describe('Lighten tool modifiers', () => {
     expect(rAfter).toBeGreaterThan(rBefore);
   });
 
-  test('Lighten + Ctrl should darken a pixel', async ({ page }) => {
+  test('Lighten + Ctrl should darken a pixel', { tag: ['@drawing-tools.lighten'] }, async ({ page }) => {
     await openEditor(page);
 
     await setPiskelFromGrid(page, [

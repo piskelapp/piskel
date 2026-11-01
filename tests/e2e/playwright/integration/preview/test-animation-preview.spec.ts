@@ -44,7 +44,7 @@ async function zoomInUntilMinimapVisible(page: Page, minimap: Locator) {
 test.describe("Preview actions", () => {
   // ─── Size buttons ──────────────────────────────────────────────
 
-  test('should default to "original" preview size', async ({ page }) => {
+  test('should default to "original" preview size', { tag: ['@preview.sizes'] }, async ({ page }) => {
     await openEditor(page);
 
     const size = await getSelectedPreviewSize(page);
@@ -56,7 +56,7 @@ test.describe("Preview actions", () => {
     );
   });
 
-  test("clicking 1x button should select original size", async ({ page }) => {
+  test("clicking 1x button should select original size", { tag: ["@preview.sizes"] }, async ({ page }) => {
     await openEditor(page);
     await showPreviewActions(page);
 
@@ -76,7 +76,7 @@ test.describe("Preview actions", () => {
     }
   });
 
-  test("clicking Full button should select full size", async ({ page }) => {
+  test("clicking Full button should select full size", { tag: ["@preview.sizes"] }, async ({ page }) => {
     await openEditor(page);
     await showPreviewActions(page);
 
@@ -96,7 +96,7 @@ test.describe("Preview actions", () => {
     }
   });
 
-  test("Alt+1 shortcut should select original size", async ({ page }) => {
+  test("Alt+1 shortcut should select original size", { tag: ["@preview.sizes"] }, async ({ page }) => {
     await openEditor(page);
 
     await page.keyboard.press("Alt+1");
@@ -106,7 +106,7 @@ test.describe("Preview actions", () => {
     expect(await getSelectedPreviewSize(page)).toBe("original");
   });
 
-  test("Alt+2 shortcut should select best size", async ({ page }) => {
+  test("Alt+2 shortcut should select best size", { tag: ["@preview.sizes"] }, async ({ page }) => {
     await openEditor(page);
 
     // Default is original, switch to best
@@ -116,7 +116,7 @@ test.describe("Preview actions", () => {
     expect(await getSelectedPreviewSize(page)).toBe("best");
   });
 
-  test("Alt+3 shortcut should select full size", async ({ page }) => {
+  test("Alt+3 shortcut should select full size", { tag: ["@preview.sizes"] }, async ({ page }) => {
     await openEditor(page);
 
     await page.keyboard.press("Alt+3");
@@ -126,7 +126,7 @@ test.describe("Preview actions", () => {
 
   // ─── Grid toggle shortcut ─────────────────────────────────────
 
-  test("Alt+G shortcut should toggle grid", async ({ page }) => {
+  test("Alt+G shortcut should toggle grid", { tag: ["@canvas.grid"] }, async ({ page }) => {
     await openEditor(page);
 
     const gridButton = testId(page, "grid-toggle-button");
@@ -156,7 +156,7 @@ test.describe("Preview actions", () => {
 
   // ─── Popup preview ────────────────────────────────────────────
 
-  test("open preview in popup should open a new window with rendered preview", async ({
+  test("open preview in popup should open a new window with rendered preview", { tag: ["@preview.popup"] }, async ({
     page,
     context
   }) => {
@@ -192,7 +192,7 @@ test.describe("Preview actions", () => {
     await popup.close();
   });
 
-  test("reloading the editor should close the popup preview", async ({
+  test("reloading the editor should close the popup preview", { tag: ["@preview.popup"] }, async ({
     page,
     context
   }) => {
@@ -211,7 +211,7 @@ test.describe("Preview actions", () => {
     expect(popup.isClosed()).toBe(true);
   });
 
-  test("closing the popup preview should allow opening a new one", async ({
+  test("closing the popup preview should allow opening a new one", { tag: ["@preview.popup"] }, async ({
     page,
     context
   }) => {
@@ -235,7 +235,7 @@ test.describe("Preview actions", () => {
     await secondPopup.close();
   });
 
-  test("popup preview should render known pattern as base64 PNG", async ({
+  test("popup preview should render known pattern as base64 PNG", { tag: ["@preview.popup"] }, async ({
     page,
     context
   }) => {
@@ -297,7 +297,7 @@ test.describe("Preview actions", () => {
 
   // ─── Base64 rendering ─────────────────────────────────────────
 
-  test("main preview at 1x should render frame as base64 PNG background-image", async ({
+  test("main preview at 1x should render frame as base64 PNG background-image", { tag: ["@preview.playback"] }, async ({
     page
   }) => {
     await openEditor(page);
@@ -356,14 +356,14 @@ const getFPS = async (page: Page): Promise<number> => {
 };
 
 test.describe("Animation preview", () => {
-  test("should display default FPS on load", async ({ page }) => {
+  test("should display default FPS on load", { tag: ["@preview.fps"] }, async ({ page }) => {
     await openEditor(page);
 
     const fps = await getFPS(page);
     expect(fps).toBe(12); // default FPS
   });
 
-  test("should change FPS via slider", async ({ page }) => {
+  test("should change FPS via slider", { tag: ["@preview.fps"] }, async ({ page }) => {
     await openEditor(page);
 
     const slider = testId(page, "fps-slider");
@@ -374,7 +374,7 @@ test.describe("Animation preview", () => {
     await expect.poll(() => getFPS(page), { timeout: 5000 }).toBe(5);
   });
 
-  test("should pause animation when FPS is set to 0", async ({ page }) => {
+  test("should pause animation when FPS is set to 0", { tag: ["@preview.fps"] }, async ({ page }) => {
     await openEditor(page);
 
     const slider = testId(page, "fps-slider");
@@ -386,7 +386,7 @@ test.describe("Animation preview", () => {
     await expect(testId(page, "fps-display")).toContainText("0");
   });
 
-  test("should set FPS to max value", async ({ page }) => {
+  test("should set FPS to max value", { tag: ["@preview.fps"] }, async ({ page }) => {
     await openEditor(page);
 
     const slider = testId(page, "fps-slider");
@@ -396,7 +396,7 @@ test.describe("Animation preview", () => {
     await expect.poll(() => getFPS(page), { timeout: 5000 }).toBe(24);
   });
 
-  test("FPS value should be saved in exported .piskel file", async ({
+  test("FPS value should be saved in exported .piskel file", { tag: ["@preview.fps-saved"] }, async ({
     page
   }) => {
     await openEditor(page);
@@ -428,14 +428,14 @@ test.describe("Animation preview", () => {
 // ─── Minimap ─────────────────────────────────────────────────────
 
 test.describe("Minimap", () => {
-  test("should not show minimap at default zoom", async ({ page }) => {
+  test("should not show minimap at default zoom", { tag: ["@preview.minimap"] }, async ({ page }) => {
     await openEditor(page);
 
     const minimap = page.locator(".minimap-crop-frame");
     await expect(minimap).toBeHidden();
   });
 
-  test("should show minimap when zoomed in via scroll wheel", async ({
+  test("should show minimap when zoomed in via scroll wheel", { tag: ["@preview.minimap", "@canvas.wheel-zoom"] }, async ({
     page
   }) => {
     await openEditor(page);
@@ -444,7 +444,7 @@ test.describe("Minimap", () => {
     await zoomInUntilMinimapVisible(page, minimap);
   });
 
-  test("panning right should increase minimap x position", async ({ page }) => {
+  test("panning right should increase minimap x position", { tag: ["@preview.minimap", "@canvas.keyboard-pan"] }, async ({ page }) => {
     await openEditor(page);
     const minimap = page.locator(".minimap-crop-frame");
     await zoomInUntilMinimapVisible(page, minimap);
@@ -465,7 +465,7 @@ test.describe("Minimap", () => {
     expect(after!.x).toBeGreaterThan(before!.x);
   });
 
-  test("panning left should decrease minimap x position", async ({ page }) => {
+  test("panning left should decrease minimap x position", { tag: ["@preview.minimap", "@canvas.keyboard-pan"] }, async ({ page }) => {
     await openEditor(page);
     const minimap = page.locator(".minimap-crop-frame");
     await zoomInUntilMinimapVisible(page, minimap);
@@ -495,7 +495,7 @@ test.describe("Minimap", () => {
     expect(after!.x).toBeLessThan(before!.x);
   });
 
-  test("panning down should increase minimap y position", async ({ page }) => {
+  test("panning down should increase minimap y position", { tag: ["@preview.minimap", "@canvas.keyboard-pan"] }, async ({ page }) => {
     await openEditor(page);
     const minimap = page.locator(".minimap-crop-frame");
     await zoomInUntilMinimapVisible(page, minimap);
@@ -516,7 +516,7 @@ test.describe("Minimap", () => {
     expect(after!.y).toBeGreaterThan(before!.y);
   });
 
-  test("panning up should decrease minimap y position", async ({ page }) => {
+  test("panning up should decrease minimap y position", { tag: ["@preview.minimap", "@canvas.keyboard-pan"] }, async ({ page }) => {
     await openEditor(page);
     const minimap = page.locator(".minimap-crop-frame");
     await zoomInUntilMinimapVisible(page, minimap);
@@ -546,7 +546,7 @@ test.describe("Minimap", () => {
     expect(after!.y).toBeLessThan(before!.y);
   });
 
-  test("zooming in more should keep minimap visible and still responsive to pan", async ({
+  test("zooming in more should keep minimap visible and still responsive to pan", { tag: ["@preview.minimap"] }, async ({
     page
   }) => {
     await openEditor(page);
@@ -580,7 +580,7 @@ test.describe("Minimap", () => {
     expect(after!.x).toBeGreaterThan(before!.x);
   });
 
-  test("zooming out partially should grow minimap width or height", async ({
+  test("zooming out partially should grow minimap width or height", { tag: ["@preview.minimap"] }, async ({
     page
   }) => {
     await openEditor(page);
@@ -619,7 +619,7 @@ test.describe("Minimap", () => {
     expect(after!.height).toBeGreaterThanOrEqual(before!.height);
   });
 
-  test("zooming out fully should hide the minimap", async ({ page }) => {
+  test("zooming out fully should hide the minimap", { tag: ["@preview.minimap"] }, async ({ page }) => {
     await openEditor(page);
     const minimap = page.locator(".minimap-crop-frame");
     await zoomInUntilMinimapVisible(page, minimap);

@@ -14,7 +14,7 @@ function emptyTestGrid(size = 10): ("T")[][] {
 
 test.describe('Pen tool', () => {
 
-  test('pen tool: draws single pixels', async ({ page }) => {
+  test('pen tool: draws single pixels', { tag: ['@drawing-tools.pen'] }, async ({ page }) => {
     await openEditor(page);
     await setPiskelFromGrid(page, emptyTestGrid());
     await clickTool(page, 'tool-pen');
