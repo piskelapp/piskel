@@ -60,7 +60,6 @@ layers.long-names
 layers.opacity-rendering
 layers.preview-opacity
 layers.preview-saved
-preview.all-hidden
 preview.max-fps
 preview.minimap-drag
 preview.saved

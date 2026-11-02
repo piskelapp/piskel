@@ -962,6 +962,62 @@ export const createThreeFrames = async (page: Page): Promise<void> => {
 };
 
 /**
+ * Open the editor with a clock the test can control. Required by
+ * assertPreviewPlays, as the clock has to be installed before the page loads.
+ */
+export const openEditorWithFakeClock = async (page: Page): Promise<void> => {
+  await page.clock.install();
+  await openEditor(page);
+};
+
+/** Read the image shown by the animated preview as an ASCII art grid */
+const readPreviewFrame = async (page: Page): Promise<string[]> => {
+  const backgroundImage = await page
+    .locator("#animated-preview-container .background-image-frame-container")
+    .evaluate((element) => getComputedStyle(element).backgroundImage);
+  const dataUrl = backgroundImage.slice(5, -2); // strip url(" and ")
+  const { width, height, pixels } = await decodePngDataUrl(page, dataUrl);
+  return Array.from({ length: height }, (_, row) =>
+    Array.from({ length: width }, (_, col) =>
+      pixels[row * width + col][3] === 0 ? "." : "X"
+    ).join("")
+  );
+};
+
+/**
+ * Check which frames the animated preview plays, whatever their order. Steps
+ * through two loops of the animation with the fake clock, without waiting for
+ * them in real time. The test has to use openEditorWithFakeClock.
+ */
+export const assertPreviewPlays = async (
+  page: Page,
+  frames: string[][]
+): Promise<void> => {
+  // At 1x, each image of the preview has the size of the sprite.
+  await page.keyboard.press("Alt+1");
+  await expect
+    .poll(async () => (await readPreviewFrame(page))[0].length)
+    .toBe(frames[0][0].length);
+
+  const fps = parseInt(await testId(page, "fps-display").innerText(), 10);
+  const frameCount = await getFrameTiles(page).count();
+
+  // Read the preview twice per frame, to be sure not to miss any.
+  const pageTime = await page.evaluate(() => Date.now());
+  await page.clock.pauseAt(pageTime + 1000);
+  const playedFrames = new Set<string>();
+  for (let step = 0; step < 2 * 2 * frameCount; step++) {
+    await page.clock.runFor(Math.ceil(1000 / fps / 2));
+    playedFrames.add((await readPreviewFrame(page)).join("\n"));
+  }
+  await page.clock.resume();
+
+  expect([...playedFrames].sort()).toEqual(
+    frames.map((frame) => frame.join("\n")).sort()
+  );
+};
+
+/**
  * Lower the size of the undo history, to fill it with a few changes only.
  * When the history is full, the oldest states are dropped up to the first
  * snapshot, so the snapshot period has to be lower than the maximum.

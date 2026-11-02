@@ -76,25 +76,6 @@ test.describe('Frame visibility toggle', () => {
     await waitFor(async () => (await isFrameVisible(page, 1)));
   });
 
-  test('hidden frame should be excluded from visible frame indexes', { tag: ['@frames.visibility'] }, async ({ page }) => {
-    await openEditor(page);
-
-    await getAddFrameButton(page).click();
-    await assertFrameCount(page, 2);
-    await getAddFrameButton(page).click();
-    await assertFrameCount(page, 3);
-
-    // Hide frame 1
-    await getFrameToggle(page, 1).click();
-    await waitFor(async () => !(await isFrameVisible(page, 1)));
-
-    // Check visible frame indexes via the model
-    const visibleIndexes = await page.evaluate(() =>
-      window.pskl.app.piskelController.getVisibleFrameIndexes()
-    );
-    expect(visibleIndexes).toEqual([0, 2]);
-  });
-
   // ─── Hidden frames stay in sync ───────────────────────────────
 
   test('a hidden frame should stay hidden when a frame is inserted before it', { tag: ['@frames.visibility-sync'] }, async ({ page }) => {
