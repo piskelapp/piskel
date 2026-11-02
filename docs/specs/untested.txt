@@ -90,9 +90,6 @@ selection.paste-image
 selection.paste-other-tab
 selection.paste-text
 selection.undo
-settings.last-tab
-settings.resize-saved
-settings.storage
 transformations.crop-noop
 transformations.rotate-non-square
 transformations.show-more-saved
