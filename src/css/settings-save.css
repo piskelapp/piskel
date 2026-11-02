@@ -11,6 +11,17 @@
   font-style: italic;
 }
 
+#save-webkit-warning {
+  margin-top: 20px;
+  color: #ff6b6b;
+  font-weight: bold;
+  font-style: normal;
+}
+
+#save-webkit-warning a {
+  color: inherit;
+}
+
 .save-file-name {
   white-space: nowrap;
   font-weight: bold;

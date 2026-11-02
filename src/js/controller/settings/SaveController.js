@@ -22,6 +22,8 @@
   ns.SaveController.prototype.init = function () {
     this.saveForm = document.querySelector(".save-form");
     this.insertSavePartials_();
+    document.querySelector("#save-webkit-warning").hidden =
+      !pskl.utils.UserAgent.isWebkit;
 
     this.piskelName = document.querySelector(".piskel-name");
     this.descriptionInput = document.querySelector("#save-description");
