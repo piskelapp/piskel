@@ -8,9 +8,8 @@ import {
   drawAtPixel,
   getAddFrameButton,
   getAddLayerButton,
-  getFrameTiles,
   wait,
-  waitFor,
+  assertFrameCount,
 } from "../../testutils";
 import PNG from 'png-ts';
 import { parseGIF, decompressFrames } from 'gifuct-js';
@@ -60,7 +59,7 @@ test.describe('Export extras — GIF loop toggle', () => {
     // Create 2 frames with different colors so the GIF has animation
     await setPiskelFromGrid(page, [['R', 'T'], ['T', 'R']]);
     await getAddFrameButton(page).click();
-    await waitFor(async () => (await getFrameTiles(page).count()) === 2);
+    await assertFrameCount(page, 2);
     await setPrimaryColor(page, '#0000FF');
     await clickTool(page, 'tool-pen');
     await drawAtPixel(page, 0, 0);

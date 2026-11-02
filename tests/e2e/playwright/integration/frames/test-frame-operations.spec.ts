@@ -12,6 +12,8 @@ import {
   getFrameTiles,
   getAddFrameButton,
   waitFor,
+  assertFrameCount,
+  selectFrame,
 } from "../../testutils";
 
 test.describe('Frame operations', () => {
@@ -19,7 +21,7 @@ test.describe('Frame operations', () => {
   test('should start with one frame', { tag: ['@frames.at-least-one'] }, async ({ page }) => {
     await openEditor(page);
     expect(await getCurrentPiskelFrameCount(page)).toBe(1);
-    await expect(getFrameTiles(page)).toHaveCount(1);
+    await assertFrameCount(page, 1);
   });
 
   test('should add a new frame', { tag: ['@frames.add'] }, async ({ page }) => {
@@ -28,7 +30,7 @@ test.describe('Frame operations', () => {
     await getAddFrameButton(page).click();
 
     expect(await getCurrentPiskelFrameCount(page)).toBe(2);
-    await expect(getFrameTiles(page)).toHaveCount(2);
+    await assertFrameCount(page, 2);
   });
 
   test('should select a frame by clicking', { tag: ['@frames.select'] }, async ({ page }) => {
@@ -39,11 +41,11 @@ test.describe('Frame operations', () => {
     expect(await getCurrentPiskelFrameCount(page)).toBe(2);
 
     // Click on the first frame tile (index 0)
-    await getFrameTiles(page).nth(0).click();
+    await selectFrame(page, 0);
     expect(await getCurrentFrameIndex(page)).toBe(0);
 
     // Click on the second frame tile (index 1)
-    await getFrameTiles(page).nth(1).click();
+    await selectFrame(page, 1);
     expect(await getCurrentFrameIndex(page)).toBe(1);
   });
 
@@ -78,7 +80,7 @@ test.describe('Frame operations', () => {
     await testId(page, 'delete-frame-button').nth(1).click();
 
     expect(await getCurrentPiskelFrameCount(page)).toBe(1);
-    await expect(getFrameTiles(page)).toHaveCount(1);
+    await assertFrameCount(page, 1);
   });
 
   test('should delete the first frame and keep the second', { tag: ['@frames.delete'] }, async ({ page }) => {
@@ -143,7 +145,7 @@ test.describe('Frame operations', () => {
     await getAddFrameButton(page).click();
 
     expect(await getCurrentPiskelFrameCount(page)).toBe(4);
-    await expect(getFrameTiles(page)).toHaveCount(4);
+    await assertFrameCount(page, 4);
   });
 
   test('should navigate frames with keyboard shortcuts', { tag: ['@frames.navigate'] }, async ({ page }) => {
@@ -155,7 +157,7 @@ test.describe('Frame operations', () => {
     expect(await getCurrentPiskelFrameCount(page)).toBe(3);
 
     // Select first frame
-    await getFrameTiles(page).nth(0).click();
+    await selectFrame(page, 0);
     expect(await getCurrentFrameIndex(page)).toBe(0);
 
     // Navigate down (next frame)

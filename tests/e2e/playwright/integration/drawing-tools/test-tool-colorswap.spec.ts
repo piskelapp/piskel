@@ -6,13 +6,13 @@ import {
   drawAtPixel,
   getAddFrameButton,
   getAddLayerButton,
-  getFrameTiles,
   getPixelColor,
   openEditor,
   setPiskelFromGrid,
   setPrimaryColor,
   wait,
-  waitFor,
+  assertFrameCount,
+  selectFrame,
 } from "../../testutils";
 
 test.describe('Color swap tool', () => {
@@ -73,13 +73,12 @@ test.describe('ColorSwap tool modifiers', () => {
     ]);
 
     await getAddFrameButton(page).click();
-    await waitFor(async () => (await getFrameTiles(page).count()) === 2);
+    await assertFrameCount(page, 2);
     await setPrimaryColor(page, '#FF0000');
     await clickTool(page, 'tool-pen');
     await drawAtPixel(page, 1, 1);
 
-    await getFrameTiles(page).nth(0).click();
-    await wait(200);
+    await selectFrame(page, 0);
 
     await setPrimaryColor(page, '#0000FF');
     await clickTool(page, 'tool-colorswap');

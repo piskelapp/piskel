@@ -8,16 +8,18 @@ import {
   drawAtPixel,
   clickTool,
   getAddFrameButton,
-  getFrameTiles,
   getAddLayerButton,
   waitFor,
   wait,
   getCurrentPiskelWidth,
   getCurrentPiskelHeight,
+  gridFromRows,
   isCurrentPiskelEmpty,
   undo,
   waitForEditorReady,
   waitForGrid,
+  assertFrameCount,
+  selectFrame,
 } from "../../testutils";
 
 /** Drag from sprite pixel (x1,y1) to (x2,y2) */
@@ -53,11 +55,6 @@ function lShapeGrid(): TestGrid {
   grid[2][1] = 'R';
   grid[2][2] = 'R';
   return grid;
-}
-
-/** Build a test grid from rows where X is a colored pixel and . a transparent one */
-function gridFromRows(rows: string[]): TestGrid {
-  return rows.map(row => [...row].map(c => (c === 'X' ? 'R' : 'T')));
 }
 
 const EMPTY = Array(10).fill('..........');
@@ -170,16 +167,14 @@ test.describe('Transform panel', () => {
 
     // Add a second frame and draw a pixel in it
     await getAddFrameButton(page).click();
-    await waitFor(async () => (await getFrameTiles(page).count()) === 2);
+    await assertFrameCount(page, 2);
     // Select frame 1
-    await getFrameTiles(page).nth(1).click();
-    await wait(200);
+    await selectFrame(page, 1);
     await clickTool(page, 'tool-pen');
     await drawAtPixel(page, 0, 0);
 
     // Go back to frame 0 and flip all frames
-    await getFrameTiles(page).nth(0).click();
-    await wait(200);
+    await selectFrame(page, 0);
     await clickTransform(page, 'tool-flip', { shift: true });
 
     // Verify frame 0 is flipped horizontally
@@ -273,15 +268,13 @@ test.describe('Transform panel', () => {
 
     // Add frame 1 with a pixel at (0,0)
     await getAddFrameButton(page).click();
-    await waitFor(async () => (await getFrameTiles(page).count()) === 2);
-    await getFrameTiles(page).nth(1).click();
-    await wait(200);
+    await assertFrameCount(page, 2);
+    await selectFrame(page, 1);
     await clickTool(page, 'tool-pen');
     await drawAtPixel(page, 0, 0);
 
     // Go back to frame 0, rotate all frames CCW
-    await getFrameTiles(page).nth(0).click();
-    await wait(200);
+    await selectFrame(page, 0);
     await clickTransform(page, 'tool-rotate', { shift: true });
 
     // Frame 0: L rotated CCW — pixel at (0,9) should be set
@@ -303,15 +296,14 @@ test.describe('Transform panel', () => {
 
     // Add an empty second frame
     await getAddFrameButton(page).click();
-    await waitFor(async () => (await getFrameTiles(page).count()) === 2);
+    await assertFrameCount(page, 2);
 
     // Frame 1 should be empty
     const gridBefore = await readPixelGrid(page, 10, 10, 0, 1);
     expect(gridBefore[0][0]).toBe('.');
 
     // Select frame 0 and clone
-    await getFrameTiles(page).nth(0).click();
-    await wait(200);
+    await selectFrame(page, 0);
     await clickTransform(page, 'tool-clone');
 
     // Frame 1 should now have the same L-shape as frame 0
@@ -364,15 +356,13 @@ test.describe('Transform panel', () => {
 
     // Add frame 1 with a pixel at (0,0)
     await getAddFrameButton(page).click();
-    await waitFor(async () => (await getFrameTiles(page).count()) === 2);
-    await getFrameTiles(page).nth(1).click();
-    await wait(200);
+    await assertFrameCount(page, 2);
+    await selectFrame(page, 1);
     await clickTool(page, 'tool-pen');
     await drawAtPixel(page, 0, 0);
 
     // Go back to frame 0, center all frames
-    await getFrameTiles(page).nth(0).click();
-    await wait(200);
+    await selectFrame(page, 0);
     await clickTransform(page, 'tool-center', { shift: true });
 
     // Frame 0: L-shape centered at (3,3)-(5,5)
@@ -655,9 +645,8 @@ test.describe('Transform panel', () => {
     await setPiskelFromGrid(page, lShapeGrid());
 
     await getAddFrameButton(page).click();
-    await waitFor(async () => (await getFrameTiles(page).count()) === 2);
-    await getFrameTiles(page).nth(0).click();
-    await wait(200);
+    await assertFrameCount(page, 2);
+    await selectFrame(page, 0);
 
     await clickTransform(page, 'tool-clone');
     await waitForGrid(page, 10, 10, L_SHAPE, { frameIndex: 1 });
@@ -691,9 +680,8 @@ test.describe('Transform panel', () => {
 
     // Frame 1 of layer 0 gets a pixel at (0,0)
     await getAddFrameButton(page).click();
-    await waitFor(async () => (await getFrameTiles(page).count()) === 2);
-    await getFrameTiles(page).nth(1).click();
-    await wait(200);
+    await assertFrameCount(page, 2);
+    await selectFrame(page, 1);
     await clickTool(page, 'tool-pen');
     await drawAtPixel(page, 0, 0);
     expect(await readPixelRows(page, 4, 4, 0, 1)).toEqual([

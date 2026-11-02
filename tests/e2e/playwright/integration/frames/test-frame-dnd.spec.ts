@@ -9,8 +9,8 @@ import {
   colorToInt,
   getFrameTiles,
   getAddFrameButton,
-  waitFor,
   wait,
+  assertFrameCount,
 } from "../../testutils";
 
 const RED = colorToInt('#FF0000');
@@ -22,13 +22,13 @@ async function setupThreeFrames(page: Page) {
   await setPiskelFromGrid(page, [['R', 'T'], ['T', 'T']]);
 
   await getAddFrameButton(page).click();
-  await waitFor(async () => (await getFrameTiles(page).count()) === 2);
+  await assertFrameCount(page, 2);
   await setPrimaryColor(page, '#00FF00');
   await clickTool(page, 'tool-pen');
   await drawAtPixel(page, 0, 0);
 
   await getAddFrameButton(page).click();
-  await waitFor(async () => (await getFrameTiles(page).count()) === 3);
+  await assertFrameCount(page, 3);
   await setPrimaryColor(page, '#0000FF');
   await drawAtPixel(page, 0, 0);
   await wait(300);

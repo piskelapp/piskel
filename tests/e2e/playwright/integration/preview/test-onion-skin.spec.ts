@@ -9,9 +9,10 @@ import {
   drawAtPixel,
   clickTool,
   getAddFrameButton,
-  getFrameTiles,
   waitFor,
   wait,
+  assertFrameCount,
+  selectFrame,
 } from "../../testutils";
 
 const ONION_SKIN_SELECTOR = '.preview-toggle-onion-skin';
@@ -103,17 +104,16 @@ test.describe('Onion skin', () => {
 
     // Add frame 1 (empty — this will be our observation frame)
     await getAddFrameButton(page).click();
-    await waitFor(async () => (await getFrameTiles(page).count()) === 2);
+    await assertFrameCount(page, 2);
 
     // Add frame 2 and draw a green pixel at (5,5)
     await getAddFrameButton(page).click();
-    await waitFor(async () => (await getFrameTiles(page).count()) === 3);
+    await assertFrameCount(page, 3);
     await setPrimaryColor(page, '#00FF00');
     await drawAtPixel(page, 5, 5);
 
     // Navigate to frame 1 (the middle frame)
-    await getFrameTiles(page).nth(1).click();
-    await wait(300);
+    await selectFrame(page, 1);
 
     // Onion skin canvas should be empty before enabling
     const beforePixel = await getOnionSkinPixel(page, 1, 1);
@@ -156,7 +156,7 @@ test.describe('Onion skin', () => {
 
     // Add frame 1 (empty) — auto-selected
     await getAddFrameButton(page).click();
-    await waitFor(async () => (await getFrameTiles(page).count()) === 2);
+    await assertFrameCount(page, 2);
 
     // Enable onion skin — should render frame 0's red pixel
     await testId(page, 'onion-skin-toggle-button').click();

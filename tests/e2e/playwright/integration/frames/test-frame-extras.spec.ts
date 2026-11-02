@@ -1,9 +1,9 @@
 import test, { expect, Page } from "@playwright/test";
 import {
   openEditor,
-  getFrameTiles,
   getAddFrameButton,
   waitFor,
+  assertFrameCount,
 } from "../../testutils";
 
 /** Get the toggle button for a frame at the given index */
@@ -27,9 +27,9 @@ test.describe('Frame visibility toggle', () => {
 
     // Add 2 more frames (3 total)
     await getAddFrameButton(page).click();
-    await waitFor(async () => (await getFrameTiles(page).count()) === 2);
+    await assertFrameCount(page, 2);
     await getAddFrameButton(page).click();
-    await waitFor(async () => (await getFrameTiles(page).count()) === 3);
+    await assertFrameCount(page, 3);
 
     // All frames should be visible in the model
     expect(await isFrameVisible(page, 0)).toBe(true);
@@ -41,9 +41,9 @@ test.describe('Frame visibility toggle', () => {
     await openEditor(page);
 
     await getAddFrameButton(page).click();
-    await waitFor(async () => (await getFrameTiles(page).count()) === 2);
+    await assertFrameCount(page, 2);
     await getAddFrameButton(page).click();
-    await waitFor(async () => (await getFrameTiles(page).count()) === 3);
+    await assertFrameCount(page, 3);
 
     // Hide frame 1
     await getFrameToggle(page, 1).click();
@@ -58,7 +58,7 @@ test.describe('Frame visibility toggle', () => {
     await openEditor(page);
 
     await getAddFrameButton(page).click();
-    await waitFor(async () => (await getFrameTiles(page).count()) === 2);
+    await assertFrameCount(page, 2);
 
     // Hide then show frame 1
     await getFrameToggle(page, 1).click();
@@ -72,9 +72,9 @@ test.describe('Frame visibility toggle', () => {
     await openEditor(page);
 
     await getAddFrameButton(page).click();
-    await waitFor(async () => (await getFrameTiles(page).count()) === 2);
+    await assertFrameCount(page, 2);
     await getAddFrameButton(page).click();
-    await waitFor(async () => (await getFrameTiles(page).count()) === 3);
+    await assertFrameCount(page, 3);
 
     // Hide frame 1
     await getFrameToggle(page, 1).click();

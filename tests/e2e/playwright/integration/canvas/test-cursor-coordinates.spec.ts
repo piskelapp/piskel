@@ -1,5 +1,5 @@
 import test, { expect, Page } from "@playwright/test";
-import { openEditor, clickTool, setPiskelFromGrid, waitFor, getAddFrameButton, getFrameTiles, wait } from "../../testutils";
+import { openEditor, clickTool, setPiskelFromGrid, waitFor, getAddFrameButton, wait, assertFrameCount } from "../../testutils";
 
 /** Get screen coordinates for a sprite pixel (waits for pending relayout first) */
 async function getScreenCoords(page: Page, col: number, row: number) {
@@ -126,9 +126,9 @@ test.describe('Cursor coordinates', () => {
 
     // Add 2 more frames (total 3) — adding auto-selects the new frame
     await getAddFrameButton(page).click();
-    await waitFor(async () => (await getFrameTiles(page).count()) === 2);
+    await assertFrameCount(page, 2);
     await getAddFrameButton(page).click();
-    await waitFor(async () => (await getFrameTiles(page).count()) === 3);
+    await assertFrameCount(page, 3);
 
     // After adding, we're on frame 3/3
     await waitFor(async () => (await frameInfo.innerText()).trim() === '3/3');
