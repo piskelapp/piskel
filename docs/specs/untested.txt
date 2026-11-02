@@ -90,10 +90,3 @@ selection.paste-image
 selection.paste-other-tab
 selection.paste-text
 selection.undo
-undo-redo.cap
-undo-redo.discard-redo
-undo-redo.load-step
-undo-redo.memory-only
-undo-redo.not-recorded
-undo-redo.restore-position
-undo-redo.throttle

@@ -78,6 +78,10 @@ export const setPiskelFromImageSrc = async (
 type TestColor = "R" | "G" | "B" | "T";
 type TestGrid = Array<Array<TestColor>>;
 
+/** Build a test grid from rows where X is a colored pixel and . a transparent one */
+export const gridFromRows = (rows: string[]): TestGrid =>
+  rows.map((row) => [...row].map((c) => (c === "X" ? "R" : "T")));
+
 export const setPiskelFromGrid = async (
   page: Page,
   grid: TestGrid
@@ -771,6 +775,65 @@ export const getCurrentFrameIndex = async (page: Page): Promise<number> => {
   const selected = page.locator(".preview-tile.selected");
   const indexStr = await selected.getAttribute("data-tile-number");
   return parseInt(indexStr ?? "0", 10);
+};
+
+/** Check how many frames are in the frames list, waiting for it to update */
+export const assertFrameCount = async (
+  page: Page,
+  count: number
+): Promise<void> => {
+  await expect(getFrameTiles(page)).toHaveCount(count);
+};
+
+/** Check which frame is current, waiting for the frames list to update */
+export const assertCurrentFrame = async (
+  page: Page,
+  frameIndex: number
+): Promise<void> => {
+  await expect.poll(() => getCurrentFrameIndex(page)).toBe(frameIndex);
+};
+
+/** Check which layer is current, waiting for the layers list to update */
+export const assertCurrentLayer = async (
+  page: Page,
+  layerIndex: number
+): Promise<void> => {
+  await expect.poll(() => getCurrentLayerIndex(page)).toBe(layerIndex);
+};
+
+/** Click a frame in the frames list */
+export const selectFrame = async (
+  page: Page,
+  frameIndex: number
+): Promise<void> => {
+  await getFrameTiles(page).nth(frameIndex).click();
+  await assertCurrentFrame(page, frameIndex);
+};
+
+/** Click the bottom layer, which is the last one of the layers list */
+export const selectBottomLayer = async (page: Page): Promise<void> => {
+  await getLayerItems(page).last().click();
+  await assertCurrentLayer(page, 0);
+};
+
+/**
+ * Lower the size of the undo history, to fill it with a few changes only.
+ * When the history is full, the oldest states are dropped up to the first
+ * snapshot, so the snapshot period has to be lower than the maximum.
+ */
+export const setUndoHistoryLimit = async (
+  page: Page,
+  maxStates: number,
+  snapshotPeriod: number
+): Promise<void> => {
+  await page.evaluate(
+    ({ maxStates, snapshotPeriod }) => {
+      const { HistoryService } = window.pskl.service;
+      HistoryService.MAX_SAVED_STATES = maxStates;
+      HistoryService.SNAPSHOT_PERIOD = snapshotPeriod;
+    },
+    { maxStates, snapshotPeriod }
+  );
 };
 
 /** Trigger undo via keyboard */

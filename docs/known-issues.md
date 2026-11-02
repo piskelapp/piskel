@@ -160,3 +160,8 @@ See [undo-redo.md](specs/undo-redo.md).
 - Changing the FPS is neither an undo step nor an unsaved change, although
   FPS is saved in `.piskel` files. Each history state stores the FPS, so
   undoing any other change also reverts the FPS.
+- Undo and redo are ignored while the system clock is behind the previous
+  undo or redo: the throttle in `HistoryService.isLoadStateAllowed_`
+  compares `Date.now()` values. Seen in an e2e run on WSL2, where the clock
+  jumped back about 2.4 seconds. The `undo-redo.cap` e2e test retries its
+  undo presses because of this: remove the retry when this is fixed.
