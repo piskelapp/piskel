@@ -1,5 +1,5 @@
 import test, {  expect } from "@playwright/test";
-import { openEditor, openExportSettingsPanel, setPiskelFromGrid } from "../../testutils";
+import { openEditor, openExportSettingsPanel, setPiskelFromGrid, testId, selectExportTab } from "../../testutils";
 import fs from 'fs/promises';
 import PNG from 'png-ts';
 
@@ -10,19 +10,19 @@ test('Test export png with scaling', { tag: ['@export.scale'] }, async ({ page }
     await openExportSettingsPanel(page);
 
     await expect(page.locator('.export-panel-png')).not.toBeAttached();
-    await page.click('[data-tab-id="png"]');
+    await selectExportTab(page, 'png');
     await expect(page.locator('.export-panel-png')).toBeAttached();
 
-    const defaultHeightInputLocator = page.locator('[name="resize-width"]');
+    const defaultHeightInputLocator = testId(page, 'export-width-input');
     await defaultHeightInputLocator.focus();
     await page.keyboard.type("0");
 
-    await expect(page.locator('[name="resize-width"]')).toHaveValue("20");
-    await expect(page.locator('[name="resize-height"]')).toHaveValue("20");
-    await expect(page.locator('[name="scale-input"]')).toHaveValue("10");
+    await expect(testId(page, 'export-width-input')).toHaveValue("20");
+    await expect(testId(page, 'export-height-input')).toHaveValue("20");
+    await expect(testId(page, 'export-scale-slider')).toHaveValue("10");
 
     const downloadPromise = page.waitForEvent('download');
-    await page.click('.png-download-button');
+    await testId(page, 'png-download-button').click();
 
     const download = await downloadPromise;
     const path = await download.path();

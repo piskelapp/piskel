@@ -33,11 +33,6 @@ editor.new-sprite
 editor.notifications
 editor.progress-bar
 editor.unsupported-browser
-export.content
-export.free-scale
-export.gif-transparency
-export.gif-warning
-export.saved
 import.animated-gif
 import.combine-selection
 import.drop-large-image

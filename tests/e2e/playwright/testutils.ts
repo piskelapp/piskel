@@ -1,7 +1,9 @@
 import { Page, expect } from "@playwright/test";
+import { decompressFrames, parseGIF } from "gifuct-js";
 import fs from "fs/promises";
 import os from "os";
 import nodePath from "path";
+import PNG from "png-ts";
 
 /** The modifier key for keyboard shortcuts: Meta on macOS, Control elsewhere. */
 export const CMD_OR_CTRL = os.platform() === "darwin" ? "Meta" : "Control";
@@ -959,6 +961,115 @@ export const createThreeFrames = async (page: Page): Promise<void> => {
   await assertFrameCount(page, 3);
   await drawAtPixel(page, 2, 0);
   expect(await readPixelRows(page, 4, 4, 0, 2)).toEqual(PIXEL_IN_THIRD_COLUMN);
+};
+
+/** Select a tab of the export drawer: "gif", "png", "zip" or "misc" */
+export const selectExportTab = async (
+  page: Page,
+  tabId: string
+): Promise<void> => {
+  const tab = testId(page, `export-tab-${tabId}`);
+  await tab.click();
+  await expect(tab).toHaveClass(/selected/);
+};
+
+/** Type a resolution in the width input of the export drawer */
+export const setExportWidth = async (
+  page: Page,
+  width: number
+): Promise<void> => {
+  await testId(page, "export-width-input").fill(String(width));
+};
+
+/** Set the opacity of the top layer, answering the prompt of the opacity button */
+export const setTopLayerOpacity = async (
+  page: Page,
+  opacity: number
+): Promise<void> => {
+  page.once("dialog", (dialog) => dialog.accept(String(opacity)));
+  await getAllLayerOpacityButtons(page).first().click();
+};
+
+/**
+ * Letter for a color in the ASCII art grid of an exported image: "." is a
+ * transparent pixel, and "?" any color without a letter.
+ */
+const getColorLetter = (r: number, g: number, b: number): string => {
+  const letters: Record<string, string> = {
+    "255,0,0": "R",
+    "0,255,0": "G",
+    "0,0,255": "B",
+    "0,0,0": "K",
+    "255,255,0": "Y"
+  };
+  return letters[`${r},${g},${b}`] ?? "?";
+};
+
+const saveDownload = async (page: Page, click: () => Promise<void>) => {
+  const downloadPromise = page.waitForEvent("download");
+  await click();
+  const download = await downloadPromise;
+  return await fs.readFile(await download.path());
+};
+
+/**
+ * Download the PNG spritesheet from the export drawer. Its pixels are returned
+ * as an ASCII art grid, and as exact [r, g, b, a] values with rgbaAt.
+ */
+export const downloadPngExport = async (page: Page) => {
+  await selectExportTab(page, "png");
+  const file = await saveDownload(page, () =>
+    testId(page, "png-download-button").click()
+  );
+  const png = new PNG(file);
+  const pixels = png.decodePixels();
+  const rgbaAt = (x: number, y: number) => {
+    const i = (y * png.width + x) * 4;
+    return [pixels[i], pixels[i + 1], pixels[i + 2], pixels[i + 3]];
+  };
+  const rows = Array.from({ length: png.height }, (_, y) =>
+    Array.from({ length: png.width }, (_, x) => {
+      const [r, g, b, a] = rgbaAt(x, y);
+      if (a === 0) return ".";
+      return a === 255 ? getColorLetter(r, g, b) : "?";
+    }).join("")
+  );
+  return { width: png.width, height: png.height, rows, rgbaAt };
+};
+
+/**
+ * Download the animated GIF from the export drawer. Each of its frames is
+ * returned as an ASCII art grid, where "." is the transparent color of the GIF.
+ * rgbAt gives the exact color of a pixel of a frame.
+ */
+export const downloadGifExport = async (page: Page) => {
+  await selectExportTab(page, "gif");
+  const file = await saveDownload(page, () =>
+    testId(page, "gif-download-button").click()
+  );
+  const gifFrames = decompressFrames(parseGIF(file as any), true);
+  const { width, height } = gifFrames[0].dims;
+  const isTransparent = (frameIndex: number, x: number, y: number) => {
+    const frame = gifFrames[frameIndex];
+    return frame.pixels[y * width + x] === frame.transparentIndex;
+  };
+  const rgbAt = (frameIndex: number, x: number, y: number) => {
+    const frame = gifFrames[frameIndex];
+    return frame.colorTable[frame.pixels[y * width + x]];
+  };
+  const frames = gifFrames.map((_, frameIndex) =>
+    Array.from({ length: height }, (_, y) =>
+      Array.from({ length: width }, (_, x) => {
+        if (isTransparent(frameIndex, x, y)) return ".";
+        const [r, g, b] = rgbAt(frameIndex, x, y);
+        return getColorLetter(r, g, b);
+      }).join("")
+    )
+  );
+  const hasTransparentColor = gifFrames.every(
+    (frame) => frame.transparentIndex !== undefined && frame.transparentIndex >= 0
+  );
+  return { width, height, frames, hasTransparentColor, rgbAt };
 };
 
 /**

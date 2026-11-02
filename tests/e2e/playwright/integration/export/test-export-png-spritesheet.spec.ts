@@ -1,5 +1,5 @@
 import test, { expect } from "@playwright/test";
-import { openEditor, openExportSettingsPanel, setPiskelFromGrid, testId } from "../../testutils";
+import { openEditor, openExportSettingsPanel, setPiskelFromGrid, testId, selectExportTab } from "../../testutils";
 import fs from 'fs/promises';
 import PNG from 'png-ts';
 import AdmZip from 'adm-zip';
@@ -27,11 +27,11 @@ test.describe('PNG spritesheet export', () => {
     });
 
     await openExportSettingsPanel(page);
-    await page.click('[data-tab-id="png"]');
+    await selectExportTab(page, 'png');
     await expect(page.locator('.export-panel-png')).toBeAttached();
 
     // Set columns to 2 for side-by-side layout
-    const columnsInput = page.locator('[name="png-export-columns"]');
+    const columnsInput = testId(page, 'png-columns-input');
     await columnsInput.fill('2');
     await expect(page.locator('[name="png-export-rows"]')).toHaveValue('1');
 
@@ -72,7 +72,7 @@ test.describe('PNG spritesheet export', () => {
     await setPiskelFromGrid(page, [["R", "T"], ["T", "B"]]);
 
     await openExportSettingsPanel(page);
-    await page.click('[data-tab-id="png"]');
+    await selectExportTab(page, 'png');
     await expect(page.locator('.export-panel-png')).toBeAttached();
 
     const downloadPromise = page.waitForEvent('download');
@@ -115,11 +115,11 @@ test.describe('PNG spritesheet export', () => {
     await page.keyboard.press('n'); // frame 3: empty/transparent
 
     await openExportSettingsPanel(page);
-    await page.click('[data-tab-id="png"]');
+    await selectExportTab(page, 'png');
     await expect(page.locator('.export-panel-png')).toBeAttached();
 
     // Set columns=1 → vertical strip, rows should auto-update to 4
-    const columnsInput = page.locator('[name="png-export-columns"]');
+    const columnsInput = testId(page, 'png-columns-input');
     await columnsInput.fill('1');
     await columnsInput.dispatchEvent('input');
     await expect(page.locator('[name="png-export-rows"]')).toHaveValue('4');
@@ -178,11 +178,11 @@ test.describe('PNG spritesheet export', () => {
     await page.keyboard.press('n'); // frame 3: transparent
 
     await openExportSettingsPanel(page);
-    await page.click('[data-tab-id="png"]');
+    await selectExportTab(page, 'png');
     await expect(page.locator('.export-panel-png')).toBeAttached();
 
     // Set columns=2 → 2x2 grid, rows should auto-update to 2
-    const columnsInput = page.locator('[name="png-export-columns"]');
+    const columnsInput = testId(page, 'png-columns-input');
     await columnsInput.fill('2');
     await columnsInput.dispatchEvent('input');
     await expect(page.locator('[name="png-export-rows"]')).toHaveValue('2');
@@ -230,13 +230,13 @@ test.describe('PNG spritesheet export', () => {
     await setPiskelFromGrid(page, [["R"]]);
 
     await openExportSettingsPanel(page);
-    await page.click('[data-tab-id="png"]');
+    await selectExportTab(page, 'png');
     await expect(page.locator('.export-panel-png')).toBeAttached();
 
     // Scale to 10x
-    const widthInput = page.locator('[name="resize-width"]');
+    const widthInput = testId(page, 'export-width-input');
     await widthInput.fill('10');
-    await expect(page.locator('[name="resize-height"]')).toHaveValue('10');
+    await expect(testId(page, 'export-height-input')).toHaveValue('10');
 
     const downloadPromise = page.waitForEvent('download');
     await testId(page, 'png-download-button').click();
@@ -265,7 +265,7 @@ test.describe('PNG spritesheet export', () => {
     await setPiskelFromGrid(page, [["R", "G"], ["B", "T"]]);
 
     await openExportSettingsPanel(page);
-    await page.click('[data-tab-id="png"]');
+    await selectExportTab(page, 'png');
     await expect(page.locator('.export-panel-png')).toBeAttached();
 
     // Click "Open" data-uri button and capture the popup
@@ -313,7 +313,7 @@ test.describe('PNG spritesheet export', () => {
     await page.keyboard.press('n');
 
     await openExportSettingsPanel(page);
-    await page.click('[data-tab-id="png"]');
+    await selectExportTab(page, 'png');
     await expect(page.locator('.export-panel-png')).toBeAttached();
 
     // Ensure inline image is unchecked (external PNG file in ZIP)
@@ -381,7 +381,7 @@ test.describe('PNG spritesheet export', () => {
     await setPiskelFromGrid(page, [["R", "G"], ["B", "T"]]);
 
     await openExportSettingsPanel(page);
-    await page.click('[data-tab-id="png"]');
+    await selectExportTab(page, 'png');
     await expect(page.locator('.export-panel-png')).toBeAttached();
 
     // Enable inline image

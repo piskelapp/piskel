@@ -1,5 +1,5 @@
 import test, { expect } from "@playwright/test";
-import { openEditor, openExportSettingsPanel, setPiskelFromGrid, testId, clickTool, setPrimaryColor, drawAtPixel, getAddLayerButton } from "../../testutils";
+import { openEditor, openExportSettingsPanel, setPiskelFromGrid, testId, clickTool, setPrimaryColor, drawAtPixel, getAddLayerButton, selectExportTab } from "../../testutils";
 import fs from 'fs/promises';
 import AdmZip from 'adm-zip';
 import PNG from 'png-ts';
@@ -38,7 +38,7 @@ test.describe('ZIP export', () => {
     await fillFrame1(page);
 
     await openExportSettingsPanel(page);
-    await page.click('[data-tab-id="zip"]');
+    await selectExportTab(page, 'zip');
     await expect(page.locator('.export-panel-zip')).toBeAttached();
 
     const downloadPromise = page.waitForEvent('download');
@@ -89,7 +89,7 @@ test.describe('ZIP export', () => {
     await fillFrame1(page);
 
     await openExportSettingsPanel(page);
-    await page.click('[data-tab-id="zip"]');
+    await selectExportTab(page, 'zip');
     await expect(page.locator('.export-panel-zip')).toBeAttached();
 
     // Set custom prefix
@@ -139,7 +139,7 @@ test.describe('ZIP export', () => {
     await drawAtPixel(page, 0, 1);
 
     await openExportSettingsPanel(page);
-    await page.click('[data-tab-id="zip"]');
+    await selectExportTab(page, 'zip');
     await expect(page.locator('.export-panel-zip')).toBeAttached();
 
     // Enable split by layers

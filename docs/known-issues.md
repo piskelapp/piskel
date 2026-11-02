@@ -43,8 +43,6 @@ See [export.md](specs/export.md).
 
 - ZIP frame numbers start at 0 for a merged export but at 1 when split by
   layers.
-- GIF transparency and the too-many-colors warning have no automated test.
-  `misc/gif-tests/` has sprites for checking them by hand.
 - The "Selected frame" PNG is named `<title>-<n>.png.png`:
   `onDownloadSelectedFrameClick_` passes a name that already ends in
   `.png` to `downloadCanvas_`, which adds it again.

@@ -5,20 +5,20 @@
         rel="tooltip"
         data-placement="top">
       <label for="scale-input">Scale</label>
-      <input type="range" class="scale-input" name="scale-input" min="1"  max="32" step="1"/>
-      <span class="scale-text"></span>
+      <input type="range" data-test-id="export-scale-slider" class="scale-input" name="scale-input" min="1"  max="32" step="1"/>
+      <span class="scale-text" data-test-id="export-scale-text"></span>
     </div>
     <div class="settings-item export-resize">
       <span class="resize-label">Resolution</span>
-      <input type="text" class="textfield  resize-field  resize-width" autocomplete="off" name="resize-width"/>
+      <input type="text" class="textfield  resize-field  resize-width" data-test-id="export-width-input" autocomplete="off" name="resize-width"/>
       <div class="resize-label">x</div>
-      <input type="text" class="textfield  resize-field  resize-height" autocomplete="off" name="resize-height"/>
+      <input type="text" class="textfield  resize-field  resize-height" data-test-id="export-height-input" autocomplete="off" name="resize-height"/>
     </div>
     <div class="export-tabs tab-list">
-      <div class="export-tab tab-item" data-tab-id="gif">GIF</div>
-      <div class="export-tab tab-item" data-tab-id="png">PNG</div>
-      <div class="export-tab tab-item" data-tab-id="zip">Zip</div>
-      <div class="export-tab tab-item" data-tab-id="misc">Others</div>
+      <div class="export-tab tab-item" data-tab-id="gif" data-test-id="export-tab-gif">GIF</div>
+      <div class="export-tab tab-item" data-tab-id="png" data-test-id="export-tab-png">PNG</div>
+      <div class="export-tab tab-item" data-tab-id="zip" data-test-id="export-tab-zip">Zip</div>
+      <div class="export-tab tab-item" data-tab-id="misc" data-test-id="export-tab-misc">Others</div>
     </div>
     <div class="export-panel tab-content"></div>
   </div>
