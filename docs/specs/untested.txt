@@ -79,6 +79,7 @@ save-and-storage.browser-overwrite
 save-and-storage.dirty-undo
 save-and-storage.file-names
 save-and-storage.save-feedback
+save-and-storage.webkit-warning
 selection.across-frames
 selection.click-outside
 selection.clip

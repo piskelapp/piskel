@@ -1,49 +1,64 @@
 (function () {
   var ns = $.namespace("pskl.utils");
-  var ua = navigator.userAgent;
 
-  ns.UserAgent = {
-    isEdge: /edge\//i.test(ua),
-    isFirefox: /Firefox/i.test(ua),
-    isMac: /Mac/.test(ua),
-    isOpera: /OPR\//.test(ua),
-    hasChrome: /Chrome/i.test(ua),
-    hasSafari: /Safari\//.test(ua)
+  var parse = function (ua) {
+    var userAgent = {
+      isEdge: /edge\//i.test(ua),
+      isFirefox: /Firefox/i.test(ua),
+      isMac: /Mac/.test(ua),
+      isOpera: /OPR\//.test(ua),
+      hasChrome: /Chrome/i.test(ua),
+      // Other iOS browsers are built on WebKit and their user agents also
+      // contain Safari, these tokens are what tell them apart from Safari.
+      hasIOSBrowser: /CriOS|FxiOS|EdgiOS|OPiOS|OPT\//.test(ua)
+    };
+
+    userAgent.isChrome =
+      userAgent.hasChrome && !userAgent.isOpera && !userAgent.isEdge;
+    // Chromium browsers also contain AppleWebKit in their user agents.
+    userAgent.isWebkit = /AppleWebKit\//.test(ua) && !userAgent.hasChrome;
+    userAgent.isSafari =
+      userAgent.isWebkit &&
+      userAgent.isMac &&
+      /Version\/.+Safari\//.test(ua) &&
+      !userAgent.hasIOSBrowser;
+
+    userAgent.supportedUserAgents = ["isEdge", "isChrome", "isFirefox"];
+
+    userAgent.version = (function () {
+      if (userAgent.isChrome) {
+        return parseInt(/Chrome\/(\d+)/i.exec(ua)[1], 10);
+      } else if (userAgent.isFirefox) {
+        return parseInt(/Firefox\/(\d+)/i.exec(ua)[1], 10);
+      }
+    })();
+
+    userAgent.isUnsupported = function () {
+      // Check that none of the supported UAs are set to true.
+      return userAgent.supportedUserAgents.every(function (uaTest) {
+        return !userAgent[uaTest];
+      });
+    };
+
+    userAgent.getDisplayName = function () {
+      if (userAgent.isChrome) {
+        return "Chrome";
+      } else if (userAgent.isFirefox) {
+        return "Firefox";
+      } else if (userAgent.isSafari) {
+        return "Safari";
+      } else if (userAgent.isOpera) {
+        return "Opera";
+      } else if (userAgent.isWebkit) {
+        return "WebKit";
+      } else {
+        return ua;
+      }
+    };
+
+    return userAgent;
   };
 
-  ns.UserAgent.isChrome =
-    ns.UserAgent.hasChrome && !ns.UserAgent.isOpera && !ns.UserAgent.isEdge;
-  ns.UserAgent.isSafari =
-    ns.UserAgent.hasSafari && !ns.UserAgent.isOpera && !ns.UserAgent.isEdge;
-
-  ns.UserAgent.supportedUserAgents = ["isEdge", "isChrome", "isFirefox"];
-
-  ns.UserAgent.version = (function () {
-    if (pskl.utils.UserAgent.isChrome) {
-      return parseInt(/Chrome\/(\d+)/i.exec(ua)[1], 10);
-    } else if (pskl.utils.UserAgent.isFirefox) {
-      return parseInt(/Firefox\/(\d+)/i.exec(ua)[1], 10);
-    }
-  })();
-
-  ns.UserAgent.isUnsupported = function () {
-    // Check that none of the supported UAs are set to true.
-    return ns.UserAgent.supportedUserAgents.every(function (uaTest) {
-      return !ns.UserAgent[uaTest];
-    });
-  };
-
-  ns.UserAgent.getDisplayName = function () {
-    if (ns.UserAgent.isChrome) {
-      return "Chrome";
-    } else if (ns.UserAgent.isFirefox) {
-      return "Firefox";
-    } else if (ns.UserAgent.isSafari) {
-      return "Safari";
-    } else if (ns.UserAgent.isOpera) {
-      return "Opera";
-    } else {
-      return ua;
-    }
-  };
+  ns.UserAgent = parse(navigator.userAgent);
+  ns.UserAgent.parse = parse;
 })();

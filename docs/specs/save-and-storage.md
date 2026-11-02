@@ -27,6 +27,10 @@ closed tabs, and never lose changes silently.
 - `save-and-storage.save-feedback` A save shows a confirmation message, or
   an error message if it fails. A successful save closes the drawer; while
   a save runs, the save buttons are disabled.
+- `save-and-storage.webkit-warning` In WebKit-based browsers, a message
+  under the **Save in Browser** button warns that the browser deletes
+  local storage, including saved artwork, after 7 days without using
+  Piskel.
 - `save-and-storage.browse-local` **Browse local saves** (Import drawer)
   lists saved sprites with their date, newest first.
 - `save-and-storage.browse-local-load` A listed sprite can be loaded,

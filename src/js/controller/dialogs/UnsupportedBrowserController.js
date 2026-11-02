@@ -12,5 +12,9 @@
     this.superclass.init.call(this);
     var currentUserAgentElement = document.querySelector("#current-user-agent");
     currentUserAgentElement.innerText = pskl.utils.UserAgent.getDisplayName();
+    var webkitWarningElement = document.querySelector(
+      "#webkit-storage-warning"
+    );
+    webkitWarningElement.hidden = !pskl.utils.UserAgent.isWebkit;
   };
 })();
