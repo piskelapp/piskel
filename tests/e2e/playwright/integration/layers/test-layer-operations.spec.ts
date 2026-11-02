@@ -22,14 +22,14 @@ import {
 
 test.describe('Layer operations', () => {
 
-  test('should start with one layer', async ({ page }) => {
+  test('should start with one layer', { tag: ['@layers.at-least-one'] }, async ({ page }) => {
     await openEditor(page);
     expect(await getCurrentPiskelLayerCount(page)).toBe(1);
     const layerItems = getLayerItems(page);
     await expect(layerItems).toHaveCount(1);
   });
 
-  test('should add a new layer', async ({ page }) => {
+  test('should add a new layer', { tag: ['@layers.add'] }, async ({ page }) => {
     await openEditor(page);
 
     await getAddLayerButton(page).click();
@@ -39,7 +39,7 @@ test.describe('Layer operations', () => {
     await expect(layerItems).toHaveCount(2);
   });
 
-  test('should select a layer by clicking its name', async ({ page }) => {
+  test('should select a layer by clicking its name', { tag: ['@layers.select'] }, async ({ page }) => {
     await openEditor(page);
 
     // Add a second layer
@@ -57,7 +57,7 @@ test.describe('Layer operations', () => {
     expect(await getCurrentLayerIndex(page)).toBe(0);
   });
 
-  test('should delete a layer', async ({ page }) => {
+  test('should delete a layer', { tag: ['@layers.delete'] }, async ({ page }) => {
     await openEditor(page);
 
     // Add a second layer
@@ -70,7 +70,7 @@ test.describe('Layer operations', () => {
     expect(await getCurrentPiskelLayerCount(page)).toBe(1);
   });
 
-  test('should rename a layer via edit button', async ({ page }) => {
+  test('should rename a layer via edit button', { tag: ['@layers.rename'] }, async ({ page }) => {
     await openEditor(page);
 
     // Click the edit/rename button
@@ -89,7 +89,7 @@ test.describe('Layer operations', () => {
     expect(layerName).toBe('My Custom Layer');
   });
 
-  test('should rename a layer via double-click', async ({ page }) => {
+  test('should rename a layer via double-click', { tag: ['@layers.rename'] }, async ({ page }) => {
     await openEditor(page);
 
     // Double-click on the layer name to start renaming
@@ -107,7 +107,7 @@ test.describe('Layer operations', () => {
     expect(newName).toBe('Renamed Layer');
   });
 
-  test('should cancel rename with Escape', async ({ page }) => {
+  test('should cancel rename with Escape', { tag: ['@layers.rename-cancel'] }, async ({ page }) => {
     await openEditor(page);
 
     const originalName = await getLayerName(page, 0);
@@ -125,7 +125,7 @@ test.describe('Layer operations', () => {
     expect(currentName).toBe(originalName);
   });
 
-  test('should move layer up', async ({ page }) => {
+  test('should move layer up', { tag: ['@layers.move'] }, async ({ page }) => {
     await openEditor(page);
 
     // Create two layers. After adding, layer 1 is selected (the new one on top).
@@ -148,7 +148,7 @@ test.describe('Layer operations', () => {
     expect(movedLayerName).toBe(bottomLayerName);
   });
 
-  test('should move layer down', async ({ page }) => {
+  test('should move layer down', { tag: ['@layers.move'] }, async ({ page }) => {
     await openEditor(page);
 
     // Create two layers. After adding, layer 1 is selected (top).
@@ -166,7 +166,7 @@ test.describe('Layer operations', () => {
     expect(movedLayerName).toBe(topLayerName);
   });
 
-  test('should merge layer down', async ({ page }) => {
+  test('should merge layer down', { tag: ['@layers.merge-down'] }, async ({ page }) => {
     await openEditor(page);
 
     // Draw on layer 0
@@ -193,14 +193,14 @@ test.describe('Layer operations', () => {
     expect(pixel11).toBe(colorToInt('#00FF00'));
   });
 
-  test('should disable delete button when only one layer', async ({ page }) => {
+  test('should disable delete button when only one layer', { tag: ['@layers.delete-disabled'] }, async ({ page }) => {
     await openEditor(page);
     expect(await getCurrentPiskelLayerCount(page)).toBe(1);
 
     await expect(getDeleteLayerButton(page)).toBeDisabled();
   });
 
-  test('should disable move-up when layer is at the top', async ({ page }) => {
+  test('should disable move-up when layer is at the top', { tag: ['@layers.move-disabled'] }, async ({ page }) => {
     await openEditor(page);
 
     // Add a second layer - the new layer (top) is selected
@@ -210,7 +210,7 @@ test.describe('Layer operations', () => {
     await expect(getMoveLayerUpButton(page)).toBeDisabled();
   });
 
-  test('should disable move-down when layer is at the bottom', async ({ page }) => {
+  test('should disable move-down when layer is at the bottom', { tag: ['@layers.move-disabled'] }, async ({ page }) => {
     await openEditor(page);
 
     // Add a second layer
@@ -224,7 +224,7 @@ test.describe('Layer operations', () => {
     await expect(getMoveLayerDownButton(page)).toBeDisabled();
   });
 
-  test('should have default opacity of 1 (gold color)', async ({ page }) => {
+  test('should have default opacity of 1 (gold color)', { tag: ['@layers.opacity', '@layers.opacity-indicator'] }, async ({ page }) => {
     await openEditor(page);
 
     const opacityEl = getAllLayerOpacityButtons(page).first();
@@ -237,7 +237,7 @@ test.describe('Layer operations', () => {
     expect(color).toBe('rgb(255, 215, 0)');
   });
 
-  test('should change layer opacity via prompt', async ({ page }) => {
+  test('should change layer opacity via prompt', { tag: ['@layers.opacity'] }, async ({ page }) => {
     await openEditor(page);
 
     // Draw on layer 0
@@ -276,7 +276,7 @@ test.describe('Layer operations', () => {
     expect(before.equals(after)).toBe(false);
   });
 
-  test('should show gray color for opacity 0', async ({ page }) => {
+  test('should show gray color for opacity 0', { tag: ['@layers.opacity-indicator'] }, async ({ page }) => {
     await openEditor(page);
 
     // Set opacity to 0
@@ -288,7 +288,7 @@ test.describe('Layer operations', () => {
     expect(color).toBe('rgb(150, 150, 150)');
   });
 
-  test('should cancel opacity change when dismissing prompt', async ({ page }) => {
+  test('should cancel opacity change when dismissing prompt', { tag: ['@layers.opacity'] }, async ({ page }) => {
     await openEditor(page);
 
     // Dismiss the prompt
@@ -301,7 +301,7 @@ test.describe('Layer operations', () => {
     expect(color).toBe('rgb(255, 215, 0)');
   });
 
-  test('should toggle layer preview with eye icon', async ({ page }) => {
+  test('should toggle layer preview with eye icon', { tag: ['@layers.preview'] }, async ({ page }) => {
     await openEditor(page);
 
     // Draw on layer 0
@@ -347,7 +347,7 @@ test.describe('Layer operations', () => {
     expect(before.equals(afterRestore)).toBe(true);
   });
 
-  test('should toggle layer preview with Alt+L shortcut', async ({ page }) => {
+  test('should toggle layer preview with Alt+L shortcut', { tag: ['@layers.preview'] }, async ({ page }) => {
     await openEditor(page);
 
     const toggle = testId(page, 'layer-preview-toggle');

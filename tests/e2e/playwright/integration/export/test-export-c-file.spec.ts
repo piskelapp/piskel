@@ -94,7 +94,7 @@ function expectCFileStructure(data: CFileData, spriteName: string, frameCount: n
 
 test.describe('C file export', () => {
 
-  test('should export a valid C file with correct structure and pixels', async ({ page }) => {
+  test('should export a valid C file with correct structure and pixels', { tag: ['@export.c-file'] }, async ({ page }) => {
     await openEditor(page);
     // R G / B T
     await setPiskelFromGrid(page, [["R", "G"], ["B", "T"]]);
@@ -125,7 +125,7 @@ test.describe('C file export', () => {
     ]);
   });
 
-  test('should export C file with multiple frames', async ({ page }) => {
+  test('should export C file with multiple frames', { tag: ['@export.c-file'] }, async ({ page }) => {
     await openEditor(page);
     // Frame 0: R T / T R
     await setPiskelFromGrid(page, [["R", "T"], ["T", "R"]]);

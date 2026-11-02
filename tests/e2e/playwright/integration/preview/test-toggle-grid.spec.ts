@@ -12,7 +12,7 @@ const isGridEnabled = async(page: Page): Promise<boolean> => {
   })
 };
 
-test('Test toggling the grid using the animated preview toggle grid icon', async ({ page }) => {
+test('Test toggling the grid using the animated preview toggle grid icon', { tag: ['@preview.toggle-grid', '@canvas.grid'] }, async ({ page }) => {
   await openEditor(page);
 
   expect(await isGridEnabled(page)).toBe(false);

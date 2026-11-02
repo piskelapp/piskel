@@ -33,7 +33,7 @@ test.describe('Resize panel — anchor origins', () => {
 
   // All tests: start with 2x2 diagonal pattern, resize to 4x4 with different anchors
 
-  test('TOP anchor should center content at top', async ({ page }) => {
+  test('TOP anchor should center content at top', { tag: ['@settings.resize-anchor'] }, async ({ page }) => {
     await openEditor(page);
     await setPiskelFromGrid(page, [['B', 'T'], ['T', 'B']]);
 
@@ -46,7 +46,7 @@ test.describe('Resize panel — anchor origins', () => {
        ['T', 'T', 'T', 'T']], 0, 0)).toBe(true);
   });
 
-  test('TOPRIGHT anchor should place content at top-right', async ({ page }) => {
+  test('TOPRIGHT anchor should place content at top-right', { tag: ['@settings.resize-anchor'] }, async ({ page }) => {
     await openEditor(page);
     await setPiskelFromGrid(page, [['B', 'T'], ['T', 'B']]);
 
@@ -59,7 +59,7 @@ test.describe('Resize panel — anchor origins', () => {
        ['T', 'T', 'T', 'T']], 0, 0)).toBe(true);
   });
 
-  test('MIDDLELEFT anchor should place content at middle-left', async ({ page }) => {
+  test('MIDDLELEFT anchor should place content at middle-left', { tag: ['@settings.resize-anchor'] }, async ({ page }) => {
     await openEditor(page);
     await setPiskelFromGrid(page, [['B', 'T'], ['T', 'B']]);
 
@@ -72,7 +72,7 @@ test.describe('Resize panel — anchor origins', () => {
        ['T', 'T', 'T', 'T']], 0, 0)).toBe(true);
   });
 
-  test('MIDDLE anchor should center content', async ({ page }) => {
+  test('MIDDLE anchor should center content', { tag: ['@settings.resize-anchor'] }, async ({ page }) => {
     await openEditor(page);
     await setPiskelFromGrid(page, [['B', 'T'], ['T', 'B']]);
 
@@ -85,7 +85,7 @@ test.describe('Resize panel — anchor origins', () => {
        ['T', 'T', 'T', 'T']], 0, 0)).toBe(true);
   });
 
-  test('MIDDLERIGHT anchor should place content at middle-right', async ({ page }) => {
+  test('MIDDLERIGHT anchor should place content at middle-right', { tag: ['@settings.resize-anchor'] }, async ({ page }) => {
     await openEditor(page);
     await setPiskelFromGrid(page, [['B', 'T'], ['T', 'B']]);
 
@@ -98,7 +98,7 @@ test.describe('Resize panel — anchor origins', () => {
        ['T', 'T', 'T', 'T']], 0, 0)).toBe(true);
   });
 
-  test('BOTTOMLEFT anchor should place content at bottom-left', async ({ page }) => {
+  test('BOTTOMLEFT anchor should place content at bottom-left', { tag: ['@settings.resize-anchor'] }, async ({ page }) => {
     await openEditor(page);
     await setPiskelFromGrid(page, [['B', 'T'], ['T', 'B']]);
 
@@ -111,7 +111,7 @@ test.describe('Resize panel — anchor origins', () => {
        ['T', 'B', 'T', 'T']], 0, 0)).toBe(true);
   });
 
-  test('BOTTOM anchor should center content at bottom', async ({ page }) => {
+  test('BOTTOM anchor should center content at bottom', { tag: ['@settings.resize-anchor'] }, async ({ page }) => {
     await openEditor(page);
     await setPiskelFromGrid(page, [['B', 'T'], ['T', 'B']]);
 
@@ -127,7 +127,7 @@ test.describe('Resize panel — anchor origins', () => {
 
 test.describe('Resize panel — ratio and content checkboxes', () => {
 
-  test('maintain ratio should sync width/height for non-square canvas', async ({ page }) => {
+  test('maintain ratio should sync width/height for non-square canvas', { tag: ['@settings.resize-ratio'] }, async ({ page }) => {
     await openEditor(page);
     // Start with a 4x2 canvas
     await setPiskelFromGrid(page, [
@@ -153,7 +153,7 @@ test.describe('Resize panel — ratio and content checkboxes', () => {
        ['T', 'T', 'T', 'T', 'T', 'T', 'T', 'T']], 0, 0)).toBe(true);
   });
 
-  test('unchecking ratio should allow independent width/height', async ({ page }) => {
+  test('unchecking ratio should allow independent width/height', { tag: ['@settings.resize-ratio'] }, async ({ page }) => {
     await openEditor(page);
     await setPiskelFromGrid(page, [['B', 'T'], ['T', 'B']]);
 
@@ -174,7 +174,7 @@ test.describe('Resize panel — ratio and content checkboxes', () => {
        ['T', 'T', 'T', 'T', 'T', 'T']], 0, 0)).toBe(true);
   });
 
-  test('resize content checkbox should disable anchor widget', async ({ page }) => {
+  test('resize content checkbox should disable anchor widget', { tag: ['@settings.resize-anchor'] }, async ({ page }) => {
     await openEditor(page);
     await openResizeSettingsPanel(page);
 
@@ -193,7 +193,7 @@ test.describe('Resize panel — ratio and content checkboxes', () => {
     await expect(anchorWrapper).not.toHaveClass(/disabled/);
   });
 
-  test('resize content should scale pixels proportionally', async ({ page }) => {
+  test('resize content should scale pixels proportionally', { tag: ['@settings.resize-content'] }, async ({ page }) => {
     await openEditor(page);
     await setPiskelFromGrid(page, [['R', 'T'], ['T', 'R']]);
 
@@ -212,7 +212,7 @@ test.describe('Resize panel — ratio and content checkboxes', () => {
        ['T', 'T', 'R', 'R']], 0, 0)).toBe(true);
   });
 
-  test('shrinking canvas should clip content', async ({ page }) => {
+  test('shrinking canvas should clip content', { tag: ['@settings.resize'] }, async ({ page }) => {
     await openEditor(page);
     await setPiskelFromGrid(page, [
       ['R', 'G', 'T', 'T'],
@@ -237,7 +237,7 @@ test.describe('Resize panel — ratio and content checkboxes', () => {
        ['B', 'R']], 0, 0)).toBe(true);
   });
 
-  test('changing default size should persist after reload', async ({ page }) => {
+  test('changing default size should persist after reload', { tag: ['@settings.default-size'] }, async ({ page }) => {
     await openEditor(page);
     await openResizeSettingsPanel(page);
 

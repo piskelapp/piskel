@@ -1,1 +1,2 @@
 npm run lint
+npm run spec-check -- --quiet

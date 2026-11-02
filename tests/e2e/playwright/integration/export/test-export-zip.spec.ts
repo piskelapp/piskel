@@ -28,7 +28,7 @@ async function fillFrame1(page: import('@playwright/test').Page) {
 
 test.describe('ZIP export', () => {
 
-  test('should export ZIP with one PNG per frame and correct pixels', async ({ page }) => {
+  test('should export ZIP with one PNG per frame and correct pixels', { tag: ['@export.zip'] }, async ({ page }) => {
     await openEditor(page);
     // Frame 0: R G / B T
     await setPiskelFromGrid(page, [["R", "G"], ["B", "T"]]);
@@ -79,7 +79,7 @@ test.describe('ZIP export', () => {
     expect(rgbaAt(f1px, 2, 1, 1)).toEqual(G);
   });
 
-  test('should export ZIP with custom prefix', async ({ page }) => {
+  test('should export ZIP with custom prefix', { tag: ['@export.zip'] }, async ({ page }) => {
     await openEditor(page);
     // Frame 0: R T / T R
     await setPiskelFromGrid(page, [["R", "T"], ["T", "R"]]);
@@ -125,7 +125,7 @@ test.describe('ZIP export', () => {
     expect(rgbaAt(f1px, 2, 1, 1)).toEqual(G);
   });
 
-  test('should export ZIP split by layers with correct content', async ({ page }) => {
+  test('should export ZIP split by layers with correct content', { tag: ['@export.zip-split-layers'] }, async ({ page }) => {
     await openEditor(page);
     // Layer 0: R T / T R
     await setPiskelFromGrid(page, [["R", "T"], ["T", "R"]]);

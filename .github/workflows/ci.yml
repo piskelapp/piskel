@@ -29,6 +29,7 @@ jobs:
           node-version: '20'
       - run: npm ci
       - run: npx biome ci src/
+      - run: npm run spec-check
 
   e2e:
     needs: lint
