@@ -33,6 +33,7 @@ editor.new-sprite
 editor.notifications
 editor.progress-bar
 editor.unsupported-browser
+export.content-other-formats
 import.animated-gif
 import.combine-selection
 import.drop-large-image
@@ -78,3 +79,4 @@ selection.paste-image
 selection.paste-other-tab
 selection.paste-text
 selection.undo
+undo-redo.load-step-browser
