@@ -466,6 +466,21 @@ export const readPixelGrid = async (
 };
 
 /**
+ * Read a frame as one string per row, to compare with an ASCII art grid.
+ * "X" is a colored pixel and "." a transparent one, see readPixelGrid.
+ */
+export const readPixelRows = async (
+  page: Page,
+  width: number,
+  height: number,
+  layerIndex = 0,
+  frameIndex = 0
+): Promise<string[]> => {
+  const grid = await readPixelGrid(page, width, height, layerIndex, frameIndex);
+  return grid.map((row) => row.join(""));
+};
+
+/**
  * Drag from sprite pixel (x1,y1) to (x2,y2) via real mouse events.
  * Waits for any pending relayout before computing coordinates (same as drawAtPixel).
  */

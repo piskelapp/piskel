@@ -90,10 +90,6 @@ selection.paste-image
 selection.paste-other-tab
 selection.paste-text
 selection.undo
-transformations.crop-noop
-transformations.rotate-non-square
-transformations.show-more-saved
-transformations.undo
 undo-redo.cap
 undo-redo.discard-redo
 undo-redo.load-step
