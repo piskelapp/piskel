@@ -8,13 +8,20 @@
     isMac: /Mac/.test(ua),
     isOpera: /OPR\//.test(ua),
     hasChrome: /Chrome/i.test(ua),
-    hasSafari: /Safari\//.test(ua)
+    // Other iOS browsers are built on WebKit and their user agents also
+    // contain Safari, these tokens are what tell them apart from Safari.
+    hasIOSBrowser: /CriOS|FxiOS|EdgiOS|OPiOS|OPT\//.test(ua)
   };
 
   ns.UserAgent.isChrome =
     ns.UserAgent.hasChrome && !ns.UserAgent.isOpera && !ns.UserAgent.isEdge;
+  // Chromium browsers also contain AppleWebKit in their user agents.
+  ns.UserAgent.isWebkit = /AppleWebKit\//.test(ua) && !ns.UserAgent.hasChrome;
   ns.UserAgent.isSafari =
-    ns.UserAgent.hasSafari && !ns.UserAgent.isOpera && !ns.UserAgent.isEdge;
+    ns.UserAgent.isWebkit &&
+    ns.UserAgent.isMac &&
+    /Version\/.+Safari\//.test(ua) &&
+    !ns.UserAgent.hasIOSBrowser;
 
   ns.UserAgent.supportedUserAgents = ["isEdge", "isChrome", "isFirefox"];
 
@@ -42,6 +49,8 @@
       return "Safari";
     } else if (ns.UserAgent.isOpera) {
       return "Opera";
+    } else if (ns.UserAgent.isWebkit) {
+      return "WebKit";
     } else {
       return ua;
     }

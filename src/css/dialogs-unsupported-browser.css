@@ -4,11 +4,11 @@
 
 #dialog-container.unsupported-browser {
   width: 600px;
-  height: 260px;
+  height: 310px;
   top: 50%;
   left: 50%;
   position: absolute;
-  margin-top: -130px;
+  margin-top: -155px;
   margin-left: -300px;
 }
 

@@ -18,7 +18,9 @@ progress bars.
   FPS. The pen tool is selected, and the colors are black and transparent.
 - `editor.unsupported-browser` In browsers other than Chrome, Firefox and
   Edge, a dialog at startup warns that the browser is not supported and
-  names the detected browser.
+  names the detected browser. In WebKit-based browsers, it also explains
+  that the browser deletes local storage, including artwork saved locally,
+  after 7 days without using Piskel.
 
 ### Dialogs
 
