@@ -38,12 +38,6 @@ export.free-scale
 export.gif-transparency
 export.gif-warning
 export.saved
-frames.all-layers
-frames.delete-selection
-frames.overflow
-frames.tiles
-frames.visibility-saved
-frames.visibility-sync
 import.animated-gif
 import.combine-selection
 import.drop-large-image

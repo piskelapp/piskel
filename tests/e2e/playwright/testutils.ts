@@ -1,5 +1,7 @@
 import { Page, expect } from "@playwright/test";
+import fs from "fs/promises";
 import os from "os";
+import nodePath from "path";
 
 /** The modifier key for keyboard shortcuts: Meta on macOS, Control elsewhere. */
 export const CMD_OR_CTRL = os.platform() === "darwin" ? "Meta" : "Control";
@@ -814,6 +816,149 @@ export const selectFrame = async (
 export const selectBottomLayer = async (page: Page): Promise<void> => {
   await getLayerItems(page).last().click();
   await assertCurrentLayer(page, 0);
+};
+
+/** Delete a frame with the delete action of its tile */
+export const deleteFrame = async (
+  page: Page,
+  frameIndex: number
+): Promise<void> => {
+  await getFrameTiles(page).nth(frameIndex).hover();
+  await testId(page, "delete-frame-button").nth(frameIndex).click();
+};
+
+/** Click the number of a frame, which shows or hides it in the preview */
+export const toggleFrameVisibility = async (
+  page: Page,
+  frameIndex: number
+): Promise<void> => {
+  await testId(page, "toggle-frame-button").nth(frameIndex).click();
+};
+
+/** Check which frames are hidden, waiting for the frames list to update */
+export const assertHiddenFrames = async (
+  page: Page,
+  frameIndexes: number[]
+): Promise<void> => {
+  await expect
+    .poll(() =>
+      testId(page, "toggle-frame-button").evaluateAll((buttons) =>
+        buttons.flatMap((button, index) =>
+          button.classList.contains("toggled") ? [] : [index]
+        )
+      )
+    )
+    .toEqual(frameIndexes);
+};
+
+/** Check the numbers shown on the frame tiles, from top to bottom */
+export const assertFrameNumbers = async (
+  page: Page,
+  numbers: string[]
+): Promise<void> => {
+  await expect(testId(page, "toggle-frame-button")).toHaveText(numbers);
+};
+
+/**
+ * Check the thumbnail of a frame tile against an ASCII art grid, waiting for
+ * the frames list to update. "X" is a colored pixel, "." a transparent one.
+ */
+export const assertFrameThumbnail = async (
+  page: Page,
+  frameIndex: number,
+  rows: string[]
+): Promise<void> => {
+  const canvas = getFrameTiles(page).nth(frameIndex).locator("canvas");
+  await expect
+    .poll(() =>
+      canvas.evaluate(
+        (canvas: HTMLCanvasElement, { width, height }) => {
+          const context = canvas.getContext("2d")!;
+          const cellWidth = canvas.width / width;
+          const cellHeight = canvas.height / height;
+          return Array.from({ length: height }, (_, row) =>
+            Array.from({ length: width }, (_, col) => {
+              const alpha = context.getImageData(
+                (col + 0.5) * cellWidth,
+                (row + 0.5) * cellHeight,
+                1,
+                1
+              ).data[3];
+              return alpha === 0 ? "." : "X";
+            }).join("")
+          );
+        },
+        { width: rows[0].length, height: rows.length }
+      )
+    )
+    .toEqual(rows);
+};
+
+/** Download the sprite as a .piskel file and return the path of the file */
+export const downloadPiskelFile = async (page: Page): Promise<string> => {
+  await openSaveSettingsPanel(page);
+  const downloadPromise = page.waitForEvent("download");
+  await testId(page, "save-file-download-button").click();
+  const download = await downloadPromise;
+  const downloadPath = await download.path();
+  const piskelPath = nodePath.join(
+    nodePath.dirname(downloadPath),
+    "sprite.piskel"
+  );
+  await fs.copyFile(downloadPath, piskelPath);
+  // A successful save closes the drawer
+  await waitFor(async () => !(await isSettingsDrawerExpanded(page)));
+  return piskelPath;
+};
+
+/** Replace the sprite with a .piskel file, using the import wizard */
+export const importPiskelFile = async (
+  page: Page,
+  piskelPath: string
+): Promise<void> => {
+  await openImportSettingsPanel(page);
+  const fileChooserPromise = page.waitForEvent("filechooser");
+  await testId(page, "import-piskel-button").click();
+  const fileChooser = await fileChooserPromise;
+  await fileChooser.setFiles(piskelPath);
+  await page.waitForSelector(".current-step .import-mode", {
+    state: "attached"
+  });
+  // Accept the confirmation to replace the current sprite
+  page.once("dialog", (dialog) => dialog.accept());
+  await page.click(".import-mode-replace-button");
+  await page.waitForSelector("#dialog-container-wrapper:not(.show)", {
+    state: "attached"
+  });
+};
+
+export const PIXEL_IN_FIRST_COLUMN = ["X...", "....", "....", "...."];
+export const PIXEL_IN_SECOND_COLUMN = [".X..", "....", "....", "...."];
+export const PIXEL_IN_THIRD_COLUMN = ["..X.", "....", "....", "...."];
+
+/** Create a 4x4 sprite with three frames, each with a pixel in a different column */
+export const createThreeFrames = async (page: Page): Promise<void> => {
+  await setPiskelFromGrid(
+    page,
+    gridFromRows(["....", "....", "....", "...."])
+  );
+  await clickTool(page, "tool-pen");
+
+  // Draw in the first frame.
+  await drawAtPixel(page, 0, 0);
+  expect(await readPixelRows(page, 4, 4, 0, 0)).toEqual(PIXEL_IN_FIRST_COLUMN);
+
+  // Add a second frame and draw in it.
+  await getAddFrameButton(page).click();
+  await assertFrameCount(page, 2);
+  await drawAtPixel(page, 1, 0);
+  expect(await readPixelRows(page, 4, 4, 0, 1)).toEqual(PIXEL_IN_SECOND_COLUMN);
+
+  // Add a third frame and draw in it.
+  await getAddFrameButton(page).click();
+  await assertFrameCount(page, 3);
+  await drawAtPixel(page, 2, 0);
+  expect(await readPixelRows(page, 4, 4, 0, 2)).toEqual(PIXEL_IN_THIRD_COLUMN);
 };
 
 /**

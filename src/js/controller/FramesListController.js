@@ -345,6 +345,7 @@
     tileCount.setAttribute("data-tile-number", tileNumber);
     tileCount.setAttribute("data-tile-action", ACTION.TOGGLE);
     tileCount.className = "tile-overlay tile-count toggle-frame-action";
+    tileCount.setAttribute("data-test-id", "toggle-frame-button");
     tileCount.innerHTML = tileNumber + 1;
     previewTileRoot.appendChild(tileCount);
 
