@@ -28,15 +28,4 @@ save-and-storage.browser-overwrite
 save-and-storage.dirty-undo
 save-and-storage.file-names
 save-and-storage.save-feedback
-selection.across-frames
-selection.click-outside
-selection.clip
-selection.dismiss-on-tool-change
-selection.move-cursor
-selection.move-outline
-selection.paste-empty
-selection.paste-image
-selection.paste-other-tab
-selection.paste-text
-selection.undo
 undo-redo.load-step-browser

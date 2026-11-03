@@ -51,7 +51,7 @@ await waitForGrid(page, 4, 4, EMPTY, { frameIndex: 1 });
 
 - Act and read through the UI, as a user would, so tests survive internal refactors.
 - Find elements with `data-test-id` and the `testId(page, 'id')` helper. Add the attribute to the template or controller when it's missing, so tests don't depend on styling classes. When the work must not change the app, use the existing class in a `testutils.ts` helper instead, as `setLayerPreviewOpacity` and `assertOtherLayerOpacityOnCanvas` do.
-- Avoid `window.pskl` internals. The accepted bridges are `setPiskelFromGrid` for fixtures, and `getPixelColor`, `readPixelGrid`, `readPixelRows`, `drawAtPixel` and `assertOtherLayerOpacityOnCanvas`, which have no DOM alternative.
+- Avoid `window.pskl` internals. The accepted bridges are `setPiskelFromGrid` for fixtures, and `getPixelColor`, `readPixelGrid`, `readPixelRows`, `assertColorRows`, `drawAtPixel` and `assertOtherLayerOpacityOnCanvas`, which have no DOM alternative.
 - When a test uses modifier keys, add a comment saying what each one does, because the keys alone don't tell the reader which behavior is being tested:
 
   ```ts
@@ -61,7 +61,7 @@ await waitForGrid(page, 4, 4, EMPTY, { frameIndex: 1 });
 
 ## Asserting
 
-- Show pixels as ASCII art and compare whole frames, because a reader can see the expected result and stray pixels fail the test:
+- When testing the rendering in the canvas or any 2-dimensional artifact (e.g. the shape of the selection), use a matrix (2D array) or a list of strings instead of querying each position line by line, because the reader can visualize the content being asserted and stray pixels fail the test:
 
   ```ts
   expect(await readPixelRows(page, 4, 4)).toEqual([
@@ -73,7 +73,7 @@ await waitForGrid(page, 4, 4, EMPTY, { frameIndex: 1 });
   ```
 
 - Use the smallest sprite that shows the behavior, so the grids stay short.
-- `readPixelRows` only tells colored from transparent. When the color matters, assert the exact value with `getPixelColor` and `colorToInt('#FF0000')` or `TRANSPARENT`, never just "not transparent".
+- `readPixelRows` only tells colored from transparent. When the color matters, use `assertColorRows`, whose grids show each color as a letter, never just "not transparent". Use `getPixelColor` and `colorToInt('#FF0000')` or `TRANSPARENT` only for a color without a letter.
 - Work out expected values from the spec or by hand. Output copied from a run only proves the code does what it does.
 - Assert the frame after each drawing action in the setup, as an ASCII grid when possible, so a broken setup fails at the step that caused it rather than later at the behavior being tested, and the reader can see the state at each step:
 
@@ -119,6 +119,12 @@ await waitForGrid(page, 4, 4, EMPTY, { frameIndex: 1 });
 
 - Before temporarily breaking the app to check that a test can fail, make sure nothing is already running on port 9001. Playwright reuses that server, so it can serve an old or broken build and the results won't count.
 - Report the real result, including any test you didn't run.
+
+## Mutation testing
+
+After writing tests for a claim, break each behavior it covers, one at a time, and confirm a test fails. Restore `src/` after each one and check that `git diff` is empty. If a mutation isn't caught, either strengthen the test or explain why the mutation couldn't have failed it.
+
+Report progress to the user every 5 mutations done, because mutation checks are long runs and the user wants to follow them. When they run in the background, watch their log; when they run in a subagent, have it notify the main agent every 5 mutations.
 
 ## Adding rules
 

@@ -1114,6 +1114,41 @@ const getColorLetter = (r: number, g: number, b: number): string => {
   return letters[`${r},${g},${b}`] ?? "?";
 };
 
+/**
+ * Check the colors of the first frame of the first layer against an ASCII art
+ * grid, with the letters of getColorLetter.
+ */
+export const assertColorRows = async (
+  page: Page,
+  rows: string[]
+): Promise<void> => {
+  const readColorRows = async () => {
+    const colors = await page.evaluate(
+      ({ width, height }) => {
+        const frame = window.pskl.app.piskelController
+          .getPiskel()
+          .getLayerAt(0)
+          .getFrameAt(0);
+        return Array.from({ length: height }, (_, y) =>
+          Array.from({ length: width }, (_, x) => frame.getPixel(x, y))
+        );
+      },
+      { width: rows[0].length, height: rows.length }
+    );
+    // Pixels are stored as ABGR integers.
+    return colors.map((row) =>
+      row
+        .map((color) =>
+          color >>> 24 === 0
+            ? "."
+            : getColorLetter(color & 255, (color >>> 8) & 255, (color >>> 16) & 255)
+        )
+        .join("")
+    );
+  };
+  await expect.poll(readColorRows).toEqual(rows);
+};
+
 const saveDownload = async (page: Page, click: () => Promise<void>) => {
   const downloadPromise = page.waitForEvent("download");
   await click();
@@ -2372,6 +2407,113 @@ export const clickTransparentSwatchOfPrimaryColor = async (
 export const importBrokenPiskelFile = async (page: Page): Promise<void> => {
   await browsePiskelFile(page, BROKEN_PISKEL_FILE);
 };
+
+/** Load a sprite from ASCII art rows, and pick the rectangle selection tool */
+export const setSpriteWithRectangleSelect = async (
+  page: Page,
+  rows: string[]
+): Promise<void> => {
+  await setPiskelFromGrid(page, gridFromRows(rows));
+  await waitForGrid(page, rows[0].length, rows.length, rows);
+  await clickTool(page, "tool-rectangle-select");
+};
+
+/** Open the editor with a sprite from ASCII art rows, and the rectangle selection tool */
+export const openEditorWithRectangleSelect = async (
+  page: Page,
+  rows: string[]
+): Promise<void> => {
+  await openEditor(page);
+  await setSpriteWithRectangleSelect(page, rows);
+};
+
+/** Hold shift and drag the selection, to move its content along with it */
+export const moveSelectionContent = async (
+  page: Page,
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number
+): Promise<void> => {
+  await page.keyboard.down("Shift");
+  await dragBetweenPixels(page, x1, y1, x2, y2);
+  await page.keyboard.up("Shift");
+};
+
+/** Move the mouse over a pixel of the sprite */
+export const hoverPixel = async (
+  page: Page,
+  col: number,
+  row: number
+): Promise<void> => {
+  const { x, y } = await getPixelScreenPosition(page, col, row);
+  await page.mouse.move(x, y);
+};
+
+/** Check the cursor shown while the mouse is over the canvas */
+export const assertCanvasCursor = async (
+  page: Page,
+  cursor: string | RegExp
+): Promise<void> => {
+  await expect(page.locator(".drawing-canvas-container")).toHaveCSS(
+    "cursor",
+    cursor
+  );
+};
+
+// The clipboard helpers below send the browser's clipboard events with their own
+// data, as the real clipboard can carry over between tests. The data copied
+// by a test is returned, so that the test can paste it, even in another tab.
+
+/** Send a copy or cut event, and return the text the app puts in the clipboard */
+const sendCopyOrCutEvent = (page: Page, type: "copy" | "cut"): Promise<string> =>
+  page.evaluate((type) => {
+    const clipboardData = new DataTransfer();
+    window.dispatchEvent(
+      new ClipboardEvent(type, { clipboardData, cancelable: true })
+    );
+    return clipboardData.getData("text/plain");
+  }, type);
+
+/** Copy the selection, and return the text the app puts in the clipboard */
+export const copySelection = (page: Page): Promise<string> =>
+  sendCopyOrCutEvent(page, "copy");
+
+/** Cut the selection, and return the text the app puts in the clipboard */
+export const cutSelection = (page: Page): Promise<string> =>
+  sendCopyOrCutEvent(page, "cut");
+
+/** Paste with this text in the clipboard */
+export const pasteClipboardText = (page: Page, text: string): Promise<void> =>
+  page.evaluate((text) => {
+    const clipboardData = new DataTransfer();
+    clipboardData.setData("text/plain", text);
+    window.dispatchEvent(
+      new ClipboardEvent("paste", { clipboardData, cancelable: true })
+    );
+  }, text);
+
+/** Paste with nothing in the clipboard */
+export const pasteEmptyClipboard = (page: Page): Promise<void> =>
+  page.evaluate(() => {
+    window.dispatchEvent(
+      new ClipboardEvent("paste", {
+        clipboardData: new DataTransfer(),
+        cancelable: true
+      })
+    );
+  });
+
+/** Paste with this image in the clipboard */
+export const pasteClipboardImage = (page: Page, file: TestFile): Promise<void> =>
+  page.evaluate(({ name, mimeType, base64 }) => {
+    const bytes = Uint8Array.from(atob(base64), (c) => c.charCodeAt(0));
+    const clipboardData = new DataTransfer();
+    clipboardData.items.add(new File([bytes], name, { type: mimeType }));
+    window.dispatchEvent(
+      new ClipboardEvent("paste", { clipboardData, cancelable: true })
+    );
+  }, file);
 
 /** Trigger undo via keyboard */
 export const undo = async (page: Page): Promise<void> => {

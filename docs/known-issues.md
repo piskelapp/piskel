@@ -203,8 +203,18 @@ See [selection.md](specs/selection.md).
 - With a selection active, copying text in a text field (layer name,
   sprite title) copies the pixel selection instead: the clipboard
   listeners run on the whole window. Not reproduced.
-- A pasted clipboard image is placed at the window's top-left corner,
-  converted to sprite coordinates, not at the sprite's top-left corner.
+- A pasted clipboard image is placed at the window's top-left corner, converted
+  to sprite coordinates (`SelectionManager.pasteImage_`). That position is usually
+  outside the sprite, so the image lands at the sprite's top-left corner. When
+  zoomed in and panned, it lands elsewhere: at (4,12) on a 32x32 sprite.
+- Switching to a non-selection tool while moving content loses that content: the
+  drag had already removed it from the frame, and nothing puts it back. Undo
+  restores it (`SelectionManager.onToolSelected_`).
+- Switching to another selection tool while moving content, then pressing `Enter`,
+  loses the content too. The tool that lifted the content is the only one that knows
+  it's moving (`BaseSelect.isMovingContent_`).
+- Undoing while moving content restores the original pixels, but the content keeps
+  moving. Committing then adds it at the new position, so the move becomes a copy.
 
 ## Settings
 
