@@ -13,6 +13,7 @@ import {
   wait,
   assertFrameCount,
   selectFrame,
+  getOnionSkinPixel,
 } from "../../testutils";
 
 const ONION_SKIN_SELECTOR = '.preview-toggle-onion-skin';
@@ -23,25 +24,6 @@ const isOnionSkinEnabled = async (page: Page): Promise<boolean> => {
     return window.pskl.UserSettings.get(window.pskl.UserSettings.ONION_SKIN) as boolean;
   });
 };
-
-/** Read a pixel from the onion-skin-canvas at sprite coordinates (col, row).
- *  Accounts for the renderer margin that centers the sprite in the display area.
- *  Returns {r, g, b, a} (0-255 each). */
-async function getOnionSkinPixel(page: Page, col: number, row: number) {
-  return await page.evaluate(({ col, row }) => {
-    const canvas = document.querySelector('.onion-skin-canvas') as HTMLCanvasElement;
-    if (!canvas) return { r: 0, g: 0, b: 0, a: 0 };
-    const renderer = (window as any).pskl.app.drawingController.onionSkinRenderer.renderer;
-    const zoom = renderer.zoom;
-    const margin = renderer.margin;
-    const offset = renderer.offset;
-    const x = Math.floor(margin.x + (col - offset.x) * zoom + zoom / 2);
-    const y = Math.floor(margin.y + (row - offset.y) * zoom + zoom / 2);
-    const ctx = canvas.getContext('2d')!;
-    const data = ctx.getImageData(x, y, 1, 1).data;
-    return { r: data[0], g: data[1], b: data[2], a: data[3] };
-  }, { col, row });
-}
 
 test.describe('Onion skin', () => {
 

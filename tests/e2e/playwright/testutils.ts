@@ -1,4 +1,4 @@
-import { Page, expect } from "@playwright/test";
+import { Locator, Page, expect } from "@playwright/test";
 import { decompressFrames, parseGIF } from "gifuct-js";
 import fs from "fs/promises";
 import os from "os";
@@ -1332,6 +1332,201 @@ export const setUndoHistoryLimit = async (
     },
     { maxStates, snapshotPeriod }
   );
+};
+
+/** Zoom in by scrolling on the canvas until the minimap appears */
+export const zoomInUntilMinimapVisible = async (
+  page: Page,
+  minimap: Locator
+): Promise<void> => {
+  const canvas = page.locator("#drawing-canvas-container");
+  await canvas.hover();
+
+  for (let i = 0; i < 30; i++) {
+    await page.mouse.wheel(0, -120);
+    await page.waitForTimeout(30);
+  }
+
+  await waitFor(async () => await minimap.isVisible());
+};
+
+/**
+ * Read a pixel from the onion-skin-canvas at sprite coordinates (col, row).
+ * Accounts for the renderer margin that centers the sprite in the display area.
+ * Returns {r, g, b, a} (0-255 each).
+ */
+export const getOnionSkinPixel = async (
+  page: Page,
+  col: number,
+  row: number
+) => {
+  return await page.evaluate(
+    ({ col, row }) => {
+      const canvas = document.querySelector(
+        ".onion-skin-canvas"
+      ) as HTMLCanvasElement;
+      if (!canvas) return { r: 0, g: 0, b: 0, a: 0 };
+      const renderer = (window as any).pskl.app.drawingController
+        .onionSkinRenderer.renderer;
+      const zoom = renderer.zoom;
+      const margin = renderer.margin;
+      const offset = renderer.offset;
+      const x = Math.floor(margin.x + (col - offset.x) * zoom + zoom / 2);
+      const y = Math.floor(margin.y + (row - offset.y) * zoom + zoom / 2);
+      const ctx = canvas.getContext("2d")!;
+      const data = ctx.getImageData(x, y, 1, 1).data;
+      return { r: data[0], g: data[1], b: data[2], a: data[3] };
+    },
+    { col, row }
+  );
+};
+
+/** Check the labels of the preview sizes on offer, from left to right */
+export const assertPreviewSizesOffered = async (
+  page: Page,
+  labels: string[]
+): Promise<void> => {
+  await expect(
+    page.locator(
+      '[data-test-id^="preview-size-"]:not(.preview-contextual-action-hidden)'
+    )
+  ).toHaveText(labels);
+};
+
+/** Check the label of the selected preview size */
+export const assertSelectedPreviewSize = async (
+  page: Page,
+  label: string
+): Promise<void> => {
+  await expect(page.locator(".size-button-selected")).toHaveText(label);
+};
+
+/** Check whether an overlay covers the preview size buttons, disabling them */
+export const assertPreviewSizesDisabled = async (
+  page: Page,
+  disabled: boolean
+): Promise<void> => {
+  // The size buttons only show while hovering the preview.
+  await page.locator(".minimap-container").hover();
+  const overlay = page.locator(".preview-disable-overlay");
+  if (disabled) {
+    await expect(overlay).toBeVisible();
+  } else {
+    await expect(overlay).toBeHidden();
+  }
+};
+
+/** Check the width of the image shown by the preview, waiting for it to update */
+export const assertPreviewImageWidth = async (
+  page: Page,
+  width: number
+): Promise<void> => {
+  await expect
+    .poll(async () => (await readPreviewImage(page)).width)
+    .toBe(width);
+};
+
+/** Count the red pixels visible in the preview, from a screenshot of it */
+export const countRedPixelsInPreview = async (page: Page): Promise<number> => {
+  // Hovering the preview shows buttons on top of it.
+  await page.mouse.move(0, 0);
+  const screenshot = await page
+    .locator("#animated-preview-canvas-container")
+    .screenshot();
+  const png = new PNG(screenshot);
+  const pixels = png.decodePixels();
+  // Screenshots have no alpha channel when they are fully opaque.
+  const channels = pixels.length / (png.width * png.height);
+  let count = 0;
+  for (let i = 0; i < pixels.length; i += channels) {
+    if (pixels[i] === 255 && pixels[i + 1] === 0 && pixels[i + 2] === 0) {
+      count++;
+    }
+  }
+  return count;
+};
+
+/** Check the size in the page of the preview area, waiting for it to update */
+export const assertPreviewAreaSize = async (
+  page: Page,
+  width: number,
+  height: number
+): Promise<void> => {
+  const area = page.locator("#animated-preview-canvas-container");
+  await expect
+    .poll(async () => {
+      const box = await area.boundingBox();
+      return [box?.width, box?.height];
+    })
+    .toEqual([width, height]);
+};
+
+/** Check the FPS of the sprite, from the display and the slider below the preview */
+export const assertFps = async (page: Page, fps: number): Promise<void> => {
+  await expect(testId(page, "fps-display")).toHaveText(`${fps} FPS`);
+  await expect(testId(page, "fps-slider")).toHaveValue(String(fps));
+};
+
+/** Type a value in the "Maximum FPS" preference, then close the drawer */
+export const setMaxFpsPreference = async (
+  page: Page,
+  maxFps: number
+): Promise<void> => {
+  await togglePreferencesPanel(page);
+  const input = page.locator(".max-fps-input");
+  await input.fill(String(maxFps));
+  await input.dispatchEvent("change");
+  await togglePreferencesPanel(page);
+  await waitFor(async () => !(await isSettingsDrawerExpanded(page)));
+};
+
+/** Enable or disable tile mode in the preferences, then close the drawer */
+export const setTileMode = async (
+  page: Page,
+  enabled: boolean
+): Promise<void> => {
+  await togglePreferencesPanel(page);
+  await page.locator('[data-tab-id="tile"]').click();
+  await page.locator(".tile-mode-checkbox").setChecked(enabled);
+  await togglePreferencesPanel(page);
+  await waitFor(async () => !(await isSettingsDrawerExpanded(page)));
+};
+
+/** Read the FPS saved in a .piskel file */
+export const readFpsFromPiskelFile = async (
+  piskelPath: string
+): Promise<number> => {
+  return JSON.parse(await fs.readFile(piskelPath, "utf-8")).piskel.fps;
+};
+
+/**
+ * Get where a pixel of the sprite is on the screen, which changes when panning.
+ * Waits for the canvas to settle, as its layout also changes that position.
+ */
+export const getPixelScreenPosition = async (
+  page: Page,
+  col: number,
+  row: number
+): Promise<{ x: number; y: number }> => {
+  await screenshotSettledCanvas(page);
+  return await page.evaluate(
+    ({ col, row }) =>
+      window.pskl.app.drawingController.getScreenCoordinates(col, row),
+    { col, row }
+  );
+};
+
+/** Press the mouse on the preview at a position in it, drag, and release */
+export const dragOnPreview = async (
+  page: Page,
+  from: { x: number; y: number },
+  to: { x: number; y: number }
+): Promise<void> => {
+  const box = await page.locator(".minimap-container").boundingBox();
+  await page.mouse.move(box!.x + from.x, box!.y + from.y);
+  await page.mouse.down();
+  await page.mouse.move(box!.x + to.x, box!.y + to.y, { steps: 5 });
+  await page.mouse.up();
 };
 
 /** Trigger undo via keyboard */

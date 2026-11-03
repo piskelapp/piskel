@@ -1,4 +1,4 @@
-import test, { expect, Page, Locator } from "@playwright/test";
+import test, { expect, Page } from "@playwright/test";
 import {
   openEditor,
   openSaveSettingsPanel,
@@ -14,7 +14,8 @@ import {
   PIXEL_IN_FIRST_COLUMN,
   PIXEL_IN_SECOND_COLUMN,
   selectFrame,
-  toggleFrameVisibility
+  toggleFrameVisibility,
+  zoomInUntilMinimapVisible
 } from "../../testutils";
 
 // ─── Shared helpers ──────────────────────────────────────────────
@@ -32,19 +33,6 @@ async function getSelectedPreviewSize(page: Page): Promise<string> {
       window.pskl.UserSettings.PREVIEW_SIZE
     ) as string;
   });
-}
-
-/** Zoom in by scrolling on the canvas until the minimap appears */
-async function zoomInUntilMinimapVisible(page: Page, minimap: Locator) {
-  const canvas = page.locator("#drawing-canvas-container");
-  await canvas.hover();
-
-  for (let i = 0; i < 30; i++) {
-    await page.mouse.wheel(0, -120);
-    await page.waitForTimeout(30);
-  }
-
-  await waitFor(async () => await minimap.isVisible());
 }
 
 // ─── Preview actions ─────────────────────────────────────────────

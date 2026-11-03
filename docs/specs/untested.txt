@@ -50,11 +50,6 @@ keyboard-shortcuts.forbidden-keys
 keyboard-shortcuts.ignore-inputs
 keyboard-shortcuts.mac-labels
 keyboard-shortcuts.persist
-preview.max-fps
-preview.minimap-drag
-preview.saved
-preview.size-options
-preview.tile-mode
 save-and-storage.backup-limits
 save-and-storage.backup-on-close
 save-and-storage.backups-delete
