@@ -44,12 +44,6 @@ import.image-name
 import.piskel-error
 import.replace-confirm
 import.undo
-keyboard-shortcuts.ctrl-cmd
-keyboard-shortcuts.custom-marker
-keyboard-shortcuts.forbidden-keys
-keyboard-shortcuts.ignore-inputs
-keyboard-shortcuts.mac-labels
-keyboard-shortcuts.persist
 save-and-storage.backup-limits
 save-and-storage.backup-on-close
 save-and-storage.backups-delete

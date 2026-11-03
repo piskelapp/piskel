@@ -1,16 +1,5 @@
 import test, { expect } from "@playwright/test";
-import { MODIFIER_LABEL, openEditor } from "../../testutils";
-
-/** Open the cheatsheet dialog and wait for it to be visible */
-async function openCheatsheet(page: import('@playwright/test').Page) {
-  // Retry pressing ? in case the page isn't ready to receive the shortcut yet
-  // (e.g. under coverage collection overhead or after dialog close animations)
-  await expect(async () => {
-    await page.keyboard.press('?');
-    await expect(page.locator('#dialog-container-wrapper.show')).toBeAttached({ timeout: 1000 });
-  }).toPass({ timeout: 5000 });
-  await expect(page.locator('.cheatsheet-container')).toBeAttached();
-}
+import { MODIFIER_LABEL, openCheatsheet, openEditor } from "../../testutils";
 
 test.describe('Cheatsheet dialog', () => {
 

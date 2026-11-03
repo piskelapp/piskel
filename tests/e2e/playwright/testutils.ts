@@ -1529,6 +1529,74 @@ export const dragOnPreview = async (
   await page.mouse.up();
 };
 
+/** Open the cheatsheet dialog and wait for it to be visible */
+export const openCheatsheet = async (page: Page): Promise<void> => {
+  // Retry pressing ? in case the page isn't ready to receive the shortcut yet
+  // (e.g. under coverage collection overhead or after dialog close animations)
+  await expect(async () => {
+    await page.keyboard.press("?");
+    await expect(page.locator("#dialog-container-wrapper.show")).toBeAttached({
+      timeout: 1000
+    });
+  }).toPass({ timeout: 5000 });
+  await expect(page.locator(".cheatsheet-container")).toBeAttached();
+};
+
+/** Close the cheatsheet dialog and wait for it to be gone */
+export const closeCheatsheet = async (page: Page): Promise<void> => {
+  await page.keyboard.press("Escape");
+  await expect(
+    page.locator("#dialog-container-wrapper:not(.show)")
+  ).toBeAttached();
+};
+
+/** Locator for a shortcut of the cheatsheet, by its id such as "tool-pen" */
+export const getCheatsheetShortcut = (page: Page, shortcutId: string) =>
+  page.locator(`[data-shortcut-id="${shortcutId}"]`);
+
+/** In the open cheatsheet, click a shortcut and press a new key for it */
+export const remapShortcut = async (
+  page: Page,
+  shortcutId: string,
+  key: string
+): Promise<void> => {
+  const shortcut = getCheatsheetShortcut(page, shortcutId);
+  await shortcut.click();
+  await expect(shortcut).toHaveClass(/cheatsheet-shortcut-editing/);
+  await page.keyboard.press(key);
+  await expect(shortcut).not.toHaveClass(/cheatsheet-shortcut-editing/);
+};
+
+/** Check the key shown for a shortcut in the open cheatsheet */
+export const assertShortcutKey = async (
+  page: Page,
+  shortcutId: string,
+  key: string
+): Promise<void> => {
+  await expect(
+    getCheatsheetShortcut(page, shortcutId).locator(".cheatsheet-key")
+  ).toHaveText(key);
+};
+
+/** Check the description shown for a shortcut in the open cheatsheet */
+export const assertShortcutDescription = async (
+  page: Page,
+  shortcutId: string,
+  description: string
+): Promise<void> => {
+  await expect(
+    getCheatsheetShortcut(page, shortcutId).locator(".cheatsheet-description")
+  ).toHaveText(description);
+};
+
+/** Check the message shown in the notification */
+export const assertNotification = async (
+  page: Page,
+  message: string
+): Promise<void> => {
+  await expect(page.locator("#user-message")).toContainText(message);
+};
+
 /** Trigger undo via keyboard */
 export const undo = async (page: Page): Promise<void> => {
   await page.keyboard.press(`${CMD_OR_CTRL}+z`);

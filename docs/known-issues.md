@@ -92,6 +92,9 @@ See [keyboard-shortcuts.md](specs/keyboard-shortcuts.md).
   `ctrl+X/C/V` keep working.
 - The notification for a key taken from another shortcut shows that
   shortcut's internal id (e.g. `tool-pen`) instead of its description.
+- On macOS, the bracketed shortcut in tooltips still shows `alt` and `ctrl`
+  (e.g. `Preview all layers (alt+L)`). `TooltipFormatter.format` only converts
+  the modifier descriptions to `option` and `cmd`. The cheatsheet is correct.
 
 ## Layers
 
