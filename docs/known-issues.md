@@ -142,8 +142,10 @@ See [selection.md](specs/selection.md).
 
 See [settings.md](specs/settings.md).
 
-- `Constants.MAX_WIDTH` / `MAX_HEIGHT` (1024) are declared but not used:
-  nothing caps the sprite size.
+- The resize panel doesn't respect the 4096 cap of the default size
+  (`Constants.MAX_DEFAULT_WIDTH` / `MAX_DEFAULT_HEIGHT`): a sprite can be resized
+  to a width of 5000. `ResizeController.onResizeFormSubmit_` doesn't use
+  `ResizeUtils.sanitizeSize`.
 
 ## Transformations
 

@@ -820,6 +820,19 @@ export const selectBottomLayer = async (page: Page): Promise<void> => {
   await assertCurrentLayer(page, 0);
 };
 
+/** Set the default size of new sprites in the resize panel, which closes the drawer */
+export const setDefaultSize = async (
+  page: Page,
+  width: string,
+  height: string
+): Promise<void> => {
+  await openResizeSettingsPanel(page);
+  await page.locator('[name="default-width"]').fill(width);
+  await page.locator('[name="default-height"]').fill(height);
+  await page.click(".default-size-button");
+  await waitFor(async () => !(await isSettingsDrawerExpanded(page)));
+};
+
 /** Open the editor in a new page of the same browser, as a new session would */
 export const openEditorInNewPage = async (page: Page): Promise<Page> => {
   const newPage = await page.context().newPage();

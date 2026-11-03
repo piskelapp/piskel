@@ -1,5 +1,5 @@
 import test, { expect } from "@playwright/test";
-import { expectDefaultResizeValues, isSettingsDrawerExpanded, openEditor, openResizeSettingsPanel, testId } from "../../testutils";
+import { expectDefaultResizeValues, isSettingsDrawerExpanded, openEditor, openEditorInNewPage, openResizeSettingsPanel, setDefaultSize, testId, waitFor } from "../../testutils";
 
 test('Test changing the default canvas size', { tag: ['@settings.default-size'] }, async ({ page }) => {
   await openEditor(page);
@@ -33,7 +33,7 @@ test('Test changing the default canvas size', { tag: ['@settings.default-size'] 
     expect(systemDefaultHeight).toBe(322);
 });
 
-test('Test the default canvas size is capped to the maximum', async ({ page }) => {
+test('Test the default canvas size is capped to the maximum', { tag: ['@settings.default-size'] }, async ({ page }) => {
   await openEditor(page);
   await openResizeSettingsPanel(page);
 
@@ -50,7 +50,7 @@ test('Test the default canvas size is capped to the maximum', async ({ page }) =
     });
 });
 
-test('Test the editor starts with an invalid stored default size', async ({ page }) => {
+test('Test the editor starts with an invalid stored default size', { tag: ['@settings.default-size'] }, async ({ page }) => {
   const errors: Error[] = [];
   page.on("pageerror", (error) => errors.push(error));
 
@@ -65,4 +65,24 @@ test('Test the editor starts with an invalid stored default size', async ({ page
 
   await expect(testId(page, "cursor-coordinates")).toContainText("[4096x4096]");
   expect(errors).toEqual([]);
+});
+
+test('Test an empty or 0 default size keeps the previous value', { tag: ['@settings.default-size'] }, async ({ page }) => {
+  // Set a default size of 64x48.
+  await openEditor(page);
+  await setDefaultSize(page, "64", "48");
+
+  // Set an empty width and a height of 0: both keep their value.
+  await setDefaultSize(page, "", "0");
+  await openResizeSettingsPanel(page);
+  await expectDefaultResizeValues(page, "64", "48");
+  await page.click('[data-setting="resize"]');
+  await waitFor(async () => !(await isSettingsDrawerExpanded(page)));
+
+  // Each side is checked on its own: a valid width still applies.
+  await setDefaultSize(page, "20", "");
+
+  // A new session starts on a sprite of that size.
+  const secondSession = await openEditorInNewPage(page);
+  await expect(testId(secondSession, "cursor-coordinates")).toContainText("[20x48]");
 });

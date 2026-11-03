@@ -29,7 +29,6 @@ drawing-tools.transparent-color
 drawing-tools.undo
 editor.dialogs
 editor.loading
-editor.new-sprite
 editor.notifications
 editor.progress-bar
 editor.unsupported-browser

@@ -15,7 +15,8 @@ progress bars.
 - `editor.new-sprite` The editor starts on a new sprite named "New
   Piskel", at the default size (32×32 out of the box, see
   [settings.md](settings.md)), with one layer "Layer 1", one frame and 12
-  FPS. The pen tool is selected, and the colors are black and transparent.
+  FPS (or the maximum FPS preference, if lower). The pen tool is selected,
+  and the colors are black and transparent.
 - `editor.unsupported-browser` In browsers other than Chrome, Firefox and
   Edge, a dialog at startup warns that the browser is not supported and
   names the detected browser.
