@@ -37,6 +37,14 @@ See [drawing-tools.md](specs/drawing-tools.md).
   which stays `4`. Either the test or the behavior should change _(to
   confirm which)_.
 
+## Editor
+
+See [editor.md](specs/editor.md).
+
+- A replaced notification's timer still runs, so it can remove the new message
+  early: a message shown 4 seconds after a 5-second one disappears 1 second later.
+  `NotificationController.displayMessage_` doesn't cancel the previous timeout.
+
 ## Export
 
 See [export.md](specs/export.md).

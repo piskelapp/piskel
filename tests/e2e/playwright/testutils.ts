@@ -1627,6 +1627,41 @@ export const assertNotification = async (
   await expect(page.locator("#user-message")).toContainText(message);
 };
 
+/** Check that this notification is showing, and that it's the only one */
+export const assertOnlyNotification = async (
+  page: Page,
+  message: string
+): Promise<void> => {
+  await expect(page.locator("#user-message")).toHaveCount(1);
+  await assertNotification(page, message);
+};
+
+/** Check that no notification is showing */
+export const assertNoNotification = async (
+  page: Page,
+  options?: { timeout: number }
+): Promise<void> => {
+  await expect(page.locator("#user-message")).toHaveCount(0, options);
+};
+
+/** Dismiss the notification with its close button */
+export const closeNotification = async (page: Page): Promise<void> => {
+  await page.locator("#user-message").getByTitle("Close message").click();
+};
+
+/** Try to import a .piskel file whose content isn't a sprite */
+export const importBrokenPiskelFile = async (page: Page): Promise<void> => {
+  await openImportSettingsPanel(page);
+  const fileChooserPromise = page.waitForEvent("filechooser");
+  await testId(page, "import-piskel-button").click();
+  const fileChooser = await fileChooserPromise;
+  await fileChooser.setFiles({
+    name: "broken.piskel",
+    mimeType: "application/octet-stream",
+    buffer: Buffer.from("this is not a sprite")
+  });
+};
+
 /** Trigger undo via keyboard */
 export const undo = async (page: Page): Promise<void> => {
   await page.keyboard.press(`${CMD_OR_CTRL}+z`);

@@ -29,7 +29,7 @@ progress bars.
 ### Feedback
 
 - `editor.notifications` Messages (save results, import errors, warnings)
-  appear one at a time in a notification with a close button; most hide
+  appear one at a time in a notification with a close button; all hide
   themselves after a few seconds.
 - `editor.progress-bar` Long tasks, such as building a GIF or reading an
   image palette, show a progress bar with a percentage, only when they

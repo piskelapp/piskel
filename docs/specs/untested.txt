@@ -28,7 +28,6 @@ drawing-tools.tooltips
 drawing-tools.transparent-color
 drawing-tools.undo
 editor.loading
-editor.notifications
 editor.progress-bar
 editor.unsupported-browser
 export.content-other-formats
