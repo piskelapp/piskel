@@ -21,11 +21,3 @@ editor.loading
 editor.progress-bar
 editor.unsupported-browser
 export.content-other-formats
-save-and-storage.backup-limits
-save-and-storage.backup-on-close
-save-and-storage.backups-delete
-save-and-storage.browser-overwrite
-save-and-storage.dirty-undo
-save-and-storage.file-names
-save-and-storage.save-feedback
-undo-redo.load-step-browser

@@ -18,6 +18,22 @@ link the issue.
   HTML with an event handler runs that handler. Names typed in the palette dialog
   are escaped (`CreatePaletteController.onNameInputChange_`), and the same name did
   nothing there. A user would have to drop a file with a crafted name.
+- **Security: a shared `.piskel` file can run code in the page.** Reproduced.
+  `Template.sanitize` doesn't escape double quotes, so a value containing one breaks
+  out of an HTML attribute in a template. A crafted file runs code:
+  - as soon as it's opened in the import wizard, through its title
+    (`title="{{name}}"` in `dialogs/import.html`), with nothing more to click;
+  - when **Browse local saves** opens, once its title has been saved in the browser
+    (`data-name="{{name}}"` in `dialogs/browse-local.html`). It then runs every time
+    that list opens;
+  - when its layer is renamed, through the layer name (`value="{{layername}}"` in
+    `layers-list.html`).
+
+  Dropping such a file doesn't run anything by itself, and the header, the title and
+  layer name in the layers list, and the backups lists are safe. A title typed in the
+  save panel does the same in **Browse local saves**. Image file names reach the same
+  wizard template, but that wasn't checked. Escaping quotes in `Template.sanitize`
+  should fix all of these.
 
 ## CLI
 
@@ -195,6 +211,19 @@ See [save-and-storage.md](specs/save-and-storage.md).
   and controller no longer exist. Dead entry.
 - Loading `.piskel` files written by older model versions is only covered
   by unit tests (`Deserializer_v0`, `Deserializer_v1`).
+- **Browse backups** shows an empty list when the only backups are from the
+  current session, instead of "No session found ..."
+  (`SelectSession.getMarkupForSessions_`).
+- A failed browser save shows "Saving failed : Error: quota": `onSaveError_` in
+  `StorageService` receives an `Error`, while a failed download passes its message.
+- A sprite saved with a double quote in its title can't be loaded or deleted from
+  **Browse local saves**: the buttons act on the title cut at the quote. This has the
+  same cause as the security bug in [Fix first](#fix-first).
+- An empty title is accepted: the header is blank, the local saves list shows a row
+  without a name, and the file is named `-<date>-<time>.piskel`.
+- Opening a sprite counts as an unsaved change, even right after saving it, but
+  the header doesn't always show it: in a new session the title has no `*`, and
+  reloading still asks for confirmation.
 
 ## Selection
 

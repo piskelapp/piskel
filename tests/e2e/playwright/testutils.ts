@@ -2427,6 +2427,286 @@ export const openEditorWithRectangleSelect = async (
   await setSpriteWithRectangleSelect(page, rows);
 };
 
+/** Check the sprite title in the header, which ends with " *" when there are unsaved changes */
+export const assertSpriteTitle = async (
+  page: Page,
+  title: string
+): Promise<void> => {
+  await expect(page.locator(".piskel-name")).toHaveText(title);
+};
+
+/** Check the title and description shown in the save panel, which stays open */
+export const assertSavePanelFields = async (
+  page: Page,
+  title: string,
+  description: string
+): Promise<void> => {
+  await openSaveSettingsPanel(page);
+  await expect(page.locator("#save-name")).toHaveValue(title);
+  await expect(page.locator("#save-description")).toHaveValue(description);
+};
+
+/** Check the opacity shown by the α button of the top layer */
+export const assertTopLayerOpacity = async (
+  page: Page,
+  opacity: number
+): Promise<void> => {
+  await expect(getAllLayerOpacityButtons(page).first()).toHaveAttribute(
+    "title",
+    `Layer opacity (${opacity})`
+  );
+};
+
+/** The Save in Browser button of the save panel */
+export const getSaveInBrowserButton = (page: Page): Locator =>
+  page.locator("#save-localstorage-button");
+
+/** Check whether the settings drawer ends up open or closed */
+export const assertSettingsDrawerOpen = async (
+  page: Page,
+  isOpen: boolean
+): Promise<void> => {
+  await expect.poll(() => isSettingsDrawerExpanded(page)).toBe(isOpen);
+};
+
+/** Open the save panel and edit the title and description, without saving */
+export const fillSpriteTitleAndDescription = async (
+  page: Page,
+  title: string,
+  description: string
+): Promise<void> => {
+  await openSaveSettingsPanel(page);
+  await page.locator("#save-name").fill(title);
+  await page.locator("#save-description").fill(description);
+};
+
+/** Press Enter in the title field of the save panel */
+export const pressEnterInSaveForm = async (page: Page): Promise<void> => {
+  await page.locator("#save-name").press("Enter");
+};
+
+/** Close the save panel with its button, and wait for the drawer to close */
+export const closeSaveDrawer = async (page: Page): Promise<void> => {
+  await page.click('[data-setting="save"]');
+  await assertSettingsDrawerOpen(page, false);
+};
+
+/** Save the sprite in the browser, and wait for the drawer to close */
+export const saveInBrowser = async (
+  page: Page,
+  title: string,
+  description?: string
+): Promise<void> => {
+  await openSaveSettingsPanel(page);
+  await page.locator("#save-name").fill(title);
+  if (description !== undefined) {
+    await page.locator("#save-description").fill(description);
+  }
+  await getSaveInBrowserButton(page).click();
+  await assertSettingsDrawerOpen(page, false);
+};
+
+const EXPORT_DOWNLOAD_BUTTONS = {
+  png: '[data-test-id="png-download-button"]',
+  pixi: ".png-pixi-download-button",
+  gif: '[data-test-id="gif-download-button"]',
+  zip: '[data-test-id="zip-download-button"]',
+  c: '[data-test-id="c-file-download-button"]'
+};
+
+/** A download button of the export drawer */
+export const getExportDownloadButton = (
+  page: Page,
+  button: keyof typeof EXPORT_DOWNLOAD_BUTTONS
+): Locator => page.locator(EXPORT_DOWNLOAD_BUTTONS[button]);
+
+/** Make the browser's storage refuse every save */
+export const makeBrowserSavesFail = (page: Page): Promise<void> =>
+  page.evaluate(() => {
+    const refuse = () => {
+      throw new Error("storage refused");
+    };
+    IDBObjectStore.prototype.add = refuse;
+    IDBObjectStore.prototype.put = refuse;
+  });
+
+/** Make the browser refuse to create the file of every download */
+export const makeDownloadsFail = (page: Page): Promise<void> =>
+  page.evaluate(() => {
+    window.URL.createObjectURL = () => {
+      throw new Error("download refused");
+    };
+  });
+
+/**
+ * Start recording each change of the disabled state of the two save buttons, as
+ * saves finish too quickly to catch that state otherwise.
+ */
+export const recordSaveButtonsDisabledStates = (page: Page): Promise<void> =>
+  page.evaluate(() => {
+    const browserButton = document.querySelector("#save-localstorage-button")!;
+    const fileButton = document.querySelector("#save-file-download-button")!;
+    const states: boolean[][] = [];
+    (window as any).saveButtonsDisabledStates = states;
+    new MutationObserver(() => {
+      states.push([
+        browserButton.hasAttribute("disabled"),
+        fileButton.hasAttribute("disabled")
+      ]);
+    }).observe(browserButton, { attributes: true });
+  });
+
+/** Read the states recorded by recordSaveButtonsDisabledStates */
+export const getSaveButtonsDisabledStates = (page: Page): Promise<boolean[][]> =>
+  page.evaluate(() => (window as any).saveButtonsDisabledStates);
+
+/** Do something that downloads a file, and return the name given to the file */
+export const getDownloadFileName = async (
+  page: Page,
+  click: () => Promise<void>
+): Promise<string> => {
+  const downloadPromise = page.waitForEvent("download");
+  await click();
+  return (await downloadPromise).suggestedFilename();
+};
+
+/** Open the Browse Local Saves dialog */
+export const openBrowseLocalSaves = async (page: Page): Promise<void> => {
+  await openImportSettingsPanel(page);
+  await page.locator(".browse-local-button").click();
+  await assertDialogOpen(page, "browse-local");
+};
+
+/** Check the titles listed in the Browse Local Saves dialog */
+export const assertLocalSaves = async (
+  page: Page,
+  titles: string[]
+): Promise<void> => {
+  await expect(
+    page.locator(".local-piskel-item .local-piskel-name")
+  ).toHaveText(titles);
+};
+
+/** Check the dates listed in the Browse Local Saves dialog */
+export const assertLocalSaveDates = async (
+  page: Page,
+  dates: string[]
+): Promise<void> => {
+  await expect(
+    page.locator(".local-piskel-item .local-piskel-save-date")
+  ).toHaveText(dates);
+};
+
+/** Click the delete button of a local save, and answer its confirmation */
+export const clickDeleteLocalSave = async (
+  page: Page,
+  title: string,
+  { accept }: { accept: boolean }
+): Promise<void> => {
+  page.once("dialog", (dialog) =>
+    accept ? dialog.accept() : dialog.dismiss()
+  );
+  await page.locator(`[data-action="delete"][data-name="${title}"]`).click();
+};
+
+/** Load a sprite from the Browse Local Saves dialog, accepting the confirmation */
+export const loadLocalSave = async (
+  page: Page,
+  title: string
+): Promise<void> => {
+  page.once("dialog", (dialog) => dialog.accept());
+  await page.locator(`[data-action="load"][data-name="${title}"]`).click();
+};
+
+/**
+ * Let time pass on the clock of openEditorWithFakeClock, then give a backup started
+ * by that time a moment to reach the browser's storage.
+ */
+export const letTimePass = async (page: Page, ms: number): Promise<void> => {
+  await page.clock.fastForward(ms);
+  await wait(200);
+};
+
+/**
+ * Open the Browse Backups dialog in a new tab, as backups of the current session
+ * aren't listed. Close that tab before letting time pass again, so that it can't
+ * make backups of its own.
+ */
+export const openBackupsInNewTab = async (page: Page): Promise<Page> => {
+  const tab = await openEditorInNewPage(page);
+  await openImportSettingsPanel(tab);
+  await testId(tab, "browse-backups-button").click();
+  await expect(tab.locator(".backups-wizard-container")).toBeAttached();
+  return tab;
+};
+
+/** Send the event a browser sends when a page is about to close, without closing it */
+export const sendPageClosingEvent = (page: Page): Promise<void> =>
+  page.evaluate(() => {
+    window.dispatchEvent(new Event("beforeunload", { cancelable: true }));
+  });
+
+/** Check the titles of the sessions listed in the Browse Backups dialog */
+export const assertBackupSessions = async (
+  page: Page,
+  titles: string[]
+): Promise<void> => {
+  await expect(
+    page.locator(".session-item .session-details-title")
+  ).toHaveText(titles);
+};
+
+/** Check the message of the Browse Backups dialog when there's no backup at all */
+export const assertNoBackupSession = async (page: Page): Promise<void> => {
+  await expect(page.locator(".session-list-empty")).toHaveText(
+    "No session found ..."
+  );
+};
+
+/** Show the snapshots of a session, and check how many there are */
+export const viewBackupSession = async (
+  page: Page,
+  sessionIndex: number,
+  snapshotCount: number
+): Promise<void> => {
+  await page
+    .locator('.session-item [data-action="view"]')
+    .nth(sessionIndex)
+    .click();
+  await expect(page.locator(".snapshot-item")).toHaveCount(snapshotCount);
+};
+
+/** Restore a snapshot of the session shown, accepting the confirmation */
+export const restoreSnapshot = async (
+  page: Page,
+  snapshotIndex: number
+): Promise<void> => {
+  page.once("dialog", (dialog) => dialog.accept());
+  await page
+    .locator('.snapshot-item [data-action="load"]')
+    .nth(snapshotIndex)
+    .click();
+  await assertNoDialogOpen(page);
+};
+
+/**
+ * Click the delete button of a session, and answer its confirmation. The event is
+ * sent directly, as the button can be outside of the viewport.
+ */
+export const clickDeleteBackupSession = async (
+  page: Page,
+  sessionIndex: number,
+  { accept }: { accept: boolean }
+): Promise<void> => {
+  page.once("dialog", (dialog) =>
+    accept ? dialog.accept() : dialog.dismiss()
+  );
+  await page
+    .locator('.session-item [data-action="delete"]')
+    .nth(sessionIndex)
+    .dispatchEvent("click");
+};
+
 /** Hold shift and drag the selection, to move its content along with it */
 export const moveSelectionContent = async (
   page: Page,
