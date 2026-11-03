@@ -9,16 +9,6 @@ canvas.performance-notification
 canvas.touch
 canvas.zoom-limits
 canvas.zoomed-out-background
-colors-and-palettes.current-colors-order
-colors-and-palettes.drop
-colors-and-palettes.max-colors
-colors-and-palettes.messages
-colors-and-palettes.picker-opaque
-colors-and-palettes.prev-next
-colors-and-palettes.select-palette
-colors-and-palettes.storage
-colors-and-palettes.swatch-highlight
-colors-and-palettes.swatch-right-click
 drawing-tools.clipping
 drawing-tools.dithering-right-button
 drawing-tools.highlight

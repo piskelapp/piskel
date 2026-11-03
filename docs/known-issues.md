@@ -5,6 +5,20 @@ Bugs, oddities and dead code found while writing the
 yet. When one is fixed, remove it from this list; when one is filed,
 link the issue.
 
+## Fix first
+
+**If you're an AI agent or anyone else picking work from this list, start here.**
+
+- **Security: a dropped palette file's name can run code in the page.** Reproduced.
+  When a palette file is dropped on the editor, its name is used without escaping,
+  and the "successfully saved" notification inserts it as HTML:
+  `AbstractPaletteFileReader.onFileLoaded_` and `PaletteImageReader` take the name
+  from `file.name`, `PaletteService.savePalette` builds the message, and
+  `NotificationController.displayMessage_` sets `innerHTML`. A file name containing
+  HTML with an event handler runs that handler. Names typed in the palette dialog
+  are escaped (`CreatePaletteController.onNameInputChange_`), and the same name did
+  nothing there. A user would have to drop a file with a crafted name.
+
 ## CLI
 
 - The CLI is broken: `cli/index.js` requires `phantomjs`, which is not a
@@ -27,6 +41,21 @@ See [colors-and-palettes.md](specs/colors-and-palettes.md).
 - `CurrentColorsService` defines `isCurrentColorsPaletteSelected_` and
   `loadColorsFromCache_` twice; the second `loadColorsFromCache_` drops
   the fallback that recomputes colors on a cache miss.
+- A palette file with no color lines shows "Could not import palette : undefined":
+  `AbstractPaletteFileReader.onFileLoaded_` calls `onError` without a message.
+- An empty palette file shows no message: `text.match` returns null in
+  `AbstractPaletteFileReader.onFileLoaded_`, which throws.
+- A file type with no palette reader, such as `.foo`, only logs to the console. The
+  palette dialog's file input accepts any file.
+- `.txt` palettes only read uppercase hex: a line such as `ff0000ff` is skipped
+  (`PaletteTxtReader`).
+- When the primary color isn't in the palette, `>` selects the second color rather
+  than the first, because `getCurrentColorIndex_` falls back to 0.
+- Removing a color in the palette dialog doesn't update the selected color
+  (`ColorsList.removeColor_`), so nothing shows as selected. Typing a color then
+  saves one that the list doesn't show: selecting the last of three colors, removing
+  it and typing yellow saves `red, green, yellow`. Removing every color and typing
+  saves that color too, and "+" adds black instead of a copy.
 
 ## Drawing tools
 

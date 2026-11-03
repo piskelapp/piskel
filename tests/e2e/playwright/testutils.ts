@@ -2045,6 +2045,329 @@ export const answerNextConfirm = (
     });
   });
 
+/** Create a text file, such as a palette file */
+export const createTextFile = (name: string, text: string): TestFile => ({
+  name,
+  mimeType: "text/plain",
+  base64: Buffer.from(text).toString("base64")
+});
+
+/** Create a GIMP palette file with these colors, such as "#ff0000" */
+export const createGplFile = (name: string, colors: string[]): TestFile => {
+  const lines = colors.map((color) =>
+    [1, 3, 5]
+      .map((start) => parseInt(color.slice(start, start + 2), 16))
+      .join(" ")
+  );
+  return createTextFile(name, ["GIMP Palette", ...lines, ""].join("\n"));
+};
+
+/** Create a PNG file with one row of pixels, one for each of these colors */
+export const createPngFileFromColors = async (
+  page: Page,
+  name: string,
+  colors: string[]
+): Promise<TestFile> => {
+  const base64 = await page.evaluate((colors) => {
+    const canvas = document.createElement("canvas");
+    canvas.width = colors.length;
+    canvas.height = 1;
+    const context = canvas.getContext("2d")!;
+    colors.forEach((color, x) => {
+      context.fillStyle = color;
+      context.fillRect(x, 0, 1, 1);
+    });
+    return canvas.toDataURL("image/png").split(",")[1];
+  }, colors);
+  return { name, mimeType: "image/png", base64 };
+};
+
+/** A list of distinct colors, as many as needed */
+export const createDistinctColors = (count: number): string[] =>
+  Array.from(
+    { length: count },
+    (_, index) => `#${index.toString(16).padStart(4, "0")}07`
+  );
+
+/** Open the palette dialog to create a palette */
+export const openCreatePaletteDialog = async (page: Page): Promise<void> => {
+  await testId(page, "create-palette-button").click();
+  await assertDialogOpen(page, "create-palette");
+};
+
+/** Open the palette dialog for the selected palette */
+export const openEditPaletteDialog = async (page: Page): Promise<void> => {
+  await page.locator(".edit-palette-button").click();
+  await assertDialogOpen(page, "create-palette");
+};
+
+/** Locator for the name of the palette in the palette dialog */
+export const getPaletteNameInput = (page: Page): Locator =>
+  page.locator('input[name="palette-name"]');
+
+/** Save the palette and close the palette dialog */
+export const savePaletteDialog = async (page: Page): Promise<void> => {
+  await page.locator(".create-palette-submit").click();
+  await assertNoDialogOpen(page);
+};
+
+/** Close the palette dialog with its cancel button */
+export const cancelPaletteDialog = async (page: Page): Promise<void> => {
+  await page.locator(".create-palette-cancel").click();
+  await assertNoDialogOpen(page);
+};
+
+/** Locator for an action of the palette dialog */
+export const getPaletteDialogButton = (
+  page: Page,
+  action: "import" | "download" | "delete"
+): Locator =>
+  page.locator(
+    {
+      import: ".create-palette-import-button",
+      download: ".create-palette-download-button",
+      delete: ".create-palette-delete"
+    }[action]
+  );
+
+/** Pick a palette file with the import button of the palette dialog */
+export const importFileInPaletteDialog = async (
+  page: Page,
+  file: TestFile
+): Promise<void> => {
+  const fileChooserPromise = page.waitForEvent("filechooser");
+  await getPaletteDialogButton(page, "import").click();
+  const fileChooser = await fileChooserPromise;
+  await fileChooser.setFiles({
+    name: file.name,
+    mimeType: file.mimeType,
+    buffer: Buffer.from(file.base64, "base64")
+  });
+};
+
+/** Create a palette with these colors, which then becomes the selected one */
+export const createPaletteWithColors = async (
+  page: Page,
+  name: string,
+  colors: string[]
+): Promise<void> => {
+  await openCreatePaletteDialog(page);
+  await importFileInPaletteDialog(page, createGplFile("palette.gpl", colors));
+  await assertPaletteDialogColors(page, colors);
+  await getPaletteNameInput(page).fill(name);
+  await savePaletteDialog(page);
+  await assertSelectedPalette(page, name);
+};
+
+const rgbToHex = (rgb: string): string => {
+  const channels = rgb.match(/\d+/g) ?? [];
+  return `#${channels.map((c) => Number(c).toString(16).padStart(2, "0")).join("")}`;
+};
+
+/** Check the colors listed in the palette dialog, in order */
+export const assertPaletteDialogColors = async (
+  page: Page,
+  colors: string[]
+): Promise<void> => {
+  await expect
+    .poll(async () => {
+      const backgrounds = await page
+        .locator(".create-palette-color")
+        .evaluateAll((elements) =>
+          elements.map((element) => (element as HTMLElement).style.background)
+        );
+      return backgrounds.map(rgbToHex);
+    })
+    .toEqual(colors);
+};
+
+/** Check which color is selected in the palette dialog, by its position */
+export const assertPaletteDialogSelectedColor = async (
+  page: Page,
+  index: number
+): Promise<void> => {
+  await expect(page.locator(".create-palette-color.selected")).toHaveAttribute(
+    "data-palette-index",
+    String(index)
+  );
+};
+
+/** Select a color in the palette dialog, by its position */
+export const selectPaletteDialogColor = async (
+  page: Page,
+  index: number
+): Promise<void> => {
+  await page.locator(".create-palette-color").nth(index).click();
+  await assertPaletteDialogSelectedColor(page, index);
+};
+
+/** Click the + button of the palette dialog */
+export const clickPaletteDialogAddColor = async (page: Page): Promise<void> => {
+  await page.locator(".create-palette-new-color").click();
+};
+
+/** Remove a color in the palette dialog, by its position */
+export const removePaletteDialogColor = async (
+  page: Page,
+  index: number
+): Promise<void> => {
+  const color = page.locator(".create-palette-color").nth(index);
+  await color.hover();
+  await color.locator(".create-palette-remove-color").click();
+};
+
+/** Type a hex value for the selected color in the palette dialog */
+export const typePaletteDialogColor = async (
+  page: Page,
+  hex: string
+): Promise<void> => {
+  const input = page.locator('[data-model="hex"]');
+  await input.fill(hex);
+  await input.press("Enter");
+};
+
+/** Drag a color of the palette dialog onto the position of another one */
+export const dragPaletteDialogColor = async (
+  page: Page,
+  from: number,
+  to: number
+): Promise<void> => {
+  const colors = page.locator(".create-palette-color");
+  const start = (await colors.nth(from).boundingBox())!;
+  const end = (await colors.nth(to).boundingBox())!;
+  const startX = start.x + start.width / 2;
+  const endX = end.x + end.width / 2;
+  const y = start.y + start.height / 2;
+  await page.mouse.move(startX, y);
+  await page.mouse.down();
+  const steps = 20;
+  for (let step = 1; step <= steps; step++) {
+    // The list only reorders on vertical movement, and a hand is never perfectly
+    // straight, so move up and down a little along the way.
+    const wobble = step % 2 === 0 ? 2 : -2;
+    await page.mouse.move(startX + ((endX - startX) * step) / steps, y + wobble);
+    await wait(20);
+  }
+  await page.mouse.up();
+};
+
+/** Choose a palette in the dropdown of the palettes panel */
+export const selectPalette = async (
+  page: Page,
+  name: string
+): Promise<void> => {
+  await testId(page, "palette-select").selectOption({ label: name });
+};
+
+/** Check which palette is selected in the dropdown of the palettes panel */
+export const assertSelectedPalette = async (
+  page: Page,
+  name: string
+): Promise<void> => {
+  await expect(
+    testId(page, "palette-select").locator("option:checked")
+  ).toHaveText(name);
+};
+
+/** Check the palettes offered in the dropdown of the palettes panel */
+export const assertPaletteOptions = async (
+  page: Page,
+  names: string[]
+): Promise<void> => {
+  await expect(testId(page, "palette-select").locator("option")).toHaveText(names);
+};
+
+/** Check the colors of the palettes panel, in order */
+export const assertPaletteSwatches = async (
+  page: Page,
+  colors: string[]
+): Promise<void> => {
+  await expect
+    .poll(() =>
+      page
+        .locator(".palettes-list-color")
+        .evaluateAll((elements) =>
+          elements.map((element) => (element as HTMLElement).dataset.color)
+        )
+    )
+    .toEqual(colors);
+};
+
+/** Check how many colors the palettes panel shows */
+export const assertPaletteSwatchCount = async (
+  page: Page,
+  count: number
+): Promise<void> => {
+  await expect(page.locator(".palettes-list-color")).toHaveCount(count);
+};
+
+/** Check how many colors the palette dialog lists */
+export const assertPaletteDialogColorCount = async (
+  page: Page,
+  count: number
+): Promise<void> => {
+  await expect(page.locator(".create-palette-color")).toHaveCount(count);
+};
+
+/** Locator for the swatch of a color in the palettes panel */
+export const getPaletteSwatch = (page: Page, color: string): Locator =>
+  page.locator(`.palettes-list-color[data-color="${color}"]`);
+
+/** Check which swatches are highlighted. Use null when none should be */
+export const assertSwatchHighlights = async (
+  page: Page,
+  highlights: { primary: string | null; secondary: string | null }
+): Promise<void> => {
+  const assertHighlight = async (selector: string, color: string | null) => {
+    const swatch = page.locator(selector);
+    if (color === null) {
+      await expect(swatch).toHaveCount(0);
+    } else {
+      await expect(swatch).toHaveAttribute("data-color", color);
+    }
+  };
+  await assertHighlight(".palettes-list-primary-color", highlights.primary);
+  await assertHighlight(".palettes-list-secondary-color", highlights.secondary);
+};
+
+/** Check the message that the selected palette has no colors */
+export const assertEmptyPaletteMessage = async (page: Page): Promise<void> => {
+  await expect(page.locator(".palettes-list-colors")).toContainText(
+    "No color in this palette"
+  );
+};
+
+/** Check the primary color, waiting for the color picker to update */
+export const assertPrimaryColor = async (
+  page: Page,
+  color: string
+): Promise<void> => {
+  await expect.poll(() => getPrimaryColor(page)).toBe(color);
+};
+
+/** Check the secondary color, waiting for the color picker to update */
+export const assertSecondaryColor = async (
+  page: Page,
+  color: string
+): Promise<void> => {
+  await expect.poll(() => getSecondaryColor(page)).toBe(color);
+};
+
+/** Click the transparent swatch offered by the primary color picker */
+export const clickTransparentSwatchOfPrimaryColor = async (
+  page: Page
+): Promise<void> => {
+  await page
+    .locator('[data-test-id="primary-color-picker"]')
+    .locator("..")
+    .locator(".sp-replacer")
+    .click();
+  await page
+    .locator(".sp-container:not(.sp-hidden) .sp-palette .sp-thumb-el")
+    .first()
+    .click();
+};
+
 /** Try to import a .piskel file whose content isn't a sprite */
 export const importBrokenPiskelFile = async (page: Page): Promise<void> => {
   await browsePiskelFile(page, BROKEN_PISKEL_FILE);
