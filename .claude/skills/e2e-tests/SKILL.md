@@ -24,6 +24,8 @@ await waitFor(async () => (await getFrameTiles(page).count()) === 2);
 await assertFrameCount(page, 2);
 ```
 
+When picking names, use user-friendly, semantic names rather than short, cryptic ones, such as `layer1` instead of `l1`, so the reader doesn't have to work out what a name refers to.
+
 Add a comment for each high-level user step, so the test reads as a scenario from top to bottom:
 
 ```ts
@@ -48,8 +50,8 @@ await waitForGrid(page, 4, 4, EMPTY, { frameIndex: 1 });
 ## Interacting with the app
 
 - Act and read through the UI, as a user would, so tests survive internal refactors.
-- Find elements with `data-test-id` and the `testId(page, 'id')` helper. Add the attribute to the template or controller when it's missing, so tests don't depend on styling classes.
-- Avoid `window.pskl` internals. The accepted bridges are `setPiskelFromGrid` for fixtures, and `getPixelColor`, `readPixelGrid`, `readPixelRows` and `drawAtPixel`, which have no DOM alternative.
+- Find elements with `data-test-id` and the `testId(page, 'id')` helper. Add the attribute to the template or controller when it's missing, so tests don't depend on styling classes. When the work must not change the app, use the existing class in a `testutils.ts` helper instead, as `setLayerPreviewOpacity` and `assertOtherLayerOpacityOnCanvas` do.
+- Avoid `window.pskl` internals. The accepted bridges are `setPiskelFromGrid` for fixtures, and `getPixelColor`, `readPixelGrid`, `readPixelRows`, `drawAtPixel` and `assertOtherLayerOpacityOnCanvas`, which have no DOM alternative.
 - When a test uses modifier keys, add a comment saying what each one does, because the keys alone don't tell the reader which behavior is being tested:
 
   ```ts
@@ -84,6 +86,20 @@ await waitForGrid(page, 4, 4, EMPTY, { frameIndex: 1 });
     '....',
   ]);
   ```
+- When an action has effects elsewhere in the app, check those effects as well as the local change, because a button updating its own look doesn't prove the feature works:
+
+  ```ts
+  // The eye icon changed, but are the other layers really hidden?
+  await toggleLayerPreview(page);
+  await assertLayerPreviewEnabled(page, false);
+  await assertOtherLayerHiddenOnCanvas(page, 0, 0);
+  ```
+
+  Other examples:
+  - After changing a layer's opacity, check the preview as well as the color of the α button.
+  - After deleting a frame, check what the preview plays as well as the frame tiles.
+  - When something should stay unchanged, check that too: changing the layer preview opacity must not change the animated preview.
+
 - Use a screenshot only when the claim is about what's rendered. Screenshot the single element, not the page (unless it's a global test like an app-level layout), and avoid text.
 - For animated content, use `assertPreviewPlays` rather than a screenshot, because a screenshot depends on timing.
 - Make sure a test can fail. For "does nothing" claims, also check that no side effect happened, such as a history step: draw first, and check that undo removes the drawing. For claims about limits or timing, temporarily disable the behavior and confirm the test fails, because these tests can easily pass for the wrong reason.
@@ -101,6 +117,7 @@ await waitForGrid(page, 4, 4, EMPTY, { frameIndex: 1 });
   npx playwright test <path> --retries=0 --repeat-each=5
   ```
 
+- Before temporarily breaking the app to check that a test can fail, make sure nothing is already running on port 9001. Playwright reuses that server, so it can serve an old or broken build and the results won't count.
 - Report the real result, including any test you didn't run.
 
 ## Adding rules
