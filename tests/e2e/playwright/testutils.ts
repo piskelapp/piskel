@@ -68,7 +68,7 @@ export const setPiskelFromImageSrc = async (
       base64Image,
       false,
       (frame: any) => {
-        var layer = window.pskl.model.Layer.fromFrames("l1", [frame]);
+        var layer = window.pskl.model.Layer.fromFrames("Base layer", [frame]);
         var piskel = window.pskl.model.Piskel.fromLayers([layer], 12, {
           name: "piskel",
           description: "description"
@@ -115,7 +115,7 @@ export const setPiskelFromGrid = async (
 
     const pixelGrid = window.pskl.utils.FrameUtils.toFrameGrid(convertedGrid);
     const frame = window.pskl.model.Frame.fromPixelGrid(pixelGrid);
-    const layer = window.pskl.model.Layer.fromFrames("l1", [frame]);
+    const layer = window.pskl.model.Layer.fromFrames("Base layer", [frame]);
     const piskel = window.pskl.model.Piskel.fromLayers([layer], 12, {
       name: "test",
       description: ""
@@ -820,6 +820,95 @@ export const selectBottomLayer = async (page: Page): Promise<void> => {
   await assertCurrentLayer(page, 0);
 };
 
+/** Open the editor in a new page of the same browser, as a new session would */
+export const openEditorInNewPage = async (page: Page): Promise<Page> => {
+  const newPage = await page.context().newPage();
+  await openEditor(newPage);
+  return newPage;
+};
+
+/** Create a 4x4 sprite: a layer with a pixel at (0,0), below an empty current layer */
+export const createEmptyLayerAbovePixel = async (page: Page): Promise<void> => {
+  await setPiskelFromGrid(
+    page,
+    gridFromRows(["X...", "....", "....", "...."])
+  );
+  await getAddLayerButton(page).click();
+  await assertCurrentLayer(page, 1);
+};
+
+/** Check the names shown in the layers list, from top to bottom */
+export const assertLayerNames = async (
+  page: Page,
+  names: string[]
+): Promise<void> => {
+  await expect(getLayerNameLocators(page)).toHaveText(names);
+};
+
+/** Shift+click on the add button, which duplicates the current layer */
+export const duplicateCurrentLayer = async (page: Page): Promise<void> => {
+  await getAddLayerButton(page).click({ modifiers: ["Shift"] });
+};
+
+/** Rename the current layer with the edit button */
+export const renameCurrentLayer = async (
+  page: Page,
+  name: string
+): Promise<void> => {
+  await testId(page, "layer-edit-button").click();
+  const input = testId(page, "layer-name-input");
+  await input.fill(name);
+  await input.press("Enter");
+};
+
+/** Click the eye icon at the top of the layers list */
+export const toggleLayerPreview = async (page: Page): Promise<void> => {
+  await testId(page, "layer-preview-toggle").click();
+};
+
+/** Check whether layer preview is on, from the eye icon of the layers list */
+export const assertLayerPreviewEnabled = async (
+  page: Page,
+  enabled: boolean
+): Promise<void> => {
+  const toggle = testId(page, "layer-preview-toggle");
+  if (enabled) {
+    await expect(toggle).toHaveClass(/layers-toggle-preview-enabled/);
+  } else {
+    await expect(toggle).not.toHaveClass(/layers-toggle-preview-enabled/);
+  }
+};
+
+/** Open or close the preferences drawer, on the Misc tab by default */
+const togglePreferencesPanel = async (page: Page): Promise<void> => {
+  await page.click('[data-setting="user"]');
+};
+
+/**
+ * Set the opacity of layer preview with the slider labelled "Layer opacity" in
+ * the preferences, then close the drawer.
+ */
+export const setLayerPreviewOpacity = async (
+  page: Page,
+  opacity: number
+): Promise<void> => {
+  await togglePreferencesPanel(page);
+  await page.locator(".layer-opacity-input").fill(String(opacity));
+  await togglePreferencesPanel(page);
+  await waitFor(async () => !(await isSettingsDrawerExpanded(page)));
+};
+
+/** Check the value next to the slider labelled "Layer opacity" in the preferences */
+export const assertLayerPreviewOpacity = async (
+  page: Page,
+  opacity: string
+): Promise<void> => {
+  await togglePreferencesPanel(page);
+  await expect(page.locator(".layer-opacity-text")).toHaveText(opacity);
+  await togglePreferencesPanel(page);
+  await waitFor(async () => !(await isSettingsDrawerExpanded(page)));
+};
+
 /** Delete a frame with the delete action of its tile */
 export const deleteFrame = async (
   page: Page,
@@ -1081,13 +1170,18 @@ export const openEditorWithFakeClock = async (page: Page): Promise<void> => {
   await openEditor(page);
 };
 
-/** Read the image shown by the animated preview as an ASCII art grid */
-const readPreviewFrame = async (page: Page): Promise<string[]> => {
+/** Decode the image shown by the animated preview */
+const readPreviewImage = async (page: Page) => {
   const backgroundImage = await page
     .locator("#animated-preview-container .background-image-frame-container")
     .evaluate((element) => getComputedStyle(element).backgroundImage);
   const dataUrl = backgroundImage.slice(5, -2); // strip url(" and ")
-  const { width, height, pixels } = await decodePngDataUrl(page, dataUrl);
+  return await decodePngDataUrl(page, dataUrl);
+};
+
+/** Read the image shown by the animated preview as an ASCII art grid */
+const readPreviewFrame = async (page: Page): Promise<string[]> => {
+  const { width, height, pixels } = await readPreviewImage(page);
   return Array.from({ length: height }, (_, row) =>
     Array.from({ length: width }, (_, col) =>
       pixels[row * width + col][3] === 0 ? "." : "X"
@@ -1126,6 +1220,98 @@ export const assertPreviewPlays = async (
   expect([...playedFrames].sort()).toEqual(
     frames.map((frame) => frame.join("\n")).sort()
   );
+};
+
+/**
+ * Screenshot the drawing canvas once it stopped changing, as it is laid out again
+ * shortly after the sprite changes (DrawingController uses setTimeout(200)).
+ */
+export const screenshotSettledCanvas = async (page: Page): Promise<Buffer> => {
+  const canvas = testId(page, "drawing-canvas");
+  let screenshot = await canvas.screenshot();
+  await expect
+    .poll(async () => {
+      await wait(300);
+      const previous = screenshot;
+      screenshot = await canvas.screenshot();
+      return screenshot.equals(previous);
+    })
+    .toBe(true);
+  return screenshot;
+};
+
+/**
+ * Check how opaque (0 to 1) a pixel of a non-current layer looks on the canvas,
+ * waiting for the canvas to update. Layer preview draws these layers on their own
+ * canvases, with the layer's opacity in the pixels and the preference in the CSS.
+ */
+export const assertOtherLayerOpacityOnCanvas = async (
+  page: Page,
+  col: number,
+  row: number,
+  opacity: number
+): Promise<void> => {
+  await expect
+    .poll(async () => {
+      const visibleOpacity = await page.evaluate(
+        ({ col, row }) => {
+          const { x, y } =
+            window.pskl.app.drawingController.getScreenCoordinates(col, row);
+          const canvases = Array.from(
+            document.querySelectorAll<HTMLCanvasElement>(".layers-canvas")
+          );
+          return Math.max(
+            ...canvases.map((canvas) => {
+              const { left, top } = canvas.getBoundingClientRect();
+              const alpha = canvas
+                .getContext("2d")!
+                .getImageData(Math.floor(x - left), Math.floor(y - top), 1, 1)
+                .data[3];
+              return (alpha / 255) * Number(getComputedStyle(canvas).opacity);
+            })
+          );
+        },
+        { col, row }
+      );
+      return Math.abs(visibleOpacity - opacity) <= 0.01;
+    })
+    .toBe(true);
+};
+
+/**
+ * Check that a pixel of a non-current layer is hidden on the canvas. It is also
+ * hidden before the canvas renders, so wait for the canvas to settle first.
+ */
+export const assertOtherLayerHiddenOnCanvas = async (
+  page: Page,
+  col: number,
+  row: number
+): Promise<void> => {
+  await screenshotSettledCanvas(page);
+  await assertOtherLayerOpacityOnCanvas(page, col, row, 0);
+};
+
+/**
+ * Check the alpha (0 to 255) of a pixel of the animated preview, waiting for the
+ * preview to update. Allows for the rounding of the browser's canvas.
+ */
+export const assertPreviewPixelAlpha = async (
+  page: Page,
+  col: number,
+  row: number,
+  alpha: number
+): Promise<void> => {
+  // At 1x, each pixel of the sprite is one pixel of the preview.
+  await page.keyboard.press("Alt+1");
+  const spriteWidth = await getCurrentPiskelWidth(page);
+  await expect
+    .poll(async () => {
+      const { width, pixels } = await readPreviewImage(page);
+      return width === spriteWidth
+        ? Math.abs(pixels[row * width + col][3] - alpha) <= 2
+        : false;
+    })
+    .toBe(true);
 };
 
 /**

@@ -56,7 +56,7 @@ test.describe('Export content', () => {
     expect((await downloadGifExport(page)).frames).toEqual([composed]);
   });
 
-  test('exports should respect the opacity of the layers', { tag: ['@export.content'] }, async ({ page }) => {
+  test('exports should respect the opacity of the layers', { tag: ['@export.content', '@layers.opacity-rendering'] }, async ({ page }) => {
     // Start from a sprite with a red pixel in the bottom layer.
     await openEditor(page);
     await setPiskelFromGrid(page, gridFromRows(['X.']));

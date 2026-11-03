@@ -16,8 +16,8 @@ its colors, across the whole animation.
 - `layers.add` The add button creates an empty layer above the current
   one, named "Layer N", and selects it.
 - `layers.duplicate` `shift`+click on the add button duplicates the
-  current layer instead. The copy is named "<name> (clone)" and is
-  inserted above the current layer.
+  current layer instead. The copy is named "<name> (clone)", is inserted
+  above the current layer, and is selected.
 - `layers.rename` The edit button or double-click opens an inline input.
   `Enter` confirms. Confirming an empty name keeps the old one.
 - `layers.rename-cancel` `Escape` or clicking elsewhere (blur) cancels the
@@ -39,12 +39,15 @@ its colors, across the whole animation.
   opacity of 1.
 - `layers.opacity-indicator` The indicator's color shows whether the layer
   is opaque (gold), fully transparent (gray) or in between (white).
-- `layers.opacity-rendering` Opacity applies to the canvas, the preview
-  and exports.
+- `layers.opacity-rendering` Opacity applies to rendered output: the preview
+  and exports. The canvas draws the current layer without it, to allow proper
+  drawing. The other layers shown by layer preview combine it with the "layer
+  opacity" preference: a layer at 0.5 with a preference of 0.2 shows at 0.1.
 - `layers.preview` Layer preview (`alt+L`, or the toggle at the top of the
   list): when on, the layers above and below the current one are drawn on
-  the canvas at the "layer opacity" set in preferences. When off, only the
-  current layer is shown on the canvas. On by default.
+  the canvas at the "layer opacity" set in preferences, multiplied by their
+  own opacity (see `layers.opacity-rendering`). When off, only the current
+  layer is shown on the canvas. On by default.
 - `layers.preview-saved` Whether layer preview is on is remembered
   across sessions.
 - `layers.preview-opacity` Setting the "layer opacity" preference to 0

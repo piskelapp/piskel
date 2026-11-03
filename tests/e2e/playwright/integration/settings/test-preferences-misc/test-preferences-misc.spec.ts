@@ -99,7 +99,7 @@ test.describe('Preferences — Misc tab', () => {
     });
   });
 
-  test('layer opacity should default to 0.20', { tag: ['@settings.layer-opacity'] }, async ({ page }) => {
+  test('layer preview opacity should default to 0.20', { tag: ['@settings.layer-opacity'] }, async ({ page }) => {
     await openEditor(page);
     await openMiscPreferences(page);
 
@@ -166,9 +166,9 @@ test.describe('Preferences — Misc tab', () => {
     await expect(canvas(page)).toHaveScreenshot('bg-medium.png', screenshotOpts);
   });
 
-  // ─── Layer opacity screenshots ─────────────────────────────────
+  // ─── Layer preview opacity screenshots ─────────────────────────
 
-  test('layer opacity affects canvas rendering with multiple layers', { tag: ['@settings.layer-opacity', '@layers.preview'] }, async ({ page }) => {
+  test('layer preview opacity affects canvas rendering with multiple layers', { tag: ['@settings.layer-opacity', '@layers.preview'] }, async ({ page }) => {
     await openEditor(page);
     await setPiskelFromGrid(page, [
       ['R', 'R', 'T', 'T'],
@@ -208,7 +208,7 @@ test.describe('Preferences — Misc tab', () => {
     await page.locator('.color-format-select').selectOption('rgb');
     await wait(100);
 
-    // 3. Layer opacity → 0.50
+    // 3. Layer preview opacity → 0.50
     await page.evaluate(() => {
       const slider = document.querySelector('.layer-opacity-input') as HTMLInputElement;
       slider.value = '0.50';

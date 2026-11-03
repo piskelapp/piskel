@@ -24,8 +24,10 @@ Three tabs: Misc, Grid and Tile mode.
 - `settings.background` **Background** (Misc): canvas checkerboard style,
   one of four, low-contrast dark by default.
 - `settings.layer-opacity` **Layer opacity** (Misc): opacity of
-  non-current layers on the canvas (see [layers.md](layers.md)), 0.2 by
-  default.
+  non-current layers on the canvas when layer preview is on (see
+  [layers.md](layers.md)), 0.2 by default. Not to be confused with the
+  opacity of a layer itself, set with the α button of the layer: the two are
+  multiplied.
 - `settings.max-fps` **Maximum FPS** (Misc): upper bound of the preview
   FPS slider, 24 by default. An invalid value is reverted. See
   [preview.md](preview.md) for its effect on the sprite's FPS.

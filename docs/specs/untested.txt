@@ -50,12 +50,6 @@ keyboard-shortcuts.forbidden-keys
 keyboard-shortcuts.ignore-inputs
 keyboard-shortcuts.mac-labels
 keyboard-shortcuts.persist
-layers.duplicate
-layers.list-order
-layers.long-names
-layers.opacity-rendering
-layers.preview-opacity
-layers.preview-saved
 preview.max-fps
 preview.minimap-drag
 preview.saved
