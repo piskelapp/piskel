@@ -1001,6 +1001,13 @@ export const assertFrameThumbnail = async (
 /** Download the sprite as a .piskel file and return the path of the file */
 export const downloadPiskelFile = async (page: Page): Promise<string> => {
   await openSaveSettingsPanel(page);
+  return await downloadPiskelFileFromSavePanel(page);
+};
+
+/** Same as downloadPiskelFile, when the save panel is already open */
+export const downloadPiskelFileFromSavePanel = async (
+  page: Page
+): Promise<string> => {
   const downloadPromise = page.waitForEvent("download");
   await testId(page, "save-file-download-button").click();
   const download = await downloadPromise;
@@ -1171,7 +1178,7 @@ export const downloadGifExport = async (page: Page) => {
   const hasTransparentColor = gifFrames.every(
     (frame) => frame.transparentIndex !== undefined && frame.transparentIndex >= 0
   );
-  return { width, height, frames, hasTransparentColor, rgbAt };
+  return { file, width, height, frames, hasTransparentColor, rgbAt };
 };
 
 /**
@@ -1649,17 +1656,398 @@ export const closeNotification = async (page: Page): Promise<void> => {
   await page.locator("#user-message").getByTitle("Close message").click();
 };
 
-/** Try to import a .piskel file whose content isn't a sprite */
-export const importBrokenPiskelFile = async (page: Page): Promise<void> => {
+/** A file that a test can drop on the editor or pick in a file chooser */
+type TestFile = { name: string; mimeType: string; base64: string };
+
+/** Create a PNG file from an ASCII art grid: X is red, . is transparent */
+export const createPngFile = async (
+  page: Page,
+  name: string,
+  rows: string[]
+): Promise<TestFile> => {
+  const base64 = await page.evaluate((rows) => {
+    const canvas = document.createElement("canvas");
+    canvas.width = rows[0].length;
+    canvas.height = rows.length;
+    const context = canvas.getContext("2d")!;
+    context.fillStyle = "#FF0000";
+    rows.forEach((row, y) => {
+      [...row].forEach((pixel, x) => {
+        if (pixel === "X") context.fillRect(x, y, 1, 1);
+      });
+    });
+    return canvas.toDataURL("image/png").split(",")[1];
+  }, rows);
+  return { name, mimeType: "image/png", base64 };
+};
+
+/** Read a .piskel file saved on disk, such as one from downloadPiskelFile */
+export const readPiskelFile = async (piskelPath: string): Promise<TestFile> => ({
+  name: nodePath.basename(piskelPath),
+  mimeType: "application/octet-stream",
+  base64: (await fs.readFile(piskelPath)).toString("base64")
+});
+
+/** A .piskel file whose content isn't a sprite */
+export const BROKEN_PISKEL_FILE: TestFile = {
+  name: "broken.piskel",
+  mimeType: "application/octet-stream",
+  base64: Buffer.from("this is not a sprite").toString("base64")
+};
+
+/** Drop files on the editor, over a pixel of the sprite */
+export const dropFilesOnPixel = async (
+  page: Page,
+  files: TestFile[],
+  col = 0,
+  row = 0
+): Promise<void> => {
+  const { x, y } = await getPixelScreenPosition(page, col, row);
+  const dataTransfer = await page.evaluateHandle((files) => {
+    const transfer = new DataTransfer();
+    files.forEach(({ name, mimeType, base64 }) => {
+      const bytes = Uint8Array.from(atob(base64), (c) => c.charCodeAt(0));
+      transfer.items.add(new File([bytes], name, { type: mimeType }));
+    });
+    return transfer;
+  }, files);
+  await page.dispatchEvent("body", "drop", {
+    dataTransfer,
+    clientX: x,
+    clientY: y
+  });
+};
+
+/** Pick a file with a button of the import drawer */
+const browseFile = async (page: Page, button: Locator, file: TestFile) => {
   await openImportSettingsPanel(page);
   const fileChooserPromise = page.waitForEvent("filechooser");
-  await testId(page, "import-piskel-button").click();
+  await button.click();
   const fileChooser = await fileChooserPromise;
   await fileChooser.setFiles({
-    name: "broken.piskel",
-    mimeType: "application/octet-stream",
-    buffer: Buffer.from("this is not a sprite")
+    name: file.name,
+    mimeType: file.mimeType,
+    buffer: Buffer.from(file.base64, "base64")
   });
+};
+
+/** Pick an image in the import drawer, and wait for the wizard's first step */
+export const browseImageFile = async (
+  page: Page,
+  file: TestFile
+): Promise<void> => {
+  await browseFile(page, page.locator(".file-input-button"), file);
+  await expect(page.locator(".current-step.import-image-container")).toBeAttached();
+};
+
+/** Pick a .piskel file in the import drawer */
+export const browsePiskelFile = async (
+  page: Page,
+  file: TestFile
+): Promise<void> => {
+  await browseFile(page, testId(page, "import-piskel-button"), file);
+};
+
+/** Go to the next step of the import wizard */
+export const clickWizardNext = async (page: Page): Promise<void> => {
+  await page.locator(".current-step .import-next-button").click();
+};
+
+/** Choose to replace the sprite in the select mode step of the import wizard */
+export const clickWizardReplace = async (page: Page): Promise<void> => {
+  await page.locator(".current-step .import-mode-replace-button").click();
+};
+
+/** Go back to the previous step of the import wizard */
+export const clickWizardBack = async (page: Page): Promise<void> => {
+  await page.locator(".current-step .import-back-button").click();
+};
+
+/** Choose to combine with the sprite in the select mode step of the import wizard */
+export const clickWizardCombine = async (page: Page): Promise<void> => {
+  await page.locator(".current-step .import-mode-merge-button").click();
+};
+
+const WIZARD_STEP_SELECTORS = {
+  "image import": ".import-section-preview",
+  "select mode": ".import-mode",
+  "adjust size": ".import-resize-info",
+  "insert location": ".insert-mode-container"
+};
+
+/**
+ * Check which step of the import wizard is showing. Do this before clicking a
+ * button of a new step: the previous step stays current during the transition.
+ */
+export const assertWizardStep = async (
+  page: Page,
+  step: keyof typeof WIZARD_STEP_SELECTORS
+): Promise<void> => {
+  await expect(
+    page.locator(`.current-step ${WIZARD_STEP_SELECTORS[step]}`)
+  ).toBeAttached();
+};
+
+/** Combine with a sprite of the same size, using the default insert location */
+export const combineInWizard = async (page: Page): Promise<void> => {
+  await assertWizardStep(page, "select mode");
+  await clickWizardCombine(page);
+  await assertWizardStep(page, "insert location");
+  await clickWizardNext(page);
+  await assertNoDialogOpen(page);
+};
+
+/** Close the import wizard with its close button */
+export const closeImportWizard = async (page: Page): Promise<void> => {
+  await page.locator(".dialog-close").click();
+  await assertNoDialogOpen(page);
+};
+
+/** Check that the current wizard step has no back button */
+export const assertNoWizardBackButton = async (page: Page): Promise<void> => {
+  await expect(page.locator(".current-step .import-back-button")).toBeHidden();
+};
+
+/** Check the summary of the imported content shown by the current wizard step */
+export const assertWizardSummary = async (
+  page: Page,
+  summary: { name: string; size: string; frames: number; layers: number }
+): Promise<void> => {
+  const meta = page.locator(".current-step .import-meta");
+  const value = (section: string) =>
+    meta.locator(`.${section} .import-meta-value`);
+  await expect(value("import-name")).toHaveText(summary.name);
+  await expect(value("import-dimensions")).toHaveText(summary.size);
+  await expect(value("import-frames")).toHaveText(String(summary.frames));
+  await expect(value("import-layers")).toHaveText(String(summary.layers));
+  await expect(
+    page.locator(".current-step .import-preview .frame-viewer .canvas-background")
+  ).toBeVisible();
+};
+
+/** Run the action that replaces the sprite, and accept the confirmation */
+export const confirmReplacement = async (
+  page: Page,
+  action: () => Promise<void>
+): Promise<void> => {
+  const confirmation = answerNextConfirm(page, "accept");
+  await action();
+  await confirmation;
+  await assertNoDialogOpen(page);
+};
+
+/** Choose "expand" or "keep" in the adjust size step */
+export const selectResizeOption = async (
+  page: Page,
+  option: "expand" | "keep"
+): Promise<void> => {
+  await page.locator(`#resize-option-${option}`).check();
+};
+
+/** Check which of "expand" or "keep" is selected in the adjust size step */
+export const assertResizeOption = async (
+  page: Page,
+  option: "expand" | "keep"
+): Promise<void> => {
+  await expect(page.locator(`#resize-option-${option}`)).toBeChecked();
+};
+
+/** Check that the adjust size step doesn't offer "expand" or "keep" */
+export const assertNoResizeOptions = async (page: Page): Promise<void> => {
+  await expect(page.locator(".current-step [name=\"resize-mode\"]")).toHaveCount(0);
+};
+
+/** Check the warning shown when keeping the size will crop the content */
+export const assertCropWarning = async (page: Page): Promise<void> => {
+  await expect(page.locator(".current-step .import-resize-warning")).toHaveText(
+    "Imported content will be cropped!"
+  );
+};
+
+/** Check the nine positions of the anchor, and which one is selected */
+export const assertWizardAnchor = async (
+  page: Page,
+  origin: string
+): Promise<void> => {
+  await expect(page.locator(".current-step .anchor-option")).toHaveCount(9);
+  await expect(
+    page.locator(".current-step .anchor-option.selected")
+  ).toHaveAttribute("data-origin", origin);
+};
+
+/** Locator for the text that says what the anchor does */
+export const getWizardAnchorLabel = (page: Page): Locator =>
+  page.locator(".current-step .import-resize-anchor-info");
+
+/** Choose "add" (as new frames) or "insert" (in existing frames) */
+export const selectInsertMode = async (
+  page: Page,
+  mode: "add" | "insert"
+): Promise<void> => {
+  await page.locator(`#insert-mode-${mode}`).check();
+};
+
+/** Check which of "add" or "insert" is selected in the insert location step */
+export const assertInsertMode = async (
+  page: Page,
+  mode: "add" | "insert"
+): Promise<void> => {
+  await expect(page.locator(`#insert-mode-${mode}`)).toBeChecked();
+};
+
+/** Go to the very start of the frames in the insert location step */
+export const clickFirstInsertFrame = async (page: Page): Promise<void> => {
+  await page.locator(".current-step .insert-frame-preview .frame-nav-first").click();
+};
+
+/** Locator for the name of the file in the image import step */
+export const getImportedFileName = (page: Page): Locator =>
+  page.locator(".current-step .import-image-file-name");
+
+/** Locator for the preview of the image in the image import step */
+export const getImportedImagePreview = (page: Page): Locator =>
+  page.locator(".current-step .import-section-preview img");
+
+/** Locator for the grid drawn on the preview in the image import step */
+export const getSpritesheetGrid = (page: Page): Locator =>
+  page.locator(".current-step .import-section-preview canvas");
+
+/** Locator for the "Smooth resize" checkbox of the image import step */
+export const getSmoothResizeCheckbox = (page: Page): Locator =>
+  page.locator('.current-step [name="smooth-resize-checkbox"]');
+
+/** Check the name of the sprite, whether or not it has unsaved changes */
+export const assertSpriteName = async (
+  page: Page,
+  name: string
+): Promise<void> => {
+  await expect(page.locator(".piskel-name")).toHaveText(
+    new RegExp(`^${name}( \\*)?$`)
+  );
+};
+
+/** Fill in the name and description of the open save panel */
+export const fillSpriteNameAndDescription = async (
+  page: Page,
+  name: string,
+  description: string
+): Promise<void> => {
+  await page.locator("#save-name").fill(name);
+  await page.locator("#save-description").fill(description);
+};
+
+/** Check the description of the sprite, in the save panel */
+export const assertSpriteDescription = async (
+  page: Page,
+  description: string
+): Promise<void> => {
+  await openSaveSettingsPanel(page);
+  await expect(page.locator("#save-description")).toHaveValue(description);
+};
+
+/** Select "single image" or "spritesheet" in the image import step */
+export const selectImportType = async (
+  page: Page,
+  importType: "single" | "sheet"
+): Promise<void> => {
+  await page.locator(`input[name="import-type"][value="${importType}"]`).check();
+};
+
+/** Check whether "single image" or "spritesheet" is selected */
+export const assertImportType = async (
+  page: Page,
+  importType: "single" | "sheet"
+): Promise<void> => {
+  await expect(
+    page.locator(`input[name="import-type"][value="${importType}"]`)
+  ).toBeChecked();
+};
+
+/** Locator for a field of the current wizard step, such as "frame-size-x" */
+export const getWizardField = (page: Page, name: string): Locator =>
+  page.locator(`.current-step [name="${name}"]`);
+
+/** Type over the value of a field of the current wizard step */
+export const typeInWizardField = async (
+  page: Page,
+  name: string,
+  value: string
+): Promise<void> => {
+  const field = getWizardField(page, name);
+  await field.selectText();
+  await field.pressSequentially(value);
+};
+
+/** Click one of the nine positions of the anchor, such as "BOTTOMRIGHT" */
+export const pickWizardAnchor = async (
+  page: Page,
+  origin: string
+): Promise<void> => {
+  await page.locator(`.current-step .anchor-option[data-origin="${origin}"]`).click();
+};
+
+/** Locator for the frame number in the insert location step */
+export const getInsertFrameInput = (page: Page): Locator =>
+  page.locator(".current-step .insert-frame-preview .frame-nav-input");
+
+/** Pick a frame in the insert location step, by its number from 1 */
+export const pickInsertFrame = async (
+  page: Page,
+  frameNumber: number
+): Promise<void> => {
+  await getInsertFrameInput(page).fill(String(frameNumber));
+  await getInsertFrameInput(page).blur();
+  await expect(getInsertFrameInput(page)).toHaveValue(String(frameNumber));
+};
+
+/** The wizard counts a sprite as empty until its colors are listed */
+export const waitForColorsToBeListed = async (page: Page): Promise<void> => {
+  await expect.poll(() => isCurrentPiskelEmpty(page)).toBe(false);
+};
+
+/** Check the frames of a layer, as ASCII art grids, and the size of the sprite */
+export const assertLayerFrames = async (
+  page: Page,
+  layerIndex: number,
+  frames: string[][]
+): Promise<void> => {
+  const width = frames[0][0].length;
+  const height = frames[0].length;
+  await assertFrameCount(page, frames.length);
+  await expect.poll(() => getCurrentPiskelWidth(page)).toBe(width);
+  await expect.poll(() => getCurrentPiskelHeight(page)).toBe(height);
+  for (const [frameIndex, rows] of frames.entries()) {
+    await expect
+      .poll(() => readPixelRows(page, width, height, layerIndex, frameIndex))
+      .toEqual(rows);
+  }
+};
+
+/** Set the FPS with the slider of the preview */
+export const setFps = async (page: Page, fps: number): Promise<void> => {
+  await testId(page, "fps-slider").fill(String(fps));
+  await assertFps(page, fps);
+};
+
+/**
+ * Answer the next native confirm dialog. The returned promise gives its
+ * message, so awaiting it also checks that the dialog appeared.
+ */
+export const answerNextConfirm = (
+  page: Page,
+  answer: "accept" | "dismiss"
+): Promise<string> =>
+  new Promise((resolve) => {
+    page.once("dialog", async (dialog) => {
+      const message = dialog.message();
+      await dialog[answer]();
+      resolve(message);
+    });
+  });
+
+/** Try to import a .piskel file whose content isn't a sprite */
+export const importBrokenPiskelFile = async (page: Page): Promise<void> => {
+  await browsePiskelFile(page, BROKEN_PISKEL_FILE);
 };
 
 /** Trigger undo via keyboard */

@@ -27,7 +27,7 @@ const notifications = [
   {
     kind: 'import error',
     trigger: importBrokenPiskelFile,
-    message: 'Piskel file import failed (Invalid piskel file',
+    message: 'Piskel file import failed',
     hidesAfterSeconds: 10,
   },
   {

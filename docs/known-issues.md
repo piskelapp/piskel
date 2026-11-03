@@ -73,12 +73,38 @@ See [import.md](specs/import.md).
 
 - When dropping several images, each new frame is selected and then
   `selectNextFrame` moves one frame further, so unless the current frame is
-  the last one, images are drawn on existing frames rather than on the new
-  empty ones. Found by reading `FileDropperService.onImageLoaded_`, not
-  reproduced.
+  the last one, images overwrite existing frames and the new frames stay empty
+  (`FileDropperService.onImageLoaded_`).
+- The import wizard counts a sprite as empty until its current colors are
+  listed (`PiskelController.isEmpty`). Importing an image right after changing
+  the sprite can skip the choice between replacing and combining. The
+  confirmation to replace still shows.
 - `onRestorePreviousSessionClick_` in `ImportController` is not wired
   to any element. Likely dead code left over from before the backups
   dialog.
+- Combining content that's bigger in one direction only (wider but shorter, or
+  taller but narrower) with **expand** leaves the imported layer at its own size:
+  a 4x1 image combined with a 2x2 sprite gives a 4x2 sprite with a 4x1 layer, and
+  the anchor is ignored for that layer. `MergeUtils.merge` only resizes the current
+  sprite in that case.
+- An animated GIF imported as a spritesheet isn't cut, but each of its frames is
+  squeezed to the frame size: a 4x4 GIF with a 2x2 frame size gives a 2x2 sprite
+  that shows whole GIF frames, shrunk (`ImportService.newPiskelFromImage`).
+- After going back from the insert location step and forward again, with **in
+  existing frames** selected, the frame number can reach 0. Importing there closes
+  the wizard normally, but the imported layer is empty on every frame, so the content
+  is lost without a message. `InsertLocation.onShow` always allows frame 0.
+- After going back from the insert location step and forward again, the buttons of
+  the frame picker move two frames at a time. `InsertLocation.onShow` calls the
+  widget's `init` on every show, which likely adds its listeners again.
+- The wizard gets stuck without a message when the sizes give no usable frames: a
+  frame size larger than the image or an offset past its edge (no frames to cut),
+  or a resize field that's empty, 0 or text. Clicking next does nothing, and only
+  the console shows an error (`ImageImport.onNextClick`).
+- Frame size and offset fields are rewritten on every key press
+  (`ImageImport.synchronizeFrameFields_`). Clearing a frame size with Backspace
+  makes it `1`, so typing `2` then gives `12`, and typing `-3` in an offset gives
+  `03`. Selecting the value and typing over it works.
 - Wrong file types are rejected without telling the user: a non-`.piskel`
   file in "Browse .piskel files", a non-image in "Browse images", several
   files in the wizard, or a palette file that fails to load on drop only

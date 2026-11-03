@@ -31,16 +31,6 @@ editor.loading
 editor.progress-bar
 editor.unsupported-browser
 export.content-other-formats
-import.animated-gif
-import.combine-selection
-import.drop-large-image
-import.drop-piskel
-import.drop-several-images
-import.drop-small-image
-import.image-name
-import.piskel-error
-import.replace-confirm
-import.undo
 save-and-storage.backup-limits
 save-and-storage.backup-on-close
 save-and-storage.backups-delete
