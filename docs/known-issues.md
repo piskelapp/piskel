@@ -105,6 +105,9 @@ See [layers.md](specs/layers.md).
   opaque (`LayerUtils.mergeLayers`).
 - Dismissing the opacity prompt still records an undo step and marks the
   sprite as modified.
+- "Layer opacity" names two different settings: the opacity of a layer (α
+  button) and the preference for how other layers show on the canvas. See
+  [the TODO](../TODO/clarify-layer-opacity-preference.md).
 
 ## Preview
 
