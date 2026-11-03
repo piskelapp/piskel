@@ -1563,6 +1563,23 @@ export const closeCheatsheet = async (page: Page): Promise<void> => {
   ).toBeAttached();
 };
 
+/** Check which dialog is open, by its id such as "cheatsheet" */
+export const assertDialogOpen = async (
+  page: Page,
+  dialogId: string
+): Promise<void> => {
+  await expect(page.locator("#dialog-container-wrapper")).toHaveClass(/show/);
+  await expect(page.locator("#dialog-container")).toHaveClass(dialogId);
+};
+
+/** Check that no dialog is open, waiting for it to be fully removed */
+export const assertNoDialogOpen = async (page: Page): Promise<void> => {
+  await expect(page.locator("#dialog-container-wrapper")).not.toHaveClass(
+    /show/
+  );
+  await expect(page.locator("#dialog-container")).toBeEmpty();
+};
+
 /** Locator for a shortcut of the cheatsheet, by its id such as "tool-pen" */
 export const getCheatsheetShortcut = (page: Page, shortcutId: string) =>
   page.locator(`[data-shortcut-id="${shortcutId}"]`);

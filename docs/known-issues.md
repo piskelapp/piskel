@@ -92,6 +92,11 @@ See [keyboard-shortcuts.md](specs/keyboard-shortcuts.md).
   `ctrl+X/C/V` keep working.
 - The notification for a key taken from another shortcut shows that
   shortcut's internal id (e.g. `tool-pen`) instead of its description.
+- `Escape` doesn't close a dialog opened from the import drawer, such as
+  browse-local or browse-backups. Opening the dialog registers `Escape`, then
+  closing the drawer unregisters it, and `unregisterShortcut` removes the most
+  recent registration of that shortcut: the dialog's, not the drawer's. The close
+  button and a click outside still work. Not reproduced with the `import` dialog.
 - On macOS, the bracketed shortcut in tooltips still shows `alt` and `ctrl`
   (e.g. `Preview all layers (alt+L)`). `TooltipFormatter.format` only converts
   the modifier descriptions to `option` and `cmd`. The cheatsheet is correct.

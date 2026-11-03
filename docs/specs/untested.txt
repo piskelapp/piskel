@@ -27,7 +27,6 @@ drawing-tools.pen-size-saved
 drawing-tools.tooltips
 drawing-tools.transparent-color
 drawing-tools.undo
-editor.dialogs
 editor.loading
 editor.notifications
 editor.progress-bar
