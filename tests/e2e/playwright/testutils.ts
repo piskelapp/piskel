@@ -29,6 +29,11 @@ export const waitForEditorReady = async (page: Page) => {
   });
 };
 
+/** Check that the editor's canvas doesn't exist yet */
+export const assertEditorNotReady = async (page: Page) => {
+  await expect(page.locator("#drawing-canvas-container canvas")).toHaveCount(0);
+};
+
 export const openEditor = async (page: Page) => {
   await page.goto(EDITOR_PATH);
   await waitForEditorReady(page);
@@ -1299,8 +1304,7 @@ export const assertPreviewPlays = async (
   const frameCount = await getFrameTiles(page).count();
 
   // Read the preview twice per frame, to be sure not to miss any.
-  const pageTime = await page.evaluate(() => Date.now());
-  await page.clock.pauseAt(pageTime + 1000);
+  await pauseClock(page);
   const playedFrames = new Set<string>();
   for (let step = 0; step < 2 * 2 * frameCount; step++) {
     await page.clock.runFor(Math.ceil(1000 / fps / 2));
@@ -3254,6 +3258,107 @@ export const assertPerformanceDialogOpen = async (page: Page): Promise<void> => 
 /** Click the link of the notification */
 export const clickNotificationLink = async (page: Page): Promise<void> => {
   await page.locator("#user-message a").click();
+};
+
+/**
+ * Start opening the editor with the app's script held back, so that the page stays on
+ * its loading screen. Returns a function that lets the script load, and waits for the
+ * editor to be ready.
+ */
+export const startOpeningEditorWithoutItsScript = async (
+  page: Page
+): Promise<() => Promise<void>> => {
+  let letScriptLoad: () => void;
+  const scriptAllowed = new Promise<void>((resolve) => {
+    letScriptLoad = resolve;
+  });
+  await page.route(/piskel-packaged/, async (route) => {
+    await scriptAllowed;
+    await route.continue();
+  });
+  const opening = page.goto(EDITOR_PATH);
+  return async () => {
+    letScriptLoad();
+    await opening;
+    await waitForEditorReady(page);
+  };
+};
+
+/** The screen shown while the editor loads */
+export const getLoadingScreen = (page: Page): Locator =>
+  page.locator("#loading-mask");
+
+/** Check that the dialog warning about the browser is open, and names this browser */
+export const assertUnsupportedBrowserWarning = async (
+  page: Page,
+  browserName: string
+): Promise<void> => {
+  await assertDialogOpen(page, "unsupported-browser");
+  await expect(page.locator("#dialog-container")).toContainText(
+    "is not supported"
+  );
+  await expect(page.locator("#current-user-agent")).toHaveText(browserName);
+};
+
+/** Check that the dialog warning about the browser doesn't open at startup */
+export const assertNoUnsupportedBrowserWarning = async (
+  page: Page
+): Promise<void> => {
+  // Give a dialog time to appear, as the check below would pass straight away.
+  await wait(500);
+  await assertNoDialogOpen(page);
+};
+
+/**
+ * Make the app's background workers wait: their messages are kept until the test lets
+ * them go, so that a task takes as long as the test needs. Let the clock settle first,
+ * so that only the task being tested is waiting.
+ */
+export const holdBackgroundWork = (page: Page): Promise<void> =>
+  page.evaluate(() => {
+    const heldWork: Array<() => void> = [];
+    const postMessage = Worker.prototype.postMessage;
+    Worker.prototype.postMessage = function (...args: [any]) {
+      heldWork.push(() => postMessage.apply(this, args));
+    };
+    (window as any).heldWork = heldWork;
+  });
+
+/** Wait for a background task to be waiting, for the tasks that start after loading a file */
+export const waitForHeldBackgroundWork = async (page: Page): Promise<void> => {
+  await expect
+    .poll(() => page.evaluate(() => (window as any).heldWork.length))
+    .toBeGreaterThan(0);
+};
+
+/** Let the oldest message held by holdBackgroundWork reach its worker */
+export const releaseBackgroundWorkStep = (page: Page): Promise<void> =>
+  page.evaluate(() => (window as any).heldWork.shift()());
+
+/** Stop the fake clock, so that time only passes with runClock */
+export const pauseClock = async (page: Page): Promise<void> => {
+  const pageTime = await page.evaluate(() => Date.now());
+  await page.clock.pauseAt(pageTime + 1000);
+};
+
+/** Let time pass on a clock stopped by pauseClock, running each timer that comes due */
+export const runClock = async (page: Page, ms: number): Promise<void> => {
+  await page.clock.runFor(ms);
+};
+
+/** Check the name and the percentage shown by the progress bar */
+export const assertProgressBar = async (
+  page: Page,
+  name: string,
+  percentage: string
+): Promise<void> => {
+  await expect(page.locator(".progress-bar-name")).toHaveText(name);
+  await expect(page.locator(".progress-bar-status")).toHaveText(percentage);
+};
+
+/** Check that no progress bar shows */
+export const assertNoProgressBar = async (page: Page): Promise<void> => {
+  await expect(page.locator(".progress-bar-container")).toHaveCount(0);
 };
 
 /** Colors of an export, by frame and position, as [r, g, b, a] */

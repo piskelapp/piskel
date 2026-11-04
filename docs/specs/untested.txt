@@ -2,6 +2,3 @@
 # This list may only shrink. When you add a test for a claim, remove its
 # id. A new claim without a test must be added here on purpose; run
 # `npm run spec-check -- --update-baseline` to rewrite the list.
-editor.loading
-editor.progress-bar
-editor.unsupported-browser

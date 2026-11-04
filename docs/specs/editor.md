@@ -19,7 +19,8 @@ progress bars.
   and the colors are black and transparent.
 - `editor.unsupported-browser` In browsers other than Chrome, Firefox and
   Edge, a dialog at startup warns that the browser is not supported and
-  names the detected browser.
+  names it (Safari or Opera), or shows its full identity for any other
+  browser. Browsers based on Chrome count as Chrome, except Opera.
 
 ### Dialogs
 
@@ -33,7 +34,7 @@ progress bars.
   themselves after a few seconds.
 - `editor.progress-bar` Long tasks, such as building a GIF or reading an
   image palette, show a progress bar with a percentage, only when they
-  take more than a fraction of a second.
+  take more than 300 ms.
 
 ## UI and shortcuts
 

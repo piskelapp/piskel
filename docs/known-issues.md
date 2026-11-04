@@ -97,6 +97,10 @@ See [editor.md](specs/editor.md).
 - A replaced notification's timer still runs, so it can remove the new message
   early: a message shown 4 seconds after a 5-second one disappears 1 second later.
   `NotificationController.displayMessage_` doesn't cancel the previous timeout.
+- Double-clicking the GIF download button on a small sprite leaves "Building animated
+  GIF ... 0%" on the screen after both exports finish, until the next export ends.
+  `ProgressBarController.showProgress_` starts a timer without cancelling the
+  previous one, so the first timer still shows the bar.
 
 ## Export
 
