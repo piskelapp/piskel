@@ -46,9 +46,18 @@ link the issue.
 See [canvas.md](specs/canvas.md).
 
 - `should show drag origin during rectangle selection` is flaky.
-- Touch listeners are attached to the window, not the canvas, so a tap
-  anywhere (for example on a toolbar button) runs the current tool's
-  press and release. Not reproduced.
+- Touch listeners are attached to the window, not the canvas, so a tap anywhere
+  (for example on a toolbar button) runs the current tool's press and release. It
+  adds an undo step, and when zoomed in and panned it can also draw: a tap on a tool
+  button drew a pixel at (17,13) on a 32x32 sprite.
+- A tap on the canvas runs the tool twice, because the browser follows the touch
+  events with mouse events (`DrawingController.initMouseBehavior`). A pen tap takes
+  two undos to remove, and a lighten tap is twice as strong as a click.
+- Only the width counts when the window is resized (`DrawingController.relayout_`).
+  In a shorter window the zoom stays the same, so the sprite no longer fits: a 32x32
+  sprite stays at x20.94 when the area goes from 670 to 450 pixels tall, and about 10
+  rows are cut off, where x14.06 would keep it all visible. In a taller window the
+  zoom doesn't grow either.
 
 ## Colors and palettes
 

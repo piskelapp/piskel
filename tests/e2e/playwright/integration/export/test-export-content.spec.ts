@@ -1,11 +1,16 @@
-import test, { expect } from "@playwright/test";
+import test, { expect, Page } from "@playwright/test";
 import {
+  assertFrameCount,
   assertHiddenFrames,
   clickTool,
   createThreeFrames,
+  downloadCFileExport,
   downloadGifExport,
+  downloadPixiExport,
   downloadPngExport,
+  downloadZipExport,
   drawAtPixel,
+  getAddFrameButton,
   getAddLayerButton,
   assertCurrentLayer,
   gridFromRows,
@@ -19,6 +24,71 @@ import {
   toggleFrameVisibility,
   testId,
 } from "../../testutils";
+
+/**
+ * Create a 2x1 sprite with two layers and two frames, where the second frame is hidden
+ * from the preview. The top layer is at half opacity:
+ * - frame 1: red then nothing below, green on both pixels above.
+ * - frame 2: nothing below, blue then nothing above.
+ */
+const createSpriteWithLayersAndHiddenFrame = async (page: Page) => {
+  await openEditor(page);
+  await setPiskelFromGrid(page, gridFromRows(['X.']));
+
+  // Add a top layer with green pixels.
+  await getAddLayerButton(page).click();
+  await assertCurrentLayer(page, 1);
+  await clickTool(page, 'tool-pen');
+  await setPrimaryColor(page, '#00FF00');
+  await drawAtPixel(page, 0, 0);
+  expect(await readPixelRows(page, 2, 1, 1, 0)).toEqual(['X.']);
+  await drawAtPixel(page, 1, 0);
+  expect(await readPixelRows(page, 2, 1, 1, 0)).toEqual(['XX']);
+
+  // Add a second frame, with a blue pixel in the top layer.
+  await getAddFrameButton(page).click();
+  await assertFrameCount(page, 2);
+  await setPrimaryColor(page, '#0000FF');
+  await drawAtPixel(page, 0, 0);
+  expect(await readPixelRows(page, 2, 1, 1, 1)).toEqual(['X.']);
+
+  // Hide this second frame, and lower the opacity of the top layer.
+  await toggleFrameVisibility(page, 1);
+  await assertHiddenFrames(page, [1]);
+  await setTopLayerOpacity(page, 0.5);
+};
+
+/** Check a color, allowing for the rounding of half-transparent colors */
+const expectColor = (actual: number[], expected: number[]) => {
+  actual.forEach((channel, i) => {
+    expect(Math.abs(channel - expected[i]), `[${actual}] should be [${expected}]`).toBeLessThanOrEqual(2);
+  });
+};
+
+test.describe('Export content in other formats', () => {
+
+  for (const { format, download } of [
+    { format: 'ZIP', download: downloadZipExport },
+    { format: 'PixiJS', download: downloadPixiExport },
+    { format: 'C file', download: (page: Page) => downloadCFileExport(page, 2) },
+  ]) {
+    test(`${format} should compose the layers, with their opacity, and include hidden frames`, { tag: ['@export.content-other-formats'] }, async ({ page }) => {
+      await createSpriteWithLayersAndHiddenFrame(page);
+
+      await openExportSettingsPanel(page);
+      const exported = await download(page);
+      expect(exported.frameCount).toBe(2);
+
+      // First frame: half green over red gives an opaque mix, and over nothing it stays half green.
+      expectColor(exported.rgbaAt(0, 0, 0), [128, 128, 0, 255]);
+      expectColor(exported.rgbaAt(0, 1, 0), [0, 255, 0, 128]);
+
+      // Hidden frame: half blue over nothing, and then nothing.
+      expectColor(exported.rgbaAt(1, 0, 0), [0, 0, 255, 128]);
+      expect(exported.rgbaAt(1, 1, 0)).toEqual([0, 0, 0, 0]);
+    });
+  }
+});
 
 test.describe('Export content', () => {
 

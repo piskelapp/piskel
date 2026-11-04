@@ -1,30 +1,58 @@
 import test, { expect } from "@playwright/test";
 import {
+  assertNoNotification,
+  assertNoNotificationAppears,
+  assertOnlyNotification,
+  assertPerformanceDialogOpen,
+  assertPerformanceIcon,
+  clickNotificationLink,
+  closeNotification,
   openEditor,
-  openResizeSettingsPanel,
+  resizeSprite,
   waitFor,
-  wait,
 } from "../../testutils";
 
-/** Resize the canvas to a given size via the resize panel */
-async function resizeCanvas(page: any, width: string, height: string) {
-  await openResizeSettingsPanel(page);
-  const ratioCheckbox = page.locator('.resize-ratio-checkbox');
-  if (await ratioCheckbox.isChecked()) {
-    await ratioCheckbox.uncheck();
-  }
-  await page.locator('[name="resize-width"]').fill(width);
-  await page.locator('[name="resize-height"]').fill(height);
+test.describe('Performance notification', () => {
 
-  // Uncheck resize-content so it just expands the canvas
-  const contentCheckbox = page.locator('.resize-content-checkbox');
-  if (await contentCheckbox.isChecked()) {
-    await contentCheckbox.uncheck();
-  }
+  test('should show with a link to the dialog when the warning icon appears', { tag: ['@canvas.performance-notification'] }, async ({ page }) => {
+    // A small sprite shows no message.
+    await openEditor(page);
+    await assertNoNotificationAppears(page);
 
-  await page.click('.resize-button');
-  await wait(500);
-}
+    // Resize it past the limit: the message shows, with the icon.
+    await resizeSprite(page, 600, 600);
+    await assertPerformanceIcon(page, true);
+    await assertOnlyNotification(page, 'Performance problem detected');
+
+    // Its link opens the dialog.
+    await clickNotificationLink(page);
+    await assertPerformanceDialogOpen(page);
+  });
+
+  test('should only show again after the warning icon went away', { tag: ['@canvas.performance-notification'] }, async ({ page }) => {
+    // Resize past the limit, and dismiss the message.
+    await openEditor(page);
+    await resizeSprite(page, 600, 600);
+    await assertOnlyNotification(page, 'Performance problem detected');
+    await closeNotification(page);
+    await assertNoNotification(page);
+
+    // Larger still, the combined score is also too high. The report changes, but the
+    // icon was already there, so no new message shows.
+    await resizeSprite(page, 800, 800);
+    await assertPerformanceIcon(page, true);
+    await assertNoNotificationAppears(page);
+
+    // Back under the limit, the icon goes away, without a message.
+    await resizeSprite(page, 32, 32);
+    await assertPerformanceIcon(page, false);
+    await assertNoNotificationAppears(page);
+
+    // Past the limit again, the message shows again.
+    await resizeSprite(page, 600, 600);
+    await assertOnlyNotification(page, 'Performance problem detected');
+  });
+});
 
 test.describe('Performance info dialog', () => {
 
@@ -40,7 +68,7 @@ test.describe('Performance info dialog', () => {
     await openEditor(page);
 
     // Resize to 600x600 (exceeds 512x512 threshold)
-    await resizeCanvas(page, '600', '600');
+    await resizeSprite(page, 600, 600);
 
     // Warning icon should become visible
     const warningLink = page.locator('.performance-link');
@@ -53,7 +81,7 @@ test.describe('Performance info dialog', () => {
 
   test('clicking warning icon should open performance dialog', { tag: ['@canvas.performance-dialog'] }, async ({ page }) => {
     await openEditor(page);
-    await resizeCanvas(page, '600', '600');
+    await resizeSprite(page, 600, 600);
 
     // Wait for warning to appear
     const warningLink = page.locator('.performance-link');
@@ -72,7 +100,7 @@ test.describe('Performance info dialog', () => {
 
   test('performance dialog should close with X button', { tag: ['@canvas.performance-dialog'] }, async ({ page }) => {
     await openEditor(page);
-    await resizeCanvas(page, '600', '600');
+    await resizeSprite(page, 600, 600);
 
     const warningLink = page.locator('.performance-link');
     await waitFor(async () => {
@@ -91,7 +119,7 @@ test.describe('Performance info dialog', () => {
 
   test('performance dialog should close with ESC', { tag: ['@canvas.performance-dialog'] }, async ({ page }) => {
     await openEditor(page);
-    await resizeCanvas(page, '600', '600');
+    await resizeSprite(page, 600, 600);
 
     const warningLink = page.locator('.performance-link');
     await waitFor(async () => {

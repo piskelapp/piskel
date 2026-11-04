@@ -2,14 +2,6 @@
 # This list may only shrink. When you add a test for a claim, remove its
 # id. A new claim without a test must be added here on purpose; run
 # `npm run spec-check -- --update-baseline` to rewrite the list.
-canvas.fit-on-resize
-canvas.grid-zoom
-canvas.no-context-menu
-canvas.performance-notification
-canvas.touch
-canvas.zoom-limits
-canvas.zoomed-out-background
 editor.loading
 editor.progress-bar
 editor.unsupported-browser
-export.content-other-formats

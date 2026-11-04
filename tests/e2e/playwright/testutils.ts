@@ -1,4 +1,5 @@
 import { Locator, Page, expect } from "@playwright/test";
+import AdmZip from "adm-zip";
 import { decompressFrames, parseGIF } from "gifuct-js";
 import fs from "fs/promises";
 import os from "os";
@@ -1721,6 +1722,15 @@ export const assertNoNotification = async (
   await expect(page.locator("#user-message")).toHaveCount(0, options);
 };
 
+/**
+ * Check that no notification shows after a moment. assertNoNotification isn't enough
+ * after an action that could show one, as it also passes when one expires.
+ */
+export const assertNoNotificationAppears = async (page: Page): Promise<void> => {
+  await wait(500);
+  expect(await page.locator("#user-message").count()).toBe(0);
+};
+
 /** Dismiss the notification with its close button */
 export const closeNotification = async (page: Page): Promise<void> => {
   await page.locator("#user-message").getByTitle("Close message").click();
@@ -2932,4 +2942,395 @@ export const undo = async (page: Page): Promise<void> => {
 /** Trigger redo via keyboard */
 export const redo = async (page: Page): Promise<void> => {
   await page.keyboard.press(`${CMD_OR_CTRL}+y`);
+};
+
+/**
+ * Open the editor, and wait for its canvas to settle. Needed before changing the zoom,
+ * as the editor resets the zoom shortly after loading, which would undo the change.
+ */
+export const openEditorWithSettledCanvas = async (page: Page): Promise<void> => {
+  await openEditor(page);
+  await screenshotSettledCanvas(page);
+};
+
+/** Build a fully transparent grid, for setPiskelFromGrid */
+export const emptyGrid = (width: number, height: number): TestGrid =>
+  Array.from({ length: height }, () => Array(width).fill("T"));
+
+/** Size in screen pixels of the area where the sprite is displayed */
+export const getDrawingAreaSize = (
+  page: Page
+): Promise<{ width: number; height: number }> =>
+  page
+    .locator(".drawing-canvas")
+    .evaluate((canvas: HTMLCanvasElement) => ({
+      width: canvas.width,
+      height: canvas.height
+    }));
+
+/** Check the zoom level shown in the bottom bar, such as 1.5 for "x1.50" */
+export const assertZoom = async (page: Page, zoom: number): Promise<void> => {
+  await expect(
+    testId(page, "cursor-coordinates").locator(".drawing-zoom")
+  ).toHaveText(`x${zoom.toFixed(2)}`);
+};
+
+/** Read the zoom level shown in the bottom bar */
+export const readZoom = async (page: Page): Promise<number> => {
+  const text = await testId(page, "cursor-coordinates")
+    .locator(".drawing-zoom")
+    .innerText();
+  return parseFloat(text.slice(1));
+};
+
+/** Check the size of the sprite shown in the bottom bar */
+export const assertSpriteSize = async (
+  page: Page,
+  width: number,
+  height: number
+): Promise<void> => {
+  await expect(testId(page, "cursor-coordinates")).toContainText(
+    `[${width}x${height}]`
+  );
+};
+
+/**
+ * Move the mouse to a position in the drawing area and read the hovered pixel from
+ * the bottom bar, as "x:y", or "" outside the sprite. The position is a fraction of
+ * the area: 0 is its top or left edge, 1 its bottom or right edge. Wrap this in
+ * expect.poll, as a mouse move can be dropped.
+ */
+export const readPixelAtDrawingAreaPosition = async (
+  page: Page,
+  xFraction: number,
+  yFraction: number
+): Promise<string> => {
+  const box = await page.locator(".drawing-canvas").boundingBox();
+  // Stay 2 pixels inside the area, as the position is measured from its edges.
+  const x = box.x + 2 + (box.width - 4) * xFraction;
+  const y = box.y + 2 + (box.height - 4) * yFraction;
+  return readPixelAtScreenPosition(page, x, y);
+};
+
+/** Move the mouse to a position on the screen and read the hovered pixel from the bottom bar */
+const readPixelAtScreenPosition = async (
+  page: Page,
+  x: number,
+  y: number
+): Promise<string> => {
+  // Two moves, as moving to the current position sends no event.
+  await page.mouse.move(x + 1, y);
+  await wait(20);
+  await page.mouse.move(x, y);
+  await wait(20);
+  const text = await testId(page, "cursor-coordinates").innerText();
+  return text.match(/\]\s*(\d+:\d+)/)?.[1] ?? "";
+};
+
+/**
+ * Count the sprite pixels between two positions in the middle of the drawing area, a
+ * number of screen pixels apart. Wrap this in expect.poll, as a mouse move can be dropped.
+ */
+export const countSpritePixelsAcross = async (
+  page: Page,
+  screenPixels: number
+): Promise<number> => {
+  const box = await page.locator(".drawing-canvas").boundingBox();
+  const y = box.y + box.height / 2;
+  const left = box.x + box.width / 2;
+  const column = (pixel: string) => Number(pixel.split(":")[0]);
+  const first = await readPixelAtScreenPosition(page, left, y);
+  const last = await readPixelAtScreenPosition(page, left + screenPixels, y);
+  return column(last) - column(first);
+};
+
+/** A position in the top-left corner of the drawing area, in the gray around a small sprite */
+export const getGrayAreaPosition = async (
+  page: Page
+): Promise<{ x: number; y: number }> => {
+  const box = await page.locator(".drawing-canvas").boundingBox();
+  return { x: box.x + 5, y: box.y + 5 };
+};
+
+/** A position on the button of a tool */
+export const getToolPosition = async (
+  page: Page,
+  toolId: string
+): Promise<{ x: number; y: number }> => {
+  const box = await page.locator(`[data-tool-id="${toolId}"]`).boundingBox();
+  return { x: box.x + 5, y: box.y + 5 };
+};
+
+/** Check the first and last rows visible in the middle column of the drawing area */
+export const assertVisibleRows = async (
+  page: Page,
+  firstRow: number,
+  lastRow: number
+): Promise<void> => {
+  const readRow = async (yFraction: number) => {
+    const pixel = await readPixelAtDrawingAreaPosition(page, 0.5, yFraction);
+    return Number(pixel.split(":")[1]);
+  };
+  await expect
+    .poll(async () => [await readRow(0), await readRow(1)])
+    .toEqual([firstRow, lastRow]);
+};
+
+/** Read the [r, g, b, a] color displayed at a position in the drawing area, as a fraction of it */
+export const readDrawingAreaColor = (
+  page: Page,
+  xFraction: number,
+  yFraction: number
+): Promise<number[]> =>
+  page.locator(".drawing-canvas").evaluate(
+    (canvas: HTMLCanvasElement, { xFraction, yFraction }) => {
+      const x = Math.floor((canvas.width - 1) * xFraction);
+      const y = Math.floor((canvas.height - 1) * yFraction);
+      return Array.from(canvas.getContext("2d").getImageData(x, y, 1, 1).data);
+    },
+    { xFraction, yFraction }
+  );
+
+/**
+ * Right-click at a position on the screen, and return whether the browser would show
+ * its context menu there.
+ */
+export const rightClickAndCheckBrowserMenu = async (
+  page: Page,
+  position: { x: number; y: number }
+): Promise<boolean> => {
+  // The app can stop the event, so listen before it reaches the app, and read the
+  // result once the event is over.
+  const isPrevented = page.evaluate(
+    () =>
+      new Promise<boolean>((resolve) => {
+        window.addEventListener(
+          "contextmenu",
+          (event) => setTimeout(() => resolve(event.defaultPrevented)),
+          { capture: true, once: true }
+        );
+      })
+  );
+  await page.mouse.click(position.x, position.y, { button: "right" });
+  return !(await isPrevented);
+};
+
+/** Tap a pixel of the sprite on a touch screen */
+export const tapPixel = async (
+  page: Page,
+  col: number,
+  row: number
+): Promise<void> => {
+  const { x, y } = await getPixelScreenPosition(page, col, row);
+  await page.touchscreen.tap(x, y);
+};
+
+/** Drag a finger between two pixels of the sprite on a touch screen */
+export const dragFingerBetweenPixels = async (
+  page: Page,
+  from: { col: number; row: number },
+  to: { col: number; row: number }
+): Promise<void> => {
+  const start = await getPixelScreenPosition(page, from.col, from.row);
+  const end = await getPixelScreenPosition(page, to.col, to.row);
+  // Playwright can only tap, so send the touches through the browser's own protocol.
+  const client = await page.context().newCDPSession(page);
+  const touch = (type: string, x?: number, y?: number) =>
+    client.send("Input.dispatchTouchEvent", {
+      type: type as "touchStart" | "touchMove" | "touchEnd",
+      touchPoints: x === undefined ? [] : [{ x, y }]
+    });
+  await touch("touchStart", start.x, start.y);
+  const steps = 6;
+  for (let step = 1; step <= steps; step++) {
+    await touch(
+      "touchMove",
+      start.x + ((end.x - start.x) * step) / steps,
+      start.y + ((end.y - start.y) * step) / steps
+    );
+    await wait(30);
+  }
+  await touch("touchEnd");
+};
+
+/** Resize the sprite with the resize panel, without keeping its proportions or scaling its content */
+export const resizeSprite = async (
+  page: Page,
+  width: number,
+  height: number
+): Promise<void> => {
+  await openResizeSettingsPanel(page);
+  await page.locator(".resize-ratio-checkbox").uncheck();
+  await page.locator('[name="resize-width"]').fill(String(width));
+  await page.locator('[name="resize-height"]').fill(String(height));
+  await page.locator(".resize-content-checkbox").uncheck();
+  await page.locator(".resize-button").click();
+  await assertSpriteSize(page, width, height);
+};
+
+/** Crop the sprite to its content */
+export const cropSprite = async (page: Page): Promise<void> => {
+  await page.locator('[data-tool-id="tool-crop"]').click();
+};
+
+/** Open the grid preferences, and turn on the grid with visible lines */
+export const enableVisibleGrid = async (page: Page): Promise<void> => {
+  await page.locator('[data-setting="user"]').click();
+  await page.locator('[data-tab-id="grid"]').click();
+  await page.locator('.grid-colors-item[data-color="#FF004D"]').click();
+  await page.locator(".enable-grid-checkbox").check();
+};
+
+/** Pick the width of the grid lines in the grid preferences */
+export const setGridLineWidth = async (
+  page: Page,
+  width: number
+): Promise<void> => {
+  await page
+    .locator(`.grid-size-container .size-picker-option[data-size="${width}"]`)
+    .click();
+};
+
+/** Pick the number of pixels between the grid lines in the grid preferences */
+export const setGridSpacing = async (
+  page: Page,
+  spacing: number
+): Promise<void> => {
+  await page
+    .locator(
+      `.grid-spacing-container .size-picker-option[data-size="${spacing}"]`
+    )
+    .click();
+};
+
+/**
+ * Read the vertical lines of the grid enabled by enableVisibleGrid: how many are
+ * displayed across the first row of the sprite, and the width of each one in screen
+ * pixels. A line between two screen pixels shares its width between them.
+ */
+export const readGridLines = async (
+  page: Page,
+  spriteHeight: number
+): Promise<{ count: number; widths: number[] }> => {
+  const zoom = await readZoom(page);
+  return page.locator(".drawing-canvas").evaluate(
+    (canvas: HTMLCanvasElement, { zoom, spriteHeight }) => {
+      const spriteTop = Math.max(0, (canvas.height - zoom * spriteHeight) / 2);
+      const { data } = canvas
+        .getContext("2d")
+        .getImageData(0, Math.floor(spriteTop + zoom / 2), canvas.width, 1);
+      const widths: number[] = [];
+      let width = 0;
+      for (let x = 0; x < canvas.width; x++) {
+        // The red of the grid, not the gray around the sprite.
+        const [r, g, a] = [data[x * 4], data[x * 4 + 1], data[x * 4 + 3]];
+        if (a > 0 && r > g) {
+          width += a / 255;
+        } else if (width > 0) {
+          widths.push(Math.round(width));
+          width = 0;
+        }
+      }
+      return { count: widths.length, widths: [...new Set(widths)] };
+    },
+    { zoom, spriteHeight }
+  );
+};
+
+/** Check whether the performance warning icon shows */
+export const assertPerformanceIcon = async (
+  page: Page,
+  isVisible: boolean
+): Promise<void> => {
+  const icon = expect(page.locator(".performance-link"));
+  await (isVisible ? icon : icon.not).toHaveClass(/visible/);
+};
+
+/** Check that the dialog about performance is open */
+export const assertPerformanceDialogOpen = async (page: Page): Promise<void> => {
+  await expect(page.locator(".dialog-performance-info-body")).toBeVisible();
+};
+
+/** Click the link of the notification */
+export const clickNotificationLink = async (page: Page): Promise<void> => {
+  await page.locator("#user-message a").click();
+};
+
+/** Colors of an export, by frame and position, as [r, g, b, a] */
+type ExportedFrames = {
+  frameCount: number;
+  rgbaAt: (frame: number, x: number, y: number) => number[];
+};
+
+const decodePng = (file: Buffer) => {
+  const png = new PNG(file);
+  const pixels = png.decodePixels();
+  return {
+    rgbaAt: (x: number, y: number) => {
+      const i = (y * png.width + x) * 4;
+      return [pixels[i], pixels[i + 1], pixels[i + 2], pixels[i + 3]];
+    }
+  };
+};
+
+/** Download the ZIP export, with its PNG files in the order of the frames */
+export const downloadZipExport = async (
+  page: Page
+): Promise<ExportedFrames> => {
+  await selectExportTab(page, "zip");
+  const file = await saveDownload(page, () =>
+    getExportDownloadButton(page, "zip").click()
+  );
+  const frames = new AdmZip(file)
+    .getEntries()
+    .sort((a, b) => a.entryName.localeCompare(b.entryName))
+    .map((entry) => decodePng(entry.getData()));
+  return {
+    frameCount: frames.length,
+    rgbaAt: (frame, x, y) => frames[frame].rgbaAt(x, y)
+  };
+};
+
+/** Download the PixiJS export, and find each frame in its spritesheet with its JSON file */
+export const downloadPixiExport = async (
+  page: Page
+): Promise<ExportedFrames> => {
+  await selectExportTab(page, "png");
+  const file = await saveDownload(page, () =>
+    getExportDownloadButton(page, "pixi").click()
+  );
+  const zip = new AdmZip(file);
+  const entry = (extension: string) =>
+    zip.getEntries().find((e) => e.entryName.endsWith(extension));
+  const json = JSON.parse(entry(".json").getData().toString("utf-8"));
+  const rects = Object.values<any>(json.frames).map((frame) => frame.frame);
+  const spritesheet = decodePng(entry(".png").getData());
+  return {
+    frameCount: rects.length,
+    rgbaAt: (frame, x, y) =>
+      spritesheet.rgbaAt(rects[frame].x + x, rects[frame].y + y)
+  };
+};
+
+/** Download the C file export, and read its pixels written as 0xAABBGGRR */
+export const downloadCFileExport = async (
+  page: Page,
+  spriteWidth: number
+): Promise<ExportedFrames> => {
+  await selectExportTab(page, "misc");
+  const file = await saveDownload(page, () =>
+    getExportDownloadButton(page, "c").click()
+  );
+  const frames = [...file.toString("utf-8").matchAll(/\{([^{}]+)\}/g)].map(
+    (match) => match[1].match(/0x[0-9a-f]{8}/g)
+  );
+  return {
+    frameCount: frames.length,
+    rgbaAt: (frame, x, y) => {
+      const hex = frames[frame][y * spriteWidth + x];
+      const channel = (start: number) =>
+        parseInt(hex.slice(start, start + 2), 16);
+      return [channel(8), channel(6), channel(4), channel(2)];
+    }
+  };
 };
