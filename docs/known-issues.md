@@ -77,10 +77,9 @@ See [colors-and-palettes.md](specs/colors-and-palettes.md).
 
 See [drawing-tools.md](specs/drawing-tools.md).
 
-- The test `should not go below size 1 or above size 4` passes, but `]` does
-  raise the size to 5. The helper reads `data-size` of the selected option,
-  which stays `4`. Either the test or the behavior should change _(to
-  confirm which)_.
+- Small circles draw nothing, in any color: a click or a 2x2 circle at any pen size
+  tried (1 and 2), and also 1x3 and 2x3 circles at pen size 2. At pen size 1, the
+  radius comes out as 0 in `Circle.getCirclePixels_`, which gives invalid coordinates.
 
 ## Editor
 

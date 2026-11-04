@@ -345,6 +345,31 @@ export const getSelectedPenSize = async (page: Page): Promise<number> => {
   return parseInt(size ?? "1", 10);
 };
 
+/** Press a key several times, such as "+" or "Shift+ArrowUp" */
+export const pressRepeatedly = async (
+  page: Page,
+  key: string,
+  count: number
+): Promise<void> => {
+  for (let i = 0; i < count; i++) {
+    await page.keyboard.press(key);
+  }
+};
+
+/** Check the size shown as a label on the last pen size option, for sizes above 4 */
+export const assertPenSizeLabel = async (
+  page: Page,
+  size: number
+): Promise<void> => {
+  const label = page.locator(".pen-size-option.labeled");
+  await expect(label).toHaveAttribute("real-size", String(size));
+};
+
+/** Check that no pen size option shows a label */
+export const assertNoPenSizeLabel = async (page: Page): Promise<void> => {
+  await expect(page.locator(".pen-size-option.labeled")).toHaveCount(0);
+};
+
 /**
  * Convert a hex color string to Piskel's ABGR integer format.
  * Matches the format returned by getPixelColor().
@@ -397,7 +422,17 @@ export const drawAtPixel = async (
     },
     { col, row }
   );
+  await moveMouseOntoCanvas(page, coords.x, coords.y);
   await page.mouse.click(coords.x, coords.y);
+};
+
+/**
+ * Move the mouse before pressing it, and wait for the tooltip of a tool button to
+ * fade out: until then, it can be over the canvas and catch the press.
+ */
+const moveMouseOntoCanvas = async (page: Page, x: number, y: number) => {
+  await page.mouse.move(x, y);
+  await expect(page.locator(".tooltip")).toHaveCount(0);
 };
 
 /**
@@ -513,7 +548,7 @@ export const dragBetweenPixels = async (
       window.pskl.app.drawingController.getScreenCoordinates(col, row),
     { col: x2, row: y2 }
   );
-  await page.mouse.move(start.x, start.y);
+  await moveMouseOntoCanvas(page, start.x, start.y);
   await page.mouse.down();
   await page.mouse.move(end.x, end.y, { steps });
   await page.mouse.up();
@@ -2425,6 +2460,100 @@ export const openEditorWithRectangleSelect = async (
 ): Promise<void> => {
   await openEditor(page);
   await setSpriteWithRectangleSelect(page, rows);
+};
+
+/** Drag between two sprite pixels with the right mouse button */
+export const dragWithRightButton = async (
+  page: Page,
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number
+): Promise<void> => {
+  const start = await getPixelScreenPosition(page, x1, y1);
+  const end = await getPixelScreenPosition(page, x2, y2);
+  await moveMouseOntoCanvas(page, start.x, start.y);
+  await page.mouse.down({ button: "right" });
+  await page.mouse.move(end.x, end.y, { steps: 5 });
+  await page.mouse.up({ button: "right" });
+};
+
+/** Drag from a pixel to another and back, in a single stroke */
+export const dragThereAndBack = async (
+  page: Page,
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number
+): Promise<void> => {
+  const start = await getPixelScreenPosition(page, x1, y1);
+  const end = await getPixelScreenPosition(page, x2, y2);
+  await moveMouseOntoCanvas(page, start.x, start.y);
+  await page.mouse.down();
+  await page.mouse.move(end.x, end.y, { steps: 3 });
+  await page.mouse.move(start.x, start.y, { steps: 3 });
+  await page.mouse.up();
+};
+
+/**
+ * Read the hover highlight of the canvas as an ASCII art grid, from the overlay
+ * canvas: "L" is the light overlay, "D" the dark one, "." no overlay.
+ */
+const readHighlightRows = (page: Page, width: number, height: number) =>
+  page.evaluate(
+    ({ width, height }) => {
+      const canvas = document.querySelector<HTMLCanvasElement>(
+        ".canvas-overlay"
+      )!;
+      const box = canvas.getBoundingClientRect();
+      const context = canvas.getContext("2d")!;
+      return Array.from({ length: height }, (_, row) =>
+        Array.from({ length: width }, (_, col) => {
+          const { x, y } =
+            window.pskl.app.drawingController.getScreenCoordinates(col, row);
+          const [red, , , alpha] = context.getImageData(
+            Math.floor(x - box.left),
+            Math.floor(y - box.top),
+            1,
+            1
+          ).data;
+          if (alpha === 0) return ".";
+          return red === 255 ? "L" : "D";
+        }).join("")
+      );
+    },
+    { width, height }
+  );
+
+/**
+ * Hover a pixel of the sprite, and check the highlight against an ASCII art grid.
+ * The app ignores a mouse move that comes too soon after another, so the hover is
+ * sent again until the highlight matches.
+ */
+export const hoverPixelAndAssertHighlight = async (
+  page: Page,
+  col: number,
+  row: number,
+  rows: string[]
+): Promise<void> => {
+  const { x, y } = await getPixelScreenPosition(page, col, row);
+  await expect(async () => {
+    await page.mouse.move(x - 1, y);
+    await page.mouse.move(x, y);
+    expect(await readHighlightRows(page, rows[0].length, rows.length)).toEqual(
+      rows
+    );
+  }).toPass({ timeout: 5000 });
+};
+
+/** Hover a tool button, and check the text of its tooltip */
+export const assertToolTooltip = async (
+  page: Page,
+  toolId: string,
+  text: string
+): Promise<void> => {
+  await page.locator(`[data-tool-id="${toolId}"]`).hover();
+  await expect(page.locator(".tooltip")).toHaveText(text);
 };
 
 /** Check the sprite title in the header, which ends with " *" when there are unsaved changes */

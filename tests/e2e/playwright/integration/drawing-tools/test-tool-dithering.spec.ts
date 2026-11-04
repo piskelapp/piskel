@@ -1,50 +1,51 @@
-import test, { expect } from "@playwright/test";
+import test, { Page } from "@playwright/test";
 import {
+  assertColorRows,
   clickTool,
-  drawAtPixel,
-  getPixelColor,
+  dragBetweenPixels,
+  dragWithRightButton,
+  gridFromRows,
   openEditor,
   setPiskelFromGrid,
   setPrimaryColor,
   setSecondaryColor,
-  TRANSPARENT,
+  waitForGrid,
 } from "../../testutils";
 
-/** Create an NxN transparent TestGrid */
-function emptyTestGrid(size = 10): ("T")[][] {
-  return Array.from({ length: size }, () => Array(size).fill('T') as ("T")[]);
-}
+const EMPTY = ['....', '....'];
+
+/** Open the editor with the dithering tool, red as primary and blue as secondary */
+const openEditorWithDithering = async (page: Page) => {
+  await openEditor(page);
+  await setPiskelFromGrid(page, gridFromRows(EMPTY));
+  await waitForGrid(page, 4, 2, EMPTY);
+  await clickTool(page, 'tool-dithering');
+  await setPrimaryColor(page, '#FF0000');
+  await setSecondaryColor(page, '#0000FF');
+};
 
 test.describe('Dithering tool', () => {
+  test('should draw a checkerboard of the primary and secondary colors', { tag: ['@drawing-tools.dithering'] }, async ({ page }) => {
+    await openEditorWithDithering(page);
 
-  test('dithering tool: draws checkerboard pattern', { tag: ['@drawing-tools.dithering'] }, async ({ page }) => {
-    await openEditor(page);
-    await setPiskelFromGrid(page, emptyTestGrid());
+    // Draw over the first row.
+    await dragBetweenPixels(page, 0, 0, 3, 0);
+    await assertColorRows(page, ['BRBR', '....']);
 
-    await clickTool(page, 'tool-dithering');
-    await setPrimaryColor(page, '#FF0000');
-    await setSecondaryColor(page, '#0000FF');
+    // Draw over the second row: the colors alternate from one row to the next.
+    await dragBetweenPixels(page, 0, 1, 3, 1);
+    await assertColorRows(page, ['BRBR', 'RBRB']);
+  });
 
-    // Draw a 4x4 area
-    for (let y = 3; y <= 6; y++) {
-      for (let x = 3; x <= 6; x++) {
-        await drawAtPixel(page, x, y);
-      }
-    }
+  test('should swap the colors with the right button', { tag: ['@drawing-tools.dithering-right-button'] }, async ({ page }) => {
+    await openEditorWithDithering(page);
 
-    // Verify checkerboard: alternating colors based on (col+row)%2
-    const p33 = await getPixelColor(page, 3, 3);
-    const p43 = await getPixelColor(page, 4, 3);
-    const p34 = await getPixelColor(page, 3, 4);
-    const p44 = await getPixelColor(page, 4, 4);
+    // Draw over the same first row as with the left button: the colors are swapped.
+    await dragWithRightButton(page, 0, 0, 3, 0);
+    await assertColorRows(page, ['RBRB', '....']);
 
-    // Diagonal pixels match, adjacent differ
-    expect(p33).toBe(p44);
-    expect(p43).toBe(p34);
-    expect(p33).not.toBe(p43);
-
-    // All are non-transparent
-    expect(p33).not.toBe(TRANSPARENT);
-    expect(p43).not.toBe(TRANSPARENT);
+    // Same for the second row.
+    await dragWithRightButton(page, 0, 1, 3, 1);
+    await assertColorRows(page, ['RBRB', 'BRBR']);
   });
 });

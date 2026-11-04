@@ -11,8 +11,13 @@ Common to all drawing tools:
 
 - `drawing-tools.mouse-buttons` The **left button** uses the primary
   color, the **right button** uses the secondary color.
-- `drawing-tools.highlight` Hovering the canvas highlights the target
-  pixel(s) with a light or dark overlay depending on the pixel underneath.
+- `drawing-tools.highlight` Hovering the canvas highlights the target pixel
+  with an overlay: dark over light pixels (lightness above 50%), and light over
+  any other pixel, including transparent ones.
+- `drawing-tools.highlight-size` The highlight covers the pen size on tools that
+  use it, and one pixel on the others.
+- `drawing-tools.highlight-outside` Moving the mouse off the sprite removes the
+  highlight.
 - `drawing-tools.undo` Each completed stroke or shape is a single undo
   step.
 - `drawing-tools.tooltips` Each tool's tooltip shows its name, its

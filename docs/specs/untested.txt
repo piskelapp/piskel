@@ -9,14 +9,6 @@ canvas.performance-notification
 canvas.touch
 canvas.zoom-limits
 canvas.zoomed-out-background
-drawing-tools.clipping
-drawing-tools.dithering-right-button
-drawing-tools.highlight
-drawing-tools.lighten-once
-drawing-tools.pen-size-saved
-drawing-tools.tooltips
-drawing-tools.transparent-color
-drawing-tools.undo
 editor.loading
 editor.progress-bar
 editor.unsupported-browser

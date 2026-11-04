@@ -1,13 +1,17 @@
-import test, { expect } from "@playwright/test";
+import test, { expect, Page } from "@playwright/test";
 import {
   CMD_OR_CTRL,
   clickTool,
+  colorToInt,
+  dragThereAndBack,
   drawAtPixel,
   getPixelColor,
+  gridFromRows,
   openEditor,
   setPiskelFromGrid,
   setPrimaryColor,
   wait,
+  waitForGrid,
   TRANSPARENT,
 } from "../../testutils";
 
@@ -37,6 +41,58 @@ test.describe('Lighten tool', () => {
 
     // Neighbouring pixels should be unchanged
     expect(await getPixelColor(page, 2, 1)).toBe(originalColor);
+  });
+});
+
+test.describe('Lighten steps', () => {
+  /** Open the editor on a red row, with the lighten tool */
+  const openEditorWithLighten = async (page: Page) => {
+    await openEditor(page);
+    await setPiskelFromGrid(page, gridFromRows(['XXXX', '....']));
+    await waitForGrid(page, 4, 2, ['XXXX', '....']);
+    await clickTool(page, 'tool-lighten');
+  };
+
+  // Lightness is 50% for red. A click adds 3 points, or 6 with shift.
+  const RED = colorToInt('#FF0000');
+
+  test('should keep lightening with repeated passes', { tag: ['@drawing-tools.lighten'] }, async ({ page }) => {
+    await openEditorWithLighten(page);
+
+    await drawAtPixel(page, 0, 0);
+    await expect.poll(() => getPixelColor(page, 0, 0)).toBe(colorToInt('#FF0F0F'));
+
+    await drawAtPixel(page, 0, 0);
+    await expect.poll(() => getPixelColor(page, 0, 0)).toBe(colorToInt('#FF1E1E'));
+  });
+
+  test('should lighten once per pixel with shift, with a stronger step', { tag: ['@drawing-tools.lighten-once'] }, async ({ page }) => {
+    await openEditorWithLighten(page);
+
+    // Shift applies the lighten only once per pixel. Go over the pixels twice.
+    await page.keyboard.down('Shift');
+    await dragThereAndBack(page, 0, 0, 2, 0);
+    await page.keyboard.up('Shift');
+
+    // Each pixel went up by one strong step, and the last pixel wasn't touched.
+    const LIGHTENED = colorToInt('#FF1F1F');
+    await expect.poll(() => getPixelColor(page, 0, 0)).toBe(LIGHTENED);
+    expect(await getPixelColor(page, 1, 0)).toBe(LIGHTENED);
+    expect(await getPixelColor(page, 2, 0)).toBe(LIGHTENED);
+    expect(await getPixelColor(page, 3, 0)).toBe(RED);
+  });
+
+  test('should apply again with shift in a new stroke', { tag: ['@drawing-tools.lighten-once'] }, async ({ page }) => {
+    await openEditorWithLighten(page);
+
+    // Shift applies the lighten only once per pixel, for each stroke.
+    await page.keyboard.down('Shift');
+    await drawAtPixel(page, 0, 0);
+    await expect.poll(() => getPixelColor(page, 0, 0)).toBe(colorToInt('#FF1F1F'));
+
+    await drawAtPixel(page, 0, 0);
+    await expect.poll(() => getPixelColor(page, 0, 0)).toBe(colorToInt('#FF3E3E'));
+    await page.keyboard.up('Shift');
   });
 });
 

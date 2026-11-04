@@ -1,5 +1,8 @@
 import test, { expect, Page } from "@playwright/test";
 import {
+  assertNoPenSizeLabel,
+  assertPenSizeLabel,
+  pressRepeatedly,
   openEditor,
   clickTool,
   drawAtPixel,
@@ -8,8 +11,11 @@ import {
   TRANSPARENT,
   getSelectedPenSize,
   getPenSizeButton,
+  gridFromRows,
+  openEditorInNewPage,
   setPiskelFromGrid,
   readPixelGrid,
+  waitForGrid,
 } from "../../testutils";
 
 /** Create a 20x20 transparent TestGrid for setPiskelFromGrid */
@@ -93,20 +99,73 @@ test.describe('Pen size UI', () => {
     expect(await getSelectedPenSize(page)).toBe(2);
   });
 
-  test('should not go below size 1 or above size 4', async ({ page }) => {
+  test('should remember the size in a new session', { tag: ['@drawing-tools.pen-size-saved'] }, async ({ page }) => {
+    // Pick a size.
+    await openEditor(page);
+    await getPenSizeButton(page, 3).click();
+
+    // A new session starts with that size.
+    const newSession = await openEditorInNewPage(page);
+    expect(await getSelectedPenSize(newSession)).toBe(3);
+
+    // The size is really used.
+    const EMPTY = ['....', '....', '....', '....'];
+    await setPiskelFromGrid(newSession, gridFromRows(EMPTY));
+    await waitForGrid(newSession, 4, 4, EMPTY);
+    await clickTool(newSession, 'tool-pen');
+    await drawAtPixel(newSession, 1, 1);
+    await waitForGrid(newSession, 4, 4, ['XXX.', 'XXX.', 'XXX.', '....']);
+  });
+
+  test('should remember a size above 4 in a new session', { tag: ['@drawing-tools.pen-size-saved'] }, async ({ page }) => {
     await openEditor(page);
 
-    // Try to decrease below 1
+    // Reach size 5 with the keyboard, which the picker can't show on its own.
+    await getPenSizeButton(page, 4).click();
+    await page.keyboard.press(']');
+
+    // In a new session, the pen draws at size 5.
+    const newSession = await openEditorInNewPage(page);
+    const EMPTY = ['......', '......', '......', '......', '......', '......'];
+    await setPiskelFromGrid(newSession, gridFromRows(EMPTY));
+    await waitForGrid(newSession, 6, 6, EMPTY);
+    await clickTool(newSession, 'tool-pen');
+    await drawAtPixel(newSession, 2, 2);
+    await waitForGrid(newSession, 6, 6, ['XXXXX.', 'XXXXX.', 'XXXXX.', 'XXXXX.', 'XXXXX.', '......']);
+  });
+
+  test('should not go below size 1 with the keyboard', { tag: ['@drawing-tools.pen-size-shortcuts'] }, async ({ page }) => {
+    await openEditor(page);
+
+    // Try to decrease below 1.
     await page.keyboard.press('[');
     expect(await getSelectedPenSize(page)).toBe(1);
+    await assertNoPenSizeLabel(page);
+  });
 
-    // Go to max
+  test('should show sizes above 4 as a label on the size 4 option, up to 32', { tag: ['@drawing-tools.pen-size-shortcuts'] }, async ({ page }) => {
+    await openEditor(page);
+
+    // Size 4 has its own option, without a label.
     await getPenSizeButton(page, 4).click();
     expect(await getSelectedPenSize(page)).toBe(4);
+    await assertNoPenSizeLabel(page);
 
-    // Try to increase above 4
+    // Size 5 stays on that option, with its size as a label.
     await page.keyboard.press(']');
     expect(await getSelectedPenSize(page)).toBe(4);
+    await assertPenSizeLabel(page, 5);
+
+    // Go up to 32, and try to go past it.
+    await pressRepeatedly(page, ']', 27);
+    await assertPenSizeLabel(page, 32);
+    await pressRepeatedly(page, ']', 2);
+    await assertPenSizeLabel(page, 32);
+
+    // Coming back under 5 removes the label.
+    await pressRepeatedly(page, '[', 28);
+    expect(await getSelectedPenSize(page)).toBe(4);
+    await assertNoPenSizeLabel(page);
   });
 
   test('should affect pen tool: size 1 vs size 2', { tag: ['@drawing-tools.pen-size-tools'] }, async ({ page }) => {
