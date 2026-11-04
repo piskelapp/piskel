@@ -1,5 +1,5 @@
 import test, { expect } from "@playwright/test";
-import { openEditor, openExportSettingsPanel, setPiskelFromGrid, testId } from "../../testutils";
+import { openEditor, openExportSettingsPanel, setPiskelFromGrid, testId, selectExportTab } from "../../testutils";
 import fs from 'fs/promises';
 
 /**
@@ -100,7 +100,7 @@ test.describe('C file export', () => {
     await setPiskelFromGrid(page, [["R", "G"], ["B", "T"]]);
 
     await openExportSettingsPanel(page);
-    await page.click('[data-tab-id="misc"]');
+    await selectExportTab(page, 'misc');
     await expect(page.locator('.export-panel-misc')).toBeAttached();
 
     const downloadPromise = page.waitForEvent('download');
@@ -134,7 +134,7 @@ test.describe('C file export', () => {
     await page.keyboard.press('n');
 
     await openExportSettingsPanel(page);
-    await page.click('[data-tab-id="misc"]');
+    await selectExportTab(page, 'misc');
     await expect(page.locator('.export-panel-misc')).toBeAttached();
 
     const downloadPromise = page.waitForEvent('download');

@@ -21,9 +21,10 @@ Let users experiment freely: any change to the sprite can be undone.
   stays responsive when undo is held down.
 - `undo-redo.memory-only` History is kept in memory only and starts fresh
   on each page load.
-- `undo-redo.load-step` Loading or replacing a sprite (open, import,
-  restore a backup) and resizing are recorded as a single step, so they
-  can be undone too.
+- `undo-redo.load-step` Loading or replacing a sprite (import, restore a
+  backup) and resizing are recorded as a single step, so they can be undone
+  too.
+- `undo-redo.load-step-browser` So is opening a sprite saved in the browser.
 - `undo-redo.cap` The number of recorded states is capped; the oldest
   states are dropped first.
 

@@ -1,4 +1,4 @@
-import test, { expect, Page } from "@playwright/test";
+import test, { expect } from "@playwright/test";
 import {
   openEditor,
   openExportSettingsPanel,
@@ -8,19 +8,14 @@ import {
   drawAtPixel,
   getAddFrameButton,
   getAddLayerButton,
-  getFrameTiles,
   wait,
-  waitFor,
+  assertFrameCount,
+  selectExportTab,
+  testId,
 } from "../../testutils";
 import PNG from 'png-ts';
 import { parseGIF, decompressFrames } from 'gifuct-js';
 import fs from 'fs/promises';
-
-/** Switch to a specific export tab */
-async function selectExportTab(page: Page, tabName: string) {
-  await page.click(`.export-tab[data-tab-id="${tabName}"]`);
-  await wait(200);
-}
 
 test.describe('Export extras — GIF loop toggle', () => {
 
@@ -29,7 +24,7 @@ test.describe('Export extras — GIF loop toggle', () => {
     await openExportSettingsPanel(page);
     await selectExportTab(page, 'gif');
 
-    const repeatCheckbox = page.locator('.gif-repeat-checkbox');
+    const repeatCheckbox = testId(page, 'gif-loop-checkbox');
     await expect(repeatCheckbox).toBeVisible();
 
     // Check default state
@@ -60,7 +55,7 @@ test.describe('Export extras — GIF loop toggle', () => {
     // Create 2 frames with different colors so the GIF has animation
     await setPiskelFromGrid(page, [['R', 'T'], ['T', 'R']]);
     await getAddFrameButton(page).click();
-    await waitFor(async () => (await getFrameTiles(page).count()) === 2);
+    await assertFrameCount(page, 2);
     await setPrimaryColor(page, '#0000FF');
     await clickTool(page, 'tool-pen');
     await drawAtPixel(page, 0, 0);
@@ -71,7 +66,7 @@ test.describe('Export extras — GIF loop toggle', () => {
 
     // Download the GIF
     const downloadPromise = page.waitForEvent('download');
-    await page.locator('.gif-download-button').click();
+    await testId(page, 'gif-download-button').click();
     const download = await downloadPromise;
 
     // Verify filename ends with .gif
@@ -155,8 +150,8 @@ test.describe('Export extras — scale slider', () => {
 
     await openExportSettingsPanel(page);
 
-    const widthInput = page.locator('.export-resize .resize-width');
-    const heightInput = page.locator('.export-resize .resize-height');
+    const widthInput = testId(page, 'export-width-input');
+    const heightInput = testId(page, 'export-height-input');
 
     // Default scale should be 1 → width/height = 2x2
     await expect(widthInput).toHaveValue('2');
@@ -164,7 +159,7 @@ test.describe('Export extras — scale slider', () => {
 
     // Change scale to 2 → width/height should become 4x4
     await page.evaluate(() => {
-      const slider = document.querySelector('.export-scale .scale-input') as HTMLInputElement;
+      const slider = document.querySelector('[data-test-id="export-scale-slider"]') as HTMLInputElement;
       slider.value = '2';
       slider.dispatchEvent(new Event('input', { bubbles: true }));
       slider.dispatchEvent(new Event('change', { bubbles: true }));
@@ -181,7 +176,7 @@ test.describe('Export extras — scale slider', () => {
     expect(dimensionInfo).toContain('4');
 
     const downloadPromise = page.waitForEvent('download');
-    await page.locator('.png-download-button').click();
+    await testId(page, 'png-download-button').click();
     const download = await downloadPromise;
     const dlPath = await download.path();
     if (!dlPath) throw new Error('Download path is null');
@@ -227,9 +222,9 @@ test.describe('Export extras — scale slider', () => {
 
     await openExportSettingsPanel(page);
 
-    const widthInput = page.locator('.export-resize .resize-width');
-    const heightInput = page.locator('.export-resize .resize-height');
-    const scaleText = page.locator('.export-scale .scale-text');
+    const widthInput = testId(page, 'export-width-input');
+    const heightInput = testId(page, 'export-height-input');
+    const scaleText = testId(page, 'export-scale-text');
 
     // Type 8 into width (2x scale for 4x4 canvas)
     await widthInput.fill('8');

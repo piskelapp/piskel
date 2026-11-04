@@ -5,6 +5,36 @@ Bugs, oddities and dead code found while writing the
 yet. When one is fixed, remove it from this list; when one is filed,
 link the issue.
 
+## Fix first
+
+**If you're an AI agent or anyone else picking work from this list, start here.**
+
+- **Security: a dropped palette file's name can run code in the page.** Reproduced.
+  When a palette file is dropped on the editor, its name is used without escaping,
+  and the "successfully saved" notification inserts it as HTML:
+  `AbstractPaletteFileReader.onFileLoaded_` and `PaletteImageReader` take the name
+  from `file.name`, `PaletteService.savePalette` builds the message, and
+  `NotificationController.displayMessage_` sets `innerHTML`. A file name containing
+  HTML with an event handler runs that handler. Names typed in the palette dialog
+  are escaped (`CreatePaletteController.onNameInputChange_`), and the same name did
+  nothing there. A user would have to drop a file with a crafted name.
+- **Security: a shared `.piskel` file can run code in the page.** Reproduced.
+  `Template.sanitize` doesn't escape double quotes, so a value containing one breaks
+  out of an HTML attribute in a template. A crafted file runs code:
+  - as soon as it's opened in the import wizard, through its title
+    (`title="{{name}}"` in `dialogs/import.html`), with nothing more to click;
+  - when **Browse local saves** opens, once its title has been saved in the browser
+    (`data-name="{{name}}"` in `dialogs/browse-local.html`). It then runs every time
+    that list opens;
+  - when its layer is renamed, through the layer name (`value="{{layername}}"` in
+    `layers-list.html`).
+
+  Dropping such a file doesn't run anything by itself, and the header, the title and
+  layer name in the layers list, and the backups lists are safe. A title typed in the
+  save panel does the same in **Browse local saves**. Image file names reach the same
+  wizard template, but that wasn't checked. Escaping quotes in `Template.sanitize`
+  should fix all of these.
+
 ## CLI
 
 - The CLI is broken: `cli/index.js` requires `phantomjs`, which is not a
@@ -16,9 +46,18 @@ link the issue.
 See [canvas.md](specs/canvas.md).
 
 - `should show drag origin during rectangle selection` is flaky.
-- Touch listeners are attached to the window, not the canvas, so a tap
-  anywhere (for example on a toolbar button) runs the current tool's
-  press and release. Not reproduced.
+- Touch listeners are attached to the window, not the canvas, so a tap anywhere
+  (for example on a toolbar button) runs the current tool's press and release. It
+  adds an undo step, and when zoomed in and panned it can also draw: a tap on a tool
+  button drew a pixel at (17,13) on a 32x32 sprite.
+- A tap on the canvas runs the tool twice, because the browser follows the touch
+  events with mouse events (`DrawingController.initMouseBehavior`). A pen tap takes
+  two undos to remove, and a lighten tap is twice as strong as a click.
+- Only the width counts when the window is resized (`DrawingController.relayout_`).
+  In a shorter window the zoom stays the same, so the sprite no longer fits: a 32x32
+  sprite stays at x20.94 when the area goes from 670 to 450 pixels tall, and about 10
+  rows are cut off, where x14.06 would keep it all visible. In a taller window the
+  zoom doesn't grow either.
 
 ## Colors and palettes
 
@@ -27,15 +66,41 @@ See [colors-and-palettes.md](specs/colors-and-palettes.md).
 - `CurrentColorsService` defines `isCurrentColorsPaletteSelected_` and
   `loadColorsFromCache_` twice; the second `loadColorsFromCache_` drops
   the fallback that recomputes colors on a cache miss.
+- A palette file with no color lines shows "Could not import palette : undefined":
+  `AbstractPaletteFileReader.onFileLoaded_` calls `onError` without a message.
+- An empty palette file shows no message: `text.match` returns null in
+  `AbstractPaletteFileReader.onFileLoaded_`, which throws.
+- A file type with no palette reader, such as `.foo`, only logs to the console. The
+  palette dialog's file input accepts any file.
+- `.txt` palettes only read uppercase hex: a line such as `ff0000ff` is skipped
+  (`PaletteTxtReader`).
+- When the primary color isn't in the palette, `>` selects the second color rather
+  than the first, because `getCurrentColorIndex_` falls back to 0.
+- Removing a color in the palette dialog doesn't update the selected color
+  (`ColorsList.removeColor_`), so nothing shows as selected. Typing a color then
+  saves one that the list doesn't show: selecting the last of three colors, removing
+  it and typing yellow saves `red, green, yellow`. Removing every color and typing
+  saves that color too, and "+" adds black instead of a copy.
 
 ## Drawing tools
 
 See [drawing-tools.md](specs/drawing-tools.md).
 
-- The test `should not go below size 1 or above size 4` passes, but `]` does
-  raise the size to 5. The helper reads `data-size` of the selected option,
-  which stays `4`. Either the test or the behavior should change _(to
-  confirm which)_.
+- Small circles draw nothing, in any color: a click or a 2x2 circle at any pen size
+  tried (1 and 2), and also 1x3 and 2x3 circles at pen size 2. At pen size 1, the
+  radius comes out as 0 in `Circle.getCirclePixels_`, which gives invalid coordinates.
+
+## Editor
+
+See [editor.md](specs/editor.md).
+
+- A replaced notification's timer still runs, so it can remove the new message
+  early: a message shown 4 seconds after a 5-second one disappears 1 second later.
+  `NotificationController.displayMessage_` doesn't cancel the previous timeout.
+- Double-clicking the GIF download button on a small sprite leaves "Building animated
+  GIF ... 0%" on the screen after both exports finish, until the next export ends.
+  `ProgressBarController.showProgress_` starts a timer without cancelling the
+  previous one, so the first timer still shows the bar.
 
 ## Export
 
@@ -43,8 +108,6 @@ See [export.md](specs/export.md).
 
 - ZIP frame numbers start at 0 for a merged export but at 1 when split by
   layers.
-- GIF transparency and the too-many-colors warning have no automated test.
-  `misc/gif-tests/` has sprites for checking them by hand.
 - The "Selected frame" PNG is named `<title>-<n>.png.png`:
   `onDownloadSelectedFrameClick_` passes a name that already ends in
   `.png` to `downloadCanvas_`, which adds it again.
@@ -67,12 +130,38 @@ See [import.md](specs/import.md).
 
 - When dropping several images, each new frame is selected and then
   `selectNextFrame` moves one frame further, so unless the current frame is
-  the last one, images are drawn on existing frames rather than on the new
-  empty ones. Found by reading `FileDropperService.onImageLoaded_`, not
-  reproduced.
+  the last one, images overwrite existing frames and the new frames stay empty
+  (`FileDropperService.onImageLoaded_`).
+- The import wizard counts a sprite as empty until its current colors are
+  listed (`PiskelController.isEmpty`). Importing an image right after changing
+  the sprite can skip the choice between replacing and combining. The
+  confirmation to replace still shows.
 - `onRestorePreviousSessionClick_` in `ImportController` is not wired
   to any element. Likely dead code left over from before the backups
   dialog.
+- Combining content that's bigger in one direction only (wider but shorter, or
+  taller but narrower) with **expand** leaves the imported layer at its own size:
+  a 4x1 image combined with a 2x2 sprite gives a 4x2 sprite with a 4x1 layer, and
+  the anchor is ignored for that layer. `MergeUtils.merge` only resizes the current
+  sprite in that case.
+- An animated GIF imported as a spritesheet isn't cut, but each of its frames is
+  squeezed to the frame size: a 4x4 GIF with a 2x2 frame size gives a 2x2 sprite
+  that shows whole GIF frames, shrunk (`ImportService.newPiskelFromImage`).
+- After going back from the insert location step and forward again, with **in
+  existing frames** selected, the frame number can reach 0. Importing there closes
+  the wizard normally, but the imported layer is empty on every frame, so the content
+  is lost without a message. `InsertLocation.onShow` always allows frame 0.
+- After going back from the insert location step and forward again, the buttons of
+  the frame picker move two frames at a time. `InsertLocation.onShow` calls the
+  widget's `init` on every show, which likely adds its listeners again.
+- The wizard gets stuck without a message when the sizes give no usable frames: a
+  frame size larger than the image or an offset past its edge (no frames to cut),
+  or a resize field that's empty, 0 or text. Clicking next does nothing, and only
+  the console shows an error (`ImageImport.onNextClick`).
+- Frame size and offset fields are rewritten on every key press
+  (`ImageImport.synchronizeFrameFields_`). Clearing a frame size with Backspace
+  makes it `1`, so typing `2` then gives `12`, and typing `-3` in an offset gives
+  `03`. Selecting the value and typing over it works.
 - Wrong file types are rejected without telling the user: a non-`.piskel`
   file in "Browse .piskel files", a non-image in "Browse images", several
   files in the wizard, or a palette file that fails to load on drop only
@@ -94,6 +183,14 @@ See [keyboard-shortcuts.md](specs/keyboard-shortcuts.md).
   `ctrl+X/C/V` keep working.
 - The notification for a key taken from another shortcut shows that
   shortcut's internal id (e.g. `tool-pen`) instead of its description.
+- `Escape` doesn't close a dialog opened from the import drawer, such as
+  browse-local or browse-backups. Opening the dialog registers `Escape`, then
+  closing the drawer unregisters it, and `unregisterShortcut` removes the most
+  recent registration of that shortcut: the dialog's, not the drawer's. The close
+  button and a click outside still work. Not reproduced with the `import` dialog.
+- On macOS, the bracketed shortcut in tooltips still shows `alt` and `ctrl`
+  (e.g. `Preview all layers (alt+L)`). `TooltipFormatter.format` only converts
+  the modifier descriptions to `option` and `cmd`. The cheatsheet is correct.
 
 ## Layers
 
@@ -107,6 +204,9 @@ See [layers.md](specs/layers.md).
   opaque (`LayerUtils.mergeLayers`).
 - Dismissing the opacity prompt still records an undo step and marks the
   sprite as modified.
+- "Layer opacity" names two different settings: the opacity of a layer (α
+  button) and the preference for how other layers show on the canvas. See
+  [the TODO](../TODO/clarify-layer-opacity-preference.md).
 
 ## Preview
 
@@ -123,6 +223,19 @@ See [save-and-storage.md](specs/save-and-storage.md).
   and controller no longer exist. Dead entry.
 - Loading `.piskel` files written by older model versions is only covered
   by unit tests (`Deserializer_v0`, `Deserializer_v1`).
+- **Browse backups** shows an empty list when the only backups are from the
+  current session, instead of "No session found ..."
+  (`SelectSession.getMarkupForSessions_`).
+- A failed browser save shows "Saving failed : Error: quota": `onSaveError_` in
+  `StorageService` receives an `Error`, while a failed download passes its message.
+- A sprite saved with a double quote in its title can't be loaded or deleted from
+  **Browse local saves**: the buttons act on the title cut at the quote. This has the
+  same cause as the security bug in [Fix first](#fix-first).
+- An empty title is accepted: the header is blank, the local saves list shows a row
+  without a name, and the file is named `-<date>-<time>.piskel`.
+- Opening a sprite counts as an unsaved change, even right after saving it, but
+  the header doesn't always show it: in a new session the title has no `*`, and
+  reloading still asks for confirmation.
 
 ## Selection
 
@@ -131,15 +244,27 @@ See [selection.md](specs/selection.md).
 - With a selection active, copying text in a text field (layer name,
   sprite title) copies the pixel selection instead: the clipboard
   listeners run on the whole window. Not reproduced.
-- A pasted clipboard image is placed at the window's top-left corner,
-  converted to sprite coordinates, not at the sprite's top-left corner.
+- A pasted clipboard image is placed at the window's top-left corner, converted
+  to sprite coordinates (`SelectionManager.pasteImage_`). That position is usually
+  outside the sprite, so the image lands at the sprite's top-left corner. When
+  zoomed in and panned, it lands elsewhere: at (4,12) on a 32x32 sprite.
+- Switching to a non-selection tool while moving content loses that content: the
+  drag had already removed it from the frame, and nothing puts it back. Undo
+  restores it (`SelectionManager.onToolSelected_`).
+- Switching to another selection tool while moving content, then pressing `Enter`,
+  loses the content too. The tool that lifted the content is the only one that knows
+  it's moving (`BaseSelect.isMovingContent_`).
+- Undoing while moving content restores the original pixels, but the content keeps
+  moving. Committing then adds it at the new position, so the move becomes a copy.
 
 ## Settings
 
 See [settings.md](specs/settings.md).
 
-- `Constants.MAX_WIDTH` / `MAX_HEIGHT` (1024) are declared but not used:
-  nothing caps the sprite size.
+- The resize panel doesn't respect the 4096 cap of the default size
+  (`Constants.MAX_DEFAULT_WIDTH` / `MAX_DEFAULT_HEIGHT`): a sprite can be resized
+  to a width of 5000. `ResizeController.onResizeFormSubmit_` doesn't use
+  `ResizeUtils.sanitizeSize`.
 
 ## Transformations
 
@@ -160,3 +285,11 @@ See [undo-redo.md](specs/undo-redo.md).
 - Changing the FPS is neither an undo step nor an unsaved change, although
   FPS is saved in `.piskel` files. Each history state stores the FPS, so
   undoing any other change also reverts the FPS.
+- Input is ignored while the system clock is behind its previous value,
+  because short intervals are measured with wall-clock time. Undo and redo do
+  nothing (`HistoryService.isLoadStateAllowed_`), and mouse moves are dropped,
+  which cuts strokes short (`DrawingController.onMousemove_`). On WSL2 the
+  clock was measured jumping back about 2.5 seconds every 32 seconds, which
+  also makes e2e tests flaky there. The `undo-redo.cap` e2e test retries its
+  undo presses because of this: remove the retry when this is fixed. See
+  [the fix plan](../TODO/fix-clock-going-backwards.md).

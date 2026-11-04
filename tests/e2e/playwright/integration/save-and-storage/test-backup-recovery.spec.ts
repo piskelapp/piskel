@@ -4,7 +4,9 @@ import {
   colorToInt,
   drawAtPixel,
   getPixelColor,
+  letTimePass,
   openEditor,
+  openEditorWithFakeClock,
   openImportSettingsPanel,
   testId,
   waitForEditorReady,
@@ -23,7 +25,7 @@ test.describe('Backup and recovery', () => {
   });
 
   test('should persist drawing across page reload via backup', { tag: ['@save-and-storage.backup', '@save-and-storage.browse-backups'] }, async ({ page }) => {
-    await openEditor(page);
+    await openEditorWithFakeClock(page);
 
     // Draw a recognizable pattern
     await clickTool(page, 'tool-pen');
@@ -32,13 +34,8 @@ test.describe('Backup and recovery', () => {
     // Verify the pixel was drawn (default primary color is black)
     expect(await getPixelColor(page, 0, 0)).toBe(colorToInt('#000000'));
 
-    // Wait for backup to be saved (BackupService saves every 10s by default,
-    // but we can force it by triggering the save via the model)
-    await page.evaluate(() => {
-      return new Promise<void>((resolve) => {
-        window.pskl.app.backupService.backup().then(() => resolve());
-      });
-    });
+    // Let the minute pass that makes a backup
+    await letTimePass(page, 60 * 1000);
 
     // Reload the page
     await page.reload();

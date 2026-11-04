@@ -18,7 +18,35 @@ import {
   setPrimaryColor,
   clickTool,
   colorToInt,
+  assertCurrentLayer,
+  assertFrameCount,
+  assertLayerNames,
+  assertLayerPreviewOpacity,
+  assertOtherLayerHiddenOnCanvas,
+  assertOtherLayerOpacityOnCanvas,
+  assertLayerPreviewEnabled,
+  assertPreviewPixelAlpha,
+  assertPreviewPlays,
+  createEmptyLayerAbovePixel,
+  duplicateCurrentLayer,
+  getAddFrameButton,
+  gridFromRows,
+  openEditorInNewPage,
+  openEditorWithFakeClock,
+  readPixelRows,
+  renameCurrentLayer,
+  screenshotSettledCanvas,
+  selectBottomLayer,
+  selectFrame,
+  setLayerPreviewOpacity,
+  setPiskelFromGrid,
+  setTopLayerOpacity,
+  toggleLayerPreview,
 } from "../../testutils";
+
+const EMPTY = ['....', '....', '....', '....'];
+const PIXEL_TOP_LEFT = ['X...', '....', '....', '....'];
+const PIXEL_IN_CENTER = ['....', '.X..', '....', '....'];
 
 test.describe('Layer operations', () => {
 
@@ -240,27 +268,8 @@ test.describe('Layer operations', () => {
   test('should change layer opacity via prompt', { tag: ['@layers.opacity'] }, async ({ page }) => {
     await openEditor(page);
 
-    // Draw on layer 0
-    await clickTool(page, 'tool-pen');
-    await setPrimaryColor(page, '#FF0000');
-    await drawAtPixel(page, 0, 0);
-
-    // Add layer 1 and draw on it
-    await getAddLayerButton(page).click();
-    await setPrimaryColor(page, '#00FF00');
-    await drawAtPixel(page, 1, 1);
-
-    // Enable layer preview so opacity is visible on the drawing canvas
-    await page.keyboard.press('Alt+l');
-
-    // Screenshot the drawing canvas before opacity change
-    const drawingCanvas = page.locator('[data-test-id="drawing-canvas"]');
-    const before = await drawingCanvas.screenshot();
-
-    // Change layer 1 opacity to 0.5
-    // Layers are in reverse DOM order: first in DOM = top layer (index 1)
-    page.once('dialog', dialog => dialog.accept('0.5'));
-    await getAllLayerOpacityButtons(page).first().click();
+    // Change the opacity of the layer to 0.5
+    await setTopLayerOpacity(page, 0.5);
 
     // Opacity α symbol should turn white for values between 0 and 1
     const opacityEl = getAllLayerOpacityButtons(page).first();
@@ -269,11 +278,25 @@ test.describe('Layer operations', () => {
 
     // Tooltip attribute reflects the new value
     await expect(opacityEl).toHaveAttribute('data-original-title', 'Layer opacity (0.5)');
+  });
 
-    // The drawing canvas should look different after opacity change
-    // (layer 1's green pixel is now semi-transparent)
-    const after = await drawingCanvas.screenshot();
-    expect(before.equals(after)).toBe(false);
+  test('should apply the opacity of the current layer to the preview but not to the canvas', { tag: ['@layers.opacity-rendering'] }, async ({ page }) => {
+    // Start from a layer with a pixel, fully opaque in the preview.
+    await openEditor(page);
+    await setPiskelFromGrid(page, gridFromRows(PIXEL_TOP_LEFT));
+    await assertPreviewPixelAlpha(page, 0, 0, 255);
+    const canvasBefore = await screenshotSettledCanvas(page);
+
+    // Set the opacity of the layer to 0.5.
+    await setTopLayerOpacity(page, 0.5);
+
+    // The preview shows the pixel half transparent.
+    await assertPreviewPixelAlpha(page, 0, 0, 128);
+
+    // The canvas still shows it as before. Hovering the canvas would highlight
+    // a pixel, so keep the mouse away from it.
+    await page.mouse.move(0, 0);
+    expect((await screenshotSettledCanvas(page)).equals(canvasBefore)).toBe(true);
   });
 
   test('should show gray color for opacity 0', { tag: ['@layers.opacity-indicator'] }, async ({ page }) => {
@@ -348,27 +371,218 @@ test.describe('Layer operations', () => {
   });
 
   test('should toggle layer preview with Alt+L shortcut', { tag: ['@layers.preview'] }, async ({ page }) => {
+    // Start with layer preview on, as it is by default.
+    await openEditor(page);
+    await createEmptyLayerAbovePixel(page);
+    await assertLayerPreviewEnabled(page, true);
+    await assertOtherLayerOpacityOnCanvas(page, 0, 0, 0.2);
+
+    // Alt+L turns it off: the other layer disappears from the canvas.
+    await page.keyboard.press('Alt+l');
+    await assertLayerPreviewEnabled(page, false);
+    await assertOtherLayerHiddenOnCanvas(page, 0, 0);
+
+    // Alt+L turns it back on.
+    await page.keyboard.press('Alt+l');
+    await assertLayerPreviewEnabled(page, true);
+    await assertOtherLayerOpacityOnCanvas(page, 0, 0, 0.2);
+  });
+
+  test('should combine the opacity of other layers with the layer preview opacity on the canvas', { tag: ['@layers.opacity-rendering', '@layers.preview'] }, async ({ page }) => {
+    // Draw a pixel in a top layer, above an empty bottom layer.
+    await openEditor(page);
+    await setPiskelFromGrid(page, gridFromRows(EMPTY));
+    await getAddLayerButton(page).click();
+    await assertCurrentLayer(page, 1);
+    await clickTool(page, 'tool-pen');
+    await drawAtPixel(page, 0, 0);
+    expect(await readPixelRows(page, 4, 4, 1)).toEqual(PIXEL_TOP_LEFT);
+
+    // From the bottom layer, the opaque top layer shows at the default 0.2.
+    await selectBottomLayer(page);
+    await assertOtherLayerOpacityOnCanvas(page, 0, 0, 0.2);
+
+    // Give the top layer an opacity of 0.5: it shows at 0.5 x 0.2.
+    await setTopLayerOpacity(page, 0.5);
+    await assertOtherLayerOpacityOnCanvas(page, 0, 0, 0.1);
+
+    // Raise the layer preview opacity to 0.5: it shows at 0.5 x 0.5.
+    await setLayerPreviewOpacity(page, 0.5);
+    await assertOtherLayerOpacityOnCanvas(page, 0, 0, 0.25);
+  });
+
+  test('should list the top layer first and draw on the current layer', { tag: ['@layers.list-order'] }, async ({ page }) => {
+    // Start from a sprite with one empty layer.
+    await openEditor(page);
+    await setPiskelFromGrid(page, gridFromRows(EMPTY));
+    await assertLayerNames(page, ['Base layer']);
+
+    // Add a layer: it goes above the first one, so it comes first in the list.
+    await getAddLayerButton(page).click();
+    await assertCurrentLayer(page, 1);
+    await assertLayerNames(page, ['Layer 1', 'Base layer']);
+    await expect(getLayerItems(page).first()).toHaveClass(/current-layer-item/);
+
+    // Draw: only the highlighted top layer changes.
+    await clickTool(page, 'tool-pen');
+    await drawAtPixel(page, 1, 1);
+    expect(await readPixelRows(page, 4, 4, 1)).toEqual(PIXEL_IN_CENTER);
+    expect(await readPixelRows(page, 4, 4, 0)).toEqual(EMPTY);
+
+    // Select the bottom layer and draw: only that layer changes.
+    await selectBottomLayer(page);
+    await expect(getLayerItems(page).last()).toHaveClass(/current-layer-item/);
+    await drawAtPixel(page, 0, 0);
+    expect(await readPixelRows(page, 4, 4, 0)).toEqual(PIXEL_TOP_LEFT);
+    expect(await readPixelRows(page, 4, 4, 1)).toEqual(PIXEL_IN_CENTER);
+  });
+
+  test('should duplicate the current layer above it', { tag: ['@layers.duplicate'] }, async ({ page }) => {
+    // Start from a layer with a pixel, below an empty layer.
+    await openEditor(page);
+    await setPiskelFromGrid(page, gridFromRows(PIXEL_TOP_LEFT));
+    await getAddLayerButton(page).click();
+    await assertCurrentLayer(page, 1);
+    await assertLayerNames(page, ['Layer 1', 'Base layer']);
+
+    // Select the bottom layer and duplicate it.
+    await selectBottomLayer(page);
+    await duplicateCurrentLayer(page);
+
+    // The copy sits between the bottom layer and the top layer, and is selected.
+    await assertLayerNames(page, ['Layer 1', 'Base layer (clone)', 'Base layer']);
+    await assertCurrentLayer(page, 1);
+
+    // It has the pixels of the original, and the other layers didn't change.
+    expect(await readPixelRows(page, 4, 4, 2)).toEqual(EMPTY);
+    expect(await readPixelRows(page, 4, 4, 1)).toEqual(PIXEL_TOP_LEFT);
+    expect(await readPixelRows(page, 4, 4, 0)).toEqual(PIXEL_TOP_LEFT);
+  });
+
+  test('should remember layer preview across sessions', { tag: ['@layers.preview-saved'] }, async ({ page }) => {
+    await openEditor(page);
+    await createEmptyLayerAbovePixel(page);
+    await assertLayerPreviewEnabled(page, true);
+    await assertOtherLayerOpacityOnCanvas(page, 0, 0, 0.2);
+
+    // Turn layer preview off and come back: it stays off.
+    await toggleLayerPreview(page);
+    await assertLayerPreviewEnabled(page, false);
+    await assertOtherLayerHiddenOnCanvas(page, 0, 0);
+    const secondSession = await openEditorInNewPage(page);
+    await createEmptyLayerAbovePixel(secondSession);
+    await assertLayerPreviewEnabled(secondSession, false);
+    await assertOtherLayerHiddenOnCanvas(secondSession, 0, 0);
+
+    // Turn it back on and come back: it stays on.
+    await toggleLayerPreview(secondSession);
+    await assertLayerPreviewEnabled(secondSession, true);
+    await assertOtherLayerOpacityOnCanvas(secondSession, 0, 0, 0.2);
+    const thirdSession = await openEditorInNewPage(secondSession);
+    await createEmptyLayerAbovePixel(thirdSession);
+    await assertLayerPreviewEnabled(thirdSession, true);
+    await assertOtherLayerOpacityOnCanvas(thirdSession, 0, 0, 0.2);
+  });
+
+  test('should turn layer preview off when the layer preview opacity is 0, and on at any other value', { tag: ['@layers.preview-opacity', '@layers.preview'] }, async ({ page }) => {
+    const BOTH_LAYERS = ['X...', '.X..', '....', '....'];
+
+    // Start from two layers with a pixel each.
+    await openEditorWithFakeClock(page);
+    await setPiskelFromGrid(page, gridFromRows(PIXEL_TOP_LEFT));
+    await getAddLayerButton(page).click();
+    await assertCurrentLayer(page, 1);
+    await clickTool(page, 'tool-pen');
+    await drawAtPixel(page, 1, 1);
+    expect(await readPixelRows(page, 4, 4, 1)).toEqual(PIXEL_IN_CENTER);
+
+    // Add an empty frame, so that the animated preview keeps rendering.
+    await getAddFrameButton(page).click();
+    await assertFrameCount(page, 2);
+
+    // Go back to the first frame, where the bottom layer shows on the canvas.
+    await selectFrame(page, 0);
+    await assertLayerPreviewEnabled(page, true);
+    await assertOtherLayerOpacityOnCanvas(page, 0, 0, 0.2);
+    await assertPreviewPlays(page, [BOTH_LAYERS, EMPTY]);
+
+    // A layer preview opacity of 0 turns layer preview off. It only concerns the
+    // canvas: the animated preview still shows all the layers.
+    await setLayerPreviewOpacity(page, 0);
+    await assertLayerPreviewEnabled(page, false);
+    await assertOtherLayerHiddenOnCanvas(page, 0, 0);
+    await assertPreviewPlays(page, [BOTH_LAYERS, EMPTY]);
+
+    // Any other value turns it back on.
+    await setLayerPreviewOpacity(page, 0.5);
+    await assertLayerPreviewEnabled(page, true);
+    await assertOtherLayerOpacityOnCanvas(page, 0, 0, 0.5);
+    await assertPreviewPlays(page, [BOTH_LAYERS, EMPTY]);
+  });
+
+  test('should reset the layer preview opacity to 0.2 when turning layer preview on at 0', { tag: ['@layers.preview-opacity'] }, async ({ page }) => {
+    // Set the layer preview opacity to 0, which turns layer preview off.
+    await openEditor(page);
+    await createEmptyLayerAbovePixel(page);
+    await setLayerPreviewOpacity(page, 0);
+    await assertLayerPreviewEnabled(page, false);
+    await assertLayerPreviewOpacity(page, '0.00');
+    await assertOtherLayerHiddenOnCanvas(page, 0, 0);
+
+    // Turn layer preview on: the layer preview opacity goes back to 0.2.
+    await toggleLayerPreview(page);
+    await assertLayerPreviewEnabled(page, true);
+    await assertLayerPreviewOpacity(page, '0.20');
+    await assertOtherLayerOpacityOnCanvas(page, 0, 0, 0.2);
+  });
+
+  test('should truncate long layer names and show them in a tooltip', { tag: ['@layers.long-names'] }, async ({ page }) => {
+    const longName = 'A very long layer name that cannot fit in the layers list at all';
     await openEditor(page);
 
-    const toggle = testId(page, 'layer-preview-toggle');
+    // Give the layer a long name.
+    await renameCurrentLayer(page, longName);
+    await assertLayerNames(page, [longName]);
 
-    // Initially disabled (default is true in UserSettings but let's check the DOM)
-    // Enable via Alt+L
-    await page.keyboard.press('Alt+l');
+    // The name is cut with an ellipsis, inside the width of the list.
+    const name = getLayerNameLocators(page).first();
+    await expect(name).toHaveCSS('text-overflow', 'ellipsis');
+    expect(await name.evaluate((el) => el.scrollWidth > el.clientWidth)).toBe(true);
 
-    // Toggle state should change
-    const enabledAfterFirst = await toggle.evaluate(
-      el => el.classList.contains('layers-toggle-preview-enabled')
-    );
+    // Hovering it shows the full name.
+    await name.hover();
+    await expect(page.locator('.tooltip')).toHaveText(longName);
+  });
 
-    // Press Alt+L again to toggle back
-    await page.keyboard.press('Alt+l');
+  test('should not truncate short layer names', { tag: ['@layers.long-names'] }, async ({ page }) => {
+    await openEditor(page);
 
-    const enabledAfterSecond = await toggle.evaluate(
-      el => el.classList.contains('layers-toggle-preview-enabled')
-    );
+    await renameCurrentLayer(page, 'Short');
+    await assertLayerNames(page, ['Short']);
 
-    // The two states should be different (toggled)
-    expect(enabledAfterFirst).not.toBe(enabledAfterSecond);
+    const name = getLayerNameLocators(page).first();
+    await expect(name).not.toHaveCSS('text-overflow', 'ellipsis');
+    await name.hover();
+    await expect(page.locator('.tooltip')).toHaveCount(0);
+  });
+
+  test('should scroll the list to keep the current layer visible', { tag: ['@layers.long-names'] }, async ({ page }) => {
+    // Add more layers than the list can show. The new top layer is current.
+    await openEditor(page);
+    for (let layerCount = 2; layerCount <= 40; layerCount++) {
+      await getAddLayerButton(page).click();
+      await expect(getLayerItems(page)).toHaveCount(layerCount);
+    }
+    await assertCurrentLayer(page, 39);
+    await expect(getLayerItems(page).first()).toBeInViewport();
+    await expect(getLayerItems(page).last()).not.toBeInViewport();
+
+    // Shift moves the current layer all the way to the bottom of the list.
+    await getMoveLayerDownButton(page).click({ modifiers: ['Shift'] });
+    await assertCurrentLayer(page, 0);
+
+    // The list followed it.
+    await expect(getLayerItems(page).last()).toBeInViewport();
+    await expect(getLayerItems(page).first()).not.toBeInViewport();
   });
 });

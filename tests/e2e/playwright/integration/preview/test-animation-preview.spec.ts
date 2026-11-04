@@ -1,4 +1,4 @@
-import test, { expect, Page, Locator } from "@playwright/test";
+import test, { expect, Page } from "@playwright/test";
 import {
   openEditor,
   openSaveSettingsPanel,
@@ -6,7 +6,16 @@ import {
   testId,
   wait,
   waitFor,
-  decodePngDataUrl
+  decodePngDataUrl,
+  assertHiddenFrames,
+  assertPreviewPlays,
+  createThreeFrames,
+  openEditorWithFakeClock,
+  PIXEL_IN_FIRST_COLUMN,
+  PIXEL_IN_SECOND_COLUMN,
+  selectFrame,
+  toggleFrameVisibility,
+  zoomInUntilMinimapVisible
 } from "../../testutils";
 
 // ─── Shared helpers ──────────────────────────────────────────────
@@ -24,19 +33,6 @@ async function getSelectedPreviewSize(page: Page): Promise<string> {
       window.pskl.UserSettings.PREVIEW_SIZE
     ) as string;
   });
-}
-
-/** Zoom in by scrolling on the canvas until the minimap appears */
-async function zoomInUntilMinimapVisible(page: Page, minimap: Locator) {
-  const canvas = page.locator("#drawing-canvas-container");
-  await canvas.hover();
-
-  for (let i = 0; i < 30; i++) {
-    await page.mouse.wheel(0, -120);
-    await page.waitForTimeout(30);
-  }
-
-  await waitFor(async () => await minimap.isVisible());
 }
 
 // ─── Preview actions ─────────────────────────────────────────────
@@ -629,5 +625,26 @@ test.describe("Minimap", () => {
 
     await waitFor(async () => !(await minimap.isVisible()));
     await expect(minimap).toBeHidden();
+  });
+});
+
+test.describe("Preview with hidden frames", () => {
+  test("should show the current frame when every frame is hidden", { tag: ["@preview.all-hidden"] }, async ({ page }) => {
+    await openEditorWithFakeClock(page);
+    await createThreeFrames(page);
+
+    // Hide all the frames.
+    await toggleFrameVisibility(page, 0);
+    await toggleFrameVisibility(page, 1);
+    await toggleFrameVisibility(page, 2);
+    await assertHiddenFrames(page, [0, 1, 2]);
+
+    // Select the second frame: the preview only shows it.
+    await selectFrame(page, 1);
+    await assertPreviewPlays(page, [PIXEL_IN_SECOND_COLUMN]);
+
+    // Select the first frame: the preview follows.
+    await selectFrame(page, 0);
+    await assertPreviewPlays(page, [PIXEL_IN_FIRST_COLUMN]);
   });
 });

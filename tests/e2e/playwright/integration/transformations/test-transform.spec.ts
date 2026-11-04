@@ -4,15 +4,22 @@ import {
   openEditor,
   setPiskelFromGrid,
   readPixelGrid,
+  readPixelRows,
   drawAtPixel,
   clickTool,
   getAddFrameButton,
-  getFrameTiles,
   getAddLayerButton,
   waitFor,
   wait,
   getCurrentPiskelWidth,
   getCurrentPiskelHeight,
+  gridFromRows,
+  isCurrentPiskelEmpty,
+  undo,
+  waitForEditorReady,
+  waitForGrid,
+  assertFrameCount,
+  selectFrame,
 } from "../../testutils";
 
 /** Drag from sprite pixel (x1,y1) to (x2,y2) */
@@ -49,6 +56,34 @@ function lShapeGrid(): TestGrid {
   grid[2][2] = 'R';
   return grid;
 }
+
+const EMPTY = Array(10).fill('..........');
+
+const L_SHAPE = [
+  'X.........',  // row 0
+  'X.........',  // row 1
+  'XXX.......',  // row 2
+  ...Array(7).fill('..........'),
+];
+
+const L_SHAPE_AND_PIXEL = [
+  ...L_SHAPE.slice(0, 5),
+  '.....X....',  // row 5
+  ...L_SHAPE.slice(6),
+];
+
+/** The bounding box of the content is the whole canvas */
+const CORNERS = [
+  'X.........',  // row 0
+  ...Array(8).fill('..........'),
+  '.........X',  // row 9
+];
+
+/** A 6x2 sprite, with pixels that don't fit on the canvas once rotated */
+const WIDE_SPRITE = [
+  'X.XX..',  // row 0
+  '..X..X',  // row 1
+];
 
 /** Click a transform tool with optional modifier keys held */
 async function clickTransform(
@@ -132,16 +167,14 @@ test.describe('Transform panel', () => {
 
     // Add a second frame and draw a pixel in it
     await getAddFrameButton(page).click();
-    await waitFor(async () => (await getFrameTiles(page).count()) === 2);
+    await assertFrameCount(page, 2);
     // Select frame 1
-    await getFrameTiles(page).nth(1).click();
-    await wait(200);
+    await selectFrame(page, 1);
     await clickTool(page, 'tool-pen');
     await drawAtPixel(page, 0, 0);
 
     // Go back to frame 0 and flip all frames
-    await getFrameTiles(page).nth(0).click();
-    await wait(200);
+    await selectFrame(page, 0);
     await clickTransform(page, 'tool-flip', { shift: true });
 
     // Verify frame 0 is flipped horizontally
@@ -235,15 +268,13 @@ test.describe('Transform panel', () => {
 
     // Add frame 1 with a pixel at (0,0)
     await getAddFrameButton(page).click();
-    await waitFor(async () => (await getFrameTiles(page).count()) === 2);
-    await getFrameTiles(page).nth(1).click();
-    await wait(200);
+    await assertFrameCount(page, 2);
+    await selectFrame(page, 1);
     await clickTool(page, 'tool-pen');
     await drawAtPixel(page, 0, 0);
 
     // Go back to frame 0, rotate all frames CCW
-    await getFrameTiles(page).nth(0).click();
-    await wait(200);
+    await selectFrame(page, 0);
     await clickTransform(page, 'tool-rotate', { shift: true });
 
     // Frame 0: L rotated CCW — pixel at (0,9) should be set
@@ -265,15 +296,14 @@ test.describe('Transform panel', () => {
 
     // Add an empty second frame
     await getAddFrameButton(page).click();
-    await waitFor(async () => (await getFrameTiles(page).count()) === 2);
+    await assertFrameCount(page, 2);
 
     // Frame 1 should be empty
     const gridBefore = await readPixelGrid(page, 10, 10, 0, 1);
     expect(gridBefore[0][0]).toBe('.');
 
     // Select frame 0 and clone
-    await getFrameTiles(page).nth(0).click();
-    await wait(200);
+    await selectFrame(page, 0);
     await clickTransform(page, 'tool-clone');
 
     // Frame 1 should now have the same L-shape as frame 0
@@ -326,15 +356,13 @@ test.describe('Transform panel', () => {
 
     // Add frame 1 with a pixel at (0,0)
     await getAddFrameButton(page).click();
-    await waitFor(async () => (await getFrameTiles(page).count()) === 2);
-    await getFrameTiles(page).nth(1).click();
-    await wait(200);
+    await assertFrameCount(page, 2);
+    await selectFrame(page, 1);
     await clickTool(page, 'tool-pen');
     await drawAtPixel(page, 0, 0);
 
     // Go back to frame 0, center all frames
-    await getFrameTiles(page).nth(0).click();
-    await wait(200);
+    await selectFrame(page, 0);
     await clickTransform(page, 'tool-center', { shift: true });
 
     // Frame 0: L-shape centered at (3,3)-(5,5)
@@ -468,5 +496,253 @@ test.describe('Transform panel', () => {
     await expect(container).not.toHaveClass(/show-more/);
     const reCollapsedHeight = await toolsWrapper.evaluate(el => getComputedStyle(el).height);
     expect(parseInt(reCollapsedHeight)).toBe(46);
+  });
+
+  test('expanding and collapsing the panel is remembered after a reload', { tag: ['@transformations.show-more-saved'] }, async ({ page }) => {
+    await openEditor(page);
+
+    const container = page.locator('.transformations-container');
+    const toolsWrapper = container.locator('.tools-wrapper');
+    const showMoreLink = page.locator('.transformations-show-more-link');
+
+    await showMoreLink.click();
+    await expect(container).toHaveClass(/show-more/);
+
+    await page.reload();
+    await waitForEditorReady(page);
+    await expect(container).toHaveClass(/show-more/);
+    const expandedHeight = await toolsWrapper.evaluate(el => parseFloat(getComputedStyle(el).height));
+    expect(expandedHeight).toBeGreaterThan(46);
+
+    await showMoreLink.click();
+    await expect(container).not.toHaveClass(/show-more/);
+
+    await page.reload();
+    await waitForEditorReady(page);
+    await expect(container).not.toHaveClass(/show-more/);
+    const collapsedHeight = await toolsWrapper.evaluate(el => parseFloat(getComputedStyle(el).height));
+    expect(collapsedHeight).toBe(46);
+  });
+
+  // ─── Crop no-op ───────────────────────────────────────────────
+
+  test('crop should do nothing when the content already fills the canvas', { tag: ['@transformations.crop-noop'] }, async ({ page }) => {
+    await openEditor(page);
+    await setPiskelFromGrid(page, gridFromRows(CORNERS));
+
+    // Draw a pixel, so that the next undo shows if the crop was recorded
+    await clickTool(page, 'tool-pen');
+    await drawAtPixel(page, 5, 5);
+
+    await clickTransform(page, 'tool-crop');
+
+    expect(await getCurrentPiskelWidth(page)).toBe(10);
+    expect(await getCurrentPiskelHeight(page)).toBe(10);
+    const grid = await readPixelGrid(page, 10, 10);
+    expect(grid[5][5]).toBe('X');
+    expect(grid[0][0]).toBe('X');
+    expect(grid[9][9]).toBe('X');
+
+    // The crop is not a step of the history: undo removes the pixel
+    await undo(page);
+    await waitForGrid(page, 10, 10, CORNERS);
+  });
+
+  test('crop should do nothing when the sprite is empty', { tag: ['@transformations.crop-noop'] }, async ({ page }) => {
+    await openEditor(page);
+    await setPiskelFromGrid(page, emptyTestGrid());
+
+    await clickTransform(page, 'tool-crop');
+
+    expect(await getCurrentPiskelWidth(page)).toBe(10);
+    expect(await getCurrentPiskelHeight(page)).toBe(10);
+    expect(await isCurrentPiskelEmpty(page)).toBe(true);
+  });
+
+  // ─── Rotate non-square ────────────────────────────────────────
+
+  test('rotate counter-clockwise on a wide sprite should rotate around the center', { tag: ['@transformations.rotate-non-square'] }, async ({ page }) => {
+    await openEditor(page);
+    await setPiskelFromGrid(page, gridFromRows(WIDE_SPRITE));
+
+    await clickTransform(page, 'tool-rotate');
+
+    // Only the 2x2 square at the center stays on the canvas
+    expect(await getCurrentPiskelWidth(page)).toBe(6);
+    expect(await getCurrentPiskelHeight(page)).toBe(2);
+    const grid = await readPixelGrid(page, 6, 2);
+    expect(grid.map(r => r.join(''))).toEqual([
+      '..X...',  // row 0
+      '..XX..',  // row 1
+    ]);
+  });
+
+  test('rotate clockwise on a wide sprite should rotate around the center', { tag: ['@transformations.rotate-non-square'] }, async ({ page }) => {
+    await openEditor(page);
+    await setPiskelFromGrid(page, gridFromRows(WIDE_SPRITE));
+
+    await clickTransform(page, 'tool-rotate', { alt: true });
+
+    const grid = await readPixelGrid(page, 6, 2);
+    expect(grid.map(r => r.join(''))).toEqual([
+      '..XX..',  // row 0
+      '...X..',  // row 1
+    ]);
+  });
+
+  test('rotate counter-clockwise on a tall sprite should rotate around the center', { tag: ['@transformations.rotate-non-square'] }, async ({ page }) => {
+    await openEditor(page);
+    await setPiskelFromGrid(page, gridFromRows([
+      'X.',  // row 0, lost
+      '..',  // row 1
+      'XX',  // row 2
+      'X.',  // row 3
+      '..',  // row 4
+      '.X',  // row 5, lost
+    ]));
+
+    await clickTransform(page, 'tool-rotate');
+
+    expect(await getCurrentPiskelWidth(page)).toBe(2);
+    expect(await getCurrentPiskelHeight(page)).toBe(6);
+    const grid = await readPixelGrid(page, 2, 6);
+    expect(grid.map(r => r.join(''))).toEqual([
+      '..',  // row 0
+      '..',  // row 1
+      'X.',  // row 2
+      'XX',  // row 3
+      '..',  // row 4
+      '..',  // row 5
+    ]);
+  });
+
+  // ─── Undo ─────────────────────────────────────────────────────
+
+  for (const toolId of ['tool-flip', 'tool-rotate', 'tool-center']) {
+    test(`${toolId} should be a single undo step`, { tag: ['@transformations.undo'] }, async ({ page }) => {
+      await openEditor(page);
+      await setPiskelFromGrid(page, lShapeGrid());
+
+      await clickTool(page, 'tool-pen');
+      await drawAtPixel(page, 5, 5);
+
+      await clickTransform(page, toolId);
+      const transformed = await readPixelGrid(page, 10, 10);
+      expect(transformed.map(r => r.join(''))).not.toEqual(L_SHAPE_AND_PIXEL);
+
+      // The first undo only reverts the transformation, the second one the pixel
+      await undo(page);
+      await waitForGrid(page, 10, 10, L_SHAPE_AND_PIXEL);
+      // Undo is ignored within 50ms of the previous one (undo-redo.throttle)
+      await wait(100);
+      await undo(page);
+      await waitForGrid(page, 10, 10, L_SHAPE);
+    });
+  }
+
+  test('clone should be a single undo step', { tag: ['@transformations.undo'] }, async ({ page }) => {
+    await openEditor(page);
+    await setPiskelFromGrid(page, lShapeGrid());
+
+    await getAddFrameButton(page).click();
+    await assertFrameCount(page, 2);
+    await selectFrame(page, 0);
+
+    await clickTransform(page, 'tool-clone');
+    await waitForGrid(page, 10, 10, L_SHAPE, { frameIndex: 1 });
+
+    await undo(page);
+    await waitForGrid(page, 10, 10, EMPTY, { frameIndex: 1 });
+    await waitForGrid(page, 10, 10, L_SHAPE, { frameIndex: 0 });
+  });
+
+  test('crop should be a single undo step', { tag: ['@transformations.undo'] }, async ({ page }) => {
+    await openEditor(page);
+    await setPiskelFromGrid(page, lShapeGrid());
+
+    await clickTransform(page, 'tool-crop');
+    await waitFor(async () => (await getCurrentPiskelWidth(page)) === 3);
+
+    await undo(page);
+    await waitFor(async () => (await getCurrentPiskelWidth(page)) === 10);
+    expect(await getCurrentPiskelHeight(page)).toBe(10);
+    await waitForGrid(page, 10, 10, L_SHAPE);
+  });
+
+  test('a transformation of all frames and layers should be a single undo step', { tag: ['@transformations.undo'] }, async ({ page }) => {
+    await openEditor(page);
+    await setPiskelFromGrid(page, gridFromRows([
+      'X...',
+      'X...',
+      'XXX.',
+      '....',
+    ]));
+
+    // Frame 1 of layer 0 gets a pixel at (0,0)
+    await getAddFrameButton(page).click();
+    await assertFrameCount(page, 2);
+    await selectFrame(page, 1);
+    await clickTool(page, 'tool-pen');
+    await drawAtPixel(page, 0, 0);
+    expect(await readPixelRows(page, 4, 4, 0, 1)).toEqual([
+      'X...',
+      '....',
+      '....',
+      '....',
+    ]);
+
+    // Frame 1 of layer 1 gets a pixel at (1,1)
+    await getAddLayerButton(page).click();
+    await wait(200);
+    await drawAtPixel(page, 1, 1);
+    expect(await readPixelRows(page, 4, 4, 1, 1)).toEqual([
+      '....',
+      '.X..',
+      '....',
+      '....',
+    ]);
+
+    // Shift applies the flip to all frames, Ctrl to all layers
+    await clickTransform(page, 'tool-flip', { shift: true, ctrl: true });
+
+    expect(await readPixelRows(page, 4, 4, 0, 0)).toEqual([
+      '...X',
+      '...X',
+      '.XXX',
+      '....',
+    ]);
+    expect(await readPixelRows(page, 4, 4, 0, 1)).toEqual([
+      '...X',
+      '....',
+      '....',
+      '....',
+    ]);
+    expect(await readPixelRows(page, 4, 4, 1, 1)).toEqual([
+      '....',
+      '..X.',
+      '....',
+      '....',
+    ]);
+
+    await undo(page);
+
+    await waitForGrid(page, 4, 4, [
+      'X...',
+      'X...',
+      'XXX.',
+      '....',
+    ], { layerIndex: 0, frameIndex: 0 });
+    expect(await readPixelRows(page, 4, 4, 0, 1)).toEqual([
+      'X...',
+      '....',
+      '....',
+      '....',
+    ]);
+    expect(await readPixelRows(page, 4, 4, 1, 1)).toEqual([
+      '....',
+      '.X..',
+      '....',
+      '....',
+    ]);
   });
 });

@@ -15,10 +15,12 @@ progress bars.
 - `editor.new-sprite` The editor starts on a new sprite named "New
   Piskel", at the default size (32×32 out of the box, see
   [settings.md](settings.md)), with one layer "Layer 1", one frame and 12
-  FPS. The pen tool is selected, and the colors are black and transparent.
+  FPS (or the maximum FPS preference, if lower). The pen tool is selected,
+  and the colors are black and transparent.
 - `editor.unsupported-browser` In browsers other than Chrome, Firefox and
   Edge, a dialog at startup warns that the browser is not supported and
-  names the detected browser.
+  names it (Safari or Opera), or shows its full identity for any other
+  browser. Browsers based on Chrome count as Chrome, except Opera.
 
 ### Dialogs
 
@@ -28,11 +30,11 @@ progress bars.
 ### Feedback
 
 - `editor.notifications` Messages (save results, import errors, warnings)
-  appear one at a time in a notification with a close button; most hide
+  appear one at a time in a notification with a close button; all hide
   themselves after a few seconds.
 - `editor.progress-bar` Long tasks, such as building a GIF or reading an
   image palette, show a progress bar with a percentage, only when they
-  take more than a fraction of a second.
+  take more than 300 ms.
 
 ## UI and shortcuts
 

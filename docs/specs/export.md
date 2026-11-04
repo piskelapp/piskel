@@ -8,8 +8,11 @@ For saving work to continue editing later, see
 
 ## Behavior
 
-- `export.content` Exports always include all layers composed (respecting
-  layer opacity) and all frames, including frames hidden from the preview.
+- `export.content` PNG and GIF exports include all layers composed
+  (respecting layer opacity) and all frames, including frames hidden from
+  the preview.
+- `export.content-other-formats` So do ZIP (unless split by layers),
+  PixiJS and C file exports.
 
 ### Scale and resolution
 

@@ -17,9 +17,10 @@ The central area where the current frame is displayed and edited.
 - `canvas.zoom-limits` Zooming out stops at one screen pixel per sprite
   pixel; zooming in stops when 10 sprite pixels no longer fit. Panning
   stops at the sprite's edges.
-- `canvas.fit-on-resize` When the sprite size changes (resize, crop,
-  load), zoom and pan reset to fit the sprite. Resizing the window keeps
-  the zoom relative to the available space.
+- `canvas.fit-on-resize` When the sprite size changes (resize, crop, or
+  undoing and redoing these) or a sprite is loaded, even of the same size,
+  zoom and pan reset to fit the sprite. Resizing the window keeps the zoom
+  relative to the available space.
 - `canvas.zoomed-out-background` When zoomed out so the sprite is smaller
   than the area, the background around it is a neutral gray.
 
@@ -54,7 +55,8 @@ The bottom bar shows:
   configurable size, spacing and color (see [settings.md](settings.md)).
   `alt+G` toggles it.
 - `canvas.grid-zoom` The grid is hidden when its lines would be less than
-  6 screen pixels apart, and drawn thinner when zoomed out.
+  6 screen pixels apart. When zoomed out it's drawn thinner: a line is at
+  most 1/6 of a sprite pixel wide, and never under 1 screen pixel.
 - `canvas.tile-mode` Tile mode draws copies of the sprite around the
   canvas, behind a semi-transparent mask, to design seamless tiles (see
   [settings.md](settings.md)).
