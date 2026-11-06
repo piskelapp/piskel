@@ -530,9 +530,35 @@ export const readPixelRows = async (
 };
 
 /**
- * Drag from sprite pixel (x1,y1) to (x2,y2) via real mouse events.
- * Waits for any pending relayout before computing coordinates (same as drawAtPixel).
+ * Press the mouse on the first sprite pixel, move it through the others in order,
+ * and release it on the last one, via real mouse events, as when drawing a lasso
+ * selection. Waits for any pending relayout before computing coordinates (same as
+ * drawAtPixel).
  */
+export const dragThroughPixels = async (
+  page: Page,
+  pixels: Array<[number, number]>,
+  options?: { steps?: number }
+): Promise<void> => {
+  const steps = options?.steps ?? 5;
+  // Wait for any pending relayout (DrawingController uses setTimeout(200) for relayout)
+  await page.evaluate(() => new Promise((resolve) => setTimeout(resolve, 210)));
+  const points = await page.evaluate(
+    (pixels) =>
+      pixels.map(([col, row]) =>
+        window.pskl.app.drawingController.getScreenCoordinates(col, row)
+      ),
+    pixels
+  );
+  await moveMouseOntoCanvas(page, points[0].x, points[0].y);
+  await page.mouse.down();
+  for (const point of points.slice(1)) {
+    await page.mouse.move(point.x, point.y, { steps });
+  }
+  await page.mouse.up();
+};
+
+/** Drag from sprite pixel (x1,y1) to (x2,y2) via real mouse events */
 export const dragBetweenPixels = async (
   page: Page,
   x1: number,
@@ -541,23 +567,35 @@ export const dragBetweenPixels = async (
   y2: number,
   options?: { steps?: number }
 ): Promise<void> => {
-  const steps = options?.steps ?? 5;
-  // Wait for any pending relayout (DrawingController uses setTimeout(200) for relayout)
-  await page.evaluate(() => new Promise((resolve) => setTimeout(resolve, 210)));
-  const start = await page.evaluate(
-    ({ col, row }) =>
-      window.pskl.app.drawingController.getScreenCoordinates(col, row),
-    { col: x1, row: y1 }
-  );
-  const end = await page.evaluate(
-    ({ col, row }) =>
-      window.pskl.app.drawingController.getScreenCoordinates(col, row),
-    { col: x2, row: y2 }
-  );
-  await moveMouseOntoCanvas(page, start.x, start.y);
-  await page.mouse.down();
-  await page.mouse.move(end.x, end.y, { steps });
-  await page.mouse.up();
+  await dragThroughPixels(page, [[x1, y1], [x2, y2]], options);
+};
+
+/** Click a transform tool with optional modifier keys held */
+export const clickTransform = async (
+  page: Page,
+  toolId: string,
+  modifiers: { alt?: boolean; shift?: boolean; ctrl?: boolean } = {}
+): Promise<void> => {
+  const tool = page.locator(`[data-tool-id="${toolId}"]`);
+
+  // Expand "show more" if the tool is not visible
+  if (!(await tool.isVisible())) {
+    await page.locator(".transformations-show-more-link").click();
+    await expect(tool).toBeVisible();
+  }
+
+  if (modifiers.alt) await page.keyboard.down("Alt");
+  if (modifiers.shift) await page.keyboard.down("Shift");
+  if (modifiers.ctrl) await page.keyboard.down(CMD_OR_CTRL);
+
+  await tool.click();
+
+  if (modifiers.ctrl) await page.keyboard.up(CMD_OR_CTRL);
+  if (modifiers.shift) await page.keyboard.up("Shift");
+  if (modifiers.alt) await page.keyboard.up("Alt");
+
+  // Wait for transform to apply
+  await wait(200);
 };
 
 /**
@@ -603,7 +641,12 @@ export const waitFor = async (
     timeout = 5000,
     interval = 100,
     message
-  }: { timeout?: number; interval?: number; message?: string } = {}
+  }: {
+    timeout?: number;
+    interval?: number;
+    // A function is called after the last try, so it can describe the final state
+    message?: string | (() => string);
+  } = {}
 ): Promise<void> => {
   const start = Date.now();
   while (Date.now() - start < timeout) {
@@ -611,7 +654,8 @@ export const waitFor = async (
     await new Promise((r) => setTimeout(r, interval));
   }
   if (!(await fn())) {
-    throw new Error(message ?? `waitFor: condition not met after ${timeout}ms`);
+    const text = typeof message === "function" ? message() : message;
+    throw new Error(text ?? `waitFor: condition not met after ${timeout}ms`);
   }
 };
 
@@ -685,7 +729,8 @@ export const waitForGrid = async (
     {
       timeout,
       interval,
-      message: `Grid did not match expected pattern within ${timeout}ms.\nExpected:\n${expectedGrid.join("\n")}\nGot:\n${lastGrid.join("\n")}`
+      message: () =>
+        `Grid did not match expected pattern within ${timeout}ms.\nExpected:\n${expectedGrid.join("\n")}\nGot:\n${lastGrid.join("\n")}`
     }
   );
 };

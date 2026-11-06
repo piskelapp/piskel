@@ -22,7 +22,7 @@ they affect the current frame of the current layer.
 | `transformations.clone` | Clone | Copies the current frame of the current layer to every frame of that layer. No modifiers. |
 | `transformations.center` | Center | Moves the content so its bounding box is centered. |
 | `transformations.crop` | Crop | Resizes the sprite to the bounding box of its content. Always applies to all frames and layers. No modifiers. |
-| `transformations.crop-selection` | Crop | With a selection, resizes the sprite to the selection instead, and dismisses the selection. |
+| `transformations.crop-selection` | Crop | With a selection, resizes the sprite to the bounding box of the selection instead, and dismisses the selection. With a lasso or shape selection, pixels inside that box but outside the selection are kept. |
 
 - `transformations.undo` Each transformation is a single undo step.
 - `transformations.rotate-non-square` Rotation of a non-square sprite
