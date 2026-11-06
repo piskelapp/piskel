@@ -1185,6 +1185,22 @@ export const setTopLayerOpacity = async (
   await getAllLayerOpacityButtons(page).first().click();
 };
 
+/** Check the opacity shown by the α button of the top layer, in its tooltip */
+export const assertTopLayerOpacity = async (
+  page: Page,
+  opacity: number
+): Promise<void> => {
+  const indicator = getAllLayerOpacityButtons(page).first();
+  // Bootstrap moves the title to data-original-title once the tooltip is set up
+  await expect
+    .poll(
+      async () =>
+        (await indicator.getAttribute("data-original-title")) ??
+        (await indicator.getAttribute("title"))
+    )
+    .toBe(`Layer opacity (${opacity})`);
+};
+
 /**
  * Letter for a color in the ASCII art grid of an exported image: "." is a
  * transparent pixel, and "?" any color without a letter.
@@ -2632,17 +2648,6 @@ export const assertSavePanelFields = async (
   await openSaveSettingsPanel(page);
   await expect(page.locator("#save-name")).toHaveValue(title);
   await expect(page.locator("#save-description")).toHaveValue(description);
-};
-
-/** Check the opacity shown by the α button of the top layer */
-export const assertTopLayerOpacity = async (
-  page: Page,
-  opacity: number
-): Promise<void> => {
-  await expect(getAllLayerOpacityButtons(page).first()).toHaveAttribute(
-    "title",
-    `Layer opacity (${opacity})`
-  );
 };
 
 /** The Save in Browser button of the save panel */

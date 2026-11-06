@@ -1,4 +1,4 @@
-import test, { expect } from "@playwright/test";
+import test, { expect, Page } from "@playwright/test";
 import {
   openEditor,
   getCurrentPiskelLayerCount,
@@ -18,6 +18,7 @@ import {
   setPrimaryColor,
   clickTool,
   colorToInt,
+  assertColorRows,
   assertCurrentLayer,
   assertFrameCount,
   assertLayerNames,
@@ -41,7 +42,10 @@ import {
   setLayerPreviewOpacity,
   setPiskelFromGrid,
   setTopLayerOpacity,
+  assertTopLayerOpacity,
   toggleLayerPreview,
+  undo,
+  waitForGrid,
 } from "../../testutils";
 
 const EMPTY = ['....', '....', '....', '....'];
@@ -194,6 +198,26 @@ test.describe('Layer operations', () => {
     expect(movedLayerName).toBe(topLayerName);
   });
 
+  test('should move a layer to the bottom or the top with shift', { tag: ['@layers.move'] }, async ({ page }) => {
+    // Start with three layers. The new top layer is current.
+    await openEditor(page);
+    await setPiskelFromGrid(page, gridFromRows(EMPTY));
+    await getAddLayerButton(page).click();
+    await getAddLayerButton(page).click();
+    await assertLayerNames(page, ['Layer 2', 'Layer 1', 'Base layer']);
+    await assertCurrentLayer(page, 2);
+
+    // Shift moves the layer to the bottom, past both other layers.
+    await getMoveLayerDownButton(page).click({ modifiers: ['Shift'] });
+    await assertLayerNames(page, ['Layer 1', 'Base layer', 'Layer 2']);
+    await assertCurrentLayer(page, 0);
+
+    // And back to the top.
+    await getMoveLayerUpButton(page).click({ modifiers: ['Shift'] });
+    await assertLayerNames(page, ['Layer 2', 'Layer 1', 'Base layer']);
+    await assertCurrentLayer(page, 2);
+  });
+
   test('should merge layer down', { tag: ['@layers.merge-down'] }, async ({ page }) => {
     await openEditor(page);
 
@@ -219,6 +243,31 @@ test.describe('Layer operations', () => {
     const pixel11 = await getPixelColor(page, 1, 1, 0, 0);
     expect(pixel00).toBe(colorToInt('#FF0000'));
     expect(pixel11).toBe(colorToInt('#00FF00'));
+  });
+
+  test('should keep the upper layer on top, and its name, when merging down', { tag: ['@layers.merge-down'] }, async ({ page }) => {
+    // Start from two red pixels on the bottom layer.
+    await openEditor(page);
+    await setPiskelFromGrid(page, [
+      ['R', 'R', 'T', 'T'],
+      ['T', 'T', 'T', 'T'],
+      ['T', 'T', 'T', 'T'],
+      ['T', 'T', 'T', 'T'],
+    ]);
+
+    // Add a layer, with two green pixels: one of them over a red one.
+    await getAddLayerButton(page).click();
+    await assertCurrentLayer(page, 1);
+    await setPrimaryColor(page, '#00FF00');
+    await clickTool(page, 'tool-pen');
+    await drawAtPixel(page, 1, 0);
+    await drawAtPixel(page, 2, 0);
+    expect(await readPixelRows(page, 4, 4, 1)).toEqual(['.XX.', '....', '....', '....']);
+
+    // Merge it down: green wins where the pixels overlap, and the name is the upper layer's.
+    await getMergeLayerButton(page).click();
+    await assertLayerNames(page, ['Layer 1']);
+    await assertColorRows(page, ['RGG.', '....', '....', '....']);
   });
 
   test('should disable delete button when only one layer', { tag: ['@layers.delete-disabled'] }, async ({ page }) => {
@@ -459,6 +508,31 @@ test.describe('Layer operations', () => {
     expect(await readPixelRows(page, 4, 4, 0)).toEqual(PIXEL_TOP_LEFT);
   });
 
+  test('should duplicate every frame of the layer, as an independent copy', { tag: ['@layers.duplicate'] }, async ({ page }) => {
+    // Start from a layer with a different pixel in each of its two frames.
+    await openEditor(page);
+    await setPiskelFromGrid(page, gridFromRows(PIXEL_TOP_LEFT));
+    await getAddFrameButton(page).click();
+    await assertFrameCount(page, 2);
+    await selectFrame(page, 1);
+    await clickTool(page, 'tool-pen');
+    await drawAtPixel(page, 1, 1);
+    expect(await readPixelRows(page, 4, 4, 0, 1)).toEqual(PIXEL_IN_CENTER);
+
+    // Duplicate it: the copy has both frames.
+    await duplicateCurrentLayer(page);
+    await assertLayerNames(page, ['Base layer (clone)', 'Base layer']);
+    await assertCurrentLayer(page, 1);
+    expect(await readPixelRows(page, 4, 4, 1, 0)).toEqual(PIXEL_TOP_LEFT);
+    expect(await readPixelRows(page, 4, 4, 1, 1)).toEqual(PIXEL_IN_CENTER);
+
+    // Draw on the copy: the original doesn't change.
+    await drawAtPixel(page, 3, 3);
+    await waitForGrid(page, 4, 4, ['....', '.X..', '....', '...X'], { layerIndex: 1, frameIndex: 1 });
+    expect(await readPixelRows(page, 4, 4, 0, 1)).toEqual(PIXEL_IN_CENTER);
+    expect(await readPixelRows(page, 4, 4, 0, 0)).toEqual(PIXEL_TOP_LEFT);
+  });
+
   test('should remember layer preview across sessions', { tag: ['@layers.preview-saved'] }, async ({ page }) => {
     await openEditor(page);
     await createEmptyLayerAbovePixel(page);
@@ -585,4 +659,69 @@ test.describe('Layer operations', () => {
     await expect(getLayerItems(page).last()).toBeInViewport();
     await expect(getLayerItems(page).first()).not.toBeInViewport();
   });
+
+  // Each operation applies to "Layer 1", the current layer, which is above "Base layer".
+  const layerOperations: Array<{
+    name: string;
+    change: (page: Page) => Promise<void>;
+    assertChanged: (page: Page) => Promise<void>;
+  }> = [
+    {
+      name: 'adding a layer',
+      change: (page) => getAddLayerButton(page).click(),
+      assertChanged: (page) => assertLayerNames(page, ['Layer 2', 'Layer 1', 'Base layer']),
+    },
+    {
+      name: 'duplicating a layer',
+      change: duplicateCurrentLayer,
+      assertChanged: (page) => assertLayerNames(page, ['Layer 1 (clone)', 'Layer 1', 'Base layer']),
+    },
+    {
+      name: 'renaming a layer',
+      change: (page) => renameCurrentLayer(page, 'Renamed'),
+      assertChanged: (page) => assertLayerNames(page, ['Renamed', 'Base layer']),
+    },
+    {
+      name: 'moving a layer',
+      change: (page) => getMoveLayerDownButton(page).click(),
+      assertChanged: (page) => assertLayerNames(page, ['Base layer', 'Layer 1']),
+    },
+    {
+      name: 'merging a layer down',
+      change: (page) => getMergeLayerButton(page).click(),
+      assertChanged: (page) => assertLayerNames(page, ['Layer 1']),
+    },
+    {
+      name: 'deleting a layer',
+      change: (page) => getDeleteLayerButton(page).click(),
+      assertChanged: (page) => assertLayerNames(page, ['Base layer']),
+    },
+    {
+      name: 'changing the opacity of a layer',
+      change: (page) => setTopLayerOpacity(page, 0.5),
+      assertChanged: (page) => assertTopLayerOpacity(page, 0.5),
+    },
+  ];
+  for (const { name, change, assertChanged } of layerOperations) {
+    test(`undo should revert ${name} in one step`, { tag: ['@layers.undo'] }, async ({ page }) => {
+      // Start from a pixel on each of two layers.
+      await openEditor(page);
+      await setPiskelFromGrid(page, gridFromRows(PIXEL_TOP_LEFT));
+      await getAddLayerButton(page).click();
+      await assertCurrentLayer(page, 1);
+      await clickTool(page, 'tool-pen');
+      await drawAtPixel(page, 1, 1);
+      expect(await readPixelRows(page, 4, 4, 1)).toEqual(PIXEL_IN_CENTER);
+
+      await change(page);
+      await assertChanged(page);
+
+      // Undo reverts the operation only: the pixel drawn before it is still there.
+      await undo(page);
+      await assertLayerNames(page, ['Layer 1', 'Base layer']);
+      await assertTopLayerOpacity(page, 1);
+      await waitForGrid(page, 4, 4, PIXEL_TOP_LEFT, { layerIndex: 0 });
+      await waitForGrid(page, 4, 4, PIXEL_IN_CENTER, { layerIndex: 1 });
+    });
+  }
 });

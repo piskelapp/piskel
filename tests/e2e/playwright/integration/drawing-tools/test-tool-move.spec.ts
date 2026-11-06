@@ -1,26 +1,20 @@
-import test, { expect, Page } from "@playwright/test";
+import test, { expect } from "@playwright/test";
 import {
   CMD_OR_CTRL,
+  assertCurrentLayer,
   clickTool,
   colorToInt,
+  dragBetweenPixels,
   drawAtPixel,
+  getAddLayerButton,
   getPixelColor,
+  gridFromRows,
   openEditor,
   readPixelGrid,
+  readPixelRows,
   setPiskelFromGrid,
+  waitForGrid,
 } from "../../testutils";
-
-/** Drag from sprite pixel (x1,y1) to (x2,y2) */
-async function dragBetweenPixels(page: Page, x1: number, y1: number, x2: number, y2: number) {
-  const start = await page.evaluate(({ col, row }) =>
-    window.pskl.app.drawingController.getScreenCoordinates(col, row), { col: x1, row: y1 });
-  const end = await page.evaluate(({ col, row }) =>
-    window.pskl.app.drawingController.getScreenCoordinates(col, row), { col: x2, row: y2 });
-  await page.mouse.move(start.x, start.y);
-  await page.mouse.down();
-  await page.mouse.move(end.x, end.y, { steps: 5 });
-  await page.mouse.up();
-}
 
 /** Create an NxN transparent TestGrid */
 function emptyTestGrid(size = 10): ("T")[][] {
@@ -260,5 +254,24 @@ test.describe('Move tool', () => {
     expect(grid1[4].join('')).toBe('......X...');
     expect(grid1[4][6]).toBe('X');
     expect(grid1[4][2]).toBe('.');
+  });
+
+  test('move tool: moves the current layer only', { tag: ['@drawing-tools.move'] }, async ({ page }) => {
+    // Start from a pixel on each of two layers. The top layer is current.
+    await openEditor(page);
+    await setPiskelFromGrid(page, gridFromRows(['X...', '....', '....', '....']));
+    await getAddLayerButton(page).click();
+    await assertCurrentLayer(page, 1);
+    await clickTool(page, 'tool-pen');
+    await drawAtPixel(page, 0, 2);
+    expect(await readPixelRows(page, 4, 4, 1)).toEqual(['....', '....', 'X...', '....']);
+
+    // Drag the content one pixel to the right.
+    await clickTool(page, 'tool-move');
+    await dragBetweenPixels(page, 0, 2, 1, 2);
+
+    // Only the top layer moved.
+    await waitForGrid(page, 4, 4, ['....', '....', '.X..', '....'], { layerIndex: 1 });
+    expect(await readPixelRows(page, 4, 4, 0)).toEqual(['X...', '....', '....', '....']);
   });
 });
