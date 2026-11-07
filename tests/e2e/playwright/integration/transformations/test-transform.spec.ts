@@ -17,6 +17,7 @@ import {
   getCurrentPiskelWidth,
   getCurrentPiskelHeight,
   gridFromRows,
+  gridFromColorRows,
   isCurrentPiskelEmpty,
   undo,
   redo,
@@ -75,12 +76,67 @@ const CORNERS = [
   '.........X',  // row 9
 ];
 
-/** A single pixel in each corner of a 4x4 sprite, and an empty 4x4 sprite */
-const TOP_LEFT = ['X...', '....', '....', '....'];
-const TOP_RIGHT = ['...X', '....', '....', '....'];
-const BOTTOM_LEFT = ['....', '....', '....', 'X...'];
-const BOTTOM_RIGHT = ['....', '....', '....', '...X'];
-const EMPTY_4X4 = ['....', '....', '....', '....'];
+/** A 10x10 sprite with a single pixel in one corner */
+const TOP_LEFT = [
+  'X.........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+];
+const TOP_RIGHT = [
+  '.........X',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+];
+const BOTTOM_LEFT = [
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  'X.........',
+];
+const BOTTOM_RIGHT = [
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '.........X',
+];
+const EMPTY_10X10 = [
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+];
 
 /** A 6x2 sprite, with pixels that don't fit on the canvas once rotated */
 const WIDE_SPRITE = [
@@ -309,8 +365,8 @@ test.describe('Transform panel', () => {
     await assertCurrentLayer(page, 1);
     await selectFrame(page, 1);
     await clickTool(page, 'tool-pen');
-    await drawAtPixel(page, 3, 3);
-    expect(await readPixelRows(page, 4, 4, 1, 1)).toEqual(BOTTOM_RIGHT);
+    await drawAtPixel(page, 9, 9);
+    expect(await readPixelRows(page, 10, 10, 1, 1)).toEqual(BOTTOM_RIGHT);
 
     // Clone the first frame of the bottom layer.
     await selectBottomLayer(page);
@@ -318,11 +374,11 @@ test.describe('Transform panel', () => {
     await clickTransform(page, 'tool-clone');
 
     // The bottom layer now shows its first frame in both frames.
-    await waitForGrid(page, 4, 4, TOP_LEFT, { layerIndex: 0, frameIndex: 1 });
+    await waitForGrid(page, 10, 10, TOP_LEFT, { layerIndex: 0, frameIndex: 1 });
 
     // The top layer is unchanged.
-    expect(await readPixelRows(page, 4, 4, 1, 0)).toEqual(EMPTY_4X4);
-    expect(await readPixelRows(page, 4, 4, 1, 1)).toEqual(BOTTOM_RIGHT);
+    expect(await readPixelRows(page, 10, 10, 1, 0)).toEqual(EMPTY_10X10);
+    expect(await readPixelRows(page, 10, 10, 1, 1)).toEqual(BOTTOM_RIGHT);
   });
 
   // ─── Center ────────────────────────────────────────────────────
@@ -470,11 +526,16 @@ test.describe('Transform panel', () => {
   }, async ({ page }) => {
     await openEditor(page);
     const sprite = [
-      'X....',
-      '.X...',
-      '.....',
-      '...X.',
-      '....X',
+      'X.........',
+      '.X........',
+      '..........',
+      '...X......',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '.........X',
     ];
     await setPiskelFromGrid(page, gridFromRows(sprite));
 
@@ -494,8 +555,8 @@ test.describe('Transform panel', () => {
 
     // Undo restores the whole sprite.
     await undo(page);
-    await assertSpriteSize(page, 5, 5);
-    await waitForGrid(page, 5, 5, sprite);
+    await assertSpriteSize(page, 10, 10);
+    await waitForGrid(page, 10, 10, sprite);
 
     // Redo crops to the same box, although the selection is gone: cropping to the
     // content would leave the sprite as it is.
@@ -514,12 +575,18 @@ test.describe('Transform panel', () => {
     tag: ['@transformations.crop-selection'],
   }, async ({ page }) => {
     await openEditor(page);
-    await setPiskelFromGrid(page, [
-      ['R', 'R', 'R', 'T'],
-      ['R', 'T', 'T', 'T'],
-      ['R', 'T', 'G', 'T'],
-      ['T', 'T', 'T', 'B'],
-    ]);
+    await setPiskelFromGrid(page, gridFromColorRows([
+      'RRR.......',
+      'R.........',
+      'R.G.......',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '.........B',
+    ]));
 
     // Select the red shape, whose bounding box goes from (0,0) to (2,2). The green
     // pixel is in that box, but not in the shape. The blue pixel is outside the box,
@@ -828,11 +895,30 @@ test.describe('Transform panel', () => {
     ]);
   });
 
+  // Each case starts from a pixel in the top left corner.
   const twiceTransformed = [
-    { name: 'flip', toolId: 'tool-flip', modifiers: {}, afterFirst: TOP_RIGHT, afterSecond: TOP_LEFT },
-    { name: 'counter-clockwise rotation', toolId: 'tool-rotate', modifiers: {}, afterFirst: BOTTOM_LEFT, afterSecond: BOTTOM_RIGHT },
-    // Alt rotates clockwise
-    { name: 'clockwise rotation', toolId: 'tool-rotate', modifiers: { alt: true }, afterFirst: TOP_RIGHT, afterSecond: BOTTOM_RIGHT },
+    {
+      name: 'flip',
+      toolId: 'tool-flip',
+      modifiers: {},
+      afterFirst: TOP_RIGHT,
+      afterSecond: TOP_LEFT,
+    },
+    {
+      name: 'counter-clockwise rotation',
+      toolId: 'tool-rotate',
+      modifiers: {},
+      afterFirst: BOTTOM_LEFT,
+      afterSecond: BOTTOM_RIGHT,
+    },
+    {
+      name: 'clockwise rotation',
+      toolId: 'tool-rotate',
+      // Alt rotates clockwise
+      modifiers: { alt: true },
+      afterFirst: TOP_RIGHT,
+      afterSecond: BOTTOM_RIGHT,
+    },
   ];
   for (const { name, toolId, modifiers, afterFirst, afterSecond } of twiceTransformed) {
     test(`undoing the second of two ${name}s should keep the first one`, { tag: ['@transformations.undo'] }, async ({ page }) => {
@@ -841,13 +927,13 @@ test.describe('Transform panel', () => {
 
       // Apply the transformation twice.
       await clickTransform(page, toolId, modifiers);
-      await waitForGrid(page, 4, 4, afterFirst);
+      await waitForGrid(page, 10, 10, afterFirst);
       await clickTransform(page, toolId, modifiers);
-      await waitForGrid(page, 4, 4, afterSecond);
+      await waitForGrid(page, 10, 10, afterSecond);
 
       // Undo removes only the second one.
       await undo(page);
-      await waitForGrid(page, 4, 4, afterFirst);
+      await waitForGrid(page, 10, 10, afterFirst);
     });
   }
 
@@ -862,31 +948,37 @@ test.describe('Transform panel', () => {
     await assertCurrentLayer(page, 1);
     await selectFrame(page, 0);
     await clickTool(page, 'tool-pen');
-    await drawAtPixel(page, 3, 3);
-    expect(await readPixelRows(page, 4, 4, 1, 0)).toEqual(BOTTOM_RIGHT);
+    await drawAtPixel(page, 9, 9);
+    expect(await readPixelRows(page, 10, 10, 1, 0)).toEqual(BOTTOM_RIGHT);
 
     // Clone the bottom layer, then the top layer (the list shows the top layer first).
     await selectBottomLayer(page);
     await clickTransform(page, 'tool-clone');
-    await waitForGrid(page, 4, 4, TOP_LEFT, { layerIndex: 0, frameIndex: 1 });
+    await waitForGrid(page, 10, 10, TOP_LEFT, { layerIndex: 0, frameIndex: 1 });
     await getLayerItems(page).first().click();
     await assertCurrentLayer(page, 1);
     await clickTransform(page, 'tool-clone');
-    await waitForGrid(page, 4, 4, BOTTOM_RIGHT, { layerIndex: 1, frameIndex: 1 });
+    await waitForGrid(page, 10, 10, BOTTOM_RIGHT, { layerIndex: 1, frameIndex: 1 });
 
     // Undo removes the clone of the top layer only.
     await undo(page);
-    await waitForGrid(page, 4, 4, EMPTY_4X4, { layerIndex: 1, frameIndex: 1 });
-    expect(await readPixelRows(page, 4, 4, 0, 1)).toEqual(TOP_LEFT);
+    await waitForGrid(page, 10, 10, EMPTY_10X10, { layerIndex: 1, frameIndex: 1 });
+    expect(await readPixelRows(page, 10, 10, 0, 1)).toEqual(TOP_LEFT);
   });
 
   test('undoing a second crop should go back to the size of the first one', { tag: ['@transformations.undo'] }, async ({ page }) => {
     await openEditor(page);
     await setPiskelFromGrid(page, gridFromRows([
-      '....',
-      '.X.X',
-      '....',
-      '.XX.',
+      '..........',
+      '.X.X......',
+      '..........',
+      '.XX.......',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
     ]));
 
     // Crop to the content.
@@ -928,37 +1020,37 @@ test.describe('Transform panel', () => {
     tag: ['@transformations.undo', '@undo-redo.shortcuts'],
   }, async ({ page }) => {
     await openEditor(page);
-    await setPiskelFromGrid(page, gridFromRows(EMPTY_4X4));
+    await setPiskelFromGrid(page, gridFromRows(EMPTY_10X10));
 
     // Draw a pixel, flip it horizontally, then vertically (Alt).
     await clickTool(page, 'tool-pen');
     await drawAtPixel(page, 0, 0);
-    await waitForGrid(page, 4, 4, TOP_LEFT);
+    await waitForGrid(page, 10, 10, TOP_LEFT);
     await clickTransform(page, 'tool-flip');
-    await waitForGrid(page, 4, 4, TOP_RIGHT);
+    await waitForGrid(page, 10, 10, TOP_RIGHT);
     await clickTransform(page, 'tool-flip', { alt: true });
-    await waitForGrid(page, 4, 4, BOTTOM_RIGHT);
+    await waitForGrid(page, 10, 10, BOTTOM_RIGHT);
 
     // Undo everything, one step at a time.
     // Undo and redo are ignored within 50ms of the previous one (undo-redo.throttle)
     await undo(page);
-    await waitForGrid(page, 4, 4, TOP_RIGHT);
+    await waitForGrid(page, 10, 10, TOP_RIGHT);
     await wait(100);
     await undo(page);
-    await waitForGrid(page, 4, 4, TOP_LEFT);
+    await waitForGrid(page, 10, 10, TOP_LEFT);
     await wait(100);
     await undo(page);
-    await waitForGrid(page, 4, 4, EMPTY_4X4);
+    await waitForGrid(page, 10, 10, EMPTY_10X10);
 
     // Redo everything, one step at a time.
     await wait(100);
     await redo(page);
-    await waitForGrid(page, 4, 4, TOP_LEFT);
+    await waitForGrid(page, 10, 10, TOP_LEFT);
     await wait(100);
     await redo(page);
-    await waitForGrid(page, 4, 4, TOP_RIGHT);
+    await waitForGrid(page, 10, 10, TOP_RIGHT);
     await wait(100);
     await redo(page);
-    await waitForGrid(page, 4, 4, BOTTOM_RIGHT);
+    await waitForGrid(page, 10, 10, BOTTOM_RIGHT);
   });
 });

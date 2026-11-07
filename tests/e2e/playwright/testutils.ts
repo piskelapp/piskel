@@ -92,6 +92,19 @@ type TestGrid = Array<Array<TestColor>>;
 export const gridFromRows = (rows: string[]): TestGrid =>
   rows.map((row) => [...row].map((c) => (c === "X" ? "R" : "T")));
 
+/**
+ * Build a test grid from rows written like the ones of assertColorRows: R, G and B
+ * are red, green and blue, and . a transparent pixel.
+ */
+export const gridFromColorRows = (rows: string[]): TestGrid =>
+  rows.map((row) =>
+    [...row].map((c) => {
+      if (c === ".") return "T";
+      if (c === "R" || c === "G" || c === "B") return c;
+      throw new Error(`Unknown color letter "${c}" in "${row}"`);
+    })
+  );
+
 export const setPiskelFromGrid = async (
   page: Page,
   grid: TestGrid
@@ -374,6 +387,19 @@ export const assertPenSizeLabel = async (
 /** Check that no pen size option shows a label */
 export const assertNoPenSizeLabel = async (page: Page): Promise<void> => {
   await expect(page.locator(".pen-size-option.labeled")).toHaveCount(0);
+};
+
+/**
+ * Pick a pen size with the picker. Sizes above 4 are only reachable with the
+ * `]` shortcut, from the size 4 option.
+ */
+export const setPenSize = async (page: Page, size: number): Promise<void> => {
+  await getPenSizeButton(page, Math.min(size, 4)).click();
+  await expect(getPenSizeButton(page, Math.min(size, 4))).toHaveClass(/selected/);
+  if (size > 4) {
+    await pressRepeatedly(page, "]", size - 4);
+    await assertPenSizeLabel(page, size);
+  }
 };
 
 /**
@@ -1039,6 +1065,9 @@ export const dragFrame = async (
   const tiles = getFrameTiles(page);
   const handle = tiles.nth(sourceIndex).locator(".dnd-action");
 
+  // The handle only shows while the tile is hovered.
+  await tiles.nth(sourceIndex).hover();
+  await expect(handle).toBeVisible();
   const handleBox = await handle.boundingBox();
   expect(handleBox).not.toBeNull();
 

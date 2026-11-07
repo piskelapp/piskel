@@ -72,7 +72,8 @@ await waitForGrid(page, 4, 4, EMPTY, { frameIndex: 1 });
   ]);
   ```
 
-- Use the smallest sprite that shows the behavior, so the grids stay short.
+- Write each grid one row per line, so it looks like the shape. Don't build grids with helpers or spreads, even for empty rows.
+- Use a 10x10 square sprite by default, like a real canvas. Use a smaller sprite only to test an edge case, such as a 2x2 sprite for clipping, and a rectangular one only when the shape matters. Say why in a comment.
 - `readPixelRows` only tells colored from transparent. When the color matters, use `assertColorRows`, whose grids show each color as a letter, never just "not transparent". Use `getPixelColor` and `colorToInt('#FF0000')` or `TRANSPARENT` only for a color without a letter.
 - Work out expected values from the spec or by hand. Output copied from a run only proves the code does what it does.
 - Assert the frame after each drawing action in the setup, as an ASCII grid when possible, so a broken setup fails at the step that caused it rather than later at the behavior being tested, and the reader can see the state at each step:

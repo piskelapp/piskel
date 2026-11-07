@@ -43,6 +43,58 @@ const EMPTY = [
   '....',
 ];
 
+/** The three frames of the undo tests: one pixel each, in its own column */
+const FRAME_1 = [
+  'X.........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+];
+const FRAME_2 = [
+  '.X........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+];
+const FRAME_3 = [
+  '..X.......',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+];
+
+/** An empty 10x10 frame */
+const EMPTY_FRAME = [
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+];
+
 test.describe('Frame operations', () => {
 
   test('should start with one frame', { tag: ['@frames.at-least-one'] }, async ({ page }) => {
@@ -422,8 +474,8 @@ test.describe('Frame operations', () => {
     await expect(bottomHint).not.toBeInViewport();
   });
 
-  // Each operation applies to the three frames of createThreeFrames, with the
-  // third one current.
+  // Each operation applies to FRAME_1, FRAME_2 and FRAME_3, with the third frame
+  // current.
   const frameOperations: Array<{
     name: string;
     change: (page: Page) => Promise<void>;
@@ -442,8 +494,8 @@ test.describe('Frame operations', () => {
       },
       assertChanged: async (page) => {
         await assertFrameCount(page, 4);
-        await waitForGrid(page, 4, 4, EMPTY, { frameIndex: 1 });
-        await waitForGrid(page, 4, 4, PIXEL_IN_SECOND_COLUMN, { frameIndex: 2 });
+        await waitForGrid(page, 10, 10, EMPTY_FRAME, { frameIndex: 1 });
+        await waitForGrid(page, 10, 10, FRAME_2, { frameIndex: 2 });
       },
     },
     {
@@ -459,7 +511,7 @@ test.describe('Frame operations', () => {
     {
       name: 'moving a frame',
       change: (page) => dragFrame(page, 0, 2),
-      assertChanged: (page) => waitForGrid(page, 4, 4, PIXEL_IN_FIRST_COLUMN, { frameIndex: 2 }),
+      assertChanged: (page) => waitForGrid(page, 10, 10, FRAME_1, { frameIndex: 2 }),
     },
     {
       name: 'hiding a frame',
@@ -469,9 +521,22 @@ test.describe('Frame operations', () => {
   ];
   for (const { name, change, assertChanged } of frameOperations) {
     test(`undo should revert ${name} in one step`, { tag: ['@frames.undo'] }, async ({ page }) => {
-      // Start from three frames, each with a pixel drawn in its own column.
+      // Draw a pixel in the first frame.
       await openEditor(page);
-      await createThreeFrames(page);
+      await setPiskelFromGrid(page, gridFromRows(EMPTY_FRAME));
+      await clickTool(page, 'tool-pen');
+      await drawAtPixel(page, 0, 0);
+      await waitForGrid(page, 10, 10, FRAME_1, { frameIndex: 0 });
+
+      // Add a second and a third frame, with a pixel each.
+      await getAddFrameButton(page).click();
+      await assertFrameCount(page, 2);
+      await drawAtPixel(page, 1, 0);
+      await waitForGrid(page, 10, 10, FRAME_2, { frameIndex: 1 });
+      await getAddFrameButton(page).click();
+      await assertFrameCount(page, 3);
+      await drawAtPixel(page, 2, 0);
+      await waitForGrid(page, 10, 10, FRAME_3, { frameIndex: 2 });
 
       await change(page);
       await assertChanged(page);
@@ -480,9 +545,9 @@ test.describe('Frame operations', () => {
       await undo(page);
       await assertFrameCount(page, 3);
       await assertHiddenFrames(page, []);
-      await waitForGrid(page, 4, 4, PIXEL_IN_FIRST_COLUMN, { frameIndex: 0 });
-      await waitForGrid(page, 4, 4, PIXEL_IN_SECOND_COLUMN, { frameIndex: 1 });
-      await waitForGrid(page, 4, 4, PIXEL_IN_THIRD_COLUMN, { frameIndex: 2 });
+      await waitForGrid(page, 10, 10, FRAME_1, { frameIndex: 0 });
+      await waitForGrid(page, 10, 10, FRAME_2, { frameIndex: 1 });
+      await waitForGrid(page, 10, 10, FRAME_3, { frameIndex: 2 });
     });
   }
 });

@@ -259,19 +259,53 @@ test.describe('Move tool', () => {
   test('move tool: moves the current layer only', { tag: ['@drawing-tools.move'] }, async ({ page }) => {
     // Start from a pixel on each of two layers. The top layer is current.
     await openEditor(page);
-    await setPiskelFromGrid(page, gridFromRows(['X...', '....', '....', '....']));
+    const bottomLayer = [
+      'X.........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+    ];
+    await setPiskelFromGrid(page, gridFromRows(bottomLayer));
     await getAddLayerButton(page).click();
     await assertCurrentLayer(page, 1);
     await clickTool(page, 'tool-pen');
     await drawAtPixel(page, 0, 2);
-    expect(await readPixelRows(page, 4, 4, 1)).toEqual(['....', '....', 'X...', '....']);
+    expect(await readPixelRows(page, 10, 10, 1)).toEqual([
+      '..........',
+      '..........',
+      'X.........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+    ]);
 
     // Drag the content one pixel to the right.
     await clickTool(page, 'tool-move');
     await dragBetweenPixels(page, 0, 2, 1, 2);
 
     // Only the top layer moved.
-    await waitForGrid(page, 4, 4, ['....', '....', '.X..', '....'], { layerIndex: 1 });
-    expect(await readPixelRows(page, 4, 4, 0)).toEqual(['X...', '....', '....', '....']);
+    await waitForGrid(page, 10, 10, [
+      '..........',
+      '..........',
+      '.X........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+    ], { layerIndex: 1 });
+    expect(await readPixelRows(page, 10, 10, 0)).toEqual(bottomLayer);
   });
 });
