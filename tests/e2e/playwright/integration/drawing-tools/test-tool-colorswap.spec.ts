@@ -1,4 +1,4 @@
-import test, { expect } from "@playwright/test";
+import test from "@playwright/test";
 import {
   CMD_OR_CTRL,
   assertColorRows,
@@ -6,15 +6,12 @@ import {
   gridFromColorRows,
   undo,
   clickTool,
-  colorToInt,
   drawAtPixel,
   getAddFrameButton,
   getAddLayerButton,
-  getPixelColor,
   openEditor,
   setPiskelFromGrid,
   setPrimaryColor,
-  wait,
   assertFrameCount,
   selectFrame,
 } from "../../testutils";
@@ -120,26 +117,39 @@ const GREEN_AT_3_3 = [
 test.describe('Color swap tool', () => {
 
   test('color swap tool: replaces all pixels of one color', { tag: ['@drawing-tools.magic-bucket'] }, async ({ page }) => {
+    // Start from a checkerboard of red and green.
     await openEditor(page);
+    await setPiskelFromGrid(page, gridFromColorRows([
+      'RGRGRGRGRG',
+      'GRGRGRGRGR',
+      'RGRGRGRGRG',
+      'GRGRGRGRGR',
+      'RGRGRGRGRG',
+      'GRGRGRGRGR',
+      'RGRGRGRGRG',
+      'GRGRGRGRGR',
+      'RGRGRGRGRG',
+      'GRGRGRGRGR',
+    ]));
 
-    // Checkerboard of red and green
-    await setPiskelFromGrid(page, [
-      ["R", "G", "R", "G"],
-      ["G", "R", "G", "R"],
-      ["R", "G", "R", "G"],
-      ["G", "R", "G", "R"],
-    ]);
-
-    // Swap red → blue by clicking a red pixel
+    // Click a red pixel with blue.
     await clickTool(page, 'tool-colorswap');
     await setPrimaryColor(page, '#0000FF');
-    await drawAtPixel(page, 0, 0);  // click on a red pixel
+    await drawAtPixel(page, 0, 0);
 
-    // All red should now be blue, green unchanged
-    expect(await getPixelColor(page, 0, 0)).toBe(colorToInt('#0000FF'));
-    expect(await getPixelColor(page, 1, 0)).toBe(colorToInt('#00FF00'));
-    expect(await getPixelColor(page, 2, 0)).toBe(colorToInt('#0000FF'));
-    expect(await getPixelColor(page, 0, 1)).toBe(colorToInt('#00FF00'));
+    // Every red pixel is now blue, and the green ones don't change.
+    await assertColorRows(page, [
+      'BGBGBGBGBG',
+      'GBGBGBGBGB',
+      'BGBGBGBGBG',
+      'GBGBGBGBGB',
+      'BGBGBGBGBG',
+      'GBGBGBGBGB',
+      'BGBGBGBGBG',
+      'GBGBGBGBGB',
+      'BGBGBGBGBG',
+      'GBGBGBGBGB',
+    ]);
   });
 });
 
@@ -148,77 +158,90 @@ test.describe('Color swap tool', () => {
 test.describe('ColorSwap tool modifiers', () => {
 
   test('ColorSwap should replace all matching pixels on current frame', { tag: ['@drawing-tools.magic-bucket'] }, async ({ page }) => {
+    // Start from two red pixels that don't touch, and a green one.
     await openEditor(page);
+    await setPiskelFromGrid(page, gridFromColorRows([
+      'R.........',
+      '..........',
+      '..........',
+      '..........',
+      '....G.....',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '.........R',
+    ]));
 
-    await setPiskelFromGrid(page, [
-      ['R', 'T', 'T'],
-      ['T', 'G', 'T'],
-      ['T', 'T', 'R'],
-    ]);
-
+    // Click a red pixel with blue.
     await setPrimaryColor(page, '#0000FF');
     await clickTool(page, 'tool-colorswap');
     await drawAtPixel(page, 0, 0);
-    await wait(200);
 
-    expect(await getPixelColor(page, 0, 0)).toBe(colorToInt('#0000FF'));
-    expect(await getPixelColor(page, 2, 2)).toBe(colorToInt('#0000FF'));
-    expect(await getPixelColor(page, 1, 1)).toBe(colorToInt('#00FF00'));
+    // Both red pixels are now blue, and the green one doesn't change.
+    await assertColorRows(page, [
+      'B.........',
+      '..........',
+      '..........',
+      '..........',
+      '....G.....',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '.........B',
+    ]);
   });
 
   test('ColorSwap + Shift should apply to all frames', { tag: ['@drawing-tools.magic-bucket'] }, async ({ page }) => {
+    // A red pixel in the first frame.
     await openEditor(page);
+    await setPiskelFromGrid(page, gridFromColorRows(RED_AT_0_0));
 
-    await setPiskelFromGrid(page, [
-      ['R', 'T'],
-      ['T', 'T'],
-    ]);
-
+    // Add a second frame, with a red pixel.
     await getAddFrameButton(page).click();
     await assertFrameCount(page, 2);
     await setPrimaryColor(page, '#FF0000');
     await clickTool(page, 'tool-pen');
     await drawAtPixel(page, 1, 1);
+    await assertColorRows(page, RED_AT_1_1, { frameIndex: 1 });
 
+    // From the first frame, swap red for green. Shift applies it to all frames.
     await selectFrame(page, 0);
-
-    await setPrimaryColor(page, '#0000FF');
+    await setPrimaryColor(page, '#00FF00');
     await clickTool(page, 'tool-colorswap');
-
     await page.keyboard.down('Shift');
     await drawAtPixel(page, 0, 0);
     await page.keyboard.up('Shift');
-    await wait(200);
 
-    expect(await getPixelColor(page, 0, 0, 0, 0)).toBe(colorToInt('#0000FF'));
-    expect(await getPixelColor(page, 1, 1, 0, 1)).toBe(colorToInt('#0000FF'));
+    // Both frames changed.
+    await assertColorRows(page, GREEN_AT_0_0, { frameIndex: 0 });
+    await assertColorRows(page, GREEN_AT_1_1, { frameIndex: 1 });
   });
 
   test('ColorSwap + Ctrl should apply to all layers', { tag: ['@drawing-tools.magic-bucket'] }, async ({ page }) => {
+    // A red pixel in the bottom layer.
     await openEditor(page);
+    await setPiskelFromGrid(page, gridFromColorRows(RED_AT_0_0));
 
-    await setPiskelFromGrid(page, [
-      ['R', 'T'],
-      ['T', 'T'],
-    ]);
-
+    // Add a top layer, with a red pixel.
     await getAddLayerButton(page).click();
-    await wait(200);
+    await assertCurrentLayer(page, 1);
     await setPrimaryColor(page, '#FF0000');
     await clickTool(page, 'tool-pen');
     await drawAtPixel(page, 1, 1);
-    await wait(200);
+    await assertColorRows(page, RED_AT_1_1, { layerIndex: 1 });
 
+    // Swap red for green. Ctrl applies it to all layers.
     await setPrimaryColor(page, '#00FF00');
     await clickTool(page, 'tool-colorswap');
-
     await page.keyboard.down(CMD_OR_CTRL);
     await drawAtPixel(page, 1, 1);
     await page.keyboard.up(CMD_OR_CTRL);
-    await wait(200);
 
-    expect(await getPixelColor(page, 1, 1, 1, 0)).toBe(colorToInt('#00FF00'));
-    expect(await getPixelColor(page, 0, 0, 0, 0)).toBe(colorToInt('#00FF00'));
+    // Both layers changed.
+    await assertColorRows(page, GREEN_AT_1_1, { layerIndex: 1 });
+    await assertColorRows(page, GREEN_AT_0_0, { layerIndex: 0 });
   });
 
   test('magic bucket: replaces transparent pixels too', { tag: ['@drawing-tools.magic-bucket'] }, async ({ page }) => {

@@ -33,6 +33,44 @@ import {
   waitForGrid,
 } from "../../testutils";
 
+/** 10x10 frames */
+const EMPTY = [
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+];
+const PIXEL_AT_0_0 = [
+  'X.........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+];
+const PIXEL_AT_1_0 = [
+  '.X........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+];
+
 const SAVED_MESSAGE = 'Successfully saved !';
 
 /** Open the editor with an unsaved drawing, so that the title has a * */
@@ -55,24 +93,24 @@ test.describe('Saving again', () => {
     await openEditor(page);
 
     // Save a first sprite.
-    await setPiskelFromGrid(page, gridFromRows(['X.', '..']));
-    await waitForGrid(page, 2, 2, ['X.', '..']);
+    await setPiskelFromGrid(page, gridFromRows(PIXEL_AT_0_0));
+    await waitForGrid(page, 10, 10, PIXEL_AT_0_0);
     await saveInBrowser(page, 'my sprite');
 
     // Save another sprite with the same title.
-    await setPiskelFromGrid(page, gridFromRows(['.X', '..']));
-    await waitForGrid(page, 2, 2, ['.X', '..']);
+    await setPiskelFromGrid(page, gridFromRows(PIXEL_AT_1_0));
+    await waitForGrid(page, 10, 10, PIXEL_AT_1_0);
     await saveInBrowser(page, 'my sprite');
     expect(dialogs).toEqual([]);
     page.off('dialog', recordDialog);
 
     // There's one save, with the second sprite.
-    await setPiskelFromGrid(page, gridFromRows(['..', '..']));
-    await waitForGrid(page, 2, 2, ['..', '..']);
+    await setPiskelFromGrid(page, gridFromRows(EMPTY));
+    await waitForGrid(page, 10, 10, EMPTY);
     await openBrowseLocalSaves(page);
     await assertLocalSaves(page, ['my sprite']);
     await loadLocalSave(page, 'my sprite');
-    await waitForGrid(page, 2, 2, ['.X', '..']);
+    await waitForGrid(page, 10, 10, PIXEL_AT_1_0);
   });
 });
 

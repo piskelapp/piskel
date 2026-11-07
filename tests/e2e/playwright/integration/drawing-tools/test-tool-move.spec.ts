@@ -3,26 +3,33 @@ import {
   CMD_OR_CTRL,
   assertCurrentLayer,
   clickTool,
-  colorToInt,
   dragBetweenPixels,
   drawAtPixel,
   getAddFrameButton,
   getAddLayerButton,
   assertFrameCount,
   selectFrame,
-  getPixelColor,
   gridFromRows,
   openEditor,
-  readPixelGrid,
   readPixelRows,
   setPiskelFromGrid,
   waitForGrid,
+  gridFromColorRows,
 } from "../../testutils";
 
-/** Create an NxN transparent TestGrid */
-function emptyTestGrid(size = 10): ("T")[][] {
-  return Array.from({ length: size }, () => Array(size).fill('T') as ("T")[]);
-}
+/** An empty 10x10 frame */
+const EMPTY = [
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+];
 
 /** 10x10 frames with a single pixel */
 const PIXEL_AT_1_1 = [
@@ -128,21 +135,20 @@ test.describe('Move tool', () => {
     await openEditor(page);
 
     // Arrow shape pointing right, near the right edge
-    await setPiskelFromGrid(page, [
-      ["T", "T", "T", "T", "T", "T", "T", "T", "T", "T"],
-      ["T", "T", "T", "T", "T", "T", "R", "T", "T", "T"],
-      ["T", "T", "T", "T", "T", "T", "R", "R", "T", "T"],
-      ["T", "T", "R", "R", "R", "R", "R", "R", "R", "T"],
-      ["T", "T", "R", "R", "R", "R", "R", "R", "R", "R"],
-      ["T", "T", "R", "R", "R", "R", "R", "R", "R", "T"],
-      ["T", "T", "T", "T", "T", "T", "R", "R", "T", "T"],
-      ["T", "T", "T", "T", "T", "T", "R", "T", "T", "T"],
-      ["T", "T", "T", "T", "T", "T", "T", "T", "T", "T"],
-      ["T", "T", "T", "T", "T", "T", "T", "T", "T", "T"],
-    ]);
+    await setPiskelFromGrid(page, gridFromColorRows([
+      '..........',
+      '......R...',
+      '......RR..',
+      '..RRRRRRR.',
+      '..RRRRRRRR',
+      '..RRRRRRR.',
+      '......RR..',
+      '......R...',
+      '..........',
+      '..........',
+    ]));
 
-    const before = await readPixelGrid(page, 10, 10);
-    const expectedBefore = [
+    expect(await readPixelRows(page, 10, 10)).toEqual([
       '..........',
       '......X...',
       '......XX..',
@@ -153,16 +159,13 @@ test.describe('Move tool', () => {
       '......X...',
       '..........',
       '..........',
-    ];
-    expect(before.map(r => r.join(''))).toEqual(expectedBefore);
+    ]);
 
     // Move right by 3 — parts past the right edge wrap to the left
     await clickTool(page, 'tool-move');
     await dragBetweenPixels(page, 5, 4, 8, 4);
 
-    const after = await readPixelGrid(page, 10, 10);
-
-    const expectedAfter = [
+    expect(await readPixelRows(page, 10, 10)).toEqual([
       '..........',
       '.........X',
       '.........X',
@@ -173,15 +176,12 @@ test.describe('Move tool', () => {
       '.........X',
       '..........',
       '..........',
-    ];
-    expect(after.map(r => r.join(''))).toEqual(expectedAfter);
+    ]);
 
     // Now move left by 6 — content clips/wraps past the left edge
     await dragBetweenPixels(page, 7, 4, 1, 4);
 
-    const afterLeft = await readPixelGrid(page, 10, 10);
-
-    const expectedLeft = [
+    expect(await readPixelRows(page, 10, 10)).toEqual([
       '..........',
       '...X......',
       '...X......',
@@ -192,45 +192,34 @@ test.describe('Move tool', () => {
       '...X......',
       '..........',
       '..........',
-    ];
-    expect(afterLeft.map(r => r.join(''))).toEqual(expectedLeft);
+    ]);
   });
 
   test('move tool + Alt: wraps content around borders', { tag: ['@drawing-tools.move'] }, async ({ page }) => {
     await openEditor(page);
 
     // Same arrow shape as the default move test
-    await setPiskelFromGrid(page, [
-      ["T", "T", "T", "T", "T", "T", "T", "T", "T", "T"],
-      ["T", "T", "T", "T", "T", "T", "R", "T", "T", "T"],
-      ["T", "T", "T", "T", "T", "T", "R", "R", "T", "T"],
-      ["T", "T", "R", "R", "R", "R", "R", "R", "R", "T"],
-      ["T", "T", "R", "R", "R", "R", "R", "R", "R", "R"],
-      ["T", "T", "R", "R", "R", "R", "R", "R", "R", "T"],
-      ["T", "T", "T", "T", "T", "T", "R", "R", "T", "T"],
-      ["T", "T", "T", "T", "T", "T", "R", "T", "T", "T"],
-      ["T", "T", "T", "T", "T", "T", "T", "T", "T", "T"],
-      ["T", "T", "T", "T", "T", "T", "T", "T", "T", "T"],
-    ]);
+    await setPiskelFromGrid(page, gridFromColorRows([
+      '..........',
+      '......R...',
+      '......RR..',
+      '..RRRRRRR.',
+      '..RRRRRRRR',
+      '..RRRRRRR.',
+      '......RR..',
+      '......R...',
+      '..........',
+      '..........',
+    ]));
 
     // Move right by 3 with Alt held — should WRAP instead of clip
     await clickTool(page, 'tool-move');
 
-    const start = await page.evaluate(({ col, row }) =>
-      window.pskl.app.drawingController.getScreenCoordinates(col, row), { col: 5, row: 4 });
-    const end = await page.evaluate(({ col, row }) =>
-      window.pskl.app.drawingController.getScreenCoordinates(col, row), { col: 8, row: 4 });
-
     await page.keyboard.down('Alt');
-    await page.mouse.move(start.x, start.y);
-    await page.mouse.down();
-    await page.mouse.move(end.x, end.y, { steps: 5 });
-    await page.mouse.up();
+    await dragBetweenPixels(page, 5, 4, 8, 4);
     await page.keyboard.up('Alt');
 
-    const grid = await readPixelGrid(page, 10, 10);
-
-    const expected = [
+    expect(await readPixelRows(page, 10, 10)).toEqual([
       '..........',
       '.........X',
       'X........X',
@@ -241,55 +230,38 @@ test.describe('Move tool', () => {
       '.........X',
       '..........',
       '..........',
-    ];
-    expect(grid.map(r => r.join(''))).toEqual(expected);
+    ]);
   });
 
   test('move tool + Shift: applies to all frames', { tag: ['@drawing-tools.move'] }, async ({ page }) => {
     await openEditor(page);
-    await setPiskelFromGrid(page, emptyTestGrid());
+    await setPiskelFromGrid(page, gridFromRows(EMPTY));
 
-    // Draw a dot on frame 0 at (2,2)
+    // Draw a pixel at (2,2) in three frames.
     await clickTool(page, 'tool-pen');
     await drawAtPixel(page, 2, 2);
-
-    // Add frame 1 and draw a dot at (2,2)
-    await page.keyboard.press('n');
+    expect(await readPixelRows(page, 10, 10, 0, 0)).toEqual(PIXEL_AT_2_2);
+    await getAddFrameButton(page).click();
+    await assertFrameCount(page, 2);
     await drawAtPixel(page, 2, 2);
-
-    // Add frame 2 and draw a dot at (2,2)
-    await page.keyboard.press('n');
+    expect(await readPixelRows(page, 10, 10, 0, 1)).toEqual(PIXEL_AT_2_2);
+    await getAddFrameButton(page).click();
+    await assertFrameCount(page, 3);
     await drawAtPixel(page, 2, 2);
+    expect(await readPixelRows(page, 10, 10, 0, 2)).toEqual(PIXEL_AT_2_2);
 
-    // Verify all 3 frames have the dot at (2,2)
-    expect(await getPixelColor(page, 2, 2, 0, 0)).toBe(colorToInt('#000000'));
-    expect(await getPixelColor(page, 2, 2, 0, 1)).toBe(colorToInt('#000000'));
-    expect(await getPixelColor(page, 2, 2, 0, 2)).toBe(colorToInt('#000000'));
-
-    // Go back to frame 0
-    await page.keyboard.press('ArrowUp');
-    await page.keyboard.press('ArrowUp');
-
-    // Move with Shift held — should move ALL frames
+    // From the first frame, move the pixel 3 to the right. Shift applies it to all frames.
+    await selectFrame(page, 0);
     await clickTool(page, 'tool-move');
-
-    const start = await page.evaluate(({ col, row }) =>
-      window.pskl.app.drawingController.getScreenCoordinates(col, row), { col: 2, row: 2 });
-    const end = await page.evaluate(({ col, row }) =>
-      window.pskl.app.drawingController.getScreenCoordinates(col, row), { col: 5, row: 2 });
-
     await page.keyboard.down('Shift');
-    await page.mouse.move(start.x, start.y);
-    await page.mouse.down();
-    await page.mouse.move(end.x, end.y, { steps: 5 });
-    await page.mouse.up();
+    await dragBetweenPixels(page, 2, 2, 5, 2);
     await page.keyboard.up('Shift');
 
-    // All 3 frames should have the dot moved from (2,2) to (5,2)
-    const expectedRow = [
+    // The pixel moved in every frame.
+    const movedPixel = [
       '..........',
       '..........',
-      '.....X....',  // dot at col 5
+      '.....X....',
       '..........',
       '..........',
       '..........',
@@ -298,63 +270,57 @@ test.describe('Move tool', () => {
       '..........',
       '..........',
     ];
-
-    // Frame 0 (current)
-    const grid0 = await readPixelGrid(page, 10, 10, 0, 0);
-    expect(grid0.map(r => r.join(''))).toEqual(expectedRow);
-
-    // Frame 1
-    const grid1 = await readPixelGrid(page, 10, 10, 0, 1);
-    expect(grid1.map(r => r.join(''))).toEqual(expectedRow);
-
-    // Frame 2
-    const grid2 = await readPixelGrid(page, 10, 10, 0, 2);
-    expect(grid2.map(r => r.join(''))).toEqual(expectedRow);
+    await waitForGrid(page, 10, 10, movedPixel, { frameIndex: 0 });
+    expect(await readPixelRows(page, 10, 10, 0, 1)).toEqual(movedPixel);
+    expect(await readPixelRows(page, 10, 10, 0, 2)).toEqual(movedPixel);
   });
 
   test('move tool + Ctrl: applies to all layers', { tag: ['@drawing-tools.move'] }, async ({ page }) => {
     await openEditor(page);
-    await setPiskelFromGrid(page, emptyTestGrid());
+    await setPiskelFromGrid(page, gridFromRows(EMPTY));
 
-    // Draw a dot on layer 0 at (2,2)
+    // Draw a pixel at (2,2) in the bottom layer.
     await clickTool(page, 'tool-pen');
     await drawAtPixel(page, 2, 2);
+    expect(await readPixelRows(page, 10, 10, 0, 0)).toEqual(PIXEL_AT_2_2);
 
-    // Add layer 1 and draw a dot at (2,4)
-    await page.locator('[data-test-id="layer-add-button"]').click();
+    // Add a top layer, with a pixel at (2,4).
+    await getAddLayerButton(page).click();
+    await assertCurrentLayer(page, 1);
     await drawAtPixel(page, 2, 4);
+    expect(await readPixelRows(page, 10, 10, 1, 0)).toEqual(PIXEL_AT_2_4);
 
-    // Verify dots on each layer
-    expect(await getPixelColor(page, 2, 2, 0, 0)).toBe(colorToInt('#000000')); // layer 0
-    expect(await getPixelColor(page, 2, 4, 1, 0)).toBe(colorToInt('#000000')); // layer 1
-
-    // Ctrl+move from (2,3) to (6,3) — should move ALL layers
+    // Move 4 to the right. Ctrl applies it to all layers.
     await clickTool(page, 'tool-move');
-
-    const start = await page.evaluate(({ col, row }) =>
-      window.pskl.app.drawingController.getScreenCoordinates(col, row), { col: 2, row: 3 });
-    const end = await page.evaluate(({ col, row }) =>
-      window.pskl.app.drawingController.getScreenCoordinates(col, row), { col: 6, row: 3 });
-
     await page.keyboard.down(CMD_OR_CTRL);
-    await page.mouse.move(start.x, start.y);
-    await page.mouse.down();
-    await page.mouse.move(end.x, end.y, { steps: 5 });
-    await page.mouse.up();
+    await dragBetweenPixels(page, 2, 3, 6, 3);
     await page.keyboard.up(CMD_OR_CTRL);
 
-    // Layer 0: dot moved from (2,2) to (6,2)
-    const grid0 = await readPixelGrid(page, 10, 10, 0, 0);
-    expect(grid0[2].join('')).toBe('......X...');
-    expect(grid0[2][6]).toBe('X');
-    // Old position should be empty
-    expect(grid0[2][2]).toBe('.');
-
-    // Layer 1: dot moved from (2,4) to (6,4)
-    const grid1 = await readPixelGrid(page, 10, 10, 1, 0);
-    expect(grid1[4].join('')).toBe('......X...');
-    expect(grid1[4][6]).toBe('X');
-    expect(grid1[4][2]).toBe('.');
+    // The pixel moved in both layers.
+    await waitForGrid(page, 10, 10, [
+      '..........',
+      '..........',
+      '......X...',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+    ], { layerIndex: 0 });
+    expect(await readPixelRows(page, 10, 10, 1, 0)).toEqual([
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '......X...',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+    ]);
   });
 
   test('move tool: moves the current layer only', { tag: ['@drawing-tools.move'] }, async ({ page }) => {

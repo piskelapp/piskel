@@ -1,5 +1,14 @@
 import test, { expect, Page } from "@playwright/test";
-import { openEditor, setPiskelFromGrid, setPrimaryColor, isSettingsDrawerExpanded, waitFor, wait } from "../../../testutils";
+import {
+  openEditor,
+  setPiskelFromGrid,
+  setPrimaryColor,
+  isSettingsDrawerExpanded,
+  waitFor,
+  gridFromColorRows,
+  getAddLayerButton,
+  assertCurrentLayer,
+} from "../../../testutils";
 
 test.use({ viewport: { width: 1280, height: 720 } });
 
@@ -19,6 +28,26 @@ async function closeMiscPreferences(page: Page) {
 }
 
 const canvas = (page: Page) => page.locator('#drawing-canvas-container');
+
+/** A 4x4 sprite with a red pixel: the screenshots of the canvas were taken with it */
+const RED_PIXEL = [
+  'R...',
+  '....',
+  '....',
+  '....',
+];
+
+/** Open the picker of the primary color, check the value it shows, and close it */
+async function assertPrimaryPickerValue(page: Page, value: RegExp) {
+  // Remove the tooltips, which can cover the picker.
+  await page.evaluate(() => document.querySelectorAll('.tooltip').forEach(t => t.remove()));
+  await page.locator('[data-test-id="primary-color-picker"]').locator('..').locator('.sp-replacer').click();
+  const input = page.locator('.sp-container:not(.sp-hidden) .sp-input');
+  await expect(input).toHaveValue(value);
+  await page.evaluate(() => {
+    (window as any).$('[data-test-id="primary-color-picker"]').spectrum('hide');
+  });
+}
 
 test.describe('Preferences — Misc tab', () => {
 
@@ -42,70 +71,29 @@ test.describe('Preferences — Misc tab', () => {
   test('changing color format should affect the color picker display', { tag: ['@settings.color-format', '@colors-and-palettes.picker'] }, async ({ page }) => {
     await openEditor(page);
 
-    // Set a known primary color so the picker has a non-default value
+    // The picker shows the primary color in hex by default.
     await setPrimaryColor(page, '#FF0000');
+    await assertPrimaryPickerValue(page, /ff0000/i);
 
-    // Open color picker and verify hex format
-    await page.evaluate(() => document.querySelectorAll('.tooltip').forEach(t => t.remove()));
-    const replacer = page.locator('[data-test-id="primary-color-picker"]').locator('..').locator('.sp-replacer');
-    await replacer.click();
-    const spInput = page.locator('.sp-container:not(.sp-hidden) .sp-input');
-    await expect(spInput).toBeVisible();
-    const hexValue = await spInput.inputValue();
-    expect(hexValue.toLowerCase()).toContain('ff0000');
-
-    // Close picker
-    await page.evaluate(() => {
-      const $ = (window as any).$;
-      $('[data-test-id="primary-color-picker"]').spectrum('hide');
-    });
-
-    // Switch to RGB format
+    // Switch to RGB: the picker shows it in RGB.
     await openMiscPreferences(page);
     await page.locator('.color-format-select').selectOption('rgb');
-    await wait(200);
-
-    // Close preferences
     await closeMiscPreferences(page);
+    await assertPrimaryPickerValue(page, /rgb\(255, ?0, ?0\)/);
 
-    // Open color picker again — should show RGB format
-    await page.evaluate(() => document.querySelectorAll('.tooltip').forEach(t => t.remove()));
-    await replacer.click();
-    const rgbValue = await spInput.inputValue();
-    expect(rgbValue).toContain('rgb');
-    expect(rgbValue).toContain('255');
-
-    // Close picker
-    await page.evaluate(() => {
-      const $ = (window as any).$;
-      $('[data-test-id="primary-color-picker"]').spectrum('hide');
-    });
-
-    // Switch back to hex
+    // Switch back to hex.
     await openMiscPreferences(page);
     await page.locator('.color-format-select').selectOption('hex');
-    await wait(200);
     await closeMiscPreferences(page);
-
-    // Open color picker — should be back to hex
-    await page.evaluate(() => document.querySelectorAll('.tooltip').forEach(t => t.remove()));
-    await replacer.click();
-    const backToHex = await spInput.inputValue();
-    expect(backToHex.toLowerCase()).toContain('ff0000');
-
-    await page.evaluate(() => {
-      const $ = (window as any).$;
-      $('[data-test-id="primary-color-picker"]').spectrum('hide');
-    });
+    await assertPrimaryPickerValue(page, /ff0000/i);
   });
 
   test('layer preview opacity should default to 0.20', { tag: ['@settings.layer-opacity'] }, async ({ page }) => {
     await openEditor(page);
     await openMiscPreferences(page);
 
-    const value = await page.locator('.layer-opacity-input').inputValue();
-    expect(parseFloat(value)).toBeCloseTo(0.20, 1);
-    expect(await page.locator('.layer-opacity-text').innerText()).toContain('0.20');
+    await expect(page.locator('.layer-opacity-input')).toHaveValue('0.2');
+    await expect(page.locator('.layer-opacity-text')).toContainText('0.20');
   });
 
   test('max FPS should default to 24', { tag: ['@settings.max-fps'] }, async ({ page }) => {
@@ -119,30 +107,18 @@ test.describe('Preferences — Misc tab', () => {
 
   test('default canvas background rendering', { tag: ['@settings.background', '@canvas.background'] }, async ({ page }) => {
     await openEditor(page);
-    await setPiskelFromGrid(page, [
-      ['R', 'T', 'T', 'T'],
-      ['T', 'T', 'T', 'T'],
-      ['T', 'T', 'T', 'T'],
-      ['T', 'T', 'T', 'T'],
-    ]);
+    await setPiskelFromGrid(page, gridFromColorRows(RED_PIXEL));
     await openMiscPreferences(page);
-    await wait(300);
 
     await expect(canvas(page)).toHaveScreenshot('bg-lowcont-dark.png', screenshotOpts);
   });
 
   test('changing to light background should update the canvas', { tag: ['@settings.background', '@canvas.background'] }, async ({ page }) => {
     await openEditor(page);
-    await setPiskelFromGrid(page, [
-      ['R', 'T', 'T', 'T'],
-      ['T', 'T', 'T', 'T'],
-      ['T', 'T', 'T', 'T'],
-      ['T', 'T', 'T', 'T'],
-    ]);
+    await setPiskelFromGrid(page, gridFromColorRows(RED_PIXEL));
     await openMiscPreferences(page);
 
     await page.locator('[data-background="light-canvas-background"]').click();
-    await wait(300);
 
     await expect(page.locator('[data-background="light-canvas-background"]')).toHaveClass(/selected/);
     await expect(page.locator('[data-background="lowcont-dark-canvas-background"]')).not.toHaveClass(/selected/);
@@ -151,16 +127,10 @@ test.describe('Preferences — Misc tab', () => {
 
   test('changing to medium background should update the canvas', { tag: ['@settings.background', '@canvas.background'] }, async ({ page }) => {
     await openEditor(page);
-    await setPiskelFromGrid(page, [
-      ['R', 'T', 'T', 'T'],
-      ['T', 'T', 'T', 'T'],
-      ['T', 'T', 'T', 'T'],
-      ['T', 'T', 'T', 'T'],
-    ]);
+    await setPiskelFromGrid(page, gridFromColorRows(RED_PIXEL));
     await openMiscPreferences(page);
 
     await page.locator('[data-background="medium-canvas-background"]').click();
-    await wait(300);
 
     await expect(page.locator('[data-background="medium-canvas-background"]')).toHaveClass(/selected/);
     await expect(canvas(page)).toHaveScreenshot('bg-medium.png', screenshotOpts);
@@ -170,26 +140,19 @@ test.describe('Preferences — Misc tab', () => {
 
   test('layer preview opacity affects canvas rendering with multiple layers', { tag: ['@settings.layer-opacity', '@layers.preview'] }, async ({ page }) => {
     await openEditor(page);
-    await setPiskelFromGrid(page, [
-      ['R', 'R', 'T', 'T'],
-      ['R', 'R', 'T', 'T'],
-      ['T', 'T', 'T', 'T'],
-      ['T', 'T', 'T', 'T'],
-    ]);
-    await page.locator('[data-test-id="layer-add-button"]').click();
-    await wait(300);
+    await setPiskelFromGrid(page, gridFromColorRows([
+      'RR..',
+      'RR..',
+      '....',
+      '....',
+    ]));
+    await getAddLayerButton(page).click();
+    await assertCurrentLayer(page, 1);
 
     await openMiscPreferences(page);
-    await wait(300);
     await expect(canvas(page)).toHaveScreenshot('layer-opacity-020.png', screenshotOpts);
 
-    await page.evaluate(() => {
-      const slider = document.querySelector('.layer-opacity-input') as HTMLInputElement;
-      slider.value = '0';
-      slider.dispatchEvent(new Event('input'));
-      slider.dispatchEvent(new Event('change'));
-    });
-    await wait(300);
+    await page.locator('.layer-opacity-input').fill('0');
     await expect(canvas(page)).toHaveScreenshot('layer-opacity-000.png', screenshotOpts);
   });
 
@@ -200,28 +163,13 @@ test.describe('Preferences — Misc tab', () => {
     await openMiscPreferences(page);
 
     // Change all settings to non-default values
-    // 1. Background → light
     await page.locator('[data-background="light-canvas-background"]').click();
-    await wait(100);
-
-    // 2. Color format → rgb
     await page.locator('.color-format-select').selectOption('rgb');
-    await wait(100);
-
-    // 3. Layer preview opacity → 0.50
-    await page.evaluate(() => {
-      const slider = document.querySelector('.layer-opacity-input') as HTMLInputElement;
-      slider.value = '0.50';
-      slider.dispatchEvent(new Event('input'));
-      slider.dispatchEvent(new Event('change'));
-    });
-    await wait(100);
-
-    // 4. Max FPS → 30
+    await page.locator('.layer-opacity-input').fill('0.5');
+    await expect(page.locator('.layer-opacity-text')).toContainText('0.50');
     const fpsInput = page.locator('.max-fps-input');
     await fpsInput.fill('30');
     await fpsInput.dispatchEvent('change');
-    await wait(100);
 
     // Close panel
     await closeMiscPreferences(page);
@@ -232,7 +180,7 @@ test.describe('Preferences — Misc tab', () => {
     await expect(page.locator('.background-picker-wrapper [data-background].selected'))
       .toHaveAttribute('data-background', 'light-canvas-background');
     await expect(page.locator('.color-format-select')).toHaveValue('rgb');
-    expect(await page.locator('.layer-opacity-text').innerText()).toContain('0.50');
+    await expect(page.locator('.layer-opacity-text')).toContainText('0.50');
     await expect(page.locator('.max-fps-input')).toHaveValue('30');
   });
 });

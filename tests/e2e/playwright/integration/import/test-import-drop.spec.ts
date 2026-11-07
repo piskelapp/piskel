@@ -18,8 +18,18 @@ import {
   waitForGrid,
 } from "../../testutils";
 
-const EMPTY = ['....', '....', '....', '....'];
-const CHECKERED = ['X.X.', '.X.X', 'X.X.', '.X.X'];
+const EMPTY = [
+  '....',
+  '....',
+  '....',
+  '....',
+];
+const CHECKERED = [
+  'X.X.',
+  '.X.X',
+  'X.X.',
+  '.X.X',
+];
 
 const openEditorWithEmptySprite = async (page: Page) => {
   await openEditor(page);
@@ -42,7 +52,10 @@ test.describe('Dropping one image', () => {
     await openEditorWithEmptySprite(page);
 
     // Drop a 2x2 image on the second pixel of the third row.
-    const image = await createPngFile(page, 'small.png', ['XX', 'X.']);
+    const image = await createPngFile(page, 'small.png', [
+      'XX',
+      'X.',
+    ]);
     await dropFilesOnPixel(page, [image], 1, 2);
 
     // It's centered there, in the current frame.
@@ -60,7 +73,11 @@ test.describe('Dropping one image', () => {
     await openEditorWithEmptySprite(page);
 
     // Drop a 3x3 image on the last pixel, where its center would push it out.
-    const image = await createPngFile(page, 'small.png', ['XXX', 'X..', 'X..']);
+    const image = await createPngFile(page, 'small.png', [
+      'XXX',
+      'X..',
+      'X..',
+    ]);
     await dropFilesOnPixel(page, [image], 3, 3);
 
     // All of it is drawn, against the bottom right corner.
@@ -86,7 +103,13 @@ test.describe('Dropping one image', () => {
 
   const largeImages = [
     { name: 'wider', rows: ['XXXXX'] },
-    { name: 'taller', rows: ['X', 'X', 'X', 'X', 'X'] },
+    { name: 'taller', rows: [
+      'X',
+      'X',
+      'X',
+      'X',
+      'X',
+    ] },
   ];
 
   for (const { name, rows } of largeImages) {
@@ -116,8 +139,18 @@ test.describe('Dropping several images', () => {
     // Each image gets a new frame, and the original frame is unchanged.
     await assertFrameCount(page, 3);
     await waitForGrid(page, 4, 4, EMPTY, { frameIndex: 0 });
-    await waitForGrid(page, 4, 4, ['....', '.X..', '....', '....'], { frameIndex: 1 });
-    await waitForGrid(page, 4, 4, ['....', 'XX..', '....', '....'], { frameIndex: 2 });
+    await waitForGrid(page, 4, 4, [
+      '....',
+      '.X..',
+      '....',
+      '....',
+    ], { frameIndex: 1 });
+    await waitForGrid(page, 4, 4, [
+      '....',
+      'XX..',
+      '....',
+      '....',
+    ], { frameIndex: 2 });
     await assertNoDialogOpen(page);
   });
 
@@ -131,8 +164,18 @@ test.describe('Dropping several images', () => {
 
     // They're drawn on new frames, and what doesn't fit is cut off.
     await assertFrameCount(page, 3);
-    await waitForGrid(page, 4, 4, ['XXXX', '....', '....', '....'], { frameIndex: 1 });
-    await waitForGrid(page, 4, 4, ['XXXX', '....', '....', '....'], { frameIndex: 2 });
+    await waitForGrid(page, 4, 4, [
+      'XXXX',
+      '....',
+      '....',
+      '....',
+    ], { frameIndex: 1 });
+    await waitForGrid(page, 4, 4, [
+      'XXXX',
+      '....',
+      '....',
+      '....',
+    ], { frameIndex: 2 });
     await assertNoDialogOpen(page);
   });
 });

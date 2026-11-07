@@ -13,16 +13,12 @@ import {
   clickWizardCombine,
   clickWizardNext,
   createPngFile,
-  createThreeFrames,
   getInsertFrameInput,
   getWizardAnchorLabel,
   gridFromRows,
   openEditor,
   pickInsertFrame,
   pickWizardAnchor,
-  PIXEL_IN_FIRST_COLUMN,
-  PIXEL_IN_SECOND_COLUMN,
-  PIXEL_IN_THIRD_COLUMN,
   selectFrame,
   selectImportType,
   selectInsertMode,
@@ -31,14 +27,72 @@ import {
   typeInWizardField,
   waitForColorsToBeListed,
   waitForGrid,
+  clickTool,
+  drawAtPixel,
+  getAddFrameButton,
+  assertFrameCount,
 } from "../../testutils";
 
 const CURRENT_LAYER = 0;
 const IMPORTED_LAYER = 1;
 
-const EMPTY = ['....', '....', '....', '....'];
-const SOLID = ['XXXX', 'XXXX', 'XXXX', 'XXXX'];
-const CHECKERED = ['X.X.', '.X.X', 'X.X.', '.X.X'];
+const EMPTY = [
+  '....',
+  '....',
+  '....',
+  '....',
+];
+const SOLID = [
+  'XXXX',
+  'XXXX',
+  'XXXX',
+  'XXXX',
+];
+const CHECKERED = [
+  'X.X.',
+  '.X.X',
+  'X.X.',
+  '.X.X',
+];
+
+/** The frames of createThreeSmallFrames: a pixel in the first, second or third column */
+const PIXEL_IN_FIRST_COLUMN = [
+  'X...',
+  '....',
+  '....',
+  '....',
+];
+const PIXEL_IN_SECOND_COLUMN = [
+  '.X..',
+  '....',
+  '....',
+  '....',
+];
+const PIXEL_IN_THIRD_COLUMN = [
+  '..X.',
+  '....',
+  '....',
+  '....',
+];
+
+/**
+ * Create a 4x4 sprite with three frames, each with a pixel in a different column. It's
+ * 4x4, like the images combined with it, so that the wizard skips the size step.
+ */
+const createThreeSmallFrames = async (page: Page) => {
+  await setPiskelFromGrid(page, gridFromRows(EMPTY));
+  await clickTool(page, 'tool-pen');
+  await drawAtPixel(page, 0, 0);
+  await waitForGrid(page, 4, 4, PIXEL_IN_FIRST_COLUMN, { frameIndex: 0 });
+  await getAddFrameButton(page).click();
+  await assertFrameCount(page, 2);
+  await drawAtPixel(page, 1, 0);
+  await waitForGrid(page, 4, 4, PIXEL_IN_SECOND_COLUMN, { frameIndex: 1 });
+  await getAddFrameButton(page).click();
+  await assertFrameCount(page, 3);
+  await drawAtPixel(page, 2, 0);
+  await waitForGrid(page, 4, 4, PIXEL_IN_THIRD_COLUMN, { frameIndex: 2 });
+};
 
 /** Start from a sprite, and combine an image with it, up to the first step after select mode */
 const startCombining = async (page: Page, spriteRows: string[], imageRows: string[]) => {
@@ -62,7 +116,10 @@ const finishFromAdjustSize = async (page: Page) => {
 };
 
 test.describe('Adjust size step, with bigger content', () => {
-  const SPRITE = ['X.', '..'];
+  const SPRITE = [
+    'X.',
+    '..',
+  ];
 
   test('should expand the canvas by default, from the top left corner', { tag: ['@import.adjust-expand'] }, async ({ page }) => {
     await startCombining(page, SPRITE, CHECKERED);
@@ -73,7 +130,12 @@ test.describe('Adjust size step, with bigger content', () => {
     await finishFromAdjustSize(page);
 
     // The canvas fits the content, and the sprite stays at the top left corner.
-    await assertLayerFrames(page, CURRENT_LAYER, [['X...', '....', '....', '....']]);
+    await assertLayerFrames(page, CURRENT_LAYER, [[
+      'X...',
+      '....',
+      '....',
+      '....',
+    ]]);
     await assertLayerFrames(page, IMPORTED_LAYER, [CHECKERED]);
   });
 
@@ -86,13 +148,31 @@ test.describe('Adjust size step, with bigger content', () => {
     await finishFromAdjustSize(page);
 
     // The sprite moves to that corner.
-    await assertLayerFrames(page, CURRENT_LAYER, [['....', '....', '..X.', '....']]);
+    await assertLayerFrames(page, CURRENT_LAYER, [[
+      '....',
+      '....',
+      '..X.',
+      '....',
+    ]]);
     await assertLayerFrames(page, IMPORTED_LAYER, [CHECKERED]);
   });
 
   const contentBiggerInOneDirection = [
-    { direction: 'wider', image: ['XXXX'], expanded: ['..X.', '....'] },
-    { direction: 'taller', image: ['X', 'X', 'X', 'X'], expanded: ['..', '..', 'X.', '..'] },
+    { direction: 'wider', image: ['XXXX'], expanded: [
+      '..X.',
+      '....',
+    ] },
+    { direction: 'taller', image: [
+      'X',
+      'X',
+      'X',
+      'X',
+    ], expanded: [
+      '..',
+      '..',
+      'X.',
+      '..',
+    ] },
   ];
 
   for (const { direction, image, expanded } of contentBiggerInOneDirection) {
@@ -111,9 +191,33 @@ test.describe('Adjust size step, with bigger content', () => {
   }
 
   const croppedContent = [
-    { anchor: 'TOPLEFT', image: ['XX.X', 'X..X', '...X', 'XXXX'], kept: ['XX', 'X.'] },
-    { anchor: 'MIDDLE', image: ['XXXX', 'XX.X', 'X.XX', 'XXXX'], kept: ['X.', '.X'] },
-    { anchor: 'BOTTOMRIGHT', image: ['XXXX', 'X...', 'X..X', 'X.XX'], kept: ['.X', 'XX'] },
+    { anchor: 'TOPLEFT', image: [
+      'XX.X',
+      'X..X',
+      '...X',
+      'XXXX',
+    ], kept: [
+      'XX',
+      'X.',
+    ] },
+    { anchor: 'MIDDLE', image: [
+      'XXXX',
+      'XX.X',
+      'X.XX',
+      'XXXX',
+    ], kept: [
+      'X.',
+      '.X',
+    ] },
+    { anchor: 'BOTTOMRIGHT', image: [
+      'XXXX',
+      'X...',
+      'X..X',
+      'X.XX',
+    ], kept: [
+      '.X',
+      'XX',
+    ] },
   ];
 
   for (const { anchor, image, kept } of croppedContent) {
@@ -136,14 +240,32 @@ test.describe('Adjust size step, with bigger content', () => {
 
 test.describe('Adjust size step, with smaller content', () => {
   const placedContent = [
-    { anchor: 'TOPLEFT', placed: ['XX..', 'X...', '....', '....'] },
-    { anchor: 'MIDDLE', placed: ['....', '.XX.', '.X..', '....'] },
-    { anchor: 'BOTTOMRIGHT', placed: ['....', '....', '..XX', '..X.'] },
+    { anchor: 'TOPLEFT', placed: [
+      'XX..',
+      'X...',
+      '....',
+      '....',
+    ] },
+    { anchor: 'MIDDLE', placed: [
+      '....',
+      '.XX.',
+      '.X..',
+      '....',
+    ] },
+    { anchor: 'BOTTOMRIGHT', placed: [
+      '....',
+      '....',
+      '..XX',
+      '..X.',
+    ] },
   ];
 
   for (const { anchor, placed } of placedContent) {
     test(`should place the content at ${anchor} without changing the canvas`, { tag: ['@import.adjust-smaller'] }, async ({ page }) => {
-      await startCombining(page, SOLID, ['XX', 'X.']);
+      await startCombining(page, SOLID, [
+        'XX',
+        'X.',
+      ]);
 
       // There's no choice of size, only the anchor.
       await assertWizardStep(page, 'adjust size');
@@ -160,14 +282,20 @@ test.describe('Adjust size step, with smaller content', () => {
 
 test.describe('Anchor', () => {
   test('should start at the top left corner, with nine positions', { tag: ['@import.adjust-anchor'] }, async ({ page }) => {
-    await startCombining(page, ['X.', '..'], CHECKERED);
+    await startCombining(page, [
+      'X.',
+      '..',
+    ], CHECKERED);
     await assertWizardStep(page, 'adjust size');
 
     await assertWizardAnchor(page, 'TOPLEFT');
   });
 
   test('should name what it does when the content is bigger', { tag: ['@import.adjust-anchor'] }, async ({ page }) => {
-    await startCombining(page, ['X.', '..'], CHECKERED);
+    await startCombining(page, [
+      'X.',
+      '..',
+    ], CHECKERED);
     await assertWizardStep(page, 'adjust size');
 
     // Expanding resizes.
@@ -179,7 +307,10 @@ test.describe('Anchor', () => {
   });
 
   test('should name what it does when the content is smaller', { tag: ['@import.adjust-anchor'] }, async ({ page }) => {
-    await startCombining(page, SOLID, ['XX', 'X.']);
+    await startCombining(page, SOLID, [
+      'XX',
+      'X.',
+    ]);
     await assertWizardStep(page, 'adjust size');
 
     await expect(getWizardAnchorLabel(page)).toHaveText('Select position anchor:');
@@ -190,7 +321,7 @@ test.describe('Insert location step', () => {
   /** Start from three frames, and combine a 4x4 image up to the insert location step */
   const reachInsertLocation = async (page: Page, imageRows: string[], options: { frameToSelect?: number; asSheet?: boolean } = {}) => {
     await openEditor(page);
-    await createThreeFrames(page);
+    await createThreeSmallFrames(page);
     if (options.frameToSelect !== undefined) {
       await selectFrame(page, options.frameToSelect);
     }
@@ -259,7 +390,12 @@ test.describe('Insert location step', () => {
 
   test('should add frames when the imported frames go past the last one', { tag: ['@import.insert-overflow'] }, async ({ page }) => {
     // A spritesheet with two 4x4 frames.
-    const imageRows = SOLID.map((row, index) => row + CHECKERED[index]);
+    const imageRows = [
+      'XXXXX.X.',
+      'XXXX.X.X',
+      'XXXXX.X.',
+      'XXXX.X.X',
+    ];
     await reachInsertLocation(page, imageRows, { asSheet: true });
 
     // Insert them in existing frames, starting at the last one.

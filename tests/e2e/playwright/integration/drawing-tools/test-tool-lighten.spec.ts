@@ -1,67 +1,99 @@
 import test, { expect, Page } from "@playwright/test";
 import {
   CMD_OR_CTRL,
+  assertColorRows,
   clickTool,
   colorToInt,
   dragThereAndBack,
   drawAtPixel,
   getPixelColor,
-  gridFromRows,
+  gridFromColorRows,
   openEditor,
   setPiskelFromGrid,
   setPrimaryColor,
-  wait,
-  waitForGrid,
-  TRANSPARENT,
 } from "../../testutils";
+
+/** An empty 10x10 frame */
+const EMPTY = [
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+];
+
+// A lighten click adds 3 points of lightness, or 6 with Shift. Red is at 50%.
+// "?" in a grid is a color without a letter, such as a lightened red.
 
 test.describe('Lighten tool', () => {
 
   test('lighten tool: modifies pixel brightness', { tag: ['@drawing-tools.lighten'] }, async ({ page }) => {
+    // Start from a red square.
     await openEditor(page);
+    await setPiskelFromGrid(page, gridFromColorRows([
+      '..........',
+      '.RR.......',
+      '.RR.......',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+    ]));
 
-    // Start with a medium gray pixel
-    await setPiskelFromGrid(page, [
-      ["T", "T", "T", "T"],
-      ["T", "R", "R", "T"],
-      ["T", "R", "R", "T"],
-      ["T", "T", "T", "T"],
-    ]);
-
-    const originalColor = await getPixelColor(page, 1, 1);
-
-    // Click lighten tool on the red pixel
+    // Click one of its pixels with the lighten tool.
     await clickTool(page, 'tool-lighten');
     await drawAtPixel(page, 1, 1);
 
-    // The pixel should have changed (lightened)
-    const lightenedColor = await getPixelColor(page, 1, 1);
-    expect(lightenedColor).not.toBe(originalColor);
-    expect(lightenedColor).not.toBe(TRANSPARENT);
-
-    // Neighbouring pixels should be unchanged
-    expect(await getPixelColor(page, 2, 1)).toBe(originalColor);
+    // Only that pixel is lighter.
+    await assertColorRows(page, [
+      '..........',
+      '.?R.......',
+      '.RR.......',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+    ]);
+    expect(await getPixelColor(page, 1, 1)).toBe(colorToInt('#FF0F0F'));
   });
 });
 
 test.describe('Lighten steps', () => {
-  /** Open the editor on a red row, with the lighten tool */
+  /** Open the editor on four red pixels, with the lighten tool */
   const openEditorWithLighten = async (page: Page) => {
     await openEditor(page);
-    await setPiskelFromGrid(page, gridFromRows(['XXXX', '....']));
-    await waitForGrid(page, 4, 2, ['XXXX', '....']);
+    await setPiskelFromGrid(page, gridFromColorRows([
+      'RRRR......',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+    ]));
     await clickTool(page, 'tool-lighten');
   };
-
-  // Lightness is 50% for red. A click adds 3 points, or 6 with shift.
-  const RED = colorToInt('#FF0000');
 
   test('should keep lightening with repeated passes', { tag: ['@drawing-tools.lighten'] }, async ({ page }) => {
     await openEditorWithLighten(page);
 
+    // Each click lightens the pixel by another step.
     await drawAtPixel(page, 0, 0);
     await expect.poll(() => getPixelColor(page, 0, 0)).toBe(colorToInt('#FF0F0F'));
-
     await drawAtPixel(page, 0, 0);
     await expect.poll(() => getPixelColor(page, 0, 0)).toBe(colorToInt('#FF1E1E'));
   });
@@ -69,17 +101,28 @@ test.describe('Lighten steps', () => {
   test('should lighten once per pixel with shift, with a stronger step', { tag: ['@drawing-tools.lighten-once'] }, async ({ page }) => {
     await openEditorWithLighten(page);
 
-    // Shift applies the lighten only once per pixel. Go over the pixels twice.
+    // Shift applies the lighten only once per pixel. Go over three pixels twice.
     await page.keyboard.down('Shift');
     await dragThereAndBack(page, 0, 0, 2, 0);
     await page.keyboard.up('Shift');
 
-    // Each pixel went up by one strong step, and the last pixel wasn't touched.
+    // Each of them went up by one strong step, and the fourth pixel wasn't touched.
+    await assertColorRows(page, [
+      '???R......',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+    ]);
     const LIGHTENED = colorToInt('#FF1F1F');
-    await expect.poll(() => getPixelColor(page, 0, 0)).toBe(LIGHTENED);
+    expect(await getPixelColor(page, 0, 0)).toBe(LIGHTENED);
     expect(await getPixelColor(page, 1, 0)).toBe(LIGHTENED);
     expect(await getPixelColor(page, 2, 0)).toBe(LIGHTENED);
-    expect(await getPixelColor(page, 3, 0)).toBe(RED);
   });
 
   test('should apply again with shift in a new stroke', { tag: ['@drawing-tools.lighten-once'] }, async ({ page }) => {
@@ -99,64 +142,32 @@ test.describe('Lighten steps', () => {
 // ─── Lighten tool modifiers ──────────────────────────────────────
 
 test.describe('Lighten tool modifiers', () => {
-
-  test('Lighten should make a pixel lighter', { tag: ['@drawing-tools.lighten'] }, async ({ page }) => {
+  /** Open the editor on a gray pixel, at 50% lightness, with the lighten tool */
+  const openEditorWithGrayPixel = async (page: Page) => {
     await openEditor(page);
-
-    await setPiskelFromGrid(page, [
-      ['T', 'T', 'T', 'T'],
-      ['T', 'T', 'T', 'T'],
-      ['T', 'T', 'T', 'T'],
-      ['T', 'T', 'T', 'T'],
-    ]);
+    await setPiskelFromGrid(page, gridFromColorRows(EMPTY));
     await setPrimaryColor(page, '#808080');
     await clickTool(page, 'tool-pen');
     await drawAtPixel(page, 1, 1);
-    await wait(200);
-
-    const before = await getPixelColor(page, 1, 1);
-
+    await expect.poll(() => getPixelColor(page, 1, 1)).toBe(colorToInt('#808080'));
     await clickTool(page, 'tool-lighten');
+  };
+
+  test('Lighten should make a pixel lighter', { tag: ['@drawing-tools.lighten'] }, async ({ page }) => {
+    await openEditorWithGrayPixel(page);
+
+    // The pixel goes from 50% to 53% lightness.
     await drawAtPixel(page, 1, 1);
-    await wait(200);
-
-    const after = await getPixelColor(page, 1, 1);
-    expect(after).not.toBe(before);
-    expect(after).not.toBe(TRANSPARENT);
-
-    const rBefore = before & 0xFF;
-    const rAfter = after & 0xFF;
-    expect(rAfter).toBeGreaterThan(rBefore);
+    await expect.poll(() => getPixelColor(page, 1, 1)).toBe(colorToInt('#888888'));
   });
 
   test('Lighten + Ctrl should darken a pixel', { tag: ['@drawing-tools.lighten'] }, async ({ page }) => {
-    await openEditor(page);
+    await openEditorWithGrayPixel(page);
 
-    await setPiskelFromGrid(page, [
-      ['T', 'T', 'T', 'T'],
-      ['T', 'T', 'T', 'T'],
-      ['T', 'T', 'T', 'T'],
-      ['T', 'T', 'T', 'T'],
-    ]);
-    await setPrimaryColor(page, '#808080');
-    await clickTool(page, 'tool-pen');
-    await drawAtPixel(page, 1, 1);
-    await wait(200);
-
-    const before = await getPixelColor(page, 1, 1);
-
-    await clickTool(page, 'tool-lighten');
+    // Ctrl darkens: the pixel goes from 50% to 47% lightness.
     await page.keyboard.down(CMD_OR_CTRL);
     await drawAtPixel(page, 1, 1);
     await page.keyboard.up(CMD_OR_CTRL);
-    await wait(200);
-
-    const after = await getPixelColor(page, 1, 1);
-    expect(after).not.toBe(before);
-    expect(after).not.toBe(TRANSPARENT);
-
-    const rBefore = before & 0xFF;
-    const rAfter = after & 0xFF;
-    expect(rAfter).toBeLessThan(rBefore);
+    await expect.poll(() => getPixelColor(page, 1, 1)).toBe(colorToInt('#787878'));
   });
 });

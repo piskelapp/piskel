@@ -43,24 +43,74 @@ import {
   waitForGrid,
 } from "../../testutils";
 
+/** 10x10 frames */
+const EMPTY = [
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+];
+const PIXEL_AT_0_0 = [
+  'X.........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+];
+const PIXEL_AT_0_1 = [
+  '..........',
+  'X.........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+];
+const PIXEL_AT_1_1 = [
+  '..........',
+  '.X........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+];
+
 const TITLE = 'my sprite';
 const DESCRIPTION = 'my description';
 
 /** Make a sprite with something to lose in each part of a save */
 const makeSpriteWithEverything = async (page: Page) => {
   // Two frames on a first layer.
-  await setPiskelFromGrid(page, gridFromRows(['X.', '..']));
-  await waitForGrid(page, 2, 2, ['X.', '..']);
+  await setPiskelFromGrid(page, gridFromRows(PIXEL_AT_0_0));
+  await waitForGrid(page, 10, 10, PIXEL_AT_0_0);
   await getAddFrameButton(page).click();
   await clickTool(page, 'tool-pen');
   await drawAtPixel(page, 1, 1);
-  await waitForGrid(page, 2, 2, ['..', '.X'], { frameIndex: 1 });
+  await waitForGrid(page, 10, 10, PIXEL_AT_1_1, { frameIndex: 1 });
 
   // A second layer, with a name and an opacity.
   await getAddLayerButton(page).click();
   await renameCurrentLayer(page, 'top layer');
   await drawAtPixel(page, 0, 1);
-  await waitForGrid(page, 2, 2, ['..', 'X.'], { layerIndex: 1, frameIndex: 1 });
+  await waitForGrid(page, 10, 10, PIXEL_AT_0_1, { layerIndex: 1, frameIndex: 1 });
   await setTopLayerOpacity(page, 0.5);
 
   // A hidden frame and another FPS.
@@ -72,8 +122,8 @@ const makeSpriteWithEverything = async (page: Page) => {
 };
 
 const assertSpriteHasEverything = async (page: Page) => {
-  await assertLayerFrames(page, 0, [['X.', '..'], ['..', '.X']]);
-  await assertLayerFrames(page, 1, [['..', '..'], ['..', 'X.']]);
+  await assertLayerFrames(page, 0, [PIXEL_AT_0_0, PIXEL_AT_1_1]);
+  await assertLayerFrames(page, 1, [EMPTY, PIXEL_AT_0_1]);
   await assertLayerNames(page, ['top layer', 'Base layer']);
   await assertTopLayerOpacity(page, 0.5);
   await assertHiddenFrames(page, [0]);
@@ -169,8 +219,8 @@ test.describe('Saving with the keyboard', () => {
     await openEditor(page);
 
     // setPiskelFromGrid gives the sprite the title "test".
-    await setPiskelFromGrid(page, gridFromRows(['X.', '..']));
-    await waitForGrid(page, 2, 2, ['X.', '..']);
+    await setPiskelFromGrid(page, gridFromRows(PIXEL_AT_0_0));
+    await waitForGrid(page, 10, 10, PIXEL_AT_0_0);
 
     await page.keyboard.press(`${CMD_OR_CTRL}+s`);
     await assertNotification(page, 'Successfully saved !');
@@ -179,7 +229,7 @@ test.describe('Saving with the keyboard', () => {
     const newSession = await openEditorInNewPage(page);
     await openBrowseLocalSaves(newSession);
     await loadLocalSave(newSession, 'test');
-    await waitForGrid(newSession, 2, 2, ['X.', '..']);
+    await waitForGrid(newSession, 10, 10, PIXEL_AT_0_0);
   });
 });
 

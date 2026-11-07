@@ -6,18 +6,28 @@ import {
   openEditor,
   setPiskelFromGrid,
   waitForGrid,
+  gridFromRows,
 } from "../../testutils";
 
-/** Create an NxN transparent TestGrid */
-function emptyTestGrid(size = 10): ("T")[][] {
-  return Array.from({ length: size }, () => Array(size).fill('T') as ("T")[]);
-}
+/** An empty 10x10 frame */
+const EMPTY = [
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+];
 
 test.describe('Pen tool', () => {
 
   test('pen tool: draws single pixels', { tag: ['@drawing-tools.pen'] }, async ({ page }) => {
     await openEditor(page);
-    await setPiskelFromGrid(page, emptyTestGrid());
+    await setPiskelFromGrid(page, gridFromRows(EMPTY));
     await clickTool(page, 'tool-pen');
 
     await drawAtPixel(page, 2, 2);
@@ -25,22 +35,22 @@ test.describe('Pen tool', () => {
     await drawAtPixel(page, 7, 3);
 
     await waitForGrid(page, 10, 10, [
-      '..........',  // row 0
-      '..........',  // row 1
-      '..X.......',  // row 2
-      '.......X..',  // row 3
-      '..........',  // row 4
-      '.....X....',  // row 5
-      '..........',  // row 6
-      '..........',  // row 7
-      '..........',  // row 8
-      '..........',  // row 9
+      '..........',
+      '..........',
+      '..X.......',
+      '.......X..',
+      '..........',
+      '.....X....',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
     ]);
   });
 
   test('pen tool: draws without gaps when the mouse moves fast', { tag: ['@drawing-tools.pen'] }, async ({ page }) => {
     await openEditor(page);
-    await setPiskelFromGrid(page, emptyTestGrid());
+    await setPiskelFromGrid(page, gridFromRows(EMPTY));
     await clickTool(page, 'tool-pen');
 
     // Drag across the sprite in a single mouse move: the pen only gets the two ends.

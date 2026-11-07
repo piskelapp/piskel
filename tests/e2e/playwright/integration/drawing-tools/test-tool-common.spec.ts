@@ -29,8 +29,39 @@ import {
 
 const WINDOWS_USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
 
-const EMPTY = ['....', '....', '....', '....'];
-const FULL = ['XXXX', 'XXXX', 'XXXX', 'XXXX'];
+/** 10x10 sprites */
+const EMPTY = [
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+];
+const FULL = [
+  'XXXXXXXXXX',
+  'XXXXXXXXXX',
+  'XXXXXXXXXX',
+  'XXXXXXXXXX',
+  'XXXXXXXXXX',
+  'XXXXXXXXXX',
+  'XXXXXXXXXX',
+  'XXXXXXXXXX',
+  'XXXXXXXXXX',
+  'XXXXXXXXXX',
+];
+
+/** 4x4 sprites, for the edge cases that need room beside the sprite */
+const SMALL_EMPTY = [
+  '....',
+  '....',
+  '....',
+  '....',
+];
 
 const openEditorWithSprite = async (page: Page, rows: string[]) => {
   await openEditor(page);
@@ -52,35 +83,224 @@ const applyAction = async (page: Page, action: Action) => {
 
 test.describe('Undoing a tool', () => {
   // R is the sprite, K the primary color, ? a lightened color.
-  const BEFORE = ['R..K', 'RRRR', '....', '....'];
+  const BEFORE = [
+    'R..K......',
+    'RRRR......',
+    '..........',
+    '..........',
+    '..........',
+    '..........',
+    '..........',
+    '..........',
+    '..........',
+    '..........',
+  ];
   const TOOLS: { tool: string; action: Action; after: string[] }[] = [
-    { tool: 'tool-pen', action: [0, 2, 3, 2], after: ['R..K', 'RRRR', 'KKKK', '....'] },
-    { tool: 'tool-vertical-mirror-pen', action: [0, 2, 1, 2], after: ['R..K', 'RRRR', 'KKKK', '....'] },
-    { tool: 'tool-eraser', action: [0, 1, 3, 1], after: ['R..K', '....', '....', '....'] },
-    { tool: 'tool-stroke', action: [0, 2, 3, 2], after: ['R..K', 'RRRR', 'KKKK', '....'] },
-    { tool: 'tool-rectangle', action: [1, 2, 3, 3], after: ['R..K', 'RRRR', '.KKK', '.KKK'] },
-    { tool: 'tool-circle', action: [1, 2, 3, 3], after: ['R..K', 'RRRR', '.KKK', '.KKK'] },
-    { tool: 'tool-dithering', action: [0, 2, 3, 2], after: ['R..K', 'RRRR', '.K.K', '....'] },
-    { tool: 'tool-lighten', action: [0, 1, 3, 1], after: ['R..K', '????', '....', '....'] },
-    { tool: 'tool-paint-bucket', action: [0, 2], after: ['R..K', 'RRRR', 'KKKK', 'KKKK'] },
-    { tool: 'tool-colorswap', action: [0, 2], after: ['RKKK', 'RRRR', 'KKKK', 'KKKK'] },
-    { tool: 'tool-move', action: [0, 1, 0, 2], after: ['....', 'R..K', 'RRRR', '....'] },
+    {
+      tool: 'tool-pen',
+      action: [0, 2, 3, 2],
+      after: [
+        'R..K......',
+        'RRRR......',
+        'KKKK......',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+      ],
+    },
+    {
+      tool: 'tool-vertical-mirror-pen',
+      action: [0, 2, 1, 2],
+      after: [
+        'R..K......',
+        'RRRR......',
+        'KK......KK',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+      ],
+    },
+    {
+      tool: 'tool-eraser',
+      action: [0, 1, 3, 1],
+      after: [
+        'R..K......',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+      ],
+    },
+    {
+      tool: 'tool-stroke',
+      action: [0, 2, 3, 2],
+      after: [
+        'R..K......',
+        'RRRR......',
+        'KKKK......',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+      ],
+    },
+    {
+      tool: 'tool-rectangle',
+      action: [1, 2, 3, 3],
+      after: [
+        'R..K......',
+        'RRRR......',
+        '.KKK......',
+        '.KKK......',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+      ],
+    },
+    {
+      tool: 'tool-circle',
+      action: [1, 2, 3, 3],
+      after: [
+        'R..K......',
+        'RRRR......',
+        '.KKK......',
+        '.KKK......',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+      ],
+    },
+    {
+      tool: 'tool-dithering',
+      action: [0, 2, 3, 2],
+      after: [
+        'R..K......',
+        'RRRR......',
+        '.K.K......',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+      ],
+    },
+    {
+      tool: 'tool-lighten',
+      action: [0, 1, 3, 1],
+      after: [
+        'R..K......',
+        '????......',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+      ],
+    },
+    {
+      tool: 'tool-paint-bucket',
+      action: [0, 2],
+      after: [
+        'R..KKKKKKK',
+        'RRRRKKKKKK',
+        'KKKKKKKKKK',
+        'KKKKKKKKKK',
+        'KKKKKKKKKK',
+        'KKKKKKKKKK',
+        'KKKKKKKKKK',
+        'KKKKKKKKKK',
+        'KKKKKKKKKK',
+        'KKKKKKKKKK',
+      ],
+    },
+    {
+      tool: 'tool-colorswap',
+      action: [0, 2],
+      after: [
+        'RKKKKKKKKK',
+        'RRRRKKKKKK',
+        'KKKKKKKKKK',
+        'KKKKKKKKKK',
+        'KKKKKKKKKK',
+        'KKKKKKKKKK',
+        'KKKKKKKKKK',
+        'KKKKKKKKKK',
+        'KKKKKKKKKK',
+        'KKKKKKKKKK',
+      ],
+    },
+    {
+      tool: 'tool-move',
+      action: [0, 1, 0, 2],
+      after: [
+        '..........',
+        'R..K......',
+        'RRRR......',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+      ],
+    },
   ];
 
   for (const { tool, action, after } of TOOLS) {
     test(`should make ${tool} a single undo step`, { tag: ['@drawing-tools.undo'] }, async ({ page }) => {
-      await openEditorWithSprite(page, ['X...', 'XXXX', '....', '....']);
+      await openEditorWithSprite(page, [
+        'X.........',
+        'XXXX......',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+      ]);
 
       // The previous undo step: a pixel drawn with the pen.
       await clickTool(page, 'tool-pen');
       await drawAtPixel(page, 3, 0);
       await assertColorRows(page, BEFORE);
 
+      // Use the tool.
       await clickTool(page, tool);
       await applyAction(page, action);
       await assertColorRows(page, after);
 
       // One undo reverts the whole action, and nothing before it.
+      // Undo and redo are ignored within 50ms of the previous one (undo-redo.throttle)
       await wait(100);
       await undo(page);
       await assertColorRows(page, BEFORE);
@@ -93,6 +313,7 @@ test.describe('Undoing a tool', () => {
   }
 });
 
+// These tests use a 4x4 sprite, so that the drags can go beside it.
 test.describe('Clipping at the edges', () => {
   const PAST_THE_RIGHT_EDGE = [
     { tool: 'tool-pen', row: '.XXX' },
@@ -104,55 +325,87 @@ test.describe('Clipping at the edges', () => {
 
   for (const { tool, row } of PAST_THE_RIGHT_EDGE) {
     test(`should clip ${tool} past the right edge`, { tag: ['@drawing-tools.clipping'] }, async ({ page }) => {
-      await openEditorWithSprite(page, EMPTY);
+      await openEditorWithSprite(page, SMALL_EMPTY);
       await clickTool(page, tool);
 
       // Drag from inside the sprite to beside it, past the right edge.
       await dragBetweenPixels(page, 1, 1, 7, 1);
 
       // Nothing wraps onto the next row, and the sprite keeps its size.
-      await assertLayerFrames(page, 0, [['....', row, '....', '....']]);
+      await assertLayerFrames(page, 0, [[
+        '....',
+        row,
+        '....',
+        '....',
+      ]]);
     });
   }
 
   test('should clip a stroke that starts outside the sprite', { tag: ['@drawing-tools.clipping'] }, async ({ page }) => {
-    await openEditorWithSprite(page, EMPTY);
+    await openEditorWithSprite(page, SMALL_EMPTY);
     await clickTool(page, 'tool-pen');
 
     // Drag from beside the sprite into it.
     await dragBetweenPixels(page, 7, 2, 2, 2);
 
     // Only the part inside the sprite is drawn.
-    await assertLayerFrames(page, 0, [['....', '....', '..XX', '....']]);
+    await assertLayerFrames(page, 0, [[
+      '....',
+      '....',
+      '..XX',
+      '....',
+    ]]);
   });
 
   test('should clip a shape past the bottom edge', { tag: ['@drawing-tools.clipping'] }, async ({ page }) => {
-    await openEditorWithSprite(page, ['......', '......']);
+    // A sprite of 2 rows, so that the drag can end well below it.
+    await openEditorWithSprite(page, [
+      '......',
+      '......',
+    ]);
     await clickTool(page, 'tool-rectangle');
 
     // Drag a rectangle that ends below the 2 rows of the sprite.
     await dragBetweenPixels(page, 1, 0, 3, 5);
 
     // Only its top is drawn.
-    await assertLayerFrames(page, 0, [['.XXX..', '.X.X..']]);
+    await assertLayerFrames(page, 0, [[
+      '.XXX..',
+      '.X.X..',
+    ]]);
   });
 
   test('should clip a large pen at the edges', { tag: ['@drawing-tools.clipping'] }, async ({ page }) => {
-    await openEditorWithSprite(page, EMPTY);
+    await openEditorWithSprite(page, SMALL_EMPTY);
     await clickTool(page, 'tool-pen');
     await getPenSizeButton(page, 3).click();
 
     // At the right edge.
     await drawAtPixel(page, 3, 1);
-    await assertLayerFrames(page, 0, [['..XX', '..XX', '..XX', '....']]);
+    await assertLayerFrames(page, 0, [[
+      '..XX',
+      '..XX',
+      '..XX',
+      '....',
+    ]]);
 
     // At the bottom left corner.
     await drawAtPixel(page, 0, 3);
-    await assertLayerFrames(page, 0, [['..XX', '..XX', 'XXXX', 'XX..']]);
+    await assertLayerFrames(page, 0, [[
+      '..XX',
+      '..XX',
+      'XXXX',
+      'XX..',
+    ]]);
 
     // At the top left corner.
     await drawAtPixel(page, 0, 0);
-    await assertLayerFrames(page, 0, [['XXXX', 'XXXX', 'XXXX', 'XX..']]);
+    await assertLayerFrames(page, 0, [[
+      'XXXX',
+      'XXXX',
+      'XXXX',
+      'XX..',
+    ]]);
   });
 });
 
@@ -160,13 +413,96 @@ test.describe('Drawing with a transparent color', () => {
   // Small circles draw nothing in any color, so they aren't tested here: see
   // docs/known-issues.md.
   const TOOLS: { tool: string; action: Action; after: string[] }[] = [
-    { tool: 'tool-pen', action: [1, 1, 2, 1], after: ['XXXX', 'X..X', 'XXXX', 'XXXX'] },
-    { tool: 'tool-vertical-mirror-pen', action: [0, 1, 1, 1], after: ['XXXX', '....', 'XXXX', 'XXXX'] },
-    { tool: 'tool-stroke', action: [1, 1, 2, 1], after: ['XXXX', 'X..X', 'XXXX', 'XXXX'] },
-    { tool: 'tool-rectangle', action: [1, 1, 2, 2], after: ['XXXX', 'X..X', 'X..X', 'XXXX'] },
-    { tool: 'tool-circle', action: [0, 0, 2, 2], after: ['X.XX', '.X.X', 'X.XX', 'XXXX'] },
-    { tool: 'tool-paint-bucket', action: [1, 1], after: EMPTY },
-    { tool: 'tool-colorswap', action: [1, 1], after: EMPTY },
+    {
+      tool: 'tool-pen',
+      action: [1, 1, 2, 1],
+      after: [
+        'XXXXXXXXXX',
+        'X..XXXXXXX',
+        'XXXXXXXXXX',
+        'XXXXXXXXXX',
+        'XXXXXXXXXX',
+        'XXXXXXXXXX',
+        'XXXXXXXXXX',
+        'XXXXXXXXXX',
+        'XXXXXXXXXX',
+        'XXXXXXXXXX',
+      ],
+    },
+    {
+      tool: 'tool-vertical-mirror-pen',
+      action: [0, 1, 1, 1],
+      after: [
+        'XXXXXXXXXX',
+        '..XXXXXX..',
+        'XXXXXXXXXX',
+        'XXXXXXXXXX',
+        'XXXXXXXXXX',
+        'XXXXXXXXXX',
+        'XXXXXXXXXX',
+        'XXXXXXXXXX',
+        'XXXXXXXXXX',
+        'XXXXXXXXXX',
+      ],
+    },
+    {
+      tool: 'tool-stroke',
+      action: [1, 1, 2, 1],
+      after: [
+        'XXXXXXXXXX',
+        'X..XXXXXXX',
+        'XXXXXXXXXX',
+        'XXXXXXXXXX',
+        'XXXXXXXXXX',
+        'XXXXXXXXXX',
+        'XXXXXXXXXX',
+        'XXXXXXXXXX',
+        'XXXXXXXXXX',
+        'XXXXXXXXXX',
+      ],
+    },
+    {
+      tool: 'tool-rectangle',
+      action: [1, 1, 2, 2],
+      after: [
+        'XXXXXXXXXX',
+        'X..XXXXXXX',
+        'X..XXXXXXX',
+        'XXXXXXXXXX',
+        'XXXXXXXXXX',
+        'XXXXXXXXXX',
+        'XXXXXXXXXX',
+        'XXXXXXXXXX',
+        'XXXXXXXXXX',
+        'XXXXXXXXXX',
+      ],
+    },
+    {
+      tool: 'tool-circle',
+      action: [0, 0, 2, 2],
+      after: [
+        'X.XXXXXXXX',
+        '.X.XXXXXXX',
+        'X.XXXXXXXX',
+        'XXXXXXXXXX',
+        'XXXXXXXXXX',
+        'XXXXXXXXXX',
+        'XXXXXXXXXX',
+        'XXXXXXXXXX',
+        'XXXXXXXXXX',
+        'XXXXXXXXXX',
+      ],
+    },
+    {
+      tool: 'tool-paint-bucket',
+      action: [1, 1],
+      after: EMPTY,
+    },
+    {
+      tool: 'tool-colorswap',
+      action: [1, 1],
+      after: EMPTY,
+    },
   ];
 
   for (const { tool, action, after } of TOOLS) {
@@ -177,7 +513,7 @@ test.describe('Drawing with a transparent color', () => {
 
       // Use the tool on a full sprite: it removes pixels.
       await applyAction(page, action);
-      await waitForGrid(page, 4, 4, after);
+      await waitForGrid(page, 10, 10, after);
     });
   }
 
@@ -187,33 +523,121 @@ test.describe('Drawing with a transparent color', () => {
 
     // Drag with the right button: it removes pixels.
     await dragWithRightButton(page, 1, 1, 2, 1);
-    await waitForGrid(page, 4, 4, ['XXXX', 'X..X', 'XXXX', 'XXXX']);
+    await waitForGrid(page, 10, 10, [
+      'XXXXXXXXXX',
+      'X..XXXXXXX',
+      'XXXXXXXXXX',
+      'XXXXXXXXXX',
+      'XXXXXXXXXX',
+      'XXXXXXXXXX',
+      'XXXXXXXXXX',
+      'XXXXXXXXXX',
+      'XXXXXXXXXX',
+      'XXXXXXXXXX',
+    ]);
   });
 });
 
 test.describe('Hover highlight', () => {
   test('should use the light or dark overlay depending on the pixel underneath', { tag: ['@drawing-tools.highlight'] }, async ({ page }) => {
     // A sprite with a pixel of 50% lightness (red), then a white and a black one.
-    await openEditorWithSprite(page, ['X...', '....', '....', '....']);
+    await openEditorWithSprite(page, [
+      'X.........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+    ]);
     await clickTool(page, 'tool-pen');
     await setPrimaryColor(page, '#FFFFFF');
     await drawAtPixel(page, 1, 0);
-    await waitForGrid(page, 4, 4, ['XX..', '....', '....', '....']);
+    await waitForGrid(page, 10, 10, [
+      'XX........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+    ]);
     await setPrimaryColor(page, '#000000');
     await drawAtPixel(page, 2, 0);
-    const SPRITE = ['XXX.', '....', '....', '....'];
-    await waitForGrid(page, 4, 4, SPRITE);
+    const SPRITE = [
+      'XXX.......',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+    ];
+    await waitForGrid(page, 10, 10, SPRITE);
 
     // Hover each one: only the white pixel gets the dark overlay.
-    await hoverPixelAndAssertHighlight(page, 0, 0, ['L...', '....', '....', '....']);
-    await hoverPixelAndAssertHighlight(page, 1, 0, ['.D..', '....', '....', '....']);
-    await hoverPixelAndAssertHighlight(page, 2, 0, ['..L.', '....', '....', '....']);
+    await hoverPixelAndAssertHighlight(page, 0, 0, [
+      'L.........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+    ]);
+    await hoverPixelAndAssertHighlight(page, 1, 0, [
+      '.D........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+    ]);
+    await hoverPixelAndAssertHighlight(page, 2, 0, [
+      '..L.......',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+    ]);
 
     // Over a transparent pixel, the overlay is light too.
-    await hoverPixelAndAssertHighlight(page, 3, 0, ['...L', '....', '....', '....']);
+    await hoverPixelAndAssertHighlight(page, 3, 0, [
+      '...L......',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+    ]);
 
     // Hovering doesn't draw.
-    expect(await readPixelRows(page, 4, 4)).toEqual(SPRITE);
+    expect(await readPixelRows(page, 10, 10)).toEqual(SPRITE);
   });
 
   const TOOLS_WITH_PEN_SIZE = [
@@ -228,7 +652,18 @@ test.describe('Hover highlight', () => {
       await clickTool(page, tool);
 
       // Hover a pixel: the highlight covers the 3x3 pen around it.
-      await hoverPixelAndAssertHighlight(page, 2, 2, ['....', '.LLL', '.LLL', '.LLL']);
+      await hoverPixelAndAssertHighlight(page, 2, 2, [
+        '..........',
+        '.LLL......',
+        '.LLL......',
+        '.LLL......',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+      ]);
     });
   }
 
@@ -239,18 +674,35 @@ test.describe('Hover highlight', () => {
       await clickTool(page, tool);
 
       // Hover a pixel: this tool ignores the pen size.
-      await hoverPixelAndAssertHighlight(page, 2, 2, ['....', '....', '..L.', '....']);
+      await hoverPixelAndAssertHighlight(page, 2, 2, [
+        '..........',
+        '..........',
+        '..L.......',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+      ]);
     });
   }
 
   test('should remove the highlight when moving off the sprite', { tag: ['@drawing-tools.highlight-outside'] }, async ({ page }) => {
-    await openEditorWithSprite(page, EMPTY);
+    // A 4x4 sprite, so that there is room beside it.
+    await openEditorWithSprite(page, SMALL_EMPTY);
     await clickTool(page, 'tool-pen');
 
-    await hoverPixelAndAssertHighlight(page, 3, 1, ['....', '...L', '....', '....']);
+    await hoverPixelAndAssertHighlight(page, 3, 1, [
+      '....',
+      '...L',
+      '....',
+      '....',
+    ]);
 
     // Move beside the sprite.
-    await hoverPixelAndAssertHighlight(page, 7, 1, EMPTY);
+    await hoverPixelAndAssertHighlight(page, 7, 1, SMALL_EMPTY);
   });
 });
 
@@ -404,18 +856,7 @@ test.describe('Tool tooltips', () => {
     test(`should use the secondary color with the right button: ${tool}`, { tag: ['@drawing-tools.mouse-buttons'] }, async ({ page }) => {
       // Start from an empty sprite, with a blue secondary color.
       await openEditor(page);
-      await setPiskelFromGrid(page, gridFromRows([
-        '..........',
-        '..........',
-        '..........',
-        '..........',
-        '..........',
-        '..........',
-        '..........',
-        '..........',
-        '..........',
-        '..........',
-      ]));
+      await setPiskelFromGrid(page, gridFromRows(EMPTY));
       await setSecondaryColor(page, '#0000FF');
       await clickTool(page, tool);
 
