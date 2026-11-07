@@ -32,12 +32,12 @@ Add a comment for each high-level user step, so the test reads as a scenario fro
 // Draw in second frame.
 await clickTool(page, 'tool-pen');
 await drawAtPixel(page, 0, 0);
-expect(await readPixelRows(page, 4, 4, 0, 1)).toEqual(ONE_PIXEL);
+expect(await readPixelRows(page, 10, 10, 0, 1)).toEqual(PIXEL_AT_0_0);
 
 // Go back to first frame and undo.
 await selectFrame(page, 0);
 await undo(page);
-await waitForGrid(page, 4, 4, EMPTY, { frameIndex: 1 });
+await waitForGrid(page, 10, 10, EMPTY, { frameIndex: 1 });
 ```
 
 ## Specs
@@ -51,7 +51,7 @@ await waitForGrid(page, 4, 4, EMPTY, { frameIndex: 1 });
 
 - Act and read through the UI, as a user would, so tests survive internal refactors.
 - Find elements with `data-test-id` and the `testId(page, 'id')` helper. Add the attribute to the template or controller when it's missing, so tests don't depend on styling classes. When the work must not change the app, use the existing class in a `testutils.ts` helper instead, as `setLayerPreviewOpacity` and `assertOtherLayerOpacityOnCanvas` do.
-- Avoid `window.pskl` internals. The accepted bridges are `setPiskelFromGrid` for fixtures, and `getPixelColor`, `readPixelGrid`, `readPixelRows`, `assertColorRows`, `drawAtPixel` and `assertOtherLayerOpacityOnCanvas`, which have no DOM alternative.
+- Avoid `window.pskl` internals. The accepted bridges are `setPiskelFromGrid` for fixtures, the pixel readers (`getPixelColor`, `readPixelGrid`, `readPixelRows`, `assertColorRows`), the mouse helpers that turn a pixel into a screen position (`drawAtPixel`, `rightClickAtPixel`, `dragThroughPixels`, `dragBetweenPixels`, …) and `assertOtherLayerOpacityOnCanvas`, which have no DOM alternative.
 - When a test uses modifier keys, add a comment saying what each one does, because the keys alone don't tell the reader which behavior is being tested:
 
   ```ts
@@ -64,11 +64,17 @@ await waitForGrid(page, 4, 4, EMPTY, { frameIndex: 1 });
 - When testing the rendering in the canvas or any 2-dimensional artifact (e.g. the shape of the selection), use a matrix (2D array) or a list of strings instead of querying each position line by line, because the reader can visualize the content being asserted and stray pixels fail the test:
 
   ```ts
-  expect(await readPixelRows(page, 4, 4)).toEqual([
-    '...X',
-    '...X',
-    '.XXX',
-    '....',
+  expect(await readPixelRows(page, 10, 10)).toEqual([
+    '..........',
+    '.......X..',
+    '.......X..',
+    '.......X..',
+    '...XXXXX..',
+    '..........',
+    '..........',
+    '..........',
+    '..........',
+    '..........',
   ]);
   ```
 
@@ -80,13 +86,10 @@ await waitForGrid(page, 4, 4, EMPTY, { frameIndex: 1 });
 
   ```ts
   await drawAtPixel(page, 1, 1);
-  expect(await readPixelRows(page, 4, 4, 1, 1)).toEqual([
-    '....',
-    '.X..',
-    '....',
-    '....',
-  ]);
+  expect(await readPixelRows(page, 10, 10, 1, 1)).toEqual(PIXEL_AT_1_1);
   ```
+
+  Declare grids used more than once, such as `PIXEL_AT_1_1`, as constants at the top of the file, still one row per line.
 - When an action has effects elsewhere in the app, check those effects as well as the local change, because a button updating its own look doesn't prove the feature works:
 
   ```ts
