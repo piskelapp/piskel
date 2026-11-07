@@ -242,10 +242,6 @@
         );
       });
 
-      if (pskl.devtools) {
-        pskl.devtools.init();
-      }
-
       if (
         pskl.utils.Environment.detectNodeWebkit() &&
         pskl.utils.UserAgent.isMac

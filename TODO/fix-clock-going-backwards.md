@@ -47,7 +47,6 @@ still work.
 - `IndexedDbStorageService` and `LocalStorageService`
 - `BaseSelection.time`, which is compared across tabs, and `performance.now()`
   isn't comparable between pages
-- `devtools/DrawingTestSuiteController`
 
 `DrawingLoop.loop_` already handles this with `Math.max(0, ...)`, from commit
 `a6d2a5b` ("Fix preview freezing when the system clock goes backwards"). It keeps

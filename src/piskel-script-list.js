@@ -237,17 +237,6 @@ exports.scripts = [
   "js/tools/transform/Rotate.js",
   "js/tools/transform/TransformUtils.js",
 
-  // Devtools
-  "js/devtools/DrawingTestPlayer.js",
-  "js/devtools/DrawingTestRecorder.js",
-  "js/devtools/DrawingTestRunner.js",
-  "js/devtools/DrawingTestSuiteController.js",
-  "js/devtools/DrawingTestSuiteRunner.js",
-  "js/devtools/MouseEvent.js",
-  "js/devtools/TestRecordController.js",
-  "js/devtools/init.js",
-  "js/devtools/lib/Blob.js",
-
   // Workers
   "js/worker/framecolors/FrameColorsWorker.js",
   "js/worker/framecolors/FrameColors.js",
