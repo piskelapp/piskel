@@ -18,6 +18,7 @@ import {
   readPixelRows,
   redo,
   remapShortcut,
+  rightClickAtPixel,
   setPiskelFromGrid,
   setPrimaryColor,
   setSecondaryColor,
@@ -304,7 +305,7 @@ test.describe('Tool tooltips', () => {
   }> = [
     {
       tool: 'tool-pen',
-      useRightButton: (page) => dragWithRightButton(page, 4, 4, 4, 4),
+      useRightButton: (page) => rightClickAtPixel(page, 4, 4),
       rows: [
         '..........',
         '..........',
@@ -320,7 +321,7 @@ test.describe('Tool tooltips', () => {
     },
     {
       tool: 'tool-vertical-mirror-pen',
-      useRightButton: (page) => dragWithRightButton(page, 2, 2, 2, 2),
+      useRightButton: (page) => rightClickAtPixel(page, 2, 2),
       rows: [
         '..........',
         '..........',
@@ -384,7 +385,7 @@ test.describe('Tool tooltips', () => {
     },
     {
       tool: 'tool-paint-bucket',
-      useRightButton: (page) => dragWithRightButton(page, 0, 0, 0, 0),
+      useRightButton: (page) => rightClickAtPixel(page, 0, 0),
       rows: [
         'BBBBBBBBBB',
         'BBBBBBBBBB',

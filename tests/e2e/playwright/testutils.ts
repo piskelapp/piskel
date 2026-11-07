@@ -458,6 +458,23 @@ export const drawAtPixel = async (
   await page.mouse.click(coords.x, coords.y);
 };
 
+/** Click a pixel with the right mouse button, which uses the secondary color */
+export const rightClickAtPixel = async (
+  page: Page,
+  col: number,
+  row: number
+): Promise<void> => {
+  // Wait for any pending relayout (DrawingController uses setTimeout(200) for relayout)
+  await page.evaluate(() => new Promise((resolve) => setTimeout(resolve, 200)));
+  const coords = await page.evaluate(
+    ({ col, row }) =>
+      window.pskl.app.drawingController.getScreenCoordinates(col, row),
+    { col, row }
+  );
+  await moveMouseOntoCanvas(page, coords.x, coords.y);
+  await page.mouse.click(coords.x, coords.y, { button: "right" });
+};
+
 /**
  * Move the mouse before pressing it, and wait for the tooltip of a tool button to
  * fade out: until then, it can be over the canvas and catch the press.
