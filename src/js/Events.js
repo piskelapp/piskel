@@ -85,13 +85,12 @@ var Events = {
 
   PISKEL_FILE_IMPORT_FAILED: "PISKEL_FILE_IMPORT_FAILED",
 
-  // Tests
+  // A mouse event happened on the drawing area
   MOUSE_EVENT: "MOUSE_EVENT",
+  // A keyboard shortcut was used
   KEYBOARD_EVENT: "KEYBOARD_EVENT",
+  // A transform tool, such as flip or rotate, is about to be applied
   TRANSFORMATION_EVENT: "TRANSFORMATION_EVENT",
-  TEST_RECORD_END: "TEST_RECORD_END",
-  TEST_CASE_END: "TEST_CASE_END",
-  TEST_SUITE_END: "TEST_SUITE_END",
 
   // A piskel external to the editor has been loaded and attached
   // to window._externalPiskel to be applied.

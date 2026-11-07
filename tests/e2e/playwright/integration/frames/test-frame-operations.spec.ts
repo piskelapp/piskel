@@ -1,4 +1,4 @@
-import test, { expect } from "@playwright/test";
+import test, { expect, Page } from "@playwright/test";
 import {
   openEditor,
   getCurrentPiskelFrameCount,
@@ -28,6 +28,12 @@ import {
   selectBottomLayer,
   selectFrame,
   setPiskelFromGrid,
+  assertHiddenFrames,
+  dragFrame,
+  duplicateFrame,
+  toggleFrameVisibility,
+  undo,
+  waitForGrid,
 } from "../../testutils";
 
 const EMPTY = [
@@ -35,6 +41,58 @@ const EMPTY = [
   '....',
   '....',
   '....',
+];
+
+/** The three frames of the undo tests: one pixel each, in its own column */
+const FRAME_1 = [
+  'X.........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+];
+const FRAME_2 = [
+  '.X........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+];
+const FRAME_3 = [
+  '..X.......',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+];
+
+/** An empty 10x10 frame */
+const EMPTY_FRAME = [
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
 ];
 
 test.describe('Frame operations', () => {
@@ -415,4 +473,81 @@ test.describe('Frame operations', () => {
     await expect(topHint).toBeInViewport();
     await expect(bottomHint).not.toBeInViewport();
   });
+
+  // Each operation applies to FRAME_1, FRAME_2 and FRAME_3, with the third frame
+  // current.
+  const frameOperations: Array<{
+    name: string;
+    change: (page: Page) => Promise<void>;
+    assertChanged: (page: Page) => Promise<void>;
+  }> = [
+    {
+      name: 'adding a frame',
+      change: (page) => getAddFrameButton(page).click(),
+      assertChanged: (page) => assertFrameCount(page, 4),
+    },
+    {
+      name: 'inserting a frame after the first one with N',
+      change: async (page) => {
+        await selectFrame(page, 0);
+        await page.keyboard.press('n');
+      },
+      assertChanged: async (page) => {
+        await assertFrameCount(page, 4);
+        await waitForGrid(page, 10, 10, EMPTY_FRAME, { frameIndex: 1 });
+        await waitForGrid(page, 10, 10, FRAME_2, { frameIndex: 2 });
+      },
+    },
+    {
+      name: 'duplicating a frame',
+      change: (page) => duplicateFrame(page, 0),
+      assertChanged: (page) => assertFrameCount(page, 4),
+    },
+    {
+      name: 'deleting a frame',
+      change: (page) => deleteFrame(page, 0),
+      assertChanged: (page) => assertFrameCount(page, 2),
+    },
+    {
+      name: 'moving a frame',
+      change: (page) => dragFrame(page, 0, 2),
+      assertChanged: (page) => waitForGrid(page, 10, 10, FRAME_1, { frameIndex: 2 }),
+    },
+    {
+      name: 'hiding a frame',
+      change: (page) => toggleFrameVisibility(page, 1),
+      assertChanged: (page) => assertHiddenFrames(page, [1]),
+    },
+  ];
+  for (const { name, change, assertChanged } of frameOperations) {
+    test(`undo should revert ${name} in one step`, { tag: ['@frames.undo'] }, async ({ page }) => {
+      // Draw a pixel in the first frame.
+      await openEditor(page);
+      await setPiskelFromGrid(page, gridFromRows(EMPTY_FRAME));
+      await clickTool(page, 'tool-pen');
+      await drawAtPixel(page, 0, 0);
+      await waitForGrid(page, 10, 10, FRAME_1, { frameIndex: 0 });
+
+      // Add a second and a third frame, with a pixel each.
+      await getAddFrameButton(page).click();
+      await assertFrameCount(page, 2);
+      await drawAtPixel(page, 1, 0);
+      await waitForGrid(page, 10, 10, FRAME_2, { frameIndex: 1 });
+      await getAddFrameButton(page).click();
+      await assertFrameCount(page, 3);
+      await drawAtPixel(page, 2, 0);
+      await waitForGrid(page, 10, 10, FRAME_3, { frameIndex: 2 });
+
+      await change(page);
+      await assertChanged(page);
+
+      // Undo reverts the operation only: the pixel drawn before it is still there.
+      await undo(page);
+      await assertFrameCount(page, 3);
+      await assertHiddenFrames(page, []);
+      await waitForGrid(page, 10, 10, FRAME_1, { frameIndex: 0 });
+      await waitForGrid(page, 10, 10, FRAME_2, { frameIndex: 1 });
+      await waitForGrid(page, 10, 10, FRAME_3, { frameIndex: 2 });
+    });
+  }
 });

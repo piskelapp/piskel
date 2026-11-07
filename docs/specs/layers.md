@@ -16,8 +16,8 @@ its colors, across the whole animation.
 - `layers.add` The add button creates an empty layer above the current
   one, named "Layer N", and selects it.
 - `layers.duplicate` `shift`+click on the add button duplicates the
-  current layer instead. The copy is named "<name> (clone)", is inserted
-  above the current layer, and is selected.
+  current layer instead, with all its frames. The copy is named
+  "<name> (clone)", is inserted above the current layer, and is selected.
 - `layers.rename` The edit button or double-click opens an inline input.
   `Enter` confirms. Confirming an empty name keeps the old one.
 - `layers.rename-cancel` `Escape` or clicking elsewhere (blur) cancels the

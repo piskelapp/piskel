@@ -52,13 +52,19 @@ Common to all drawing tools:
 
 ### Pen size
 
-- `drawing-tools.pen-size-tools` Pen size applies to pen, mirror pen,
-  eraser, lighten, dithering, stroke, rectangle and circle.
+- `drawing-tools.pen-size-tools` Pen size applies to the pen, mirror pen,
+  eraser, lighten, dithering, stroke, rectangle and circle tools. The paint
+  bucket, magic bucket, move, color picker and selection tools ignore it.
+- `drawing-tools.pen-size-shape` At a pen size of N, each pixel a tool draws
+  becomes an N×N square: centered on the pixel for an odd size, and with the
+  pixel at the bottom right of the center for an even size. Rectangles and
+  circles keep the dragged bounds and get thicker inward.
 - `drawing-tools.pen-size-picker` The picker in the tool section offers
   sizes 1 to 4. The default size is 1.
 - `drawing-tools.pen-size-shortcuts` `[` and `]` decrease/increase the
-  size between 1 and 32. Above 4, the size-4 option is shown with the
-  actual size as a label.
+  size between 1 and 32. Sizes above 4 can only be reached with these
+  shortcuts: the size-4 option of the picker is then selected, and shows the
+  actual size as a number inside the option.
 - `drawing-tools.pen-size-saved` The size is persisted as a user setting.
 
 ## UI and shortcuts

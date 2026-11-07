@@ -1,38 +1,35 @@
-import test, { expect, Page } from "@playwright/test";
+import test, { expect } from "@playwright/test";
 import {
-  CMD_OR_CTRL,
   openEditor,
   setPiskelFromGrid,
   readPixelGrid,
   readPixelRows,
   drawAtPixel,
   clickTool,
+  clickTransform,
+  dragBetweenPixels,
+  dragThroughPixels,
   getAddFrameButton,
   getAddLayerButton,
+  getLayerItems,
   waitFor,
   wait,
   getCurrentPiskelWidth,
   getCurrentPiskelHeight,
   gridFromRows,
+  gridFromColorRows,
   isCurrentPiskelEmpty,
   undo,
+  redo,
+  assertSpriteSize,
+  assertColorRows,
+  selectBottomLayer,
+  assertCurrentLayer,
   waitForEditorReady,
   waitForGrid,
   assertFrameCount,
   selectFrame,
 } from "../../testutils";
-
-/** Drag from sprite pixel (x1,y1) to (x2,y2) */
-async function dragBetweenPixels(page: Page, x1: number, y1: number, x2: number, y2: number) {
-  const start = await page.evaluate(({ col, row }) =>
-    window.pskl.app.drawingController.getScreenCoordinates(col, row), { col: x1, row: y1 });
-  const end = await page.evaluate(({ col, row }) =>
-    window.pskl.app.drawingController.getScreenCoordinates(col, row), { col: x2, row: y2 });
-  await page.mouse.move(start.x, start.y);
-  await page.mouse.down();
-  await page.mouse.move(end.x, end.y, { steps: 5 });
-  await page.mouse.up();
-}
 
 type TestGrid = Array<Array<"R" | "G" | "B" | "T">>;
 
@@ -79,39 +76,73 @@ const CORNERS = [
   '.........X',  // row 9
 ];
 
+/** A 10x10 sprite with a single pixel in one corner */
+const TOP_LEFT = [
+  'X.........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+];
+const TOP_RIGHT = [
+  '.........X',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+];
+const BOTTOM_LEFT = [
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  'X.........',
+];
+const BOTTOM_RIGHT = [
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '.........X',
+];
+const EMPTY_10X10 = [
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+];
+
 /** A 6x2 sprite, with pixels that don't fit on the canvas once rotated */
 const WIDE_SPRITE = [
   'X.XX..',  // row 0
   '..X..X',  // row 1
 ];
-
-/** Click a transform tool with optional modifier keys held */
-async function clickTransform(
-  page: Page,
-  toolId: string,
-  modifiers: { alt?: boolean; shift?: boolean; ctrl?: boolean } = {}
-) {
-  const tool = page.locator(`[data-tool-id="${toolId}"]`);
-
-  // Expand "show more" if the tool is not visible
-  if (!(await tool.isVisible())) {
-    await page.locator('.transformations-show-more-link').click();
-    await expect(tool).toBeVisible();
-  }
-
-  if (modifiers.alt) await page.keyboard.down('Alt');
-  if (modifiers.shift) await page.keyboard.down('Shift');
-  if (modifiers.ctrl) await page.keyboard.down(CMD_OR_CTRL);
-
-  await tool.click();
-
-  if (modifiers.ctrl) await page.keyboard.up(CMD_OR_CTRL);
-  if (modifiers.shift) await page.keyboard.up('Shift');
-  if (modifiers.alt) await page.keyboard.up('Alt');
-
-  // Wait for transform to apply
-  await wait(200);
-}
 
 test.describe('Transform panel', () => {
 
@@ -323,6 +354,33 @@ test.describe('Transform panel', () => {
     expect(grid1.map(r => r.join(''))).toEqual(expected);
   });
 
+  test('clone should leave the other layers unchanged', { tag: ['@transformations.clone'] }, async ({ page }) => {
+    await openEditor(page);
+    await setPiskelFromGrid(page, gridFromRows(TOP_LEFT));
+
+    // Add a second frame, and a top layer with a pixel in that frame only.
+    await getAddFrameButton(page).click();
+    await assertFrameCount(page, 2);
+    await getAddLayerButton(page).click();
+    await assertCurrentLayer(page, 1);
+    await selectFrame(page, 1);
+    await clickTool(page, 'tool-pen');
+    await drawAtPixel(page, 9, 9);
+    expect(await readPixelRows(page, 10, 10, 1, 1)).toEqual(BOTTOM_RIGHT);
+
+    // Clone the first frame of the bottom layer.
+    await selectBottomLayer(page);
+    await selectFrame(page, 0);
+    await clickTransform(page, 'tool-clone');
+
+    // The bottom layer now shows its first frame in both frames.
+    await waitForGrid(page, 10, 10, TOP_LEFT, { layerIndex: 0, frameIndex: 1 });
+
+    // The top layer is unchanged.
+    expect(await readPixelRows(page, 10, 10, 1, 0)).toEqual(EMPTY_10X10);
+    expect(await readPixelRows(page, 10, 10, 1, 1)).toEqual(BOTTOM_RIGHT);
+  });
+
   // ─── Center ────────────────────────────────────────────────────
 
   test('center should move content to the center of the canvas', { tag: ['@transformations.center'] }, async ({ page }) => {
@@ -461,6 +519,97 @@ test.describe('Transform panel', () => {
       'XXXXX',
     ];
     expect(grid.map(r => r.join(''))).toEqual(expected);
+  });
+
+  test('crop to a lasso selection should keep the pixels of its bounding box, and redo should crop the same way', {
+    tag: ['@transformations.crop-selection', '@undo-redo.shortcuts'],
+  }, async ({ page }) => {
+    await openEditor(page);
+    const sprite = [
+      'X.........',
+      '.X........',
+      '..........',
+      '...X......',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '.........X',
+    ];
+    await setPiskelFromGrid(page, gridFromRows(sprite));
+
+    // Select a triangle whose bounding box goes from (1,1) to (3,3). The pixel at
+    // (3,3) is in that box, but outside the triangle.
+    await clickTool(page, 'tool-lasso-select');
+    await dragThroughPixels(page, [[1, 1], [3, 1], [1, 3], [1, 1]]);
+
+    // The sprite is cropped to the bounding box, with the pixel outside the triangle.
+    await clickTransform(page, 'tool-crop');
+    await assertSpriteSize(page, 3, 3);
+    await waitForGrid(page, 3, 3, [
+      'X..',
+      '...',
+      '..X',
+    ]);
+
+    // Undo restores the whole sprite.
+    await undo(page);
+    await assertSpriteSize(page, 10, 10);
+    await waitForGrid(page, 10, 10, sprite);
+
+    // Redo crops to the same box, although the selection is gone: cropping to the
+    // content would leave the sprite as it is.
+    // Undo and redo are ignored within 50ms of the previous one (undo-redo.throttle)
+    await wait(100);
+    await redo(page);
+    await assertSpriteSize(page, 3, 3);
+    await waitForGrid(page, 3, 3, [
+      'X..',
+      '...',
+      '..X',
+    ]);
+  });
+
+  test('crop to a shape selection should keep the other pixels of its bounding box, and dismiss the selection', {
+    tag: ['@transformations.crop-selection'],
+  }, async ({ page }) => {
+    await openEditor(page);
+    await setPiskelFromGrid(page, gridFromColorRows([
+      'RRR.......',
+      'R.........',
+      'R.G.......',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '.........B',
+    ]));
+
+    // Select the red shape, whose bounding box goes from (0,0) to (2,2). The green
+    // pixel is in that box, but not in the shape. The blue pixel is outside the box,
+    // so cropping to the content would leave the sprite as it is.
+    await clickTool(page, 'tool-shape-select');
+    await drawAtPixel(page, 0, 0);
+
+    // The sprite is cropped to the bounding box, with the green pixel.
+    await clickTransform(page, 'tool-crop');
+    await assertSpriteSize(page, 3, 3);
+    await assertColorRows(page, [
+      'RRR',
+      'R..',
+      'R.G',
+    ]);
+
+    // The selection is gone: Delete, which deletes the selected pixels, does nothing.
+    await page.keyboard.press('Delete');
+    await assertColorRows(page, [
+      'RRR',
+      'R..',
+      'R.G',
+    ]);
   });
 
   // ─── Show more toggle ─────────────────────────────────────────
@@ -744,5 +893,164 @@ test.describe('Transform panel', () => {
       '....',
       '....',
     ]);
+  });
+
+  // Each case starts from a pixel in the top left corner.
+  const twiceTransformed = [
+    {
+      name: 'flip',
+      toolId: 'tool-flip',
+      modifiers: {},
+      afterFirst: TOP_RIGHT,
+      afterSecond: TOP_LEFT,
+    },
+    {
+      name: 'counter-clockwise rotation',
+      toolId: 'tool-rotate',
+      modifiers: {},
+      afterFirst: BOTTOM_LEFT,
+      afterSecond: BOTTOM_RIGHT,
+    },
+    {
+      name: 'clockwise rotation',
+      toolId: 'tool-rotate',
+      // Alt rotates clockwise
+      modifiers: { alt: true },
+      afterFirst: TOP_RIGHT,
+      afterSecond: BOTTOM_RIGHT,
+    },
+  ];
+  for (const { name, toolId, modifiers, afterFirst, afterSecond } of twiceTransformed) {
+    test(`undoing the second of two ${name}s should keep the first one`, { tag: ['@transformations.undo'] }, async ({ page }) => {
+      await openEditor(page);
+      await setPiskelFromGrid(page, gridFromRows(TOP_LEFT));
+
+      // Apply the transformation twice.
+      await clickTransform(page, toolId, modifiers);
+      await waitForGrid(page, 10, 10, afterFirst);
+      await clickTransform(page, toolId, modifiers);
+      await waitForGrid(page, 10, 10, afterSecond);
+
+      // Undo removes only the second one.
+      await undo(page);
+      await waitForGrid(page, 10, 10, afterFirst);
+    });
+  }
+
+  test('undoing a clone should keep an earlier clone of another layer', { tag: ['@transformations.undo'] }, async ({ page }) => {
+    await openEditor(page);
+    await setPiskelFromGrid(page, gridFromRows(TOP_LEFT));
+
+    // Add a second frame, and a top layer with a pixel in the first frame.
+    await getAddFrameButton(page).click();
+    await assertFrameCount(page, 2);
+    await getAddLayerButton(page).click();
+    await assertCurrentLayer(page, 1);
+    await selectFrame(page, 0);
+    await clickTool(page, 'tool-pen');
+    await drawAtPixel(page, 9, 9);
+    expect(await readPixelRows(page, 10, 10, 1, 0)).toEqual(BOTTOM_RIGHT);
+
+    // Clone the bottom layer, then the top layer (the list shows the top layer first).
+    await selectBottomLayer(page);
+    await clickTransform(page, 'tool-clone');
+    await waitForGrid(page, 10, 10, TOP_LEFT, { layerIndex: 0, frameIndex: 1 });
+    await getLayerItems(page).first().click();
+    await assertCurrentLayer(page, 1);
+    await clickTransform(page, 'tool-clone');
+    await waitForGrid(page, 10, 10, BOTTOM_RIGHT, { layerIndex: 1, frameIndex: 1 });
+
+    // Undo removes the clone of the top layer only.
+    await undo(page);
+    await waitForGrid(page, 10, 10, EMPTY_10X10, { layerIndex: 1, frameIndex: 1 });
+    expect(await readPixelRows(page, 10, 10, 0, 1)).toEqual(TOP_LEFT);
+  });
+
+  test('undoing a second crop should go back to the size of the first one', { tag: ['@transformations.undo'] }, async ({ page }) => {
+    await openEditor(page);
+    await setPiskelFromGrid(page, gridFromRows([
+      '..........',
+      '.X.X......',
+      '..........',
+      '.XX.......',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+    ]));
+
+    // Crop to the content.
+    await clickTransform(page, 'tool-crop');
+    await assertSpriteSize(page, 3, 3);
+    await waitForGrid(page, 3, 3, [
+      'X.X',
+      '...',
+      'XX.',
+    ]);
+
+    // Erase the top right pixel, and crop again.
+    await clickTool(page, 'tool-eraser');
+    await drawAtPixel(page, 2, 0);
+    await waitForGrid(page, 3, 3, [
+      'X..',
+      '...',
+      'XX.',
+    ]);
+    await clickTransform(page, 'tool-crop');
+    await assertSpriteSize(page, 2, 3);
+    await waitForGrid(page, 2, 3, [
+      'X.',
+      '..',
+      'XX',
+    ]);
+
+    // Undo goes back to the first crop, with the pixel still erased.
+    await undo(page);
+    await assertSpriteSize(page, 3, 3);
+    await waitForGrid(page, 3, 3, [
+      'X..',
+      '...',
+      'XX.',
+    ]);
+  });
+
+  test('undo and redo should go back and forth through transformations', {
+    tag: ['@transformations.undo', '@undo-redo.shortcuts'],
+  }, async ({ page }) => {
+    await openEditor(page);
+    await setPiskelFromGrid(page, gridFromRows(EMPTY_10X10));
+
+    // Draw a pixel, flip it horizontally, then vertically (Alt).
+    await clickTool(page, 'tool-pen');
+    await drawAtPixel(page, 0, 0);
+    await waitForGrid(page, 10, 10, TOP_LEFT);
+    await clickTransform(page, 'tool-flip');
+    await waitForGrid(page, 10, 10, TOP_RIGHT);
+    await clickTransform(page, 'tool-flip', { alt: true });
+    await waitForGrid(page, 10, 10, BOTTOM_RIGHT);
+
+    // Undo everything, one step at a time.
+    // Undo and redo are ignored within 50ms of the previous one (undo-redo.throttle)
+    await undo(page);
+    await waitForGrid(page, 10, 10, TOP_RIGHT);
+    await wait(100);
+    await undo(page);
+    await waitForGrid(page, 10, 10, TOP_LEFT);
+    await wait(100);
+    await undo(page);
+    await waitForGrid(page, 10, 10, EMPTY_10X10);
+
+    // Redo everything, one step at a time.
+    await wait(100);
+    await redo(page);
+    await waitForGrid(page, 10, 10, TOP_LEFT);
+    await wait(100);
+    await redo(page);
+    await waitForGrid(page, 10, 10, TOP_RIGHT);
+    await wait(100);
+    await redo(page);
+    await waitForGrid(page, 10, 10, BOTTOM_RIGHT);
   });
 });

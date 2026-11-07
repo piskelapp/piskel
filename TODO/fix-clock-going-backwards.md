@@ -15,6 +15,10 @@ What users see:
 - **Strokes are cut short.** Mouse moves are dropped, so part of the drawing is
   missing. This is the serious one.
 - **Undo and redo do nothing**, with no message. History itself is intact.
+- **Panning with the middle button picks a color instead.** The moves are
+  dropped, so the view doesn't move, and the release counts as a middle click,
+  which sets the primary color to the pixel under the cursor. This is what makes
+  the `undo-redo.not-recorded` e2e test flaky.
 
 Who can hit it: anyone whose clock moves back, such as WSL2 or VMs that correct
 their clock, NTP corrections, or a manual time change. Setting the clock back by
@@ -43,7 +47,6 @@ still work.
 - `IndexedDbStorageService` and `LocalStorageService`
 - `BaseSelection.time`, which is compared across tabs, and `performance.now()`
   isn't comparable between pages
-- `devtools/DrawingTestSuiteController`
 
 `DrawingLoop.loop_` already handles this with `Math.max(0, ...)`, from commit
 `a6d2a5b` ("Fix preview freezing when the system clock goes backwards"). It keeps
@@ -133,6 +136,8 @@ example `canvas.clock-backwards` and `undo-redo.clock-backwards` to the specs.
 
 - Move the clock back in the middle of a stroke: the stroke has no gap.
 - Move the clock back between two undo presses: the second undo still applies.
+- Move the clock back before a middle-button pan: the view moves, and the
+  primary color doesn't change.
 
 `page.clock` may not suit these: it also fakes `performance.now()`, and after the
 fix the app would measure time with it, so check how it behaves. The script above

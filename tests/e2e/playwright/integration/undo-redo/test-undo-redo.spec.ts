@@ -8,9 +8,7 @@ import {
   expectResizeValues,
   getAddFrameButton,
   getAddLayerButton,
-  getCurrentPiskelFrameCount,
   getCurrentPiskelHeight,
-  getCurrentPiskelLayerCount,
   getCurrentPiskelWidth,
   getPixelColor,
   getPrimaryColor,
@@ -125,32 +123,6 @@ test.describe('Undo and Redo', () => {
     await wait(100);
     await undo(page);
     await waitFor(async () => (await getPixelColor(page, 0, 0)) === TRANSPARENT);
-  });
-
-  test('should undo add frame', { tag: ['@undo-redo.recorded', '@frames.undo'] }, async ({ page }) => {
-    await openEditor(page);
-    expect(await getCurrentPiskelFrameCount(page)).toBe(1);
-
-    // Add a frame via keyboard
-    await page.keyboard.press('n');
-    await waitFor(async () => (await getCurrentPiskelFrameCount(page)) === 2);
-
-    // Undo should remove the added frame
-    await undo(page);
-    await waitFor(async () => (await getCurrentPiskelFrameCount(page)) === 1);
-  });
-
-  test('should undo add layer', { tag: ['@undo-redo.recorded', '@layers.undo'] }, async ({ page }) => {
-    await openEditor(page);
-    expect(await getCurrentPiskelLayerCount(page)).toBe(1);
-
-    // Add a layer
-    await getAddLayerButton(page).click();
-    expect(await getCurrentPiskelLayerCount(page)).toBe(2);
-
-    // Undo should remove the added layer
-    await undo(page);
-    await waitFor(async () => (await getCurrentPiskelLayerCount(page)) === 1);
   });
 
   // ─── Redo history ─────────────────────────────────────────────

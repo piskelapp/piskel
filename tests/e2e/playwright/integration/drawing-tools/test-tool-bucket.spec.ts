@@ -1,9 +1,11 @@
 import test, { expect } from "@playwright/test";
 import {
+  assertColorRows,
   clickTool,
   colorToInt,
   drawAtPixel,
   getPixelColor,
+  gridFromColorRows,
   openEditor,
   readPixelGrid,
   setPiskelFromGrid,
@@ -45,5 +47,42 @@ test.describe('Paint bucket tool', () => {
     // Verify colors precisely: border=red, interior=blue
     expect(await getPixelColor(page, 0, 0)).toBe(colorToInt('#FF0000'));
     expect(await getPixelColor(page, 3, 3)).toBe(colorToInt('#0000FF'));
+  });
+
+  test('paint bucket: does not spread to diagonal pixels', { tag: ['@drawing-tools.paint-bucket'] }, async ({ page }) => {
+    // A transparent area inside a red frame. The transparent pixel at (3,3) only
+    // touches it by a corner.
+    await openEditor(page);
+    await setPiskelFromGrid(page, gridFromColorRows([
+      'RRRR......',
+      'R..R......',
+      'R..R......',
+      'RRR.R.....',
+      '...R......',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+    ]));
+
+    // Fill the area with green.
+    await clickTool(page, 'tool-paint-bucket');
+    await setPrimaryColor(page, '#00FF00');
+    await drawAtPixel(page, 1, 1);
+
+    // The fill stops at the frame: the pixel at (3,3) and the outside stay transparent.
+    await assertColorRows(page, [
+      'RRRR......',
+      'RGGR......',
+      'RGGR......',
+      'RRR.R.....',
+      '...R......',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+    ]);
   });
 });
