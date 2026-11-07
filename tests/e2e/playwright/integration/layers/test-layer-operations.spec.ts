@@ -441,49 +441,21 @@ test.describe('Layer operations', () => {
   });
 
   test('should toggle layer preview with eye icon', { tag: ['@layers.preview'] }, async ({ page }) => {
+    // Start with layer preview on, as it is by default.
     await openEditor(page);
+    await createEmptyLayerAbovePixel(page);
+    await assertLayerPreviewEnabled(page, true);
+    await assertOtherLayerOpacityOnCanvas(page, 0, 0, 0.2);
 
-    // Draw on layer 0
-    await clickTool(page, 'tool-pen');
-    await setPrimaryColor(page, '#FF0000');
-    await drawAtPixel(page, 0, 0);
+    // The eye icon turns it off: the other layer disappears from the canvas.
+    await toggleLayerPreview(page);
+    await assertLayerPreviewEnabled(page, false);
+    await assertOtherLayerHiddenOnCanvas(page, 0, 0);
 
-    // Add layer 1 and draw different color
-    await getAddLayerButton(page).click();
-    await setPrimaryColor(page, '#00FF00');
-    await drawAtPixel(page, 1, 1);
-
-    const toggle = testId(page, 'layer-preview-toggle');
-    const drawingCanvas = page.locator('[data-test-id="drawing-canvas"]');
-
-    // Check initial state (LAYER_PREVIEW defaults to true)
-    const initiallyEnabled = await toggle.evaluate(
-      el => el.classList.contains('layers-toggle-preview-enabled')
-    );
-
-    // Screenshot with current state
-    const before = await drawingCanvas.screenshot();
-
-    // Click to toggle
-    await toggle.click();
-
-    // Class should have changed
-    if (initiallyEnabled) {
-      await expect(toggle).not.toHaveClass(/layers-toggle-preview-enabled/);
-    } else {
-      await expect(toggle).toHaveClass(/layers-toggle-preview-enabled/);
-    }
-
-    // Canvas should look different (layer preview on vs off)
-    const afterToggle = await drawingCanvas.screenshot();
-    expect(before.equals(afterToggle)).toBe(false);
-
-    // Click again to toggle back
-    await toggle.click();
-
-    // Canvas should return to original appearance
-    const afterRestore = await drawingCanvas.screenshot();
-    expect(before.equals(afterRestore)).toBe(true);
+    // The eye icon turns it back on.
+    await toggleLayerPreview(page);
+    await assertLayerPreviewEnabled(page, true);
+    await assertOtherLayerOpacityOnCanvas(page, 0, 0, 0.2);
   });
 
   test('should toggle layer preview with Alt+L shortcut', { tag: ['@layers.preview'] }, async ({ page }) => {
