@@ -2,10 +2,8 @@ import test, { expect } from "@playwright/test";
 import {
   assertColorRows,
   clickTool,
-  colorToInt,
   rightClickAtPixel,
   drawAtPixel,
-  getPixelColor,
   getPrimaryColor,
   getSecondaryColor,
   gridFromColorRows,
@@ -16,30 +14,41 @@ import {
 test.describe('Color picker tool', () => {
 
   test('color picker tool: picks color from canvas', { tag: ['@drawing-tools.color-picker'] }, async ({ page }) => {
+    // Start from a pattern of red, green and transparent squares.
     await openEditor(page);
+    await setPiskelFromGrid(page, gridFromColorRows([
+      'RRGGRRGGRR',
+      'RRGGRRGGRR',
+      'GG..GG..GG',
+      'GG..GG..GG',
+      'RRGGRRGGRR',
+      'RRGGRRGGRR',
+      'GG..GG..GG',
+      'GG..GG..GG',
+      'RRGGRRGGRR',
+      'RRGGRRGGRR',
+    ]));
 
-    await setPiskelFromGrid(page, [
-      ["R", "R", "G", "G", "R", "R", "G", "G", "R", "R"],
-      ["R", "R", "G", "G", "R", "R", "G", "G", "R", "R"],
-      ["G", "G", "T", "T", "G", "G", "T", "T", "G", "G"],
-      ["G", "G", "T", "T", "G", "G", "T", "T", "G", "G"],
-      ["R", "R", "G", "G", "R", "R", "G", "G", "R", "R"],
-      ["R", "R", "G", "G", "R", "R", "G", "G", "R", "R"],
-      ["G", "G", "T", "T", "G", "G", "T", "T", "G", "G"],
-      ["G", "G", "T", "T", "G", "G", "T", "T", "G", "G"],
-      ["R", "R", "G", "G", "R", "R", "G", "G", "R", "R"],
-      ["R", "R", "G", "G", "R", "R", "G", "G", "R", "R"],
-    ]);
-
-    // Pick green from (2,1)
+    // Pick the green of (2,1): it becomes the primary color.
     await clickTool(page, 'tool-colorpicker');
     await drawAtPixel(page, 2, 1);
+    await expect.poll(() => getPrimaryColor(page)).toBe('#00ff00');
 
-    // Draw with picked color in transparent area
+    // The pen draws with it.
     await clickTool(page, 'tool-pen');
     await drawAtPixel(page, 3, 3);
-
-    expect(await getPixelColor(page, 3, 3)).toBe(colorToInt('#00FF00'));
+    await assertColorRows(page, [
+      'RRGGRRGGRR',
+      'RRGGRRGGRR',
+      'GG..GG..GG',
+      'GG.GGG..GG',
+      'RRGGRRGGRR',
+      'RRGGRRGGRR',
+      'GG..GG..GG',
+      'GG..GG..GG',
+      'RRGGRRGGRR',
+      'RRGGRRGGRR',
+    ]);
   });
 
   test('color picker tool: right-click picks the secondary color', { tag: ['@drawing-tools.color-picker'] }, async ({ page }) => {

@@ -28,7 +28,10 @@ const openEditorWithPen = async (page: Page) => {
   await clickTool(page, 'tool-pen');
 };
 
-/** Draw a pixel on the top row of the sprite, and check that row */
+/**
+ * Draw a pixel on the top row of the sprite, and check that row. Only the top row is
+ * checked, so that each backup reads as one line.
+ */
 const drawAndAssertTopRow = async (page: Page, col: number, topRow: string) => {
   await drawAtPixel(page, col, 0);
   await waitForGrid(page, topRow.length, 1, [topRow]);
@@ -137,6 +140,7 @@ test.describe('Backup timing', () => {
 
 test.describe('Backup limits', () => {
   test('should keep the 12 latest snapshots of a session', { tag: ['@save-and-storage.backup-limits', '@save-and-storage.backups-order'] }, async ({ page }) => {
+    // A sprite of a single row, wide enough for one more pixel in each of 13 snapshots.
     await openEditorWithFakeClock(page);
     await setPiskelFromGrid(page, gridFromRows(['..............']));
     await waitForGrid(page, 14, 1, ['..............']);

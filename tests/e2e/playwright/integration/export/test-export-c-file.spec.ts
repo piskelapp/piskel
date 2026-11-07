@@ -1,5 +1,12 @@
 import test, { expect } from "@playwright/test";
-import { openEditor, openExportSettingsPanel, setPiskelFromGrid, testId, selectExportTab } from "../../testutils";
+import {
+  openEditor,
+  openExportSettingsPanel,
+  setPiskelFromGrid,
+  testId,
+  selectExportTab,
+  gridFromColorRows,
+} from "../../testutils";
 import fs from 'fs/promises';
 
 /**
@@ -97,7 +104,10 @@ test.describe('C file export', () => {
   test('should export a valid C file with correct structure and pixels', { tag: ['@export.c-file'] }, async ({ page }) => {
     await openEditor(page);
     // R G / B T
-    await setPiskelFromGrid(page, [["R", "G"], ["B", "T"]]);
+    await setPiskelFromGrid(page, gridFromColorRows([
+      'RG',
+      'B.',
+    ]));
 
     await openExportSettingsPanel(page);
     await selectExportTab(page, 'misc');
@@ -128,7 +138,10 @@ test.describe('C file export', () => {
   test('should export C file with multiple frames', { tag: ['@export.c-file'] }, async ({ page }) => {
     await openEditor(page);
     // Frame 0: R T / T R
-    await setPiskelFromGrid(page, [["R", "T"], ["T", "R"]]);
+    await setPiskelFromGrid(page, gridFromColorRows([
+      'R.',
+      '.R',
+    ]));
 
     // Add frame 1
     await page.keyboard.press('n');

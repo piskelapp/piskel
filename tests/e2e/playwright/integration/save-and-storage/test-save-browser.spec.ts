@@ -1,50 +1,94 @@
 import test, { expect, Page } from "@playwright/test";
 import {
+  answerNextConfirm,
+  assertColorRows,
+  waitForEditorReady,
+  clickDeleteLocalSave,
   clickTool,
-  colorToInt,
   drawAtPixel,
-  getPixelColor,
+  gridFromColorRows,
+  loadLocalSave,
   openBrowseLocalSaves,
   openEditor,
   openSaveSettingsPanel,
   saveInBrowser,
   setPiskelFromGrid,
   wait,
-  waitFor
 } from "../../testutils";
 
-/** Get the header sprite name text (includes " *" when dirty) */
-async function getHeaderName(page: Page): Promise<string> {
-  return await page.locator('.piskel-name').innerText();
-}
+/** 10x10 sprites */
+const SAVED_SPRITE = [
+  'RG........',
+  'B.........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+];
+const EMPTY = [
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+];
+
+/** Check whether the header shows the sprite as changed since its last save, with a * */
+const assertUnsavedChanges = async (page: Page, unsaved: boolean) => {
+  const header = page.locator('.piskel-name');
+  if (unsaved) {
+    await expect(header).toContainText('*');
+  } else {
+    await expect(header).not.toContainText('*');
+  }
+};
+
+/** Draw a black pixel at (0,0) with the pen, which leaves unsaved changes */
+const drawUnsavedPixel = async (page: Page) => {
+  await clickTool(page, 'tool-pen');
+  await drawAtPixel(page, 0, 0);
+  await assertUnsavedChanges(page, true);
+};
+
+/** Record whether the page asks for a confirmation before unloading, and dismiss it */
+const recordUnloadPrompt = (page: Page) => {
+  const prompt = { shown: false, type: '' };
+  page.on('dialog', async dialog => {
+    prompt.shown = true;
+    prompt.type = dialog.type();
+    await dialog.dismiss();
+  });
+  return prompt;
+};
 
 test.describe('Save to browser (IndexedDB)', () => {
 
   test('should save a piskel to IndexedDB and show it in browse local dialog', { tag: ['@save-and-storage.browser-save', '@save-and-storage.browse-local', '@import.browse-local'] }, async ({ page }) => {
+    // Save a sprite with a name.
     await openEditor(page);
-    await setPiskelFromGrid(page, [['R', 'T'], ['T', 'B']]);
-
-    // Save with a custom name
+    await setPiskelFromGrid(page, gridFromColorRows(SAVED_SPRITE));
     await saveInBrowser(page, 'test-save-1', 'a test piskel');
 
-    // Open browse local dialog and verify the saved piskel appears
+    // The browse dialog lists it.
     await openBrowseLocalSaves(page);
-
-    const items = page.locator('.local-piskel-item');
-    await expect(items).not.toHaveCount(0);
-
-    // Find our saved piskel by name
-    const nameCell = page.locator('.local-piskel-name', { hasText: 'test-save-1' });
-    await expect(nameCell).toBeVisible();
+    await expect(page.locator('.local-piskel-name', { hasText: 'test-save-1' })).toBeVisible();
   });
 
   test('name and description should persist in save panel', { tag: ['@save-and-storage.descriptor'] }, async ({ page }) => {
+    // Save with a name and a description.
     await openEditor(page);
-
-    // Set name and description, save
     await saveInBrowser(page, 'my-sprite', 'pixel art test');
 
-    // Reopen save panel — fields should retain the values
+    // The save panel shows them again.
     await openSaveSettingsPanel(page);
     await expect(page.locator('#save-name')).toHaveValue('my-sprite');
     await expect(page.locator('#save-description')).toHaveValue('pixel art test');
@@ -55,168 +99,117 @@ test.describe('Header dirty indicator', () => {
 
   test('header should show sprite name without * on fresh load', { tag: ['@save-and-storage.dirty-indicator'] }, async ({ page }) => {
     await openEditor(page);
-
-    const name = await getHeaderName(page);
-    expect(name).not.toContain('*');
+    await assertUnsavedChanges(page, false);
   });
 
   test('header should show * after drawing (dirty state)', { tag: ['@save-and-storage.dirty-indicator'] }, async ({ page }) => {
     await openEditor(page);
-
-    await clickTool(page, 'tool-pen');
-    await drawAtPixel(page, 0, 0);
-
-    await waitFor(async () => (await getHeaderName(page)).includes('*'));
-    const name = await getHeaderName(page);
-    expect(name).toContain('*');
+    await drawUnsavedPixel(page);
   });
 
   test('header should remove * after saving to IndexedDB', { tag: ['@save-and-storage.dirty-indicator'] }, async ({ page }) => {
     await openEditor(page);
+    await drawUnsavedPixel(page);
 
-    // Make a change to dirty the state
-    await clickTool(page, 'tool-pen');
-    await drawAtPixel(page, 0, 0);
-    await waitFor(async () => (await getHeaderName(page)).includes('*'));
-
-    // Save to IndexedDB
     await saveInBrowser(page, 'clean-save');
-
-    // Dirty indicator should be gone
-    await waitFor(async () => !(await getHeaderName(page)).includes('*'));
-    const name = await getHeaderName(page);
-    expect(name).not.toContain('*');
+    await assertUnsavedChanges(page, false);
   });
 
   test('header should show the sprite name from save panel', { tag: ['@save-and-storage.header-name'] }, async ({ page }) => {
     await openEditor(page);
 
     await saveInBrowser(page, 'my-custom-name');
-
-    await waitFor(async () => (await getHeaderName(page)).includes('my-custom-name'));
-    expect(await getHeaderName(page)).toContain('my-custom-name');
+    await expect(page.locator('.piskel-name')).toContainText('my-custom-name');
   });
 });
 
 test.describe('Browse local saves dialog', () => {
 
   test('should load a saved piskel and verify pixel content', { tag: ['@save-and-storage.browse-local-load'] }, async ({ page }) => {
+    // Save a sprite, then replace it with an empty one.
     await openEditor(page);
-
-    // Draw a known pattern and save
-    await setPiskelFromGrid(page, [['R', 'G'], ['B', 'T']]);
+    await setPiskelFromGrid(page, gridFromColorRows(SAVED_SPRITE));
     await saveInBrowser(page, 'load-test');
+    await setPiskelFromGrid(page, gridFromColorRows(EMPTY));
 
-    // Clear canvas
-    await setPiskelFromGrid(page, [['T', 'T'], ['T', 'T']]);
-
-    // Open browse local and load
+    // Load the save: its pixels are back.
     await openBrowseLocalSaves(page);
-
-    // Accept the confirm dialog that appears on load
-    page.once('dialog', dialog => dialog.accept());
-    await page.locator('[data-action="load"][data-name="load-test"]').click();
-    await wait(1000);
-
-    // Verify pixel content was restored
-    expect(await getPixelColor(page, 0, 0)).toBe(colorToInt('#FF0000'));
-    expect(await getPixelColor(page, 1, 0)).toBe(colorToInt('#00FF00'));
-    expect(await getPixelColor(page, 0, 1)).toBe(colorToInt('#0000FF'));
-    expect(await getPixelColor(page, 1, 1)).toBe(0); // transparent
+    await loadLocalSave(page, 'load-test');
+    await assertColorRows(page, SAVED_SPRITE);
   });
 
   test('should delete a saved piskel', { tag: ['@save-and-storage.browse-local-delete'] }, async ({ page }) => {
+    // Save a sprite: the browse dialog lists it.
     await openEditor(page);
-
-    // Save a piskel
     await saveInBrowser(page, 'delete-me');
-
-    // Open browse local dialog
     await openBrowseLocalSaves(page);
+    const savedName = page.locator('.local-piskel-name', { hasText: 'delete-me' });
+    await expect(savedName).toBeVisible();
 
-    // Verify it exists
-    await expect(page.locator('.local-piskel-name', { hasText: 'delete-me' })).toBeVisible();
-
-    // Delete it (accept confirm dialog)
-    page.once('dialog', dialog => dialog.accept());
-    await page.locator('[data-action="delete"][data-name="delete-me"]').click();
-    await wait(500);
-
-    // Verify it's gone from the list
-    await expect(page.locator('.local-piskel-name', { hasText: 'delete-me' })).not.toBeAttached();
+    // Delete it, accepting the confirmation: it's no longer listed.
+    await clickDeleteLocalSave(page, 'delete-me', { accept: true });
+    await expect(savedName).not.toBeAttached();
   });
 
   test('should list multiple saved piskels', { tag: ['@save-and-storage.browse-local'] }, async ({ page }) => {
+    // Save two sprites with different names: both are listed.
     await openEditor(page);
-
-    // Save two piskels with different names
     await saveInBrowser(page, 'piskel-alpha');
     await saveInBrowser(page, 'piskel-beta');
 
-    // Open browse local dialog
     await openBrowseLocalSaves(page);
-
-    // Both should appear
     await expect(page.locator('.local-piskel-name', { hasText: 'piskel-alpha' })).toBeVisible();
     await expect(page.locator('.local-piskel-name', { hasText: 'piskel-beta' })).toBeVisible();
   });
 
   test('loading while dirty should prompt confirm — accept loads the piskel', { tag: ['@save-and-storage.browse-local-load'] }, async ({ page }) => {
+    // Save a sprite, then draw on it without saving.
     await openEditor(page);
-
-    // Save a piskel first
-    await setPiskelFromGrid(page, [['R', 'G'], ['B', 'T']]);
+    await setPiskelFromGrid(page, gridFromColorRows(SAVED_SPRITE));
     await saveInBrowser(page, 'confirm-test');
-
-    // Make the canvas dirty by drawing
     await clickTool(page, 'tool-pen');
     await drawAtPixel(page, 1, 1);
-    await waitFor(async () => (await getHeaderName(page)).includes('*'));
+    await assertUnsavedChanges(page, true);
 
-    // Open browse local and click load
+    // Load the save: a confirmation warns about erasing the changes. Accept it.
     await openBrowseLocalSaves(page);
-
-    // Capture dialog message and accept
-    let dialogMessage = '';
-    page.once('dialog', dialog => {
-      dialogMessage = dialog.message();
-      dialog.accept();
-    });
+    const confirmation = answerNextConfirm(page, 'accept');
     await page.locator('[data-action="load"][data-name="confirm-test"]').click();
+    expect(await confirmation).toContain('erase');
 
-    // Wait for load to complete
-    await waitFor(async () => (await getPixelColor(page, 0, 0)) === colorToInt('#FF0000'));
-
-    expect(dialogMessage).toContain('erase');
-    expect(await getPixelColor(page, 0, 0)).toBe(colorToInt('#FF0000'));
+    // The saved pixels are back, without the drawing.
+    await assertColorRows(page, SAVED_SPRITE);
   });
 
   test('loading while dirty should prompt confirm — dismiss keeps current piskel', { tag: ['@save-and-storage.browse-local-load'] }, async ({ page }) => {
+    // Save a sprite, then replace it with an empty one and draw a black pixel.
     await openEditor(page);
-
-    // Save a clean piskel
-    await setPiskelFromGrid(page, [['R', 'G'], ['B', 'T']]);
+    await setPiskelFromGrid(page, gridFromColorRows(SAVED_SPRITE));
     await saveInBrowser(page, 'dismiss-test');
+    await setPiskelFromGrid(page, gridFromColorRows(EMPTY));
+    await drawUnsavedPixel(page);
+    const drawing = [
+      'K.........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+    ];
+    await assertColorRows(page, drawing);
 
-    // Replace with a different pattern and make it dirty
-    await setPiskelFromGrid(page, [['T', 'T'], ['T', 'T']]);
-    await clickTool(page, 'tool-pen');
-    await drawAtPixel(page, 0, 0); // draws black at (0,0)
-    await waitFor(async () => (await getHeaderName(page)).includes('*'));
-
-    const blackPixel = await getPixelColor(page, 0, 0);
-
-    // Open browse local and click load
+    // Load the save, and dismiss the confirmation: nothing is loaded.
     await openBrowseLocalSaves(page);
-
-    // Dismiss the confirm dialog — should NOT load
-    page.once('dialog', dialog => dialog.dismiss());
+    const confirmation = answerNextConfirm(page, 'dismiss');
     await page.locator('[data-action="load"][data-name="dismiss-test"]').click();
+    await confirmation;
+    // Give the load the time to happen, if it wrongly did.
     await wait(500);
-
-    // Current pixel should still be the black we drew, not the saved red
-    expect(await getPixelColor(page, 0, 0)).toBe(blackPixel);
-    expect(await getPixelColor(page, 0, 0)).not.toBe(colorToInt('#FF0000'));
+    await assertColorRows(page, drawing);
   });
 });
 
@@ -224,71 +217,35 @@ test.describe('Beforeunload prompt', () => {
 
   test('dirty piskel should trigger beforeunload dialog on reload', { tag: ['@save-and-storage.unload-confirm'] }, async ({ page }) => {
     await openEditor(page);
+    await drawUnsavedPixel(page);
 
-    // Make canvas dirty
-    await clickTool(page, 'tool-pen');
-    await drawAtPixel(page, 0, 0);
-    await waitFor(async () => (await getHeaderName(page)).includes('*'));
-
-    // Attempt reload — should trigger beforeunload dialog
-    let dialogFired = false;
-    let dialogMessage = '';
-    let dialogType = '';
-    page.on('dialog', async dialog => {
-      dialogFired = true;
-      dialogMessage = dialog.message();
-      dialogType = dialog.type();
-      await dialog.dismiss(); // stay on page
-    });
-
-    // page.reload() will throw if dismissed, so catch it
-    try {
-      await page.reload({ timeout: 3000 });
-    } catch {
-      // Expected — dialog was dismissed, reload aborted
-    }
-
-    expect(dialogFired).toBe(true);
-    expect(dialogType).toBe('beforeunload');
+    // Reload: the page asks to confirm. Dismissing it cancels the reload.
+    const prompt = recordUnloadPrompt(page);
+    await page.reload({ timeout: 3000 }).catch(() => {});
+    expect(prompt.shown).toBe(true);
+    expect(prompt.type).toBe('beforeunload');
   });
 
   test('clean piskel should NOT trigger beforeunload dialog on reload', { tag: ['@save-and-storage.unload-confirm'] }, async ({ page }) => {
+    // Without changes, the reload goes through without a confirmation.
     await openEditor(page);
-
-    // No changes — reload should go through without a dialog
-    let dialogFired = false;
-    page.on('dialog', async dialog => {
-      dialogFired = true;
-      await dialog.accept();
-    });
-
+    const prompt = recordUnloadPrompt(page);
     await page.reload();
-    await page.waitForSelector('#drawing-canvas-container canvas', { state: 'attached' });
-
-    expect(dialogFired).toBe(false);
+    await waitForEditorReady(page);
+    expect(prompt.shown).toBe(false);
   });
 
   test('saved piskel should NOT trigger beforeunload dialog on reload', { tag: ['@save-and-storage.unload-confirm'] }, async ({ page }) => {
+    // Draw, then save.
     await openEditor(page);
-
-    // Draw then save
-    await clickTool(page, 'tool-pen');
-    await drawAtPixel(page, 0, 0);
-    await waitFor(async () => (await getHeaderName(page)).includes('*'));
-
+    await drawUnsavedPixel(page);
     await saveInBrowser(page, 'beforeunload-test');
-    await waitFor(async () => !(await getHeaderName(page)).includes('*'));
+    await assertUnsavedChanges(page, false);
 
-    // Reload — should NOT trigger dialog
-    let dialogFired = false;
-    page.on('dialog', async dialog => {
-      dialogFired = true;
-      await dialog.accept();
-    });
-
+    // The reload goes through without a confirmation.
+    const prompt = recordUnloadPrompt(page);
     await page.reload();
-    await page.waitForSelector('#drawing-canvas-container canvas', { state: 'attached' });
-
-    expect(dialogFired).toBe(false);
+    await waitForEditorReady(page);
+    expect(prompt.shown).toBe(false);
   });
 });

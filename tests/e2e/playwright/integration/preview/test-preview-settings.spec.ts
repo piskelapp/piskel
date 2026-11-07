@@ -22,7 +22,6 @@ import {
   setTileMode,
   testId,
   wait,
-  waitFor,
   zoomInUntilMinimapVisible,
 } from "../../testutils";
 
@@ -128,17 +127,21 @@ test.describe('Preview settings across sessions', () => {
     // From the middle frame, the canvas shows the previous and next frames.
     await createThreeFrames(secondSession);
     await selectFrame(secondSession, 1);
-    await waitFor(async () => (await getOnionSkinPixel(secondSession, 0, 0)).a > 0);
-    await waitFor(async () => (await getOnionSkinPixel(secondSession, 2, 0)).a > 0);
+    await expect.poll(async () => (await getOnionSkinPixel(secondSession, 0, 0)).a).toBeGreaterThan(0);
+    await expect.poll(async () => (await getOnionSkinPixel(secondSession, 2, 0)).a).toBeGreaterThan(0);
     expect((await getOnionSkinPixel(secondSession, 1, 0)).a).toBe(0);
   });
 });
 
 test.describe('Preview in tile mode', () => {
   test('should repeat the sprite in a fixed square and disable the sizes', { tag: ['@preview.tile-mode'] }, async ({ page }) => {
-    // Start from a sprite of 4x2 with one red pixel, at its best zoom.
+    // Start from a sprite of 4x2 with one red pixel, at its best zoom. It's
+    // rectangular, so that the area changes shape in tile mode.
     await openEditor(page);
-    await setPiskelFromGrid(page, gridFromRows(['X...', '....']));
+    await setPiskelFromGrid(page, gridFromRows([
+      'X...',
+      '....',
+    ]));
     await assertPreviewSizesOffered(page, ['1x', '50x']);
     await page.keyboard.press('Alt+2');
     await assertSelectedPreviewSize(page, '50x');

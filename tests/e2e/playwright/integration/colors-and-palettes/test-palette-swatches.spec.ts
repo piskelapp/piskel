@@ -1,4 +1,4 @@
-import test, { expect, Page } from "@playwright/test";
+import test, { Page } from "@playwright/test";
 import {
   assertEmptyPaletteMessage,
   assertFrameCount,
@@ -13,7 +13,6 @@ import {
   clickTool,
   clickTransparentSwatchOfPrimaryColor,
   clickWizardNext,
-  colorToInt,
   confirmReplacement,
   createDistinctColors,
   createPaletteWithColors,
@@ -22,7 +21,6 @@ import {
   getAddFrameButton,
   getAddLayerButton,
   getPaletteSwatch,
-  getPixelColor,
   gridFromRows,
   openCreatePaletteDialog,
   openEditor,
@@ -37,7 +35,34 @@ import {
   typeInWizardField,
   wait,
   waitForGrid,
+  assertColorRows,
 } from "../../testutils";
+
+/** 10x10 frames */
+const EMPTY = [
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+];
+const PIXEL_AT_0_0 = [
+  'X.........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+];
 
 const RED = '#ff0000';
 const GREEN = '#00ff00';
@@ -161,7 +186,7 @@ test.describe('Selecting colors with the keyboard', () => {
 test.describe('Color pickers', () => {
   test('should make a typed color fully opaque', { tag: ['@colors-and-palettes.picker-opaque'] }, async ({ page }) => {
     await openEditor(page);
-    await setPiskelFromGrid(page, gridFromRows(['..', '..']));
+    await setPiskelFromGrid(page, gridFromRows(EMPTY));
 
     // Type a color that is half transparent.
     await setPrimaryColor(page, 'rgba(255, 0, 0, 0.5)');
@@ -170,8 +195,18 @@ test.describe('Color pickers', () => {
     // It draws fully opaque.
     await clickTool(page, 'tool-pen');
     await drawAtPixel(page, 0, 0);
-    await waitForGrid(page, 2, 2, ['X.', '..']);
-    expect(await getPixelColor(page, 0, 0)).toBe(colorToInt('#FF0000'));
+    await assertColorRows(page, [
+      'R.........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+    ]);
   });
 
   test('should offer a transparent swatch', { tag: ['@colors-and-palettes.picker-opaque'] }, async ({ page }) => {
@@ -208,25 +243,25 @@ test.describe('Current colors palette', () => {
 
   test('should gather the colors of every layer and frame, without transparent', { tag: ['@colors-and-palettes.current-colors-order'] }, async ({ page }) => {
     await openEditor(page);
-    await setPiskelFromGrid(page, gridFromRows(['..', '..']));
+    await setPiskelFromGrid(page, gridFromRows(EMPTY));
     await clickTool(page, 'tool-pen');
 
     // Draw red on the first frame.
     await setPrimaryColor(page, RED);
     await drawAtPixel(page, 0, 0);
-    await assertLayerFrames(page, 0, [['X.', '..']]);
+    await assertLayerFrames(page, 0, [PIXEL_AT_0_0]);
 
     // Draw green on a second frame.
     await getAddFrameButton(page).click();
     await setPrimaryColor(page, GREEN);
     await drawAtPixel(page, 0, 0);
-    await assertLayerFrames(page, 0, [['X.', '..'], ['X.', '..']]);
+    await assertLayerFrames(page, 0, [PIXEL_AT_0_0, PIXEL_AT_0_0]);
 
     // Draw blue on a second layer, on that second frame.
     await getAddLayerButton(page).click();
     await setPrimaryColor(page, BLUE);
     await drawAtPixel(page, 0, 0);
-    await assertLayerFrames(page, 1, [['..', '..'], ['X.', '..']]);
+    await assertLayerFrames(page, 1, [EMPTY, PIXEL_AT_0_0]);
 
     await assertPaletteSwatches(page, [RED, GREEN, BLUE]);
   });
@@ -254,8 +289,8 @@ test.describe('Palettes with many colors', () => {
 
   test('should show at most 256 current colors from several frames', { tag: ['@colors-and-palettes.max-colors'] }, async ({ page }) => {
     await openEditor(page);
-    await setPiskelFromGrid(page, gridFromRows(['..', '..']));
-    await waitForGrid(page, 2, 2, ['..', '..']);
+    await setPiskelFromGrid(page, gridFromRows(EMPTY));
+    await waitForGrid(page, 10, 10, EMPTY);
 
     // Import a spritesheet as two frames of 200 colors each, 400 colors in all.
     const image = await createPngFileFromColors(page, 'colors.png', createDistinctColors(400));

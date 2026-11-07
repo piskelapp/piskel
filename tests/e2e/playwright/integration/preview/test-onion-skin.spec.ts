@@ -1,161 +1,129 @@
 import test, { Page, expect } from "@playwright/test";
 import {
+  assertColorRows,
+  assertFrameCount,
+  clickTool,
+  drawAtPixel,
   expectHasClass,
   expectHasNotClass,
+  getAddFrameButton,
+  getOnionSkinPixel,
+  gridFromRows,
   openEditor,
-  testId,
+  selectFrame,
   setPiskelFromGrid,
   setPrimaryColor,
-  drawAtPixel,
-  clickTool,
-  getAddFrameButton,
-  waitFor,
-  wait,
-  assertFrameCount,
-  selectFrame,
-  getOnionSkinPixel,
+  testId,
 } from "../../testutils";
 
 const ONION_SKIN_SELECTOR = '.preview-toggle-onion-skin';
 const ENABLED_CLASS = 'preview-toggle-onion-skin-enabled';
 
-const isOnionSkinEnabled = async (page: Page): Promise<boolean> => {
-  return await page.evaluate(() => {
-    return window.pskl.UserSettings.get(window.pskl.UserSettings.ONION_SKIN) as boolean;
-  });
+/** 10x10 frames */
+const EMPTY = [
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+];
+const RED_PIXEL_AT_1_1 = [
+  '..........',
+  '.R........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+];
+
+/** A red pixel in the first frame, and an empty second frame, which is current */
+const openEditorWithPixelInPreviousFrame = async (page: Page) => {
+  await openEditor(page);
+  await setPiskelFromGrid(page, gridFromRows(EMPTY));
+  await setPrimaryColor(page, '#FF0000');
+  await clickTool(page, 'tool-pen');
+  await drawAtPixel(page, 1, 1);
+  await assertColorRows(page, RED_PIXEL_AT_1_1, { frameIndex: 0 });
+  await getAddFrameButton(page).click();
+  await assertFrameCount(page, 2);
+};
+
+/** Check whether the onion skin shows the pixel of the previous frame */
+const assertOnionSkinShown = async (page: Page, shown: boolean) => {
+  if (shown) {
+    await expectHasClass(page, ONION_SKIN_SELECTOR, ENABLED_CLASS);
+    await expect.poll(async () => (await getOnionSkinPixel(page, 1, 1)).a).toBeGreaterThan(0);
+  } else {
+    await expectHasNotClass(page, ONION_SKIN_SELECTOR, ENABLED_CLASS);
+    await expect.poll(async () => (await getOnionSkinPixel(page, 1, 1)).a).toBe(0);
+  }
 };
 
 test.describe('Onion skin', () => {
 
   test('should be disabled by default', { tag: ['@preview.onion-skin-toggle'] }, async ({ page }) => {
-    await openEditor(page);
-
-    expect(await isOnionSkinEnabled(page)).toBe(false);
-    await expectHasNotClass(page, ONION_SKIN_SELECTOR, ENABLED_CLASS);
+    await openEditorWithPixelInPreviousFrame(page);
+    await assertOnionSkinShown(page, false);
   });
 
   test('should toggle on when clicking the onion skin button', { tag: ['@preview.onion-skin-toggle'] }, async ({ page }) => {
-    await openEditor(page);
+    await openEditorWithPixelInPreviousFrame(page);
 
     await testId(page, 'onion-skin-toggle-button').click();
-
-    await expect.poll(() => isOnionSkinEnabled(page), {
-      timeout: 5000,
-      message: 'Onion skin should be enabled',
-    }).toBe(true);
-
-    await expectHasClass(page, ONION_SKIN_SELECTOR, ENABLED_CLASS);
+    await assertOnionSkinShown(page, true);
   });
 
-  test('should toggle off when clicking again', { tag: ['@preview.onion-skin-toggle'] }, async ({ page }) => {
-    await openEditor(page);
-
-    // Enable
+  test('should toggle off when clicking again', { tag: ['@preview.onion-skin-toggle', '@preview.onion-skin'] }, async ({ page }) => {
+    await openEditorWithPixelInPreviousFrame(page);
     await testId(page, 'onion-skin-toggle-button').click();
-    await expect.poll(() => isOnionSkinEnabled(page), { timeout: 5000 }).toBe(true);
+    await assertOnionSkinShown(page, true);
 
-    // Disable
+    // Click again: the onion skin goes away.
     await testId(page, 'onion-skin-toggle-button').click();
-    await expect.poll(() => isOnionSkinEnabled(page), { timeout: 5000 }).toBe(false);
-
-    await expectHasNotClass(page, ONION_SKIN_SELECTOR, ENABLED_CLASS);
+    await assertOnionSkinShown(page, false);
   });
 
   test('should toggle onion skin with Alt+O shortcut', { tag: ['@preview.onion-skin-toggle'] }, async ({ page }) => {
-    await openEditor(page);
-
-    expect(await isOnionSkinEnabled(page)).toBe(false);
+    await openEditorWithPixelInPreviousFrame(page);
 
     await page.keyboard.press('Alt+o');
-    await expect.poll(() => isOnionSkinEnabled(page), { timeout: 5000 }).toBe(true);
-    await expectHasClass(page, ONION_SKIN_SELECTOR, ENABLED_CLASS);
-
+    await assertOnionSkinShown(page, true);
     await page.keyboard.press('Alt+o');
-    await expect.poll(() => isOnionSkinEnabled(page), { timeout: 5000 }).toBe(false);
-    await expectHasNotClass(page, ONION_SKIN_SELECTOR, ENABLED_CLASS);
+    await assertOnionSkinShown(page, false);
   });
 
   test('onion skin canvas should render previous and next frame content', { tag: ['@preview.onion-skin'] }, async ({ page }) => {
-    await openEditor(page);
+    // A red pixel in the first frame, and an empty second frame.
+    await openEditorWithPixelInPreviousFrame(page);
 
-    // Create a 10x10 piskel with a red pixel at (1,1) on frame 0
-    await setPiskelFromGrid(page, Array.from({ length: 10 }, () => Array(10).fill('T')));
-    await setPrimaryColor(page, '#FF0000');
-    await clickTool(page, 'tool-pen');
-    await drawAtPixel(page, 1, 1);
-
-    // Add frame 1 (empty — this will be our observation frame)
-    await getAddFrameButton(page).click();
-    await assertFrameCount(page, 2);
-
-    // Add frame 2 and draw a green pixel at (5,5)
+    // Add a third frame, with a green pixel.
     await getAddFrameButton(page).click();
     await assertFrameCount(page, 3);
     await setPrimaryColor(page, '#00FF00');
     await drawAtPixel(page, 5, 5);
 
-    // Navigate to frame 1 (the middle frame)
+    // Go to the middle frame, and turn the onion skin on.
     await selectFrame(page, 1);
-
-    // Onion skin canvas should be empty before enabling
-    const beforePixel = await getOnionSkinPixel(page, 1, 1);
-    expect(beforePixel.a).toBe(0);
-
-    // Enable onion skin
     await testId(page, 'onion-skin-toggle-button').click();
-    await expect.poll(() => isOnionSkinEnabled(page), { timeout: 5000 }).toBe(true);
+    await assertOnionSkinShown(page, true);
 
-    // Wait for onion skin to render frame 0's red pixel at (1,1)
-    await waitFor(async () => {
-      const px = await getOnionSkinPixel(page, 1, 1);
-      return px.a > 0;
-    });
-
-    // Verify previous frame's red pixel
-    const prevPixel = await getOnionSkinPixel(page, 1, 1);
-    expect(prevPixel.r).toBe(255);
-    expect(prevPixel.g).toBe(0);
-    expect(prevPixel.b).toBe(0);
-
-    // Verify next frame's green pixel at (5,5)
+    // It shows the red pixel of the previous frame and the green one of the next frame.
+    const previousPixel = await getOnionSkinPixel(page, 1, 1);
+    expect([previousPixel.r, previousPixel.g, previousPixel.b]).toEqual([255, 0, 0]);
+    await expect.poll(async () => (await getOnionSkinPixel(page, 5, 5)).a).toBeGreaterThan(0);
     const nextPixel = await getOnionSkinPixel(page, 5, 5);
-    expect(nextPixel.a).toBeGreaterThan(0);
-    expect(nextPixel.g).toBe(255);
+    expect([nextPixel.r, nextPixel.g, nextPixel.b]).toEqual([0, 255, 0]);
 
-    // Empty pixel on adjacent frames should remain transparent
-    const emptyPixel = await getOnionSkinPixel(page, 8, 8);
-    expect(emptyPixel.a).toBe(0);
-  });
-
-  test('onion skin canvas should clear when disabled', { tag: ['@preview.onion-skin'] }, async ({ page }) => {
-    await openEditor(page);
-
-    // Frame 0: red pixel at (1,1)
-    await setPiskelFromGrid(page, Array.from({ length: 10 }, () => Array(10).fill('T')));
-    await setPrimaryColor(page, '#FF0000');
-    await clickTool(page, 'tool-pen');
-    await drawAtPixel(page, 1, 1);
-
-    // Add frame 1 (empty) — auto-selected
-    await getAddFrameButton(page).click();
-    await assertFrameCount(page, 2);
-
-    // Enable onion skin — should render frame 0's red pixel
-    await testId(page, 'onion-skin-toggle-button').click();
-    await expect.poll(() => isOnionSkinEnabled(page), { timeout: 5000 }).toBe(true);
-
-    await waitFor(async () => {
-      const px = await getOnionSkinPixel(page, 1, 1);
-      return px.a > 0;
-    });
-    expect((await getOnionSkinPixel(page, 1, 1)).r).toBe(255);
-
-    // Disable onion skin — canvas should clear
-    await testId(page, 'onion-skin-toggle-button').click();
-    await expect.poll(() => isOnionSkinEnabled(page), { timeout: 5000 }).toBe(false);
-    await wait(500);
-
-    const pixel = await getOnionSkinPixel(page, 1, 1);
-    expect(pixel.a).toBe(0);
+    // Nothing shows where neither frame has a pixel.
+    expect((await getOnionSkinPixel(page, 8, 8)).a).toBe(0);
   });
 });

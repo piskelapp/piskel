@@ -1,13 +1,10 @@
-import test, { expect } from "@playwright/test";
+import test from "@playwright/test";
 import {
   assertColorRows,
   clickTool,
-  colorToInt,
   drawAtPixel,
-  getPixelColor,
   gridFromColorRows,
   openEditor,
-  readPixelGrid,
   setPiskelFromGrid,
   setPrimaryColor,
 } from "../../testutils";
@@ -15,38 +12,39 @@ import {
 test.describe('Paint bucket tool', () => {
 
   test('paint bucket: fills connected transparent area', { tag: ['@drawing-tools.paint-bucket'] }, async ({ page }) => {
+    // A red square, transparent inside and outside.
     await openEditor(page);
+    await setPiskelFromGrid(page, gridFromColorRows([
+      '..........',
+      '.RRRRRR...',
+      '.R....R...',
+      '.R....R...',
+      '.R....R...',
+      '.R....R...',
+      '.RRRRRR...',
+      '..........',
+      '..........',
+      '..........',
+    ]));
 
-    // Red border, transparent inside
-    await setPiskelFromGrid(page, [
-      ["R", "R", "R", "R", "R", "R"],
-      ["R", "T", "T", "T", "T", "R"],
-      ["R", "T", "T", "T", "T", "R"],
-      ["R", "T", "T", "T", "T", "R"],
-      ["R", "T", "T", "T", "T", "R"],
-      ["R", "R", "R", "R", "R", "R"],
-    ]);
-
+    // Fill the inside with blue.
     await clickTool(page, 'tool-paint-bucket');
     await setPrimaryColor(page, '#0000FF');
     await drawAtPixel(page, 3, 3);
 
-    const grid = await readPixelGrid(page, 6, 6);
-
-    // Interior filled, border unchanged (both show as X since non-transparent)
-    const expected = [
-      'XXXXXX',  // row 0: red border
-      'XXXXXX',  // row 1: red + blue fill
-      'XXXXXX',  // row 2
-      'XXXXXX',  // row 3
-      'XXXXXX',  // row 4
-      'XXXXXX',  // row 5: red border
-    ];
-    expect(grid.map(r => r.join(''))).toEqual(expected);
-
-    // Verify colors precisely: border=red, interior=blue
-    expect(await getPixelColor(page, 0, 0)).toBe(colorToInt('#FF0000'));
-    expect(await getPixelColor(page, 3, 3)).toBe(colorToInt('#0000FF'));
+    // Only the inside is filled: the square stops the fill.
+    await assertColorRows(page, [
+      '..........',
+      '.RRRRRR...',
+      '.RBBBBR...',
+      '.RBBBBR...',
+      '.RBBBBR...',
+      '.RBBBBR...',
+      '.RRRRRR...',
+      '..........',
+      '..........',
+      '..........',
+    ]);
   });
 
   test('paint bucket: does not spread to diagonal pixels', { tag: ['@drawing-tools.paint-bucket'] }, async ({ page }) => {

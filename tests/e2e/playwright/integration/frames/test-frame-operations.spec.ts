@@ -5,13 +5,10 @@ import {
   getCurrentFrameIndex,
   testId,
   setPrimaryColor,
-  getPixelColor,
   drawAtPixel,
   clickTool,
-  colorToInt,
   getFrameTiles,
   getAddFrameButton,
-  waitFor,
   assertCurrentFrame,
   assertCurrentLayer,
   assertFrameCount,
@@ -24,6 +21,7 @@ import {
   PIXEL_IN_FIRST_COLUMN,
   PIXEL_IN_SECOND_COLUMN,
   PIXEL_IN_THIRD_COLUMN,
+  assertColorRows,
   readPixelRows,
   selectBottomLayer,
   selectFrame,
@@ -36,54 +34,47 @@ import {
   waitForGrid,
 } from "../../testutils";
 
-const EMPTY = [
-  '....',
-  '....',
-  '....',
-  '....',
-];
-
-/** The three frames of the undo tests: one pixel each, in its own column */
-const FRAME_1 = [
-  'X.........',
-  '..........',
-  '..........',
-  '..........',
-  '..........',
-  '..........',
-  '..........',
-  '..........',
-  '..........',
-  '..........',
-];
-const FRAME_2 = [
-  '.X........',
-  '..........',
-  '..........',
-  '..........',
-  '..........',
-  '..........',
-  '..........',
-  '..........',
-  '..........',
-  '..........',
-];
-const FRAME_3 = [
-  '..X.......',
-  '..........',
-  '..........',
-  '..........',
-  '..........',
-  '..........',
-  '..........',
-  '..........',
-  '..........',
-  '..........',
-];
-
 /** An empty 10x10 frame */
-const EMPTY_FRAME = [
+const EMPTY = [
   '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+];
+
+/** 10x10 frames with a single red, green or blue pixel at (0,0) */
+const RED_FRAME = [
+  'R.........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+];
+const GREEN_FRAME = [
+  'G.........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+];
+const BLUE_FRAME = [
+  'B.........',
   '..........',
   '..........',
   '..........',
@@ -129,22 +120,21 @@ test.describe('Frame operations', () => {
   });
 
   test('should duplicate a frame', { tag: ['@frames.duplicate'] }, async ({ page }) => {
+    // Draw a red pixel in the first frame, so the copy has content.
     await openEditor(page);
-
-    // Draw something on frame 0 so the duplicate has content
+    await setPiskelFromGrid(page, gridFromRows(EMPTY));
     await clickTool(page, 'tool-pen');
     await setPrimaryColor(page, '#FF0000');
     await drawAtPixel(page, 0, 0);
+    await assertColorRows(page, RED_FRAME);
 
-    // Hover on the frame tile to reveal the duplicate button, then click
+    // Duplicate it with the button of its tile.
     await getFrameTiles(page).nth(0).hover();
     await testId(page, 'duplicate-frame-button').nth(0).click();
+    await assertFrameCount(page, 2);
 
-    expect(await getCurrentPiskelFrameCount(page)).toBe(2);
-
-    // The duplicated frame (index 1) should have the same red pixel
-    const pixel = await getPixelColor(page, 0, 0, 0, 1);
-    expect(pixel).toBe(colorToInt('#FF0000'));
+    // The copy has the same red pixel.
+    await assertColorRows(page, RED_FRAME, { frameIndex: 1 });
   });
 
   test('should delete the last frame', { tag: ['@frames.delete'] }, async ({ page }) => {
@@ -162,60 +152,58 @@ test.describe('Frame operations', () => {
   });
 
   test('should delete the first frame and keep the second', { tag: ['@frames.delete'] }, async ({ page }) => {
+    // Draw a red pixel in the first frame.
     await openEditor(page);
-
-    // Draw red on frame 0
+    await setPiskelFromGrid(page, gridFromRows(EMPTY));
     await clickTool(page, 'tool-pen');
     await setPrimaryColor(page, '#FF0000');
     await drawAtPixel(page, 0, 0);
+    await assertColorRows(page, RED_FRAME);
 
-    // Add frame 1 and draw green
+    // Add a second frame, with a green pixel.
     await getAddFrameButton(page).click();
+    await assertFrameCount(page, 2);
     await setPrimaryColor(page, '#00FF00');
     await drawAtPixel(page, 0, 0);
+    await assertColorRows(page, GREEN_FRAME, { frameIndex: 1 });
 
-    expect(await getCurrentPiskelFrameCount(page)).toBe(2);
-
-    // Delete frame 0 (the red one)
+    // Delete the red frame: only the green one is left.
     await deleteFrame(page, 0);
-
-    // Only 1 frame remains — it should be the green one
+    await assertFrameCount(page, 1);
     expect(await getCurrentPiskelFrameCount(page)).toBe(1);
-    expect(await getPixelColor(page, 0, 0)).toBe(colorToInt('#00FF00'));
+    await assertColorRows(page, GREEN_FRAME);
   });
 
   test('should delete a middle frame', { tag: ['@frames.delete'] }, async ({ page }) => {
+    // Draw a red, a green and a blue frame.
     await openEditor(page);
-
-    // Frame 0: red
+    await setPiskelFromGrid(page, gridFromRows(EMPTY));
     await clickTool(page, 'tool-pen');
     await setPrimaryColor(page, '#FF0000');
     await drawAtPixel(page, 0, 0);
-
-    // Frame 1: green
+    await assertColorRows(page, RED_FRAME, { frameIndex: 0 });
     await getAddFrameButton(page).click();
+    await assertFrameCount(page, 2);
     await setPrimaryColor(page, '#00FF00');
     await drawAtPixel(page, 0, 0);
-
-    // Frame 2: blue
+    await assertColorRows(page, GREEN_FRAME, { frameIndex: 1 });
     await getAddFrameButton(page).click();
+    await assertFrameCount(page, 3);
     await setPrimaryColor(page, '#0000FF');
     await drawAtPixel(page, 0, 0);
+    await assertColorRows(page, BLUE_FRAME, { frameIndex: 2 });
 
-    expect(await getCurrentPiskelFrameCount(page)).toBe(3);
-
-    // Delete middle frame (green, index 1)
+    // Delete the green frame: the red and the blue ones are left.
     await deleteFrame(page, 1);
-
-    // 2 frames remain: red (index 0) and blue (index 1)
-    expect(await getCurrentPiskelFrameCount(page)).toBe(2);
-    expect(await getPixelColor(page, 0, 0, 0, 0)).toBe(colorToInt('#FF0000'));
-    expect(await getPixelColor(page, 0, 0, 0, 1)).toBe(colorToInt('#0000FF'));
+    await assertFrameCount(page, 2);
+    await assertColorRows(page, RED_FRAME, { frameIndex: 0 });
+    await assertColorRows(page, BLUE_FRAME, { frameIndex: 1 });
   });
 
   test('should add multiple frames', { tag: ['@frames.add'] }, async ({ page }) => {
     await openEditor(page);
 
+    // Add three frames.
     await getAddFrameButton(page).click();
     await getAddFrameButton(page).click();
     await getAddFrameButton(page).click();
@@ -252,58 +240,66 @@ test.describe('Frame operations', () => {
     await openEditor(page);
     expect(await getCurrentPiskelFrameCount(page)).toBe(1);
 
+    // Press N to add a frame.
     await page.keyboard.press('n');
-
-    await waitFor(async () => (await getCurrentPiskelFrameCount(page)) === 2);
+    await assertFrameCount(page, 2);
   });
 
   test('should duplicate frame with content via UI button', { tag: ['@frames.duplicate'] }, async ({ page }) => {
+    // Draw a black pixel, the default primary color, in the first frame.
+    const blackPixel = [
+      '..........',
+      '.K........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+    ];
     await openEditor(page);
-
-    // Draw something on frame 0 via the pen tool
+    await setPiskelFromGrid(page, gridFromRows(EMPTY));
     await clickTool(page, 'tool-pen');
     await drawAtPixel(page, 1, 1);
+    await assertColorRows(page, blackPixel);
 
-    // Duplicate via the frame tile button
+    // Duplicate it with the button of its tile.
     await getFrameTiles(page).nth(0).hover();
     await testId(page, 'duplicate-frame-button').nth(0).click();
+    await assertFrameCount(page, 2);
 
-    expect(await getCurrentPiskelFrameCount(page)).toBe(2);
-    // Duplicated frame should have the same black pixel (default primary color)
-    const pixel = await getPixelColor(page, 1, 1, 0, 1);
-    expect(pixel).toBe(colorToInt('#000000'));
+    // The copy has the same black pixel.
+    await assertColorRows(page, blackPixel, { frameIndex: 1 });
   });
 
   test('should duplicate a middle frame and insert after it', { tag: ['@frames.duplicate'] }, async ({ page }) => {
+    // Draw a red, a green and a blue frame.
     await openEditor(page);
+    await setPiskelFromGrid(page, gridFromRows(EMPTY));
     await clickTool(page, 'tool-pen');
-
-    // Frame 0: red
     await setPrimaryColor(page, '#FF0000');
     await drawAtPixel(page, 0, 0);
-
-    // Frame 1: green
+    await assertColorRows(page, RED_FRAME, { frameIndex: 0 });
     await getAddFrameButton(page).click();
+    await assertFrameCount(page, 2);
     await setPrimaryColor(page, '#00FF00');
     await drawAtPixel(page, 0, 0);
-
-    // Frame 2: blue
+    await assertColorRows(page, GREEN_FRAME, { frameIndex: 1 });
     await getAddFrameButton(page).click();
+    await assertFrameCount(page, 3);
     await setPrimaryColor(page, '#0000FF');
     await drawAtPixel(page, 0, 0);
+    await assertColorRows(page, BLUE_FRAME, { frameIndex: 2 });
 
-    expect(await getCurrentPiskelFrameCount(page)).toBe(3);
-
-    // Duplicate frame 1 (green)
-    await getFrameTiles(page).nth(1).hover();
-    await testId(page, 'duplicate-frame-button').nth(1).click();
-
-    // Should now have 4 frames: red, green, green-copy, blue
-    expect(await getCurrentPiskelFrameCount(page)).toBe(4);
-    expect(await getPixelColor(page, 0, 0, 0, 0)).toBe(colorToInt('#FF0000'));
-    expect(await getPixelColor(page, 0, 0, 0, 1)).toBe(colorToInt('#00FF00'));
-    expect(await getPixelColor(page, 0, 0, 0, 2)).toBe(colorToInt('#00FF00'));
-    expect(await getPixelColor(page, 0, 0, 0, 3)).toBe(colorToInt('#0000FF'));
+    // Duplicate the green frame: the copy is inserted right after it.
+    await duplicateFrame(page, 1);
+    await assertFrameCount(page, 4);
+    await assertColorRows(page, RED_FRAME, { frameIndex: 0 });
+    await assertColorRows(page, GREEN_FRAME, { frameIndex: 1 });
+    await assertColorRows(page, GREEN_FRAME, { frameIndex: 2 });
+    await assertColorRows(page, BLUE_FRAME, { frameIndex: 3 });
   });
 
   // ─── Selection after a delete ─────────────────────────────────
@@ -319,7 +315,7 @@ test.describe('Frame operations', () => {
 
     // The previous frame is selected.
     await assertCurrentFrame(page, 1);
-    expect(await readPixelRows(page, 4, 4, 0, 1)).toEqual(PIXEL_IN_SECOND_COLUMN);
+    expect(await readPixelRows(page, 10, 10, 0, 1)).toEqual(PIXEL_IN_SECOND_COLUMN);
   });
 
   test('deleting a middle frame should select the previous one', { tag: ['@frames.delete-selection'] }, async ({ page }) => {
@@ -333,7 +329,7 @@ test.describe('Frame operations', () => {
 
     // The previous frame is selected.
     await assertCurrentFrame(page, 0);
-    expect(await readPixelRows(page, 4, 4, 0, 0)).toEqual(PIXEL_IN_FIRST_COLUMN);
+    expect(await readPixelRows(page, 10, 10, 0, 0)).toEqual(PIXEL_IN_FIRST_COLUMN);
   });
 
   test('deleting the first frame should select the new first frame', { tag: ['@frames.delete-selection'] }, async ({ page }) => {
@@ -347,7 +343,7 @@ test.describe('Frame operations', () => {
 
     // The frame that was second is now first, and selected.
     await assertCurrentFrame(page, 0);
-    expect(await readPixelRows(page, 4, 4, 0, 0)).toEqual(PIXEL_IN_SECOND_COLUMN);
+    expect(await readPixelRows(page, 10, 10, 0, 0)).toEqual(PIXEL_IN_SECOND_COLUMN);
   });
 
   // ─── Layers ───────────────────────────────────────────────────
@@ -362,24 +358,24 @@ test.describe('Frame operations', () => {
     // Add a frame: both layers get it, empty.
     await getAddFrameButton(page).click();
     await assertFrameCount(page, 2);
-    expect(await readPixelRows(page, 4, 4, 0, 1)).toEqual(EMPTY);
-    expect(await readPixelRows(page, 4, 4, 1, 1)).toEqual(EMPTY);
+    expect(await readPixelRows(page, 10, 10, 0, 1)).toEqual(EMPTY);
+    expect(await readPixelRows(page, 10, 10, 1, 1)).toEqual(EMPTY);
 
     // Draw in the new frame of the top layer.
     await clickTool(page, 'tool-pen');
     await drawAtPixel(page, 0, 0);
-    expect(await readPixelRows(page, 4, 4, 1, 1)).toEqual(PIXEL_IN_FIRST_COLUMN);
+    expect(await readPixelRows(page, 10, 10, 1, 1)).toEqual(PIXEL_IN_FIRST_COLUMN);
 
     // Draw in the new frame of the bottom layer.
     await selectBottomLayer(page);
     await drawAtPixel(page, 1, 0);
-    expect(await readPixelRows(page, 4, 4, 0, 1)).toEqual(PIXEL_IN_SECOND_COLUMN);
+    expect(await readPixelRows(page, 10, 10, 0, 1)).toEqual(PIXEL_IN_SECOND_COLUMN);
 
     // Delete the first frame: both layers lose it, and keep their second frame.
     await deleteFrame(page, 0);
     await assertFrameCount(page, 1);
-    expect(await readPixelRows(page, 4, 4, 0, 0)).toEqual(PIXEL_IN_SECOND_COLUMN);
-    expect(await readPixelRows(page, 4, 4, 1, 0)).toEqual(PIXEL_IN_FIRST_COLUMN);
+    expect(await readPixelRows(page, 10, 10, 0, 0)).toEqual(PIXEL_IN_SECOND_COLUMN);
+    expect(await readPixelRows(page, 10, 10, 1, 0)).toEqual(PIXEL_IN_FIRST_COLUMN);
   });
 
   test('a new layer should have as many frames as the sprite', { tag: ['@frames.all-layers'] }, async ({ page }) => {
@@ -392,8 +388,8 @@ test.describe('Frame operations', () => {
     // Add a layer: it has the two frames too.
     await getAddLayerButton(page).click();
     await assertCurrentLayer(page, 1);
-    expect(await readPixelRows(page, 4, 4, 1, 0)).toEqual(EMPTY);
-    expect(await readPixelRows(page, 4, 4, 1, 1)).toEqual(EMPTY);
+    expect(await readPixelRows(page, 10, 10, 1, 0)).toEqual(EMPTY);
+    expect(await readPixelRows(page, 10, 10, 1, 1)).toEqual(EMPTY);
   });
 
   // ─── Tiles ────────────────────────────────────────────────────
@@ -421,7 +417,7 @@ test.describe('Frame operations', () => {
     await setPiskelFromGrid(page, gridFromRows(EMPTY));
     await clickTool(page, 'tool-pen');
     await drawAtPixel(page, 0, 0);
-    expect(await readPixelRows(page, 4, 4, 0, 0)).toEqual(PIXEL_IN_FIRST_COLUMN);
+    expect(await readPixelRows(page, 10, 10, 0, 0)).toEqual(PIXEL_IN_FIRST_COLUMN);
     await assertFrameThumbnail(page, 0, PIXEL_IN_FIRST_COLUMN);
 
     // Add a layer: it is empty, and so is the thumbnail.
@@ -431,7 +427,7 @@ test.describe('Frame operations', () => {
 
     // Draw in the new layer.
     await drawAtPixel(page, 1, 0);
-    expect(await readPixelRows(page, 4, 4, 1, 0)).toEqual(PIXEL_IN_SECOND_COLUMN);
+    expect(await readPixelRows(page, 10, 10, 1, 0)).toEqual(PIXEL_IN_SECOND_COLUMN);
     await assertFrameThumbnail(page, 0, PIXEL_IN_SECOND_COLUMN);
 
     // Go back to the bottom layer: the thumbnail follows.
@@ -474,8 +470,8 @@ test.describe('Frame operations', () => {
     await expect(bottomHint).not.toBeInViewport();
   });
 
-  // Each operation applies to FRAME_1, FRAME_2 and FRAME_3, with the third frame
-  // current.
+  // Each operation applies to the three frames of createThreeFrames, with the
+  // third frame current.
   const frameOperations: Array<{
     name: string;
     change: (page: Page) => Promise<void>;
@@ -494,8 +490,8 @@ test.describe('Frame operations', () => {
       },
       assertChanged: async (page) => {
         await assertFrameCount(page, 4);
-        await waitForGrid(page, 10, 10, EMPTY_FRAME, { frameIndex: 1 });
-        await waitForGrid(page, 10, 10, FRAME_2, { frameIndex: 2 });
+        await waitForGrid(page, 10, 10, EMPTY, { frameIndex: 1 });
+        await waitForGrid(page, 10, 10, PIXEL_IN_SECOND_COLUMN, { frameIndex: 2 });
       },
     },
     {
@@ -511,7 +507,7 @@ test.describe('Frame operations', () => {
     {
       name: 'moving a frame',
       change: (page) => dragFrame(page, 0, 2),
-      assertChanged: (page) => waitForGrid(page, 10, 10, FRAME_1, { frameIndex: 2 }),
+      assertChanged: (page) => waitForGrid(page, 10, 10, PIXEL_IN_FIRST_COLUMN, { frameIndex: 2 }),
     },
     {
       name: 'hiding a frame',
@@ -521,22 +517,9 @@ test.describe('Frame operations', () => {
   ];
   for (const { name, change, assertChanged } of frameOperations) {
     test(`undo should revert ${name} in one step`, { tag: ['@frames.undo'] }, async ({ page }) => {
-      // Draw a pixel in the first frame.
+      // Three frames, with a pixel each.
       await openEditor(page);
-      await setPiskelFromGrid(page, gridFromRows(EMPTY_FRAME));
-      await clickTool(page, 'tool-pen');
-      await drawAtPixel(page, 0, 0);
-      await waitForGrid(page, 10, 10, FRAME_1, { frameIndex: 0 });
-
-      // Add a second and a third frame, with a pixel each.
-      await getAddFrameButton(page).click();
-      await assertFrameCount(page, 2);
-      await drawAtPixel(page, 1, 0);
-      await waitForGrid(page, 10, 10, FRAME_2, { frameIndex: 1 });
-      await getAddFrameButton(page).click();
-      await assertFrameCount(page, 3);
-      await drawAtPixel(page, 2, 0);
-      await waitForGrid(page, 10, 10, FRAME_3, { frameIndex: 2 });
+      await createThreeFrames(page);
 
       await change(page);
       await assertChanged(page);
@@ -545,9 +528,9 @@ test.describe('Frame operations', () => {
       await undo(page);
       await assertFrameCount(page, 3);
       await assertHiddenFrames(page, []);
-      await waitForGrid(page, 10, 10, FRAME_1, { frameIndex: 0 });
-      await waitForGrid(page, 10, 10, FRAME_2, { frameIndex: 1 });
-      await waitForGrid(page, 10, 10, FRAME_3, { frameIndex: 2 });
+      await waitForGrid(page, 10, 10, PIXEL_IN_FIRST_COLUMN, { frameIndex: 0 });
+      await waitForGrid(page, 10, 10, PIXEL_IN_SECOND_COLUMN, { frameIndex: 1 });
+      await waitForGrid(page, 10, 10, PIXEL_IN_THIRD_COLUMN, { frameIndex: 2 });
     });
   }
 });

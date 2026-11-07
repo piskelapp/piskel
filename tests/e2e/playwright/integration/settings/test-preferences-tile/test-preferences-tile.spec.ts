@@ -1,5 +1,9 @@
 import test, { expect, Page } from "@playwright/test";
-import { openEditor, setPiskelFromGrid, wait } from "../../../testutils";
+import {
+  openEditor,
+  setPiskelFromGrid,
+  gridFromColorRows,
+} from "../../../testutils";
 
 test.use({ viewport: { width: 1280, height: 720 } });
 
@@ -14,6 +18,20 @@ async function openTilePreferences(page: Page) {
 const canvas = (page: Page) => page.locator('#drawing-canvas-container');
 
 const screenshotOpts = { maxDiffPixelRatio: 0.01 };
+
+/** 4x4 sprites: the screenshots of the canvas were taken with them */
+const RED_PIXEL = [
+  'R...',
+  '....',
+  '....',
+  '....',
+];
+const RED_BLOCK = [
+  'RR..',
+  'RR..',
+  '....',
+  '....',
+];
 
 test.describe('Preferences — Tile tab', () => {
 
@@ -30,15 +48,9 @@ test.describe('Preferences — Tile tab', () => {
   test('canvas without tile mode', { tag: ['@canvas.tile-mode'] }, async ({ page }) => {
     await openEditor(page);
 
-    await setPiskelFromGrid(page, [
-      ['R', 'T', 'T', 'T'],
-      ['T', 'T', 'T', 'T'],
-      ['T', 'T', 'T', 'T'],
-      ['T', 'T', 'T', 'T'],
-    ]);
+    await setPiskelFromGrid(page, gridFromColorRows(RED_PIXEL));
 
     await openTilePreferences(page);
-    await wait(300);
 
     await expect(canvas(page)).toHaveScreenshot('tile-mode-off.png', screenshotOpts);
   });
@@ -46,16 +58,10 @@ test.describe('Preferences — Tile tab', () => {
   test('enabling tile mode should tile the sprite around the canvas', { tag: ['@settings.tile-mode', '@canvas.tile-mode'] }, async ({ page }) => {
     await openEditor(page);
 
-    await setPiskelFromGrid(page, [
-      ['R', 'T', 'T', 'T'],
-      ['T', 'T', 'T', 'T'],
-      ['T', 'T', 'T', 'T'],
-      ['T', 'T', 'T', 'T'],
-    ]);
+    await setPiskelFromGrid(page, gridFromColorRows(RED_PIXEL));
 
     await openTilePreferences(page);
     await page.locator('.tile-mode-checkbox').check();
-    await wait(500);
 
     await expect(canvas(page)).toHaveScreenshot('tile-mode-on.png', screenshotOpts);
   });
@@ -63,20 +69,14 @@ test.describe('Preferences — Tile tab', () => {
   test('disabling tile mode should restore canvas to original', { tag: ['@settings.tile-mode', '@canvas.tile-mode'] }, async ({ page }) => {
     await openEditor(page);
 
-    await setPiskelFromGrid(page, [
-      ['R', 'T', 'T', 'T'],
-      ['T', 'T', 'T', 'T'],
-      ['T', 'T', 'T', 'T'],
-      ['T', 'T', 'T', 'T'],
-    ]);
+    await setPiskelFromGrid(page, gridFromColorRows(RED_PIXEL));
 
     await openTilePreferences(page);
 
     // Enable then disable
     await page.locator('.tile-mode-checkbox').check();
-    await wait(500);
+    await expect(canvas(page)).toHaveScreenshot('tile-mode-on.png', screenshotOpts);
     await page.locator('.tile-mode-checkbox').uncheck();
-    await wait(500);
 
     // Should match the "off" golden screenshot
     await expect(canvas(page)).toHaveScreenshot('tile-mode-off.png', screenshotOpts);
@@ -88,43 +88,25 @@ test.describe('Preferences — Tile tab', () => {
     await openEditor(page);
     await openTilePreferences(page);
 
-    const slider = page.locator('.tile-mask-opacity-input');
-    const value = await slider.inputValue();
-    expect(parseFloat(value)).toBeCloseTo(0.30, 1);
-
-    const text = await page.locator('.tile-mask-opacity-text').innerText();
-    expect(text).toContain('0.30');
+    await expect(page.locator('.tile-mask-opacity-input')).toHaveValue('0.3');
+    await expect(page.locator('.tile-mask-opacity-text')).toContainText('0.30');
   });
 
   test('changing tile mask opacity should update the display text', { tag: ['@settings.tile-opacity'] }, async ({ page }) => {
     await openEditor(page);
     await openTilePreferences(page);
 
-    await page.evaluate(() => {
-      const slider = document.querySelector('.tile-mask-opacity-input') as HTMLInputElement;
-      slider.value = '0.10';
-      slider.dispatchEvent(new Event('input'));
-      slider.dispatchEvent(new Event('change'));
-    });
-    await wait(200);
-
-    const text = await page.locator('.tile-mask-opacity-text').innerText();
-    expect(text).toContain('0.10');
+    await page.locator('.tile-mask-opacity-input').fill('0.1');
+    await expect(page.locator('.tile-mask-opacity-text')).toContainText('0.10');
   });
 
   test('tile mode with default opacity 0.30', { tag: ['@settings.tile-opacity', '@canvas.tile-mode'] }, async ({ page }) => {
     await openEditor(page);
 
-    await setPiskelFromGrid(page, [
-      ['R', 'R', 'T', 'T'],
-      ['R', 'R', 'T', 'T'],
-      ['T', 'T', 'T', 'T'],
-      ['T', 'T', 'T', 'T'],
-    ]);
+    await setPiskelFromGrid(page, gridFromColorRows(RED_BLOCK));
 
     await openTilePreferences(page);
     await page.locator('.tile-mode-checkbox').check();
-    await wait(500);
 
     await expect(canvas(page)).toHaveScreenshot('tile-opacity-030.png', screenshotOpts);
   });
@@ -132,24 +114,13 @@ test.describe('Preferences — Tile tab', () => {
   test('tile mode with opacity 0.05 should show more visible tiles', { tag: ['@settings.tile-opacity', '@canvas.tile-mode'] }, async ({ page }) => {
     await openEditor(page);
 
-    await setPiskelFromGrid(page, [
-      ['R', 'R', 'T', 'T'],
-      ['R', 'R', 'T', 'T'],
-      ['T', 'T', 'T', 'T'],
-      ['T', 'T', 'T', 'T'],
-    ]);
+    await setPiskelFromGrid(page, gridFromColorRows(RED_BLOCK));
 
     await openTilePreferences(page);
     await page.locator('.tile-mode-checkbox').check();
-    await wait(300);
 
-    await page.evaluate(() => {
-      const slider = document.querySelector('.tile-mask-opacity-input') as HTMLInputElement;
-      slider.value = '0.05';
-      slider.dispatchEvent(new Event('input'));
-      slider.dispatchEvent(new Event('change'));
-    });
-    await wait(500);
+    await page.locator('.tile-mask-opacity-input').fill('0.05');
+    await expect(page.locator('.tile-mask-opacity-text')).toContainText('0.05');
 
     await expect(canvas(page)).toHaveScreenshot('tile-opacity-005.png', screenshotOpts);
   });

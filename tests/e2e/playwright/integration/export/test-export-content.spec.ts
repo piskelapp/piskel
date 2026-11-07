@@ -23,6 +23,7 @@ import {
   setTopLayerOpacity,
   toggleFrameVisibility,
   testId,
+  gridFromColorRows,
 } from "../../testutils";
 
 /**
@@ -95,10 +96,10 @@ test.describe('Export content', () => {
   test('exports should compose all layers', { tag: ['@export.content'] }, async ({ page }) => {
     // Start from a sprite with red pixels in the bottom layer.
     await openEditor(page);
-    await setPiskelFromGrid(page, [
-      ['R', 'T'],
-      ['R', 'T'],
-    ]);
+    await setPiskelFromGrid(page, gridFromColorRows([
+      'R.',
+      'R.',
+    ]));
 
     // Add a top layer with a green pixel over a red one, and another one next to it.
     await getAddLayerButton(page).click();
@@ -176,17 +177,56 @@ test.describe('Export content', () => {
     await selectExportTab(page, 'png');
     await testId(page, 'png-columns-input').fill('3');
     expect((await downloadPngExport(page)).rows).toEqual([
-      'K....K....K.',
-      '............',
-      '............',
-      '............',
+      'K..........K..........K.......',
+      '..............................',
+      '..............................',
+      '..............................',
+      '..............................',
+      '..............................',
+      '..............................',
+      '..............................',
+      '..............................',
+      '..............................',
     ]);
 
     // The GIF has the three frames too.
     expect((await downloadGifExport(page)).frames).toEqual([
-      ['K...', '....', '....', '....'],
-      ['.K..', '....', '....', '....'],
-      ['..K.', '....', '....', '....'],
+      [
+        'K.........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+      ],
+      [
+        '.K........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+      ],
+      [
+        '..K.......',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+      ],
     ]);
   });
 });

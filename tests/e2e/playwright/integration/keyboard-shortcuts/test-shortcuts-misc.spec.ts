@@ -3,119 +3,87 @@ import {
   CMD_OR_CTRL,
   openEditor,
   setPiskelFromGrid,
-  setPrimaryColor,
-  getPrimaryColor,
   clickTool,
   drawAtPixel,
   openSaveSettingsPanel,
   isSettingsDrawerExpanded,
   waitFor,
+  gridFromColorRows,
+  readZoom,
+  assertPaletteSwatches,
+  assertPrimaryColor,
 } from "../../testutils";
 
 test.describe('Keyboard shortcuts — zoom', () => {
 
-  async function getZoom(page: Page): Promise<number> {
-    return await page.evaluate(() =>
-      window.pskl.app.drawingController.compositeRenderer.getZoom()
-    );
-  }
-
-  /** Press a zoom key and wait for the zoom to change from `before`. Retries the keypress if needed. */
-  async function pressZoomKey(page: Page, key: string, before: number, direction: 'up' | 'down') {
-    const check = direction === 'up'
-      ? async () => (await getZoom(page)) > before
-      : async () => (await getZoom(page)) < before;
-    // Retry the keypress up to 3 times in case it doesn't register
-    for (let attempt = 0; attempt < 3; attempt++) {
-      await page.keyboard.press(key);
-      try {
-        await waitFor(check, { timeout: 1000, message: '' });
-        return;
-      } catch {
-        // Key didn't register — retry
-      }
+  /** Press a zoom key, and wait for the zoom shown in the bottom bar to change */
+  const pressZoomKey = async (page: Page, key: string, direction: 'in' | 'out') => {
+    const before = await readZoom(page);
+    await page.keyboard.press(key);
+    if (direction === 'in') {
+      await expect.poll(() => readZoom(page)).toBeGreaterThan(before);
+    } else {
+      await expect.poll(() => readZoom(page)).toBeLessThan(before);
     }
-    throw new Error(`Zoom did not ${direction === 'up' ? 'increase' : 'decrease'} after pressing "${key}" (3 attempts)`);
-  }
+  };
 
   test('"+" should increase zoom', { tag: ['@canvas.zoom-shortcuts'] }, async ({ page }) => {
     await openEditor(page);
-    const before = await getZoom(page);
-    await pressZoomKey(page, '+', before, 'up');
+    await pressZoomKey(page, '+', 'in');
   });
 
   test('"-" should decrease zoom', { tag: ['@canvas.zoom-shortcuts'] }, async ({ page }) => {
+    // Zoom in three times first.
     await openEditor(page);
-
-    // Zoom in first — press one at a time and wait for each to take effect
-    let zoom = await getZoom(page);
     for (let i = 0; i < 3; i++) {
-      await pressZoomKey(page, '+', zoom, 'up');
-      zoom = await getZoom(page);
+      await pressZoomKey(page, '+', 'in');
     }
 
-    await pressZoomKey(page, '-', zoom, 'down');
+    await pressZoomKey(page, '-', 'out');
   });
 
   test('"0" should reset zoom', { tag: ['@canvas.zoom-shortcuts'] }, async ({ page }) => {
+    // Zoom in three times.
     await openEditor(page);
-    const initial = await getZoom(page);
-
-    // Zoom in — press one at a time and wait for each to take effect
-    let zoom = initial;
+    const initial = await readZoom(page);
     for (let i = 0; i < 3; i++) {
-      await pressZoomKey(page, '+', zoom, 'up');
-      zoom = await getZoom(page);
+      await pressZoomKey(page, '+', 'in');
     }
 
-    // Reset
+    // 0 goes back to the zoom of the start.
     await page.keyboard.press('0');
-    await waitFor(async () => Math.abs(await getZoom(page) - initial) < 1);
+    await expect.poll(() => readZoom(page)).toBe(initial);
   });
 });
 
 test.describe('Keyboard shortcuts — palette color select', () => {
 
   test('"1"-"3" should select different palette colors', { tag: ['@colors-and-palettes.number-keys'] }, async ({ page }) => {
+    // A sprite with a red, a green and a blue pixel: the current colors palette lists them.
     await openEditor(page);
+    await setPiskelFromGrid(page, gridFromColorRows([
+      'RGB.......',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+    ]));
+    await assertPaletteSwatches(page, ['#ff0000', '#00ff00', '#0000ff']);
 
-    // Set a grid with 3 distinct colors so the palette has entries
-    await setPiskelFromGrid(page, [['R', 'G', 'B', 'T']]);
-    // Draw a pixel to trigger history state save → palette refresh
-    await clickTool(page, 'tool-pen');
-    await drawAtPixel(page, 3, 0);
-
-    // Wait until the palette has at least 3 color swatches (async: throttled 1s + web worker)
-    await waitFor(async () => {
-      const count = await page.locator('.palettes-list-color').count();
-      return count >= 3;
-    }, { timeout: 5000, message: 'Palette did not populate with at least 3 colors' });
-
-    // Set primary to a color NOT in the palette so pressing "1" will cause a visible change
-    await setPrimaryColor(page, '#AABBCC');
-
-    // Key "1" selects first palette color
+    // Each number key selects the color at that position.
     await page.keyboard.press('1');
-    await waitFor(async () =>
-      (await getPrimaryColor(page)).toLowerCase() !== '#aabbcc'
-    , { timeout: 2000, message: 'Primary color did not change after pressing "1"' });
-    const color1 = (await getPrimaryColor(page)).toLowerCase();
-
-    // Key "2" selects second palette color
+    await assertPrimaryColor(page, '#ff0000');
     await page.keyboard.press('2');
-    await waitFor(async () =>
-      (await getPrimaryColor(page)).toLowerCase() !== color1
-    , { timeout: 2000, message: 'Primary color did not change after pressing "2"' });
-    const color2 = (await getPrimaryColor(page)).toLowerCase();
-
-    // They should be different
-    expect(color1).not.toBe(color2);
-
-    // Key "1" again should go back to first
+    await assertPrimaryColor(page, '#00ff00');
+    await page.keyboard.press('3');
+    await assertPrimaryColor(page, '#0000ff');
     await page.keyboard.press('1');
-    await waitFor(async () =>
-      (await getPrimaryColor(page)).toLowerCase() === color1
-    , { timeout: 2000, message: 'Primary color did not revert after pressing "1" again' });
+    await assertPrimaryColor(page, '#ff0000');
   });
 });
 

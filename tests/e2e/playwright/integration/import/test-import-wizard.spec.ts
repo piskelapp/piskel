@@ -61,10 +61,22 @@ import {
   waitForGrid,
 } from "../../testutils";
 
-const EMPTY = ['..', '..'];
-const DIAGONAL = ['X.', '.X'];
-const OTHER_DIAGONAL = ['.X', 'X.'];
-const FIRST_ROW = ['XX', '..'];
+const EMPTY = [
+  '..',
+  '..',
+];
+const DIAGONAL = [
+  'X.',
+  '.X',
+];
+const OTHER_DIAGONAL = [
+  '.X',
+  'X.',
+];
+const FIRST_ROW = [
+  'XX',
+  '..',
+];
 
 const openEditorWithSprite = async (page: Page, rows: string[]) => {
   await openEditor(page);
@@ -145,7 +157,7 @@ test.describe('Confirming a replacement', () => {
   }
 });
 
-/** Export a sprite with three 4x4 frames as a GIF, then show another sprite */
+/** Export a sprite with three 10x10 frames as a GIF, then show another sprite */
 const createThreeFramesGifFile = async (page: Page) => {
   await openEditor(page);
   await createThreeFrames(page);
@@ -183,19 +195,81 @@ test.describe('Animated GIF as a single image', () => {
   test('should resize every frame of the GIF', { tag: ['@import.animated-gif'] }, async ({ page }) => {
     const gifFile = await createThreeFramesGifFile(page);
 
-    // Import the 4x4 GIF resized to 8x8, without smoothing.
+    // Import the 10x10 GIF resized to 20x20, without smoothing.
     await browseImageFile(page, gifFile);
-    await typeInWizardField(page, 'resize-width', '8');
+    await typeInWizardField(page, 'resize-width', '20');
     await getSmoothResizeCheckbox(page).uncheck();
     await replaceSpriteInWizard(page);
 
     // Each pixel becomes a block of four, on all three frames.
-    const pixelBlockInColumn = (column: number) => [
-      '.'.repeat(column * 2) + 'XX' + '.'.repeat(6 - column * 2),
-      '.'.repeat(column * 2) + 'XX' + '.'.repeat(6 - column * 2),
-      ...Array(6).fill('........'),
-    ];
-    await assertLayerFrames(page, 0, [pixelBlockInColumn(0), pixelBlockInColumn(1), pixelBlockInColumn(2)]);
+    await assertLayerFrames(page, 0, [
+      [
+        'XX..................',
+        'XX..................',
+        '....................',
+        '....................',
+        '....................',
+        '....................',
+        '....................',
+        '....................',
+        '....................',
+        '....................',
+        '....................',
+        '....................',
+        '....................',
+        '....................',
+        '....................',
+        '....................',
+        '....................',
+        '....................',
+        '....................',
+        '....................',
+      ],
+      [
+        '..XX................',
+        '..XX................',
+        '....................',
+        '....................',
+        '....................',
+        '....................',
+        '....................',
+        '....................',
+        '....................',
+        '....................',
+        '....................',
+        '....................',
+        '....................',
+        '....................',
+        '....................',
+        '....................',
+        '....................',
+        '....................',
+        '....................',
+        '....................',
+      ],
+      [
+        '....XX..............',
+        '....XX..............',
+        '....................',
+        '....................',
+        '....................',
+        '....................',
+        '....................',
+        '....................',
+        '....................',
+        '....................',
+        '....................',
+        '....................',
+        '....................',
+        '....................',
+        '....................',
+        '....................',
+        '....................',
+        '....................',
+        '....................',
+        '....................',
+      ],
+    ]);
   });
 });
 
@@ -210,7 +284,7 @@ test.describe('Animated GIF as a spritesheet', () => {
     await typeInWizardField(page, 'frame-size-y', '2');
     await replaceSpriteInWizard(page);
 
-    // There are still three frames: the 4x4 GIF frames aren't cut into four cells.
+    // There are still three frames: the 10x10 GIF frames aren't cut into cells.
     // Their size isn't checked: see docs/known-issues.md.
     await assertFrameCount(page, 3);
   });
@@ -245,7 +319,10 @@ test.describe('Undo after importing', () => {
   const drawFirstPixel = async (page: Page) => {
     await clickTool(page, 'tool-pen');
     await drawAtPixel(page, 0, 0);
-    await waitForGrid(page, 2, 2, ['X.', '..']);
+    await waitForGrid(page, 2, 2, [
+      'X.',
+      '..',
+    ]);
   };
 
   test('should undo and redo a replacement in one step', { tag: ['@import.undo'] }, async ({ page }) => {
@@ -259,7 +336,11 @@ test.describe('Undo after importing', () => {
 
     // One undo goes back to the drawing.
     await undo(page);
-    await waitForGrid(page, 2, 2, ['X.', '..']);
+    await waitForGrid(page, 2, 2, [
+      'X.',
+      '..',
+    ]);
+    // Undo and redo are ignored within 50ms of the previous one (undo-redo.throttle)
     await wait(100);
 
     // One redo brings the replacement back.
@@ -279,7 +360,11 @@ test.describe('Undo after importing', () => {
     // One undo removes the imported layer and keeps the drawing.
     await undo(page);
     await assertLayerNames(page, ['Base layer']);
-    await waitForGrid(page, 2, 2, ['X.', '..']);
+    await waitForGrid(page, 2, 2, [
+      'X.',
+      '..',
+    ]);
+    // Undo and redo are ignored within 50ms of the previous one (undo-redo.throttle)
     await wait(100);
 
     // One redo brings the imported layer back.
@@ -294,7 +379,11 @@ test.describe('Summary of the imported content', () => {
     await waitForColorsToBeListed(page);
 
     // Import an image bigger than the sprite, so that every step shows.
-    await browseImageFile(page, await createPngFile(page, 'hero.png', ['XXX', 'XXX', 'XXX']));
+    await browseImageFile(page, await createPngFile(page, 'hero.png', [
+      'XXX',
+      'XXX',
+      'XXX',
+    ]));
     await clickWizardNext(page);
 
     // Each step shows the same summary.
@@ -335,7 +424,12 @@ test.describe('Back button', () => {
     await waitForColorsToBeListed(page);
 
     // Import a 4x4 image resized to 3x3, and combine it.
-    await browseImageFile(page, await createPngFile(page, 'image.png', ['XXXX', 'XXXX', 'XXXX', 'XXXX']));
+    await browseImageFile(page, await createPngFile(page, 'image.png', [
+      'XXXX',
+      'XXXX',
+      'XXXX',
+      'XXXX',
+    ]));
     await typeInWizardField(page, 'resize-width', '3');
     await clickWizardNext(page);
     await assertWizardStep(page, 'select mode');
@@ -369,7 +463,12 @@ test.describe('Back button', () => {
     await waitForColorsToBeListed(page);
 
     // Choose a frame size and an offset for a spritesheet.
-    await browseImageFile(page, await createPngFile(page, 'image.png', ['XXXX', 'XXXX', 'XXXX', 'XXXX']));
+    await browseImageFile(page, await createPngFile(page, 'image.png', [
+      'XXXX',
+      'XXXX',
+      'XXXX',
+      'XXXX',
+    ]));
     await selectImportType(page, 'sheet');
     await typeInWizardField(page, 'frame-size-x', '2');
     await typeInWizardField(page, 'frame-size-y', '3');
@@ -417,7 +516,11 @@ test.describe('Closing the wizard', () => {
       await waitForColorsToBeListed(page);
 
       // Go through the wizard, with an image bigger than the sprite, up to this step.
-      await browseImageFile(page, await createPngFile(page, 'image.png', ['XXX', 'XXX', 'XXX']));
+      await browseImageFile(page, await createPngFile(page, 'image.png', [
+        'XXX',
+        'XXX',
+        'XXX',
+      ]));
       if (stepsAfterTheFirst >= 1) {
         await clickWizardNext(page);
         await assertWizardStep(page, 'select mode');

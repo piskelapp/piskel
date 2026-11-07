@@ -572,6 +572,12 @@ export const readPixelRows = async (
   return grid.map((row) => row.join(""));
 };
 
+/** Count the colored pixels in the first 10x10 pixels of the first frame */
+export const countDrawnPixels = async (page: Page): Promise<number> => {
+  const rows = await readPixelRows(page, 10, 10);
+  return rows.join("").split("X").length - 1;
+};
+
 /**
  * Press the mouse on the first sprite pixel, move it through the others in order,
  * and release it on the last one, via real mouse events, as when drawing a lasso
@@ -969,12 +975,9 @@ export const openEditorInNewPage = async (page: Page): Promise<Page> => {
   return newPage;
 };
 
-/** Create a 4x4 sprite: a layer with a pixel at (0,0), below an empty current layer */
+/** Create a 10x10 sprite: a layer with a pixel at (0,0), below an empty current layer */
 export const createEmptyLayerAbovePixel = async (page: Page): Promise<void> => {
-  await setPiskelFromGrid(
-    page,
-    gridFromRows(["X...", "....", "....", "...."])
-  );
+  await setPiskelFromGrid(page, gridFromRows(PIXEL_IN_FIRST_COLUMN));
   await getAddLayerButton(page).click();
   await assertCurrentLayer(page, 1);
 };
@@ -1231,33 +1234,76 @@ export const importPiskelFile = async (
   });
 };
 
-export const PIXEL_IN_FIRST_COLUMN = ["X...", "....", "....", "...."];
-export const PIXEL_IN_SECOND_COLUMN = [".X..", "....", "....", "...."];
-export const PIXEL_IN_THIRD_COLUMN = ["..X.", "....", "....", "...."];
+/** 10x10 frames of createThreeFrames, with a pixel in the first, second or third column */
+export const PIXEL_IN_FIRST_COLUMN = [
+  'X.........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+];
+export const PIXEL_IN_SECOND_COLUMN = [
+  '.X........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+];
+export const PIXEL_IN_THIRD_COLUMN = [
+  '..X.......',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+];
+const EMPTY_10X10 = [
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+];
 
-/** Create a 4x4 sprite with three frames, each with a pixel in a different column */
+/** Create a 10x10 sprite with three frames, each with a pixel in a different column */
 export const createThreeFrames = async (page: Page): Promise<void> => {
-  await setPiskelFromGrid(
-    page,
-    gridFromRows(["....", "....", "....", "...."])
-  );
+  await setPiskelFromGrid(page, gridFromRows(EMPTY_10X10));
   await clickTool(page, "tool-pen");
 
   // Draw in the first frame.
   await drawAtPixel(page, 0, 0);
-  expect(await readPixelRows(page, 4, 4, 0, 0)).toEqual(PIXEL_IN_FIRST_COLUMN);
+  expect(await readPixelRows(page, 10, 10, 0, 0)).toEqual(PIXEL_IN_FIRST_COLUMN);
 
   // Add a second frame and draw in it.
   await getAddFrameButton(page).click();
   await assertFrameCount(page, 2);
   await drawAtPixel(page, 1, 0);
-  expect(await readPixelRows(page, 4, 4, 0, 1)).toEqual(PIXEL_IN_SECOND_COLUMN);
+  expect(await readPixelRows(page, 10, 10, 0, 1)).toEqual(PIXEL_IN_SECOND_COLUMN);
 
   // Add a third frame and draw in it.
   await getAddFrameButton(page).click();
   await assertFrameCount(page, 3);
   await drawAtPixel(page, 2, 0);
-  expect(await readPixelRows(page, 4, 4, 0, 2)).toEqual(PIXEL_IN_THIRD_COLUMN);
+  expect(await readPixelRows(page, 10, 10, 0, 2)).toEqual(PIXEL_IN_THIRD_COLUMN);
 };
 
 /** Select a tab of the export drawer: "gif", "png", "zip" or "misc" */
@@ -1365,6 +1411,23 @@ const saveDownload = async (page: Page, click: () => Promise<void>) => {
  * Download the PNG spritesheet from the export drawer. Its pixels are returned
  * as an ASCII art grid, and as exact [r, g, b, a] values with rgbaAt.
  */
+/**
+ * Decode a PNG file as rows of color letters, like the grids of assertColorRows:
+ * "." is transparent, and "?" a color without a letter or a partly transparent one.
+ */
+export const readPngColorRows = (file: Buffer): string[] => {
+  const png = new PNG(file);
+  const pixels = png.decodePixels();
+  return Array.from({ length: png.height }, (_, y) =>
+    Array.from({ length: png.width }, (_, x) => {
+      const i = (y * png.width + x) * 4;
+      const [r, g, b, a] = [pixels[i], pixels[i + 1], pixels[i + 2], pixels[i + 3]];
+      if (a === 0) return ".";
+      return a === 255 ? getColorLetter(r, g, b) : "?";
+    }).join("")
+  );
+};
+
 export const downloadPngExport = async (page: Page) => {
   await selectExportTab(page, "png");
   const file = await saveDownload(page, () =>
@@ -1907,7 +1970,7 @@ export const closeNotification = async (page: Page): Promise<void> => {
 /** A file that a test can drop on the editor or pick in a file chooser */
 type TestFile = { name: string; mimeType: string; base64: string };
 
-/** Create a PNG file from an ASCII art grid: X is red, . is transparent */
+/** Create a PNG file from an ASCII art grid: X and R are red, G green, B blue, K black, . transparent */
 export const createPngFile = async (
   page: Page,
   name: string,
@@ -1918,10 +1981,19 @@ export const createPngFile = async (
     canvas.width = rows[0].length;
     canvas.height = rows.length;
     const context = canvas.getContext("2d")!;
-    context.fillStyle = "#FF0000";
+    const colors: Record<string, string> = {
+      X: "#FF0000",
+      R: "#FF0000",
+      G: "#00FF00",
+      B: "#0000FF",
+      K: "#000000"
+    };
     rows.forEach((row, y) => {
       [...row].forEach((pixel, x) => {
-        if (pixel === "X") context.fillRect(x, y, 1, 1);
+        if (colors[pixel]) {
+          context.fillStyle = colors[pixel];
+          context.fillRect(x, y, 1, 1);
+        }
       });
     });
     return canvas.toDataURL("image/png").split(",")[1];

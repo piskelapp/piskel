@@ -20,13 +20,20 @@ import {
   TRANSPARENT,
   typeInWizardField,
   waitForGrid,
+  assertColorRows,
 } from "../../testutils";
 
 /** Open the wizard with an image, from an empty sprite so that it imports directly */
 const openWizardWithImage = async (page: Page, rows: string[], name = 'image.png') => {
   await openEditor(page);
-  await setPiskelFromGrid(page, gridFromRows(['..', '..']));
-  await waitForGrid(page, 2, 2, ['..', '..']);
+  await setPiskelFromGrid(page, gridFromRows([
+    '..',
+    '..',
+  ]));
+  await waitForGrid(page, 2, 2, [
+    '..',
+    '..',
+  ]);
   await browseImageFile(page, await createPngFile(page, name, rows));
 };
 
@@ -48,7 +55,10 @@ const importSpritesheet = async (page: Page, rows: string[], fields: Record<stri
 test.describe('Image import step', () => {
   test('should show the image and start with its size', { tag: ['@import.image-step'] }, async ({ page }) => {
     // Open the wizard with a 4x2 image.
-    await openWizardWithImage(page, ['XXXX', '....'], 'hero.png');
+    await openWizardWithImage(page, [
+      'XXXX',
+      '....',
+    ], 'hero.png');
 
     // The step shows the name and a preview of the file.
     await expect(getImportedFileName(page)).toHaveText('hero.png');
@@ -75,7 +85,10 @@ test.describe('Image import step', () => {
 
   for (const { field, selects, startsFrom } of fieldsSelectingAType) {
     test(`should select ${selects} when typing in ${field}`, { tag: ['@import.auto-select-type'] }, async ({ page }) => {
-      await openWizardWithImage(page, ['XXXX', '....']);
+      await openWizardWithImage(page, [
+        'XXXX',
+        '....',
+      ]);
       await selectImportType(page, startsFrom);
 
       // Type in the field.
@@ -89,15 +102,23 @@ test.describe('Image import step', () => {
 
 test.describe('Importing as a single image', () => {
   test('should import the image at its own size by default', { tag: ['@import.single-image'] }, async ({ page }) => {
-    await openWizardWithImage(page, ['XXXX', 'X...']);
+    await openWizardWithImage(page, [
+      'XXXX',
+      'X...',
+    ]);
 
     // Import without changing anything.
     await finishImport(page);
 
     // The sprite is the image, as one frame, with its exact colors.
-    await assertLayerFrames(page, 0, [['XXXX', 'X...']]);
-    expect(await getPixelColor(page, 0, 1)).toBe(colorToInt('#FF0000'));
-    expect(await getPixelColor(page, 1, 1)).toBe(TRANSPARENT);
+    await assertLayerFrames(page, 0, [[
+      'XXXX',
+      'X...',
+    ]]);
+    await assertColorRows(page, [
+      'RRRR',
+      'R...',
+    ]);
   });
 
   const typedSizes = [
@@ -107,7 +128,10 @@ test.describe('Importing as a single image', () => {
 
   for (const { typed, value, other, expected, title } of typedSizes) {
     test(`should keep the aspect ratio when typing ${title}`, { tag: ['@import.resize-aspect'] }, async ({ page }) => {
-      await openWizardWithImage(page, ['XXXX', '....']);
+      await openWizardWithImage(page, [
+        'XXXX',
+        '....',
+      ]);
 
       // Type a size for this 4x2 image.
       await typeInWizardField(page, typed, value);
@@ -118,7 +142,10 @@ test.describe('Importing as a single image', () => {
   }
 
   test('should round the aspect ratio to the nearest pixel', { tag: ['@import.resize-aspect'] }, async ({ page }) => {
-    await openWizardWithImage(page, ['XXX', '...']);
+    await openWizardWithImage(page, [
+      'XXX',
+      '...',
+    ]);
 
     // A width of 4 on this 3x2 image gives a height of 2.67.
     await typeInWizardField(page, 'resize-width', '4');
@@ -134,9 +161,14 @@ test.describe('Importing as a single image', () => {
     await finishImport(page);
 
     // Each pixel becomes a block of four, with its exact color.
-    await assertLayerFrames(page, 0, [['XX..', 'XX..']]);
-    expect(await getPixelColor(page, 1, 1)).toBe(colorToInt('#FF0000'));
-    expect(await getPixelColor(page, 2, 1)).toBe(TRANSPARENT);
+    await assertLayerFrames(page, 0, [[
+      'XX..',
+      'XX..',
+    ]]);
+    await assertColorRows(page, [
+      'RR..',
+      'RR..',
+    ]);
   });
 
   test('should blend pixels when resizing with smoothing, the default', { tag: ['@import.resize-smoothing'] }, async ({ page }) => {
@@ -166,10 +198,22 @@ test.describe('Importing as a spritesheet', () => {
     'XX.X',
   ];
   const FOUR_CELLS_IN_READING_ORDER = [
-    ['X.', '..'],
-    ['XX', 'X.'],
-    ['.X', 'XX'],
-    ['..', '.X'],
+    [
+      'X.',
+      '..',
+    ],
+    [
+      'XX',
+      'X.',
+    ],
+    [
+      '.X',
+      'XX',
+    ],
+    [
+      '..',
+      '.X',
+    ],
   ];
 
   test('should read the frames left to right, then top to bottom', { tag: ['@import.spritesheet', '@import.sheet-order'] }, async ({ page }) => {
@@ -177,9 +221,10 @@ test.describe('Importing as a spritesheet', () => {
     await assertLayerFrames(page, 0, FOUR_CELLS_IN_READING_ORDER);
 
     // The cells keep their exact colors.
-    const secondFrame = 1;
-    expect(await getPixelColor(page, 0, 0, 0, secondFrame)).toBe(colorToInt('#FF0000'));
-    expect(await getPixelColor(page, 1, 1, 0, secondFrame)).toBe(TRANSPARENT);
+    await assertColorRows(page, [
+      'RR',
+      'R.',
+    ], { frameIndex: 1 });
   });
 
   test('should use the default frame size and offset to import the whole image', { tag: ['@import.spritesheet'] }, async ({ page }) => {
@@ -191,7 +236,10 @@ test.describe('Importing as a spritesheet', () => {
   });
 
   test('should take a frame size that is not square', { tag: ['@import.sheet-size'] }, async ({ page }) => {
-    await importSpritesheet(page, ['XX..', 'X..X'], { 'frame-size-x': '2', 'frame-size-y': '1' });
+    await importSpritesheet(page, [
+      'XX..',
+      'X..X',
+    ], { 'frame-size-x': '2', 'frame-size-y': '1' });
 
     // The sprite is 2x1. The empty cell is skipped.
     await assertLayerFrames(page, 0, [['XX'], ['X.'], ['.X']]);
@@ -219,7 +267,13 @@ test.describe('Importing as a spritesheet', () => {
     ], { 'frame-size-x': '2', 'frame-size-y': '2' });
 
     // Only the first and last cells make frames.
-    await assertLayerFrames(page, 0, [['XX', 'XX'], ['..', 'XX']]);
+    await assertLayerFrames(page, 0, [[
+      'XX',
+      'XX',
+    ], [
+      '..',
+      'XX',
+    ]]);
   });
 
   test('should ignore cells that do not fit in the image', { tag: ['@import.sheet-partial-cells'] }, async ({ page }) => {
@@ -231,7 +285,11 @@ test.describe('Importing as a spritesheet', () => {
     ], { 'frame-size-x': '3', 'frame-size-y': '3' });
 
     // Only one 3x3 cell fits in this 5x4 image.
-    await assertLayerFrames(page, 0, [['X..', '...', '...']]);
+    await assertLayerFrames(page, 0, [[
+      'X..',
+      '...',
+      '...',
+    ]]);
   });
 
   test('should show and update a grid on the preview', { tag: ['@import.spritesheet', '@import.sheet-grid'] }, async ({ page }) => {
@@ -258,7 +316,10 @@ test.describe('Importing as a spritesheet', () => {
 
   for (const value of invalidFrameSizes) {
     test(`should use a frame size of 1 instead of "${value}"`, { tag: ['@import.sheet-invalid'] }, async ({ page }) => {
-      await openWizardWithImage(page, ['X.', '.X']);
+      await openWizardWithImage(page, [
+        'X.',
+        '.X',
+      ]);
       await selectImportType(page, 'sheet');
 
       // Paste the value.

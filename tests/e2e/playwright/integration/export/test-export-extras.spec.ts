@@ -1,138 +1,121 @@
 import test, { expect } from "@playwright/test";
+import fs from 'fs/promises';
 import {
-  openEditor,
-  openExportSettingsPanel,
-  setPiskelFromGrid,
-  setPrimaryColor,
+  assertColorRows,
+  assertCurrentLayer,
+  assertFrameCount,
   clickTool,
+  downloadGifExport,
   drawAtPixel,
   getAddFrameButton,
   getAddLayerButton,
-  wait,
-  assertFrameCount,
+  gridFromColorRows,
+  openEditor,
+  openExportSettingsPanel,
+  readPngColorRows,
   selectExportTab,
+  setPiskelFromGrid,
+  setPrimaryColor,
   testId,
 } from "../../testutils";
-import PNG from 'png-ts';
-import { parseGIF, decompressFrames } from 'gifuct-js';
-import fs from 'fs/promises';
+
+// The sprites are 2x2 or 4x4, so that the exported images read at a glance.
+
+/** A 2x2 sprite with two red pixels on a diagonal */
+const RED_DIAGONAL = [
+  'R.',
+  '.R',
+];
 
 test.describe('Export extras — GIF loop toggle', () => {
 
   test('GIF repeat checkbox should be present and toggleable', { tag: ['@export.gif-loop'] }, async ({ page }) => {
     await openEditor(page);
+    await setPiskelFromGrid(page, gridFromColorRows(RED_DIAGONAL));
     await openExportSettingsPanel(page);
     await selectExportTab(page, 'gif');
 
+    // The GIF loops by default: it holds the NETSCAPE2.0 block that sets the loops.
     const repeatCheckbox = testId(page, 'gif-loop-checkbox');
-    await expect(repeatCheckbox).toBeVisible();
+    await expect(repeatCheckbox).toBeChecked();
+    expect((await downloadGifExport(page)).file.includes('NETSCAPE2.0')).toBe(true);
 
-    // Check default state
-    const initialState = await repeatCheckbox.isChecked();
+    // Uncheck it: the GIF plays once.
+    await repeatCheckbox.uncheck();
+    await expect(repeatCheckbox).not.toBeChecked();
+    expect((await downloadGifExport(page)).file.includes('NETSCAPE2.0')).toBe(false);
 
-    // Toggle it
-    if (initialState) {
-      await repeatCheckbox.uncheck();
-      await expect(repeatCheckbox).not.toBeChecked();
-    } else {
-      await repeatCheckbox.check();
-      await expect(repeatCheckbox).toBeChecked();
-    }
-
-    // Toggle back
-    if (initialState) {
-      await repeatCheckbox.check();
-      await expect(repeatCheckbox).toBeChecked();
-    } else {
-      await repeatCheckbox.uncheck();
-      await expect(repeatCheckbox).not.toBeChecked();
-    }
+    // Check it again: the GIF loops again.
+    await repeatCheckbox.check();
+    await expect(repeatCheckbox).toBeChecked();
+    expect((await downloadGifExport(page)).file.includes('NETSCAPE2.0')).toBe(true);
   });
 
   test('downloading a GIF should produce a valid file', { tag: ['@export.gif'] }, async ({ page }) => {
+    // A frame with two red pixels, and a second one with a blue pixel.
     await openEditor(page);
-
-    // Create 2 frames with different colors so the GIF has animation
-    await setPiskelFromGrid(page, [['R', 'T'], ['T', 'R']]);
+    await setPiskelFromGrid(page, gridFromColorRows(RED_DIAGONAL));
     await getAddFrameButton(page).click();
     await assertFrameCount(page, 2);
     await setPrimaryColor(page, '#0000FF');
     await clickTool(page, 'tool-pen');
     await drawAtPixel(page, 0, 0);
-    await wait(200);
+    await assertColorRows(page, [
+      'B.',
+      '..',
+    ], { frameIndex: 1 });
 
+    // Download the GIF.
     await openExportSettingsPanel(page);
     await selectExportTab(page, 'gif');
-
-    // Download the GIF
     const downloadPromise = page.waitForEvent('download');
     await testId(page, 'gif-download-button').click();
     const download = await downloadPromise;
-
-    // Verify filename ends with .gif
     expect(download.suggestedFilename()).toMatch(/\.gif$/i);
 
-    // Parse GIF and verify frames
-    const downloadPath = await download.path();
-    if (!downloadPath) throw new Error('Download path is null');
-    const fileData = await fs.readFile(downloadPath);
-    expect(fileData.length).toBeGreaterThan(0);
+    // It's a GIF file, starting with "GIF87a" or "GIF89a".
+    const file = await fs.readFile(await download.path());
+    expect(file.subarray(0, 6).toString('ascii')).toMatch(/^GIF8[79]a$/);
 
-    // GIF magic bytes: "GIF89a" or "GIF87a"
-    const header = fileData.subarray(0, 6).toString('ascii');
-    expect(header).toMatch(/^GIF8[79]a$/);
-
-    // Decode and verify frame content
-    const gif = parseGIF(fileData as unknown as ArrayBuffer);
-    const frames = decompressFrames(gif, true);
-
-    // Should have 2 frames
-    expect(frames.length).toBe(2);
-
-    // Frame dimensions should match the 2x2 canvas
-    expect(frames[0].dims.width).toBe(2);
-    expect(frames[0].dims.height).toBe(2);
-
-    // Frame 0 pixel (0,0) should be red (from setPiskelFromGrid R)
-    const frame0Color = frames[0].colorTable[frames[0].pixels[0]].toString();
-    expect(frame0Color).toBe('255,0,0');
+    // It has both frames.
+    const { frames } = await downloadGifExport(page);
+    expect(frames).toEqual([
+      RED_DIAGONAL,
+      [
+        'B.',
+        '..',
+      ],
+    ]);
   });
 });
 
 test.describe('Export extras — ZIP layer names', () => {
 
   test('use layer names checkbox should appear when split by layers is checked', { tag: ['@export.zip-layer-names'] }, async ({ page }) => {
+    // A sprite with two layers, so that splitting by layers makes sense.
     await openEditor(page);
-
-    // Need 2 layers for split-by-layers to be meaningful
-    await setPiskelFromGrid(page, [['R', 'T'], ['T', 'R']]);
+    await setPiskelFromGrid(page, gridFromColorRows(RED_DIAGONAL));
     await getAddLayerButton(page).click();
-    await wait(300);
+    await assertCurrentLayer(page, 1);
 
     await openExportSettingsPanel(page);
     await selectExportTab(page, 'zip');
-
     const splitLayersCheckbox = page.locator('.zip-split-layers-checkbox');
     const useLayerNamesContainer = page.locator('.use-layer-names-container');
     const useLayerNamesCheckbox = page.locator('.zip-use-layer-names-checkbox');
 
-    // Initially split-layers is unchecked → layer names container hidden
+    // Splitting by layers is off by default, and the layer names option is hidden.
     await expect(splitLayersCheckbox).not.toBeChecked();
     await expect(useLayerNamesContainer).toBeHidden();
 
-    // Check split-layers → layer names checkbox should appear
+    // Split by layers: the layer names option shows, and can be checked.
     await splitLayersCheckbox.check();
-    await wait(200);
     await expect(useLayerNamesContainer).toBeVisible();
-    await expect(useLayerNamesCheckbox).toBeVisible();
-
-    // Toggle the layer names checkbox
     await useLayerNamesCheckbox.check();
     await expect(useLayerNamesCheckbox).toBeChecked();
 
-    // Uncheck split-layers → layer names hidden again
+    // Stop splitting by layers: the option is hidden again.
     await splitLayersCheckbox.uncheck();
-    await wait(200);
     await expect(useLayerNamesContainer).toBeHidden();
   });
 });
@@ -140,102 +123,53 @@ test.describe('Export extras — ZIP layer names', () => {
 test.describe('Export extras — scale slider', () => {
 
   test('scale slider should sync with width/height inputs', { tag: ['@export.scale', '@export.resolution'] }, async ({ page }) => {
+    // A 2x2 sprite with a red pixel: at a scale of 1, the export is 2x2.
     await openEditor(page);
-
-    // Use a known 2x2 canvas with R at (0,0)
-    await setPiskelFromGrid(page, [
-      ['R', 'T'],
-      ['T', 'T'],
-    ]);
-
+    await setPiskelFromGrid(page, gridFromColorRows([
+      'R.',
+      '..',
+    ]));
     await openExportSettingsPanel(page);
-
     const widthInput = testId(page, 'export-width-input');
     const heightInput = testId(page, 'export-height-input');
-
-    // Default scale should be 1 → width/height = 2x2
     await expect(widthInput).toHaveValue('2');
     await expect(heightInput).toHaveValue('2');
 
-    // Change scale to 2 → width/height should become 4x4
-    await page.evaluate(() => {
-      const slider = document.querySelector('[data-test-id="export-scale-slider"]') as HTMLInputElement;
-      slider.value = '2';
-      slider.dispatchEvent(new Event('input', { bubbles: true }));
-      slider.dispatchEvent(new Event('change', { bubbles: true }));
-    });
-    await wait(300);
-
+    // A scale of 2 makes it 4x4.
+    await testId(page, 'export-scale-slider').fill('2');
     await expect(widthInput).toHaveValue('4');
     await expect(heightInput).toHaveValue('4');
 
-    // Download scaled PNG and verify dimensions
+    // The PNG tab shows that size, and the PNG has each pixel twice as large.
     await selectExportTab(page, 'png');
-    await wait(300);
-    const dimensionInfo = await page.locator('.png-export-dimension-info').innerText();
-    expect(dimensionInfo).toContain('4');
-
+    await expect(page.locator('.png-export-dimension-info')).toContainText('4');
     const downloadPromise = page.waitForEvent('download');
     await testId(page, 'png-download-button').click();
     const download = await downloadPromise;
-    const dlPath = await download.path();
-    if (!dlPath) throw new Error('Download path is null');
-
-    const pngData = await fs.readFile(dlPath);
-    const png = new PNG(pngData);
-
-    // 2x2 canvas scaled 2x → 4x4 PNG
-    expect(png.width).toBe(4);
-    expect(png.height).toBe(4);
-
-    // Verify pixel grid matches expected scaled pattern
-    const pixels = png.decodePixels();
-    const grid: string[][] = [];
-    for (let y = 0; y < png.height; y++) {
-      const row: string[] = [];
-      for (let x = 0; x < png.width; x++) {
-        const i = (y * png.width + x) * 4;
-        const r = pixels[i], g = pixels[i + 1], b = pixels[i + 2], a = pixels[i + 3];
-        row.push(r === 255 && g === 0 && b === 0 && a === 255 ? 'R' : 'T');
-      }
-      grid.push(row);
-    }
-
-    // Red pixel at (0,0) scaled 2x → 2x2 block at top-left
-    expect(grid).toEqual([
-      ['R', 'R', 'T', 'T'],
-      ['R', 'R', 'T', 'T'],
-      ['T', 'T', 'T', 'T'],
-      ['T', 'T', 'T', 'T'],
+    expect(readPngColorRows(await fs.readFile(await download.path()))).toEqual([
+      'RR..',
+      'RR..',
+      '....',
+      '....',
     ]);
   });
 
   test('changing width input should update scale and height', { tag: ['@export.resolution'] }, async ({ page }) => {
     await openEditor(page);
-
-    await setPiskelFromGrid(page, [
-      ['R', 'T', 'T', 'T'],
-      ['T', 'T', 'T', 'T'],
-      ['T', 'T', 'T', 'T'],
-      ['T', 'T', 'T', 'T'],
-    ]);
-
+    await setPiskelFromGrid(page, gridFromColorRows([
+      'R...',
+      '....',
+      '....',
+      '....',
+    ]));
     await openExportSettingsPanel(page);
 
+    // Type a width of 8, twice the size of the sprite: the height follows, and the
+    // scale is 2.
     const widthInput = testId(page, 'export-width-input');
-    const heightInput = testId(page, 'export-height-input');
-    const scaleText = testId(page, 'export-scale-text');
-
-    // Type 8 into width (2x scale for 4x4 canvas)
     await widthInput.fill('8');
     await widthInput.dispatchEvent('change');
-    await wait(300);
-
-    // Height should sync to 8 (maintaining 1:1 ratio)
-    await expect(heightInput).toHaveValue('8');
-
-    // Scale text should show 2x
-    const text = await scaleText.innerText();
-    expect(text).toContain('2');
+    await expect(testId(page, 'export-height-input')).toHaveValue('8');
+    await expect(testId(page, 'export-scale-text')).toContainText('2');
   });
 });

@@ -1,11 +1,21 @@
 import test, {  expect } from "@playwright/test";
-import { openEditor, openExportSettingsPanel, setPiskelFromGrid, testId, selectExportTab } from "../../testutils";
+import {
+  openEditor,
+  openExportSettingsPanel,
+  setPiskelFromGrid,
+  testId,
+  selectExportTab,
+  gridFromColorRows,
+} from "../../testutils";
 import fs from 'fs/promises';
 import PNG from 'png-ts';
 
 test('Test export png with scaling', { tag: ['@export.scale'] }, async ({ page }) => {
     await openEditor(page);
-    await setPiskelFromGrid(page, [["B", "T"],["T", "B"]]);
+    await setPiskelFromGrid(page, gridFromColorRows([
+      'B.',
+      '.B',
+    ]));
 
     await openExportSettingsPanel(page);
 

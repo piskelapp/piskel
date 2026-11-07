@@ -13,11 +13,9 @@ import {
   getMergeLayerButton,
   getDeleteLayerButton,
   getAllLayerOpacityButtons,
-  getPixelColor,
   drawAtPixel,
   setPrimaryColor,
   clickTool,
-  colorToInt,
   assertColorRows,
   assertCurrentLayer,
   assertFrameCount,
@@ -48,10 +46,6 @@ import {
   undo,
   waitForGrid,
 } from "../../testutils";
-
-const EMPTY = ['....', '....', '....', '....'];
-const PIXEL_TOP_LEFT = ['X...', '....', '....', '....'];
-const PIXEL_IN_CENTER = ['....', '.X..', '....', '....'];
 
 /** 10x10 sprites: empty, or with a single pixel */
 const EMPTY_10X10 = [
@@ -258,30 +252,58 @@ test.describe('Layer operations', () => {
   });
 
   test('should merge layer down', { tag: ['@layers.merge-down'] }, async ({ page }) => {
+    // Draw a red pixel on the bottom layer.
     await openEditor(page);
-
-    // Draw on layer 0
+    await setPiskelFromGrid(page, gridFromRows(EMPTY_10X10));
     await clickTool(page, 'tool-pen');
     await setPrimaryColor(page, '#FF0000');
     await drawAtPixel(page, 0, 0);
+    await assertColorRows(page, [
+      'R.........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+    ]);
 
-    // Add layer 1 and draw on it
+    // Add a layer, and draw a green pixel on it.
     await getAddLayerButton(page).click();
+    await assertCurrentLayer(page, 1);
     await setPrimaryColor(page, '#00FF00');
     await drawAtPixel(page, 1, 1);
+    await assertColorRows(page, [
+      '..........',
+      '.G........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+    ], { layerIndex: 1 });
 
-    expect(await getCurrentPiskelLayerCount(page)).toBe(2);
-
-    // Merge layer 1 down into layer 0
+    // Merge the top layer down: a single layer is left, with both pixels.
     await getMergeLayerButton(page).click();
-
     expect(await getCurrentPiskelLayerCount(page)).toBe(1);
-
-    // Both pixels should exist in the merged layer
-    const pixel00 = await getPixelColor(page, 0, 0, 0, 0);
-    const pixel11 = await getPixelColor(page, 1, 1, 0, 0);
-    expect(pixel00).toBe(colorToInt('#FF0000'));
-    expect(pixel11).toBe(colorToInt('#00FF00'));
+    await assertColorRows(page, [
+      'R.........',
+      '.G........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+    ]);
   });
 
   test('should keep the upper layer on top, and its name, when merging down', { tag: ['@layers.merge-down'] }, async ({ page }) => {
@@ -399,7 +421,7 @@ test.describe('Layer operations', () => {
   test('should apply the opacity of the current layer to the preview but not to the canvas', { tag: ['@layers.opacity-rendering'] }, async ({ page }) => {
     // Start from a layer with a pixel, fully opaque in the preview.
     await openEditor(page);
-    await setPiskelFromGrid(page, gridFromRows(PIXEL_TOP_LEFT));
+    await setPiskelFromGrid(page, gridFromRows(PIXEL_AT_0_0));
     await assertPreviewPixelAlpha(page, 0, 0, 255);
     const canvasBefore = await screenshotSettledCanvas(page);
 
@@ -479,12 +501,12 @@ test.describe('Layer operations', () => {
   test('should combine the opacity of other layers with the layer preview opacity on the canvas', { tag: ['@layers.opacity-rendering', '@layers.preview'] }, async ({ page }) => {
     // Draw a pixel in a top layer, above an empty bottom layer.
     await openEditor(page);
-    await setPiskelFromGrid(page, gridFromRows(EMPTY));
+    await setPiskelFromGrid(page, gridFromRows(EMPTY_10X10));
     await getAddLayerButton(page).click();
     await assertCurrentLayer(page, 1);
     await clickTool(page, 'tool-pen');
     await drawAtPixel(page, 0, 0);
-    expect(await readPixelRows(page, 4, 4, 1)).toEqual(PIXEL_TOP_LEFT);
+    expect(await readPixelRows(page, 10, 10, 1)).toEqual(PIXEL_AT_0_0);
 
     // From the bottom layer, the opaque top layer shows at the default 0.2.
     await selectBottomLayer(page);
@@ -502,7 +524,7 @@ test.describe('Layer operations', () => {
   test('should list the top layer first and draw on the current layer', { tag: ['@layers.list-order'] }, async ({ page }) => {
     // Start from a sprite with one empty layer.
     await openEditor(page);
-    await setPiskelFromGrid(page, gridFromRows(EMPTY));
+    await setPiskelFromGrid(page, gridFromRows(EMPTY_10X10));
     await assertLayerNames(page, ['Base layer']);
 
     // Add a layer: it goes above the first one, so it comes first in the list.
@@ -514,21 +536,21 @@ test.describe('Layer operations', () => {
     // Draw: only the highlighted top layer changes.
     await clickTool(page, 'tool-pen');
     await drawAtPixel(page, 1, 1);
-    expect(await readPixelRows(page, 4, 4, 1)).toEqual(PIXEL_IN_CENTER);
-    expect(await readPixelRows(page, 4, 4, 0)).toEqual(EMPTY);
+    expect(await readPixelRows(page, 10, 10, 1)).toEqual(PIXEL_AT_1_1);
+    expect(await readPixelRows(page, 10, 10, 0)).toEqual(EMPTY_10X10);
 
     // Select the bottom layer and draw: only that layer changes.
     await selectBottomLayer(page);
     await expect(getLayerItems(page).last()).toHaveClass(/current-layer-item/);
     await drawAtPixel(page, 0, 0);
-    expect(await readPixelRows(page, 4, 4, 0)).toEqual(PIXEL_TOP_LEFT);
-    expect(await readPixelRows(page, 4, 4, 1)).toEqual(PIXEL_IN_CENTER);
+    expect(await readPixelRows(page, 10, 10, 0)).toEqual(PIXEL_AT_0_0);
+    expect(await readPixelRows(page, 10, 10, 1)).toEqual(PIXEL_AT_1_1);
   });
 
   test('should duplicate the current layer above it', { tag: ['@layers.duplicate'] }, async ({ page }) => {
     // Start from a layer with a pixel, below an empty layer.
     await openEditor(page);
-    await setPiskelFromGrid(page, gridFromRows(PIXEL_TOP_LEFT));
+    await setPiskelFromGrid(page, gridFromRows(PIXEL_AT_0_0));
     await getAddLayerButton(page).click();
     await assertCurrentLayer(page, 1);
     await assertLayerNames(page, ['Layer 1', 'Base layer']);
@@ -542,9 +564,9 @@ test.describe('Layer operations', () => {
     await assertCurrentLayer(page, 1);
 
     // It has the pixels of the original, and the other layers didn't change.
-    expect(await readPixelRows(page, 4, 4, 2)).toEqual(EMPTY);
-    expect(await readPixelRows(page, 4, 4, 1)).toEqual(PIXEL_TOP_LEFT);
-    expect(await readPixelRows(page, 4, 4, 0)).toEqual(PIXEL_TOP_LEFT);
+    expect(await readPixelRows(page, 10, 10, 2)).toEqual(EMPTY_10X10);
+    expect(await readPixelRows(page, 10, 10, 1)).toEqual(PIXEL_AT_0_0);
+    expect(await readPixelRows(page, 10, 10, 0)).toEqual(PIXEL_AT_0_0);
   });
 
   test('should duplicate every frame of the layer, as an independent copy', { tag: ['@layers.duplicate'] }, async ({ page }) => {
@@ -609,16 +631,27 @@ test.describe('Layer operations', () => {
   });
 
   test('should turn layer preview off when the layer preview opacity is 0, and on at any other value', { tag: ['@layers.preview-opacity', '@layers.preview'] }, async ({ page }) => {
-    const BOTH_LAYERS = ['X...', '.X..', '....', '....'];
+    const BOTH_LAYERS = [
+      'X.........',
+      '.X........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+    ];
 
     // Start from two layers with a pixel each.
     await openEditorWithFakeClock(page);
-    await setPiskelFromGrid(page, gridFromRows(PIXEL_TOP_LEFT));
+    await setPiskelFromGrid(page, gridFromRows(PIXEL_AT_0_0));
     await getAddLayerButton(page).click();
     await assertCurrentLayer(page, 1);
     await clickTool(page, 'tool-pen');
     await drawAtPixel(page, 1, 1);
-    expect(await readPixelRows(page, 4, 4, 1)).toEqual(PIXEL_IN_CENTER);
+    expect(await readPixelRows(page, 10, 10, 1)).toEqual(PIXEL_AT_1_1);
 
     // Add an empty frame, so that the animated preview keeps rendering.
     await getAddFrameButton(page).click();
@@ -628,20 +661,20 @@ test.describe('Layer operations', () => {
     await selectFrame(page, 0);
     await assertLayerPreviewEnabled(page, true);
     await assertOtherLayerOpacityOnCanvas(page, 0, 0, 0.2);
-    await assertPreviewPlays(page, [BOTH_LAYERS, EMPTY]);
+    await assertPreviewPlays(page, [BOTH_LAYERS, EMPTY_10X10]);
 
     // A layer preview opacity of 0 turns layer preview off. It only concerns the
     // canvas: the animated preview still shows all the layers.
     await setLayerPreviewOpacity(page, 0);
     await assertLayerPreviewEnabled(page, false);
     await assertOtherLayerHiddenOnCanvas(page, 0, 0);
-    await assertPreviewPlays(page, [BOTH_LAYERS, EMPTY]);
+    await assertPreviewPlays(page, [BOTH_LAYERS, EMPTY_10X10]);
 
     // Any other value turns it back on.
     await setLayerPreviewOpacity(page, 0.5);
     await assertLayerPreviewEnabled(page, true);
     await assertOtherLayerOpacityOnCanvas(page, 0, 0, 0.5);
-    await assertPreviewPlays(page, [BOTH_LAYERS, EMPTY]);
+    await assertPreviewPlays(page, [BOTH_LAYERS, EMPTY_10X10]);
   });
 
   test('should reset the layer preview opacity to 0.2 when turning layer preview on at 0', { tag: ['@layers.preview-opacity'] }, async ({ page }) => {

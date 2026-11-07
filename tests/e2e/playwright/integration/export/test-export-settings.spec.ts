@@ -8,16 +8,17 @@ import {
   setPiskelFromGrid,
   waitForEditorReady,
   testId,
+  gridFromColorRows,
 } from "../../testutils";
 
 test.describe('Export resolution', () => {
   test('typing a resolution should allow a fractional scale', { tag: ['@export.free-scale'] }, async ({ page }) => {
     // Start from a 2x2 sprite with red pixels in two opposite corners.
     await openEditor(page);
-    await setPiskelFromGrid(page, [
-      ['R', 'T'],
-      ['T', 'R'],
-    ]);
+    await setPiskelFromGrid(page, gridFromColorRows([
+      'R.',
+      '.R',
+    ]));
     await openExportSettingsPanel(page);
 
     // Type a width of 3: the scale is 1.5x, and the slider shows the closest value.
@@ -39,10 +40,10 @@ test.describe('Export resolution', () => {
   test('typing a resolution should allow a scale above 32x', { tag: ['@export.free-scale'] }, async ({ page }) => {
     // Start from a 2x2 sprite with red pixels in two opposite corners.
     await openEditor(page);
-    await setPiskelFromGrid(page, [
-      ['R', 'T'],
-      ['T', 'R'],
-    ]);
+    await setPiskelFromGrid(page, gridFromColorRows([
+      'R.',
+      '.R',
+    ]));
     await openExportSettingsPanel(page);
 
     // Type a width of 66: the scale is 33x, and the slider stops at its maximum.

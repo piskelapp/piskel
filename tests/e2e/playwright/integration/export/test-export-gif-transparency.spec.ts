@@ -17,6 +17,7 @@ import {
   setTopLayerOpacity,
   waitFor,
   testId,
+  gridFromColorRows,
 } from "../../testutils";
 
 const TOO_MANY_COLORS = 'misc/gif-tests/too-many-colors-with-transparency.piskel';
@@ -40,10 +41,10 @@ test.describe('GIF transparency', () => {
   test('a sprite with few colors should keep its transparency', { tag: ['@export.gif-transparency'] }, async ({ page }) => {
     // Start from a sprite with few colors and empty pixels.
     await openEditor(page);
-    await setPiskelFromGrid(page, [
-      ['R', 'T'],
-      ['T', 'B'],
-    ]);
+    await setPiskelFromGrid(page, gridFromColorRows([
+      'R.',
+      '.B',
+    ]));
 
     // Download the GIF.
     await openExportSettingsPanel(page);
@@ -60,7 +61,7 @@ test.describe('GIF transparency', () => {
   test('the transparent color should be a color the sprite does not use', { tag: ['@export.gif-transparency'] }, async ({ page }) => {
     // Start from a sprite using yellow, the first color tried as the transparent color.
     await openEditor(page);
-    await setPiskelFromGrid(page, [['T', 'T']]);
+    await setPiskelFromGrid(page, gridFromColorRows(['..']));
     await clickTool(page, 'tool-pen');
     await setPrimaryColor(page, '#FFFF00');
     await drawAtPixel(page, 0, 0);
@@ -77,7 +78,7 @@ test.describe('GIF transparency', () => {
   test('a layer below full opacity should render transparent pixels on white', { tag: ['@export.gif-transparency'] }, async ({ page }) => {
     // Start from an empty sprite with a top layer.
     await openEditor(page);
-    await setPiskelFromGrid(page, [['T', 'T']]);
+    await setPiskelFromGrid(page, gridFromColorRows(['..']));
     await getAddLayerButton(page).click();
     await assertCurrentLayer(page, 1);
 
