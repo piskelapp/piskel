@@ -30,6 +30,32 @@ import {
   waitForGrid,
 } from "../../testutils";
 
+/** 10x10 frames */
+const EMPTY = [
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+];
+const PIXEL_AT_0_0 = [
+  'X.........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+];
+
 const RED = '#ff0000';
 const GREEN = '#00ff00';
 const BLUE = '#0000ff';
@@ -131,8 +157,8 @@ test.describe('Dropping a palette file', () => {
   for (const { format, file } of PALETTE_FILES) {
     test(`should save and select a ${format} file`, { tag: ['@colors-and-palettes.drop', '@colors-and-palettes.import-name'] }, async ({ page }) => {
       await openEditor(page);
-      await setPiskelFromGrid(page, gridFromRows(['..', '..']));
-      await waitForGrid(page, 2, 2, ['..', '..']);
+      await setPiskelFromGrid(page, gridFromRows(EMPTY));
+      await waitForGrid(page, 10, 10, EMPTY);
 
       // Drop the file.
       await dropFilesOnPixel(page, [file]);
@@ -143,7 +169,7 @@ test.describe('Dropping a palette file', () => {
       await assertNoDialogOpen(page);
 
       // The sprite isn't touched.
-      expect(await readPixelRows(page, 2, 2)).toEqual(['..', '..']);
+      expect(await readPixelRows(page, 10, 10)).toEqual(EMPTY);
 
       // It's saved: a new session offers it too.
       const newSession = await openEditorInNewPage(page);
@@ -178,8 +204,8 @@ test.describe('Palette messages', () => {
 test.describe('Palette storage', () => {
   test('should keep palettes in this browser, not in .piskel files', { tag: ['@colors-and-palettes.storage'] }, async ({ page, browser }) => {
     await openEditor(page);
-    await setPiskelFromGrid(page, gridFromRows(['X.', '..']));
-    await waitForGrid(page, 2, 2, ['X.', '..']);
+    await setPiskelFromGrid(page, gridFromRows(PIXEL_AT_0_0));
+    await waitForGrid(page, 10, 10, PIXEL_AT_0_0);
 
     // Save a palette and download the sprite.
     await createPaletteWithColors(page, 'My colors', [RED, GREEN, BLUE]);
@@ -197,7 +223,7 @@ test.describe('Palette storage', () => {
     const otherPage = await otherBrowser.newPage();
     await openEditor(otherPage);
     await importPiskelFile(otherPage, piskelPath);
-    await waitForGrid(otherPage, 2, 2, ['X.', '..']);
+    await waitForGrid(otherPage, 10, 10, PIXEL_AT_0_0);
     await assertPaletteOptions(otherPage, ['Current colors']);
     await otherBrowser.close();
   });

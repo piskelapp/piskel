@@ -25,15 +25,37 @@ import {
 const MAC_USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
 const WINDOWS_USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
 
-const EMPTY = ['....', '....', '....', '....'];
-const ONE_PIXEL = ['X...', '....', '....', '....'];
+const EMPTY = [
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+];
+const ONE_PIXEL = [
+  'X.........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+];
 
-/** Draw one pixel with the pen on an empty 4x4 sprite */
+/** Draw one pixel with the pen on an empty 10x10 sprite */
 const drawOnePixel = async (page: Page) => {
   await setPiskelFromGrid(page, gridFromRows(EMPTY));
   await clickTool(page, 'tool-pen');
   await drawAtPixel(page, 0, 0);
-  expect(await readPixelRows(page, 4, 4)).toEqual(ONE_PIXEL);
+  expect(await readPixelRows(page, 10, 10)).toEqual(ONE_PIXEL);
 };
 
 test.describe('Shortcuts while typing', () => {
@@ -51,7 +73,7 @@ test.describe('Shortcuts while typing', () => {
 
     // The tool is still the pen, and the drawing is still there.
     expect(await getSelectedToolId(page)).toBe('tool-pen');
-    expect(await readPixelRows(page, 4, 4)).toEqual(ONE_PIXEL);
+    expect(await readPixelRows(page, 10, 10)).toEqual(ONE_PIXEL);
 
     // Leave the input: the same key selects the eraser.
     await input.press('Escape');
@@ -69,6 +91,7 @@ test.describe('Shortcuts while typing', () => {
     await description.fill('');
     await description.press('e');
     await expect(description).toHaveValue('e');
+    // Give the key the time to select the eraser, if it wrongly did.
     await wait(100);
     expect(await getSelectedToolId(page)).toBe('tool-pen');
 
@@ -188,11 +211,11 @@ test.describe('On macOS', () => {
     // Control+Z does nothing.
     await page.keyboard.press('Control+z');
     await wait(100);
-    expect(await readPixelRows(page, 4, 4)).toEqual(ONE_PIXEL);
+    expect(await readPixelRows(page, 10, 10)).toEqual(ONE_PIXEL);
 
     // Cmd+Z undoes.
     await page.keyboard.press('Meta+z');
-    await waitForGrid(page, 4, 4, EMPTY);
+    await waitForGrid(page, 10, 10, EMPTY);
   });
 
   test('should show cmd and option in the cheatsheet and in tooltips', { tag: ['@keyboard-shortcuts.mac-labels'] }, async ({ page }) => {
@@ -223,11 +246,11 @@ test.describe('On other systems', () => {
     // The Windows key does nothing.
     await page.keyboard.press('Meta+z');
     await wait(100);
-    expect(await readPixelRows(page, 4, 4)).toEqual(ONE_PIXEL);
+    expect(await readPixelRows(page, 10, 10)).toEqual(ONE_PIXEL);
 
     // Ctrl+Z undoes.
     await page.keyboard.press('Control+z');
-    await waitForGrid(page, 4, 4, EMPTY);
+    await waitForGrid(page, 10, 10, EMPTY);
   });
 
   test('should show ctrl and alt in the cheatsheet and in tooltips', { tag: ['@keyboard-shortcuts.mac-labels'] }, async ({ page }) => {

@@ -1,5 +1,16 @@
 import test, { expect } from "@playwright/test";
-import { openEditor, openExportSettingsPanel, setPiskelFromGrid, testId, clickTool, setPrimaryColor, drawAtPixel, getAddLayerButton, selectExportTab } from "../../testutils";
+import {
+  openEditor,
+  openExportSettingsPanel,
+  setPiskelFromGrid,
+  testId,
+  clickTool,
+  setPrimaryColor,
+  drawAtPixel,
+  getAddLayerButton,
+  selectExportTab,
+  gridFromColorRows,
+} from "../../testutils";
 import fs from 'fs/promises';
 import AdmZip from 'adm-zip';
 import PNG from 'png-ts';
@@ -31,7 +42,10 @@ test.describe('ZIP export', () => {
   test('should export ZIP with one PNG per frame and correct pixels', { tag: ['@export.zip'] }, async ({ page }) => {
     await openEditor(page);
     // Frame 0: R G / B T
-    await setPiskelFromGrid(page, [["R", "G"], ["B", "T"]]);
+    await setPiskelFromGrid(page, gridFromColorRows([
+      'RG',
+      'B.',
+    ]));
 
     // Frame 1: G B / T G
     await page.keyboard.press('n');
@@ -82,7 +96,10 @@ test.describe('ZIP export', () => {
   test('should export ZIP with custom prefix', { tag: ['@export.zip'] }, async ({ page }) => {
     await openEditor(page);
     // Frame 0: R T / T R
-    await setPiskelFromGrid(page, [["R", "T"], ["T", "R"]]);
+    await setPiskelFromGrid(page, gridFromColorRows([
+      'R.',
+      '.R',
+    ]));
 
     // Frame 1: G B / T G
     await page.keyboard.press('n');
@@ -128,7 +145,10 @@ test.describe('ZIP export', () => {
   test('should export ZIP split by layers with correct content', { tag: ['@export.zip-split-layers'] }, async ({ page }) => {
     await openEditor(page);
     // Layer 0: R T / T R
-    await setPiskelFromGrid(page, [["R", "T"], ["T", "R"]]);
+    await setPiskelFromGrid(page, gridFromColorRows([
+      'R.',
+      '.R',
+    ]));
 
     // Add layer 1 and draw: T G / B T
     await getAddLayerButton(page).click();

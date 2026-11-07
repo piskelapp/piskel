@@ -23,15 +23,89 @@ import {
   waitForGrid,
 } from "../../testutils";
 
-const FULL = ['XXXX', 'XXXX', 'XXXX', 'XXXX'];
-const BLOCK = ['XX..', 'XX..', '....', '....'];
-const EMPTY = ['....', '....', '....', '....'];
+/** 10x10 sprites */
+const FULL = [
+  'XXXXXXXXXX',
+  'XXXXXXXXXX',
+  'XXXXXXXXXX',
+  'XXXXXXXXXX',
+  'XXXXXXXXXX',
+  'XXXXXXXXXX',
+  'XXXXXXXXXX',
+  'XXXXXXXXXX',
+  'XXXXXXXXXX',
+  'XXXXXXXXXX',
+];
+const BLOCK = [
+  'XX........',
+  'XX........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+];
+const EMPTY = [
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+];
+/** The block, moved by one pixel right and down */
+const BLOCK_AT_1_1 = [
+  '..........',
+  '.XX.......',
+  '.XX.......',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+];
+/** The block, moved by two pixels right and down */
+const BLOCK_AT_2_2 = [
+  '..........',
+  '..........',
+  '..XX......',
+  '..XX......',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+];
+
+/** 4x4 sprites, for the clipping tests that move content past the edges */
+const SMALL_BLOCK = [
+  'XX..',
+  'XX..',
+  '....',
+  '....',
+];
+const SMALL_EMPTY = [
+  '....',
+  '....',
+  '....',
+  '....',
+];
 
 /** Press delete, and check that it left the sprite as it is: nothing is selected */
 const assertNothingSelected = async (page: Page, rows: string[]) => {
   await page.keyboard.press('Delete');
   await wait(100);
-  expect(await readPixelRows(page, 4, 4)).toEqual(rows);
+  expect(await readPixelRows(page, rows[0].length, rows.length)).toEqual(rows);
 };
 
 test.describe('Moving a selection', () => {
@@ -41,11 +115,22 @@ test.describe('Moving a selection', () => {
 
     // Drag the selection: the sprite doesn't change.
     await dragBetweenPixels(page, 0, 0, 2, 2);
-    expect(await readPixelRows(page, 4, 4)).toEqual(FULL);
+    expect(await readPixelRows(page, 10, 10)).toEqual(FULL);
 
     // Deleting clears the new position.
     await page.keyboard.press('Delete');
-    await waitForGrid(page, 4, 4, ['XXXX', 'XXXX', 'XX..', 'XX..']);
+    await waitForGrid(page, 10, 10, [
+      'XXXXXXXXXX',
+      'XXXXXXXXXX',
+      'XX..XXXXXX',
+      'XX..XXXXXX',
+      'XXXXXXXXXX',
+      'XXXXXXXXXX',
+      'XXXXXXXXXX',
+      'XXXXXXXXXX',
+      'XXXXXXXXXX',
+      'XXXXXXXXXX',
+    ]);
   });
 
   test('should keep moving the content on later drags, without shift', { tag: ['@selection.move-content-continue'] }, async ({ page }) => {
@@ -54,12 +139,12 @@ test.describe('Moving a selection', () => {
 
     // Move the content with shift, then drag again without it.
     await moveSelectionContent(page, 0, 0, 1, 0);
-    await waitForGrid(page, 4, 4, EMPTY);
+    await waitForGrid(page, 10, 10, EMPTY);
     await dragBetweenPixels(page, 1, 0, 1, 1);
 
     // The original position is clear, and the content follows both drags.
     await page.keyboard.press('Enter');
-    await waitForGrid(page, 4, 4, ['....', '.XX.', '.XX.', '....']);
+    await waitForGrid(page, 10, 10, BLOCK_AT_1_1);
   });
 
   test('should show the move cursor when hovering the selection', { tag: ['@selection.move-cursor'] }, async ({ page }) => {
@@ -78,42 +163,58 @@ test.describe('Moving a selection', () => {
     await assertCanvasCursor(page, 'crosshair');
   });
 
+  // The clipping tests use a 4x4 sprite, to move content past its edges.
   test('should clip the content moved outside the canvas on commit', { tag: ['@selection.clip'] }, async ({ page }) => {
-    await openEditorWithRectangleSelect(page, BLOCK);
+    await openEditorWithRectangleSelect(page, SMALL_BLOCK);
     await dragBetweenPixels(page, 0, 0, 1, 1);
 
     // Move the block so that only its top left corner stays in the sprite.
     await moveSelectionContent(page, 0, 0, 3, 3);
-    await waitForGrid(page, 4, 4, EMPTY);
+    await waitForGrid(page, 4, 4, SMALL_EMPTY);
     await page.keyboard.press('Enter');
 
     // The sprite keeps its size.
-    await assertLayerFrames(page, 0, [['....', '....', '....', '...X']]);
+    await assertLayerFrames(page, 0, [[
+      '....',
+      '....',
+      '....',
+      '...X',
+    ]]);
   });
 
   test('should not wrap the content moved past the right edge onto the next row', { tag: ['@selection.clip'] }, async ({ page }) => {
-    await openEditorWithRectangleSelect(page, BLOCK);
+    await openEditorWithRectangleSelect(page, SMALL_BLOCK);
     await dragBetweenPixels(page, 0, 0, 1, 1);
 
     // Move the block so that only its left column stays in the sprite.
     await moveSelectionContent(page, 0, 0, 3, 0);
-    await waitForGrid(page, 4, 4, EMPTY);
+    await waitForGrid(page, 4, 4, SMALL_EMPTY);
     await page.keyboard.press('Enter');
 
-    await assertLayerFrames(page, 0, [['...X', '...X', '....', '....']]);
+    await assertLayerFrames(page, 0, [[
+      '...X',
+      '...X',
+      '....',
+      '....',
+    ]]);
   });
 
   test('should keep the whole content when moved back before the commit', { tag: ['@selection.clip'] }, async ({ page }) => {
-    await openEditorWithRectangleSelect(page, BLOCK);
+    await openEditorWithRectangleSelect(page, SMALL_BLOCK);
     await dragBetweenPixels(page, 0, 0, 1, 1);
 
     // Move the block partly outside, then back inside.
     await moveSelectionContent(page, 0, 0, 3, 3);
-    await waitForGrid(page, 4, 4, EMPTY);
+    await waitForGrid(page, 4, 4, SMALL_EMPTY);
     await dragBetweenPixels(page, 3, 3, 1, 1);
     await page.keyboard.press('Enter');
 
-    await waitForGrid(page, 4, 4, ['....', '.XX.', '.XX.', '....']);
+    await waitForGrid(page, 4, 4, [
+      '....',
+      '.XX.',
+      '.XX.',
+      '....',
+    ]);
   });
 
   // Undoing before the commit turns the move into a copy, so that isn't tested here:
@@ -124,19 +225,19 @@ test.describe('Moving a selection', () => {
 
     // Move the content and commit.
     await moveSelectionContent(page, 0, 0, 2, 2);
-    await waitForGrid(page, 4, 4, EMPTY);
+    await waitForGrid(page, 10, 10, EMPTY);
     await page.keyboard.press('Enter');
-    await waitForGrid(page, 4, 4, ['....', '....', '..XX', '..XX']);
+    await waitForGrid(page, 10, 10, BLOCK_AT_2_2);
 
     // The first undo reverts the commit, which leaves the content lifted.
     await wait(100);
     await undo(page);
-    await waitForGrid(page, 4, 4, EMPTY);
+    await waitForGrid(page, 10, 10, EMPTY);
 
     // The second undo reverts lifting it.
     await wait(100);
     await undo(page);
-    await waitForGrid(page, 4, 4, BLOCK);
+    await waitForGrid(page, 10, 10, BLOCK);
   });
 });
 
@@ -148,7 +249,18 @@ test.describe('Selection across frames and layers', () => {
     await getAddFrameButton(page).click();
     await clickTool(page, 'tool-pen');
     await drawAtPixel(page, 0, 0);
-    await waitForGrid(page, 4, 4, ['X...', '....', '....', '....'], { frameIndex: 1 });
+    await waitForGrid(page, 10, 10, [
+      'X.........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+    ], { frameIndex: 1 });
 
     // Select on the first frame, then go back to the second.
     await clickTool(page, 'tool-rectangle-select');
@@ -158,8 +270,8 @@ test.describe('Selection across frames and layers', () => {
 
     // Only the second frame changes.
     await page.keyboard.press('Delete');
-    await waitForGrid(page, 4, 4, EMPTY, { frameIndex: 1 });
-    expect(await readPixelRows(page, 4, 4, 0, 0)).toEqual(FULL);
+    await waitForGrid(page, 10, 10, EMPTY, { frameIndex: 1 });
+    expect(await readPixelRows(page, 10, 10, 0, 0)).toEqual(FULL);
   });
 
   test('should move content onto another frame', { tag: ['@selection.across-frames'] }, async ({ page }) => {
@@ -170,13 +282,13 @@ test.describe('Selection across frames and layers', () => {
     // Move the content on the first frame.
     await dragBetweenPixels(page, 0, 0, 1, 1);
     await moveSelectionContent(page, 0, 0, 2, 2);
-    await waitForGrid(page, 4, 4, EMPTY);
+    await waitForGrid(page, 10, 10, EMPTY);
 
     // Commit it on the second frame.
     await selectFrame(page, 1);
     await page.keyboard.press('Enter');
 
-    await assertLayerFrames(page, 0, [EMPTY, ['....', '....', '..XX', '..XX']]);
+    await assertLayerFrames(page, 0, [EMPTY, BLOCK_AT_2_2]);
   });
 
   test('should move content onto another layer', { tag: ['@selection.across-frames'] }, async ({ page }) => {
@@ -185,16 +297,15 @@ test.describe('Selection across frames and layers', () => {
     // Move the content on the first layer.
     await dragBetweenPixels(page, 0, 0, 1, 1);
     await moveSelectionContent(page, 0, 0, 2, 2);
-    await waitForGrid(page, 4, 4, EMPTY);
+    await waitForGrid(page, 10, 10, EMPTY);
 
     // Commit it on a new layer.
     await getAddLayerButton(page).click();
     await assertCurrentLayer(page, 1);
     await page.keyboard.press('Enter');
 
-    const moved = ['....', '....', '..XX', '..XX'];
-    await waitForGrid(page, 4, 4, moved, { layerIndex: 1 });
-    expect(await readPixelRows(page, 4, 4, 0, 0)).toEqual(EMPTY);
+    await waitForGrid(page, 10, 10, BLOCK_AT_2_2, { layerIndex: 1 });
+    expect(await readPixelRows(page, 10, 10, 0, 0)).toEqual(EMPTY);
   });
 
   test('should paste onto another layer', { tag: ['@selection.across-frames'] }, async ({ page }) => {
@@ -211,8 +322,8 @@ test.describe('Selection across frames and layers', () => {
     await pasteClipboardText(page, copied);
 
     // The pixels land at the moved position, and only on the new layer.
-    await waitForGrid(page, 4, 4, ['....', '....', '..XX', '..XX'], { layerIndex: 1 });
-    expect(await readPixelRows(page, 4, 4, 0, 0)).toEqual(BLOCK);
+    await waitForGrid(page, 10, 10, BLOCK_AT_2_2, { layerIndex: 1 });
+    expect(await readPixelRows(page, 10, 10, 0, 0)).toEqual(BLOCK);
   });
 });
 
@@ -239,7 +350,18 @@ test.describe('Ending a selection', () => {
       await clickTool(page, `tool-${name}-select`);
 
       await page.keyboard.press('Delete');
-      await waitForGrid(page, 4, 4, ['..XX', '..XX', 'XXXX', 'XXXX']);
+      await waitForGrid(page, 10, 10, [
+        '..XXXXXXXX',
+        '..XXXXXXXX',
+        'XXXXXXXXXX',
+        'XXXXXXXXXX',
+        'XXXXXXXXXX',
+        'XXXXXXXXXX',
+        'XXXXXXXXXX',
+        'XXXXXXXXXX',
+        'XXXXXXXXXX',
+        'XXXXXXXXXX',
+      ]);
     });
   }
 
@@ -257,20 +379,30 @@ test.describe('Ending a selection', () => {
     await openEditorWithRectangleSelect(page, BLOCK);
     await dragBetweenPixels(page, 0, 0, 1, 1);
     await moveSelectionContent(page, 0, 0, 1, 1);
-    await waitForGrid(page, 4, 4, EMPTY);
+    await waitForGrid(page, 10, 10, EMPTY);
 
     await drawAtPixel(page, 3, 0);
 
-    const moved = ['....', '.XX.', '.XX.', '....'];
-    await waitForGrid(page, 4, 4, moved);
-    await assertNothingSelected(page, moved);
+    await waitForGrid(page, 10, 10, BLOCK_AT_1_1);
+    await assertNothingSelected(page, BLOCK_AT_1_1);
   });
 
   test('should need a second click for a new shape selection', { tag: ['@selection.click-outside'] }, async ({ page }) => {
-    const rows = ['XX..', 'XX..', '....', '..XX'];
+    const rows = [
+      'XX........',
+      'XX........',
+      '..........',
+      '..XX......',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+    ];
     await openEditor(page);
     await setPiskelFromGrid(page, gridFromRows(rows));
-    await waitForGrid(page, 4, 4, rows);
+    await waitForGrid(page, 10, 10, rows);
     await clickTool(page, 'tool-shape-select');
     await drawAtPixel(page, 0, 0);
 
@@ -281,7 +413,7 @@ test.describe('Ending a selection', () => {
     // The next one selects the shape.
     await drawAtPixel(page, 3, 3);
     await page.keyboard.press('Delete');
-    await waitForGrid(page, 4, 4, BLOCK);
+    await waitForGrid(page, 10, 10, BLOCK);
   });
 
   test('should start a new selection when dragging outside the selection', { tag: ['@selection.drag-outside'] }, async ({ page }) => {
@@ -292,21 +424,43 @@ test.describe('Ending a selection', () => {
 
     // Only the new selection is deleted.
     await page.keyboard.press('Delete');
-    await waitForGrid(page, 4, 4, ['XXXX', 'XXXX', 'XX..', 'XX..']);
+    await waitForGrid(page, 10, 10, [
+      'XXXXXXXXXX',
+      'XXXXXXXXXX',
+      'XX..XXXXXX',
+      'XX..XXXXXX',
+      'XXXXXXXXXX',
+      'XXXXXXXXXX',
+      'XXXXXXXXXX',
+      'XXXXXXXXXX',
+      'XXXXXXXXXX',
+      'XXXXXXXXXX',
+    ]);
   });
 
   test('should apply moved content when dragging outside the selection', { tag: ['@selection.drag-outside'] }, async ({ page }) => {
     await openEditorWithRectangleSelect(page, BLOCK);
     await dragBetweenPixels(page, 0, 0, 1, 1);
     await moveSelectionContent(page, 0, 0, 1, 1);
-    await waitForGrid(page, 4, 4, EMPTY);
+    await waitForGrid(page, 10, 10, EMPTY);
 
     // Drag over part of the moved content, from outside it.
     await dragBetweenPixels(page, 0, 2, 1, 3);
-    await waitForGrid(page, 4, 4, ['....', '.XX.', '.XX.', '....']);
+    await waitForGrid(page, 10, 10, BLOCK_AT_1_1);
 
     // The new selection holds that part only.
     await page.keyboard.press('Delete');
-    await waitForGrid(page, 4, 4, ['....', '.XX.', '..X.', '....']);
+    await waitForGrid(page, 10, 10, [
+      '..........',
+      '.XX.......',
+      '..X.......',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+      '..........',
+    ]);
   });
 });

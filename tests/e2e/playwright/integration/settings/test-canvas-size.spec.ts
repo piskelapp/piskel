@@ -1,32 +1,34 @@
-import test, { expect } from "@playwright/test";
+import test, { expect, Page } from "@playwright/test";
 import {
-  expectGrid,
   expectDefaultResizeValues,
   expectResizeValues,
-  getCurrentPiskelHeight,
-  getCurrentPiskelWidth,
   openEditor,
   openResizeSettingsPanel,
   setPiskelFromGrid,
-  wait,
+  gridFromColorRows,
+  assertColorRows,
+  assertSpriteSize,
+  isSettingsDrawerExpanded,
 } from "../../testutils";
 
-/** Resize helper: open panel, set size, pick anchor, click resize */
+/** A 2x2 sprite, small so that the 4x4 result of each anchor reads at a glance */
+const DIAGONAL = [
+  'B.',
+  '.B',
+];
+
+/** Open the resize panel, type a size, pick an anchor, and resize */
 async function resizeWithAnchor(
-  page: any, width: string, height: string, origin: string
+  page: Page, width: string, height: string, origin: string
 ) {
   await openResizeSettingsPanel(page);
-  // Uncheck ratio to allow independent width/height
-  const ratioCheckbox = page.locator('.resize-ratio-checkbox');
-  if (await ratioCheckbox.isChecked()) {
-    await ratioCheckbox.uncheck();
-  }
+  // Uncheck the ratio, to type the width and the height.
+  await page.locator('.resize-ratio-checkbox').uncheck();
   await page.locator('[name="resize-width"]').fill(width);
   await page.locator('[name="resize-height"]').fill(height);
   await page.click(`[data-origin="${origin}"]`);
   await expect(page.locator(`[data-origin="${origin}"].selected`)).toBeAttached();
   await page.click('.resize-button');
-  await wait(300);
 }
 
 test.describe('Resize panel — anchor origins', () => {
@@ -35,93 +37,107 @@ test.describe('Resize panel — anchor origins', () => {
 
   test('TOP anchor should center content at top', { tag: ['@settings.resize-anchor'] }, async ({ page }) => {
     await openEditor(page);
-    await setPiskelFromGrid(page, [['B', 'T'], ['T', 'B']]);
+    await setPiskelFromGrid(page, gridFromColorRows(DIAGONAL));
 
     await resizeWithAnchor(page, '4', '4', 'TOP');
 
-    expect(await expectGrid(page,
-      [['T', 'B', 'T', 'T'],
-       ['T', 'T', 'B', 'T'],
-       ['T', 'T', 'T', 'T'],
-       ['T', 'T', 'T', 'T']], 0, 0)).toBe(true);
+    await assertSpriteSize(page, 4, 4);
+    await assertColorRows(page, [
+      '.B..',
+      '..B.',
+      '....',
+      '....',
+    ]);
   });
 
   test('TOPRIGHT anchor should place content at top-right', { tag: ['@settings.resize-anchor'] }, async ({ page }) => {
     await openEditor(page);
-    await setPiskelFromGrid(page, [['B', 'T'], ['T', 'B']]);
+    await setPiskelFromGrid(page, gridFromColorRows(DIAGONAL));
 
     await resizeWithAnchor(page, '4', '4', 'TOPRIGHT');
 
-    expect(await expectGrid(page,
-      [['T', 'T', 'B', 'T'],
-       ['T', 'T', 'T', 'B'],
-       ['T', 'T', 'T', 'T'],
-       ['T', 'T', 'T', 'T']], 0, 0)).toBe(true);
+    await assertSpriteSize(page, 4, 4);
+    await assertColorRows(page, [
+      '..B.',
+      '...B',
+      '....',
+      '....',
+    ]);
   });
 
   test('MIDDLELEFT anchor should place content at middle-left', { tag: ['@settings.resize-anchor'] }, async ({ page }) => {
     await openEditor(page);
-    await setPiskelFromGrid(page, [['B', 'T'], ['T', 'B']]);
+    await setPiskelFromGrid(page, gridFromColorRows(DIAGONAL));
 
     await resizeWithAnchor(page, '4', '4', 'MIDDLELEFT');
 
-    expect(await expectGrid(page,
-      [['T', 'T', 'T', 'T'],
-       ['B', 'T', 'T', 'T'],
-       ['T', 'B', 'T', 'T'],
-       ['T', 'T', 'T', 'T']], 0, 0)).toBe(true);
+    await assertSpriteSize(page, 4, 4);
+    await assertColorRows(page, [
+      '....',
+      'B...',
+      '.B..',
+      '....',
+    ]);
   });
 
   test('MIDDLE anchor should center content', { tag: ['@settings.resize-anchor'] }, async ({ page }) => {
     await openEditor(page);
-    await setPiskelFromGrid(page, [['B', 'T'], ['T', 'B']]);
+    await setPiskelFromGrid(page, gridFromColorRows(DIAGONAL));
 
     await resizeWithAnchor(page, '4', '4', 'MIDDLE');
 
-    expect(await expectGrid(page,
-      [['T', 'T', 'T', 'T'],
-       ['T', 'B', 'T', 'T'],
-       ['T', 'T', 'B', 'T'],
-       ['T', 'T', 'T', 'T']], 0, 0)).toBe(true);
+    await assertSpriteSize(page, 4, 4);
+    await assertColorRows(page, [
+      '....',
+      '.B..',
+      '..B.',
+      '....',
+    ]);
   });
 
   test('MIDDLERIGHT anchor should place content at middle-right', { tag: ['@settings.resize-anchor'] }, async ({ page }) => {
     await openEditor(page);
-    await setPiskelFromGrid(page, [['B', 'T'], ['T', 'B']]);
+    await setPiskelFromGrid(page, gridFromColorRows(DIAGONAL));
 
     await resizeWithAnchor(page, '4', '4', 'MIDDLERIGHT');
 
-    expect(await expectGrid(page,
-      [['T', 'T', 'T', 'T'],
-       ['T', 'T', 'B', 'T'],
-       ['T', 'T', 'T', 'B'],
-       ['T', 'T', 'T', 'T']], 0, 0)).toBe(true);
+    await assertSpriteSize(page, 4, 4);
+    await assertColorRows(page, [
+      '....',
+      '..B.',
+      '...B',
+      '....',
+    ]);
   });
 
   test('BOTTOMLEFT anchor should place content at bottom-left', { tag: ['@settings.resize-anchor'] }, async ({ page }) => {
     await openEditor(page);
-    await setPiskelFromGrid(page, [['B', 'T'], ['T', 'B']]);
+    await setPiskelFromGrid(page, gridFromColorRows(DIAGONAL));
 
     await resizeWithAnchor(page, '4', '4', 'BOTTOMLEFT');
 
-    expect(await expectGrid(page,
-      [['T', 'T', 'T', 'T'],
-       ['T', 'T', 'T', 'T'],
-       ['B', 'T', 'T', 'T'],
-       ['T', 'B', 'T', 'T']], 0, 0)).toBe(true);
+    await assertSpriteSize(page, 4, 4);
+    await assertColorRows(page, [
+      '....',
+      '....',
+      'B...',
+      '.B..',
+    ]);
   });
 
   test('BOTTOM anchor should center content at bottom', { tag: ['@settings.resize-anchor'] }, async ({ page }) => {
     await openEditor(page);
-    await setPiskelFromGrid(page, [['B', 'T'], ['T', 'B']]);
+    await setPiskelFromGrid(page, gridFromColorRows(DIAGONAL));
 
     await resizeWithAnchor(page, '4', '4', 'BOTTOM');
 
-    expect(await expectGrid(page,
-      [['T', 'T', 'T', 'T'],
-       ['T', 'T', 'T', 'T'],
-       ['T', 'B', 'T', 'T'],
-       ['T', 'T', 'B', 'T']], 0, 0)).toBe(true);
+    await assertSpriteSize(page, 4, 4);
+    await assertColorRows(page, [
+      '....',
+      '....',
+      '.B..',
+      '..B.',
+    ]);
   });
 });
 
@@ -130,10 +146,10 @@ test.describe('Resize panel — ratio and content checkboxes', () => {
   test('maintain ratio should sync width/height for non-square canvas', { tag: ['@settings.resize-ratio'] }, async ({ page }) => {
     await openEditor(page);
     // Start with a 4x2 canvas
-    await setPiskelFromGrid(page, [
-      ['R', 'T', 'T', 'T'],
-      ['T', 'T', 'T', 'R'],
-    ]);
+    await setPiskelFromGrid(page, gridFromColorRows([
+      'R...',
+      '...R',
+    ]));
 
     await openResizeSettingsPanel(page);
     await expectResizeValues(page, '4', '2');
@@ -143,19 +159,20 @@ test.describe('Resize panel — ratio and content checkboxes', () => {
     await expectResizeValues(page, '8', '4');
 
     await page.click('.resize-button');
-    await wait(300);
 
     // Content stays at top-left (default TOPLEFT anchor), canvas expanded
-    expect(await expectGrid(page,
-      [['R', 'T', 'T', 'T', 'T', 'T', 'T', 'T'],
-       ['T', 'T', 'T', 'R', 'T', 'T', 'T', 'T'],
-       ['T', 'T', 'T', 'T', 'T', 'T', 'T', 'T'],
-       ['T', 'T', 'T', 'T', 'T', 'T', 'T', 'T']], 0, 0)).toBe(true);
+    await assertSpriteSize(page, 8, 4);
+    await assertColorRows(page, [
+      'R.......',
+      '...R....',
+      '........',
+      '........',
+    ]);
   });
 
   test('unchecking ratio should allow independent width/height', { tag: ['@settings.resize-ratio'] }, async ({ page }) => {
     await openEditor(page);
-    await setPiskelFromGrid(page, [['B', 'T'], ['T', 'B']]);
+    await setPiskelFromGrid(page, gridFromColorRows(DIAGONAL));
 
     await openResizeSettingsPanel(page);
 
@@ -165,13 +182,14 @@ test.describe('Resize panel — ratio and content checkboxes', () => {
     await expectResizeValues(page, '6', '3');
 
     await page.click('.resize-button');
-    await wait(300);
 
     // 2x2 content at top-left of 6x3 canvas
-    expect(await expectGrid(page,
-      [['B', 'T', 'T', 'T', 'T', 'T'],
-       ['T', 'B', 'T', 'T', 'T', 'T'],
-       ['T', 'T', 'T', 'T', 'T', 'T']], 0, 0)).toBe(true);
+    await assertSpriteSize(page, 6, 3);
+    await assertColorRows(page, [
+      'B.....',
+      '.B....',
+      '......',
+    ]);
   });
 
   test('resize content checkbox should disable anchor widget', { tag: ['@settings.resize-anchor'] }, async ({ page }) => {
@@ -195,46 +213,48 @@ test.describe('Resize panel — ratio and content checkboxes', () => {
 
   test('resize content should scale pixels proportionally', { tag: ['@settings.resize-content'] }, async ({ page }) => {
     await openEditor(page);
-    await setPiskelFromGrid(page, [['R', 'T'], ['T', 'R']]);
+    await setPiskelFromGrid(page, gridFromColorRows([
+      'R.',
+      '.R',
+    ]));
 
     await openResizeSettingsPanel(page);
     await page.locator('.resize-content-checkbox').check();
     await page.locator('[name="resize-width"]').fill('4');
     await expectResizeValues(page, '4', '4');
     await page.click('.resize-button');
-    await wait(300);
 
     // 2x2 → 4x4 with content scaling: each pixel becomes a 2x2 block
-    expect(await expectGrid(page,
-      [['R', 'R', 'T', 'T'],
-       ['R', 'R', 'T', 'T'],
-       ['T', 'T', 'R', 'R'],
-       ['T', 'T', 'R', 'R']], 0, 0)).toBe(true);
+    await assertSpriteSize(page, 4, 4);
+    await assertColorRows(page, [
+      'RR..',
+      'RR..',
+      '..RR',
+      '..RR',
+    ]);
   });
 
   test('shrinking canvas should clip content', { tag: ['@settings.resize'] }, async ({ page }) => {
     await openEditor(page);
-    await setPiskelFromGrid(page, [
-      ['R', 'G', 'T', 'T'],
-      ['B', 'R', 'T', 'T'],
-      ['T', 'T', 'T', 'T'],
-      ['T', 'T', 'T', 'T'],
-    ]);
+    await setPiskelFromGrid(page, gridFromColorRows([
+      'RG..',
+      'BR..',
+      '....',
+      '....',
+    ]));
 
     await openResizeSettingsPanel(page);
     await page.locator('.resize-ratio-checkbox').uncheck();
     await page.locator('[name="resize-width"]').fill('2');
     await page.locator('[name="resize-height"]').fill('2');
     await page.click('.resize-button');
-    await wait(300);
-
-    expect(await getCurrentPiskelWidth(page)).toBe(2);
-    expect(await getCurrentPiskelHeight(page)).toBe(2);
 
     // Content at top-left should be preserved, rest clipped
-    expect(await expectGrid(page,
-      [['R', 'G'],
-       ['B', 'R']], 0, 0)).toBe(true);
+    await assertSpriteSize(page, 2, 2);
+    await assertColorRows(page, [
+      'RG',
+      'BR',
+    ]);
   });
 
   test('changing default size should persist after reload', { tag: ['@settings.default-size'] }, async ({ page }) => {
@@ -244,11 +264,11 @@ test.describe('Resize panel — ratio and content checkboxes', () => {
     // Verify initial default is 32x32
     await expectDefaultResizeValues(page, '32', '32');
 
-    // Change default size to 64x48
+    // Change default size to 64x48: saving it closes the panel.
     await page.locator('[name="default-width"]').fill('64');
     await page.locator('[name="default-height"]').fill('48');
     await page.click('.default-size-button');
-    await wait(300);
+    await expect.poll(() => isSettingsDrawerExpanded(page)).toBe(false);
 
     // Reload the page
     await openEditor(page);
@@ -257,8 +277,7 @@ test.describe('Resize panel — ratio and content checkboxes', () => {
     await openResizeSettingsPanel(page);
     await expectDefaultResizeValues(page, '64', '48');
 
-    // Also verify the new piskel was created with the new default size
-    expect(await getCurrentPiskelWidth(page)).toBe(64);
-    expect(await getCurrentPiskelHeight(page)).toBe(48);
+    // The new sprite has the new default size.
+    await assertSpriteSize(page, 64, 48);
   });
 });

@@ -1,24 +1,39 @@
-import test, { expect, Page } from "@playwright/test";
+import test, { expect, Locator, Page } from "@playwright/test";
 import {
-  openEditor,
-  openSaveSettingsPanel,
-  setPiskelFromGrid,
-  testId,
-  wait,
-  waitFor,
-  decodePngDataUrl,
+  assertFps,
   assertHiddenFrames,
+  assertPreviewImageWidth,
   assertPreviewPlays,
+  assertSelectedPreviewSize,
   createThreeFrames,
+  downloadPiskelFile,
+  gridFromRows,
+  openEditor,
   openEditorWithFakeClock,
   PIXEL_IN_FIRST_COLUMN,
   PIXEL_IN_SECOND_COLUMN,
+  readFpsFromPiskelFile,
   selectFrame,
+  setFps,
+  setPiskelFromGrid,
+  testId,
   toggleFrameVisibility,
-  zoomInUntilMinimapVisible
+  zoomInUntilMinimapVisible,
 } from "../../testutils";
 
-// ─── Shared helpers ──────────────────────────────────────────────
+/** A 10x10 sprite with an L shape */
+const L_SHAPE = [
+  'X.........',
+  'X.........',
+  'XX........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+];
 
 /** Hover on the preview area to reveal the contextual action buttons */
 async function showPreviewActions(page: Page) {
@@ -26,180 +41,137 @@ async function showPreviewActions(page: Page) {
   await expect(page.locator(".preview-contextual-actions")).toBeVisible();
 }
 
-/** Get the currently selected preview size from the DOM (.size-button-selected) */
-async function getSelectedPreviewSize(page: Page): Promise<string> {
-  return await page.evaluate(() => {
-    return window.pskl.UserSettings.get(
-      window.pskl.UserSettings.PREVIEW_SIZE
-    ) as string;
+/** Hover the preview area and its size menu, and click a size button */
+async function clickPreviewSizeButton(page: Page, size: "1x" | "full") {
+  await showPreviewActions(page);
+  await page.locator(".preview-drop-down").hover();
+  const button = testId(page, `preview-size-${size}`);
+  await expect(button).toBeVisible();
+  await button.click();
+}
+
+/** Open the popup preview, and return its page */
+async function openPopupPreview(page: Page): Promise<Page> {
+  await showPreviewActions(page);
+  const popupPromise = page.context().waitForEvent("page");
+  await testId(page, "open-popup-preview-button").click();
+  const popup = await popupPromise;
+  await expect(popup.locator(".preview-container")).toBeAttached();
+  return popup;
+}
+
+/** Read the size of the image shown by the popup preview */
+async function readPopupImageSize(popup: Page): Promise<{ width: number; height: number }> {
+  const image = popup.locator(".background-image-frame-container");
+  await expect
+    .poll(() => image.evaluate((element) => getComputedStyle(element).backgroundImage))
+    .toContain("data:image/png;base64,");
+  return image.evaluate((element) => {
+    const url = getComputedStyle(element).backgroundImage.slice(5, -2);
+    return new Promise<{ width: number; height: number }>((resolve) => {
+      const img = new Image();
+      img.onload = () => resolve({ width: img.width, height: img.height });
+      img.src = url;
+    });
   });
 }
 
 // ─── Preview actions ─────────────────────────────────────────────
 
+// The default sprite is 32x32 and the preview area is 200 pixels wide: the sizes are
+// 1x (32 pixels), the best zoom 6x (192 pixels) and Full (200 pixels).
 test.describe("Preview actions", () => {
   // ─── Size buttons ──────────────────────────────────────────────
 
   test('should default to "original" preview size', { tag: ['@preview.sizes'] }, async ({ page }) => {
     await openEditor(page);
 
-    const size = await getSelectedPreviewSize(page);
-    expect(size).toBe("original");
-
-    await showPreviewActions(page);
-    await expect(testId(page, "preview-size-1x")).toHaveClass(
-      /size-button-selected/
-    );
+    await assertSelectedPreviewSize(page, '1x');
+    await assertPreviewImageWidth(page, 32);
   });
 
   test("clicking 1x button should select original size", { tag: ["@preview.sizes"] }, async ({ page }) => {
+    // Start from Full.
     await openEditor(page);
-    await showPreviewActions(page);
+    await page.keyboard.press("Alt+3");
+    await assertSelectedPreviewSize(page, 'Full');
 
-    // Hover the dropdown to reveal size buttons
-    await page.locator(".preview-drop-down").hover();
-    await wait(300);
-
-    const btn1x = testId(page, "preview-size-1x");
-    if (await btn1x.isVisible()) {
-      await btn1x.click();
-      await waitFor(
-        async () => (await getSelectedPreviewSize(page)) === "original"
-      );
-      expect(await getSelectedPreviewSize(page)).toBe("original");
-      await showPreviewActions(page);
-      await expect(btn1x).toHaveClass(/size-button-selected/);
-    }
+    await clickPreviewSizeButton(page, "1x");
+    await assertSelectedPreviewSize(page, '1x');
+    await assertPreviewImageWidth(page, 32);
   });
 
   test("clicking Full button should select full size", { tag: ["@preview.sizes"] }, async ({ page }) => {
     await openEditor(page);
-    await showPreviewActions(page);
 
-    // Hover the dropdown to reveal size buttons
-    await page.locator(".preview-drop-down").hover();
-    await wait(300);
-
-    const btnFull = testId(page, "preview-size-full");
-    if (await btnFull.isVisible()) {
-      await btnFull.click();
-      await waitFor(
-        async () => (await getSelectedPreviewSize(page)) === "full"
-      );
-      expect(await getSelectedPreviewSize(page)).toBe("full");
-      await showPreviewActions(page);
-      await expect(btnFull).toHaveClass(/size-button-selected/);
-    }
+    await clickPreviewSizeButton(page, "full");
+    await assertSelectedPreviewSize(page, 'Full');
+    await assertPreviewImageWidth(page, 200);
   });
 
   test("Alt+1 shortcut should select original size", { tag: ["@preview.sizes"] }, async ({ page }) => {
+    // Start from Full.
     await openEditor(page);
+    await page.keyboard.press("Alt+3");
+    await assertSelectedPreviewSize(page, 'Full');
 
     await page.keyboard.press("Alt+1");
-    await waitFor(
-      async () => (await getSelectedPreviewSize(page)) === "original"
-    );
-    expect(await getSelectedPreviewSize(page)).toBe("original");
+    await assertSelectedPreviewSize(page, '1x');
+    await assertPreviewImageWidth(page, 32);
   });
 
   test("Alt+2 shortcut should select best size", { tag: ["@preview.sizes"] }, async ({ page }) => {
     await openEditor(page);
 
-    // Default is original, switch to best
-    expect(await getSelectedPreviewSize(page)).toBe("original");
     await page.keyboard.press("Alt+2");
-    await waitFor(async () => (await getSelectedPreviewSize(page)) === "best");
-    expect(await getSelectedPreviewSize(page)).toBe("best");
+    await assertSelectedPreviewSize(page, '6x');
+    await assertPreviewImageWidth(page, 192);
   });
 
   test("Alt+3 shortcut should select full size", { tag: ["@preview.sizes"] }, async ({ page }) => {
     await openEditor(page);
 
     await page.keyboard.press("Alt+3");
-    await waitFor(async () => (await getSelectedPreviewSize(page)) === "full");
-    expect(await getSelectedPreviewSize(page)).toBe("full");
+    await assertSelectedPreviewSize(page, 'Full');
+    await assertPreviewImageWidth(page, 200);
   });
 
   // ─── Grid toggle shortcut ─────────────────────────────────────
 
   test("Alt+G shortcut should toggle grid", { tag: ["@canvas.grid"] }, async ({ page }) => {
+    // The grid is off by default: its button is white.
     await openEditor(page);
-
     const gridButton = testId(page, "grid-toggle-button");
-
-    // Grid is off by default
     await expect(gridButton).toHaveClass(/icon-minimap-grid-white/);
-    await expect(gridButton).not.toHaveClass(/icon-minimap-grid-gold/);
 
-    // Toggle on with Alt+G
+    // Alt+G turns it on: the button is gold.
     await page.keyboard.press("Alt+g");
-    await waitFor(async () => {
-      const cls = (await gridButton.getAttribute("class")) ?? "";
-      return cls.includes("icon-minimap-grid-gold");
-    });
     await expect(gridButton).toHaveClass(/icon-minimap-grid-gold/);
     await expect(gridButton).not.toHaveClass(/icon-minimap-grid-white/);
 
-    // Toggle off with Alt+G
+    // Alt+G turns it off again.
     await page.keyboard.press("Alt+g");
-    await waitFor(async () => {
-      const cls = (await gridButton.getAttribute("class")) ?? "";
-      return cls.includes("icon-minimap-grid-white");
-    });
     await expect(gridButton).toHaveClass(/icon-minimap-grid-white/);
     await expect(gridButton).not.toHaveClass(/icon-minimap-grid-gold/);
   });
 
   // ─── Popup preview ────────────────────────────────────────────
 
-  test("open preview in popup should open a new window with rendered preview", { tag: ["@preview.popup"] }, async ({
-    page,
-    context
-  }) => {
+  test("open preview in popup should open a new window with rendered preview", { tag: ["@preview.popup"] }, async ({ page }) => {
     await openEditor(page);
-    await showPreviewActions(page);
 
-    const popupBtn = testId(page, "open-popup-preview-button");
-    await expect(popupBtn).toBeVisible();
-
-    // Listen for new page (popup window)
-    const popupPromise = context.waitForEvent("page");
-    await popupBtn.click();
-    const popup = await popupPromise;
-    await popup.waitForLoadState();
-
-    // Popup should contain a preview canvas container
-    await expect(popup.locator(".preview-container")).toBeAttached();
-
-    // The rendered preview should have a background-image with a base64 PNG data URI
-    const bgContainer = popup.locator(".background-image-frame-container");
-    await expect(bgContainer).toBeAttached();
-    await waitFor(async () => {
-      const bg = await bgContainer.evaluate(
-        (el) => getComputedStyle(el).backgroundImage
-      );
-      return bg.includes("data:image/png;base64,");
-    });
-    const bgImage = await bgContainer.evaluate(
-      (el) => getComputedStyle(el).backgroundImage
-    );
-    expect(bgImage).toContain("data:image/png;base64,");
+    // The popup shows the 32x32 sprite, zoomed in.
+    const popup = await openPopupPreview(page);
+    const { width, height } = await readPopupImageSize(popup);
+    expect(width).toBeGreaterThan(32);
+    expect(height).toBe(width);
 
     await popup.close();
   });
 
-  test("reloading the editor should close the popup preview", { tag: ["@preview.popup"] }, async ({
-    page,
-    context
-  }) => {
+  test("reloading the editor should close the popup preview", { tag: ["@preview.popup"] }, async ({ page }) => {
     await openEditor(page);
-    await showPreviewActions(page);
-
-    const popupPromise = context.waitForEvent("page");
-    await testId(page, "open-popup-preview-button").click();
-    const popup = await popupPromise;
-    await popup.waitForLoadState();
-    await expect(popup.locator(".preview-container")).toBeAttached();
+    const popup = await openPopupPreview(page);
 
     const popupClosed = popup.waitForEvent("close");
     await page.reload();
@@ -207,237 +179,116 @@ test.describe("Preview actions", () => {
     expect(popup.isClosed()).toBe(true);
   });
 
-  test("closing the popup preview should allow opening a new one", { tag: ["@preview.popup"] }, async ({
-    page,
-    context
-  }) => {
+  test("closing the popup preview should allow opening a new one", { tag: ["@preview.popup"] }, async ({ page }) => {
     await openEditor(page);
-    await showPreviewActions(page);
-
-    const firstPopupPromise = context.waitForEvent("page");
-    await testId(page, "open-popup-preview-button").click();
-    const firstPopup = await firstPopupPromise;
-    await expect(firstPopup.locator(".preview-container")).toBeAttached();
+    const firstPopup = await openPopupPreview(page);
     await firstPopup.close();
 
     // If the popup closure was not detected, clicking would only try to focus
     // the closed popup instead of opening a new one.
-    await showPreviewActions(page);
-    const secondPopupPromise = context.waitForEvent("page");
-    await testId(page, "open-popup-preview-button").click();
-    const secondPopup = await secondPopupPromise;
-    await expect(secondPopup.locator(".preview-container")).toBeAttached();
-
+    const secondPopup = await openPopupPreview(page);
     await secondPopup.close();
   });
 
-  test("popup preview should render known pattern as base64 PNG", { tag: ["@preview.popup"] }, async ({
-    page,
-    context
-  }) => {
+  test("popup preview should render known pattern as base64 PNG", { tag: ["@preview.popup"] }, async ({ page }) => {
     await openEditor(page);
+    await setPiskelFromGrid(page, gridFromRows(L_SHAPE));
 
-    // Set a known 4x4 L-shape pattern
-    await setPiskelFromGrid(page, [
-      ["R", "T", "T", "T"],
-      ["R", "T", "T", "T"],
-      ["R", "R", "T", "T"],
-      ["T", "T", "T", "T"]
-    ]);
-    await wait(500);
-
-    await showPreviewActions(page);
-    const popupPromise = context.waitForEvent("page");
-    await testId(page, "open-popup-preview-button").click();
-    const popup = await popupPromise;
-    await popup.waitForLoadState();
-
-    const bgContainer = popup.locator(".background-image-frame-container");
-    await waitFor(async () => {
-      const bg = await bgContainer.evaluate(
-        (el) => getComputedStyle(el).backgroundImage
-      );
-      return bg.includes("data:image/png;base64,");
-    });
-
-    // Extract base64 and decode PNG IHDR to verify pixel dimensions
-    const bgImage = await bgContainer.evaluate(
-      (el) => getComputedStyle(el).backgroundImage
-    );
-    const match = bgImage.match(/url\("data:image\/png;base64,([^"]+)"\)/);
-    expect(match).not.toBeNull();
-
-    const pngDims = await popup.evaluate((b64: string) => {
-      const binary = atob(b64);
-      // PNG IHDR chunk: bytes 16-19 = width, 20-23 = height (big-endian)
-      const width =
-        (binary.charCodeAt(16) << 24) |
-        (binary.charCodeAt(17) << 16) |
-        (binary.charCodeAt(18) << 8) |
-        binary.charCodeAt(19);
-      const height =
-        (binary.charCodeAt(20) << 24) |
-        (binary.charCodeAt(21) << 16) |
-        (binary.charCodeAt(22) << 8) |
-        binary.charCodeAt(23);
-      return { width, height };
-    }, match![1]);
-
-    // Popup renders at zoom to fill ~320px window — 4x4 sprite scaled up, dimensions should be square
-    expect(pngDims.width).toBeGreaterThan(4);
-    expect(pngDims.height).toBeGreaterThan(4);
-    expect(pngDims.width).toBe(pngDims.height);
+    // The popup shows the 10x10 sprite at a whole zoom: a square, 10 times the zoom.
+    const popup = await openPopupPreview(page);
+    const { width, height } = await readPopupImageSize(popup);
+    expect(width).toBeGreaterThan(10);
+    expect(width % 10).toBe(0);
+    expect(height).toBe(width);
 
     await popup.close();
   });
 
-  // ─── Base64 rendering ─────────────────────────────────────────
+  // ─── Rendering ────────────────────────────────────────────────
 
-  test("main preview at 1x should render frame as base64 PNG background-image", { tag: ["@preview.playback"] }, async ({
-    page
-  }) => {
-    await openEditor(page);
+  test("main preview at 1x should render frame as base64 PNG background-image", { tag: ["@preview.playback"] }, async ({ page }) => {
+    await openEditorWithFakeClock(page);
+    await setPiskelFromGrid(page, gridFromRows(L_SHAPE));
 
-    // Set a known 4x4 L-shape pattern and wait for preview to update
-    await setPiskelFromGrid(page, [
-      ["R", "T", "T", "T"],
-      ["R", "T", "T", "T"],
-      ["R", "R", "T", "T"],
-      ["T", "T", "T", "T"]
-    ]);
-    await wait(500);
-
-    // Switch to 1x (original) to get native-resolution PNG
-    await page.keyboard.press("Alt+1");
-    await waitFor(
-      async () => (await getSelectedPreviewSize(page)) === "original"
-    );
-    await wait(500);
-
-    // Wait for the preview to render
-    const bgContainer = page.locator(
-      "#animated-preview-container .background-image-frame-container"
-    );
-    await waitFor(async () => {
-      const bg = await bgContainer.evaluate(
-        (el) => getComputedStyle(el).backgroundImage
-      );
-      return bg.includes("data:image/png;base64,");
-    });
-
-    const bgImage = await bgContainer.evaluate(
-      (el) => getComputedStyle(el).backgroundImage
-    );
-    const dataUrl = bgImage.slice(5, -2); // strip url(" and ")
-    const pixels = await decodePngDataUrl(page, dataUrl);
-
-    expect(pixels.width).toBe(4);
-    expect(pixels.height).toBe(4);
-
-    // L-shape: col 0 rows 0-2 are red, (1,2) is red, rest transparent
-    const R = [255, 0, 0, 255];
-    const T = [0, 0, 0, 0];
-    const expectedPixels = [R, T, T, T, R, T, T, T, R, R, T, T, T, T, T, T];
-    expectedPixels.forEach((expected, i) => {
-      expect(pixels.pixels[i]).toEqual(expected);
-    });
+    // At 1x, the preview shows the sprite pixel for pixel.
+    await assertPreviewPlays(page, [L_SHAPE]);
   });
 });
 
 // ─── Animation preview (FPS) ─────────────────────────────────────
 
-const getFPS = async (page: Page): Promise<number> => {
-  const text = await testId(page, "fps-display").innerText();
-  return parseInt(text, 10);
-};
-
 test.describe("Animation preview", () => {
   test("should display default FPS on load", { tag: ["@preview.fps"] }, async ({ page }) => {
     await openEditor(page);
-
-    const fps = await getFPS(page);
-    expect(fps).toBe(12); // default FPS
+    await assertFps(page, 12);
   });
 
   test("should change FPS via slider", { tag: ["@preview.fps"] }, async ({ page }) => {
     await openEditor(page);
-
-    const slider = testId(page, "fps-slider");
-    // Set FPS to 5 by filling the range input
-    await slider.fill("5");
-    await slider.dispatchEvent("change");
-
-    await expect.poll(() => getFPS(page), { timeout: 5000 }).toBe(5);
+    await setFps(page, 5);
   });
 
   test("should pause animation when FPS is set to 0", { tag: ["@preview.fps"] }, async ({ page }) => {
     await openEditor(page);
-
-    const slider = testId(page, "fps-slider");
-    await slider.fill("0");
-    await slider.dispatchEvent("change");
-
-    await expect.poll(() => getFPS(page), { timeout: 5000 }).toBe(0);
-    // FPS display should show "0 FPS"
-    await expect(testId(page, "fps-display")).toContainText("0");
+    await setFps(page, 0);
   });
 
   test("should set FPS to max value", { tag: ["@preview.fps"] }, async ({ page }) => {
     await openEditor(page);
-
-    const slider = testId(page, "fps-slider");
-    await slider.fill("24");
-    await slider.dispatchEvent("change");
-
-    await expect.poll(() => getFPS(page), { timeout: 5000 }).toBe(24);
+    await setFps(page, 24);
   });
 
-  test("FPS value should be saved in exported .piskel file", { tag: ["@preview.fps-saved"] }, async ({
-    page
-  }) => {
+  test("FPS value should be saved in exported .piskel file", { tag: ["@preview.fps-saved"] }, async ({ page }) => {
+    // Set a FPS other than the default one, and save the sprite to a file.
     await openEditor(page);
+    await setFps(page, 7);
+    const piskelPath = await downloadPiskelFile(page);
 
-    // Set a non-default FPS
-    const slider = testId(page, "fps-slider");
-    await slider.fill("7");
-    await slider.dispatchEvent("change");
-    await expect.poll(() => getFPS(page), { timeout: 5000 }).toBe(7);
-
-    // Save as .piskel file
-    await openSaveSettingsPanel(page);
-    const downloadPromise = page.waitForEvent("download");
-    await testId(page, "save-file-download-button").click();
-    const download = await downloadPromise;
-
-    const downloadPath = await download.path();
-    if (!downloadPath) throw new Error("Download path is null");
-
-    // Read and parse the .piskel file (it's JSON)
-    const fs = await import("fs/promises");
-    const content = await fs.readFile(downloadPath, "utf-8");
-    const piskelData = JSON.parse(content);
-
-    expect(piskelData.piskel.fps).toBe(7);
+    expect(await readFpsFromPiskelFile(piskelPath)).toBe(7);
   });
 });
 
 // ─── Minimap ─────────────────────────────────────────────────────
 
+/** Press a key three times, and wait for the minimap to move along an axis */
+async function panAndAssertMinimapMoves(
+  page: Page,
+  minimap: Locator,
+  key: string,
+  axis: "x" | "y",
+  direction: "more" | "less"
+) {
+  const before = (await minimap.boundingBox())![axis];
+  for (let i = 0; i < 3; i++) {
+    await page.keyboard.press(key);
+  }
+  const position = async () => (await minimap.boundingBox())?.[axis] ?? before;
+  if (direction === "more") {
+    await expect.poll(position).toBeGreaterThan(before);
+  } else {
+    await expect.poll(position).toBeLessThan(before);
+  }
+}
+
+/** Turn the mouse wheel over the drawing area: up to zoom in, down to zoom out */
+async function turnWheel(page: Page, steps: number, direction: "up" | "down") {
+  await page.locator("#drawing-canvas-container").hover();
+  for (let i = 0; i < steps; i++) {
+    await page.mouse.wheel(0, direction === "up" ? -120 : 120);
+    // Let the app handle each step on its own.
+    await page.waitForTimeout(30);
+  }
+}
+
 test.describe("Minimap", () => {
   test("should not show minimap at default zoom", { tag: ["@preview.minimap"] }, async ({ page }) => {
     await openEditor(page);
-
-    const minimap = page.locator(".minimap-crop-frame");
-    await expect(minimap).toBeHidden();
+    await expect(page.locator(".minimap-crop-frame")).toBeHidden();
   });
 
-  test("should show minimap when zoomed in via scroll wheel", { tag: ["@preview.minimap", "@canvas.wheel-zoom"] }, async ({
-    page
-  }) => {
+  test("should show minimap when zoomed in via scroll wheel", { tag: ["@preview.minimap", "@canvas.wheel-zoom"] }, async ({ page }) => {
     await openEditor(page);
-
-    const minimap = page.locator(".minimap-crop-frame");
-    await zoomInUntilMinimapVisible(page, minimap);
+    await zoomInUntilMinimapVisible(page, page.locator(".minimap-crop-frame"));
   });
 
   test("panning right should increase minimap x position", { tag: ["@preview.minimap", "@canvas.keyboard-pan"] }, async ({ page }) => {
@@ -445,50 +296,17 @@ test.describe("Minimap", () => {
     const minimap = page.locator(".minimap-crop-frame");
     await zoomInUntilMinimapVisible(page, minimap);
 
-    const before = await minimap.boundingBox();
-    expect(before).not.toBeNull();
-
-    await page.keyboard.press("Shift+ArrowRight");
-    await page.keyboard.press("Shift+ArrowRight");
-    await page.keyboard.press("Shift+ArrowRight");
-
-    await waitFor(async () => {
-      const pos = await minimap.boundingBox();
-      return pos !== null && pos.x > before!.x;
-    });
-
-    const after = await minimap.boundingBox();
-    expect(after!.x).toBeGreaterThan(before!.x);
+    await panAndAssertMinimapMoves(page, minimap, "Shift+ArrowRight", "x", "more");
   });
 
   test("panning left should decrease minimap x position", { tag: ["@preview.minimap", "@canvas.keyboard-pan"] }, async ({ page }) => {
+    // Pan right first, to have room to pan left.
     await openEditor(page);
     const minimap = page.locator(".minimap-crop-frame");
     await zoomInUntilMinimapVisible(page, minimap);
+    await panAndAssertMinimapMoves(page, minimap, "Shift+ArrowRight", "x", "more");
 
-    // First pan right to have room to pan left
-    await page.keyboard.press("Shift+ArrowRight");
-    await page.keyboard.press("Shift+ArrowRight");
-    await page.keyboard.press("Shift+ArrowRight");
-    await waitFor(async () => {
-      const pos = await minimap.boundingBox();
-      return pos !== null && pos.x > 0;
-    });
-
-    const before = await minimap.boundingBox();
-    expect(before).not.toBeNull();
-
-    await page.keyboard.press("Shift+ArrowLeft");
-    await page.keyboard.press("Shift+ArrowLeft");
-    await page.keyboard.press("Shift+ArrowLeft");
-
-    await waitFor(async () => {
-      const pos = await minimap.boundingBox();
-      return pos !== null && pos.x < before!.x;
-    });
-
-    const after = await minimap.boundingBox();
-    expect(after!.x).toBeLessThan(before!.x);
+    await panAndAssertMinimapMoves(page, minimap, "Shift+ArrowLeft", "x", "less");
   });
 
   test("panning down should increase minimap y position", { tag: ["@preview.minimap", "@canvas.keyboard-pan"] }, async ({ page }) => {
@@ -496,123 +314,48 @@ test.describe("Minimap", () => {
     const minimap = page.locator(".minimap-crop-frame");
     await zoomInUntilMinimapVisible(page, minimap);
 
-    const before = await minimap.boundingBox();
-    expect(before).not.toBeNull();
-
-    await page.keyboard.press("Shift+ArrowDown");
-    await page.keyboard.press("Shift+ArrowDown");
-    await page.keyboard.press("Shift+ArrowDown");
-
-    await waitFor(async () => {
-      const pos = await minimap.boundingBox();
-      return pos !== null && pos.y > before!.y;
-    });
-
-    const after = await minimap.boundingBox();
-    expect(after!.y).toBeGreaterThan(before!.y);
+    await panAndAssertMinimapMoves(page, minimap, "Shift+ArrowDown", "y", "more");
   });
 
   test("panning up should decrease minimap y position", { tag: ["@preview.minimap", "@canvas.keyboard-pan"] }, async ({ page }) => {
+    // Pan down first, to have room to pan up.
     await openEditor(page);
     const minimap = page.locator(".minimap-crop-frame");
     await zoomInUntilMinimapVisible(page, minimap);
+    await panAndAssertMinimapMoves(page, minimap, "Shift+ArrowDown", "y", "more");
 
-    // First pan down to have room to pan up
-    await page.keyboard.press("Shift+ArrowDown");
-    await page.keyboard.press("Shift+ArrowDown");
-    await page.keyboard.press("Shift+ArrowDown");
-    await waitFor(async () => {
-      const pos = await minimap.boundingBox();
-      return pos !== null && pos.y > 0;
-    });
-
-    const before = await minimap.boundingBox();
-    expect(before).not.toBeNull();
-
-    await page.keyboard.press("Shift+ArrowUp");
-    await page.keyboard.press("Shift+ArrowUp");
-    await page.keyboard.press("Shift+ArrowUp");
-
-    await waitFor(async () => {
-      const pos = await minimap.boundingBox();
-      return pos !== null && pos.y < before!.y;
-    });
-
-    const after = await minimap.boundingBox();
-    expect(after!.y).toBeLessThan(before!.y);
+    await panAndAssertMinimapMoves(page, minimap, "Shift+ArrowUp", "y", "less");
   });
 
-  test("zooming in more should keep minimap visible and still responsive to pan", { tag: ["@preview.minimap"] }, async ({
-    page
-  }) => {
+  test("zooming in more should keep minimap visible and still responsive to pan", { tag: ["@preview.minimap"] }, async ({ page }) => {
     await openEditor(page);
     const minimap = page.locator(".minimap-crop-frame");
     await zoomInUntilMinimapVisible(page, minimap);
 
-    // Zoom in even more
-    const canvas = page.locator("#drawing-canvas-container");
-    await canvas.hover();
-    for (let i = 0; i < 15; i++) {
-      await page.mouse.wheel(0, -120);
-      await page.waitForTimeout(30);
-    }
-
-    // Minimap should still be visible at higher zoom
-    await waitFor(async () => await minimap.isVisible());
-
-    // And still responds to panning
-    const before = await minimap.boundingBox();
-    expect(before).not.toBeNull();
-
-    await page.keyboard.press("Shift+ArrowRight");
-    await page.keyboard.press("Shift+ArrowRight");
-
-    await waitFor(async () => {
-      const pos = await minimap.boundingBox();
-      return pos !== null && pos.x > before!.x;
-    });
-
-    const after = await minimap.boundingBox();
-    expect(after!.x).toBeGreaterThan(before!.x);
+    // Zoom in even more: the minimap stays, and still follows the panning.
+    await turnWheel(page, 15, "up");
+    await expect(minimap).toBeVisible();
+    await panAndAssertMinimapMoves(page, minimap, "Shift+ArrowRight", "x", "more");
   });
 
-  test("zooming out partially should grow minimap width or height", { tag: ["@preview.minimap"] }, async ({
-    page
-  }) => {
+  test("zooming out partially should grow minimap width or height", { tag: ["@preview.minimap"] }, async ({ page }) => {
+    // Zoom in even more, to have room to zoom out.
     await openEditor(page);
     const minimap = page.locator(".minimap-crop-frame");
     await zoomInUntilMinimapVisible(page, minimap);
+    await turnWheel(page, 20, "up");
+    await expect(minimap).toBeVisible();
+    const before = (await minimap.boundingBox())!;
 
-    // Zoom in even more so we have room to zoom out
-    const canvas = page.locator("#drawing-canvas-container");
-    await canvas.hover();
-    for (let i = 0; i < 20; i++) {
-      await page.mouse.wheel(0, -120);
-      await page.waitForTimeout(30);
-    }
-    await waitFor(async () => await minimap.isVisible());
-
-    const before = await minimap.boundingBox();
-    expect(before).not.toBeNull();
-
-    // Zoom out a bit
-    for (let i = 0; i < 10; i++) {
-      await page.mouse.wheel(0, 120);
-      await page.waitForTimeout(30);
-    }
-
-    await waitFor(async () => {
-      const pos = await minimap.boundingBox();
-      return (
-        pos !== null &&
-        (pos.width >= before!.width || pos.height >= before!.height)
-      );
-    });
-
-    const after = await minimap.boundingBox();
-    expect(after).not.toBeNull();
-    expect(after!.width).toBeGreaterThanOrEqual(before!.width);
-    expect(after!.height).toBeGreaterThanOrEqual(before!.height);
+    // Zoom out a bit: the minimap frame grows, as more of the sprite is visible.
+    await turnWheel(page, 10, "down");
+    await expect.poll(async () => {
+      const after = (await minimap.boundingBox())!;
+      return after.width > before.width || after.height > before.height;
+    }).toBe(true);
+    const after = (await minimap.boundingBox())!;
+    expect(after.width).toBeGreaterThanOrEqual(before.width);
+    expect(after.height).toBeGreaterThanOrEqual(before.height);
   });
 
   test("zooming out fully should hide the minimap", { tag: ["@preview.minimap"] }, async ({ page }) => {
@@ -620,10 +363,8 @@ test.describe("Minimap", () => {
     const minimap = page.locator(".minimap-crop-frame");
     await zoomInUntilMinimapVisible(page, minimap);
 
-    // Reset zoom with 0 key
+    // Reset the zoom with 0.
     await page.keyboard.press("0");
-
-    await waitFor(async () => !(await minimap.isVisible()));
     await expect(minimap).toBeHidden();
   });
 });
