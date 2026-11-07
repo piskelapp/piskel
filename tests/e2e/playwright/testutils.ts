@@ -1017,6 +1017,62 @@ export const deleteFrame = async (
   await testId(page, "delete-frame-button").nth(frameIndex).click();
 };
 
+/** Duplicate a frame with the clone action of its tile */
+export const duplicateFrame = async (
+  page: Page,
+  frameIndex: number
+): Promise<void> => {
+  await getFrameTiles(page).nth(frameIndex).hover();
+  await testId(page, "duplicate-frame-button").nth(frameIndex).click();
+};
+
+/**
+ * Drag a frame from sourceIndex to targetIndex using the drag handle.
+ * jQuery sortable (tolerance: 'pointer') inserts at the position where
+ * the pointer crosses another item's midpoint.
+ */
+export const dragFrame = async (
+  page: Page,
+  sourceIndex: number,
+  targetIndex: number
+): Promise<void> => {
+  const tiles = getFrameTiles(page);
+  const handle = tiles.nth(sourceIndex).locator(".dnd-action");
+
+  const handleBox = await handle.boundingBox();
+  expect(handleBox).not.toBeNull();
+
+  await page.mouse.move(
+    handleBox!.x + handleBox!.width / 2,
+    handleBox!.y + handleBox!.height / 2
+  );
+  await page.mouse.down();
+
+  // To land at targetIndex, we need to cross the midpoint of the item
+  // currently at that position. Get the target tile's bounding box.
+  const targetBox = await tiles.nth(targetIndex).boundingBox();
+  expect(targetBox).not.toBeNull();
+
+  const targetX = targetBox!.x + targetBox!.width / 2;
+  let targetY: number;
+
+  if (sourceIndex < targetIndex) {
+    // Moving down: go just past the bottom edge of the target tile
+    targetY = targetBox!.y + targetBox!.height + 5;
+  } else if (targetIndex === 0) {
+    // Moving up to the very start: go above the first tile
+    targetY = targetBox!.y - 10;
+  } else {
+    // Moving up to a middle position: stop at the center of the target tile
+    // This crosses the target's midpoint without crossing the previous item
+    targetY = targetBox!.y + targetBox!.height / 2;
+  }
+
+  await page.mouse.move(targetX, targetY, { steps: 15 });
+  await page.mouse.up();
+  await wait(500);
+};
+
 /** Click the number of a frame, which shows or hides it in the preview */
 export const toggleFrameVisibility = async (
   page: Page,

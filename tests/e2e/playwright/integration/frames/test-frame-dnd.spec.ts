@@ -7,7 +7,7 @@ import {
   setPrimaryColor,
   getPixelColor,
   colorToInt,
-  getFrameTiles,
+  dragFrame,
   getAddFrameButton,
   wait,
   assertFrameCount,
@@ -32,44 +32,6 @@ async function setupThreeFrames(page: Page) {
   await setPrimaryColor(page, '#0000FF');
   await drawAtPixel(page, 0, 0);
   await wait(300);
-}
-
-/** Drag a frame from sourceIndex to targetIndex using the drag handle.
- *  jQuery sortable (tolerance: 'pointer') inserts at the position where
- *  the pointer crosses another item's midpoint. */
-async function dragFrame(page: Page, sourceIndex: number, targetIndex: number) {
-  const tiles = getFrameTiles(page);
-  const handle = tiles.nth(sourceIndex).locator('.dnd-action');
-
-  const handleBox = await handle.boundingBox();
-  expect(handleBox).not.toBeNull();
-
-  await page.mouse.move(handleBox!.x + handleBox!.width / 2, handleBox!.y + handleBox!.height / 2);
-  await page.mouse.down();
-
-  // To land at targetIndex, we need to cross the midpoint of the item
-  // currently at that position. Get the target tile's bounding box.
-  const targetBox = await tiles.nth(targetIndex).boundingBox();
-  expect(targetBox).not.toBeNull();
-
-  const targetX = targetBox!.x + targetBox!.width / 2;
-  let targetY: number;
-
-  if (sourceIndex < targetIndex) {
-    // Moving down: go just past the bottom edge of the target tile
-    targetY = targetBox!.y + targetBox!.height + 5;
-  } else if (targetIndex === 0) {
-    // Moving up to the very start: go above the first tile
-    targetY = targetBox!.y - 10;
-  } else {
-    // Moving up to a middle position: stop at the center of the target tile
-    // This crosses the target's midpoint without crossing the previous item
-    targetY = targetBox!.y + targetBox!.height / 2;
-  }
-
-  await page.mouse.move(targetX, targetY, { steps: 15 });
-  await page.mouse.up();
-  await wait(500);
 }
 
 /** Get the color of pixel (0,0) for each frame as an array */
