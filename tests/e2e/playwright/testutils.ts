@@ -2051,13 +2051,16 @@ const browseFile = async (page: Page, button: Locator, file: TestFile) => {
   });
 };
 
-/** Pick an image in the import drawer, and wait for the wizard's first step */
+/** Pick an image in the import drawer, and wait for the wizard's first step to show it */
 export const browseImageFile = async (
   page: Page,
   file: TestFile
 ): Promise<void> => {
   await browseFile(page, page.locator(".file-input-button"), file);
   await expect(page.locator(".current-step.import-image-container")).toBeAttached();
+  // The wizard fills its size fields once the image has loaded, at the same time as
+  // it shows the file name. Typing in a field before that would mix both values.
+  await expect(page.locator(".import-image-file-name")).toHaveText(file.name);
 };
 
 /** Pick a .piskel file in the import drawer */
@@ -3329,19 +3332,24 @@ export const rightClickAndCheckBrowserMenu = async (
   position: { x: number; y: number }
 ): Promise<boolean> => {
   // The app can stop the event, so listen before it reaches the app, and read the
-  // result once the event is over.
-  const isPrevented = page.evaluate(
-    () =>
-      new Promise<boolean>((resolve) => {
-        window.addEventListener(
-          "contextmenu",
-          (event) => setTimeout(() => resolve(event.defaultPrevented)),
-          { capture: true, once: true }
-        );
-      })
-  );
+  // result once the event is over. The listener must be in place before the click,
+  // or the click can reach the page first and the event is missed.
+  await page.evaluate(() => {
+    const result = window as unknown as { contextMenuPrevented?: boolean };
+    delete result.contextMenuPrevented;
+    window.addEventListener(
+      "contextmenu",
+      (event) => setTimeout(() => (result.contextMenuPrevented = event.defaultPrevented)),
+      { capture: true, once: true }
+    );
+  });
   await page.mouse.click(position.x, position.y, { button: "right" });
-  return !(await isPrevented);
+  const readPrevented = () =>
+    page.evaluate(
+      () => (window as unknown as { contextMenuPrevented?: boolean }).contextMenuPrevented
+    );
+  await expect.poll(readPrevented).not.toBeUndefined();
+  return !(await readPrevented());
 };
 
 /** Tap a pixel of the sprite on a touch screen */
