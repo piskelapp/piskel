@@ -1302,25 +1302,26 @@ const getColorLetter = (r: number, g: number, b: number): string => {
 };
 
 /**
- * Check the colors of the first frame of the first layer against an ASCII art
- * grid, with the letters of getColorLetter.
+ * Check the colors of a frame against an ASCII art grid, with the letters of
+ * getColorLetter. By default, the first frame of the first layer.
  */
 export const assertColorRows = async (
   page: Page,
-  rows: string[]
+  rows: string[],
+  { layerIndex = 0, frameIndex = 0 }: { layerIndex?: number; frameIndex?: number } = {}
 ): Promise<void> => {
   const readColorRows = async () => {
     const colors = await page.evaluate(
-      ({ width, height }) => {
+      ({ width, height, layerIndex, frameIndex }) => {
         const frame = window.pskl.app.piskelController
           .getPiskel()
-          .getLayerAt(0)
-          .getFrameAt(0);
+          .getLayerAt(layerIndex)
+          .getFrameAt(frameIndex);
         return Array.from({ length: height }, (_, y) =>
           Array.from({ length: width }, (_, x) => frame.getPixel(x, y))
         );
       },
-      { width: rows[0].length, height: rows.length }
+      { width: rows[0].length, height: rows.length, layerIndex, frameIndex }
     );
     // Pixels are stored as ABGR integers.
     return colors.map((row) =>

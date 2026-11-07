@@ -6,7 +6,10 @@ import {
   colorToInt,
   dragBetweenPixels,
   drawAtPixel,
+  getAddFrameButton,
   getAddLayerButton,
+  assertFrameCount,
+  selectFrame,
   getPixelColor,
   gridFromRows,
   openEditor,
@@ -20,6 +23,104 @@ import {
 function emptyTestGrid(size = 10): ("T")[][] {
   return Array.from({ length: size }, () => Array(size).fill('T') as ("T")[]);
 }
+
+/** 10x10 frames with a single pixel */
+const PIXEL_AT_1_1 = [
+  '..........',
+  '.X........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+];
+const PIXEL_AT_1_3 = [
+  '..........',
+  '..........',
+  '..........',
+  '.X........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+];
+const PIXEL_AT_3_1 = [
+  '..........',
+  '...X......',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+];
+const PIXEL_AT_3_3 = [
+  '..........',
+  '..........',
+  '..........',
+  '...X......',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+];
+const PIXEL_AT_2_2 = [
+  '..........',
+  '..........',
+  '..X.......',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+];
+const PIXEL_AT_2_4 = [
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..X.......',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+];
+const PIXEL_AT_4_2 = [
+  '..........',
+  '..........',
+  '....X.....',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+];
+const PIXEL_AT_4_4 = [
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '....X.....',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+  '..........',
+];
 
 test.describe('Move tool', () => {
 
@@ -307,5 +408,42 @@ test.describe('Move tool', () => {
       '..........',
     ], { layerIndex: 1 });
     expect(await readPixelRows(page, 10, 10, 0)).toEqual(bottomLayer);
+  });
+
+  test('move tool + Shift + Ctrl: moves every frame of every layer', { tag: ['@drawing-tools.move'] }, async ({ page }) => {
+    // A pixel in the first frame of the bottom layer.
+    await openEditor(page);
+    await setPiskelFromGrid(page, gridFromRows(PIXEL_AT_1_1));
+    await clickTool(page, 'tool-pen');
+
+    // Add a second frame, with a pixel.
+    await getAddFrameButton(page).click();
+    await assertFrameCount(page, 2);
+    await drawAtPixel(page, 1, 3);
+    await waitForGrid(page, 10, 10, PIXEL_AT_1_3, { layerIndex: 0, frameIndex: 1 });
+
+    // Add a top layer, with a pixel in each frame.
+    await getAddLayerButton(page).click();
+    await assertCurrentLayer(page, 1);
+    await drawAtPixel(page, 3, 3);
+    await waitForGrid(page, 10, 10, PIXEL_AT_3_3, { layerIndex: 1, frameIndex: 1 });
+    await selectFrame(page, 0);
+    await drawAtPixel(page, 3, 1);
+    await waitForGrid(page, 10, 10, PIXEL_AT_3_1, { layerIndex: 1, frameIndex: 0 });
+
+    // Drag one pixel down and to the right. Shift applies it to all frames, Ctrl to
+    // all layers.
+    await clickTool(page, 'tool-move');
+    await page.keyboard.down('Shift');
+    await page.keyboard.down(CMD_OR_CTRL);
+    await dragBetweenPixels(page, 5, 5, 6, 6);
+    await page.keyboard.up(CMD_OR_CTRL);
+    await page.keyboard.up('Shift');
+
+    // Every pixel moved.
+    await waitForGrid(page, 10, 10, PIXEL_AT_2_2, { layerIndex: 0, frameIndex: 0 });
+    await waitForGrid(page, 10, 10, PIXEL_AT_2_4, { layerIndex: 0, frameIndex: 1 });
+    await waitForGrid(page, 10, 10, PIXEL_AT_4_2, { layerIndex: 1, frameIndex: 0 });
+    await waitForGrid(page, 10, 10, PIXEL_AT_4_4, { layerIndex: 1, frameIndex: 1 });
   });
 });

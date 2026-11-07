@@ -20,6 +20,7 @@ import {
   remapShortcut,
   setPiskelFromGrid,
   setPrimaryColor,
+  setSecondaryColor,
   undo,
   wait,
   waitForGrid,
@@ -294,4 +295,131 @@ test.describe('Tool tooltips', () => {
 
     await assertToolTooltip(page, 'tool-pen', 'Pen tool (Q)');
   });
+
+  // Each tool used with the right button, with a blue secondary color.
+  const RIGHT_BUTTON_TOOLS: Array<{
+    tool: string;
+    useRightButton: (page: Page) => Promise<void>;
+    rows: string[];
+  }> = [
+    {
+      tool: 'tool-pen',
+      useRightButton: (page) => dragWithRightButton(page, 4, 4, 4, 4),
+      rows: [
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '....B.....',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+      ],
+    },
+    {
+      tool: 'tool-vertical-mirror-pen',
+      useRightButton: (page) => dragWithRightButton(page, 2, 2, 2, 2),
+      rows: [
+        '..........',
+        '..........',
+        '..B....B..',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+      ],
+    },
+    {
+      tool: 'tool-stroke',
+      useRightButton: (page) => dragWithRightButton(page, 1, 4, 8, 4),
+      rows: [
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '.BBBBBBBB.',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+      ],
+    },
+    {
+      tool: 'tool-rectangle',
+      useRightButton: (page) => dragWithRightButton(page, 2, 2, 7, 7),
+      rows: [
+        '..........',
+        '..........',
+        '..BBBBBB..',
+        '..B....B..',
+        '..B....B..',
+        '..B....B..',
+        '..B....B..',
+        '..BBBBBB..',
+        '..........',
+        '..........',
+      ],
+    },
+    {
+      tool: 'tool-circle',
+      useRightButton: (page) => dragWithRightButton(page, 1, 1, 8, 8),
+      rows: [
+        '..........',
+        '...BBBB...',
+        '..B....B..',
+        '.B......B.',
+        '.B......B.',
+        '.B......B.',
+        '.B......B.',
+        '..B....B..',
+        '...BBBB...',
+        '..........',
+      ],
+    },
+    {
+      tool: 'tool-paint-bucket',
+      useRightButton: (page) => dragWithRightButton(page, 0, 0, 0, 0),
+      rows: [
+        'BBBBBBBBBB',
+        'BBBBBBBBBB',
+        'BBBBBBBBBB',
+        'BBBBBBBBBB',
+        'BBBBBBBBBB',
+        'BBBBBBBBBB',
+        'BBBBBBBBBB',
+        'BBBBBBBBBB',
+        'BBBBBBBBBB',
+        'BBBBBBBBBB',
+      ],
+    },
+  ];
+  for (const { tool, useRightButton, rows } of RIGHT_BUTTON_TOOLS) {
+    test(`should use the secondary color with the right button: ${tool}`, { tag: ['@drawing-tools.mouse-buttons'] }, async ({ page }) => {
+      // Start from an empty sprite, with a blue secondary color.
+      await openEditor(page);
+      await setPiskelFromGrid(page, gridFromRows([
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+        '..........',
+      ]));
+      await setSecondaryColor(page, '#0000FF');
+      await clickTool(page, tool);
+
+      await useRightButton(page);
+      await assertColorRows(page, rows);
+    });
+  }
 });
