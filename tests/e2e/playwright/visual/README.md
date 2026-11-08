@@ -10,7 +10,7 @@ behaves.
 | --- | --- |
 | `npm run visual` | Compare with the committed baselines. Only meaningful in the CI container. |
 | `npm run visual:local` | Compare with `tmp-visual-local/`, to write tests on any machine. Add `-- --update-snapshots` to create that folder. |
-| `npm run visual:storyboard` | Build a page with all the committed screenshots. |
+| `npm run visual:storyboard` | Build a page with all the committed screenshots, in `tmp-visual-storyboard/index.html`. Add `-- tests/e2e/playwright/tmp-visual-local` to show your local ones instead. |
 
 Committed baselines come only from the **Update visual baselines** GitHub
 workflow, which runs in the same container as the `visual` CI job. Run it on a
