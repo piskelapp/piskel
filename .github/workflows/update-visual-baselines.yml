@@ -4,11 +4,6 @@ name: Update visual baselines
 # them, and commits the result to the branch this workflow was started on.
 on:
   workflow_dispatch:
-  # TEMPORARY: a manual workflow can only start once it is on master. Remove
-  # this trigger before merging.
-  push:
-    branches:
-      - visual-storyboard-tests
 
 permissions:
   contents: write
