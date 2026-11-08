@@ -25,7 +25,7 @@ We also use the following **libraries** :
 * [canvas-toBlob](https://github.com/eligrey/canvas-toBlob.js/) : shim for canvas toBlob
 * [jquery](https://jquery.com/) : used sporadically in the application
 * [bootstrap-tooltip](https://getbootstrap.com/javascript/#tooltips) : nice tooltips
-* [playwright](https://playwright.dev/): End to end testing
+* [playwright](https://playwright.dev/): End to end testing, and [visual tests](tests/e2e/playwright/visual/README.md)
 
 As well as some **icons** from the [Noun Project](https://thenounproject.com/) :
 * Folder by Simple Icons from The Noun Project

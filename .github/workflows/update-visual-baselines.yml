@@ -1,0 +1,42 @@
+name: Update visual baselines
+
+# Regenerates the visual test screenshots in the same container that compares
+# them, and commits the result to the branch this workflow was started on.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    # Keep this tag equal to the @playwright/test version.
+    container: mcr.microsoft.com/playwright:v1.59.1-noble
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm ci
+      - run: npm run visual -- --update-snapshots
+      - name: Check that the new baselines are stable
+        run: npm run visual -- --repeat-each=3
+      - run: npm run visual:storyboard
+        if: always()
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: visual-storyboard
+          path: tests/e2e/playwright/tmp-visual-storyboard
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: visual-diffs
+          path: tests/e2e/playwright/tmp
+      - name: Commit updated baselines
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add tests/e2e/playwright/visual
+          git diff --cached --quiet || git commit -m "Update visual baselines"
+          git push
