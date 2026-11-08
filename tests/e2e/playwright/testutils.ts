@@ -3672,3 +3672,45 @@ export const downloadCFileExport = async (
     }
   };
 };
+
+/**
+ * Compare an element with its storyboard screenshot, named "area--state".
+ * Soft, so that one broken state doesn't hide the following ones.
+ * Tooltips are appended to the body and could cover the element: unless the
+ * state is about hovering, call moveMouseAway first.
+ */
+export const expectVisualState = async (
+  target: Locator,
+  name: string,
+  options?: { mask?: Locator[] }
+): Promise<void> => {
+  await expect.soft(target).toHaveScreenshot(`${name}.png`, options);
+};
+
+/** Wait for the debounced relayout of the canvas, after a load or a resize */
+export const waitForCanvasRelayout = (page: Page): Promise<void> =>
+  page.waitForTimeout(500);
+
+/** Resize the window and wait for the relayout of the canvas */
+export const resizeWindow = async (
+  page: Page,
+  width: number,
+  height: number
+): Promise<void> => {
+  await page.setViewportSize({ width, height });
+  await waitForCanvasRelayout(page);
+};
+
+/** Make saves in the browser never finish, to show what a save in progress looks like */
+export const makeBrowserSavesHang = (page: Page): Promise<void> =>
+  page.evaluate(() => {
+    const neverFinishes = () => ({}) as IDBRequest;
+    IDBObjectStore.prototype.add = neverFinishes;
+    IDBObjectStore.prototype.put = neverFinishes;
+  });
+
+/** Take the mouse off the UI and wait for the tooltips and hover styles to go */
+export const moveMouseAway = async (page: Page): Promise<void> => {
+  await page.mouse.move(0, 0);
+  await expect(page.locator(".tooltip")).toHaveCount(0);
+};

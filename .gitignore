@@ -42,3 +42,5 @@ report
 
 # Test artifacts
 tests/e2e/playwright/tmp
+tests/e2e/playwright/tmp-visual-local
+tests/e2e/playwright/tmp-visual-storyboard
