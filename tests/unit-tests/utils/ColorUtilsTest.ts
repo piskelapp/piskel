@@ -1,0 +1,35 @@
+import { ColorUtils } from "../../../src/js/utils/ColorUtils";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
+
+describe("Color utils", function () {
+  beforeEach(function () {});
+  afterEach(function () {});
+
+  it("returns a color when provided with array of colors", function () {
+    // when/then
+    let unusedColor = ColorUtils.getUnusedColor([
+      "#ffff00",
+      "#feff00",
+      "#fdff00"
+    ]);
+    // verify
+    expect(unusedColor).toBe("#FCFF00");
+
+    // when/then
+    unusedColor = ColorUtils.getUnusedColor(["#fcff00", "#feff00", "#fdff00"]);
+    // verify
+    expect(unusedColor).toBe("#FFFF00");
+  });
+
+  it("returns a color for an empty array", function () {
+    // when/then
+    let unusedColor = ColorUtils.getUnusedColor([]);
+    // verify
+    expect(unusedColor).toBe("#FFFF00");
+
+    // when/then
+    unusedColor = ColorUtils.getUnusedColor();
+    // verify
+    expect(unusedColor).toBe("#FFFF00");
+  });
+});

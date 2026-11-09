@@ -17,8 +17,7 @@
     "misc/scripts/piskel-root"
   ],
   "bin": {
-    "piskel-root": "./misc/scripts/piskel-root",
-    "piskel-cli": "./cli/index.js"
+    "piskel-root": "./misc/scripts/piskel-root"
   },
   "main": "./dest/prod/index.html",
   "scripts": {
@@ -27,8 +26,8 @@
     "build:sprites": "node scripts/sprite.js",
     "start": "npm run build && node scripts/serve.js",
     "start:test": "npm run build && node scripts/serve.js --test",
-    "lint": "biome check src/",
-    "lint:fix": "biome check --write src/",
+    "lint": "biome check src/ tests/unit-tests/ && tsc --noEmit && node scripts/check-forbidden-patterns.js",
+    "lint:fix": "biome check --write src/ tests/unit-tests/",
     "spec-check": "node scripts/spec-check.js",
     "build:desktop": "npm run lint && npm run build && node scripts/desktop.js",
     "build:mac": "npm run lint && npm run build && node scripts/desktop.js --platform=macos",
@@ -38,8 +37,8 @@
     "visual": "npx playwright test --project=visual",
     "visual:local": "VISUAL_LOCAL=1 npx playwright test --project=visual",
     "visual:storyboard": "node scripts/visual-storyboard.js",
-    "unit-tests": "karma start",
-    "unit-tests:watch": "karma start --auto-watch --no-single-run",
+    "unit-tests": "vitest run",
+    "unit-tests:watch": "vitest",
     "test": "npm run unit-tests; npm run e2e",
     "test-ci": "bash ./run-test-ci.sh",
     "release": "npm run build && node ./bin/copy-to-piskel-website",
@@ -49,27 +48,25 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.10",
+    "@jridgewell/remapping": "2.3.5",
     "@playwright/test": "1.59.1",
     "@types/adm-zip": "0.5.8",
+    "@vitest/browser-playwright": "5.1.0",
     "adm-zip": "0.5.17",
     "dateformat": "4.5.1",
     "fs-extra": "10.0.0",
     "gifuct-js": "2.1.2",
     "husky": "9.1.7",
-    "jasmine-core": "3.8.0",
-    "karma": "6.3.4",
-    "karma-chrome-launcher": "3.2.0",
-    "karma-jasmine": "4.0.1",
     "magic-string": "0.30.21",
     "nw-builder": "4.17.5",
     "png-ts": "0.0.3",
-    "puppeteer": "24.40.0",
     "rmdir": "1.2.0",
     "spritesheet-templates": "10.5.2",
     "spritesmith": "3.5.1",
     "terser": "5.46.1",
     "typescript": "5.9.3",
-    "vite": "8.0.7"
+    "vite": "8.0.7",
+    "vitest": "5.1.0"
   },
   "window": {
     "title": "Piskel",
@@ -77,8 +74,5 @@
     "toolbar": false,
     "width": 1000,
     "height": 700
-  },
-  "dependencies": {
-    "minimist": "1.2.8"
   }
 }

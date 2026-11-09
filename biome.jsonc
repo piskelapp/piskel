@@ -29,10 +29,32 @@
         "useLiteralKeys": "error"
       },
       "style": {
-        "useBlockStatements": "error"
+        "useBlockStatements": "error",
+        "noDefaultExport": "error",
+        "noNonNullAssertion": "error",
+        "useConst": "error",
+        "noRestrictedTypes": {
+          "level": "error",
+          "options": {
+            "types": {
+              "ReturnType": "Declare the type explicitly.",
+              "Parameters": "Declare the type explicitly.",
+              "ConstructorParameters": "Declare the type explicitly.",
+              "InstanceType": "Declare the type explicitly."
+            }
+          }
+        },
+        "useConsistentTypeDefinitions": {
+          "level": "error",
+          "options": { "style": "type" }
+        }
       },
       "suspicious": {
-        "noWith": "error"
+        "noWith": "error",
+        "noVar": "error",
+        "noExplicitAny": "error",
+        "noTsIgnore": "error",
+        "noImportCycles": "error"
       }
     }
   },
@@ -43,33 +65,7 @@
       "trailingCommas": "none",
       "arrowParentheses": "always"
     },
-    "globals": [
-      "$",
-      "jQuery",
-      "pskl",
-      "Events",
-      "Constants",
-      "module",
-      "require",
-      "console",
-      "Promise",
-      "describe",
-      "xdescribe",
-      "fdescribe",
-      "it",
-      "xit",
-      "fit",
-      "beforeEach",
-      "afterEach",
-      "beforeAll",
-      "afterAll",
-      "expect",
-      "fail",
-      "pending",
-      "spyOn",
-      "spyOnProperty",
-      "jasmine"
-    ]
+    "globals": ["$"]
   },
   "css": {
     "formatter": {
@@ -90,7 +86,7 @@
   "overrides": [
     {
       // Vendor/third-party files — legacy CSS syntax causes parse errors
-      "includes": ["src/js/lib/**", "src/css/bootstrap/**", "src/css/spectrum/**"],
+      "includes": ["src/js/lib/**", "!src/js/lib/**/*.d.ts", "src/css/bootstrap/**", "src/css/spectrum/**"],
       "linter": {
         "enabled": false
       },

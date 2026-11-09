@@ -5,12 +5,12 @@
 
 const fs = require('fs');
 const path = require('path');
-const dateFormat = require('dateformat');
+const ts = require('typescript');
 
 function htmlInclude(options = {}) {
   const rootDir = options.rootDir || process.cwd();
   const srcDir = path.resolve(rootDir, 'src');
-  const version = '-' + dateFormat(new Date(), 'yyyy-mm-dd-hh-MM');
+  const version = options.version;
   const releaseVersion = require(path.resolve(rootDir, 'package.json')).version;
 
   function resolveIncludes(content, baseDir) {
@@ -21,6 +21,15 @@ function htmlInclude(options = {}) {
       const fullPath = path.resolve(baseDir, includePath);
       try {
         let included = fs.readFileSync(fullPath, 'utf-8');
+        if (fullPath.endsWith('.ts')) {
+          included = ts.transpileModule(included, {
+            compilerOptions: {
+              target: ts.ScriptTarget.ES2020,
+              module: ts.ModuleKind.None,
+              removeComments: false
+            }
+          }).outputText.replace(/\n$/, '');
+        }
         // Recursively resolve includes in the included file
         included = resolveIncludes(included, path.dirname(fullPath));
         return included;
