@@ -35,12 +35,6 @@ link the issue.
   wizard template, but that wasn't checked. Escaping quotes in `Template.sanitize`
   should fix all of these.
 
-## CLI
-
-- The CLI is broken: `cli/index.js` requires `phantomjs`, which is not a
-  dependency in `package.json`, so it fails with
-  `Cannot find module 'phantomjs'`.
-
 ## Canvas (drawing area)
 
 See [canvas.md](specs/canvas.md).

@@ -1,0 +1,88 @@
+const getFileInputElement = function (
+  nwsaveas?: string | boolean,
+  accept?: string
+): HTMLInputElement {
+  const fileInputElement = document.createElement("input");
+  fileInputElement.setAttribute("type", "file");
+  fileInputElement.setAttribute("nwworkingdir", "");
+  if (nwsaveas) {
+    fileInputElement.setAttribute("nwsaveas", String(nwsaveas));
+  }
+  if (accept) {
+    fileInputElement.setAttribute("accept", accept);
+  }
+
+  return fileInputElement;
+};
+
+export const FileUtilsDesktop = {
+  chooseFilenameDialog(
+    nwsaveas?: string | boolean,
+    accept?: string
+  ): Promise<string> {
+    const fileInputElement = getFileInputElement(nwsaveas, accept);
+
+    return new Promise<string>(function (resolve) {
+      const changeListener = function (evt: Event) {
+        fileInputElement.removeEventListener("change", changeListener);
+        document.removeEventListener("click", changeListener);
+        resolve(fileInputElement.value);
+      };
+
+      // fix for issue #322 :
+      window.setTimeout(function () {
+        fileInputElement.click();
+        fileInputElement.addEventListener("change", changeListener);
+        // there is no way to detect a cancelled fileInput popup
+        // as a crappy workaround we add a click listener on the document
+        // on top the change event listener
+        // todo : listen to dirty check instead
+        document.addEventListener("mousedown", changeListener);
+      }, 50);
+    });
+  },
+
+  /**
+   * Save data directly to disk, without showing a save dialog
+   * Requires Node-Webkit environment for file system access
+   * @param content - data to be saved
+   * @param {string} filename - fill path to the file
+   * @callback callback
+   */
+  saveToFile(content: string, filename: string): Promise<void> {
+    const fs = window.require("fs");
+    return new Promise<void>(function (resolve, reject) {
+      fs.writeFile(filename, content, function (err) {
+        if (err) {
+          reject(
+            "FileUtilsDesktop::savetoFile() - error saving file: " +
+              filename +
+              " Error: " +
+              err
+          );
+        } else {
+          resolve();
+        }
+      });
+    });
+  },
+
+  readFile(filename: string): Promise<string> {
+    const fs = window.require("fs");
+    // NOTE: currently loading everything as utf8, which may not be desirable in future
+    return new Promise<string>(function (resolve, reject) {
+      fs.readFile(filename, "utf8", function (err, data) {
+        if (err) {
+          reject(
+            "FileUtilsDesktop::readFile() - error reading file: " +
+              filename +
+              " Error: " +
+              err
+          );
+        } else {
+          resolve(data);
+        }
+      });
+    });
+  }
+};
