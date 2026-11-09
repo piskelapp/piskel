@@ -26,9 +26,11 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
       - run: npm ci
-      - run: npx biome ci src/
+      - run: npx biome ci src/ tests/unit-tests/
+      - run: npx tsc --noEmit
+      - run: node scripts/check-forbidden-patterns.js
       - run: npm run spec-check
 
   e2e:
@@ -42,7 +44,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
       - run: npm ci
       - run: npx playwright install --with-deps
       - run: npm run test-ci

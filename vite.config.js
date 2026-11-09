@@ -1,55 +1,58 @@
 const path = require('path');
-const concatScripts = require('./vite-plugins/concat-scripts');
+const dateFormat = require('dateformat');
+const bundleClassic = require('./vite-plugins/bundle-classic');
 const htmlInclude = require('./vite-plugins/html-include');
 const cssReplace = require('./vite-plugins/css-replace');
 
-const VIRTUAL_ENTRY = 'virtual:piskel-entry';
-const RESOLVED_ENTRY = '\0' + VIRTUAL_ENTRY;
-
-/**
- * Minimal entry plugin. Vite/Rollup requires at least one entry point,
- * but all real work is done by our concat/html/css plugins.
- * This just provides a no-op entry so Rollup doesn't error.
- */
-function virtualEntry() {
-  return {
-    name: 'piskel-virtual-entry',
-    resolveId(id) {
-      if (id === VIRTUAL_ENTRY) return RESOLVED_ENTRY;
-      return null;
-    },
-    load(id) {
-      if (id === RESOLVED_ENTRY) return '// piskel build entry';
-      return null;
-    },
-  };
-}
+// Computed once per build, so that all the emitted names share it.
+const version = '-' + dateFormat(new Date(), 'yyyy-mm-dd-hh-MM');
+const srcDir = path.resolve(__dirname, 'src');
 
 /** @type {import('vite').UserConfig} */
 module.exports = {
+  // CSS url() are written relative to the stylesheet.
+  base: './',
+  // index.html is produced by the html-include plugin.
+  publicDir: false,
+
   plugins: [
-    virtualEntry(),
-    htmlInclude({ rootDir: __dirname }),
-    concatScripts({ rootDir: __dirname }),
-    cssReplace(),
+    htmlInclude({ rootDir: __dirname, version }),
+    bundleClassic({ rootDir: __dirname, version }),
+    cssReplace()
   ],
 
   build: {
     outDir: path.resolve(__dirname, 'dest/prod'),
     emptyOutDir: true,
-    rollupOptions: {
-      input: VIRTUAL_ENTRY,
-      output: {
-        // The virtual entry produces a trivial JS file; we'll clean it up
-        entryFileNames: '_entry.js',
-      },
-    },
-    // We handle minification ourselves via terser in the concat plugin
-    minify: false,
-    // Disable CSS processing - we concatenate manually
+    target: 'es2020',
+    sourcemap: true,
     cssCodeSplit: false,
+    cssMinify: false,
+    // The bundle is minified by the bundle-classic plugin.
+    minify: false,
+    assetsInlineLimit: 0,
+    rollupOptions: {
+      input: path.resolve(srcDir, 'js/main.ts'),
+      output: {
+        format: 'iife',
+        entryFileNames: bundleClassic.APP_CHUNK,
+        codeSplitting: false,
+        assetFileNames(assetInfo) {
+          if (assetInfo.names.some((name) => name.endsWith('.css'))) {
+            return `css/piskel-style-packaged${version}.css`;
+          }
+          // Assets referenced by the CSS keep their path in src.
+          const original = (assetInfo.originalFileNames || [])[0];
+          if (original) {
+            return original.replace(/^src\//, '');
+          }
+          return 'assets/[name][extname]';
+        }
+      }
+    }
   },
 
-  // Dev server and preview are handled by scripts/dev-server.js
-  // (Vite's dev server assumes ES modules which doesn't fit our concat-based debug mode)
+  worker: {
+    format: 'iife'
+  }
 };
