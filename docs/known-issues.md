@@ -119,7 +119,6 @@ See [frames.md](specs/frames.md).
 - Deleting a hidden frame leaves its index in the hidden list, so the frame
   that takes its place becomes hidden. Found by reading
   `PiskelController.removeFrameAt`, not reproduced.
-- Undo can lose hidden frames: see [Undo and redo](#undo-and-redo).
 - Moving a frame un-hides the hidden frames outside the moved range: the
   `hiddenFrames.map` callback in `PiskelController.moveFrame` returns
   nothing for them. Not reproduced.
@@ -277,11 +276,6 @@ See [transformations.md](specs/transformations.md).
 
 See [undo-redo.md](specs/undo-redo.md).
 
-- History snapshots don't preserve hidden frames correctly: the binary
-  serializer used for history keeps only the last character of the hidden
-  frames list, as a string. After an undo that goes through a snapshot,
-  frames hidden before that snapshot can show up in the preview again.
-  Found by reading `ArrayBufferDeserializer`, not reproduced.
 - Changing the FPS is neither an undo step nor an unsaved change, although
   FPS is saved in `.piskel` files. Each history state stores the FPS, so
   undoing any other change also reverts the FPS.

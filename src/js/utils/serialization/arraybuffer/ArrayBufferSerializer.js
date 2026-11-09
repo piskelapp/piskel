@@ -2,199 +2,154 @@
   var ns = $.namespace("pskl.utils.serialization.arraybuffer");
 
   /**
-   * The array buffer serialization-deserialization should only be used when when backing
-   * up the animation in memory. If you actually need to dump the animation to a string
-   * use the regular serialization helpers.
+   * The array buffer serialization-deserialization should only be used when backing
+   * up the animation in memory. If you actually need to dump the animation to a
+   * string use the regular serialization helpers.
    *
-   * This is due to the lacking support on TypedArray::toString on some browsers.
-   * Will revisit the option of using this across the whole project when the APIs are less
-   * green.
+   * The in-memory format stores the raw frame pixels (not a PNG snapshot), so a
+   * history round-trip never reads pixels back from a canvas. It is therefore
+   * immune to browsers that perturb canvas readbacks (getImageData/toDataURL) for
+   * fingerprinting protection, e.g. Firefox / LibreWolf with
+   * privacy.resistFingerprinting, which used to corrupt snapshot-based undo/redo.
+   * See https://github.com/piskelapp/piskel/issues/1294
    *
    *********
-   *  META *
+   *  META  *
    *********
-   * // Piskel
+   * Each meta entry is one Uint16.
    * [0] = model version
    * [1] = width
    * [2] = height
    * [3] = fps
-   *
-   * // Descriptor
-   * [4] = name length
-   * [5] = description length
-   *
-   * // Layers
+   * [4] = descriptor name length
+   * [5] = descriptor description length
    * [6] = layers count
-   * [layer data index start] = layer name length
-   * [layer data index start + 1] = opacity
-   * [layer data index start + 2] = frame count
-   * [layer data index start + 3] = base 64 png data url length (upper 16 bits)
-   * [layer data index start + 4] = base 64 png data url length (lower 16 bits)
+   * [7] = hidden frames list length (number of characters, joined with "-")
    *
-   *********
-   *  DATA *
-   *********
-   * [7..name length-1] = name
-   * [name length..description length-1] = description
-   * [layer data index start + 4..layer name length-1] = layer name
-   * [layer name length..base 64 png data url length-1] = base 64 png data url
+   * // Descriptor data (Uint16 characters)
+   * [8 .. 8+nameLen-1]                     = descriptor name
+   * [8+nameLen .. 8+nameLen+descLen-1]     = descriptor description
+   * [8+nameLen+descLen .. +hiddenLen-1]    = hidden frames list
    *
+   * // Layers meta (Uint16, repeated per layer)
+   * layer name length
+   * layer name characters
+   * layer opacity (0..65535)
+   * layer frame count
+   *
+   * // Layers data : raw pixels, one Uint32 per sprite pixel, byte-identical to
+   * // pskl.model.Frame#pixels. The region is 4-byte aligned.
+   * [layerCount * frameCount * width * height] Uint32s = pixels of every frame of every layer
    */
-
   ns.ArrayBufferSerializer = {
-    calculateRequiredBytes: function (piskel, framesData) {
+    calculateRequiredBytes: function (piskel, width, height) {
+      var layers = piskel.getLayers();
       var descriptorNameLength = piskel.getDescriptor().name.length;
       var descriptorDescriptionLength =
         piskel.getDescriptor().description.length;
+      var serializedHiddenFrames = piskel.hiddenFrames.join("-");
 
-      var bytes = 0;
+      // 8 meta words + descriptor name/description + hidden frames list.
+      var wordCount =
+        8 +
+        descriptorNameLength +
+        descriptorDescriptionLength +
+        serializedHiddenFrames.length;
 
-      /********/
-      /* META */
-      /********/
-      // Piskel meta
-      bytes += 4 * 2;
-
-      // Descriptor meta
-      bytes += 2 * 2;
-
-      // Layers meta
-      bytes += 1 * 2;
-
-      /********/
-      /* DATA */
-      /********/
-      // Descriptor name
-      bytes += descriptorNameLength * 2;
-
-      // Descriptor description
-      bytes += descriptorDescriptionLength * 2;
-
-      // Layers
-      for (var i = 0, layers = piskel.getLayers(); i < layers.length; i++) {
-        bytes += 5 * 2;
-        bytes += layers[i].name.length * 2;
-        bytes += framesData[i].length;
-        if (bytes % 2 == 1) {
-          bytes++;
-        }
+      // Per layer: name length + name characters + opacity + frame count.
+      for (var i = 0; i < layers.length; i++) {
+        wordCount += 3 + layers[i].getName().length;
       }
 
-      return bytes;
+      // All layers are synchronized (same number of frames), so the pixel region
+      // size derives from the first layer frame count.
+      var frameCount = layers[0].getFrames().length;
+
+      var uint16Bytes = wordCount * 2;
+      // The pixel region must be 4-byte aligned.
+      var padding = (4 - (uint16Bytes % 4)) % 4;
+      var pixelBytes = layers.length * frameCount * width * height * 4;
+
+      return uint16Bytes + padding + pixelBytes;
     },
 
     serialize: function (piskel) {
       var i;
       var j;
-      var layers;
-      var dataUri;
-      var dataUriLength;
-
-      // Render frames
-      var framesData = [];
-      for (i = 0, layers = piskel.getLayers(); i < layers.length; i++) {
-        var renderer = new pskl.rendering.FramesheetRenderer(
-          layers[i].getFrames()
-        );
-        dataUri = renderer.renderAsCanvas().toDataURL().split(",")[1];
-        dataUriLength = dataUri.length;
-        framesData.push({ uri: dataUri, length: dataUriLength });
-      }
-
-      var hiddenFrames = piskel.hiddenFrames;
-      var serializedHiddenFrames = hiddenFrames.join("-");
+      var width = piskel.getWidth();
+      var height = piskel.getHeight();
+      var layers = piskel.getLayers();
+      var descriptorName = piskel.getDescriptor().name;
+      var descriptorDescription = piskel.getDescriptor().description;
+      var serializedHiddenFrames = piskel.hiddenFrames.join("-");
 
       var bytes = ns.ArrayBufferSerializer.calculateRequiredBytes(
         piskel,
-        framesData,
-        serializedHiddenFrames
+        width,
+        height
       );
-
       var buffer = new ArrayBuffer(bytes);
-      var arr8 = new Uint8Array(buffer);
-      var arr16 = new Uint16Array(buffer);
+      var uint16 = new Uint16Array(buffer);
+      var uint32 = new Uint32Array(buffer);
 
-      var width = piskel.getWidth();
-      var height = piskel.getHeight();
-      var descriptorName = piskel.getDescriptor().name;
-      var descriptorNameLength = descriptorName.length;
-      var descriptorDescription = piskel.getDescriptor().description;
-      var descriptorDescriptionLength = descriptorDescription.length;
+      var index = 0;
 
       /********/
       /* META */
       /********/
-      // Piskel meta
-      arr16[0] = Constants.MODEL_VERSION;
-      arr16[1] = width;
-      arr16[2] = height;
-      arr16[3] = pskl.app.piskelController.getFPS();
+      uint16[index++] = Constants.MODEL_VERSION;
+      uint16[index++] = width;
+      uint16[index++] = height;
+      uint16[index++] = piskel.getFPS();
+      uint16[index++] = descriptorName.length;
+      uint16[index++] = descriptorDescription.length;
+      uint16[index++] = layers.length;
+      uint16[index++] = serializedHiddenFrames.length;
 
-      // Descriptor meta
-      arr16[4] = descriptorNameLength;
-      arr16[5] = descriptorDescriptionLength;
-
-      // Layers meta
-      arr16[6] = piskel.getLayers().length;
-
-      // Frames meta
-      arr16[7] = serializedHiddenFrames.length;
-
-      var currentIndex = 8;
-
-      /********/
-      /* DATA */
-      /********/
-      // Descriptor name
-      for (i = 0; i < descriptorNameLength; i++) {
-        arr16[currentIndex + i] = descriptorName.charCodeAt(i);
+      /******************/
+      /* DESCRIPTOR DATA */
+      /******************/
+      for (i = 0; i < descriptorName.length; i++) {
+        uint16[index++] = descriptorName.charCodeAt(i);
       }
-      currentIndex = currentIndex + descriptorNameLength;
-
-      // Descriptor description
-      for (i = 0; i < descriptorDescriptionLength; i++) {
-        arr16[currentIndex + i] = descriptorDescription.charCodeAt(i);
+      for (i = 0; i < descriptorDescription.length; i++) {
+        uint16[index++] = descriptorDescription.charCodeAt(i);
       }
-      currentIndex = currentIndex + descriptorDescriptionLength;
-
-      // Hidden frames
       for (i = 0; i < serializedHiddenFrames.length; i++) {
-        arr16[currentIndex + i] = serializedHiddenFrames.charCodeAt(i);
+        uint16[index++] = serializedHiddenFrames.charCodeAt(i);
       }
-      currentIndex = currentIndex + serializedHiddenFrames.length;
 
-      // Layers
-      for (i = 0, layers = piskel.getLayers(); i < layers.length; i++) {
-        var layer = layers[i];
-        var frames = layer.getFrames();
+      /***************/
+      /* LAYERS META */
+      /***************/
+      for (i = 0; i < layers.length; i++) {
+        var layerName = layers[i].getName();
+        var opacity = layers[i].getOpacity();
+        var frameCount = layers[i].getFrames().length;
 
-        var layerName = layer.getName();
-        var layerNameLength = layerName.length;
-        var opacity = layer.getOpacity();
-        var frameCount = frames.length;
-
-        dataUri = framesData[i].uri;
-        dataUriLength = framesData[i].length;
-
-        // Meta
-        arr16[currentIndex] = layerNameLength;
-        arr16[currentIndex + 1] = Math.floor(opacity * 65535);
-        arr16[currentIndex + 2] = frameCount;
-        arr16[currentIndex + 3] = ((dataUriLength & 0xffff0000) >> 16) >>> 0; // Upper 16
-        arr16[currentIndex + 4] = (dataUriLength & 0x0000ffff) >>> 0; // Lower 16
-
-        // Name
-        for (j = 0; j < layerNameLength; j++) {
-          arr16[currentIndex + 5 + j] = layerName.charCodeAt(j);
+        uint16[index++] = layerName.length;
+        for (j = 0; j < layerName.length; j++) {
+          uint16[index++] = layerName.charCodeAt(j);
         }
+        uint16[index++] = Math.round(opacity * 65535);
+        uint16[index++] = frameCount;
+      }
 
-        // Data URI
-        for (j = 0; j < dataUriLength; j++) {
-          arr8[(currentIndex + 5 + layerNameLength) * 2 + j] =
-            dataUri.charCodeAt(j);
+      /***************/
+      /* LAYERS DATA */
+      /***************/
+      // index is the number of Uint16 written so far. The pixel region starts at
+      // the first 4-byte aligned offset at or after that, i.e. the nearest whole
+      // number of Uint32 words. Round by adding 1 then halving.
+      var framePixelCount = width * height;
+      var pixelIndex = (index + 1) >> 1;
+
+      for (i = 0; i < layers.length; i++) {
+        var frames = layers[i].getFrames();
+        for (j = 0; j < frames.length; j++) {
+          uint32.set(frames[j].pixels, pixelIndex);
+          pixelIndex += framePixelCount;
         }
-
-        currentIndex += Math.ceil(5 + layerNameLength + dataUriLength / 2);
       }
 
       return buffer;
