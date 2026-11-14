@@ -49,7 +49,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.10",
-    "@playwright/test": "1.59.1",
+    "@playwright/test": "1.61.1",
     "@types/adm-zip": "0.5.8",
     "adm-zip": "0.5.17",
     "dateformat": "4.5.1",

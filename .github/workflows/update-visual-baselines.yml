@@ -12,7 +12,7 @@ jobs:
   update:
     runs-on: ubuntu-latest
     # Keep this tag equal to the @playwright/test version.
-    container: mcr.microsoft.com/playwright:v1.59.1-noble
+    container: mcr.microsoft.com/playwright:v1.61.1-noble
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
