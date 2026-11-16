@@ -1,8 +1,6 @@
 (function () {
   var ns = $.namespace('pskl.utils');
   var colorCache = {};
-  var offCanvasPool = {};
-  var imageDataPool = {};
   ns.FrameUtils = {
     /**
      * Render a Frame object as an image.
@@ -55,32 +53,12 @@
           }
         }
 
-        // Imagedata from cache
-        var imageDataKey = w + '-' + h;
-        var imageData;
-        if (!imageDataPool[imageDataKey]) {
-          imageData = imageDataPool[imageDataKey] = context.createImageData(w, h);
-        } else {
-          imageData = imageDataPool[imageDataKey];
-        }
-
-        // Convert to uint8 and set the data
-        var data = new Uint8ClampedArray(pixels.buffer);
-        var imgDataData = imageData.data;
-        imgDataData.set(data);
-
-        // Offcanvas from cache
-        var offCanvasKey = w + '-' + h;
-        var offCanvas;
-        if (!offCanvasPool[offCanvasKey]) {
-          offCanvas = offCanvasPool[offCanvasKey] = pskl.utils.CanvasUtils.createCanvas(w, h);
-          offCanvas.context = offCanvas.getContext('2d');
-        } else {
-          offCanvas = offCanvasPool[offCanvasKey];
-        }
-
-        // Put pixel data to offcanvas and draw the offcanvas onto the canvas
-        offCanvas.context.putImageData(imageData, 0, 0);
+        // Safari can draw a stale copy of a reused canvas after putImageData.
+        var offCanvas = pskl.utils.CanvasUtils.createCanvas(w, h);
+        var offContext = offCanvas.getContext('2d');
+        var imageData = offContext.createImageData(w, h);
+        imageData.data.set(new Uint8ClampedArray(pixels.buffer));
+        offContext.putImageData(imageData, 0, 0);
         context.drawImage(offCanvas, 0, 0, w, h);
         context.globalAlpha = 1;
       }
