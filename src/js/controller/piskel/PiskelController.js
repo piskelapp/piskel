@@ -227,7 +227,10 @@
           return index + 1;
         }
       }
-    });
+
+      return index;
+    }).sort();
+
   };
 
   ns.PiskelController.prototype.hasVisibleFrameAt = function (index) {
