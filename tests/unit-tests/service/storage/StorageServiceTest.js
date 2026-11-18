@@ -3,9 +3,6 @@ describe("Storage Service test suite", function () {
   var piskel = {};
 
   beforeEach(function () {
-    pskl.app.galleryStorageService = {
-      save: function () {}
-    };
     pskl.app.desktopStorageService = {
       save: function () {}
     };
@@ -61,22 +58,6 @@ describe("Storage Service test suite", function () {
       });
   };
 
-  // GalleryStorage
-  it("calls GalleryStorage#save in saveToGallery", function (done) {
-    checkSubServiceSuccessfulSave(
-      pskl.app.galleryStorageService,
-      "saveToGallery",
-      done
-    );
-  });
-  it("calls GalleryStorage#save in saveToGallery - error case", function (done) {
-    checkSubServiceFailedSave(
-      pskl.app.galleryStorageService,
-      "saveToGallery",
-      done
-    );
-  });
-
   // DesktopStorage
   it("calls DesktopStorage#save in saveToDesktop", function (done) {
     checkSubServiceSuccessfulSave(
@@ -130,23 +111,23 @@ describe("Storage Service test suite", function () {
     var savePromise = new Promise(function (resolve) {
       resolveSavePromise = resolve;
     });
-    spyOn(pskl.app.galleryStorageService, "save").and.returnValue(savePromise);
+    spyOn(pskl.app.desktopStorageService, "save").and.returnValue(savePromise);
 
     // check storageService is not in saving mode
     expect(storageService.isSaving()).toBe(false);
 
     // save
-    var storageServicePromise = storageService.saveToGallery(piskel);
+    var storageServicePromise = storageService.saveToDesktop(piskel);
 
     // storageService is now in saving mode
     expect(storageService.isSaving()).toBe(true);
 
     // we have called save once
-    expect(pskl.app.galleryStorageService.save.calls.count()).toBe(1);
+    expect(pskl.app.desktopStorageService.save.calls.count()).toBe(1);
 
     // call save again, should be ignored (rejected with "Already saving")
-    storageService.saveToGallery(piskel).catch(function () {});
-    expect(pskl.app.galleryStorageService.save.calls.count()).toBe(1);
+    storageService.saveToDesktop(piskel).catch(function () {});
+    expect(pskl.app.desktopStorageService.save.calls.count()).toBe(1);
 
     resolveSavePromise();
     storageServicePromise.then(function () {
@@ -157,7 +138,7 @@ describe("Storage Service test suite", function () {
   });
 
   it("updates saving status on BEFORE_SAVING_PISKEL and AFTER_SAVING_PISKEL events", function () {
-    spyOn(pskl.app.galleryStorageService, "save").and.returnValue(
+    spyOn(pskl.app.desktopStorageService, "save").and.returnValue(
       Promise.resolve()
     );
 
@@ -169,8 +150,8 @@ describe("Storage Service test suite", function () {
     expect(storageService.isSaving()).toBe(true);
 
     // call save, should have been ignored (rejected with "Already saving")
-    storageService.saveToGallery(piskel).catch(function () {});
-    expect(pskl.app.galleryStorageService.save.calls.count()).toBe(0);
+    storageService.saveToDesktop(piskel).catch(function () {});
+    expect(pskl.app.desktopStorageService.save.calls.count()).toBe(0);
 
     // trigger before save event
     $.publish(Events.AFTER_SAVING_PISKEL);

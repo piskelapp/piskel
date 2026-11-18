@@ -176,7 +176,6 @@ exports.scripts = [
   "js/service/storage/FileDownloadStorageService.js",
   "js/service/storage/IndexedDbStorageService.js",
   "js/service/storage/LocalStorageService.js",
-  "js/service/storage/GalleryStorageService.js",
   "js/service/storage/DesktopStorageService.js",
   "js/service/BackupService.js",
   "js/service/BeforeUnloadService.js",
@@ -238,17 +237,6 @@ exports.scripts = [
   "js/tools/transform/Rotate.js",
   "js/tools/transform/TransformUtils.js",
 
-  // Devtools
-  "js/devtools/DrawingTestPlayer.js",
-  "js/devtools/DrawingTestRecorder.js",
-  "js/devtools/DrawingTestRunner.js",
-  "js/devtools/DrawingTestSuiteController.js",
-  "js/devtools/DrawingTestSuiteRunner.js",
-  "js/devtools/MouseEvent.js",
-  "js/devtools/TestRecordController.js",
-  "js/devtools/init.js",
-  "js/devtools/lib/Blob.js",
-
   // Workers
   "js/worker/framecolors/FrameColorsWorker.js",
   "js/worker/framecolors/FrameColors.js",
@@ -258,8 +246,5 @@ exports.scripts = [
   "js/worker/imageprocessor/ImageProcessor.js",
 
   // Application controller and initialization
-  "js/app.js",
-
-  // Bonus features !!
-  "js/snippets.js"
+  "js/app.js"
 ];

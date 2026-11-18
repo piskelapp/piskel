@@ -1,4 +1,5 @@
 const rmdir = require('rmdir');
+const { execSync } = require('child_process');
 const path = require('path');
 const fs = require('fs');
 const fse = require('fs-extra');
@@ -43,6 +44,12 @@ const copyPiskelStaticsToPiskelWeb = async () => {
 
         /** Kids file moves  */
 
+        // Clean up the kids target directory too, like the editor one above.
+        // Bundle names contain the build date, so without this, every release
+        // adds new bundles next to the previous ones instead of replacing them.
+        await fse.remove(path.resolve(PISKELAPP_KIDS_PATH));
+        console.log(`Kids target destination folder cleaned-up successfully!`);
+
         // Then, copy all kids statics from piskel into piskel-web
         await fse.copy(
             path.resolve(PISKEL_PATH, "dest/prod"),
@@ -66,6 +73,12 @@ const copyPiskelStaticsToPiskelWeb = async () => {
         await fse.writeFile(path.resolve(PISKELAPP_PATH, "VERSION"), pjson.version);
         console.log(`VERSION file created successfully!`);
 
+        // Record the exact piskel commit in a COMMIT file next to VERSION, so releases can be diffed against each other.
+        // VERSION alone is not enough: it stays the same (e.g. x.y.z-SNAPSHOT) across releases.
+        const commit = execSync('git rev-parse HEAD', { cwd: PISKEL_PATH }).toString().trim();
+        await fse.writeFile(path.resolve(PISKELAPP_PATH, "COMMIT"), commit);
+        console.log(`COMMIT file created successfully (${commit})!`);
+
         const readmeContent = `
           The content of the editor folder was copied from the piskel project.
           Do not edit this folder directly but instead edit the piskel project
@@ -76,6 +89,8 @@ const copyPiskelStaticsToPiskelWeb = async () => {
 
     } catch (err) {
         console.error(`Failed to copy piskel statics`, err);
+        // Exit with an error code, so that callers (npm, scripts, CI) see the failure.
+        process.exitCode = 1;
     }
 }
 

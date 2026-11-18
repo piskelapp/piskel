@@ -20,9 +20,6 @@ const { exec } = require('child_process');
 const isTest = process.argv.includes('--test');
 const PORT = 9001;
 const ROOT = path.resolve(__dirname, '..', 'dest/prod');
-const EXTRA_ROOTS = isTest
-  ? [path.resolve(__dirname, '..', 'tests/e2e/data')]
-  : [path.resolve(__dirname, '..', 'test')];
 
 const MIME_TYPES = {
   '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css',
@@ -68,16 +65,13 @@ const LIVE_RELOAD_SCRIPT = `
 
 // --- Static file serving ---
 function findFile(urlPath) {
-  const roots = [ROOT, ...EXTRA_ROOTS];
-  for (const root of roots) {
-    const filePath = path.join(root, urlPath);
-    if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
-      return filePath;
-    }
-    if (fs.existsSync(filePath) && fs.statSync(filePath).isDirectory()) {
-      const indexPath = path.join(filePath, 'index.html');
-      if (fs.existsSync(indexPath)) return indexPath;
-    }
+  const filePath = path.join(ROOT, urlPath);
+  if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
+    return filePath;
+  }
+  if (fs.existsSync(filePath) && fs.statSync(filePath).isDirectory()) {
+    const indexPath = path.join(filePath, 'index.html');
+    if (fs.existsSync(indexPath)) return indexPath;
   }
   return null;
 }

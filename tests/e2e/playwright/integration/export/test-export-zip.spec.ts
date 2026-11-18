@@ -1,5 +1,16 @@
 import test, { expect } from "@playwright/test";
-import { openEditor, openExportSettingsPanel, setPiskelFromGrid, testId, clickTool, setPrimaryColor, drawAtPixel, getAddLayerButton } from "../../testutils";
+import {
+  openEditor,
+  openExportSettingsPanel,
+  setPiskelFromGrid,
+  testId,
+  clickTool,
+  setPrimaryColor,
+  drawAtPixel,
+  getAddLayerButton,
+  selectExportTab,
+  gridFromColorRows,
+} from "../../testutils";
 import fs from 'fs/promises';
 import AdmZip from 'adm-zip';
 import PNG from 'png-ts';
@@ -28,17 +39,20 @@ async function fillFrame1(page: import('@playwright/test').Page) {
 
 test.describe('ZIP export', () => {
 
-  test('should export ZIP with one PNG per frame and correct pixels', async ({ page }) => {
+  test('should export ZIP with one PNG per frame and correct pixels', { tag: ['@export.zip'] }, async ({ page }) => {
     await openEditor(page);
     // Frame 0: R G / B T
-    await setPiskelFromGrid(page, [["R", "G"], ["B", "T"]]);
+    await setPiskelFromGrid(page, gridFromColorRows([
+      'RG',
+      'B.',
+    ]));
 
     // Frame 1: G B / T G
     await page.keyboard.press('n');
     await fillFrame1(page);
 
     await openExportSettingsPanel(page);
-    await page.click('[data-tab-id="zip"]');
+    await selectExportTab(page, 'zip');
     await expect(page.locator('.export-panel-zip')).toBeAttached();
 
     const downloadPromise = page.waitForEvent('download');
@@ -79,17 +93,20 @@ test.describe('ZIP export', () => {
     expect(rgbaAt(f1px, 2, 1, 1)).toEqual(G);
   });
 
-  test('should export ZIP with custom prefix', async ({ page }) => {
+  test('should export ZIP with custom prefix', { tag: ['@export.zip'] }, async ({ page }) => {
     await openEditor(page);
     // Frame 0: R T / T R
-    await setPiskelFromGrid(page, [["R", "T"], ["T", "R"]]);
+    await setPiskelFromGrid(page, gridFromColorRows([
+      'R.',
+      '.R',
+    ]));
 
     // Frame 1: G B / T G
     await page.keyboard.press('n');
     await fillFrame1(page);
 
     await openExportSettingsPanel(page);
-    await page.click('[data-tab-id="zip"]');
+    await selectExportTab(page, 'zip');
     await expect(page.locator('.export-panel-zip')).toBeAttached();
 
     // Set custom prefix
@@ -125,10 +142,13 @@ test.describe('ZIP export', () => {
     expect(rgbaAt(f1px, 2, 1, 1)).toEqual(G);
   });
 
-  test('should export ZIP split by layers with correct content', async ({ page }) => {
+  test('should export ZIP split by layers with correct content', { tag: ['@export.zip-split-layers'] }, async ({ page }) => {
     await openEditor(page);
     // Layer 0: R T / T R
-    await setPiskelFromGrid(page, [["R", "T"], ["T", "R"]]);
+    await setPiskelFromGrid(page, gridFromColorRows([
+      'R.',
+      '.R',
+    ]));
 
     // Add layer 1 and draw: T G / B T
     await getAddLayerButton(page).click();
@@ -139,7 +159,7 @@ test.describe('ZIP export', () => {
     await drawAtPixel(page, 0, 1);
 
     await openExportSettingsPanel(page);
-    await page.click('[data-tab-id="zip"]');
+    await selectExportTab(page, 'zip');
     await expect(page.locator('.export-panel-zip')).toBeAttached();
 
     // Enable split by layers

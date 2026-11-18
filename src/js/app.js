@@ -9,18 +9,14 @@
    */
   ns.app = {
     init: function () {
-      /**
-       * When started from APP Engine, appEngineToken_ (Boolean) should be set on window.pskl
-       */
-      this.isAppEngineVersion = !!pskl.appEngineToken_;
-
       // This id is used to keep track of sessions in the BackupService.
       this.sessionId = pskl.utils.Uuid.generate();
 
       this.shortcutService = new pskl.service.keyboard.ShortcutService();
       this.shortcutService.init();
 
-      var size = pskl.UserSettings.get(pskl.UserSettings.DEFAULT_SIZE);
+      var size =
+        pskl.controller.settings.resize.DefaultSizeController.getDefaultSize();
       var fps = Constants.DEFAULT.FPS;
       var descriptor = new pskl.model.piskel.Descriptor("New Piskel", "");
       var piskel = new pskl.model.Piskel(
@@ -166,10 +162,6 @@
         new pskl.service.storage.DesktopStorageService(this.piskelController);
       this.desktopStorageService.init();
 
-      this.galleryStorageService =
-        new pskl.service.storage.GalleryStorageService(this.piskelController);
-      this.galleryStorageService.init();
-
       this.storageService = new pskl.service.storage.StorageService(
         this.piskelController
       );
@@ -250,10 +242,6 @@
         );
       });
 
-      if (pskl.devtools) {
-        pskl.devtools.init();
-      }
-
       if (
         pskl.utils.Environment.detectNodeWebkit() &&
         pskl.utils.UserAgent.isMac
@@ -272,11 +260,6 @@
           dialogId: "unsupported-browser"
         });
       }
-    },
-
-    // TODO: Remove this method and connected code.
-    isLoggedIn: function () {
-      return false;
     },
 
     initTooltips_: function () {

@@ -158,7 +158,20 @@
   ns.SelectionManager.prototype.pasteText_ = function (clipboardItem) {
     var _blob = clipboardItem.getAsString(
       function (selectionString) {
-        var selectionData = JSON.parse(selectionString);
+        var selectionData;
+        try {
+          // TODO: ideally we should validate the parsed data against a piskel selection
+          // schema instead of accepting any arbitrary JSON as a valid selection.
+          selectionData = JSON.parse(selectionString);
+        } catch {
+          // The clipboard does not contain a potential piskel selection, dropping.
+          return;
+        }
+
+        if (!selectionData) {
+          return;
+        }
+
         var time = selectionData.time;
         var pixels = selectionData.pixels;
 

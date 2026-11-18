@@ -1,5 +1,12 @@
 import test, { expect } from "@playwright/test";
-import { openEditor, openExportSettingsPanel, setPiskelFromGrid, testId } from "../../testutils";
+import {
+  openEditor,
+  openExportSettingsPanel,
+  setPiskelFromGrid,
+  testId,
+  selectExportTab,
+  gridFromColorRows,
+} from "../../testutils";
 import fs from 'fs/promises';
 
 /**
@@ -94,13 +101,16 @@ function expectCFileStructure(data: CFileData, spriteName: string, frameCount: n
 
 test.describe('C file export', () => {
 
-  test('should export a valid C file with correct structure and pixels', async ({ page }) => {
+  test('should export a valid C file with correct structure and pixels', { tag: ['@export.c-file'] }, async ({ page }) => {
     await openEditor(page);
     // R G / B T
-    await setPiskelFromGrid(page, [["R", "G"], ["B", "T"]]);
+    await setPiskelFromGrid(page, gridFromColorRows([
+      'RG',
+      'B.',
+    ]));
 
     await openExportSettingsPanel(page);
-    await page.click('[data-tab-id="misc"]');
+    await selectExportTab(page, 'misc');
     await expect(page.locator('.export-panel-misc')).toBeAttached();
 
     const downloadPromise = page.waitForEvent('download');
@@ -125,16 +135,19 @@ test.describe('C file export', () => {
     ]);
   });
 
-  test('should export C file with multiple frames', async ({ page }) => {
+  test('should export C file with multiple frames', { tag: ['@export.c-file'] }, async ({ page }) => {
     await openEditor(page);
     // Frame 0: R T / T R
-    await setPiskelFromGrid(page, [["R", "T"], ["T", "R"]]);
+    await setPiskelFromGrid(page, gridFromColorRows([
+      'R.',
+      '.R',
+    ]));
 
     // Add frame 1
     await page.keyboard.press('n');
 
     await openExportSettingsPanel(page);
-    await page.click('[data-tab-id="misc"]');
+    await selectExportTab(page, 'misc');
     await expect(page.locator('.export-panel-misc')).toBeAttached();
 
     const downloadPromise = page.waitForEvent('download');

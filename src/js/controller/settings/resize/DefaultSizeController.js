@@ -10,10 +10,23 @@
     pskl.controller.settings.AbstractSettingController
   );
 
+  /**
+   * Returns the default size from the user settings. The stored value is sanitized
+   * since it may have been saved by an older version without any size limit.
+   */
+  ns.DefaultSizeController.getDefaultSize = function () {
+    var defaultSize = pskl.UserSettings.get(pskl.UserSettings.DEFAULT_SIZE);
+    return pskl.utils.ResizeUtils.sanitizeSize(
+      defaultSize.width,
+      defaultSize.height,
+      { width: Constants.DEFAULT.WIDTH, height: Constants.DEFAULT.HEIGHT }
+    );
+  };
+
   ns.DefaultSizeController.prototype.init = function () {
     this.container = document.querySelector(".settings-default-size");
 
-    var defaultSize = pskl.UserSettings.get(pskl.UserSettings.DEFAULT_SIZE);
+    var defaultSize = ns.DefaultSizeController.getDefaultSize();
 
     this.widthInput = this.container.querySelector('[name="default-width"]');
     this.heightInput = this.container.querySelector('[name="default-height"]');
@@ -28,26 +41,13 @@
   ns.DefaultSizeController.prototype.onFormSubmit_ = function (evt) {
     evt.preventDefault();
 
-    var defaultSize = pskl.UserSettings.get(pskl.UserSettings.DEFAULT_SIZE);
+    var size = pskl.utils.ResizeUtils.sanitizeSize(
+      this.widthInput.value,
+      this.heightInput.value,
+      ns.DefaultSizeController.getDefaultSize()
+    );
 
-    var width = this.toNumber_(this.widthInput.value, defaultSize.width);
-    var height = this.toNumber_(this.heightInput.value, defaultSize.height);
-
-    pskl.UserSettings.set(pskl.UserSettings.DEFAULT_SIZE, {
-      width: width,
-      height: height
-    });
+    pskl.UserSettings.set(pskl.UserSettings.DEFAULT_SIZE, size);
     $.publish(Events.CLOSE_SETTINGS_DRAWER);
-  };
-
-  ns.DefaultSizeController.prototype.toNumber_ = function (
-    strValue,
-    defaultValue
-  ) {
-    var value = parseInt(strValue, 10);
-    if (value === 0 || isNaN(value)) {
-      value = defaultValue;
-    }
-    return value;
   };
 })();

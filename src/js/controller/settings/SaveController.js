@@ -26,9 +26,6 @@
     this.piskelName = document.querySelector(".piskel-name");
     this.descriptionInput = document.querySelector("#save-description");
     this.nameInput = document.querySelector("#save-name");
-    this.isPublicCheckbox = document.querySelector(
-      "input[name=save-public-checkbox]"
-    );
     this.updateDescriptorInputs_();
 
     this.saveLocalStorageButton = document.querySelector(
@@ -99,16 +96,6 @@
     var descriptor = this.piskelController.getPiskel().getDescriptor();
     this.descriptionInput.value = descriptor.description;
     this.nameInput.value = descriptor.name;
-    if (descriptor.isPublic) {
-      this.isPublicCheckbox.setAttribute("checked", true);
-    }
-
-    if (!pskl.app.isLoggedIn()) {
-      var isPublicCheckboxContainer = document.querySelector(
-        ".save-public-section"
-      );
-      isPublicCheckboxContainer.style.display = "none";
-    }
   };
 
   ns.SaveController.prototype.onSaveFormSubmit_ = function (evt) {
@@ -145,19 +132,7 @@
   ns.SaveController.prototype.getDescriptor_ = function () {
     var name = this.nameInput.value;
     var description = this.descriptionInput.value;
-    return new pskl.model.piskel.Descriptor(
-      name,
-      description,
-      this.isPublic_()
-    );
-  };
-
-  ns.SaveController.prototype.isPublic_ = function () {
-    if (!this.isPublicCheckbox) {
-      return true;
-    }
-
-    return !!this.isPublicCheckbox.checked;
+    return new pskl.model.piskel.Descriptor(name, description);
   };
 
   ns.SaveController.prototype.onSaveSuccess_ = function () {
