@@ -47,7 +47,7 @@ export const TransformUtils = {
     const xDelta = Math.ceil((max - w) / 2);
     const yDelta = Math.ceil((max - h) / 2);
 
-    frame.forEachPixel(function (color: number, x: number, y: number) {
+    frame.forEachPixel(function (_color: number, x: number, y: number) {
       const _x = x;
       const _y = y;
 
@@ -109,7 +109,7 @@ export const TransformUtils = {
 
   moveFramePixels(frame: Frame, dx: number, dy: number): void {
     const clone = frame.clone();
-    frame.forEachPixel(function (color: number, x: number, y: number) {
+    frame.forEachPixel(function (_color: number, x: number, y: number) {
       const _x = x;
       const _y = y;
 

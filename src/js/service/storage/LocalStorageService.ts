@@ -110,7 +110,7 @@ export class LocalStorageService {
     return window.localStorage.getItem("piskel." + name);
   }
 
-  getKeys(name?: string): LocalStorageKey[] {
+  getKeys(): LocalStorageKey[] {
     const keysString = window.localStorage.getItem("piskel.keys");
     return JSON.parse(String(keysString)) || [];
   }

@@ -66,7 +66,7 @@ export class VerticalMirrorPen extends SimplePen {
   /**
    * Depending on the pen size, the mirrored index need to have an offset of 1 pixel.
    */
-  getPenSizeOffset_(row?: number, frame?: Frame): number {
+  getPenSizeOffset_(): number {
     return (
       assertInitialized(app.penSizeService, "penSizeService").getPenSize() % 2
     );

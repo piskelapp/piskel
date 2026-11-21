@@ -1,4 +1,4 @@
-import { Events, type UserSettingValue } from "@/Events";
+import { Events } from "@/Events";
 import { app } from "@/app";
 import type { JQueryEvent } from "@/lib/jquery-1.8.0";
 import type { Shortcut } from "@/service/keyboard/Shortcut";
@@ -242,11 +242,7 @@ export class PreviewActionsController {
     }
   }
 
-  onUserSettingsChange_(
-    evt: JQueryEvent,
-    name: string,
-    value: UserSettingValue
-  ): void {
+  onUserSettingsChange_(_evt: JQueryEvent, name: string): void {
     if (name == UserSettings.ONION_SKIN) {
       this.updateOnionSkinPreview_();
     } else if (name == UserSettings.MAX_FPS) {

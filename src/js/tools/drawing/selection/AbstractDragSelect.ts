@@ -4,7 +4,12 @@ import { BaseSelect } from "./BaseSelect";
 
 export class AbstractDragSelect extends BaseSelect {
   /** @override */
-  onSelectStart_(col: number, row: number, frame: Frame, overlay: Frame): void {
+  onSelectStart_(
+    col: number,
+    row: number,
+    _frame: Frame,
+    overlay: Frame
+  ): void {
     if (this.hasSelection) {
       this.hasSelection = false;
       this.commitSelection();
@@ -54,20 +59,25 @@ export class AbstractDragSelect extends BaseSelect {
 
   /** @protected */
   onDragSelectStart_(
-    col: number,
-    row: number,
-    frame?: Frame,
-    overlay?: Frame
+    _col: number,
+    _row: number,
+    _frame?: Frame,
+    _overlay?: Frame
   ): void {}
 
   /** @protected */
-  onDragSelect_(col: number, row: number, frame: Frame, overlay: Frame): void {}
+  onDragSelect_(
+    _col: number,
+    _row: number,
+    _frame: Frame,
+    _overlay: Frame
+  ): void {}
 
   /** @protected */
   onDragSelectEnd_(
-    col: number,
-    row: number,
-    frame: Frame,
-    overlay: Frame
+    _col: number,
+    _row: number,
+    _frame: Frame,
+    _overlay: Frame
   ): void {}
 }

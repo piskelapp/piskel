@@ -74,12 +74,12 @@ export class TransformationsController {
     }
   }
 
-  toggleShowMoreTools_(evt: Event): void {
+  toggleShowMoreTools_(): void {
     const showMore = UserSettings.get(UserSettings.TRANSFORM_SHOW_MORE);
     UserSettings.set(UserSettings.TRANSFORM_SHOW_MORE, !showMore);
   }
 
-  onUserSettingsChange_(evt: JQueryEvent, settingName: string): void {
+  onUserSettingsChange_(_evt: JQueryEvent, settingName: string): void {
     if (settingName == UserSettings.TRANSFORM_SHOW_MORE) {
       this.updateShowMoreLink_();
     }

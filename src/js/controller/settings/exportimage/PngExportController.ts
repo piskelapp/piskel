@@ -215,7 +215,7 @@ export class PngExportController extends AbstractSettingController {
     return outputCanvas;
   }
 
-  onDownloadClick_(evt: Event): void {
+  onDownloadClick_(): void {
     // Create PNG export.
     const canvas = this.createPngSpritesheet_();
     this.downloadCanvas_(canvas);
@@ -301,7 +301,7 @@ export class PngExportController extends AbstractSettingController {
     FileUtils.downloadAsFile(blob, name + ".zip");
   }
 
-  onDataUriClick_(evt: Event): void {
+  onDataUriClick_(): void {
     const popup = window.open("about:blank");
     const dataUri = this.createPngSpritesheet_().toDataURL("image/png");
     window.setTimeout(() => {
@@ -314,7 +314,7 @@ export class PngExportController extends AbstractSettingController {
     }, 500);
   }
 
-  onDownloadSelectedFrameClick_(evt: Event): void {
+  onDownloadSelectedFrameClick_(): void {
     const frameIndex = this.piskelController.getCurrentFrameIndex();
     const name = this.piskelController.getPiskel().getDescriptor().name;
     let canvas = this.piskelController.renderFrameAt(frameIndex, true);

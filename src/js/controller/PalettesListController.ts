@@ -1,5 +1,5 @@
 import { Constants } from "@/Constants";
-import { Events, type UserSettingValue } from "@/Events";
+import { Events } from "@/Events";
 import { app } from "@/app";
 import type { JQueryEvent } from "@/lib/jquery-1.8.0";
 import type { CurrentColorsService } from "@/service/CurrentColorsService";
@@ -230,11 +230,7 @@ export class PalettesListController {
     }
   }
 
-  onUserSettingsChange_(
-    evt: JQueryEvent,
-    name: string,
-    value: UserSettingValue
-  ): void {
+  onUserSettingsChange_(_evt: JQueryEvent, name: string): void {
     if (name == UserSettings.SELECTED_PALETTE) {
       this.updateFromUserSettings();
     }
@@ -247,7 +243,7 @@ export class PalettesListController {
       paletteId;
   }
 
-  onPaletteSelected_(evt: Event): void {
+  onPaletteSelected_(): void {
     const paletteId = assertInitialized(
       this.colorPaletteSelect_,
       "colorPaletteSelect_"
@@ -256,13 +252,13 @@ export class PalettesListController {
     assertInitialized(this.colorPaletteSelect_, "colorPaletteSelect_").blur();
   }
 
-  onCreatePaletteClick_(evt: Event): void {
+  onCreatePaletteClick_(): void {
     $.publish(Events.DIALOG_SHOW, {
       dialogId: "create-palette"
     });
   }
 
-  onEditPaletteClick_(evt: Event): void {
+  onEditPaletteClick_(): void {
     const paletteId = assertInitialized(
       this.colorPaletteSelect_,
       "colorPaletteSelect_"

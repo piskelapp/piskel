@@ -23,7 +23,8 @@
       "correctness": {
         "noUndeclaredVariables": "error",
         "noInvalidUseBeforeDeclaration": "error",
-        "noUnusedVariables": "warn"
+        "noUnusedVariables": "warn",
+        "noUnusedFunctionParameters": "error"
       },
       "complexity": {
         "useLiteralKeys": "error",

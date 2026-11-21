@@ -17,7 +17,7 @@ export class MiscExportController extends AbstractSettingController {
     this.addEventListener(cDownloadButton, "click", this.onDownloadCFileClick_);
   }
 
-  onDownloadCFileClick_(evt: Event): void {
+  onDownloadCFileClick_(): void {
     const fileName = this.getPiskelName_() + ".c";
     const cName = this.getPiskelName_().replace(" ", "_");
     const width = this.piskelController.getWidth();

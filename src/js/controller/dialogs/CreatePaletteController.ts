@@ -12,7 +12,6 @@ import { UserSettings } from "@/utils/UserSettings";
 import { Uuid } from "@/utils/Uuid";
 import { assertInitialized, escapeHtml, unescapeHtml } from "@/utils/core";
 import { ColorsList } from "@/widgets/ColorsList";
-import type { PublicPiskelController } from "@/controller/piskel/PublicPiskelController";
 import { AbstractDialogController } from "./AbstractDialogController";
 
 export class CreatePaletteController extends AbstractDialogController {
@@ -23,7 +22,7 @@ export class CreatePaletteController extends AbstractDialogController {
   colorsListWidget: ColorsList | undefined;
   palette: Palette | undefined;
 
-  constructor(piskelController: PublicPiskelController) {
+  constructor() {
     super();
     this.paletteService = app.paletteService;
     this.paletteImportService = app.paletteImportService;
@@ -198,7 +197,7 @@ export class CreatePaletteController extends AbstractDialogController {
     assertInitialized(this.hiddenFileInput, "hiddenFileInput").click();
   }
 
-  onFileInputChange_(evt: Event): void {
+  onFileInputChange_(): void {
     const files = assertInitialized(
       this.hiddenFileInput,
       "hiddenFileInput"
@@ -224,7 +223,7 @@ export class CreatePaletteController extends AbstractDialogController {
     }, 2000);
   }
 
-  onNameInputChange_(evt: Event): void {
+  onNameInputChange_(): void {
     assertInitialized(this.palette, "palette").name = escapeHtml(
       assertInitialized(this.nameInput, "nameInput").value
     );

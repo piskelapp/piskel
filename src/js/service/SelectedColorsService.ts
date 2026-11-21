@@ -30,11 +30,11 @@ export class SelectedColorsService {
     return this.secondaryColor_;
   }
 
-  onPrimaryColorUpdate_(evt: JQueryEvent, color: string): void {
+  onPrimaryColorUpdate_(_evt: JQueryEvent, color: string): void {
     this.primaryColor_ = color;
   }
 
-  onSecondaryColorUpdate_(evt: JQueryEvent, color: string): void {
+  onSecondaryColorUpdate_(_evt: JQueryEvent, color: string): void {
     this.secondaryColor_ = color;
   }
 }

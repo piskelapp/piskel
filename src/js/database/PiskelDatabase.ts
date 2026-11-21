@@ -29,7 +29,7 @@ export type SavedPiskelInfo = Omit<SavedPiskel, "serialized">;
 export class PiskelDatabase {
   db: IDBDatabase | null;
 
-  constructor(options?: unknown) {
+  constructor() {
     this.db = null;
   }
 
@@ -52,7 +52,7 @@ export class PiskelDatabase {
 
     // Create an object store "piskels" with the autoIncrement flag set as true.
     const objectStore = db.createObjectStore("piskels", { keyPath: "name" });
-    objectStore.transaction.oncomplete = (event: Event) => {
+    objectStore.transaction.oncomplete = () => {
       MigrateLocalStorageToIndexedDb.migrate(this);
     };
   }

@@ -43,7 +43,7 @@ export class BrowseBackups extends AbstractDialogController {
   steps: WizardSteps | undefined;
   wizard: Wizard | undefined;
 
-  constructor(piskelController: PublicPiskelController, args?: unknown) {
+  constructor(piskelController: PublicPiskelController) {
     super();
     this.piskelController = piskelController;
 

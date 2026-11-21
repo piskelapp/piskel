@@ -24,7 +24,7 @@ export class ProgressBarController {
     $.subscribe(Events.HIDE_PROGRESS, this.hideProgress_.bind(this));
   }
 
-  showProgress_(event: JQueryEvent, progressInfo: ProgressInfo): void {
+  showProgress_(_event: JQueryEvent, progressInfo: ProgressInfo): void {
     this.removeProgressBar_();
     this.showProgressTimer_ = window.setTimeout(
       this.onTimerExpired_.bind(this, progressInfo),
@@ -47,7 +47,7 @@ export class ProgressBarController {
     );
   }
 
-  updateProgress_(event: JQueryEvent, progressInfo: ProgressUpdate): void {
+  updateProgress_(_event: JQueryEvent, progressInfo: ProgressUpdate): void {
     if (this.progressBar && this.progressBarStatus) {
       const progress = progressInfo.progress;
       const width = this.progressBar.offsetWidth;
@@ -57,7 +57,7 @@ export class ProgressBarController {
     }
   }
 
-  hideProgress_(event: JQueryEvent): void {
+  hideProgress_(): void {
     if (this.showProgressTimer_) {
       window.clearTimeout(this.showProgressTimer_);
     }

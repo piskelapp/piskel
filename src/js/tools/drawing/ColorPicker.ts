@@ -19,13 +19,7 @@ export class ColorPicker extends BaseTool {
   /**
    * @override
    */
-  applyToolAt(
-    col: number,
-    row: number,
-    frame: Frame,
-    overlay: Frame,
-    event: MouseEvent
-  ): void {
+  applyToolAt(col: number, row: number, frame: Frame): void {
     if (frame.containsPixel(col, row)) {
       const sampledColor = intToColor(frame.getPixel(col, row));
       if (

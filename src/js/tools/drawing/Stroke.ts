@@ -35,13 +35,7 @@ export class Stroke extends BaseTool {
   /**
    * @override
    */
-  applyToolAt(
-    col: number,
-    row: number,
-    frame: Frame,
-    overlay: Frame,
-    event: MouseEvent
-  ): void {
+  applyToolAt(col: number, row: number, _frame: Frame, overlay: Frame): void {
     this.startCol = col;
     this.startRow = row;
 
@@ -60,7 +54,7 @@ export class Stroke extends BaseTool {
   moveToolAt(
     col: number,
     row: number,
-    frame: Frame,
+    _frame: Frame,
     overlay: Frame,
     event: MouseEvent
   ): void {

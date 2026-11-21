@@ -48,7 +48,7 @@ export abstract class AbstractTransformTool extends Tool {
   }
 
   replay(
-    frame: Frame,
+    _frame: Frame,
     replayData: { altKey: boolean; allFrames: boolean; allLayers: boolean }
   ): void {
     this.applyTool_(

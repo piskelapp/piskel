@@ -31,7 +31,7 @@ export class ColorSwap extends BaseTool {
     col: number,
     row: number,
     frame: Frame,
-    overlay: Frame,
+    _overlay: Frame,
     event: MouseEvent
   ): void {
     const oldColor = frame.getPixel(col, row);
@@ -52,7 +52,7 @@ export class ColorSwap extends BaseTool {
   }
 
   replay(
-    frame: Frame,
+    _frame: Frame,
     replayData: {
       oldColor: string | number;
       newColor: string | number;

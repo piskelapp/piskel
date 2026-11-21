@@ -1,6 +1,6 @@
 import { Dom } from "@/utils/Dom";
 import { Constants } from "@/Constants";
-import { Events, type UserSettingValue } from "@/Events";
+import { Events } from "@/Events";
 import { app } from "@/app";
 import type { JQueryEvent } from "@/lib/jquery-1.8.0";
 import type { Frame } from "@/model/Frame";
@@ -277,11 +277,7 @@ export class FrameRenderer extends AbstractRenderer {
     this.container.appendChild(this.displayCanvas);
   }
 
-  onUserSettingsChange_(
-    evt: JQueryEvent,
-    settingName: string,
-    settingValue: UserSettingValue
-  ): void {
+  onUserSettingsChange_(_evt: JQueryEvent, settingName: string): void {
     const settings = UserSettings;
     if (
       settingName == settings.GRID_WIDTH ||

@@ -18,7 +18,7 @@ export class Clone extends AbstractTransformTool {
     throw new Error("Clone copies whole frames in applyTool_");
   }
 
-  applyTool_(altKey: boolean, allFrames: boolean, allLayers: boolean): void {
+  applyTool_(): void {
     const ref = assertInitialized(
       app.piskelController,
       "piskelController"

@@ -61,7 +61,7 @@ export class BackupDatabase {
         this.db = (event.target as IDBRequest<IDBDatabase>).result;
         return this.db;
       })
-      .catch(function (e: Event) {
+      .catch(function () {
         console.log("Could not initialize the piskel backup database");
       });
   }
@@ -83,7 +83,7 @@ export class BackupDatabase {
       unique: false
     });
 
-    objectStore.transaction.oncomplete = (event: Event) => {
+    objectStore.transaction.oncomplete = () => {
       // Nothing to do at the moment!
     };
   }

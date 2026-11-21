@@ -40,7 +40,7 @@ export class MouseStateService {
     );
   }
 
-  onMouseEvent_(evt: JQueryEvent, mouseEvent: MouseEvent): void {
+  onMouseEvent_(_evt: JQueryEvent, mouseEvent: MouseEvent): void {
     if (mouseEvent.type == "mousedown") {
       this.lastButtonPressed_ = mouseEvent.button;
     } else if (mouseEvent.type == "mouseup") {

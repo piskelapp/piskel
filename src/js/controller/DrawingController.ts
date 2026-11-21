@@ -1,5 +1,5 @@
 import { Constants } from "@/Constants";
-import { Events, type UserSettingValue } from "@/Events";
+import { Events } from "@/Events";
 import { app } from "@/app";
 import type { JQueryEvent } from "@/lib/jquery-1.8.0";
 import { Frame } from "@/model/Frame";
@@ -109,7 +109,7 @@ export class DrawingController {
   init(): void {
     this.initMouseBehavior();
 
-    $.subscribe(Events.TOOL_SELECTED, (evt, toolBehavior) => {
+    $.subscribe(Events.TOOL_SELECTED, (_evt, toolBehavior) => {
       this.currentToolBehavior = toolBehavior;
       this.overlayFrame.clear();
     });
@@ -206,11 +206,7 @@ export class DrawingController {
   /**
    * @private
    */
-  onUserSettingsChange_(
-    evt: JQueryEvent,
-    settingsName: string,
-    settingsValue: UserSettingValue
-  ): void {
+  onUserSettingsChange_(_evt: JQueryEvent, settingsName: string): void {
     if (settingsName == "SHOW_GRID") {
       console.warn("DrawingController:onUserSettingsChange_ not implemented !");
     } else if (

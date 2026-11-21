@@ -98,7 +98,7 @@ export class StorageService {
     // no other implementation for now
   }
 
-  onSaveKey_(charkey: string): void {
+  onSaveKey_(): void {
     if (Environment.detectNodeWebkit()) {
       this.saveToDesktop(this.piskelController.getPiskel());
     } else {

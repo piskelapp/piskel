@@ -20,7 +20,7 @@ export class CanvasBackgroundController {
   }
 
   onUserSettingsChange_(
-    evt: JQueryEvent,
+    _evt: JQueryEvent,
     settingName: string,
     settingValue: UserSettingValue
   ): void {

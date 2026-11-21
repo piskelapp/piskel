@@ -77,7 +77,7 @@ export class GridPreferencesController extends AbstractSettingController {
     const gridColor = UserSettings.get(UserSettings.GRID_COLOR);
 
     let markup = "";
-    Object.keys(colorsMap).forEach(function (key: string, index: number) {
+    Object.keys(colorsMap).forEach(function (key: string) {
       let background = colorsMap[key];
       if (key === "transparent") {
         background =

@@ -87,7 +87,7 @@ describe("PiskelDatabase test", function () {
       piskelDatabase = new PiskelDatabase();
       piskelDatabase
         .init()
-        .then(function (db) {
+        .then(function () {
           return piskelDatabase.create("name", "desc", 0, "serialized");
         })
         .then(function () {
@@ -115,7 +115,7 @@ describe("PiskelDatabase test", function () {
       piskelDatabase = new PiskelDatabase();
       piskelDatabase
         .init()
-        .then(function (db) {
+        .then(function () {
           return _addPiskels(piskels);
         })
         .then(function () {
@@ -149,7 +149,7 @@ describe("PiskelDatabase test", function () {
       piskelDatabase = new PiskelDatabase();
       piskelDatabase
         .init()
-        .then(function (db) {
+        .then(function () {
           return _addPiskels(piskels);
         })
         .then(function () {
@@ -178,13 +178,13 @@ describe("PiskelDatabase test", function () {
       piskelDatabase = new PiskelDatabase();
       piskelDatabase
         .init()
-        .then(function (db) {
+        .then(function () {
           return _addPiskels(piskels);
         })
         .then(function () {
           return piskelDatabase.update("n2", "d2_updated", 40, "s2_updated");
         })
-        .then(function (piskels) {
+        .then(function () {
           return piskelDatabase.list();
         })
         .then(function (piskels) {

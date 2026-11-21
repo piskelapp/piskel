@@ -10,19 +10,19 @@ export abstract class BaseTool extends Tool {
   highlightedPixelRow: number | null | undefined;
 
   applyToolAt(
-    col: number,
-    row: number,
-    frame: Frame,
-    overlay: Frame,
-    event: MouseEvent
+    _col: number,
+    _row: number,
+    _frame: Frame,
+    _overlay: Frame,
+    _event: MouseEvent
   ): void {}
 
   moveToolAt(
-    col: number,
-    row: number,
-    frame: Frame,
-    overlay: Frame,
-    event: MouseEvent
+    _col: number,
+    _row: number,
+    _frame: Frame,
+    _overlay: Frame,
+    _event: MouseEvent
   ): void {}
 
   supportsDynamicPenSize() {
@@ -52,7 +52,7 @@ export abstract class BaseTool extends Tool {
     row: number,
     frame: Frame,
     overlay: Frame,
-    event: MouseEvent
+    _event: MouseEvent
   ): void {
     if (overlay.containsPixel(col, row)) {
       this.updateHighlightedPixel(frame, overlay, col, row);
@@ -114,11 +114,11 @@ export abstract class BaseTool extends Tool {
   }
 
   releaseToolAt(
-    col: number,
-    row: number,
-    frame: Frame,
-    overlay: Frame,
-    event: MouseEvent
+    _col: number,
+    _row: number,
+    _frame: Frame,
+    _overlay: Frame,
+    _event: MouseEvent
   ): void {}
 
   /**

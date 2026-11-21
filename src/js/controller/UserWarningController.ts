@@ -62,7 +62,7 @@ export class UserWarningController {
   }
 
   onPerformanceReportChanged_(
-    event: JQueryEvent,
+    _event: JQueryEvent,
     report: PerformanceReport
   ): void {
     const shouldDisplayWarning = report.hasProblem();

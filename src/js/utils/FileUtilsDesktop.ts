@@ -23,7 +23,7 @@ export const FileUtilsDesktop = {
     const fileInputElement = getFileInputElement(nwsaveas, accept);
 
     return new Promise<string>(function (resolve) {
-      const changeListener = function (evt: Event) {
+      const changeListener = function () {
         fileInputElement.removeEventListener("change", changeListener);
         document.removeEventListener("click", changeListener);
         resolve(fileInputElement.value);

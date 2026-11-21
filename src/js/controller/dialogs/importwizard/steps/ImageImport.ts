@@ -164,7 +164,7 @@ export class ImageImport extends AbstractImportStep {
     });
   }
 
-  onImportTypeChange_(evt: Event): void {
+  onImportTypeChange_(): void {
     if (this.getImportType_() === "single") {
       // Using single image, so remove the frame grid
       this.hideFrameGrid_();

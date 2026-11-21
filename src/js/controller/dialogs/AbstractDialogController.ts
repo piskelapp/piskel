@@ -3,7 +3,7 @@ import { Dom } from "@/utils/Dom";
 import { EventUtils, type ListenerCallback } from "@/utils/Event";
 
 export class AbstractDialogController {
-  init(initArgs?: unknown): void {
+  init(_initArgs?: unknown): void {
     const closeButton = Dom.getElement<HTMLElement>(".dialog-close");
     this.addEventListener(closeButton, "click", this.closeDialog);
   }

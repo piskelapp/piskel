@@ -43,7 +43,7 @@ export class SimplePen extends BaseTool {
     row: number,
     frame: Frame,
     overlay: Frame,
-    event: MouseEvent
+    _event: MouseEvent
   ): void {
     this.previousCol = col;
     this.previousRow = row;
@@ -123,13 +123,7 @@ export class SimplePen extends BaseTool {
     this.previousRow = row;
   }
 
-  releaseToolAt(
-    col: number,
-    row: number,
-    frame: Frame,
-    overlay: Frame,
-    event: MouseEvent
-  ): void {
+  releaseToolAt(_col: number, _row: number, frame: Frame): void {
     // apply on real frame
     this.setPixelsToFrame_(frame, this.pixels);
 
@@ -147,14 +141,10 @@ export class SimplePen extends BaseTool {
     frame: Frame,
     replayData: { pixels: ColoredPixel[]; color: string | number }
   ): void {
-    this.setPixelsToFrame_(frame, replayData.pixels, replayData.color);
+    this.setPixelsToFrame_(frame, replayData.pixels);
   }
 
-  setPixelsToFrame_(
-    frame: Frame,
-    pixels: ColoredPixel[],
-    color?: string | number
-  ): void {
+  setPixelsToFrame_(frame: Frame, pixels: ColoredPixel[]): void {
     pixels.forEach(function (pixel: ColoredPixel) {
       frame.setPixel(pixel.col, pixel.row, pixel.color);
     });

@@ -80,7 +80,7 @@ describe("BackupDatabase test", function () {
       backupDatabase = new BackupDatabase();
       backupDatabase
         .init()
-        .then(function (db) {
+        .then(function () {
           // Create snapshot in backup database
           return backupDatabase.createSnapshot(snapshot);
         })

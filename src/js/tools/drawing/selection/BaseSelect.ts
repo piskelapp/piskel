@@ -89,41 +89,29 @@ export class BaseSelect extends BaseTool {
         $.publish(Events.CLIPBOARD_CUT);
         this.drawSelectionOnOverlay_(overlay);
       }
-      this.onSelectionMoveStart_(col, row, frame, overlay);
+      this.onSelectionMoveStart_();
     }
   }
 
   /**
    * @override
    */
-  moveToolAt(
-    col: number,
-    row: number,
-    frame: Frame,
-    overlay: Frame,
-    event: MouseEvent
-  ): void {
+  moveToolAt(col: number, row: number, frame: Frame, overlay: Frame): void {
     if (this.mode == "select") {
       this.onSelect_(col, row, frame, overlay);
     } else if (this.mode == "moveSelection") {
-      this.onSelectionMove_(col, row, frame, overlay);
+      this.onSelectionMove_(col, row, overlay);
     }
   }
 
   /**
    * @override
    */
-  releaseToolAt(
-    col: number,
-    row: number,
-    frame: Frame,
-    overlay: Frame,
-    event: MouseEvent
-  ): void {
+  releaseToolAt(col: number, row: number, frame: Frame, overlay: Frame): void {
     if (this.mode == "select") {
       this.onSelectEnd_(col, row, frame, overlay);
     } else if (this.mode == "moveSelection") {
-      this.onSelectionMoveEnd_(col, row, frame, overlay);
+      this.onSelectionMoveEnd_(col, row, overlay);
     }
   }
 
@@ -220,35 +208,30 @@ export class BaseSelect extends BaseTool {
   // The list of callbacks to implement by specialized tools to implement the selection creation behavior.
   /** @protected */
   onSelectStart_(
-    col: number,
-    row: number,
-    frame: Frame,
-    overlay: Frame
+    _col: number,
+    _row: number,
+    _frame: Frame,
+    _overlay: Frame
   ): void {}
 
   /** @protected */
-  onSelect_(col: number, row: number, frame: Frame, overlay: Frame): void {}
+  onSelect_(_col: number, _row: number, _frame: Frame, _overlay: Frame): void {}
 
   /** @protected */
-  onSelectEnd_(col: number, row: number, frame: Frame, overlay: Frame): void {}
+  onSelectEnd_(
+    _col: number,
+    _row: number,
+    _frame: Frame,
+    _overlay: Frame
+  ): void {}
 
   // The list of callbacks that define the drag'n drop behavior of the selection.
   /** @private */
 
-  onSelectionMoveStart_(
-    col: number,
-    row: number,
-    frame: Frame,
-    overlay: Frame
-  ): void {}
+  onSelectionMoveStart_(): void {}
 
   /** @private */
-  onSelectionMove_(
-    col: number,
-    row: number,
-    frame: Frame,
-    overlay: Frame
-  ): void {
+  onSelectionMove_(col: number, row: number, overlay: Frame): void {
     const deltaCol = col - Number(this.lastMoveCol);
     const deltaRow = row - Number(this.lastMoveRow);
 
@@ -262,12 +245,7 @@ export class BaseSelect extends BaseTool {
   }
 
   /** @private */
-  onSelectionMoveEnd_(
-    col: number,
-    row: number,
-    frame: Frame,
-    overlay: Frame
-  ): void {
-    this.onSelectionMove_(col, row, frame, overlay);
+  onSelectionMoveEnd_(col: number, row: number, overlay: Frame): void {
+    this.onSelectionMove_(col, row, overlay);
   }
 }

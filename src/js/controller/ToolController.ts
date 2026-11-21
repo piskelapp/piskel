@@ -97,7 +97,7 @@ export class ToolController {
     stage.dataset.selectedToolClass = toolId;
   }
 
-  onSelectToolEvent_(event: JQueryEvent, toolId: string): void {
+  onSelectToolEvent_(_event: JQueryEvent, toolId: string): void {
     const tool = this.getToolById_(toolId);
     if (tool) {
       this.selectTool_(tool);
@@ -142,7 +142,7 @@ export class ToolController {
     }
   }
 
-  onKeyboardShortcut_(toolId: string, charkey: string): void {
+  onKeyboardShortcut_(toolId: string): void {
     const tool = this.getToolById_(toolId);
     if (tool !== null) {
       this.selectTool_(tool);

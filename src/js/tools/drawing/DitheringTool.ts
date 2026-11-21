@@ -20,13 +20,7 @@ export class DitheringTool extends SimplePen {
   /**
    * @override
    */
-  applyToolAt(
-    col: number,
-    row: number,
-    frame: Frame,
-    overlay: Frame,
-    event: MouseEvent
-  ): void {
+  applyToolAt(col: number, row: number, frame: Frame, overlay: Frame): void {
     this.previousCol = col;
     this.previousRow = row;
 
@@ -36,7 +30,7 @@ export class DitheringTool extends SimplePen {
     ).getPenSize();
     const points = PixelUtils.resizePixel(col, row, penSize);
     points.forEach((point) => {
-      this.applyToolOnPixel(point[0], point[1], frame, overlay, event);
+      this.applyToolOnPixel(point[0], point[1], frame, overlay);
     });
   }
 
@@ -44,8 +38,7 @@ export class DitheringTool extends SimplePen {
     col: number,
     row: number,
     frame: Frame,
-    overlay: Frame,
-    event: Event
+    overlay: Frame
   ): void {
     let usePrimaryColor: number | boolean = (col + row) % 2;
 

@@ -72,7 +72,7 @@ export class GifExportController extends AbstractSettingController {
     return this.exportController.getExportZoom();
   }
 
-  onDownloadButtonClick_(evt: Event): void {
+  onDownloadButtonClick_(): void {
     const zoom = this.getZoom_();
     const fps = this.piskelController.getFPS();
 

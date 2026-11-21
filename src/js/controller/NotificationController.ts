@@ -15,7 +15,7 @@ export class NotificationController {
   /**
    * @private
    */
-  displayMessage_(evt: JQueryEvent, messageInfo: NotificationInfo): void {
+  displayMessage_(_evt: JQueryEvent, messageInfo: NotificationInfo): void {
     this.removeMessage_();
 
     const message = document.createElement("div");
@@ -39,7 +39,7 @@ export class NotificationController {
   /**
    * @private
    */
-  removeMessage_(evt?: JQueryEvent): void {
+  removeMessage_(): void {
     const message = document.querySelector("#user-message");
     if (message) {
       assertInitialized(message.parentNode, "parentNode").removeChild(message);

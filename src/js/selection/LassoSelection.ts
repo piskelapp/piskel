@@ -25,7 +25,7 @@ export class LassoSelection extends BaseSelection {
   getLassoPixels_(frame: Frame): { col: number; row: number }[] {
     const lassoPixels: { col: number; row: number }[] = [];
 
-    frame.forEachPixel((color: number, pixelCol: number, pixelRow: number) => {
+    frame.forEachPixel((_color: number, pixelCol: number, pixelRow: number) => {
       const pixel = { col: pixelCol, row: pixelRow };
       if (this.isInSelection_(pixel, frame)) {
         lassoPixels.push(pixel);

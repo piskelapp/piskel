@@ -99,8 +99,8 @@ Enforcement in CI and in the pre-commit hook:
 - `tsc --noEmit`.
 - Biome: `noExplicitAny`, `noNonNullAssertion`, `noTsIgnore`,
   `noRestrictedTypes` (for the banned utility types),
-  `useConsistentTypeDefinitions` (set to `type`), `noDefaultExport` and
-  `noImportCycles`.
+  `useConsistentTypeDefinitions` (set to `type`), `noDefaultExport`,
+  `noImportCycles` and `noUnusedFunctionParameters`.
 - A check for the forbidden patterns Biome doesn't cover: `@ts-nocheck`,
   `@ts-expect-error`, `as unknown as`, `field!:` declarations and
   parent-relative imports of `src/js` modules.
@@ -179,6 +179,15 @@ services. Direct imports would produce a 48-file cycle.
 - Don't keep a constructor that only calls `super()` with the same
   arguments: a class without a constructor already does that. Biome's
   `noUselessConstructor` enforces this.
+- Don't keep unused function parameters. Biome's
+  `noUnusedFunctionParameters` enforces this:
+  - Remove unused trailing parameters, and the arguments that callers pass
+    for them.
+  - Prefix with `_` an unused parameter that comes before a used one, as in
+    `onCursorMoved_(_evt: JQueryEvent, x: number, y: number)`.
+  - Also prefix with `_` the parameters of a base-class method that
+    subclasses override with the same signature, such as the no-op hooks of
+    `BaseTool`.
 - Modern syntax is allowed where safe: `const`/`let`, arrow functions and
   template literals.
 - Don't change logic, rename things (except the table above) or restructure

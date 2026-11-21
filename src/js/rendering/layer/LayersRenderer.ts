@@ -111,7 +111,7 @@ export class LayersRenderer extends CompositeRenderer {
   }
 
   onUserSettingsChange_(
-    evt: JQueryEvent,
+    _evt: JQueryEvent,
     settingsName: string,
     settingsValue: UserSettingValue
   ): void {

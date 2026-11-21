@@ -91,7 +91,7 @@ export class HistoryService {
     });
   }
 
-  onSaveStateEvent(evt: JQueryEvent, action: SaveStateInfo): void {
+  onSaveStateEvent(_evt: JQueryEvent, action: SaveStateInfo): void {
     this.saveState(action);
   }
 

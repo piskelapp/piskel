@@ -42,13 +42,7 @@ export class Move extends BaseTool {
   /**
    * @override
    */
-  applyToolAt(
-    col: number,
-    row: number,
-    frame: Frame,
-    overlay: Frame,
-    event: MouseEvent
-  ): void {
+  applyToolAt(col: number, row: number, frame: Frame): void {
     this.startCol = col;
     this.startRow = row;
     this.currentFrame = frame;
@@ -59,7 +53,7 @@ export class Move extends BaseTool {
     col: number,
     row: number,
     frame: Frame,
-    overlay: Frame,
+    _overlay: Frame,
     event: MouseEvent
   ): void {
     const colDiff = col - Number(this.startCol);
@@ -108,8 +102,8 @@ export class Move extends BaseTool {
   releaseToolAt(
     col: number,
     row: number,
-    frame: Frame,
-    overlay: Frame,
+    _frame: Frame,
+    _overlay: Frame,
     event: MouseEvent
   ): void {
     const colDiff = col - Number(this.startCol);
@@ -136,7 +130,7 @@ export class Move extends BaseTool {
   }
 
   replay(
-    frame: Frame,
+    _frame: Frame,
     replayData: {
       colDiff: number;
       rowDiff: number;

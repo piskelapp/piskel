@@ -17,13 +17,7 @@ export class PaintBucket extends BaseTool {
   /**
    * @override
    */
-  applyToolAt(
-    col: number,
-    row: number,
-    frame: Frame,
-    overlay: Frame,
-    event: MouseEvent
-  ): void {
+  applyToolAt(col: number, row: number, frame: Frame): void {
     const color = this.getToolColor();
     PixelUtils.paintSimilarConnectedPixelsFromFrame(frame, col, row, color);
 

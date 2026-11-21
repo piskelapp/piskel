@@ -1,5 +1,5 @@
 import { Constants } from "@/Constants";
-import { Events, type UserSettingValue } from "@/Events";
+import { Events } from "@/Events";
 import type { JQueryEvent } from "@/lib/jquery-1.8.0";
 import { BackgroundImageFrameRenderer } from "@/rendering/frame/BackgroundImageFrameRenderer";
 import { Dom } from "@/utils/Dom";
@@ -70,11 +70,7 @@ export class PreviewController {
     this.popupPreviewController.open();
   }
 
-  onUserSettingsChange_(
-    evt: JQueryEvent,
-    name: string,
-    value: UserSettingValue
-  ): void {
+  onUserSettingsChange_(_evt: JQueryEvent, name: string): void {
     if (name === UserSettings.SEAMLESS_MODE) {
       this.onFrameSizeChange_();
     } else {
@@ -116,7 +112,7 @@ export class PreviewController {
 
   render(delta: number): void {
     this.elapsedTime += delta;
-    const index = this.getNextIndex_(delta);
+    const index = this.getNextIndex_();
     if (this.shouldRender_() || this.currentIndex != index) {
       this.currentIndex = index;
       const frame = LayerUtils.mergeFrameAt(
@@ -131,7 +127,7 @@ export class PreviewController {
     }
   }
 
-  getNextIndex_(delta: number): number {
+  getNextIndex_(): number {
     const fps = this.piskelController.getFPS();
     if (fps === 0) {
       return this.piskelController.getCurrentFrameIndex();

@@ -76,7 +76,7 @@ export class PopupPreviewController {
     }
   }
 
-  onWindowResize_(frame: Frame): void {
+  onWindowResize_(): void {
     this.updateZoom_();
     this.renderFlag = true;
   }

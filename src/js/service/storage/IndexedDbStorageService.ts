@@ -19,7 +19,7 @@ export class IndexedDbStorageService {
   }
 
   init(): void {
-    this.piskelDatabase.init().catch(function (e: Event) {
+    this.piskelDatabase.init().catch(function () {
       console.log(
         "Failed to initialize PiskelDatabase, local browser saves will be unavailable."
       );

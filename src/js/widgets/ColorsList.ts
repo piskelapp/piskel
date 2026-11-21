@@ -98,11 +98,11 @@ export class ColorsList {
   onColorContainerClick_(evt: Event): void {
     const target = evt.target as HTMLElement;
     if (target.classList.contains("create-palette-color")) {
-      this.onPaletteColorClick_(evt, target);
+      this.onPaletteColorClick_(target);
     } else if (target.classList.contains("create-palette-new-color")) {
-      this.onNewColorClick_(evt, target);
+      this.onNewColorClick_();
     } else if (target.classList.contains("create-palette-remove-color")) {
-      this.onRemoveColorClick_(evt, target);
+      this.onRemoveColorClick_(target);
     }
     this.refresh_();
   }
@@ -117,12 +117,12 @@ export class ColorsList {
     }
   }
 
-  onPaletteColorClick_(evt: Event, target: HTMLElement): void {
+  onPaletteColorClick_(target: HTMLElement): void {
     const index = parseInt(String(target.dataset.paletteIndex), 10);
     this.selectColor_(index);
   }
 
-  onRemoveColorClick_(evt: Event, target: HTMLElement): void {
+  onRemoveColorClick_(target: HTMLElement): void {
     const colorElement = assertInitialized(
       target.parentElement,
       "parentElement"
@@ -131,7 +131,7 @@ export class ColorsList {
     this.removeColor_(index);
   }
 
-  onNewColorClick_(evt: Event, target: HTMLElement): void {
+  onNewColorClick_(): void {
     const newColor = this.palette.get(this.selectedIndex) || "#000000";
     this.palette.add(newColor);
     this.selectColor_(this.palette.size() - 1);
@@ -173,7 +173,7 @@ export class ColorsList {
     return rgb.r + rgb.b + rgb.g > 128 * 3;
   }
 
-  onColorDrop_(evt: Event, drop: SortableUi): void {
+  onColorDrop_(_evt: Event, drop: SortableUi): void {
     const colorElement = drop.item.get(0);
 
     const oldIndex = parseInt(String(colorElement.dataset.paletteIndex), 10);

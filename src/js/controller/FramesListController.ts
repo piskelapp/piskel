@@ -312,7 +312,7 @@ export class FramesListController {
   /**
    * @private
    */
-  onUpdate_(event: Event, ui: SortableUi): void {
+  onUpdate_(_event: Event, ui: SortableUi): void {
     const movedItem = ui.item.get(0);
     const originFrameId = parseInt(String(movedItem.dataset.tileNumber), 10);
     const tiles = document.querySelectorAll(".preview-tile");
@@ -332,7 +332,7 @@ export class FramesListController {
   /**
    * @private
    */
-  onSortableStop_(event: Event, ui: SortableUi): void {
+  onSortableStop_(): void {
     this.justDropped = true;
 
     this.resizeTimer = window.setTimeout(() => {

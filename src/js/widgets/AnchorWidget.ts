@@ -55,7 +55,7 @@ export class AnchorWidget {
     BOTTOMRIGHT: "BOTTOMRIGHT"
   };
 
-  destroy(evt?: Event): void {
+  destroy(): void {
     EventUtils.removeAllEventListeners(this);
     this.wrapper = null;
   }

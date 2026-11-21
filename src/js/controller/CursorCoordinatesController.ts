@@ -83,7 +83,7 @@ export class CursorCoordinatesController {
     return "[" + w + "x" + h + "] ";
   }
 
-  onCursorMoved_(event: JQueryEvent, x: number, y: number): void {
+  onCursorMoved_(_event: JQueryEvent, x: number, y: number): void {
     this.coordinates = {
       x: x,
       y: y
@@ -91,7 +91,7 @@ export class CursorCoordinatesController {
     this.redraw();
   }
 
-  onDragStart_(event: JQueryEvent, x: number, y: number): void {
+  onDragStart_(_event: JQueryEvent, x: number, y: number): void {
     this.origin = {
       x: x,
       y: y
@@ -99,7 +99,7 @@ export class CursorCoordinatesController {
     this.redraw();
   }
 
-  onDragEnd_(event: JQueryEvent): void {
+  onDragEnd_(): void {
     this.origin = null;
     this.redraw();
   }

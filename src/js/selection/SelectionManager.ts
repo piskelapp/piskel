@@ -67,7 +67,7 @@ export class SelectionManager {
   /**
    * @private
    */
-  onToolSelected_(evt: JQueryEvent, tool: BaseTool): void {
+  onToolSelected_(_evt: JQueryEvent, tool: BaseTool): void {
     const isSelectionTool = tool instanceof BaseSelect;
     if (!isSelectionTool) {
       this.cleanSelection_();
@@ -77,11 +77,11 @@ export class SelectionManager {
   /**
    * @private
    */
-  onSelectionDismissed_(evt: JQueryEvent): void {
+  onSelectionDismissed_(): void {
     this.cleanSelection_();
   }
 
-  onDeleteShortcut_(key: string): boolean | undefined {
+  onDeleteShortcut_(): boolean | undefined {
     if (this.currentSelection) {
       this.erase();
     } else {
@@ -284,7 +284,7 @@ export class SelectionManager {
   /**
    * @private
    */
-  onSelectionCreated_(evt: JQueryEvent, selection: BaseSelection): void {
+  onSelectionCreated_(_evt: JQueryEvent, selection: BaseSelection): void {
     if (selection) {
       this.currentSelection = selection;
     } else {
@@ -295,7 +295,7 @@ export class SelectionManager {
   /**
    * @private
    */
-  onSelectionMoved_(evt: JQueryEvent, colDiff: number, rowDiff: number): void {
+  onSelectionMoved_(_evt: JQueryEvent, colDiff: number, rowDiff: number): void {
     if (this.currentSelection) {
       this.currentSelection.move(colDiff, rowDiff);
     } else {

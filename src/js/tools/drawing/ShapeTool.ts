@@ -42,13 +42,7 @@ export abstract class ShapeTool extends BaseTool {
   /**
    * @override
    */
-  applyToolAt(
-    col: number,
-    row: number,
-    frame: Frame,
-    overlay: Frame,
-    event: MouseEvent
-  ): void {
+  applyToolAt(col: number, row: number, _frame: Frame, overlay: Frame): void {
     $.publish(Events.DRAG_START, [col, row]);
     this.startCol = col;
     this.startRow = row;
@@ -64,7 +58,7 @@ export abstract class ShapeTool extends BaseTool {
   moveToolAt(
     col: number,
     row: number,
-    frame: Frame,
+    _frame: Frame,
     overlay: Frame,
     event: MouseEvent
   ): void {

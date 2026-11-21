@@ -1,6 +1,5 @@
 import { Events } from "@/Events";
 import { app } from "@/app";
-import type { JQueryEvent } from "@/lib/jquery-1.8.0";
 import { Dom } from "@/utils/Dom";
 import { assertInitialized } from "@/utils/core";
 import { SizePicker } from "@/widgets/SizePicker";
@@ -23,7 +22,7 @@ export class PenSizeController {
     assertInitialized(app.penSizeService, "penSizeService").setPenSize(size);
   }
 
-  onPenSizeChanged_(e: JQueryEvent): void {
+  onPenSizeChanged_(): void {
     this.updateSelectedOption_();
   }
 

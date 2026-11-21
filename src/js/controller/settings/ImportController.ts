@@ -71,15 +71,15 @@ export class ImportController extends AbstractSettingController {
     $.publish(Events.CLOSE_SETTINGS_DRAWER);
   }
 
-  onFileUploadChange_(evt: Event): void {
+  onFileUploadChange_(): void {
     this.importPictureFromFile_();
   }
 
-  onFileInputClick_(evt: Event): void {
+  onFileInputClick_(): void {
     assertInitialized(this.hiddenFileInput, "hiddenFileInput").click();
   }
 
-  onOpenPiskelChange_(evt: Event): void {
+  onOpenPiskelChange_(): void {
     const files = assertInitialized(
       this.hiddenOpenPiskelInput,
       "hiddenOpenPiskelInput"
@@ -89,7 +89,7 @@ export class ImportController extends AbstractSettingController {
     }
   }
 
-  openPiskelDesktop_(evt: Event): void {
+  openPiskelDesktop_(): void {
     this.closeDrawer_();
     assertInitialized(
       app.desktopStorageService,
@@ -97,21 +97,21 @@ export class ImportController extends AbstractSettingController {
     ).openPiskel();
   }
 
-  onOpenPiskelClick_(evt: Event): void {
+  onOpenPiskelClick_(): void {
     assertInitialized(
       this.hiddenOpenPiskelInput,
       "hiddenOpenPiskelInput"
     ).click();
   }
 
-  onBrowseLocalClick_(evt: Event): void {
+  onBrowseLocalClick_(): void {
     $.publish(Events.DIALOG_SHOW, {
       dialogId: "browse-local"
     });
     this.closeDrawer_();
   }
 
-  onBrowseBackupsClick_(evt: Event): void {
+  onBrowseBackupsClick_(): void {
     $.publish(Events.DIALOG_SHOW, {
       dialogId: "browse-backups"
     });

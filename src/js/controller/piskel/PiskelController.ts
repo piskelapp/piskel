@@ -260,7 +260,7 @@ export class PiskelController {
   getVisibleFrameIndexes(): number[] {
     return this.getCurrentLayer()
       .getFrames()
-      .map(function (frame: Frame, index: number) {
+      .map(function (_frame: Frame, index: number) {
         return index;
       })
       .filter((index: number) => {

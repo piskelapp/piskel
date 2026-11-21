@@ -1,5 +1,5 @@
 import { Constants } from "@/Constants";
-import { Events, type UserSettingValue } from "@/Events";
+import { Events } from "@/Events";
 import { app } from "@/app";
 import type { JQueryEvent } from "@/lib/jquery-1.8.0";
 import type { Layer } from "@/model/Layer";
@@ -177,11 +177,7 @@ export class LayersListController {
     }
   }
 
-  onUserSettingsChange_(
-    evt: JQueryEvent,
-    name: string,
-    value: UserSettingValue
-  ): void {
+  onUserSettingsChange_(_evt: JQueryEvent, name: string): void {
     if (name == UserSettings.LAYER_PREVIEW) {
       this.updateToggleLayerPreview_();
     }

@@ -37,8 +37,8 @@ export class ImportService {
   init(): void {
     $.subscribe(
       Events.PISKEL_FILE_IMPORT_FAILED,
-      (evt: JQueryEvent, reason: string) => {
-        this.onPiskelFileImportFailed_(evt, reason);
+      (_evt: JQueryEvent, reason: string) => {
+        this.onPiskelFileImportFailed_(reason);
       }
     );
   }
@@ -47,7 +47,7 @@ export class ImportService {
    * Called when a piskel load failed event is published. Display an appropriate error message.
    * TODO: for some failure reasons, we might want to display a dialog with more details.
    */
-  onPiskelFileImportFailed_(evt: JQueryEvent, reason: string): void {
+  onPiskelFileImportFailed_(reason: string): void {
     $.publish(Events.SHOW_NOTIFICATION, [
       {
         content: "Piskel file import failed (" + reason + ")",

@@ -85,7 +85,7 @@ export class PublicPiskelController {
     });
   }
 
-  replay(frame: Frame, replayData: { fn: () => void }): void {
+  replay(_frame: Frame, replayData: { fn: () => void }): void {
     replayData.fn();
   }
 

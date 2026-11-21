@@ -100,7 +100,7 @@ export class PaletteController {
    */
   onColorSelected_(
     args: { isPrimary: boolean },
-    evt: JQueryEvent,
+    _evt: JQueryEvent,
     color: string
   ): void {
     if (args.isPrimary) {

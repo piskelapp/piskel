@@ -5,17 +5,12 @@ import { DateUtils } from "@/utils/DateUtils";
 import { Dom } from "@/utils/Dom";
 import { Template } from "@/utils/Template";
 import { assertInitialized } from "@/utils/core";
-import type { PublicPiskelController } from "@/controller/piskel/PublicPiskelController";
 import { AbstractDialogController } from "./AbstractDialogController";
 
 export class BrowseLocalController extends AbstractDialogController {
   localStorageItemTemplate_: string | undefined;
   service_: IndexedDbStorageService | undefined;
   piskelList: HTMLTableElement | undefined;
-
-  constructor(piskelController: PublicPiskelController) {
-    super();
-  }
 
   init(): void {
     super.init();

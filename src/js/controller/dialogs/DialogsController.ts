@@ -132,7 +132,7 @@ export class DialogsController {
     }
   }
 
-  onDialogDisplayEvent_(evt: JQueryEvent, args: DialogShowInfo): void {
+  onDialogDisplayEvent_(_evt: JQueryEvent, args: DialogShowInfo): void {
     this.showDialog(args.dialogId, args.initArgs);
   }
 

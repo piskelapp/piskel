@@ -27,7 +27,7 @@ export class RectangleSelect extends AbstractDragSelect {
    * the current mouse coordinate in sprite.
    * @override
    */
-  onDragSelect_(col: number, row: number, frame: Frame, overlay: Frame): void {
+  onDragSelect_(col: number, row: number, _frame: Frame, overlay: Frame): void {
     overlay.clear();
     this.selection = new RectangularSelection(
       Number(this.startCol),

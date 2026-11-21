@@ -142,11 +142,11 @@ export class MinimapController {
     }
   }
 
-  onMinimapMousedown_(evt: Event): void {
+  onMinimapMousedown_(): void {
     this.isClicked = true;
   }
 
-  onMinimapMouseup_(evt: Event): void {
+  onMinimapMouseup_(): void {
     this.isClicked = false;
   }
 

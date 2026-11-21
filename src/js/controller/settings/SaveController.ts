@@ -108,7 +108,7 @@ export class SaveController extends AbstractSettingController {
     return [PARTIALS.FILEDOWNLOAD, PARTIALS.LOCALSTORAGE];
   }
 
-  updateDescriptorInputs_(evt?: Event): void {
+  updateDescriptorInputs_(): void {
     const descriptor = this.piskelController.getPiskel().getDescriptor();
     assertInitialized(this.descriptionInput, "descriptionInput").value =
       descriptor.description;

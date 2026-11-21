@@ -23,7 +23,7 @@ export class Crop extends Tool {
     ];
   }
 
-  applyTransformation(evt: Event): void {
+  applyTransformation(): void {
     const frames = this.getFrames_();
 
     let boundaries;
@@ -46,7 +46,7 @@ export class Crop extends Tool {
     }
   }
 
-  replay(frame: Frame, replayData: { boundaries: Boundaries }): void {
+  replay(_frame: Frame, replayData: { boundaries: Boundaries }): void {
     const frames = this.getFrames_();
     this.applyTool_(frames, replayData.boundaries);
   }
