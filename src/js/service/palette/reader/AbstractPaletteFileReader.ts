@@ -1,4 +1,3 @@
-import { Constants } from "@/Constants";
 import { Palette } from "@/model/Palette";
 import { Base64 } from "@/utils/Base64";
 import { FileUtils } from "@/utils/FileUtils";
@@ -7,7 +6,7 @@ import { Uuid } from "@/utils/Uuid";
 export type PaletteReadSuccess = (palette: Palette) => void;
 export type PaletteReadError = (message?: string) => void;
 
-export class AbstractPaletteFileReader {
+export abstract class AbstractPaletteFileReader {
   file: File;
   onSuccess: PaletteReadSuccess;
   onError: PaletteReadError;
@@ -25,9 +24,7 @@ export class AbstractPaletteFileReader {
     this.colorLineRegexp = colorLineRegexp;
   }
 
-  extractColorFromLine(line: string): string {
-    return Constants.ABSTRACT_FUNCTION();
-  }
+  abstract extractColorFromLine(line: string): string;
 
   read(): void {
     FileUtils.readFile(this.file, this.onFileLoaded_.bind(this));

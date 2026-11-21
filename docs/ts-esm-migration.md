@@ -168,6 +168,14 @@ services. Direct imports would produce a 48-file cycle.
   assignments, 62 `inherit` calls). TypeScript can't type the old pattern.
 - `superclass` calls (43) become `super`. `super()` must run before `this` is
   touched, so check constructors that did work before calling the parent.
+- `Constants.ABSTRACT_FUNCTION`, which threw at runtime, is deleted:
+  - Methods that every subclass implements become TypeScript `abstract`
+    methods, in `abstract` classes.
+  - `replay` is only implemented by the tools that record their actions, so
+    it isn't declared on `Tool`. `raiseSaveStateEvent` requires
+    `this: Tool & Replayable` instead.
+  - Base-class methods that no subclass implements and nothing calls are
+    removed, such as the pixel methods of `RenderedFrame`.
 - Don't keep a constructor that only calls `super()` with the same
   arguments: a class without a constructor already does that. Biome's
   `noUselessConstructor` enforces this.

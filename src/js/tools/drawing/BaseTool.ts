@@ -5,7 +5,7 @@ import { PixelUtils } from "@/utils/PixelUtils";
 import { assertInitialized, intToColor } from "@/utils/core";
 import { Tool } from "@/tools/Tool";
 
-export class BaseTool extends Tool {
+export abstract class BaseTool extends Tool {
   highlightedPixelCol: number | null | undefined;
   highlightedPixelRow: number | null | undefined;
 
@@ -24,10 +24,6 @@ export class BaseTool extends Tool {
     overlay: Frame,
     event: MouseEvent
   ): void {}
-
-  replay(frame: Frame, replayData: unknown): void {
-    return Constants.ABSTRACT_FUNCTION();
-  }
 
   supportsDynamicPenSize() {
     return false;

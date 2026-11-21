@@ -1,6 +1,3 @@
-import { Constants } from "@/Constants";
-import type { Frame, PixelBuffer, PixelCallback } from "@/model/Frame";
-
 /**
  * Create a frame instance that provides an image getter. Can be faster
  * to use after merging using transparency. Transparent frames are merged to
@@ -46,41 +43,5 @@ export class RenderedFrame {
 
   getHeight(): number {
     return this.height;
-  }
-
-  getPixels(): Uint32Array {
-    return Constants.ABSTRACT_FUNCTION();
-  }
-
-  containsPixel(col: number, row: number): boolean {
-    return Constants.ABSTRACT_FUNCTION();
-  }
-
-  isSameSize(otherFrame: Frame | RenderedFrame): boolean {
-    return Constants.ABSTRACT_FUNCTION();
-  }
-
-  clone(): RenderedFrame {
-    return Constants.ABSTRACT_FUNCTION();
-  }
-
-  setPixels(pixels: PixelBuffer): void {
-    return Constants.ABSTRACT_FUNCTION();
-  }
-
-  clear(): void {
-    return Constants.ABSTRACT_FUNCTION();
-  }
-
-  setPixel(x: number, y: number, color: string | number): void {
-    return Constants.ABSTRACT_FUNCTION();
-  }
-
-  getPixel(x: number, y: number): number | null {
-    return Constants.ABSTRACT_FUNCTION();
-  }
-
-  forEachPixel(callback: PixelCallback): void {
-    return Constants.ABSTRACT_FUNCTION();
   }
 }

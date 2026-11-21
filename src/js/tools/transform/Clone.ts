@@ -14,6 +14,10 @@ export class Clone extends AbstractTransformTool {
     this.tooltipDescriptors = [];
   }
 
+  applyToolOnFrame_(): void {
+    throw new Error("Clone copies whole frames in applyTool_");
+  }
+
   applyTool_(altKey: boolean, allFrames: boolean, allLayers: boolean): void {
     const ref = assertInitialized(
       app.piskelController,

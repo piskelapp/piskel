@@ -1,49 +1,19 @@
-import { Constants } from "@/Constants";
-import type { Frame } from "@/model/Frame";
-import type { RenderedFrame } from "@/model/frame/RenderedFrame";
+export abstract class AbstractRenderer {
+  abstract clear(): void;
 
-export class AbstractRenderer {
-  clear(): void {
-    return Constants.ABSTRACT_FUNCTION();
-  }
+  abstract setGridWidth(value: number): void;
 
-  render(frame: Frame | RenderedFrame): void {
-    return Constants.ABSTRACT_FUNCTION();
-  }
+  abstract getGridWidth(): number;
 
-  getCoordinates(x: number, y: number): { x: number; y: number } {
-    return Constants.ABSTRACT_FUNCTION();
-  }
+  abstract setZoom(zoom: number): void;
 
-  setGridWidth(value: number): void {
-    return Constants.ABSTRACT_FUNCTION();
-  }
+  abstract getZoom(): number;
 
-  getGridWidth(): number {
-    return Constants.ABSTRACT_FUNCTION();
-  }
+  abstract setOffset(x: number, y: number): void;
 
-  setZoom(zoom: number): void {
-    return Constants.ABSTRACT_FUNCTION();
-  }
+  abstract getOffset(): { x: number; y: number };
 
-  getZoom(): number {
-    return Constants.ABSTRACT_FUNCTION();
-  }
+  abstract setDisplaySize(width: number, height: number): void;
 
-  setOffset(x: number, y: number): void {
-    return Constants.ABSTRACT_FUNCTION();
-  }
-
-  getOffset(): { x: number; y: number } {
-    return Constants.ABSTRACT_FUNCTION();
-  }
-
-  setDisplaySize(width: number, height: number): void {
-    return Constants.ABSTRACT_FUNCTION();
-  }
-
-  getDisplaySize(): { width: number; height: number } {
-    return Constants.ABSTRACT_FUNCTION();
-  }
+  abstract getDisplaySize(): { width: number; height: number };
 }

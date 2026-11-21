@@ -1,4 +1,3 @@
-import { Constants } from "@/Constants";
 import { Events } from "@/Events";
 import { app } from "@/app";
 import type { Frame } from "@/model/Frame";
@@ -7,10 +6,8 @@ import { UserAgent } from "@/utils/UserAgent";
 import { assertInitialized } from "@/utils/core";
 import { Tool } from "@/tools/Tool";
 
-export class AbstractTransformTool extends Tool {
-  applyToolOnFrame_(frame: Frame, altKey?: boolean): void {
-    return Constants.ABSTRACT_FUNCTION();
-  }
+export abstract class AbstractTransformTool extends Tool {
+  abstract applyToolOnFrame_(frame: Frame, altKey?: boolean): void;
 
   applyTransformation(evt: MouseEvent): void {
     const allFrames = evt.shiftKey;

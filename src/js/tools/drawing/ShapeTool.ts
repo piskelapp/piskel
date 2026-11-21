@@ -19,7 +19,7 @@ export type ShapeReplayData = {
   penSize: number;
 };
 
-export class ShapeTool extends BaseTool {
+export abstract class ShapeTool extends BaseTool {
   startCol: number | null;
   startRow: number | null;
   tooltipDescriptors: TooltipDescriptor[];
@@ -177,13 +177,11 @@ export class ShapeTool extends BaseTool {
     };
   }
 
-  draw(
+  abstract draw(
     col: number,
     row: number,
     color: string | number,
     targetFrame: Frame,
     penSize: number
-  ): void {
-    return Constants.ABSTRACT_FUNCTION();
-  }
+  ): void;
 }

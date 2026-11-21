@@ -47,10 +47,6 @@ export const Constants = {
   RIGHT_BUTTON: 2,
   MOUSEMOVE_THROTTLING: 10,
 
-  ABSTRACT_FUNCTION: function (): never {
-    throw "abstract method should be implemented";
-  },
-
   // TESTS
   DRAWING_TEST_FOLDER: "drawing",
 
