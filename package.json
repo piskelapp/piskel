@@ -35,7 +35,7 @@
     "start:nw": "npm run build && nw",
     "e2e": "npx playwright test --project=integration",
     "e2e:interactive": "npx playwright test --ui",
-    "visual": "npx playwright test --project=visual",
+    "visual": "npx playwright test --project=visual --workers=2",
     "visual:local": "VISUAL_LOCAL=1 npx playwright test --project=visual",
     "visual:storyboard": "node scripts/visual-storyboard.js",
     "unit-tests": "karma start",
