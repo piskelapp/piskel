@@ -7,7 +7,8 @@ export default defineConfig({
   snapshotPathTemplate: '{testDir}/{testFileDir}/snapshots/{arg}{ext}',
   retries: 3,
   // One worker per CPU on CI: 4 on Ubuntu, 3 on macOS. The default (half the
-  // CPUs) gave 1 worker on macOS and doubled the run time.
+  // CPUs) gave 1 worker on macOS and doubled the run time. CI memory
+  // use is logged by the sampler in ci.yml.
   // The visual tests keep 2 workers (--workers=2 in the "visual" npm script,
   // used by CI and the baselines workflow): their screenshots must match
   // exactly, and a fully loaded CPU could render timing-sensitive states
