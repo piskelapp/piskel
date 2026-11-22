@@ -54,6 +54,8 @@ Three tabs: Misc, Grid and Tile mode.
 
 - `settings.resize` **Resize canvas** sets a new width and height for all
   frames and layers, in one undo step. No maximum is enforced.
+- `settings.resize-invalid` Resize does nothing while the width or height
+  is empty, 0 or not a number.
 - `settings.resize-ratio` **Maintain aspect ratio** links width and
   height; unchecked, they can be set independently.
 - `settings.resize-content` **Resize canvas content** scales the pixels to

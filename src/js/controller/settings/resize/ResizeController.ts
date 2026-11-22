@@ -105,16 +105,23 @@ export class ResizeController extends AbstractSettingController {
   onResizeFormSubmit_(evt: Event): void {
     evt.preventDefault();
 
+    const width = parseInt(
+      assertInitialized(this.widthInput, "widthInput").value,
+      10
+    );
+    const height = parseInt(
+      assertInitialized(this.heightInput, "heightInput").value,
+      10
+    );
+    // An empty or zero size can't be applied: keep the current sprite.
+    if (!(width > 0 && height > 0)) {
+      return;
+    }
+
     const currentPiskel = this.piskelController.getPiskel();
     const piskel = ResizeUtils.resizePiskel(currentPiskel, {
-      width: parseInt(
-        assertInitialized(this.widthInput, "widthInput").value,
-        10
-      ),
-      height: parseInt(
-        assertInitialized(this.heightInput, "heightInput").value,
-        10
-      ),
+      width,
+      height,
       origin: assertInitialized(this.anchorWidget.getOrigin(), "origin"),
       resizeContent: assertInitialized(
         this.resizeContentCheckbox,
