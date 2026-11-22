@@ -19,6 +19,11 @@ on:
     branches:
       - master
 
+# A new push to a PR cancels the run still going on its previous commit.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   lint:
     runs-on: ubuntu-26.04
