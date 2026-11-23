@@ -35,12 +35,6 @@ link the issue.
   wizard template, but that wasn't checked. Escaping quotes in `Template.sanitize`
   should fix all of these.
 
-## CLI
-
-- The CLI is broken: `cli/index.js` requires `phantomjs`, which is not a
-  dependency in `package.json`, so it fails with
-  `Cannot find module 'phantomjs'`.
-
 ## Canvas (drawing area)
 
 See [canvas.md](specs/canvas.md).
@@ -123,6 +117,12 @@ See [frames.md](specs/frames.md).
 - Moving a frame un-hides the hidden frames outside the moved range: the
   `hiddenFrames.map` callback in `PiskelController.moveFrame` returns
   nothing for them. Not reproduced.
+- The frames list can scroll by 20 pixels, hiding the top of the first tile and
+  showing the bottom overflow hint. `.preview-list-wrapper` is `overflow: hidden`,
+  but the hints are placed outside it (`top: -20px`, `bottom: -20px` in
+  `frames-list.css`), so scroll-into-view can still scroll it. This makes the
+  `frames--tiles-packed` visual test flaky, when Playwright scrolls a tile into
+  view to hover it. `overflow: clip` should fix it.
 
 ## Import
 
