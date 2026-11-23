@@ -47,13 +47,15 @@
           <span  class="resize-section-title">Width</span>
           <input type="text" class="textfield resize-size-field" autocomplete="off" name="default-width"/>
           <span>px</span>
+          <div class="resize-size-error" id="default-width-error" data-test-id="default-width-error" role="alert" hidden></div>
         </div>
         <div class="resize-section">
           <span  class="resize-section-title">Height</span>
           <input type="text" class="textfield resize-size-field" autocomplete="off" name="default-height"/>
           <span>px</span>
+          <div class="resize-size-error" id="default-height-error" data-test-id="default-height-error" role="alert" hidden></div>
         </div>
-        <input type="submit" class="button button-primary default-size-button" value="Set default" />
+        <input type="submit" class="button button-primary default-size-button" data-test-id="default-size-button" value="Set default" />
       </form>
     </div>
   </div>

@@ -72,8 +72,9 @@ Three tabs: Misc, Grid and Tile mode.
   top-left by default.
 - `settings.default-size` **Default size**: width and height used for new
   sprites (32×32 out of the box), with a "Set default" button. Persisted
-  across reloads. An empty or 0 value keeps the previous default. Sizes above
-  4096 are capped, including a value already saved by an older version.
+  across reloads. Invalid sizes are shown and block the button as in
+  `settings.resize-invalid`. A size above 4096 already saved by an older
+  version is capped.
 
 ## UI and shortcuts
 

@@ -4,6 +4,7 @@ import { Dom } from "@/utils/Dom";
 import { ResizeUtils } from "@/utils/ResizeUtils";
 import { UserSettings } from "@/utils/UserSettings";
 import { assertInitialized } from "@/utils/core";
+import { SizeFieldsValidation } from "@/widgets/SizeFieldsValidation";
 import type { PublicPiskelController } from "@/controller/piskel/PublicPiskelController";
 import { AbstractSettingController } from "@/controller/settings/AbstractSettingController";
 
@@ -13,6 +14,7 @@ export class DefaultSizeController extends AbstractSettingController {
   widthInput: HTMLInputElement | undefined;
   heightInput: HTMLInputElement | undefined;
   defaultSizeForm: HTMLElement | undefined;
+  sizeValidation: SizeFieldsValidation | undefined;
 
   constructor(piskelController: PublicPiskelController) {
     super();
@@ -48,6 +50,28 @@ export class DefaultSizeController extends AbstractSettingController {
     this.widthInput.value = String(defaultSize.width);
     this.heightInput.value = String(defaultSize.height);
 
+    this.sizeValidation = new SizeFieldsValidation(
+      [
+        {
+          input: this.widthInput,
+          error: Dom.getElement<HTMLElement>(
+            "#default-width-error",
+            this.container
+          ),
+          max: Constants.MAX_DEFAULT_WIDTH
+        },
+        {
+          input: this.heightInput,
+          error: Dom.getElement<HTMLElement>(
+            "#default-height-error",
+            this.container
+          ),
+          max: Constants.MAX_DEFAULT_HEIGHT
+        }
+      ],
+      Dom.getElement<HTMLInputElement>(".default-size-button", this.container)
+    );
+
     this.defaultSizeForm = Dom.getElement<HTMLFormElement>(
       "form",
       this.container
@@ -55,8 +79,19 @@ export class DefaultSizeController extends AbstractSettingController {
     this.addEventListener(this.defaultSizeForm, "submit", this.onFormSubmit_);
   }
 
+  destroy(): void {
+    this.sizeValidation?.destroy();
+    super.destroy();
+  }
+
   onFormSubmit_(evt: Event): void {
     evt.preventDefault();
+
+    // The button is disabled while a size is invalid: also guard any other way
+    // of submitting the form.
+    if (!assertInitialized(this.sizeValidation, "sizeValidation").validate()) {
+      return;
+    }
 
     const size = ResizeUtils.sanitizeSize(
       assertInitialized(this.widthInput, "widthInput").value,

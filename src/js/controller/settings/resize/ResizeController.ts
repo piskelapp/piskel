@@ -126,6 +126,7 @@ export class ResizeController extends AbstractSettingController {
     this.anchorWidget.destroy();
     assertInitialized(this.sizeInputWidget, "sizeInputWidget").destroy();
     assertInitialized(this.sizeValidation, "sizeValidation").destroy();
+    this.defaultSizeController.destroy();
     super.destroy();
   }
 
