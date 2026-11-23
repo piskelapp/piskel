@@ -49,6 +49,29 @@ describe("ResizeUtils", function () {
     });
   });
 
+  it("isValidSize accepts whole numbers from 1 to the maximum", function () {
+    for (const value of ["1", "32", " 64 ", "032", "4096"]) {
+      expect(ResizeUtils.isValidSize(value, 4096)).toBe(true);
+    }
+  });
+
+  it("isValidSize rejects empty, zero, non numeric and too large values", function () {
+    for (const value of [
+      "",
+      " ",
+      "0",
+      "-5",
+      "abc",
+      "12abc",
+      "1.5",
+      "1e3",
+      "4097",
+      "99999999999999"
+    ]) {
+      expect(ResizeUtils.isValidSize(value, 4096)).toBe(false);
+    }
+  });
+
   it("getDefaultSize sanitizes the stored default size", function () {
     const get = vi.spyOn(UserSettings, "get");
     get.mockReturnValue(mock<string>({ width: 64, height: 48 }));
