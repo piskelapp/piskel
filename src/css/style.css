@@ -1,5 +1,5 @@
 body {
-  background: #1D1D1D;
+  background: #1d1d1d;
 }
 
 /* Browser fixes */
@@ -28,23 +28,23 @@ body {
 .pull-right,
 .pull-bottom,
 .pull-left {
-  position:absolute;
+  position: absolute;
 }
 
 .pull-top {
-  top:0;
+  top: 0;
 }
 
 .pull-right {
-  right:0;
+  right: 0;
 }
 
 .pull-bottom {
-  bottom:0;
+  bottom: 0;
 }
 
 .pull-left {
-  left:0;
+  left: 0;
 }
 
 .uppercase {
@@ -76,7 +76,7 @@ body {
 }
 
 .tooltip-descriptor {
-  color:#999;
+  color: #999;
 }
 
 .tooltip-descriptor:last-child {

@@ -6,7 +6,7 @@
       <div style="display: flex; line-height: 20px;">
         <div style="flex: 1;">
           <span>Columns</span>
-          <input type="number" min="1" class="textfield" id="png-export-columns" name="png-export-columns">
+          <input type="number" min="1" class="textfield" id="png-export-columns" name="png-export-columns" data-test-id="png-columns-input">
         </div>
         <div style="flex: 1;">
           <span>Rows</span>
@@ -19,7 +19,7 @@
         <span class="highlight export-panel-row">Spritesheet file export: </span>
       </div>
       <div class="export-panel-row">
-        <button type="button" class="button button-primary png-download-button">Download</button>
+        <button type="button" class="button button-primary png-download-button" data-test-id="png-download-button">Download</button>
         <span class="png-export-dimension-info export-info"></span>
       </div>
     </div>
@@ -52,7 +52,7 @@
         <span class="highlight">Selected frame export:</span>
       </div>
       <div class="export-panel-row">
-        <button type="button" class="button button-primary selected-frame-download-button"/>Download</button>
+        <button type="button" class="button button-primary selected-frame-download-button" data-test-id="png-selected-frame-download-button"/>Download</button>
         <span class="export-info">Single frame as a PNG file</span>
       </div>
     </div>

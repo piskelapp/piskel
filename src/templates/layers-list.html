@@ -1,50 +1,82 @@
-<div class="toolbox-container layers-list-container">
-  <h3 class="toolbox-title layers-title">Layers
-    <div rel="tooltip"
-         data-placement="left"
-         class="layers-toggle-preview piskel-icon-eye"></div>
+<div class="toolbox-container layers-list-container" data-test-id="layer-list">
+  <h3 class="toolbox-title layers-title">
+    Layers
+    <div
+      rel="tooltip"
+      data-placement="left"
+      class="layers-toggle-preview piskel-icon-eye"
+      data-test-id="layer-preview-toggle"
+    ></div>
   </h3>
   <div class="toolbox-buttons">
-    <button data-action="add"
+    <button
+      data-action="add"
+      data-test-id="layer-add-button"
       class="button layers-button piskel-icon-plus"
-      rel="tooltip" data-placement="top" ></button>
+      rel="tooltip"
+      data-placement="top"
+    ></button>
 
-    <button data-action="up"
+    <button
+      data-action="up"
+      data-test-id="layer-move-up-button"
       class="button layers-button piskel-icon-arrow-up-fat"
-      title="Move layer up" rel="tooltip" data-placement="top" ></button>
+      title="Move layer up"
+      rel="tooltip"
+      data-placement="top"
+    ></button>
 
-    <button data-action="down"
+    <button
+      data-action="down"
+      data-test-id="layer-move-down-button"
       class="button layers-button piskel-icon-arrow-down-fat"
-      title="Move layer down" rel="tooltip" data-placement="top" ></button>
+      title="Move layer down"
+      rel="tooltip"
+      data-placement="top"
+    ></button>
 
-    <button data-action="edit"
+    <button
+      data-action="edit"
+      data-test-id="layer-edit-button"
       class="button layers-button piskel-icon-pencil"
-      title="Edit layer name" rel="tooltip" data-placement="top"></button>
+      title="Edit layer name"
+      rel="tooltip"
+      data-placement="top"
+    ></button>
 
-    <button data-action="merge"
+    <button
+      data-action="merge"
+      data-test-id="layer-merge-button"
       class="button layers-button piskel-icon-merge"
-      title="Merge with layer below" rel="tooltip" data-placement="top" ></button>
+      title="Merge with layer below"
+      rel="tooltip"
+      data-placement="top"
+    ></button>
 
-    <button data-action="delete"
+    <button
+      data-action="delete"
+      data-test-id="layer-delete-button"
       class="button layers-button piskel-icon-close"
-      title="Delete selected layer" rel="tooltip" data-placement="top" ></button>
-
+      title="Delete selected layer"
+      rel="tooltip"
+      data-placement="top"
+    ></button>
   </div>
 
-  <ul class="layers-list"></ul>
+  <ul class="layers-list" data-test-id="layers-list-items"></ul>
 
   <script type="text/template" id="layer-item-template">
     <li class="layer-item {{isselected:current-layer-item}}"
-        data-layer-index="{{layerindex}}">
-        <span class="layer-name" data-placement="top">{{layername}}</span>
-        <span class="layer-item-opacity"
+        data-layer-index="{{layerindex}}" data-test-id="layer-item">
+        <span class="layer-name" data-placement="top" data-test-id="layer-name">{{layername}}</span>
+        <span class="layer-item-opacity" data-test-id="layer-opacity"
               title="Layer opacity ({{opacity}})" rel="tooltip" data-placement="top">
             &#945;
         </span>
     </li>
   </script>
-    
+
   <script type="text/template" id="layer-name-input-template">
-    <input class="textfield layer-name-input" type="text" autocomplete="off" value="{{layername}}" />
+    <input class="textfield layer-name-input" type="text" autocomplete="off" value="{{layername}}" data-test-id="layer-name-input" />
   </script>
 </div>

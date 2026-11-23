@@ -1,9 +1,9 @@
 #dialog-container.import {
   width: 500px;
   height: 350px;
-  top : 50%;
-  left : 50%;
-  position : absolute;
+  top: 50%;
+  left: 50%;
+  position: absolute;
   margin-left: -250px;
   margin-top: -175px;
 }
@@ -50,7 +50,7 @@
 }
 
 .import-image-loading::after {
-  content: 'loading image';
+  content: "loading image";
 
   position: absolute;
   width: 100%;
@@ -104,7 +104,7 @@
 }
 
 .dialog-section-title {
-  display : inline-block;
+  display: inline-block;
   width: 80px;
 }
 
@@ -124,7 +124,7 @@
   width: 200px;
   vertical-align: middle;
 
-  word-break : break-all;
+  word-break: break-all;
   white-space: nowrap;
   text-overflow: ellipsis;
 
@@ -134,13 +134,13 @@
   color: var(--highlight-color);
 }
 
-[name=smooth-resize-checkbox] {
-  margin : 0 8px;
+[name="smooth-resize-checkbox"] {
+  margin: 0 8px;
 }
 
 .dialog-import-body {
   padding: 10px 20px;
-  font-size:1.3em
+  font-size: 1.3em;
 }
 
 /**
@@ -204,7 +204,7 @@
 }
 
 .import-mode-title {
-  margin-bottom: 10px
+  margin-bottom: 10px;
 }
 
 .import-mode-section {

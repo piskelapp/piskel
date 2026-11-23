@@ -1,6 +1,6 @@
 .tool-icon {
-  position : relative;
-  cursor : pointer;
+  position: relative;
+  cursor: pointer;
   width: 46px;
   height: 46px;
   margin: 1px;
@@ -13,10 +13,10 @@
 }
 
 .tool-icon.selected:before {
-  content:"";
-  position : absolute;
-  height : 100%;
-  width : 100%;
+  content: "";
+  position: absolute;
+  height: 100%;
+  width: 100%;
   border: 3px solid var(--highlight-color);
   box-sizing: border-box;
 }
@@ -31,43 +31,63 @@
 
 .tool-paint-bucket .drawing-canvas-container:hover,
 .tool-colorswap .drawing-canvas-container:hover {
-  cursor: url(../img/cursors/paint-bucket.png) 14 14, pointer;
+  cursor:
+    url(../img/cursors/paint-bucket.png) 14 14,
+    pointer;
 }
 
 .tool-vertical-mirror-pen .drawing-canvas-container:hover {
-  cursor: url(../img/cursors/vertical-mirror-pen.png) 5 15, pointer;
+  cursor:
+    url(../img/cursors/vertical-mirror-pen.png) 5 15,
+    pointer;
 }
 
 .tool-pen .drawing-canvas-container:hover {
-  cursor: url(../img/cursors/pen.png) 1 14, pointer;
+  cursor:
+    url(../img/cursors/pen.png) 1 14,
+    pointer;
 }
 
 .tool-dithering .drawing-canvas-container:hover {
-  cursor: url(../img/cursors/dither.png) 1 14, pointer;
+  cursor:
+    url(../img/cursors/dither.png) 1 14,
+    pointer;
 }
 
 .tool-lighten .drawing-canvas-container:hover {
-  cursor: url(../img/cursors/lighten.png) 1 15, pointer;
+  cursor:
+    url(../img/cursors/lighten.png) 1 15,
+    pointer;
 }
 
 .tool-eraser .drawing-canvas-container:hover {
-  cursor: url(../img/cursors/eraser.png) 3 14, pointer;
+  cursor:
+    url(../img/cursors/eraser.png) 3 14,
+    pointer;
 }
 
 .tool-stroke .drawing-canvas-container:hover {
-  cursor: url(../img/cursors/stroke.png) 1 14, pointer;
+  cursor:
+    url(../img/cursors/stroke.png) 1 14,
+    pointer;
 }
 
 .tool-rectangle .drawing-canvas-container:hover {
-  cursor: url(../img/cursors/rectangle.png) 5 15, pointer;
+  cursor:
+    url(../img/cursors/rectangle.png) 5 15,
+    pointer;
 }
 
 .tool-circle .drawing-canvas-container:hover {
-  cursor: url(../img/cursors/circle.png) 5 15, pointer;
+  cursor:
+    url(../img/cursors/circle.png) 5 15,
+    pointer;
 }
 
 .tool-move .drawing-canvas-container:hover {
-  cursor: url(../img/cursors/hand.png) 7 7, pointer;
+  cursor:
+    url(../img/cursors/hand.png) 7 7,
+    pointer;
 }
 
 .tool-rectangle-select .drawing-canvas-container:hover,
@@ -76,11 +96,15 @@
 }
 
 .tool-shape-select .drawing-canvas-container:hover {
-  cursor: url(../img/cursors/wand.png) 10 5, pointer;
+  cursor:
+    url(../img/cursors/wand.png) 10 5,
+    pointer;
 }
 
 .tool-colorpicker .drawing-canvas-container:hover {
-  cursor: url(../img/cursors/dropper.png) 2 15, pointer;
+  cursor:
+    url(../img/cursors/dropper.png) 2 15,
+    pointer;
 }
 
 .swap-colors-button {
@@ -90,27 +114,27 @@
   height: 18px;
   width: 18px;
 
-  opacity : 0.3;
+  opacity: 0.3;
 
-  cursor : pointer;
+  cursor: pointer;
 }
 
 .swap-colors-button:hover {
-  opacity : 1;
+  opacity: 1;
 }
 
 .tool-color-picker {
-  position:relative;
+  position: relative;
 }
 
 .tool-color-picker:nth-child(1) {
-  z-index : 100;
+  z-index: 100;
 }
 
 .tool-color-picker:nth-child(2) {
-  z-index : 90;
+  z-index: 90;
   margin-top: 25px;
-  margin-left:-20px;
+  margin-left: -20px;
 }
 
 .tool-color-picker input {
@@ -120,13 +144,13 @@
   border: 1px solid black;
   background: white;
   cursor: pointer;
-  position : relative;
+  position: relative;
   top: 10px;
   margin-left: 2px;
 }
 
 .tool-color-picker .secondary-color-picker {
-  top : 18px;
+  top: 18px;
   margin-left: 0;
 }
 
@@ -135,13 +159,13 @@
   margin-left: 10px;
 }
 
-.palette-color[data-color=TRANSPARENT] {
+.palette-color[data-color="TRANSPARENT"] {
   position: relative;
   top: 10px;
   left: 10px;
   background-color: white;
-  height : 16px;
-  width : 16px;
+  height: 16px;
+  width: 16px;
   border: 2px solid #000;
   background-size: 16px 16px;
   background-position: 0 0;
@@ -156,12 +180,11 @@
     color-stop(1, #fff)
   );
   background-image: -moz-linear-gradient(
-      left top,
-      #fff 0%,
-      #fff 45%,
-      #f00 50%,
-      #fff 55%,
-      #fff 100%
+    left top,
+    #fff 0%,
+    #fff 45%,
+    #f00 50%,
+    #fff 55%,
+    #fff 100%
   );
 }
-

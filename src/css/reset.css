@@ -1,8 +1,10 @@
-html, body {
-  height : 100%; width: 100%;
-  margin : 0;
+html,
+body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
   overflow: hidden;
-  cursor : default;
+  cursor: default;
   font-family: Arial;
   font-size: 11px;
   line-height: 1.1;
@@ -14,9 +16,10 @@ html, body {
   user-select: none;
 }
 
-ul, li {
-  margin : 0;
-  padding : 0;
+ul,
+li {
+  margin: 0;
+  padding: 0;
   list-style-type: none;
 }
 
@@ -34,19 +37,20 @@ input[type="range"] {
 
 /* Force apparition of scrollbars on leopard */
 ::-webkit-scrollbar {
-    -webkit-appearance: none;
-    width: 6px;
+  -webkit-appearance: none;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-thumb {
-    border-radius: 2px;
-    background-color: #666;
+  border-radius: 2px;
+  background-color: #666;
 }
 
 ::-webkit-scrollbar-track {
-   background-color: rgba(50, 50, 50, 0.4);
+  background-color: rgba(50, 50, 50, 0.4);
 }
 
-a, a:visited {
+a,
+a:visited {
   color: var(--highlight-color);
 }

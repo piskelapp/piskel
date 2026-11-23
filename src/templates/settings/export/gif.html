@@ -1,23 +1,23 @@
 <script type="text/html" id="templates/settings/export/gif.html">
-  <div class="export-panel-gif">
+  <div class="export-panel-gif" data-test-id="gif-export-panel">
     <div class="export-panel-header export-info">
       Convert your sprite to an animated GIF.
     </div>
-    <div class="gif-export-warning">
+    <div class="gif-export-warning" data-test-id="gif-colors-warning">
       <div class="gif-export-warning-icon icon-common-warning-red">&nbsp;</div>
       <div class="gif-export-warning-message">
         Too many colors: can not preserve original colors or transparency.
       </div>
     </div>
     <div class="export-panel-section export-panel-row">
-      <input id="gif-repeat-checkbox" class="gif-repeat-checkbox checkbox-fix" type="checkbox" />
+      <input id="gif-repeat-checkbox" class="gif-repeat-checkbox checkbox-fix" data-test-id="gif-loop-checkbox" type="checkbox" />
       <label for="gif-repeat-checkbox"
              title="Uncheck to play the animation only one time."
              rel="tooltip"
              data-placement="top">Loop repeatedly</label>
     </div>
     <div class="export-panel-section export-panel-row">
-      <button type="button" class="button button-primary gif-download-button">Download</button>
+      <button type="button" class="button button-primary gif-download-button" data-test-id="gif-download-button">Download</button>
       <div class="export-info">Download as an animated GIF.</div>
     </div>
   </div>

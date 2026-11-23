@@ -25,7 +25,7 @@ We also use the following **libraries** :
 * [canvas-toBlob](https://github.com/eligrey/canvas-toBlob.js/) : shim for canvas toBlob
 * [jquery](https://jquery.com/) : used sporadically in the application
 * [bootstrap-tooltip](https://getbootstrap.com/javascript/#tooltips) : nice tooltips
-* [playwright](https://playwright.dev/): End to end testing
+* [playwright](https://playwright.dev/): End to end testing, and [visual tests](tests/e2e/playwright/visual/README.md)
 
 As well as some **icons** from the [Noun Project](https://thenounproject.com/) :
 * Folder by Simple Icons from The Noun Project
@@ -49,10 +49,28 @@ Offline builds are available. More details in the [dedicated wiki page](https://
 
 ## Contributing ?
 
-Help is always welcome !
+### Reporting an issue
 
-* **Issues** : Found a problem when using the application, want to request a feature, [open an issue](https://github.com/piskelapp/piskel/issues).
-* **Development** : Have a look at the [wiki](https://github.com/piskelapp/piskel/wiki) to set up the development environment
+Found a problem when using the application, want to request a feature, [open an issue](https://github.com/piskelapp/piskel/issues).
+
+How each feature is expected to behave is described in the [feature specs](docs/specs/README.md).
+ 
+### About PR contributions
+
+#### PR Contributions we accept
+- Small, straightforward fixes (documentation updates, typos, incorrect strings, minor bugs): only a few words or lines.
+
+#### PR Contributions we are unlikely to merge/review
+- Large or complex bug fixes that are spread across multiple areas of the codebase
+- Major refactors that require significant testing, validation, or architectural discussion
+- Pull requests that modify the user experience or introduce new features
+
+You are still welcome to open a PR, but please note that complex or UX-impacting changes are unlikely to be reviewed or merged due to limited time and resources.
+
+### Setting up Development environment
+Have a look at the [wiki](https://github.com/piskelapp/piskel/wiki) to set up the development environment.
+
+
 
 ## License
 
