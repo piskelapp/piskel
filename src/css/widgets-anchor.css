@@ -10,7 +10,9 @@
 /* When transitioning between enabled and disabled states */
 .transition .anchor-option,
 .transition .anchor-option:before {
-  transition: background-color 0.2s, border-color 0.2s;
+  transition:
+    background-color 0.2s,
+    border-color 0.2s;
 }
 
 .anchor-option {
@@ -22,7 +24,7 @@
   width: 20px;
   height: 20px;
 
-  background : #888;
+  background: #888;
 
   font-size: 8px;
   text-align: center;
@@ -31,20 +33,20 @@
 
 .disabled .anchor-option {
   cursor: default;
-  background : #555;
+  background: #555;
   border-color: #555 !important;
 }
 
 .anchor-option:hover {
-  border : 3px solid white;
+  border: 3px solid white;
 }
 
 .anchor-option.selected {
-  border : 3px solid var(--highlight-color);
+  border: 3px solid var(--highlight-color);
 }
 
 .anchor-option:before {
-  content: '';
+  content: "";
   position: absolute;
   display: block;
   top: 50%;
@@ -53,7 +55,7 @@
 }
 
 .anchor-option.selected:before {
-  content: '';
+  content: "";
   width: 4px;
   height: 4px;
   background: var(--highlight-color);

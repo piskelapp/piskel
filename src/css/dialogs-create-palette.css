@@ -1,9 +1,9 @@
 #dialog-container.create-palette {
   width: 500px;
   height: 600px;
-  top : 50%;
-  left : 50%;
-  position : absolute;
+  top: 50%;
+  left: 50%;
+  position: absolute;
   margin-left: -250px;
 }
 
@@ -18,7 +18,7 @@
 }
 
 .create-palette-import-section {
-  display : inline-block;
+  display: inline-block;
 }
 
 .colors-container {
@@ -35,11 +35,11 @@
 }
 
 .color-picker-container {
-  position:absolute;
-  left : 280px;
-  top:0;
-  bottom:0;
-  right:0;
+  position: absolute;
+  left: 280px;
+  top: 0;
+  bottom: 0;
+  right: 0;
   background: #222;
 }
 
@@ -47,15 +47,15 @@
   position: absolute;
   box-sizing: border-box;
 
-  width:100%;
+  width: 100%;
   height: 45px;
 
   left: 0;
   right: 0;
   bottom: 0;
 
-  padding:10px;
-  text-align:right;
+  padding: 10px;
+  text-align: right;
 }
 
 .color-preview {
@@ -72,46 +72,51 @@
   padding-bottom: 10px;
 }
 
-.create-palette-color, .create-palette-new-color, .colors-list-drop-proxy{
-  position:relative;
-  float : left;
+.create-palette-color,
+.create-palette-new-color,
+.colors-list-drop-proxy {
+  position: relative;
+  float: left;
 
-  width : 44px;
-  height : 44px;
-  margin : 10px 0 0 10px;
+  width: 44px;
+  height: 44px;
+  margin: 10px 0 0 10px;
 
-  box-sizing : border-box;
+  box-sizing: border-box;
 
-  cursor : pointer;
+  cursor: pointer;
 }
 
 @-moz-document url-prefix() {
-  .create-palette-color, .create-palette-new-color, .colors-list-drop-proxy{
-    margin : 7px 0 0 7px;
+  .create-palette-color,
+  .create-palette-new-color,
+  .colors-list-drop-proxy {
+    margin: 7px 0 0 7px;
   }
 }
 
 @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
-  .create-palette-color, .create-palette-new-color, .colors-list-drop-proxy{
-    margin : 7px 0 0 7px;
+  .create-palette-color,
+  .create-palette-new-color,
+  .colors-list-drop-proxy {
+    margin: 7px 0 0 7px;
   }
 }
 
-
 .create-palette-color {
-  border:1px solid #2c2c2c;
-  transition : border-color 0.2s;
+  border: 1px solid #2c2c2c;
+  transition: border-color 0.2s;
 }
 .create-palette-color:hover {
-  border:1px solid var(--highlight-color);
+  border: 1px solid var(--highlight-color);
 }
 
 .colors-list-drop-proxy {
-  border:2px dotted #eee;
+  border: 2px dotted #eee;
 }
 
 .create-palette-new-color {
-  border:2px dotted var(--highlight-color);
+  border: 2px dotted var(--highlight-color);
 
   border-radius: 2px;
   line-height: 40px;
@@ -121,7 +126,7 @@
 }
 
 .create-palette-color.selected {
-  border:2px solid var(--highlight-color);
+  border: 2px solid var(--highlight-color);
 }
 
 .create-palette-remove-color {
@@ -129,18 +134,20 @@
   top: 0;
   right: 0;
   padding: 2px 4px 0 0;
-  opacity : 0.2;
+  opacity: 0.2;
 
   font-weight: bold;
-  color: rgb(255,255,255);
-  text-shadow : 0 0 1px rgb(0,0,0);
+  color: rgb(255, 255, 255);
+  text-shadow: 0 0 1px rgb(0, 0, 0);
 
-  transition : opacity 0.3s, color 0.1s;
+  transition:
+    opacity 0.3s,
+    color 0.1s;
 }
 
 .light-color .create-palette-remove-color {
-  color: rgb(0,0,0);
-  text-shadow : 0 0 1px rgb(255,255,255);
+  color: rgb(0, 0, 0);
+  text-shadow: 0 0 1px rgb(255, 255, 255);
 }
 
 .selected .create-palette-remove-color {
@@ -154,16 +161,16 @@
 
 .create-palette-color .create-palette-remove-color:hover {
   opacity: 1;
-  color: rgb(240,80,80);
-  text-shadow : 0 0 1px rgb(0,0,0);
+  color: rgb(240, 80, 80);
+  text-shadow: 0 0 1px rgb(0, 0, 0);
 }
 
 /*SPECTRUM OVERRIDES*/
 
-.create-palette .sp-container{
+.create-palette .sp-container {
   background-color: transparent;
   border: none;
-  box-shadow : none;
-  border-radius:0;
-  padding:5px;
+  box-shadow: none;
+  border-radius: 0;
+  padding: 5px;
 }

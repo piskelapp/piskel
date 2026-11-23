@@ -73,25 +73,25 @@
   flex-shrink: 0;
 }
 
-.grid-spacing-container .size-picker-option[data-size='1'] {
+.grid-spacing-container .size-picker-option[data-size="1"] {
   padding: 7px;
 }
-.grid-spacing-container .size-picker-option[data-size='2'] {
+.grid-spacing-container .size-picker-option[data-size="2"] {
   padding: 6px;
 }
-.grid-spacing-container .size-picker-option[data-size='4'] {
+.grid-spacing-container .size-picker-option[data-size="4"] {
   padding: 5px;
 }
-.grid-spacing-container .size-picker-option[data-size='8'] {
+.grid-spacing-container .size-picker-option[data-size="8"] {
   padding: 4px;
 }
-.grid-spacing-container .size-picker-option[data-size='16'] {
+.grid-spacing-container .size-picker-option[data-size="16"] {
   padding: 3px;
 }
-.grid-spacing-container .size-picker-option[data-size='32'] {
+.grid-spacing-container .size-picker-option[data-size="32"] {
   padding: 2px;
 }
-.grid-spacing-container .size-picker-option[data-size='64'] {
+.grid-spacing-container .size-picker-option[data-size="64"] {
   padding: 1px;
 }
 
@@ -109,7 +109,6 @@
 .color-format-select {
   margin: 5px 5px 0 5px;
 }
-
 
 .grid-colors-list {
   overflow: hidden;

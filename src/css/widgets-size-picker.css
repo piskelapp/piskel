@@ -19,21 +19,21 @@
   cursor: pointer;
 }
 
-.size-picker-option[data-size='1'] {
+.size-picker-option[data-size="1"] {
   padding: 5px;
 }
-.size-picker-option[data-size='2'] {
+.size-picker-option[data-size="2"] {
   padding: 4px;
 }
-.size-picker-option[data-size='3'] {
+.size-picker-option[data-size="3"] {
   padding: 3px;
 }
-.size-picker-option[data-size='4'] {
+.size-picker-option[data-size="4"] {
   padding: 2px;
 }
 
 .size-picker-option:before {
-  content: '';
+  content: "";
   width: 100%;
   height: 100%;
   background-color: white;

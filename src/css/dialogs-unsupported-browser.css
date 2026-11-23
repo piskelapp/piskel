@@ -5,17 +5,17 @@
 #dialog-container.unsupported-browser {
   width: 600px;
   height: 260px;
-  top : 50%;
-  left : 50%;
-  position : absolute;
+  top: 50%;
+  left: 50%;
+  position: absolute;
   margin-top: -130px;
   margin-left: -300px;
 }
 
 .unsupported-browser .dialog-content {
-  font-size:1.2em;
+  font-size: 1.2em;
   letter-spacing: 1px;
-  padding:10px 20px;
+  padding: 10px 20px;
   overflow: auto;
 }
 

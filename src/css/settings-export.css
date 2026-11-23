@@ -3,28 +3,28 @@
 /*******************************/
 .gif-download-button,
 .gif-render-button {
-  margin-top : 10px;
-  margin-right : 10px;
+  margin-top: 10px;
+  margin-right: 10px;
 }
 
 .gif-export-preview,
 .png-export-preview {
-  position:relative;
-  margin-top:10px;
-  max-height:32px;
+  position: relative;
+  margin-top: 10px;
+  max-height: 32px;
 }
 
 .gif-export-preview {
-  max-width:32px;
+  max-width: 32px;
 }
 
 .png-export-preview img {
-  max-height:32px;
+  max-height: 32px;
   float: left;
 }
 
 .png-export-preview .light-picker-background {
-  max-width:240px;
+  max-width: 240px;
 }
 
 .gif-upload-status {
@@ -40,7 +40,7 @@
 
 .gif-upload-status,
 .gif-export-preview {
-  float : left;
+  float: left;
 }
 
 .gif-export-warning {

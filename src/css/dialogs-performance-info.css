@@ -6,7 +6,7 @@
   z-index: 11000;
   cursor: pointer;
   opacity: 0;
-  transition : opacity 0.3s;
+  transition: opacity 0.3s;
 }
 
 .performance-link.visible {
@@ -23,12 +23,11 @@
 #dialog-container.performance-info {
   width: 500px;
   height: 525px;
-  top : 50%;
-  left : 50%;
-  position : absolute;
+  top: 50%;
+  left: 50%;
+  position: absolute;
   margin-left: -250px;
   margin-top: -260px;
-
 }
 
 .dialog-performance-info-body {
