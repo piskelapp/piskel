@@ -10,3 +10,31 @@
   margin-top: 5px;
   display: inline-block;
 }
+
+.resize-size-error {
+  margin: 6px 0 0 25%;
+  /* Wrapped lines start after the icon. */
+  padding-left: 20px;
+  text-indent: -20px;
+  color: var(--error-color);
+}
+
+.resize-size-error[hidden] {
+  display: none;
+}
+
+.resize-size-error::before {
+  content: "!";
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin-right: 6px;
+  border-radius: 50%;
+  background: var(--error-color);
+  color: black;
+  font-weight: bold;
+  font-size: 11px;
+  line-height: 14px;
+  text-align: center;
+  text-indent: 0;
+}

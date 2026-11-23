@@ -76,3 +76,8 @@
   margin-right: 8px;
   text-align: right;
 }
+
+.textfield.textfield-invalid,
+.textfield.textfield-invalid:focus {
+  border-color: var(--error-color);
+}

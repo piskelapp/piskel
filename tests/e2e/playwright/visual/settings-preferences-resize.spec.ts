@@ -43,7 +43,7 @@ test.describe("Preferences and resize drawers", () => {
 
   test(
     "shows the resize drawer, with its anchor disabled when resizing the content",
-    { tag: ["@settings.resize", "@settings.resize-anchor", "@settings.resize-content", "@settings.resize-ratio"] },
+    { tag: ["@settings.resize", "@settings.resize-anchor", "@settings.resize-content", "@settings.resize-ratio", "@settings.resize-invalid"] },
     async ({ page }) => {
       const drawer = testId(page, "settings-drawer");
 
@@ -56,6 +56,11 @@ test.describe("Preferences and resize drawers", () => {
       await page.locator(".resize-content-checkbox").setChecked(true);
       await moveMouseAway(page);
       await expectVisualState(drawer, "settings--resize-content");
+
+      // An invalid width: red border, error message and disabled Resize button.
+      await page.locator('[name="resize-width"]').fill("0");
+      await moveMouseAway(page);
+      await expectVisualState(drawer, "settings--resize-invalid");
     }
   );
 });

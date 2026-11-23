@@ -53,9 +53,11 @@ Three tabs: Misc, Grid and Tile mode.
 ### Resize drawer
 
 - `settings.resize` **Resize canvas** sets a new width and height for all
-  frames and layers, in one undo step. No maximum is enforced.
-- `settings.resize-invalid` Resize does nothing while the width or height
-  is empty, 0 or not a number.
+  frames and layers, in one undo step.
+- `settings.resize-invalid` Width and height must be whole numbers from 1
+  to 4096. While a field is empty, 0, not a number or too large, it gets a
+  red border and an error message below it, and the Resize button is
+  disabled.
 - `settings.resize-ratio` **Maintain aspect ratio** links width and
   height; unchecked, they can be set independently. An empty, 0 or non
   numeric value leaves the other field unchanged.
