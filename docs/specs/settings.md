@@ -57,7 +57,8 @@ Three tabs: Misc, Grid and Tile mode.
 - `settings.resize-invalid` Resize does nothing while the width or height
   is empty, 0 or not a number.
 - `settings.resize-ratio` **Maintain aspect ratio** links width and
-  height; unchecked, they can be set independently.
+  height; unchecked, they can be set independently. An empty, 0 or non
+  numeric value leaves the other field unchanged.
 - `settings.resize-content` **Resize canvas content** scales the pixels to
   the new size; otherwise the content keeps its size and is cropped or
   padded.

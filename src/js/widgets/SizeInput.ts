@@ -82,12 +82,11 @@ export class SizeInput {
    */
   synchronize_(input: EventTarget | null): void {
     const sizeInput = assertInitialized(input, "sizeInput") as HTMLInputElement;
-    let value = parseInt(sizeInput.value, 10);
-    if (isNaN(value)) {
-      value = 0;
-    }
+    const value = parseInt(sizeInput.value, 10);
 
-    if (sizeInput === this.widthInput) {
+    if (!(value > 0)) {
+      // Empty, zero or not a number: leave the other input as it is.
+    } else if (sizeInput === this.widthInput) {
       assertInitialized(this.heightInput, "heightInput").value = String(
         Math.round((value * this.initHeight) / this.initWidth)
       );
