@@ -1,4 +1,3 @@
-
 /** Righty sticky drawer expanded state. */
 
 .right-sticky-section.sticky-section {
@@ -52,7 +51,7 @@
   background-color: #444;
   margin-right: 0;
   padding-right: 2px;
-  border-left : 3px solid var(--highlight-color);
+  border-left: 3px solid var(--highlight-color);
 }
 
 /************************************************************************************************/
@@ -80,7 +79,7 @@
 }
 
 .settings-description {
-  margin : 0 0 10px 0;
+  margin: 0 0 10px 0;
 }
 
 .settings-form-section {
@@ -88,9 +87,9 @@
 }
 
 .settings-item {
-  margin : 10px 0;
+  margin: 10px 0;
 }
 
-[name*=checkbox] {
+[name*="checkbox"] {
   vertical-align: middle;
 }

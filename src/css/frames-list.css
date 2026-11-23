@@ -23,8 +23,23 @@
   -o-transition: all 500ms ease-out;
   transition: all 500ms ease-out;
 
-  background-image: linear-gradient(45deg, #1D1D1D 20%, transparent 25%, transparent 75%, #1D1D1D 80%, #1D1D1D),
-                    linear-gradient(-45deg, #1D1D1D 20%, transparent 25%, transparent 75%, #1D1D1D 80%, #1D1D1D);
+  background-image:
+    linear-gradient(
+      45deg,
+      #1d1d1d 20%,
+      transparent 25%,
+      transparent 75%,
+      #1d1d1d 80%,
+      #1d1d1d
+    ),
+    linear-gradient(
+      -45deg,
+      #1d1d1d 20%,
+      transparent 25%,
+      transparent 75%,
+      #1d1d1d 80%,
+      #1d1d1d
+    );
   background-size: 30px 40px;
   background-repeat: repeat-x;
   background-position: 3px 0;
@@ -104,7 +119,7 @@
 }
 
 .tile-view {
-  position : relative;
+  position: relative;
 }
 
 .preview-tile .tile-overlay {
@@ -118,12 +133,12 @@
 }
 
 .preview-tile:hover .tile-overlay {
-  opacity: 1.0;
+  opacity: 1;
 }
 
 .preview-tile .tile-overlay.tile-count {
   display: block;
-  opacity: 1.0;
+  opacity: 1;
   border-bottom-right-radius: 3px;
   top: 0;
   left: 0;
@@ -141,24 +156,24 @@
 }
 
 .preview-tile .tile-overlay.delete-frame-action {
-   top: 0;
-   right: 0;
-   border-bottom-left-radius: 3px;
-   cursor: pointer;
+  top: 0;
+  right: 0;
+  border-bottom-left-radius: 3px;
+  cursor: pointer;
 }
 
 .preview-tile .tile-overlay.duplicate-frame-action {
-   bottom: 0;
-   right: 0;
-   border-bottom-left-radius: 3px;
-   cursor: pointer;
+  bottom: 0;
+  right: 0;
+  border-bottom-left-radius: 3px;
+  cursor: pointer;
 }
 
 .preview-tile .tile-overlay.dnd-action {
-   bottom: 0;
-   left: 0;
-   border-top-right-radius: 3px;
-   cursor: move;
+  bottom: 0;
+  left: 0;
+  border-top-right-radius: 3px;
+  cursor: move;
 }
 
 .preview-tile.selected {
@@ -176,12 +191,11 @@
   border-style: solid;
 }
 
-
 /**
  *  Drag n drop styles.
  */
 
 .preview-tile-drop-proxy {
   border: 3px dashed var(--highlight-color);
-  background-color: rgba(255, 215,0, 0.2);
+  background-color: rgba(255, 215, 0, 0.2);
 }

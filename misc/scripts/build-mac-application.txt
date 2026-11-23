@@ -1,4 +1,4 @@
-01 - Run grunt desktop on mac os x
+01 - Run npm run desktop on mac os x
 02 - Retrieve piskel.new.dmg.zip on Dropbox. Unzip it.
 03 - Retrieve nw.icns on Dropbox
 04 - Go to piskel/dest/desktop/releases/mac ; copy piskel.app to your working directory

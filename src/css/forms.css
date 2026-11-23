@@ -3,13 +3,13 @@
 }
 
 .textfield {
-  box-sizing:border-box;
+  box-sizing: border-box;
 
-  background : black;
-  border : 1px solid #888;
-  border-radius : 2px;
-  padding : 3px 10px;
-  color : white;
+  background: black;
+  border: 1px solid #888;
+  border-radius: 2px;
+  padding: 3px 10px;
+  color: white;
 
   height: 23px;
 }
@@ -18,8 +18,8 @@
   background: transparent;
 }
 
-.textfield[disabled=disabled] {
-  background : #3a3a3a;
+.textfield[disabled="disabled"] {
+  background: #3a3a3a;
 }
 
 .textfield:focus {
@@ -28,7 +28,7 @@
 }
 
 .textfield-small {
-  width : 50px;
+  width: 50px;
 }
 
 .button {
@@ -64,14 +64,14 @@
 
 .button[disabled],
 .button[disabled]:hover {
-  cursor:default;
+  cursor: default;
   background-color: #aaa;
   color: #777;
 }
 
 .import-size-field,
 .resize-size-field,
-.export-size-field  {
+.export-size-field {
   width: 50px;
   margin-right: 8px;
   text-align: right;

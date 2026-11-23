@@ -1,4 +1,3 @@
-
 /**
  * Layers container
  */
@@ -35,7 +34,7 @@
 
 .layers-toggle-preview-enabled,
 .layers-toggle-preview-enabled:hover {
-  color : var(--highlight-color);
+  color: var(--highlight-color);
 }
 
 /**
@@ -45,7 +44,7 @@
 .layers-button {
   margin: 0;
   width: 16.66667%;
-  float : left;
+  float: left;
 }
 
 /**
@@ -53,14 +52,14 @@
  */
 
 .layers-list {
-  font-size : 12px;
+  font-size: 12px;
   overflow: auto;
 }
 
 .layer-item {
   position: relative;
   display: flex;
-  height:24px;
+  height: 24px;
   line-height: 24px;
   border-top: 1px solid #444;
   cursor: pointer;
@@ -83,7 +82,7 @@
 }
 
 .layer-item:hover {
-  background : #222;
+  background: #222;
 }
 
 .layer-item-opacity {
@@ -93,6 +92,6 @@
 
 .current-layer-item,
 .current-layer-item:hover {
-  background : #333;
+  background: #333;
   color: var(--highlight-color);
 }

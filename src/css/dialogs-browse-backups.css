@@ -1,9 +1,9 @@
 #dialog-container.browse-backups {
   width: 700px;
   height: 500px;
-  top : 50%;
-  left : 50%;
-  position : absolute;
+  top: 50%;
+  left: 50%;
+  position: absolute;
   margin-left: -350px;
 }
 

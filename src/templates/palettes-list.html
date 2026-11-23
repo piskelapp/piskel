@@ -1,13 +1,28 @@
-<div class="toolbox-container palettes-list-container">
+<div
+  class="toolbox-container palettes-list-container"
+  data-test-id="palettes-panel"
+>
   <h3 class="toolbox-title palettes-title">Palettes</h3>
   <div class="toolbox-buttons">
     <button
-      class="button palettes-list-button create-palette-button piskel-icon-plus" data-action="add"
-      title="Create a new palette" rel="tooltip" data-placement="top" ></button>
-    <select class="button palettes-list-select"></select>
+      class="button palettes-list-button create-palette-button piskel-icon-plus"
+      data-action="add"
+      title="Create a new palette"
+      rel="tooltip"
+      data-placement="top"
+      data-test-id="create-palette-button"
+    ></button>
+    <select
+      class="button palettes-list-select"
+      data-test-id="palette-select"
+    ></select>
     <button
-      class="button palettes-list-button edit-palette-button  piskel-icon-pencil" data-action="edit"
-      title="Manage this palette" rel="tooltip" data-placement="top"></button>
+      class="button palettes-list-button edit-palette-button  piskel-icon-pencil"
+      data-action="edit"
+      title="Manage this palette"
+      rel="tooltip"
+      data-placement="top"
+    ></button>
   </div>
   <div class="palettes-list-colors"></div>
   <script type="text/template" id="palette-color-template">
@@ -24,7 +39,4 @@
       No color in this palette…
     </div>
   </script>
-
 </div>
-
-

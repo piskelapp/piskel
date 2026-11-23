@@ -15,7 +15,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-
 }
 
 .frame-viewer > canvas,
@@ -40,7 +39,7 @@
 
 .frame-nav .button[disabled],
 .frame-nav .button[disabled]:hover {
-    background-color: #aaa;
+  background-color: #aaa;
 }
 
 .frame-nav .button + .button {

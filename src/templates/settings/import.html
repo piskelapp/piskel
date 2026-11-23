@@ -16,7 +16,7 @@
       <span>Load a <span class="import-highlight">.piskel</span> file from your computer</span>
 
       <div class="import-section">
-        <button type="button" class="button  button-primary open-piskel-button">Browse .piskel files</button>
+        <button type="button" class="button  button-primary open-piskel-button" data-test-id="import-piskel-button">Browse .piskel files</button>
         <span class="file-input-open-piskel-status"></span>
         <input style="display:none"
           type="file" name="open-piskel-input"
@@ -29,7 +29,7 @@
     <div class="settings-item">
       <div style="margin-top:5px;margin-bottom:5px;">Supports <span class="import-highlight">PNG, JPG, BMP, Animated GIF</span></div>
       <div class="import-section">
-        <button type="button" class="button  button-primary file-input-button">Browse images</button>
+        <button type="button" class="button  button-primary file-input-button" data-test-id="import-image-button">Browse images</button>
         <input style="display:none"
           type="file" name="file-upload-input"
           value="file" accept="image/*"/>
@@ -41,7 +41,7 @@
     <div class="settings-item">
       Browse backups of previous sessions.
       <div style="margin-top:10px;">
-        <button type="button" class="button button-primary browse-backups-button">Browse backups</button>
+        <button type="button" class="button button-primary browse-backups-button" data-test-id="browse-backups-button">Browse backups</button>
       </div>
     </div>
   </div>

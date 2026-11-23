@@ -3,16 +3,16 @@
   bottom: 10px;
   left: 10px;
 
-  color : var(--highlight-color);
+  color: var(--highlight-color);
   font-weight: bold;
-  font-size : 1.25em;
+  font-size: 1.25em;
   line-height: 20px;
 
   cursor: pointer;
 
   opacity: 0.5;
   z-index: 11000;
-  transition : opacity 0.3s;
+  transition: opacity 0.3s;
 }
 
 .cheatsheet-link:hover {
@@ -26,12 +26,12 @@
   bottom: 46px;
   padding: 20px 3%;
   border-radius: 3px;
-  background-color: rgba(0,0,0,0.9);
+  background-color: rgba(0, 0, 0, 0.9);
   overflow: auto;
 }
 
 .cheatsheet-container .cheatsheet-title {
-  font-size:24px;
+  font-size: 24px;
   margin-top: 30px;
 }
 
@@ -44,7 +44,7 @@
   float: left;
 
   vertical-align: top;
-  padding : 0 20px 20px 20px;
+  padding: 0 20px 20px 20px;
   min-width: 300px;
 }
 
@@ -81,25 +81,25 @@
 
 .cheatsheet-description {
   color: white;
-  font-size : 14px;
+  font-size: 14px;
   margin-left: 10px;
-  line-height : 30px;
+  line-height: 30px;
 }
 
 .cheatsheet-key {
   box-sizing: border-box;
-  display : inline-block;
+  display: inline-block;
   height: 30px;
   line-height: 26px;
   padding: 0 10px;
 
-  border : 2px solid white;
+  border: 2px solid white;
   border-radius: 2px;
 
   text-align: center;
   font-family: monospace;
   font-weight: bold;
-  font-size : 18px;
+  font-size: 18px;
   color: white;
 }
 
@@ -109,7 +109,7 @@
 }
 
 .cheatsheet-shortcut-editable {
-  cursor : pointer;
+  cursor: pointer;
 }
 
 .cheatsheet-shortcut-editable .cheatsheet-key {
@@ -118,7 +118,7 @@
 }
 
 .cheatsheet-shortcut-editing .cheatsheet-key {
-  animation: fade .5s infinite;
+  animation: fade 0.5s infinite;
 }
 
 .cheatsheet-shortcut-undefined .cheatsheet-key {
@@ -132,21 +132,21 @@
   position: absolute;
   box-sizing: border-box;
 
-  bottom : 0;
-  left : 0;
-  right : 0;
-  height : 46px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 46px;
 
-  padding : 10px;
+  padding: 10px;
   overflow: hidden;
 
-  background-color : var(--highlight-color);
+  background-color: var(--highlight-color);
 }
 
 .cheatsheet-helptext {
   font-size: 14px;
-  height : 26px;
-  line-height : 26px;
+  height: 26px;
+  line-height: 26px;
   color: black;
 }
 
@@ -164,7 +164,6 @@
   bottom: 10px;
   right: 10px;
 }
-
 
 .cheatsheet-icon-tool-circle {
   background-image: url(../img/icons/tools/tool-circle.png);

@@ -1,23 +1,52 @@
 <div class="sticky-section left-sticky-section" id="tool-section">
   <div class="sticky-section-wrap">
     <div class="vertical-centerer">
-      <div class="pen-size-container size-picker-container" title="Pen size<br/>from 1 to 4 pixels" rel="tooltip" data-placement="top">
-        <div class="pen-size-option size-picker-option" data-size="1"></div>
-        <div class="pen-size-option size-picker-option" data-size="2"></div>
-        <div class="pen-size-option size-picker-option" data-size="3"></div>
-        <div class="pen-size-option size-picker-option" data-size="4"></div>
+      <div
+        class="pen-size-container size-picker-container"
+        title="Pen size<br/>from 1 to 4 pixels"
+        rel="tooltip"
+        data-placement="top"
+        data-test-id="pen-size-picker"
+      >
+        <div
+          class="pen-size-option size-picker-option"
+          data-size="1"
+          data-test-id="pen-size-1"
+        ></div>
+        <div
+          class="pen-size-option size-picker-option"
+          data-size="2"
+          data-test-id="pen-size-2"
+        ></div>
+        <div
+          class="pen-size-option size-picker-option"
+          data-size="3"
+          data-test-id="pen-size-3"
+        ></div>
+        <div
+          class="pen-size-option size-picker-option"
+          data-size="4"
+          data-test-id="pen-size-4"
+        ></div>
       </div>
-      <ul id="tools-container" class="tools-wrapper">
-        <!-- Drawing tools will be inserted here -->
-      </ul>
-      <div class="palette-wrapper">
+      <ul
+        id="tools-container"
+        class="tools-wrapper"
+        data-test-id="tools-container"
+      ><!-- Drawing tools will be inserted here --></ul>
+      <div class="palette-wrapper" data-test-id="current-colors">
         <div
           class="tool-icon tool-color-picker"
           data-initial-title="Primary - left mouse button"
           rel="tooltip"
           data-placement="right"
         >
-          <input id="color-picker" class="color" type="text"/>
+          <input
+            id="color-picker"
+            class="color"
+            type="text"
+            data-test-id="primary-color-picker"
+          >
         </div>
         <div
           class="tool-icon tool-color-picker"
@@ -25,10 +54,16 @@
           rel="tooltip"
           data-placement="right"
         >
-          <input id="secondary-color-picker" class="secondary-color-picker color" type="text" />
+          <input
+            id="secondary-color-picker"
+            class="secondary-color-picker color"
+            type="text"
+            data-test-id="secondary-color-picker"
+          >
         </div>
         <div
           class="swap-colors-button icon-common-swapcolors-arrow-grey"
+          data-test-id="swap-colors-button"
           title="Swap colors (X)"
           rel="tooltip"
           data-placement="right"
@@ -41,6 +76,6 @@
 
   <!-- Drawing tool icon-button -->
   <script type="text/template" id="drawingTool-item-template">
-    <li rel="tooltip" data-placement="{{tooltipposition}}" class="{{cssclass}}" data-tool-id="{{toolid}}" title="{{title}}"></li>
+    <li rel="tooltip" data-placement="{{tooltipposition}}" class="{{cssclass}}" data-tool-id="{{toolid}}" data-test-id="tool-{{toolid}}" title="{{title}}"></li>
   </script>
 </div>
