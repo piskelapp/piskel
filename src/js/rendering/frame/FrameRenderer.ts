@@ -61,11 +61,15 @@ export class FrameRenderer extends AbstractRenderer {
     );
 
     if (container === undefined) {
-      throw "Bad FrameRenderer initialization. <container> undefined.";
+      throw new Error(
+        "Bad FrameRenderer initialization. <container> undefined."
+      );
     }
 
     if (isNaN(options.zoom)) {
-      throw "Bad FrameRenderer initialization. <zoom> not well defined.";
+      throw new Error(
+        "Bad FrameRenderer initialization. <zoom> not well defined."
+      );
     }
 
     this.container = container;

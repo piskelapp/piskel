@@ -6,7 +6,9 @@ export class Layer {
 
   constructor(name: string) {
     if (!name) {
-      throw "Invalid arguments in Layer constructor : 'name' is mandatory";
+      throw new Error(
+        "Invalid arguments in Layer constructor : 'name' is mandatory"
+      );
     } else {
       this.name = name;
       this.frames = [];

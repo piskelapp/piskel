@@ -13,7 +13,9 @@ export class FramesheetRenderer {
     if (frames.length > 0) {
       this.frames = frames;
     } else {
-      throw "FramesheetRenderer : Invalid argument : frames is empty";
+      throw new Error(
+        "FramesheetRenderer : Invalid argument : frames is empty"
+      );
     }
   }
 

@@ -22,7 +22,9 @@ export class PiskelController {
     if (piskel) {
       this.setPiskel(piskel);
     } else {
-      throw "A piskel instance is mandatory for instanciating PiskelController";
+      throw new Error(
+        "A piskel instance is mandatory for instanciating PiskelController"
+      );
     }
   }
 
@@ -376,7 +378,7 @@ export class PiskelController {
       );
       this.setCurrentLayerIndex(currentLayerIndex + 1);
     } else {
-      throw "Layer name should be unique";
+      throw new Error("Layer name should be unique");
     }
   }
 
