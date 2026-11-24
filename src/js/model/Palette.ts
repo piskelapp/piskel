@@ -1,5 +1,9 @@
 export type PaletteData = { id: string; name: string; colors: string[] };
 
+const isValidColor = function (color: unknown): color is string {
+  return typeof color === "string" && window.tinycolor(color).ok;
+};
+
 export class Palette {
   id: string;
   name: string;
@@ -12,7 +16,10 @@ export class Palette {
   }
 
   static fromObject(paletteObj: PaletteData): Palette {
-    const colors = paletteObj.colors.slice(0, paletteObj.colors.length);
+    // Older versions could save palettes with null entries in their colors.
+    // Keep only the colors the color picker can parse, so these palettes can
+    // be opened and edited again.
+    const colors = paletteObj.colors.filter(isValidColor);
     return new Palette(paletteObj.id, paletteObj.name, colors);
   }
 
