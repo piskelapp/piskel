@@ -10,7 +10,11 @@ import { HslRgbColorPicker } from "./HslRgbColorPicker";
 const DEFAULT_COLOR = "#000000";
 
 export class ColorsList {
+  // Index of the selected color in the list, or -1 when no color is selected.
   selectedIndex: number;
+  // Last color of the picker. It can differ from the selected color: when the
+  // palette is emptied, the picker keeps the last removed color.
+  pickerColor: string;
   palette: Palette;
   container: HTMLElement | null;
   colorsList: HTMLElement | null;
@@ -19,6 +23,7 @@ export class ColorsList {
 
   constructor(container: HTMLElement) {
     this.selectedIndex = -1;
+    this.pickerColor = DEFAULT_COLOR;
     this.palette = new Palette("tmp", "tmp", []);
     this.container = container;
 
@@ -109,9 +114,11 @@ export class ColorsList {
 
   onColorUpdated_(color: TinyColor): void {
     const strColor = color.toHexString();
+    this.pickerColor = strColor;
     assertInitialized(this.colorPreviewEl, "colorPreviewEl").style.background =
       strColor;
-    if (this.palette) {
+    // With no color selected, changing the picker doesn't change the palette.
+    if (this.hasSelectedColor_()) {
       this.palette.set(this.selectedIndex, strColor);
       this.refreshColorElement_(this.selectedIndex);
     }
@@ -132,7 +139,9 @@ export class ColorsList {
   }
 
   onNewColorClick_(): void {
-    const newColor = this.palette.get(this.selectedIndex) || "#000000";
+    const newColor = this.hasSelectedColor_()
+      ? this.palette.get(this.selectedIndex)
+      : this.pickerColor;
     this.palette.add(newColor);
     this.selectColor_(this.palette.size() - 1);
   }
@@ -158,6 +167,10 @@ export class ColorsList {
     assertInitialized(this.colorsList, "colorsList").innerHTML = html;
   }
 
+  hasSelectedColor_(): boolean {
+    return this.selectedIndex >= 0 && this.selectedIndex < this.palette.size();
+  }
+
   selectColor_(index: number): void {
     this.selectedIndex = index;
     this.hslRgbColorPicker.setColor(this.palette.get(index));
@@ -165,6 +178,22 @@ export class ColorsList {
 
   removeColor_(index: number): void {
     this.palette.removeAt(index);
+
+    // Keep the selection on a color that still exists: the same color, or
+    // the next one when the selected color is removed, or the previous one
+    // when it was the last. Otherwise the color picker keeps editing an index
+    // past the end of the palette, and writing there leaves empty slots in the
+    // colors array. When no color is left, nothing is selected, and the
+    // picker keeps showing the last color.
+    if (index < this.selectedIndex) {
+      this.selectedIndex--;
+    }
+    if (this.palette.size() > 0) {
+      this.selectColor_(Math.min(this.selectedIndex, this.palette.size() - 1));
+    } else {
+      this.selectedIndex = -1;
+    }
+
     this.refresh_();
   }
 
