@@ -66,13 +66,19 @@ colors from the sprite (see [drawing-tools.md](drawing-tools.md) and
   selected color), remove, reorder and edit them, then save or cancel. A
   saved palette becomes the selected one.
 - `colors-and-palettes.palette-dialog-add-copy` "+" adds a copy of the selected
-  color at the end of the list, and selects it.
+  color at the end of the list, and selects it. With no color selected, it adds
+  the color shown in the picker.
 - `colors-and-palettes.palette-dialog-edit-color` Typing a hex value changes the
   selected color.
 - `colors-and-palettes.palette-dialog-reorder` Dragging a color moves it in the
   list, and selects it. The saved palette keeps that order.
 - `colors-and-palettes.empty-palette` All the colors can be removed, and the
-  palette can be saved empty.
+  palette can be saved empty. With no color left, no color is selected: the
+  picker keeps showing the last removed color, and changing it doesn't change
+  the palette.
+- `colors-and-palettes.palette-dialog-remove-selected` Removing the selected
+  color selects the next color, or the previous one if it was the last.
+  Removing another color keeps the same color selected.
 - `colors-and-palettes.palette-dialog-buttons` When creating a palette, the
   dialog offers importing a file, but not downloading or deleting. When editing
   one, it offers downloading and deleting, but not importing.

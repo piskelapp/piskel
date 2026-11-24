@@ -1,6 +1,7 @@
 import test, { expect, Page } from "@playwright/test";
 import {
   assertPaletteDialogColors,
+  assertPaletteDialogPickerColor,
   assertPaletteDialogSelectedColor,
   assertPaletteOptions,
   assertPaletteSwatches,
@@ -27,6 +28,7 @@ const YELLOW = '#ffff00';
 const BLACK = '#000000';
 
 const THREE_COLORS = 'Three colors';
+const FOUR_COLORS = 'Four colors';
 
 /** Create a palette with three colors, and edit it */
 const editPaletteWithThreeColors = async (page: Page) => {
@@ -88,9 +90,27 @@ test.describe('Changing colors in the palette dialog', () => {
   test('should let all the colors be removed and saved', { tag: ['@colors-and-palettes.empty-palette'] }, async ({ page }) => {
     await editPaletteWithThreeColors(page);
 
-    // Remove every color.
+    // Remove the selected first color: the next one is selected, and shown in
+    // the picker.
+    await assertPaletteDialogSelectedColor(page, 0);
+    await removePaletteDialogColor(page, 0);
+    await assertPaletteDialogColors(page, [GREEN, BLUE]);
+    await assertPaletteDialogSelectedColor(page, 0);
+    await assertPaletteDialogPickerColor(page, GREEN);
+
+    // Remove the other colors: the picker keeps showing the last removed one.
     await removePaletteDialogColor(page, 0);
     await removePaletteDialogColor(page, 0);
+    await assertPaletteDialogColors(page, []);
+    await assertPaletteDialogPickerColor(page, BLUE);
+
+    // No color is selected, so changing the picker doesn't add a color.
+    await typePaletteDialogColor(page, YELLOW);
+    await assertPaletteDialogColors(page, []);
+
+    // "+" adds the color shown in the picker. Remove it again.
+    await clickPaletteDialogAddColor(page);
+    await assertPaletteDialogColors(page, [YELLOW]);
     await removePaletteDialogColor(page, 0);
     await assertPaletteDialogColors(page, []);
 
@@ -98,6 +118,39 @@ test.describe('Changing colors in the palette dialog', () => {
     await savePaletteDialog(page);
     await assertPaletteSwatches(page, []);
     await assertSelectedPalette(page, THREE_COLORS);
+  });
+
+  test('should select a remaining color when the selected one is removed', { tag: ['@colors-and-palettes.palette-dialog-remove-selected'] }, async ({ page }) => {
+    await openEditor(page);
+    await createPaletteWithColors(page, FOUR_COLORS, [RED, GREEN, BLUE, YELLOW]);
+    await openEditPaletteDialog(page);
+    await selectPaletteDialogColor(page, 2);
+
+    // Remove the color before the selected one: blue stays selected.
+    await removePaletteDialogColor(page, 0);
+    await assertPaletteDialogColors(page, [GREEN, BLUE, YELLOW]);
+    await assertPaletteDialogSelectedColor(page, 1);
+    await assertPaletteDialogPickerColor(page, BLUE);
+
+    // Remove the color after it: blue is still selected.
+    await removePaletteDialogColor(page, 2);
+    await assertPaletteDialogColors(page, [GREEN, BLUE]);
+    await assertPaletteDialogSelectedColor(page, 1);
+    await assertPaletteDialogPickerColor(page, BLUE);
+
+    // Remove blue, the selected last color: the previous one is selected, so
+    // typing a color changes it.
+    await removePaletteDialogColor(page, 1);
+    await assertPaletteDialogColors(page, [GREEN]);
+    await assertPaletteDialogSelectedColor(page, 0);
+    await assertPaletteDialogPickerColor(page, GREEN);
+    await typePaletteDialogColor(page, BLACK);
+    await assertPaletteDialogColors(page, [BLACK]);
+
+    // The saved palette can be edited again, with the same colors.
+    await savePaletteDialog(page);
+    await openEditPaletteDialog(page);
+    await assertPaletteDialogColors(page, [BLACK]);
   });
 });
 
