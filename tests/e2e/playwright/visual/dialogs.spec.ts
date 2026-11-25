@@ -45,7 +45,14 @@ test.describe("Palette dialog", () => {
 
   test(
     "starts with an empty list when creating a palette",
-    { tag: ["@colors-and-palettes.create", "@colors-and-palettes.palette-dialog-buttons"] },
+    {
+      tag: [
+        "@colors-and-palettes.create",
+        "@colors-and-palettes.palette-dialog-buttons",
+        "@colors-and-palettes.palette-dialog-layout",
+        "@colors-and-palettes.palette-dialog-select",
+      ],
+    },
     async ({ page }) => {
       await openCreatePaletteDialog(page);
       await moveMouseAway(page);
@@ -56,7 +63,14 @@ test.describe("Palette dialog", () => {
 
   test(
     "offers other buttons and shows a selected color when editing",
-    { tag: ["@colors-and-palettes.edit", "@colors-and-palettes.palette-dialog-buttons"] },
+    {
+      tag: [
+        "@colors-and-palettes.edit",
+        "@colors-and-palettes.palette-dialog-buttons",
+        "@colors-and-palettes.palette-dialog-select",
+        "@colors-and-palettes.palette-dialog-picker-shows",
+      ],
+    },
     async ({ page }) => {
       await createPaletteWithColors(page, "Four colors", FOUR_COLORS);
       await openEditPaletteDialog(page);

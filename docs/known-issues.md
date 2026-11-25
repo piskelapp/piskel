@@ -70,11 +70,10 @@ See [colors-and-palettes.md](specs/colors-and-palettes.md).
   (`PaletteTxtReader`).
 - When the primary color isn't in the palette, `>` selects the second color rather
   than the first, because `getCurrentColorIndex_` falls back to 0.
-- Removing a color in the palette dialog doesn't update the selected color
-  (`ColorsList.removeColor_`), so nothing shows as selected. Typing a color then
-  saves one that the list doesn't show: selecting the last of three colors, removing
-  it and typing yellow saves `red, green, yellow`. Removing every color and typing
-  saves that color too, and "+" adds black instead of a copy.
+- Dragging a swatch in the palette dialog selects it, but the dialog's color
+  picker keeps showing the previously selected swatch's color
+  (`ColorsList.onColorDrop_` doesn't update the picker). Changing the color in the
+  picker still changes the dragged swatch.
 
 ## Drawing tools
 
