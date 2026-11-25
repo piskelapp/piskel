@@ -70,6 +70,10 @@ See [colors-and-palettes.md](specs/colors-and-palettes.md).
   (`PaletteTxtReader`).
 - When the primary color isn't in the palette, `>` selects the second color rather
   than the first, because `getCurrentColorIndex_` falls back to 0.
+- Dragging a swatch in the palette dialog selects it, but the dialog's color
+  picker keeps showing the previously selected swatch's color
+  (`ColorsList.onColorDrop_` doesn't update the picker). Changing the color in the
+  picker still changes the dragged swatch.
 
 ## Drawing tools
 
