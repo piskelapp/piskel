@@ -66,10 +66,11 @@ picker** on the right (spectrum, hex field, H/S/V and R/G/B sliders) shows
 and edits one color. In this section, only swatches are "selected"; the
 dialog's color picker "shows" a color.
 
-- `colors-and-palettes.create` **Create palette** (button or `alt+P`)
-  opens the palette dialog with a palette named "New palette" holding one
-  black swatch. You can name it, add, remove, reorder and edit swatches,
-  then save or cancel. A saved palette becomes the selected palette.
+- `colors-and-palettes.create` **Create palette** (the "+" button left of
+  the palette dropdown, or `alt+P`) opens the palette dialog with a palette
+  named "New palette" holding one black swatch. You can name it, add,
+  remove, reorder and edit swatches, then save or cancel. A saved palette
+  becomes the selected palette.
 - `colors-and-palettes.palette-dialog-layout` The swatches are listed on the
   left, in palette order, followed by a "+" swatch. The dialog's color picker
   is on the right.
@@ -98,8 +99,8 @@ dialog's color picker "shows" a color.
   one, it offers downloading and deleting, but not importing.
 - `colors-and-palettes.palette-dialog-cancel` Cancelling discards all the changes
   made in the dialog.
-- `colors-and-palettes.edit` **Edit palette** opens the dialog for the
-  selected palette.
+- `colors-and-palettes.edit` **Edit palette** (the pencil button right of
+  the palette dropdown) opens the dialog for the selected palette.
 - `colors-and-palettes.edit-save` Saving an edited palette replaces it, with its
   new name and colors, instead of adding another palette. It stays selected.
 - `colors-and-palettes.delete` From the dialog, a palette can be deleted,
@@ -139,5 +140,6 @@ dialog's color picker "shows" a color.
 ## UI and shortcuts
 
 - Color pickers at the bottom of the left toolbar.
-- Palettes panel in the right column, palette dialog.
+- Palettes panel in the right column, below the layers and "Transform"
+  panels; palette dialog.
 - Shortcuts: `X`, `D`, `alt+P`, `1`–`9`, `<`, `>`.

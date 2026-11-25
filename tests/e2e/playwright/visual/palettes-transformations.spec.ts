@@ -19,10 +19,18 @@ test.describe("Palettes panel", () => {
 
   test(
     "shows a message for an empty palette",
-    { tag: ["@colors-and-palettes.empty-palette"] },
+    {
+      tag: [
+        "@colors-and-palettes.empty-palette",
+        "@colors-and-palettes.create",
+        "@colors-and-palettes.edit",
+      ],
+    },
     async ({ page }) => {
       await moveMouseAway(page);
 
+      // The panel also shows the "+" (create) and pencil (edit) buttons on
+      // either side of the palette dropdown.
       await expectVisualState(testId(page, "palettes-panel"), "palettes--empty");
     }
   );

@@ -60,5 +60,5 @@ its colors, across the whole animation.
 
 ## UI and shortcuts
 
-Layers panel in the right column.
+Layers panel in the right column, below the animated preview.
 Shortcut: `alt+L` toggles layer preview.
