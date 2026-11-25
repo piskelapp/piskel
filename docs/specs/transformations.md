@@ -37,4 +37,4 @@ they affect the current frame of the current layer.
 
 ## UI and shortcuts
 
-The "Transform" panel in the right column. No keyboard shortcuts.
+The "Transform" panel in the right column, below the layers panel. No keyboard shortcuts.

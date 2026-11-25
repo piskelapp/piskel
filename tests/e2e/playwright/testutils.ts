@@ -2420,7 +2420,7 @@ export const openCreatePaletteDialog = async (page: Page): Promise<void> => {
 
 /** Open the palette dialog for the selected palette */
 export const openEditPaletteDialog = async (page: Page): Promise<void> => {
-  await page.locator(".edit-palette-button").click();
+  await testId(page, "edit-palette-button").click();
   await assertDialogOpen(page, "create-palette");
 };
 

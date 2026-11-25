@@ -182,7 +182,7 @@ test.describe('Create palette', () => {
     await waitFor(async () => (await colorSwatches.count()) >= 2);
 
     // Click the edit (pencil) button on the palette — clones current colors
-    await page.locator('.edit-palette-button').click();
+    await testId(page, 'edit-palette-button').click();
     await expect(page.locator('#dialog-container-wrapper.show')).toBeAttached({ timeout: 5000 });
 
     // Dialog should show "Create Palette" (cloning, not editing)
