@@ -8,6 +8,8 @@ import {
   gridFromColorRows,
   getAddLayerButton,
   assertCurrentLayer,
+  assertFps,
+  testId,
 } from "../../../testutils";
 
 test.use({ viewport: { width: 1280, height: 720 } });
@@ -101,6 +103,35 @@ test.describe('Preferences — Misc tab', () => {
     await openMiscPreferences(page);
 
     await expect(page.locator('.max-fps-input')).toHaveValue('24');
+  });
+
+  test('invalid maximum FPS should preserve the previous limit and animation speed', {
+    tag: ['@settings.max-fps', '@preview.fps'],
+  }, async ({ page }) => {
+    // Start with a valid limit and the default animation speed.
+    await openEditor(page);
+    await openMiscPreferences(page);
+
+    const maximumFps = page.locator('input[name="max-fps"]');
+    await maximumFps.fill('30');
+    await maximumFps.press('Tab');
+    await expect(testId(page, 'fps-slider')).toHaveAttribute('max', '30');
+    await assertFps(page, 12);
+
+    // Reject each invalid input without changing the displayed preference or preview.
+    for (const value of ['-1', '-30', '0', '', 'abc', '9'.repeat(400)]) {
+      await maximumFps.fill(value);
+      await maximumFps.press('Tab');
+
+      await expect(maximumFps).toHaveValue('30');
+      await expect(testId(page, 'fps-slider')).toHaveAttribute('max', '30');
+      await assertFps(page, 12);
+    }
+
+    // Reopening Preferences still shows the previous usable limit.
+    await closeMiscPreferences(page);
+    await openMiscPreferences(page);
+    await expect(maximumFps).toHaveValue('30');
   });
 
   // ─── Canvas background screenshots ────────────────────────────

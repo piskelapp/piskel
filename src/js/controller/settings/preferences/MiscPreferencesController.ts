@@ -106,7 +106,7 @@ export class MiscPreferencesController extends AbstractSettingController {
   onMaxFpsChange_(evt: Event): void {
     const target = evt.target as HTMLInputElement;
     const fps = parseInt(target.value, 10);
-    if (fps && !isNaN(fps)) {
+    if (Number.isFinite(fps) && fps > 0) {
       UserSettings.set(UserSettings.MAX_FPS, fps);
     } else {
       target.value = String(UserSettings.get(UserSettings.MAX_FPS));
