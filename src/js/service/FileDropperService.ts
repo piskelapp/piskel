@@ -45,8 +45,10 @@ export class FileDropperService {
       y: event.clientY
     };
 
-    const files = assertInitialized(event.dataTransfer, "dataTransfer").files;
+    const files = Array.from(assertInitialized(event.dataTransfer, "dataTransfer").files);
     this.isMultipleFiles_ = files.length > 1;
+    const loadedOrder: number[] = [];
+    const lastFrameIndex = this.piskelController.getCurrentFrameIndex();
 
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
@@ -57,7 +59,13 @@ export class FileDropperService {
         FileUtils.readImageFile(
           file,
           (image: HTMLImageElement | HTMLCanvasElement) => {
+            // keep it drag-drop order
+            loadedOrder.push(i);
             this.onImageLoaded_(image, file);
+            if (loadedOrder.length === files.length)
+              if(this.isMultipleFiles_) {
+                this.resortImportOrders_(lastFrameIndex, loadedOrder);
+              }
           }
         );
       } else if (isPiskel) {
@@ -144,5 +152,50 @@ export class FileDropperService {
     $.publish(Events.PISKEL_SAVE_STATE, {
       type: HistoryService.SNAPSHOT
     });
+  }
+
+  /**
+   * Resort imported images to the dragged order
+   * 
+   * @param {number} startIndex ordered index
+   * @param {number[]} order insert order. start from 0
+   */
+  resortImportOrders_(startIndex: number, order: number[]): void {
+    const indexedOrder = order.map((o) => o + startIndex + 1);
+    const sorted = [...indexedOrder].sort((a, b) => a - b);
+
+    let currentPositions = new Map();
+    for (let i = 0; i < indexedOrder.length; i++) {
+      currentPositions.set(indexedOrder[i], startIndex + 1 + i);
+    }
+
+    for (let targetIdx = 0; targetIdx < sorted.length; targetIdx++) {
+      const targetValue = sorted[targetIdx];
+      const targetAbsolutePos = startIndex + 1 + targetIdx;
+
+      const currentPos = currentPositions.get(targetValue);
+
+      if (currentPos === targetAbsolutePos)
+        continue;
+
+      this.piskelController.moveFrame(currentPos, targetAbsolutePos);
+
+      // update others location
+      if (currentPos < targetAbsolutePos) {
+        for (let [value, pos] of currentPositions) {
+          if (pos > currentPos && pos <= targetAbsolutePos) {
+            currentPositions.set(value, pos - 1);
+          }
+        }
+      } else {
+        for (let [value, pos] of currentPositions) {
+          if (pos >= targetAbsolutePos && pos < currentPos) {
+            currentPositions.set(value, pos + 1);
+          }
+        }
+      }
+
+      currentPositions.set(targetValue, targetAbsolutePos);
+    }
   }
 }
