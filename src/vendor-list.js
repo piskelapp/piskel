@@ -9,5 +9,6 @@ exports.vendors = [
   "js/lib/gif/gif.js",
   "js/lib/gif/libgif.js",
   "js/lib/jszip/jszip.min.js",
-  "js/lib/spectrum/spectrum.js"
+  "js/lib/spectrum/spectrum.js",
+  "js/lib/apng/UPNG.js"
 ];

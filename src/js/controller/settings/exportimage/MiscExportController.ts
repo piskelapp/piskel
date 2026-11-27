@@ -15,6 +15,28 @@ export class MiscExportController extends AbstractSettingController {
   init(): void {
     const cDownloadButton = Dom.getElement<HTMLElement>(".c-download-button");
     this.addEventListener(cDownloadButton, "click", this.onDownloadCFileClick_);
+    this.addEventListener(Dom.getElement<HTMLElement>('.apng-download-button'), 'click', this.onDownloadApngClick_);
+  }
+
+  onDownloadApngClick_(): void {
+    var fileName = this.piskelController.getPiskel().getDescriptor().name + '.apng';
+    var width = this.piskelController.getWidth();
+    var height = this.piskelController.getHeight();
+    var frameCount = this.piskelController.getFrameCount();
+    var fps = this.piskelController.getFPS();
+
+    const frameBuffers = Array.from({ length: frameCount }).map((_, i) => {
+      var render = this.piskelController.renderFrameAt(i, true);
+      var context = Dom.getContext2d(render);
+      var imgd = context.getImageData(0, 0, width, height);
+      return imgd.data.buffer;
+    });
+    const dels = Array.from({ length: frameCount }).fill(1000 / fps);
+    // @ts-ignore
+    const apngBuffer = UPNG.encodeLL(frameBuffers, width, height, 3, 1, 8, dels);
+    const file = new Blob([apngBuffer], { type: 'image/png' });
+
+    FileUtils.downloadAsFile(file, fileName);
   }
 
   onDownloadCFileClick_(): void {
