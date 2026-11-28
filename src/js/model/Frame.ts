@@ -39,11 +39,11 @@ export class Frame {
       this.pixels = Frame.createEmptyPixelGrid_(width, height);
       this.stateIndex = 0;
     } else {
-      throw (
+      throw new Error(
         "Bad arguments in pskl.model.Frame constructor : " +
-        width +
-        ", " +
-        height
+          width +
+          ", " +
+          height
       );
     }
   }
@@ -78,14 +78,16 @@ export class Frame {
         h = height;
         buffer = pixels;
       } else {
-        throw "Bad arguments in pskl.model.frame.fromPixelGrid, missing width and height";
+        throw new Error(
+          "Bad arguments in pskl.model.frame.fromPixelGrid, missing width and height"
+        );
       }
 
       const frame = new Frame(w, h);
       frame.setPixels(buffer);
       return frame;
     } else {
-      throw "Bad arguments in pskl.model.Frame.fromPixelGrid";
+      throw new Error("Bad arguments in pskl.model.Frame.fromPixelGrid");
     }
   }
 

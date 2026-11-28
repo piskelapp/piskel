@@ -28,6 +28,16 @@ test('Test resize a canvas from 32x32 to 320x320', { tag: ['@settings.resize-rat
     await page.keyboard.press('Backspace');
     await expectResizeValues(page, "30", "30");
 
+    // An empty, zero or non numeric value leaves the other field as it is.
+    await widthInputLocator.fill("");
+    await expectResizeValues(page, "", "30");
+    await widthInputLocator.fill("0");
+    await expectResizeValues(page, "0", "30");
+    await widthInputLocator.fill("abc");
+    await expectResizeValues(page, "abc", "30");
+    await widthInputLocator.fill("30");
+    await expectResizeValues(page, "30", "30");
+
     await ratioCheckbox.click();
     await expect(ratioCheckbox).not.toBeChecked();
 

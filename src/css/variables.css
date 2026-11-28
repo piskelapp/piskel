@@ -1,4 +1,5 @@
 html,
 body {
   --highlight-color: gold;
+  --error-color: #ff6b6b;
 }

@@ -16,7 +16,9 @@ export class LocalStorageService {
 
   constructor(piskelController: PublicPiskelController) {
     if (piskelController === undefined) {
-      throw "Bad LocalStorageService initialization: <undefined piskelController>";
+      throw new Error(
+        "Bad LocalStorageService initialization: <undefined piskelController>"
+      );
     }
     this.piskelController = piskelController;
   }

@@ -34,9 +34,9 @@ export class Piskel {
       this.fps = fps;
       this.hiddenFrames = [];
     } else {
-      throw (
+      throw new Error(
         "Missing arguments in Piskel constructor : " +
-        [width, height, fps, descriptor].join(",")
+          [width, height, fps, descriptor].join(",")
       );
     }
   }
@@ -63,7 +63,9 @@ export class Piskel {
       );
       layers.forEach(piskel.addLayer.bind(piskel));
     } else {
-      throw "Piskel.fromLayers expects array of non empty pskl.model.Layer as first argument";
+      throw new Error(
+        "Piskel.fromLayers expects array of non empty pskl.model.Layer as first argument"
+      );
     }
     return piskel;
   }

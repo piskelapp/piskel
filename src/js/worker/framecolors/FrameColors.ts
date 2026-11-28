@@ -11,7 +11,9 @@ type FrameColorsCallback = (event: MessageEvent<FrameColorsResponse>) => void;
 
 // The worker defaults assume this value.
 if (Constants.TRANSPARENT_COLOR !== "rgba(0, 0, 0, 0)") {
-  throw "Constants.TRANSPARENT_COLOR, please update FrameColorsWorker";
+  throw new Error(
+    "Constants.TRANSPARENT_COLOR, please update FrameColorsWorker"
+  );
 }
 
 export class FrameColors {

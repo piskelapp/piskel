@@ -175,7 +175,9 @@ export class HistoryService {
 
         const snapshotIndex = this.getPreviousSnapshotIndex_(index);
         if (snapshotIndex < 0) {
-          throw "Could not find previous SNAPSHOT saved in history stateQueue";
+          throw new Error(
+            "Could not find previous SNAPSHOT saved in history stateQueue"
+          );
         }
         const serializedPiskel = assertInitialized(
           this.getSnapshotFromState_(snapshotIndex),

@@ -256,15 +256,6 @@ See [selection.md](specs/selection.md).
 - Undoing while moving content restores the original pixels, but the content keeps
   moving. Committing then adds it at the new position, so the move becomes a copy.
 
-## Settings
-
-See [settings.md](specs/settings.md).
-
-- The resize panel doesn't respect the 4096 cap of the default size
-  (`Constants.MAX_DEFAULT_WIDTH` / `MAX_DEFAULT_HEIGHT`): a sprite can be resized
-  to a width of 5000. `ResizeController.onResizeFormSubmit_` doesn't use
-  `ResizeUtils.sanitizeSize`.
-
 ## Transformations
 
 See [transformations.md](specs/transformations.md).

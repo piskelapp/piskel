@@ -262,7 +262,7 @@ export class ImageImport extends AbstractImportStep {
     ) {
       return assertInitialized(this.sheetImportType, "sheetImportType").value;
     } else {
-      throw "Could not find the currently selected import type";
+      throw new Error("Could not find the currently selected import type");
     }
   }
 

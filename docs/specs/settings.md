@@ -53,9 +53,14 @@ Three tabs: Misc, Grid and Tile mode.
 ### Resize drawer
 
 - `settings.resize` **Resize canvas** sets a new width and height for all
-  frames and layers, in one undo step. No maximum is enforced.
+  frames and layers, in one undo step.
+- `settings.resize-invalid` Width and height must be whole numbers from 1
+  to 4096. While a field is empty, 0, not a number or too large, it gets a
+  red border and an error message below it, and the Resize button is
+  disabled.
 - `settings.resize-ratio` **Maintain aspect ratio** links width and
-  height; unchecked, they can be set independently.
+  height; unchecked, they can be set independently. An empty, 0 or non
+  numeric value leaves the other field unchanged.
 - `settings.resize-content` **Resize canvas content** scales the pixels to
   the new size; otherwise the content keeps its size and is cropped or
   padded.
@@ -67,8 +72,9 @@ Three tabs: Misc, Grid and Tile mode.
   top-left by default.
 - `settings.default-size` **Default size**: width and height used for new
   sprites (32×32 out of the box), with a "Set default" button. Persisted
-  across reloads. An empty or 0 value keeps the previous default. Sizes above
-  4096 are capped, including a value already saved by an older version.
+  across reloads. Invalid sizes are shown and block the button as in
+  `settings.resize-invalid`. A size above 4096 already saved by an older
+  version is capped.
 
 ## UI and shortcuts
 

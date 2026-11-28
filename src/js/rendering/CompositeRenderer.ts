@@ -63,7 +63,7 @@ export class CompositeRenderer extends AbstractRenderer {
     if (this.renderers.length > 0) {
       return this.renderers[0];
     } else {
-      throw "Renderer manager is empty";
+      throw new Error("Renderer manager is empty");
     }
   }
 }

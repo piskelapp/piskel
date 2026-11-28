@@ -3236,6 +3236,26 @@ export const readZoom = async (page: Page): Promise<number> => {
   return parseFloat(text.slice(1));
 };
 
+/**
+ * Check whether a size field of the resize panel ("resize-width", "default-height", ...)
+ * is shown as invalid, with its error message below it
+ */
+export const assertSizeFieldInvalid = async (
+  page: Page,
+  fieldName: string,
+  invalid: boolean
+): Promise<void> => {
+  const field = page.locator(`[name="${fieldName}"]`);
+  const error = testId(page, `${fieldName}-error`);
+  await expect(field).toHaveAttribute("aria-invalid", String(invalid));
+  if (invalid) {
+    await expect(error).toBeVisible();
+    await expect(error).toHaveText("Enter a whole number from 1 to 4096.");
+  } else {
+    await expect(error).toBeHidden();
+  }
+};
+
 /** Check the size of the sprite shown in the bottom bar */
 export const assertSpriteSize = async (
   page: Page,

@@ -1,5 +1,5 @@
 import test, { expect } from "@playwright/test";
-import { expectDefaultResizeValues, isSettingsDrawerExpanded, openEditor, openEditorInNewPage, openResizeSettingsPanel, setDefaultSize, testId, waitFor } from "../../testutils";
+import { assertSizeFieldInvalid, assertSpriteSize, expectDefaultResizeValues, isSettingsDrawerExpanded, openEditor, openEditorInNewPage, openResizeSettingsPanel, testId } from "../../testutils";
 
 test('Test changing the default canvas size', { tag: ['@settings.default-size'] }, async ({ page }) => {
   // The resize panel shows the default size of 32x32.
@@ -22,18 +22,42 @@ test('Test changing the default canvas size', { tag: ['@settings.default-size'] 
   await expectDefaultResizeValues(page, "321", "322");
 });
 
-test('Test the default canvas size is capped to the maximum', { tag: ['@settings.default-size'] }, async ({ page }) => {
-  // Save a huge default size.
+test('Test an invalid default size is shown and disables the Set default button', { tag: ['@settings.default-size'] }, async ({ page }) => {
   await openEditor(page);
   await openResizeSettingsPanel(page);
-  await page.locator('[name="default-width"]').fill("99999999999999");
-  await page.locator('[name="default-height"]').fill("99999999999999");
-  await page.click('.default-size-button');
+  const widthInput = page.locator('[name="default-width"]');
+  const heightInput = page.locator('[name="default-height"]');
+  const setDefaultButton = testId(page, "default-size-button");
+  await expect(setDefaultButton).toBeEnabled();
+
+  // Too large, empty, 0 or letters: only the width is invalid.
+  for (const value of ["4097", "", "0", "abc"]) {
+    await widthInput.fill(value);
+    await assertSizeFieldInvalid(page, "default-width", true);
+    await assertSizeFieldInvalid(page, "default-height", false);
+    await expect(setDefaultButton).toBeDisabled();
+  }
+
+  // A valid width, and a height of 0: only the height is invalid.
+  await widthInput.fill("64");
+  await heightInput.fill("0");
+  await assertSizeFieldInvalid(page, "default-width", false);
+  await assertSizeFieldInvalid(page, "default-height", true);
+  await expect(setDefaultButton).toBeDisabled();
+
+  // Pressing Enter doesn't save the invalid size or close the drawer.
+  await heightInput.press("Enter");
+  expect(await isSettingsDrawerExpanded(page)).toBe(true);
+
+  // Valid sizes can be saved.
+  await heightInput.fill("48");
+  await assertSizeFieldInvalid(page, "default-height", false);
+  await setDefaultButton.click();
   await expect.poll(() => isSettingsDrawerExpanded(page)).toBe(false);
 
-  // It was capped to 4096x4096.
-  await openResizeSettingsPanel(page);
-  await expectDefaultResizeValues(page, "4096", "4096");
+  // A new session starts on a sprite of that size.
+  const secondSession = await openEditorInNewPage(page);
+  await assertSpriteSize(secondSession, 64, 48);
 });
 
 test('Test the editor starts with an invalid stored default size', { tag: ['@settings.default-size'] }, async ({ page }) => {
@@ -51,24 +75,4 @@ test('Test the editor starts with an invalid stored default size', { tag: ['@set
 
   await expect(testId(page, "cursor-coordinates")).toContainText("[4096x4096]");
   expect(errors).toEqual([]);
-});
-
-test('Test an empty or 0 default size keeps the previous value', { tag: ['@settings.default-size'] }, async ({ page }) => {
-  // Set a default size of 64x48.
-  await openEditor(page);
-  await setDefaultSize(page, "64", "48");
-
-  // Set an empty width and a height of 0: both keep their value.
-  await setDefaultSize(page, "", "0");
-  await openResizeSettingsPanel(page);
-  await expectDefaultResizeValues(page, "64", "48");
-  await page.click('[data-setting="resize"]');
-  await waitFor(async () => !(await isSettingsDrawerExpanded(page)));
-
-  // Each side is checked on its own: a valid width still applies.
-  await setDefaultSize(page, "20", "");
-
-  // A new session starts on a sprite of that size.
-  const secondSession = await openEditorInNewPage(page);
-  await expect(testId(secondSession, "cursor-coordinates")).toContainText("[20x48]");
 });

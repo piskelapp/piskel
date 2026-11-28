@@ -103,6 +103,20 @@ export const ResizeUtils = {
     };
   },
 
+  /**
+   * True if the value typed in a size field is a whole number from 1 to max.
+   * @param  {String} value the raw value of the input field
+   * @param  {Number} max   the largest accepted size
+   */
+  isValidSize(value: string, max: number): boolean {
+    const trimmed = value.trim();
+    if (!/^\d+$/.test(trimmed)) {
+      return false;
+    }
+    const size = parseInt(trimmed, 10);
+    return size >= 1 && size <= max;
+  },
+
   translateCoordinates(
     x: number,
     y: number,

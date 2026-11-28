@@ -28,11 +28,13 @@ export class ShortcutService {
    */
   registerShortcut(shortcut: Shortcut, callback: ShortcutCallback): void {
     if (!(shortcut instanceof Shortcut)) {
-      throw "Invalid shortcut argument, please use instances of pskl.service.keyboard.Shortcut";
+      throw new Error(
+        "Invalid shortcut argument, please use instances of pskl.service.keyboard.Shortcut"
+      );
     }
 
     if (typeof callback != "function") {
-      throw "Invalid callback argument, please provide a function";
+      throw new Error("Invalid callback argument, please provide a function");
     }
 
     this.shortcuts_.push({
